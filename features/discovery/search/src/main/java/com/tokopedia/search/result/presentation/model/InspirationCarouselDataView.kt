@@ -12,7 +12,7 @@ class InspirationCarouselDataView(
         val type: String = "",
         val position: Int = 0,
         val layout: String = "",
-        val options: List<Option> = listOf()
+        val options: List<Option> = listOf(),
 ) : Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
@@ -34,6 +34,8 @@ class InspirationCarouselDataView(
             val carouselTitle: String = "",
             val optionPosition: Int = 0,
             var isChipsActive: Boolean = false,
+            val hexColor: String = "",
+            val chipImageUrl: String = "",
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -54,6 +56,8 @@ class InspirationCarouselDataView(
         }
 
         fun hasProducts() = product.isNotEmpty()
+
+        fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
 
         class Product(
                 val id: String = "",

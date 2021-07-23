@@ -46,6 +46,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -65,6 +68,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
@@ -672,17 +676,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
     }
 
-    override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-                                  activityType: String) {
+    override fun onGoToKolComment(
+        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        activityType: String,
+    ) {
         RouteManager.getIntent(
-                requireContext(),
-                UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.COMMENT,
-                        mapOf(
-                                COMMENT_ARGS_POSITION to rowNumber.toString()
-                        )
-                ),
-                id.toString()
+            requireContext(),
+            UriUtil.buildUriAppendParam(
+                ApplinkConstInternalContent.COMMENT,
+                mapOf(
+                    COMMENT_ARGS_POSITION to rowNumber.toString()
+                )
+            ),
+            id.toString()
         ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
         if (isOwner.not()) {
             profileAnalytics.eventClickComment(hasMultipleContent, id.toString(), activityType)
@@ -763,7 +769,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
 
     //newfeed section
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
+    override fun onAvatarClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        activityId: Int,
+        activityName: String,
+        followCta: FollowCta,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        isVideo: Boolean,
+        isCaption: Boolean
+    ) {
         onGoToLink(redirectUrl)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
             val model = adapter.list[positionInFeed] as DynamicPostViewModel
@@ -776,7 +793,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
+    override fun onHeaderActionClick(
+        positionInFeed: Int,
+        id: String,
+        type: String,
+        isFollow: Boolean,
+        postType: String,
+        isVideo: Boolean
+    ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
             try {
@@ -800,18 +824,30 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
+    override fun onMenuClick(
+        positionInFeed: Int,
+        postId: Int,
+        reportable: Boolean,
+        deletable: Boolean,
+        editable: Boolean,
+        isFollowed: Boolean,
+        id: String,
+        authorType: String,
+        postType: String,
+        isVideo: Boolean
+    ) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
-                override fun onDeleteClicked() {
-                    createDeleteDialog(positionInFeed, postId).show()
-                }
+            val menus =
+                createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
+                    override fun onDeleteClicked() {
+                        createDeleteDialog(positionInFeed, postId).show()
+                    }
 
-                override fun onReportClick() {
-                    goToContentReport(postId)
-                }
+                    override fun onReportClick() {
+                        goToContentReport(postId)
+                    }
 
-                override fun onEditClick() {
+                    override fun onEditClick() {
                     goToEditPostAffiliate(postId)
                 }
             })
@@ -837,7 +873,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(
+        positionInFeed: Int,
+        id: Int,
+        isLiked: Boolean,
+        postType: String,
+        isFollowed: Boolean,
+        type: Boolean,
+        shopId: String,
+        isVideo: Boolean
+    ) {
         profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -846,22 +891,41 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int) {
+    override fun onCommentClick(
+        positionInFeed: Int,
+        id: Int,
+        authorType: String,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean,
+        shopId: String
+    ) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
-                              url: String, imageUrl: String) {
+    override fun onShareClick(
+        positionInFeed: Int,
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
+        imageUrl: String,
+        typeASGC: Boolean,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        video: Boolean
+    ) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
             checkShouldChangeUsername(url) {
                 linkerData = showShareBottomSheet(
-                        ProfileHeaderViewModel(link = url),
-                        description,
-                        title,
-                        null
+                    ProfileHeaderViewModel(link = url),
+                    description,
+                    title,
+                    null
                 )
             }
         }
@@ -905,6 +969,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 )
             }
         }
+    }
+
+    override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
+    }
+
+    override fun onPostTagItemBSImpression(
+        activityId: String,
+        postTagItemList: List<FeedXProduct>,
+        type: String,
+        shopId: String,
+        isFollowed: Boolean,
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
@@ -951,15 +1028,30 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
+    override fun userCarouselImpression(
+        activityId: String,
+        media: FeedXMedia,
+        positionInFeed: Int,
+        postType: String,
+        isFollowed: Boolean,
+        shopId: String,
+        postPosition: Int
+    ) {
+    }
+
+    override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String, shopId: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
             val model = adapter.list[positionInFeed] as DynamicPostViewModel
             trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.trackingPostModel,
-                    ProfileAnalytics.Element.IMAGE,
+                positionInFeed,
+                contentPosition,
+                model.trackingPostModel,
+                ProfileAnalytics.Element.IMAGE,
                     redirectLink
             )
         }
@@ -1012,23 +1104,27 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
         val shop = postTagItem.shop.firstOrNull()
         feedAnalytics.eventProfileAddToCart(
-                postTagItem.id,
-                postTagItem.text,
-                postTagItem.price,
-                1,
-                shop?.shopId?.toIntOrZero() ?: -1,
-                ""
+            postTagItem.id,
+            postTagItem.text,
+            postTagItem.price,
+            1,
+            shop?.shopId?.toIntOrZero() ?: -1,
+            ""
         )
         presenter.addPostTagItemToCart(postTagItem)
     }
 
-    override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
+    override fun onYoutubeThumbnailClick(
+        positionInFeed: Int,
+        contentPosition: Int,
+        youtubeId: String
+    ) {
         val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
 
         if (context != null) {
             RouteManager.route(
-                    context,
-                    redirectUrl
+                context,
+                redirectUrl
             )
         }
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
@@ -1059,8 +1155,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
-                                 redirectLink: String) {
+    override fun onGridItemClick(
+        positionInFeed: Int,
+        contentPosition: Int,
+        productPosition: Int,
+        redirectLink: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        feedXProduct: FeedXProduct
+    ) {
         onGoToLink(redirectLink)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
             val model = adapter.list[positionInFeed] as DynamicPostViewModel
@@ -1074,12 +1178,28 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun userProductImpression(
+        positionInFeed: Int,
+        activityId: String,
+        productId: String,
+        shopId: String,
+        productList: List<FeedXProduct>
+    ) {
+    }
+
     override fun onVideoPlayerClicked(
-            positionInFeed: Int,
-            contentPosition: Int,
-            postId: String,
-            redirectUrl: String) {
+        positionInFeed: Int,
+        contentPosition: Int,
+        postId: String,
+        redirectUrl: String,
+        authorId: String,
+        authorType: String,
+        isFollowed: Boolean
+    ) {
         onGoToLink(redirectUrl)
+    }
+
+    override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
     }
 
     override fun onEmptyComponentClicked() {
@@ -1109,21 +1229,66 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
         feedAnalytics.eventProfileClickReadMore(
-                isOwner,
-                trackingPostModel.postId.toString(),
-                trackingPostModel.activityName,
-                trackingPostModel.mediaType
+            isOwner,
+            trackingPostModel.postId.toString(),
+            trackingPostModel.activityName,
+            trackingPostModel.mediaType
         )
+    }
+
+    override fun onReadMoreClicked(
+        postId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean
+    ) {
+    }
+
+    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    }
+
+    override fun onTagClicked(
+        postId: Int,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        id: String,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean,
+        positionInFeed: Int
+    ) {
+    }
+
+    override fun onBottomSheetMenuClicked(
+        item: ProductPostTagViewModelNew,
+        context: Context,
+        shopId: String
+    ) {
+
+    }
+
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+    }
+
+    override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
+    }
+
+    override fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard) {
     }
 
     override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {
         getPostStatisticBottomSheet()
-                .setPostStatisticCommissionModel(statisticCommissionModel)
+            .setPostStatisticCommissionModel(statisticCommissionModel)
     }
 
-    override fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>) {
+    override fun onErrorGetPostStatistic(
+        error: Throwable,
+        activityId: String,
+        productIds: List<String>
+    ) {
         getPostStatisticBottomSheet()
-                .setError(error, activityId, productIds)
+            .setError(error, activityId, productIds)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {

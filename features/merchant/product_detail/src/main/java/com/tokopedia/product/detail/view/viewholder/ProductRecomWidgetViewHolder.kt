@@ -28,11 +28,11 @@ class ProductRecomWidgetViewHolder (
     }
     private var productRecom: ProductRecomWidgetDataModel? = null
 
-    private lateinit var componentTrackDataModel: ComponentTrackDataModel
+    private var componentTrackDataModel: ComponentTrackDataModel? = null
+    private val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
 
     override fun bind(element: ProductRecomWidgetDataModel) {
         productRecom = element
-        val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
         itemView.visible()
         if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
@@ -69,7 +69,7 @@ class ProductRecomWidgetViewHolder (
                 itemPosition,
                 data.recommendationData.pageName,
                 data.recommendationData.title,
-                componentTrackDataModel)
+                componentTrackDataModel?: ComponentTrackDataModel())
     }
 
     override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
@@ -84,7 +84,7 @@ class ProductRecomWidgetViewHolder (
                 itemPosition,
                 data.recommendationData.pageName,
                 data.recommendationData.title,
-                componentTrackDataModel)
+                componentTrackDataModel ?: ComponentTrackDataModel())
 
         view.context?.run {
             RouteManager.route(this,

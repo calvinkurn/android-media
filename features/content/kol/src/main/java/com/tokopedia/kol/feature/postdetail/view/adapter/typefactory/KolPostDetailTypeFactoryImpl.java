@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel;
@@ -24,6 +25,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
@@ -31,7 +33,9 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostDetailViewHolder;
@@ -136,6 +140,16 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(KolCommentNewModel viewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(KolCommentHeaderNewModel viewModel) {
+        return 0;
+    }
+
+    @Override
     public int type(EmptyKolPostViewModel emptyKolPostViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + EmptyKolPostViewModel.class.getSimpleName());
@@ -190,6 +204,16 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(@NotNull CarouselPlayCardViewModel carouselPlayCardViewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull ShimmerUiModel shimmerUiModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull DynamicPostUiModel dynamicPostUiModel) {
         return 0;
     }
 

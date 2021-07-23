@@ -55,6 +55,11 @@ interface DynamicProductDetailListener {
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
+     * BestSellerViewHolder
+     */
+    fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
+
+    /**
      * ProductDiscussionViewHolder
      */
     fun onDiscussionClicked(componentTrackDataModel: ComponentTrackDataModel?)
