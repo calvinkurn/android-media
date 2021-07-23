@@ -25,6 +25,13 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.media.loader.loadImage
@@ -80,6 +87,10 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
@@ -94,7 +105,8 @@ class TokoNowHomeFragment: Fragment(),
         TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
         BannerComponentListener,
-        HomeProductRecomViewHolder.HomeProductRecomListener
+        HomeProductRecomViewHolder.HomeProductRecomListener,
+        ShareBottomsheetListener
 {
 
     companion object {
@@ -143,6 +155,7 @@ class TokoNowHomeFragment: Fragment(),
     private var movingPosition = 0
     private var isVariantAdded = false
     private var isFirstImpressionOnBanner = false
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -946,5 +959,97 @@ class TokoNowHomeFragment: Fragment(),
                 loadMoreLayoutData()
             }
         }
+    }
+
+    //call this when share icon is click
+    //for "{sharing_text}" string ask PO he/she will give you the format in which sharing string is to be created
+    private fun shareIconClicked(){
+        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+            showUniversalShareBottomSheet()
+        }
+        else {
+            LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(0,
+                    linkerDataMapper(data), object : ShareCallback {
+                        override fun urlCreated(linkerShareData: LinkerShareResult) {
+                            if (linkerShareData.url != null) {
+                                shareData(
+                                    activity,
+                                    "{sharing_text}",
+                                    linkerShareData.url
+                                )
+                            }
+                        }
+
+                        override fun onError(linkerError: LinkerError) {
+                            shareData(activity, "{sharing_text}", "{sharing_url}")
+                        }
+                    })
+            )
+        }
+    }
+
+    //feel free to move this method to Util
+    fun shareData(context: Context?, shareTxt: String?, pageUri: String?) {
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.putExtra(Intent.EXTRA_TEXT, shareTxt + "\n" + pageUri)
+        context?.startActivity(Intent.createChooser(share, shareTxt))
+    }
+
+    //method to init and feed data to Universal sharing
+    private fun showUniversalShareBottomSheet() {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@TokoNowHomeFragment)
+            setUtmCampaignData("TokoNow", "{userId}", "{pageID}", "Share")
+            setMetaData(
+                "{thumb_nail_title}", "{thumb_nail_image}"
+            )
+            //set the Image Url of the Image that represents page
+            setOgImageUrl("{og_img_url}")
+        }
+        universalShareBottomSheet?.show(fragmentManager)
+    }
+
+    //please discuss with PO for setting the data of this method. I have copied the Discovery template
+    //you can check the Discovery integration in DiscoveryFragment
+    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.id = data?.id?.toString() ?: ""//page specific id
+        linkerData.name = data?.name ?: ""//specific page name
+        linkerData.uri = "{desktop_url_or_complete_url_of_page}"
+        linkerData.description = data?.share?.description ?: ""//specific page description
+        linkerData.isThrowOnError = true
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        var linkerShareData = linkerDataMapper(pageInfoHolder)
+        linkerShareData.linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        }
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    val shareString = "{this_is_the_sharing_text_that_user_will_see_contact_PO_for_this}"
+                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        TODO("Not yet implemented")
+        //you will use this to implement the GA events
     }
 }
