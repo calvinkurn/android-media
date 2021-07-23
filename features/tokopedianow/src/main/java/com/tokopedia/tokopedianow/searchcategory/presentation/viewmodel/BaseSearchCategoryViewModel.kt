@@ -373,9 +373,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun createVisitableListWithEmptyProduct() {
+        val activeFilterList = filterController.getActiveFilterOptionList()
+
         visitableList.add(chooseAddressDataView)
-        visitableList.add(EmptyProductDataView(filterController.getActiveFilterOptionList()))
-        visitableList.add(RecommendationCarouselDataView())
+        visitableList.add(EmptyProductDataView(activeFilterList))
+
+        if (activeFilterList.isEmpty())
+            visitableList.add(RecommendationCarouselDataView())
     }
 
     private fun createVisitableListWithProduct(
@@ -1033,6 +1037,7 @@ abstract class BaseSearchCategoryViewModel(
 //                isTokonow = true,
                 pageNumber = PAGE_NUMBER_RECOM_WIDGET,
 //                keywords = getRecomKeywords(),
+                xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
         )
         val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
 
