@@ -275,6 +275,12 @@ public class BranchWrapper implements WrapperInterface {
                     );
                 }
                 break;
+            case LinkerConstants.EVENT_SEARCH:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
+                    BranchHelper.sendSearchEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
+                break;
         }
     }
 
