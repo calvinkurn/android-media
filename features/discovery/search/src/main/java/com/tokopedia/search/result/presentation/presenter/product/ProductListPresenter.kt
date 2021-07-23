@@ -1310,9 +1310,15 @@ class ProductListPresenter @Inject constructor(
                                 labelGroupDataList = product.labelGroupDataList,
                                 badgeItemDataViewList = product.badgeItemDataViewList,
                                 shopLocation = product.shopLocation,
+                                shopName = product.shopName,
                                 position = index + 1,
                                 alternativeKeyword = option.title,
                                 carouselProductType = determineInspirationCarouselProductType(type, option),
+                                freeOngkirDataView = product.freeOngkirDataView,
+                                isOrganicAds = product.isOrganicAds,
+                                topAdsViewUrl = product.topAdsViewUrl,
+                                topAdsClickUrl = product.topAdsClickUrl,
+                                topAdsWishlistUrl = product.topAdsWishlistUrl,
                         )
                     }
             )

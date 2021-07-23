@@ -12,6 +12,7 @@ data class BroadMatchItemDataView(
         val applink: String = "",
         val priceString: String = "",
         val shopLocation: String = "",
+        val shopName: String = "",
         val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
         val freeOngkirDataView: FreeOngkirDataView = FreeOngkirDataView(),
         var isWishlisted: Boolean = false,

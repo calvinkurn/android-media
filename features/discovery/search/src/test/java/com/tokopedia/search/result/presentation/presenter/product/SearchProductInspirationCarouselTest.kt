@@ -755,8 +755,15 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
         shopLocation shouldBe inspirationCarouselProduct.shop.city
+        shopName shouldBe inspirationCarouselProduct.shop.name
         position shouldBe index + 1
         alternativeKeyword shouldBe expectedAlternativeKeyword
+        freeOngkirDataView.isActive shouldBe inspirationCarouselProduct.freeOngkir.isActive
+        freeOngkirDataView.imageUrl shouldBe inspirationCarouselProduct.freeOngkir.imageUrl
+        isOrganicAds shouldBe inspirationCarouselProduct.isOrganicAds()
+        topAdsClickUrl shouldBe inspirationCarouselProduct.ads.productClickUrl
+        topAdsViewUrl shouldBe inspirationCarouselProduct.ads.productViewUrl
+        topAdsWishlistUrl shouldBe inspirationCarouselProduct.ads.productWishlistUrl
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title

@@ -412,7 +412,18 @@ class SearchProductFirstPageGqlUseCase(
                                     show
                                 }
                               	shop {
+                                    name
                                     city
+                                }
+                                freeOngkir {
+                                    isActive
+                                    image_url
+                                }
+                                ads {
+                                    id
+                                    productClickUrl
+                                    productWishlistUrl
+                                    productViewUrl
                                 }
                             }
                         }
