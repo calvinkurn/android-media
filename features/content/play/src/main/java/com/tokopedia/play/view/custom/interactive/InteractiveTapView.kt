@@ -38,10 +38,6 @@ class InteractiveTapView : ConstraintLayout {
         iconTap = view.findViewById(R.id.icon_tap)
         tvTapAction = view.findViewById(R.id.tv_tap_action)
         flTapBackground = view.findViewById(R.id.fl_tap_background)
-
-        flTapBackground.setCornerRadius(
-                resources.getDimension(com.tokopedia.play_common.R.dimen.play_interactive_common_radius)
-        )
     }
 
     fun setTimer(durationInMs: Long, onFinished: () -> Unit) {

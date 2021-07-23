@@ -25,10 +25,6 @@ class InteractiveInitView : RoundedConstraintLayout {
     private var mListener: Listener? = null
 
     init {
-        setCornerRadius(
-                resources.getDimension(R.dimen.play_interactive_create_radius)
-        )
-
         binding.root.setOnClickListener {
             mListener?.onCreateNewGameClicked(this)
         }
