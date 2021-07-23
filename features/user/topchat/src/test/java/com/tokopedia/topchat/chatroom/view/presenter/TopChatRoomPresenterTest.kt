@@ -77,6 +77,9 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouse
+import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -207,6 +210,9 @@ class TopChatRoomPresenterTest {
 
     @RelaxedMockK
     private lateinit var chatSrwUseCase: SmartReplyQuestionUseCase
+
+    @RelaxedMockK
+    private lateinit var tokoNowWHUsecase: ChatTokoNowWarehouseUseCase
 
     @RelaxedMockK
     private lateinit var remoteConfig: RemoteConfig
@@ -352,10 +358,11 @@ class TopChatRoomPresenterTest {
                 chatToggleBlockChat,
                 chatBackgroundUseCase,
                 chatSrwUseCase,
-                sharedPref,
-                dispatchers,
-                remoteConfig
-            )
+                tokoNowWHUsecase,
+                        sharedPref,
+                        dispatchers,
+                        remoteConfig
+                )
         )
         presenter.attachView(view)
         presenter.autoRetryConnectWs = false
@@ -1707,6 +1714,26 @@ class TopChatRoomPresenterTest {
         verify (exactly = 1) { view.addDummyMessage(imageViewModel) }
         assertThat(UploadImageChatService.dummyMap, hasItem(imageDummy))
         assertThat(UploadImageChatService.dummyMap.size, `is`(1))
+    }
+
+    @Test
+    fun `get interlocutor warehouse id`() {
+        // Given
+        val warehouseId = "123"
+        val response = ChatTokoNowWarehouseResponse(
+            ChatTokoNowWarehouse(warehouseId = warehouseId)
+        )
+        val expectedValue = Resource.success(response)
+        val successFlow = flow { emit(expectedValue) }
+        every {
+            tokoNowWHUsecase.getWarehouseId(exMessageId)
+        } returns successFlow
+
+        // When
+        presenter.adjustInterlocutorWarehouseId(exMessageId)
+
+        // Then
+        assertThat(presenter.attachProductWarehouseId, `is`(warehouseId))
     }
 
     private fun getErrorAtcModel(): AddToCartDataModel {

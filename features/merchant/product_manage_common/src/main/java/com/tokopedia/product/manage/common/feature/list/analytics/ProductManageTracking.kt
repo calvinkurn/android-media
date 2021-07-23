@@ -307,21 +307,34 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationProductStatus(isVariant: Boolean,
-                                          isOn: Boolean,
-                                          source: String = ""
+    fun eventClickAllocationProductStatus(
+        isVariant: Boolean,
+        isOn: Boolean,
+        source: String = "",
+        productId: String = "",
+        shopId: String = ""
     ) {
-        var label =
-                if (isOn) {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_ON
-                } else {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
-                }
-        if(source.isNotEmpty()) label = "$label - $source"
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant, label)
+        var label = if (isOn) {
+            ProductManageDataLayer.EVENT_LABEL_ALLOCATION_ON
+        } else {
+            ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
+        }
+        if (source.isNotEmpty()) label = "$label - $source"
+        label = addProductIdAndShopId(label, productId, shopId)
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant,
+            label
+        )
     }
 
-    fun eventClickAllocationDecreaseStock(isVariant: Boolean, label: String = "") {
+    fun eventClickAllocationDecreaseStock(
+        isVariant: Boolean,
+        source: String = "",
+        productId: String = "",
+        shopId: String = ""
+    ) {
+        var label = source
+        label = addProductIdAndShopId(label, productId, shopId)
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant, label)
     }
 
@@ -329,7 +342,14 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationIncreaseStock(isVariant: Boolean, label: String = "") {
+    fun eventClickAllocationIncreaseStock(
+        isVariant: Boolean,
+        source: String = "",
+        productId: String = "",
+        shopId: String = ""
+    ) {
+        var label = source
+        label = addProductIdAndShopId(label, productId, shopId)
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant, label)
     }
 
@@ -337,17 +357,21 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationSaveStock(isVariant: Boolean,
-                                      isMain: Boolean,
-                                      source: String
+    fun eventClickAllocationSaveStock(
+        isVariant: Boolean,
+        isMain: Boolean,
+        source: String,
+        productId: String,
+        shopId: String
     ) {
-        val label =
-                if (isMain) {
-                    "${ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN} - $source"
-                } else {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
-                }
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, label)
+        var label = if (isMain) {
+            "${ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN} - $source"
+        } else {
+            ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
+        }
+        label = label.plus(" - $productId - $shopId")
+        val eventAction = ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
+        eventProductManage(eventAction, label)
     }
 
     fun eventClickPreviewVariantProduct() {
@@ -371,5 +395,17 @@ object ProductManageTracking {
                     ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_SINGLE
                 }
         sendScreen(screenName)
+    }
+
+    private fun addProductIdAndShopId(
+        label: String,
+        productId: String,
+        shopId: String
+    ): String {
+        var newLabel = label
+        if (productId.isNotEmpty() && shopId.isNotEmpty()) {
+            newLabel = label.plus(" - $productId - $shopId")
+        }
+        return newLabel
     }
 }

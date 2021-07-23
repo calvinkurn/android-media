@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
-import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
+import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir

@@ -157,6 +157,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

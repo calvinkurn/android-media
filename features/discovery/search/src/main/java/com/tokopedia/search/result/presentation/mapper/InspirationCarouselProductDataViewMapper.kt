@@ -1,9 +1,10 @@
 package com.tokopedia.search.result.presentation.mapper
 
-import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
-import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
+import com.tokopedia.search.result.domain.model.SearchProductModel.*
+import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import java.util.*
 
 class InspirationCarouselProductDataViewMapper {
 
@@ -14,7 +15,8 @@ class InspirationCarouselProductDataViewMapper {
             layout: String,
             mapLabelGroupDataViewList: (List<ProductLabelGroup>) -> List<LabelGroupDataView>,
             optionTitle: String,
-    ): List<InspirationCarouselDataView.Option.Product> {
+
+            ): List<InspirationCarouselDataView.Option.Product> {
 
         return inspirationCarouselProduct.mapIndexed { index, product ->
             InspirationCarouselDataView.Option.Product(
@@ -36,7 +38,21 @@ class InspirationCarouselProductDataViewMapper {
                     product.originalPrice,
                     product.discountPercentage,
                     index + 1,
-                    optionTitle
+                    optionTitle,
+                    product.shop.city,
+                    convertInspirationCarouselProductBadgeToBadgesItemList(product.badgeList),
+            )
+        }
+    }
+
+    private fun convertInspirationCarouselProductBadgeToBadgesItemList(
+            badgesList: List<InspirationCarouselProductBadge>,
+    ): List<BadgeItemDataView> {
+        return badgesList.map { badgeModel ->
+            BadgeItemDataView(
+                    title = badgeModel.title,
+                    imageUrl = badgeModel.imageUrl,
+                    isShown = badgeModel.isShown,
             )
         }
     }

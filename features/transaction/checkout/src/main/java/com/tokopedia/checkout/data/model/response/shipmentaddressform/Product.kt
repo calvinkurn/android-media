@@ -29,6 +29,8 @@ data class Product(
         val productWeightFmt: String = "",
         @SerializedName("product_weight")
         val productWeight: Int = 0,
+        @SerializedName("product_weight_actual")
+        val productWeightActual: Int = 0,
         @SerializedName("product_condition")
         val productCondition: Int = 0,
         @SerializedName("product_url")

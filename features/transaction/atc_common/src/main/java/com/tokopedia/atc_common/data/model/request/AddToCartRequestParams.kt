@@ -36,7 +36,7 @@ data class AddToCartRequestParams(
         const val ATC_FROM_NOTIFCENTER = "notifcenter"
         const val ATC_FROM_DISCOVERY = "discovery_page"
         const val ATC_FROM_PLAY = "play"
-        const val ATC_FROM_PDP = ""
+        const val ATC_FROM_PDP = "pdp_atc"
         const val ATC_FROM_OTHERS = "others"
     }
 }

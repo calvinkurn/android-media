@@ -39,12 +39,20 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
     private fun initViews() {
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
+            val extra = intent.extras
+            extra?.getString(EXTRA_REF).let { from ->
+                AddNewAddressRevampAnalytics.sendScreenName(from)
+            }
             bundle.putAll(intent.extras)
         }
         supportFragmentManager.beginTransaction().replace(R.id.container, SearchPageFragment.newInstance(bundle)).commit()
         btn_back.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    companion object {
+        private const val EXTRA_REF = "EXTRA_REF"
     }
 
 }

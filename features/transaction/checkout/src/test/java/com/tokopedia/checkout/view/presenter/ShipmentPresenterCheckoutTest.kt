@@ -36,6 +36,7 @@ import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -472,7 +473,7 @@ class ShipmentPresenterCheckoutTest {
         val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
 
         // Then
-        assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] == fingerprintString )
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_PUBLICKEY] == fingerprintString)
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_FINGERPRINT_SUPPORT] == "true")
     }
 
@@ -543,6 +544,64 @@ class ShipmentPresenterCheckoutTest {
             view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
             view.renderCheckoutCartSuccess(any())
         }
+    }
+
+    @Test
+    fun `WHEN checkout multiple products with two non-error product THEN should checkout only non-error products`() {
+        val slot = CapturingSlot<ArrayList<ShipmentCartItemModel>>()
+
+        // Given
+        val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = ArrayList<CartItemModel>()
+                    cartItemModels.add(
+                            CartItemModel().apply {
+                                isError = false
+                            }
+                    )
+                }
+        )
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = arrayListOf(
+                            CartItemModel().apply {
+                                isError = true
+                            },
+                            CartItemModel().apply {
+                                isError = false
+                            }
+                    )
+                }
+        )
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = arrayListOf(
+                            CartItemModel().apply {
+                                isError = true
+                                isShopError = true
+                            }
+                    )
+                    isAllItemError = true
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
+        every { view.generateNewCheckoutRequest(capture(slot), any()) } returns listOf(dataCheckoutRequest)
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        assertEquals(2, slot.captured.size)
+        assertEquals(1, slot.captured[0].cartItemModels.filter { !it.isError }.size)
+        assertEquals(1, slot.captured[1].cartItemModels.filter { !it.isError }.size)
     }
 
     @Test
