@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.R
 import com.tokopedia.media.common.data.HIGH_QUALITY
 import com.tokopedia.media.common.data.MediaBitmapSize
@@ -32,6 +33,7 @@ class MediaLoaderActivityLifecycle(
     private val bitmapSize by lazy { MediaBitmapSize(context) }
 
     private val logger = SessionDataUsageLogger(
+        priority = Priority.P2,
         sessionName = "MEDIALOADER_ACTIVE_SESSION",
         dataUsageName = "MEDIALOADER_DATA_USAGE",
         intervalSession = INTERVAL_SESSION,

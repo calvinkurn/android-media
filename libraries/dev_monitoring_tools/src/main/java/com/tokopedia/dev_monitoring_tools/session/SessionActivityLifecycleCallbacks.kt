@@ -4,11 +4,13 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
+import com.tokopedia.logger.utils.Priority
 import java.util.concurrent.TimeUnit
 
 class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
 
     private val logger by lazy { SessionDataUsageLogger(
+        priority = Priority.P1,
         sessionName = "ACTIVE_SESSION",
         dataUsageName = "DATA_USAGE",
         intervalSession = INTERVAL_SESSION

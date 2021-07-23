@@ -10,6 +10,7 @@ import com.tokopedia.utils.network.NetworkTrafficUtils
 import java.util.*
 
 class SessionDataUsageLogger constructor(
+    private val priority: Priority,
     private val sessionName: String,
     private val dataUsageName: String,
     private val intervalSession: Long,
@@ -29,6 +30,7 @@ class SessionDataUsageLogger constructor(
 
     fun addJourney(activity: Activity) {
         var bundle = Bundle()
+
         try {
             activity.intent.extras?.let {
                 bundle = it
@@ -36,13 +38,16 @@ class SessionDataUsageLogger constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
         UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
     }
 
     fun checkSession(activityName: String, connectionType: String?) {
         running = true
+
         val currentMillis = System.currentTimeMillis()
         val minSessionTimeMillis = currentMillis - intervalSession
+
         if (lastSessionMillis < minSessionTimeMillis) {
             sessionCount++
             logSession(activityName, currentMillis)
@@ -50,12 +55,13 @@ class SessionDataUsageLogger constructor(
             lastSessionMillis = System.currentTimeMillis()
             openedPageCount = 0
         }
+
         running = false
     }
 
     private fun logSession(activityName: String, currentMillis: Long) {
         ServerLogger.log(
-            Priority.P1, sessionName, mapOf(
+            priority, sessionName, mapOf(
             "type" to activityName,
             "count" to sessionCount.toString(),
             "open_page_total" to openedPageCountTotal.toString(),
@@ -69,25 +75,29 @@ class SessionDataUsageLogger constructor(
         val bootTx = NetworkTrafficUtils.getUidTxBytes(uid)
         val bootRx = NetworkTrafficUtils.getUidRxBytes(uid)
         val bootNetwork = bootTx + bootRx
-        if (bootTx <= 0 || bootRx <= 0) {
-            return
-        }
+
+        if (bootTx <= 0 || bootRx <= 0) return
+
         if (firstSumTx <= 0 || firstSumRx <= 0) {
             firstSumTx = bootTx
             firstSumRx = bootRx
         }
+
         if (lastSumTx <= 0 || lastSumRx <= 0) {
             updateLastSumTraffic(bootTx, bootRx)
         }
+
         val diffTx = bootTx - lastSumTx
         val diffRx = bootRx - lastSumRx
         val network = diffTx + diffRx
         val sumDiffTx = bootTx - firstSumTx
         val sumDiffRx = bootRx - firstSumRx
         val sumNetwork = sumDiffTx + sumDiffRx
+
         updateLastSumTraffic(bootTx, bootRx)
 
-        val dataMap = mutableMapOf("type" to activityName,
+        val dataMap = mutableMapOf(
+            "type" to activityName,
             "count" to sessionCount.toString(),
             "open_page_total" to openedPageCountTotal.toString(),
             "open_page" to openedPageCount.toString(),
@@ -107,7 +117,7 @@ class SessionDataUsageLogger constructor(
         // add an additional data
         dataMap.putAll(additionalData)
 
-        ServerLogger.log(Priority.P1, dataUsageName, dataMap)
+        ServerLogger.log(priority, dataUsageName, dataMap)
     }
 
     private fun updateLastSumTraffic(currentSumTx: Long, currentSumRx: Long) {
@@ -117,10 +127,12 @@ class SessionDataUsageLogger constructor(
 
     private fun getDiffDuration(startDuration: Long, stopDuration: Long): String {
         var diffTimeInMillis = 0f
+
         if (startDuration in 1 until stopDuration) {
             diffTimeInMillis = (stopDuration - startDuration).toFloat()
             diffTimeInMillis /= intervalSession.toFloat()
         }
+
         return String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis)
     }
 
