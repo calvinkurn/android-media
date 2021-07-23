@@ -289,5 +289,8 @@
             app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
 
     </LinearLayout>
-
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone" />
 </RelativeLayout>

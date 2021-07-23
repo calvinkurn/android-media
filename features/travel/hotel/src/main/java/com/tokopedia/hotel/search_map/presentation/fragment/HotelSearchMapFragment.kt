@@ -45,6 +45,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
@@ -75,6 +76,7 @@ import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import javax.inject.Inject
 
 /**
@@ -298,6 +300,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun isAutoLoadEnabled(): Boolean = true
 
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
+
+    override fun showGetListError(throwable: Throwable?) {
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, throwable,
+                { onRetryClicked() }, global_error)
+        }
+    }
+
+    override fun onRetryClicked() {
+        view?.let {
+            container_error.hide()
+            halfExpandBottomSheet()
+        }
+        super.onRetryClicked()
+    }
 
     override fun loadInitialData() {
         hotelSearchMapViewModel.searchParam.page = defaultInitialPage

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.databinding.FragmentHotelReviewBinding
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
@@ -20,6 +21,8 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFac
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -118,7 +121,21 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     private fun onErrorGetResult(throwable: Throwable) {
-        super.showGetListError(throwable)
+        binding?.containerError?.root?.visible()
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, throwable,
+                    { onRetryClicked() }, it
+                )
+            }
+        }
+    }
+
+    override fun onRetryClicked() {
+        binding?.let {
+            it.containerError.root.hide()
+        }
+        super.onRetryClicked()
     }
 
     override fun getAdapterTypeFactory(): ReviewAdapterTypeFactory = ReviewAdapterTypeFactory()
