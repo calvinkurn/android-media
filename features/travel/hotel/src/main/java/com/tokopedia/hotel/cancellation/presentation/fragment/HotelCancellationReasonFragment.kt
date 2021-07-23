@@ -33,7 +33,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation_reason.*
 import javax.inject.Inject
 
-
 /**
  * @author by jessica on 30/04/20
  */
