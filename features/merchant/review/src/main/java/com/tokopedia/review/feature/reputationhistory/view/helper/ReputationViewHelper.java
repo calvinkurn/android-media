@@ -23,10 +23,8 @@ public class ReputationViewHelper {
 
     public void renderData(ShopModel shopModel) {
         ReputationView.ReputationUiModel reputationUiModel = new ReputationView.ReputationUiModel();
-        reputationUiModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
-        reputationUiModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
-        reputationUiModel.reputationPoints = shopModel.stats.shopReputationScore;
-        reputationUiModel.stats = shopModel.stats;
+        reputationUiModel.reputationScore = shopModel.stats.shopReputationScore;
+//        reputationUiModel.reputationBadgeUrl = shopModel.stats;
 
         sellerReputationHeaderView.init(reputationUiModel);
     }
