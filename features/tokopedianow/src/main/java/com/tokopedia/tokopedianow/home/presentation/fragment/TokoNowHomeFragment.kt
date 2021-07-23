@@ -964,7 +964,7 @@ class TokoNowHomeFragment: Fragment(),
     //call this when share icon is click
     //for "{sharing_text}" string ask PO he/she will give you the format in which sharing string is to be created
     private fun shareIconClicked(){
-        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){//this method has two parameters please use your own key as feature flag
             showUniversalShareBottomSheet()
         }
         else {
