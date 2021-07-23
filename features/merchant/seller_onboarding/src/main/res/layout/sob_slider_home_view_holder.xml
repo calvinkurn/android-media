@@ -11,7 +11,7 @@
         android:id="@+id/tvSobSliderHome"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl7"
+        android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
         android:text="@string/sob_slider_title_home"
         app:layout_constraintEnd_toEndOf="parent"

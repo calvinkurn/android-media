@@ -11,4 +11,8 @@
     <string name="sob_skip">Lewati</string>
     <string name="sob_login">Masuk</string>
     <string name="sob_slider_title_home">Akses cepat semua aktivitas \ntokomu di 1 halaman</string>
+    <string name="sob_slider_title_statistics">Banyak pilihan promosi dan iklan \nuntuk memajukan bisnismu</string>
+    <string name="sob_slider_title_promo">Banyak pilihan promosi dan iklan \nuntuk memajukan bisnismu</string>
+    <string name="sob_slider_title_message">Sigap balas pembeli supaya \nnggak ada pesanan terlewat</string>
+    <string name="sob_slider_title_manage">Lebih praktis atur produk dan \nkelola pesanan sekaligus</string>
 </resources>
