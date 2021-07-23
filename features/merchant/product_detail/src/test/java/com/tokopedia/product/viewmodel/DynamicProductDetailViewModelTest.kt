@@ -7,13 +7,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -1584,12 +1581,12 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart =  MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
-        val response = RemoveFromCartData(status = "OK", data = com.tokopedia.minicart.common.data.response.deletecart.Data(message = listOf("sukses delete cart"), success = 1))
+        val response = RemoveFromCartData(status = "OK", data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart"), success = 1))
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.deleteRecomItemFromCart(recomItem, quantity, miniCart)
+        viewModel.deleteRecomItemFromCart(recomItem, miniCart)
         coVerify {
             deleteCartUseCase.executeOnBackground()
         }
@@ -1605,12 +1602,12 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart =  MiniCartItem(productId = recomItem.productId.toString(), quantity = 10)
         val quantity = 0
-        val response = RemoveFromCartData(status = "ERROR", data = com.tokopedia.minicart.common.data.response.deletecart.Data(success = 0))
+        val response = RemoveFromCartData(status = "ERROR", data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 0))
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } returns response
 
-        viewModel.deleteRecomItemFromCart(recomItem, quantity, miniCart)
+        viewModel.deleteRecomItemFromCart(recomItem, miniCart)
         coVerify {
             deleteCartUseCase.executeOnBackground()
         }
@@ -1627,7 +1624,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.deleteRecomItemFromCart(recomItem, quantity, miniCart)
+        viewModel.deleteRecomItemFromCart(recomItem, miniCart)
         coVerify {
             deleteCartUseCase.executeOnBackground()
         }

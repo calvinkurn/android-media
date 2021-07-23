@@ -674,25 +674,25 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
-        miniCart?.let { cartData ->
-            mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
-                val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
-                productRecom.recomWidgetData?.let { recomData ->
-                    val recomWidget = recomData.copy()
-                    if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                        val dataList = recomWidget.copyRecomItemList()
-                        dataList.forEach { recomItem ->
-                            //update data based on tokonow cart
-                            if (recomItem.isRecomProductShowVariantAndCart) {
-                                recomItem.updateItemCurrentStock(0)
+        mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
+            val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
+            productRecom.recomWidgetData?.let { recomData ->
+                val recomWidget = recomData.copy()
+                if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                    val dataList = recomWidget.copyRecomItemList()
+                    dataList.forEach { recomItem ->
+                        //update data based on tokonow cart
+                        if (recomItem.isRecomProductShowVariantAndCart) {
+                            recomItem.updateItemCurrentStock(0)
+                            miniCart?.let { cartData ->
                                 if (cartData.containsKey(recomItem.productId.toString())) {
                                     recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity ?: 0)
                                 }
                             }
                         }
-                        updateData(key) {
-                            updateRecomDataByKey(key, dataList)
-                        }
+                    }
+                    updateData(key) {
+                        updateRecomDataByKey(key, dataList)
                     }
                 }
             }
