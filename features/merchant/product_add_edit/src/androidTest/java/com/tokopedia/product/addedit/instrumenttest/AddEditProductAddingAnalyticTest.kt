@@ -16,6 +16,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
 import com.tokopedia.product.addedit.stub.AddEditProductPreviewActivityStub
+import com.tokopedia.product.addedit.utils.InstrumentedTestUtil
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performDialogPrimaryClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performPressBack
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performReplaceText
@@ -81,6 +82,7 @@ class AddEditProductAddingAnalyticTest {
 
     @After
     fun afterTest() {
+        InstrumentedTestUtil.deleteAllDraft()
         gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
