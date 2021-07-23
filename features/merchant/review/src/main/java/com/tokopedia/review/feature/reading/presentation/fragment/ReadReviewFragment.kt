@@ -572,6 +572,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 ratingAndTopics.availableFilters,
                 this@ReadReviewFragment
             )
+            getRecyclerView(view)?.show()
             show()
         }
     }
@@ -583,9 +584,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
-        if (viewModel.ratingAndTopic.value !is Success) {
-            return
-        }
         hideError()
         if (productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
             showFilteredEmpty()
