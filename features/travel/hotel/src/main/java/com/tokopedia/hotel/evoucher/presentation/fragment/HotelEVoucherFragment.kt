@@ -23,6 +23,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.databinding.FragmentHotelEVoucherBinding
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelEVoucherCancellationPoliciesAdapter
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
@@ -36,9 +37,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
-import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
 import java.io.File
 import java.io.File.separator
 import java.io.FileOutputStream
@@ -54,6 +55,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var eVoucherViewModel: HotelEVoucherViewModel
+    private var binding by autoClearedNullable<FragmentHotelEVoucherBinding>()
 
     lateinit var orderId: String
     lateinit var cancellationPoliciesAdapter: HotelEVoucherCancellationPoliciesAdapter
@@ -136,17 +138,17 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
 
     private fun getScreenBitmap(): Bitmap? {
-        val v = container_root
+        val v = binding?.containerRoot
 
-        v.measure(View.MeasureSpec.makeMeasureSpec(v.width, View.MeasureSpec.EXACTLY),
+        v?.measure(View.MeasureSpec.makeMeasureSpec(v.width, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
 
         /**Stretch out layout to fit root view (because, footer is sticky) */
-        v.layout(0, 0, v.measuredWidth, v.measuredHeight)
+        v?.layout(0, 0, v.measuredWidth, v.measuredHeight)
 
-        val b = Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)
+        val b = Bitmap.createBitmap(v?.measuredWidth ?: 0, v?.measuredHeight ?: 0, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
-        v.draw(c)
+        v?.draw(c)
         return b
     }
 
@@ -154,7 +156,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         if (bitmap != null) {
 
             /**Reset layout to origin*/
-            container_root.requestLayout()
+            binding?.containerRoot?.requestLayout()
 
             permissionChecker.checkPermission(this,
                     PERMISSION_WRITE_EXTERNAL_STORAGE,
@@ -262,21 +264,21 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
     private fun renderData(data: HotelOrderDetail) {
 
-        tv_guest_title.text = data.hotelTransportDetails.guestDetail.title
-        tv_guest_name.text = data.hotelTransportDetails.guestDetail.content
+        binding?.tvGuestTitle?.text = data.hotelTransportDetails.guestDetail.title
+        binding?.tvGuestName?.text = data.hotelTransportDetails.guestDetail.content
 
         if (data.hotelTransportDetails.propertyDetail.isNotEmpty()) {
             val propertyDetail = data.hotelTransportDetails.propertyDetail[0]
 
-            tv_property_name.text = propertyDetail.propertyInfo.name
-            tv_property_address.text = propertyDetail.propertyInfo.address
+            binding?.tvPropertyName?.text = propertyDetail.propertyInfo.name
+            binding?.tvPropertyAddress?.text = propertyDetail.propertyInfo.address
 
-            rdv_checkin_checkout_date.setRoomDatesFormatted(
+            binding?.rdvCheckinCheckoutDate?.setRoomDatesFormatted(
                     propertyDetail.checkInOut[0].checkInOut.date,
                     propertyDetail.checkInOut[1].checkInOut.date,
                     propertyDetail.stayLength.content)
 
-            rdv_checkin_checkout_date.setRoomCheckTimes(
+            binding?.rdvCheckinCheckoutDate?.setRoomCheckTimes(
                     getString(R.string.hotel_order_detail_day_and_time, propertyDetail.checkInOut[0].checkInOut.day,
                             propertyDetail.checkInOut[0].checkInOut.time),
                     getString(R.string.hotel_order_detail_day_and_time, propertyDetail.checkInOut[1].checkInOut.day,
@@ -285,16 +287,16 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
             for (i in 1..propertyDetail.propertyInfo.starRating) {
                 context?.run {
-                    container_rating_view.addView(RatingStarView(this))
+                    binding?.containerRatingView?.addView(RatingStarView(this))
                 }
             }
 
-            tv_booking_title.text = propertyDetail.bookingKey.title
-            tv_booking_code.text = propertyDetail.bookingKey.content
+            binding?.tvBookingTitle?.text = propertyDetail.bookingKey.title
+            binding?.tvBookingCode?.text = propertyDetail.bookingKey.content
 
             if (propertyDetail.room.isNotEmpty()) {
-                tv_room_title.text = propertyDetail.room[0].title
-                tv_room_info.text = propertyDetail.room[0].content
+                binding?.tvRoomTitle?.text = propertyDetail.room[0].title
+                binding?.tvRoomInfo?.text = propertyDetail.room[0].content
 
                 var amenitiesString = ""
                 for ((index, item) in propertyDetail.room[0].amenities.withIndex()) {
@@ -302,21 +304,21 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     if (index < propertyDetail.room[0].amenities.size - 1) amenitiesString += ", "
                 }
 
-                tv_room_facility.text = amenitiesString
-                if (amenitiesString.isEmpty()) tv_room_facility.hide() else tv_room_facility.show()
+                binding?.tvRoomFacility?.text = amenitiesString
+                if (amenitiesString.isEmpty()) binding?.tvRoomFacility?.hide() else binding?.tvRoomFacility?.show()
             }
 
             if (propertyDetail.specialRequest.content.isEmpty()) {
-                tv_request_label.hide()
-                tv_request_info.hide()
-                hotel_detail_seperator.hide()
+                binding?.tvRequestLabel?.hide()
+                binding?.tvRequestInfo?.hide()
+                binding?.hotelDetailSeperator?.hide()
             } else {
-                tv_request_label.text = propertyDetail.specialRequest.title
-                tv_request_info.text = propertyDetail.specialRequest.content
-                hotel_detail_seperator.show()
+                binding?.tvRequestLabel?.text = propertyDetail.specialRequest.title
+                binding?.tvRequestInfo?.text = propertyDetail.specialRequest.content
+                binding?.hotelDetailSeperator?.show()
             }
 
-            if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) hotel_detail_seperator.hide()
+            if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
         }
 
         var phoneString = ""
@@ -325,9 +327,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             if (index < data.hotelTransportDetails.contactInfo.size - 1) phoneString += ", "
         }
         if (phoneString.isNotEmpty()) {
-            tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
+            binding?.tvPropertyPhone?.text = getString(R.string.hotel_e_voucher_phone, phoneString)
         } else {
-            tv_property_phone.hide()
+            binding?.tvPropertyPhone?.hide()
         }
 
         if (data.hotelTransportDetails.cancellation.cancellationPolicies.isNotEmpty()) {
@@ -339,10 +341,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         cancellationPoliciesAdapter = HotelEVoucherCancellationPoliciesAdapter(cancellationList)
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        rv_cancellation_policies.layoutManager = layoutManager
-        rv_cancellation_policies.setHasFixedSize(true)
-        rv_cancellation_policies.isNestedScrollingEnabled = false
-        rv_cancellation_policies.adapter = cancellationPoliciesAdapter
+        binding?.rvCancellationPolicies?.layoutManager = layoutManager
+        binding?.rvCancellationPolicies?.setHasFixedSize(true)
+        binding?.rvCancellationPolicies?.isNestedScrollingEnabled = false
+        binding?.rvCancellationPolicies?.adapter = cancellationPoliciesAdapter
     }
 
     override fun onErrorRetryClicked() {
