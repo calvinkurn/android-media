@@ -74,6 +74,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -170,6 +171,8 @@ class TokoNowHomeFragment: Fragment(),
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
+    private var shareHomeTokonow: ShareHomeTokonow? = null
+
     private val loadMoreListener by lazy { createLoadMoreListener() }
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
@@ -189,6 +192,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shareHomeTokonow()
         setupNavToolbar()
         stickyLoginSetup()
         setupStatusBar()
@@ -407,6 +411,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setIconNewTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
                 .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
@@ -420,6 +425,10 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onClickCartButton() {
         analytics.onClickCartButton()
+    }
+
+    private fun onClickShareButton() {
+        shareIconClicked(shareHomeTokonow)
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -963,26 +972,26 @@ class TokoNowHomeFragment: Fragment(),
 
     //call this when share icon is click
     //for "{sharing_text}" string ask PO he/she will give you the format in which sharing string is to be created
-    private fun shareIconClicked(){
+    private fun shareIconClicked(shareHomeTokonow: ShareHomeTokonow?){
         if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){//this method has two parameters please use your own key as feature flag
-            showUniversalShareBottomSheet()
+            showUniversalShareBottomSheet(shareHomeTokonow)
         }
         else {
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0,
-                    linkerDataMapper(data), object : ShareCallback {
+                    linkerDataMapper(shareHomeTokonow), object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
                             if (linkerShareData.url != null) {
                                 shareData(
                                     activity,
-                                    "{sharing_text}",
+                                    shareHomeTokonow?.sharingText ?: "",
                                     linkerShareData.url
                                 )
                             }
                         }
 
                         override fun onError(linkerError: LinkerError) {
-                            shareData(activity, "{sharing_text}", "{sharing_url}")
+                            shareData(activity, shareHomeTokonow?.sharingText ?: "", shareHomeTokonow?.sharingUrl ?: "")
                         }
                     })
             )
@@ -998,35 +1007,52 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     //method to init and feed data to Universal sharing
-    private fun showUniversalShareBottomSheet() {
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData("TokoNow", "{userId}", "{pageID}", "Share")
+            setUtmCampaignData("TokoNow", shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", "Share")
             setMetaData(
-                "{thumb_nail_title}", "{thumb_nail_image}"
+                shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
             )
             //set the Image Url of the Image that represents page
-            setOgImageUrl("{og_img_url}")
+            setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
         }
         universalShareBottomSheet?.show(fragmentManager)
     }
 
     //please discuss with PO for setting the data of this method. I have copied the Discovery template
     //you can check the Discovery integration in DiscoveryFragment
-    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = data?.id?.toString() ?: ""//page specific id
-        linkerData.name = data?.name ?: ""//specific page name
-        linkerData.uri = "{desktop_url_or_complete_url_of_page}"
-        linkerData.description = data?.share?.description ?: ""//specific page description
+        linkerData.id = shareHomeTokonow?.specificPageId ?: "" //page specific id
+        linkerData.name = shareHomeTokonow?.specificPageName ?: "" //specific page name
+        linkerData.uri = shareHomeTokonow?.completePageUrl ?: ""
+        linkerData.description = shareHomeTokonow?.specificPageDescription ?: "" //specific page description
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
     }
 
+    private fun shareHomeTokonow(){
+        shareHomeTokonow = ShareHomeTokonow(
+                "{sharing_text}",
+                "{sharing_url}",
+                userSession.userId,
+                "{page_id}",
+                "{thumbnail_title}",
+                "{thumbnail_image}",
+                "{og_image_url}",
+                "{spesific_page_id}",
+                "{spesific_page_name}",
+                "{complete_page_url}",
+                "{spesific_page_desc}",
+                "{share_string}"
+        )
+    }
+
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        var linkerShareData = linkerDataMapper(pageInfoHolder)
+        val linkerShareData = linkerDataMapper(shareHomeTokonow)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
@@ -1038,7 +1064,7 @@ class TokoNowHomeFragment: Fragment(),
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = "{this_is_the_sharing_text_that_user_will_see_contact_PO_for_this}"
+                    val shareString = shareHomeTokonow?.shareString ?: ""
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     universalShareBottomSheet?.dismiss()
                 }
