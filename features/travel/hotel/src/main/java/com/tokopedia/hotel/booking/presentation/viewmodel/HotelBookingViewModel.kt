@@ -127,7 +127,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
     fun onCancelAppliedVoucher(rawQuery: String) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.main) {
+            val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher.Response>()

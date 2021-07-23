@@ -68,16 +68,16 @@ class ErrorHandlerHotel {
             else return R.drawable.hotel_ic_server_error
         }
 
-        fun getErrorUnify(context: Context?, e: Throwable?, action: () -> Unit, view: GlobalError){
-            when(e){
+        fun getErrorUnify(context: Context?, error: Throwable?, action: () -> Unit, view: GlobalError){
+            when(error){
                 is UnknownHostException -> view.setType(GlobalError.NO_CONNECTION)
                 is MessageErrorException -> {
                     view.setType(GlobalError.SERVER_ERROR)
-                    view.errorTitle.text = if(e.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, e) else e.message
+                    view.errorTitle.text = if(error.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, error) else error.message
                 }
                 else -> {
                     view.setType(GlobalError.SERVER_ERROR)
-                    view.errorTitle.text = ErrorHandler.getErrorMessage(context, e)
+                    view.errorTitle.text = ErrorHandler.getErrorMessage(context, error)
                 }
             }
             view.setActionClickListener {
