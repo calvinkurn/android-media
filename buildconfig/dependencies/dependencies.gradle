@@ -116,7 +116,9 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.7'
-    unifyAccordionVersion = '1.1.2'
+    unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
+    unifyTotalAmountVersion = '1.0.3'
+    unifyExplorePromoVersion = '1.0.2'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -242,7 +244,7 @@ ext {
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
-            cameraView            : "com.otaliastudios:cameraview:2.6.4",
+            cameraView            : "com.otaliastudios:cameraview:2.7.1",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
@@ -360,6 +362,8 @@ ext {
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
             accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
+            total_amount    : "com.tokopedia.unify.compositions:total_amount:${unifyTotalAmountVersion}@aar",
+            explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }

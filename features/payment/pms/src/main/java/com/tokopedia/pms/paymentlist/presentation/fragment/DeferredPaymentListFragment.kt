@@ -49,8 +49,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     override fun getScreenName() = null
     override fun initInjector() = getComponent(PmsComponent::class.java).inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.fragment_payment_list, container, false)
     }
 
@@ -211,7 +213,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         transactionId: String,
         merchantCode: String,
         productName: String?
-    )  = viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
+    ) = viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
 
     private fun openActionBottomSheet(model: BasePaymentModel) {
         val bundle = Bundle()

@@ -17,7 +17,10 @@ class FeedDetailItemModel(var productId: Int,
                           var isWishlist: Boolean,
                           var tags: List<TagsItem>,
                           val rating: Double,
-                          var countReview: String) : Visitable<FeedPlusDetailTypeFactory> {
+                          var countReview: String,
+                          var shopId: String = "",
+                          var activityId: String = ""
+      ) : Visitable<FeedPlusDetailTypeFactory> {
     override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
         return typeFactory.type(this)
     }

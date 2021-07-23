@@ -1,8 +1,8 @@
 package com.tokopedia.developer_options.presentation.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Notification;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -18,23 +18,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity;
@@ -61,7 +54,9 @@ import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.remoteconfig.RollenceKey;
+import com.tokopedia.unifycomponents.TextFieldUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -73,13 +68,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeveloperOptionActivity extends BaseActivity {
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-    public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
+public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
-    private static final String IP_GROUPCHAT = "ip_groupchat";
-    private static final String LOG_GROUPCHAT = "log_groupchat";
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
@@ -103,8 +97,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
-    String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
-    String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+    String EXP_TOP_NAV = NAVIGATION_EXP_TOP_NAV;
+    String VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP;
 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
@@ -113,37 +107,37 @@ public class DeveloperOptionActivity extends BaseActivity {
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
-    private TextView resetOnBoarding;
-    private TextView testOnBoarding;
-    private TextView vForceCrash;
-    private AppCompatEditText remoteConfigPrefix;
-    private AppCompatTextView remoteConfigStartButton;
-    private AppCompatTextView abTestRollenceEditorStartButton;
+    private UnifyButton resetOnBoarding;
+    private UnifyButton testOnBoarding;
+    private UnifyButton vForceCrash;
+    private TextFieldUnify remoteConfigPrefix;
+    private UnifyButton remoteConfigStartButton;
+    private UnifyButton abTestRollenceEditorStartButton;
     private Spinner spinnerEnvironmentChooser;
 
     private View sendTimberButton;
-    private EditText editTextTimberMessage;
+    private TextFieldUnify editTextTimberMessage;
 
-    private View sendFirebaseCrash;
-    private EditText editTextFirebaseCrash;
+    private UnifyButton sendFirebaseCrash;
+    private TextFieldUnify editTextFirebaseCrash;
 
-    private View routeManagerButton;
-    private EditText editTextRouteManager;
-    private EditText editTextChangeVersionName;
-    private EditText editTextChangeVersionCode;
+    private UnifyButton routeManagerButton;
+    private TextFieldUnify editTextRouteManager;
+    private TextFieldUnify editTextChangeVersionName;
+    private TextFieldUnify editTextChangeVersionCode;
     private View changeVersionButton;
 
-    private TextView vGoToScreenRecorder;
-    private TextView vGoTochuck;
+    private UnifyButton vGoToScreenRecorder;
+    private UnifyButton vGoTochuck;
     private CheckBox toggleChuck;
 
-    private TextView vGoToTopAdsDebugger;
-    private TextView vGoToApplinkDebugger;
-    private TextView vGoToFpm;
-    private TextView vGoToCassava;
-    private TextView vGoToAnalytics;
-    private TextView vGoToIrisSaveLogDB;
-    private TextView vGoToIrisSendLogDB;
+    private UnifyButton vGoToTopAdsDebugger;
+    private UnifyButton vGoToApplinkDebugger;
+    private UnifyButton vGoToFpm;
+    private UnifyButton vGoToCassava;
+    private UnifyButton vGoToAnalytics;
+    private UnifyButton vGoToIrisSaveLogDB;
+    private UnifyButton vGoToIrisSendLogDB;
     private CheckBox toggleDarkMode;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
@@ -153,21 +147,18 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleSellerAppReview;
     private CheckBox toggleLeakCanary;
 
-    private AppCompatEditText ipGroupChat;
-    private View saveIpGroupChat;
-    private ToggleButton groupChatLogToggle;
-
     private UserSessionInterface userSession;
-    private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
-    private TextView accessTokenView;
-    private TextView appAuthSecretView;
-    private TextView tvFakeResponse;
+    private UnifyButton accessTokenView;
+    private UnifyButton appAuthSecretView;
+    private UnifyButton tvFakeResponse;
 
-    private Button requestFcmToken;
+    private UnifyButton requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
+
+    private UnifyButton alwaysOldBalanceWidget;
 
     @Override
     public String getScreenName() {
@@ -211,6 +202,13 @@ public class DeveloperOptionActivity extends BaseActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        System.out.println("++ line 206");
+        alwaysOldBalanceWidget.setEllipsize(null);
     }
 
     private void handleUri(Uri uri) {
@@ -316,38 +314,35 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextChangeVersionName = findViewById(R.id.et_change_version_name);
         editTextChangeVersionCode = findViewById(R.id.et_change_version_code);
         changeVersionButton = findViewById(R.id.btn_change_version);
-        editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
-        editTextChangeVersionCode.setText(String.valueOf(GlobalConfig.VERSION_CODE));
-
-        ipGroupChat = findViewById(R.id.ip_groupchat);
-        saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
-        groupChatLogToggle = findViewById(R.id.groupchat_log);
+        editTextChangeVersionName.getTextFieldInput().setText(GlobalConfig.VERSION_NAME);
+        editTextChangeVersionCode.getTextFieldInput().setText(String.valueOf(GlobalConfig.VERSION_CODE));
 
         accessTokenView = findViewById(R.id.access_token);
         appAuthSecretView = findViewById(R.id.app_auth_secret);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
-        ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
+        ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, R.layout.customized_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
-        Button buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
-        Button alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
-        Button alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
-        Button alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
-        Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
-        Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
-        Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
+        UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
+        UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
+        UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
+        UnifyButton alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
+        UnifyButton alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
+        alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
+        System.out.println("++ line 332");
+        UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
         setupNewInboxAbButton();
         setupNewNotifcenterAbButton();
 
-        TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
-        TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
-        Button btnApplyRollence = findViewById(R.id.btn_apply_rollence);
+        TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
+        TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
+        UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,17 +370,17 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
-        String VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
-        String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+        String EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV;
+        String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
+        String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-        String EXP_HOME = AbTestPlatform.HOME_EXP;
-        String HOME_VARIANT_OLD = AbTestPlatform.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = AbTestPlatform.HOME_VARIANT_REVAMP;
+        String EXP_HOME = RollenceKey.HOME_EXP;
+        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
+        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
 
-        String EXP_BALANCE_WIDGET = AbTestPlatform.BALANCE_EXP;
-        String BALANCE_WIDGET_VARIANT_OLD = AbTestPlatform.BALANCE_VARIANT_OLD;
-        String BALANCE_WIDGET_VARIANT_REVAMP = AbTestPlatform.BALANCE_VARIANT_NEW;
+        String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
+        String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
+        String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
 
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -438,12 +433,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         btnApplyRollence.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (inputRollenceKey.getText().length() < 1) {
+                if (inputRollenceKey.getTextFieldInput().getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Key", Toast.LENGTH_SHORT).show();
-                } else if (inputRollenceVariant.getText().length() < 1) {
+                } else if (inputRollenceVariant.getTextFieldInput().getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
                 } else {
-                    RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
+                    RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getTextFieldInput().getText().toString().trim(), inputRollenceVariant.getTextFieldInput().getText().toString().trim());
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -451,15 +446,15 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void setupNewInboxAbButton() {
-        Button oldInboxBtn = findViewById(R.id.btn_always_old_inbox);
-        Button newInboxBtn = findViewById(R.id.btn_always_new_inbox);
+        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_inbox);
+        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_inbox);
 
         oldInboxBtn.setOnClickListener(v -> {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
-                            AbTestPlatform.VARIANT_OLD_INBOX
+                            RollenceKey.KEY_AB_INBOX_REVAMP,
+                            RollenceKey.VARIANT_OLD_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: Old", Toast.LENGTH_SHORT).show();
         });
@@ -467,23 +462,23 @@ public class DeveloperOptionActivity extends BaseActivity {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
-                            AbTestPlatform.VARIANT_NEW_INBOX
+                            RollenceKey.KEY_AB_INBOX_REVAMP,
+                            RollenceKey.VARIANT_NEW_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void setupNewNotifcenterAbButton() {
-        Button oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
-        Button newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
+        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
+        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
 
         oldInboxBtn.setOnClickListener(v -> {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_NEW_NOTFICENTER,
-                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_OLD_NOTFICENTER
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
         });
@@ -491,16 +486,17 @@ public class DeveloperOptionActivity extends BaseActivity {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_NEW_NOTFICENTER,
-                            AbTestPlatform.VARIANT_NEW_NOTFICENTER
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_NEW_NOTFICENTER
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void initListener() {
         remoteConfigStartButton.setOnClickListener(v -> {
-            Editable prefix = remoteConfigPrefix.getText();
+            Editable prefix = remoteConfigPrefix.getTextFieldInput().getEditableText();
 
             startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
         });
@@ -522,7 +518,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         sendTimberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String timberMessage = editTextTimberMessage.getText().toString();
+                String timberMessage = editTextTimberMessage.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(timberMessage)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
@@ -574,7 +570,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         sendFirebaseCrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String crashMessage = editTextFirebaseCrash.getText().toString();
+                String crashMessage = editTextFirebaseCrash.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(crashMessage)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Crash message should not be empty", Toast.LENGTH_SHORT).show();
@@ -587,7 +583,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         routeManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String routeManagerString = editTextRouteManager.getText().toString();
+                String routeManagerString = editTextRouteManager.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(routeManagerString)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
@@ -600,8 +596,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         changeVersionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String versionCode = editTextChangeVersionCode.getText().toString();
-                String versionName = editTextChangeVersionName.getText().toString();
+                String versionCode = editTextChangeVersionCode.getTextFieldInput().getText().toString();
+                String versionName = editTextChangeVersionName.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(versionCode)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Version Code should not be empty", Toast.LENGTH_SHORT).show();
@@ -695,13 +691,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
-        saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
-        groupChatLogToggle.setOnCheckedChangeListener((buttonView, isChecked) -> actionLogGroupChat(isChecked));
-
-        groupChatSf = getSharedPreferences(GROUPCHAT_PREF);
-
-        ipGroupChat.setText(groupChatSf.getString(IP_GROUPCHAT, ""));
-        groupChatLogToggle.setChecked(groupChatSf.getBoolean(LOG_GROUPCHAT, false));
 
         Env currentEnv = TokopediaUrl.Companion.getInstance().getTYPE();
         for (int i = 0; i < Env.values().length; i++) {
@@ -827,24 +816,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         intent.putExtra(REMOTE_CONFIG_PREFIX, prefix.trim());
 
         startActivity(intent);
-    }
-
-    private void actionSaveIpGroupChat() {
-        String ip = ipGroupChat.getText().toString();
-        SharedPreferences.Editor editor = groupChatSf.edit();
-        if (TextUtils.isEmpty(ip)) {
-            editor.putString(IP_GROUPCHAT, null);
-        } else {
-            editor.putString(IP_GROUPCHAT, ip);
-        }
-        editor.apply();
-        Toast.makeText(this, ip + " saved", Toast.LENGTH_SHORT).show();
-    }
-
-    private void actionLogGroupChat(boolean check) {
-        SharedPreferences.Editor editor = groupChatSf.edit();
-        editor.putBoolean(LOG_GROUPCHAT, check);
-        editor.apply();
     }
 
     private SharedPreferences getSharedPreferences(String name) {

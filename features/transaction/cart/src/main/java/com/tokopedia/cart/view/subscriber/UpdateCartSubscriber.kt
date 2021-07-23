@@ -1,11 +1,13 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.view.CartListPresenter
+import com.tokopedia.cart.view.CartLogger
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 
 /**
@@ -14,41 +16,38 @@ import rx.Subscriber
 
 class UpdateCartSubscriber(private val view: ICartListView?,
                            private val presenter: ICartListPresenter?,
-                           private val fireAndForget: Boolean) : Subscriber<UpdateCartData>() {
+                           private val cartItemDataList: List<CartItemData>) : Subscriber<UpdateCartData>() {
 
     override fun onCompleted() {
 
     }
 
     override fun onError(e: Throwable) {
-        if (!fireAndForget) {
-            view?.let {
-                e.printStackTrace()
-                it.hideProgressLoading()
-                it.renderErrorToShipmentForm(e)
-            }
+        view?.let {
+            it.hideProgressLoading()
+            it.renderErrorToShipmentForm(e)
+            CartLogger.logOnErrorUpdateCartForCheckout(e, cartItemDataList)
         }
     }
 
     override fun onNext(data: UpdateCartData) {
-        if (!fireAndForget) {
-            view?.let {
-                it.hideProgressLoading()
-                if (!data.isSuccess) {
-                    if (data.outOfServiceData.id != 0) {
-                        it.renderErrorToShipmentForm(data.outOfServiceData)
-                    } else {
-                        it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
-                    }
+        view?.let {
+            it.hideProgressLoading()
+            if (!data.isSuccess) {
+                if (data.outOfServiceData.id != 0) {
+                    it.renderErrorToShipmentForm(data.outOfServiceData)
                 } else {
-                    val checklistCondition = getChecklistCondition()
-                    val cartItemDataList = it.getAllSelectedCartDataList()
-                    cartItemDataList?.let { data ->
-                        it.renderToShipmentFormSuccess(
-                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1)
-                                        ?: hashMapOf(),
-                                data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
-                    }
+                    it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
+                }
+                CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(data.message), cartItemDataList)
+            } else {
+                val checklistCondition = getChecklistCondition()
+                val cartItemDataList = it.getAllSelectedCartDataList()
+                cartItemDataList?.let { data ->
+                    it.renderToShipmentFormSuccess(
+                            presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1)
+                                    ?: hashMapOf(),
+                            data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
                 }
             }
         }
@@ -104,14 +103,15 @@ class UpdateCartSubscriber(private val view: ICartListView?,
 
     private fun isCheckoutProductEligibleForCashOnDelivery(cartItemDataList: List<CartItemData>): Boolean {
         var totalAmount = 0.0
-        val maximalTotalAmountEligible = 1000000.0
         for (cartItemData in cartItemDataList) {
-            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity
-                    ?: 0) ?: 0.toDouble()
+            val itemPriceAmount = cartItemData.originData.pricePlan.times(cartItemData.updatedData.quantity)
             totalAmount += itemPriceAmount
-            if (cartItemData.originData?.isCod == false) return false
+            if (!cartItemData.originData.isCod) return false
         }
-        return totalAmount <= maximalTotalAmountEligible
+        return totalAmount <= MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
     }
 
+    companion object {
+        const val MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD = 1000000.0
+    }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -9,58 +10,73 @@
             android:id="@+id/sw_translate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Translator (ON/OFF)" />
+            android:text="@string/translator_title"
+            android:textColor="@color/Unify_N700_96"/>
 
     <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="1dp"
-            android:background="#808080" />
+            android:background="@color/Unify_N700_96" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="API Key Setting"
-            android:textStyle="bold" />
+            android:text="@string/api_key_setting"
+            app:typographyWeight="bold"
+            android:layout_marginTop="8dp"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current Key" />
+            android:text="@string/curr_key"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_curr_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49"
-            android:textSize="8sp"
-            android:textStyle="italic" />
+            android:text="@string/trnsl_1"
+            android:textStyle="italic"
+            app:typographyType="small"
+            app:typographyWeight="reguler"/>
 
-    <EditText
+    <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/edit_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your key" />
+            app:text_field_placeholder="@string/enter_your_key"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text"/>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_save_key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Save key" />
+            android:layout_gravity="end"
+            android:text="@string/save_key"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textUri"
-            android:text="Visit below for new API key" />
+            android:text="@string/visit_below"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textUri"
-            android:text="https://translate.yandex.com/developers" />
+            android:text="@string/url"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
     <View
             android:layout_width="match_parent"
@@ -68,21 +84,23 @@
             android:layout_marginTop="8dp"
             android:background="#808080" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Language Setting"
-            android:textStyle="bold" />
+            android:text="@string/language_setting"
+            app:typographyWeight="bold"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:enabled="false"
             android:id="@+id/text_val"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Current languages:  Bhasa-English"
-            android:textStyle="italic" />
+            android:text="@string/curr_language"
+            android:textStyle="italic"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -102,23 +120,27 @@
                 android:id="@+id/list_destination"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_weight="1" />
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_count_char"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Total characters translated so far is 854358" />
+            android:text="@string/total_chars_translated"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_count_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Total words translated so far is 854358"
-            android:visibility="gone" />
+            android:text="@string/total_words_translated"
+            android:visibility="gone"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"/>
 
 </LinearLayout>

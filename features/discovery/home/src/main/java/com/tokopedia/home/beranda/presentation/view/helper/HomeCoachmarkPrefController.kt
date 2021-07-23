@@ -13,6 +13,8 @@ const val PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV"
 const val PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX"
 const val PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS = "PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS"
 const val PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
+const val PREF_KEY_WALLETAPP_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_WALLETAPP"
+const val PREF_KEY_WALLETAPP2_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_WALLETAPP2"
 
 
 fun isNavigationCoachmarkShown(context: Context): Boolean {
@@ -53,8 +55,32 @@ fun isBalanceWidgetCoachmarkShown(context: Context): Boolean {
     return sharedPrefs.getBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, false)
 }
 
+fun isWalletAppCoachmarkShown(context: Context): Boolean {
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+    return sharedPrefs.getBoolean(PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
+}
+
+fun isWalletApp2CoachmarkShown(context: Context): Boolean {
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+    return sharedPrefs.getBoolean(PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
+}
+
 fun setBalanceWidgetCoachmarkShown(context: Context) {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
             PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, true).apply()
+}
+
+fun setWalletAppCoachmarkShown(context: Context) {
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(PREF_KEY_WALLETAPP_COACHMARK_BALANCE, true).apply()
+}
+
+fun setWalletApp2CoachmarkShown(context: Context) {
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+        PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, true).apply()
 }
