@@ -81,7 +81,7 @@
         app:srcCompat="@drawable/ic_play_eye_white"
         tools:ignore="RtlSymmetry"
         tools:visibility="visible"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_4"
         app:layout_constraintTop_toTopOf="@id/ll_promo_detail"
         app:layout_constraintBottom_toBottomOf="@id/ll_promo_detail"
         app:layout_constraintStart_toEndOf="@id/ll_promo_detail"
