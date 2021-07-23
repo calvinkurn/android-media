@@ -30,6 +30,7 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
     private var tvDescCalculationDetail: Typography? = null
     private var tvDescTipsDetail: Typography? = null
     private var tvMoreInfoPerformanceDetail: Typography? = null
+    private var tvTitleTipsDetail: Typography? = null
     private var separatorTips: DividerUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +70,7 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
         tvDescTipsDetail = findViewById(R.id.tvDescTipsDetail)
         tvMoreInfoPerformanceDetail = findViewById(R.id.tvMoreInfoPerformanceDetail)
         separatorTips = findViewById(R.id.separatorTips)
+        tvTitleTipsDetail = findViewById(R.id.tvTitleTipsDetail)
     }
 
     private fun observeShopPerformanceDetail() {
@@ -83,7 +85,8 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
             tvDescCalculationDetail?.text = MethodChecker.fromHtml(descCalculation?.let { getString(it) })
             tvDescTipsDetail?.text = MethodChecker.fromHtml(descTips?.let { getString(it) })
             tvMoreInfoPerformanceDetail?.showWithCondition(moreInformation != null)
-            separatorTips?.showWithCondition(moreInformation != null)
+            separatorTips?.showWithCondition(moreInformation != null || descTips != null)
+            tvTitleTipsDetail?.showWithCondition(descTips != null)
             moreInformation?.let {
                 tvMoreInfoPerformanceDetail?.setTextMakeHyperlink(getString(it, urlLink)) {
                     if (urlLink.isNotBlank()) {
