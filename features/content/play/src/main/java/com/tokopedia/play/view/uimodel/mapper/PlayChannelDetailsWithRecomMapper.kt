@@ -26,6 +26,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return input.channelDetails.dataList.map {
             PlayChannelData(
                     id = it.id,
+                    channelDetail = PlayChannelDetailUiModel(
+                            channelInfo = mapChannelInfo(it.isLive, it.config),
+                            shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
+                    ),
                     channelInfo = mapChannelInfo(it.isLive, it.config),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
@@ -77,8 +81,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 content = htmlTextTransformer.transform(fullShareContent),
                 shouldShow = shareResponse.isShowButton
                         && shareResponse.redirectUrl.isNotBlank()
-                        && isActive
-                        && !isFreezed
         )
     }
 

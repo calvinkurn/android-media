@@ -61,10 +61,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayLikeUiState
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.uimodel.state.ViewVisibility
+import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -305,9 +302,10 @@ class PlayUserInteractionFragment @Inject constructor(
         shouldOpenCartPage()
     }
 
-    override fun onCopyButtonClicked(view: ToolbarViewComponent, content: String) {
-        copyToClipboard(content)
-        showLinkCopiedToaster()
+    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+//        copyToClipboard(content)
+//        showLinkCopiedToaster()
+        playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
     }
@@ -584,7 +582,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeCartInfo()
         observeBottomInsetsState()
         observeStatusInfo()
-        observeShareInfo()
         observeProductContent()
 
         observeUiState()
@@ -785,12 +782,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeShareInfo() {
-        playViewModel.observableShareInfo.observe(viewLifecycleOwner, DistinctObserver {
-            toolbarView.setShareInfo(it)
-        })
-    }
-
     private fun observeProductContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
@@ -816,7 +807,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
                 renderWinnerBadgeView(state.showWinnerBadge)
-                renderToolbarView(state.followStatus, state.partnerName)
+                renderToolbarView(state.followStatus, state.partnerName, state.isShareable)
                 renderLikeView(prevState?.like, state.like)
                 renderStatsInfoView(state.totalView)
             }
@@ -844,6 +835,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
                     }
                     is ShowToasterEvent -> handleToasterEvent(event)
+                    is CopyToClipboardEvent -> copyToClipboard(event.content)
                 }
             }
         }
@@ -1120,10 +1112,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 .setPrimaryClip(ClipData.newPlainText("play-room", content))
     }
 
-    private fun showLinkCopiedToaster() {
-        doShowToaster(message = getString(R.string.play_link_copied))
-    }
-
     private fun doShowToaster(
             toasterType: Int = Toaster.TYPE_NORMAL,
             actionText: String = "",
@@ -1391,9 +1379,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderToolbarView(
             followStatus: PlayPartnerFollowStatus,
             partnerName: String,
+            isShareable: Boolean,
     ) {
         toolbarView.setFollowStatus(followStatus)
         toolbarView.setPartnerName(partnerName)
+
+        toolbarView.setIsShareable(isShareable)
     }
 
     private fun renderLikeView(

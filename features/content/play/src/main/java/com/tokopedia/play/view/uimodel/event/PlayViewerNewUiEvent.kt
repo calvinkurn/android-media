@@ -17,6 +17,7 @@ sealed class ShowToasterEvent : PlayViewerNewUiEvent() {
     data class Error(override val message: UiString) : ShowToasterEvent()
 }
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
+data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 
 
 //---------------------

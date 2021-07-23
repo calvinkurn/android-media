@@ -31,4 +31,9 @@ object ClickPartnerNameAction : PlayViewerNewAction()
  */
 object ClickLikeAction : PlayViewerNewAction()
 
+/**
+ * Share
+ */
+object ClickShareAction : PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

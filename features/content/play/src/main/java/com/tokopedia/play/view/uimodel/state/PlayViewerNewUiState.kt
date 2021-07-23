@@ -26,6 +26,8 @@ data class PlayViewerNewUiState(
         val like: PlayLikeUiState,
 
         val totalView: String,
+
+        val isShareable: Boolean,
 )
 
 sealed class PlayInteractiveUiState {

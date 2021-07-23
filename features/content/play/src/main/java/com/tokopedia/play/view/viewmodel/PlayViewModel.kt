@@ -42,9 +42,6 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -62,7 +59,7 @@ import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import com.tokopedia.play.extensions.combine
-import com.tokopedia.play.view.uimodel.state.PlayLikeUiState
+import com.tokopedia.play.view.uimodel.state.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -121,8 +118,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
         get() = _observableCartInfo
-    val observableShareInfo: LiveData<PlayShareInfoUiModel> /**Added**/
-        get() = _observableShareInfo
     val observableEventPiPState: LiveData<Event<PiPState>>
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
@@ -130,12 +125,13 @@ class PlayViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
 
+    private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardInfoUiModel>(PlayLeaderboardInfoUiModel())
-    private val _likeInfo = MutableStateFlow<PlayLikeInfoUiModel>(PlayLikeInfoUiModel())
+    private val _leaderboardInfo = MutableStateFlow(PlayLeaderboardInfoUiModel())
+    private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
 
     /**
@@ -145,6 +141,7 @@ class PlayViewModel @Inject constructor(
     private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
+            _channelDetail,
             _partnerInfo,
             _bottomInsets,
             _interactive,
@@ -152,7 +149,7 @@ class PlayViewModel @Inject constructor(
             _status,
             _likeInfo,
             _channelReport
-    ) { partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport ->
+    ) { channelDetail, partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
@@ -178,6 +175,7 @@ class PlayViewModel @Inject constructor(
                         totalLike = channelReport.totalLikeFmt,
                 ),
                 totalView = channelReport.totalViewFmt,
+                isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
@@ -298,7 +296,6 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
-    private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
@@ -604,6 +601,7 @@ class PlayViewModel @Inject constructor(
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike()
+            ClickShareAction -> handleClickShare()
         }
     }
 
@@ -635,12 +633,12 @@ class PlayViewModel @Inject constructor(
 
     fun createPage(channelData: PlayChannelData) {
         mChannelData = channelData
+        handleChannelDetail(channelData.channelDetail)
         handleStatusInfo(channelData.statusInfo)
         handleChannelInfo(channelData.channelInfo)
         handleOnboarding(channelData.videoMetaInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
-        handleShareInfo(channelData.shareInfo)
         handleChannelReportInfo(channelData.channelReportInfo)
         handleLikeInfo(channelData.likeInfo)
         handleCartInfo(channelData.cartInfo)
@@ -720,34 +718,6 @@ class PlayViewModel @Inject constructor(
         )
     }
 
-//    fun changeLikeCount(shouldLike: Boolean) {
-//        val likeInfo = _observableLikeInfo.value
-//        if (likeInfo !is PlayLikeInfoUiModel.Complete) return
-//
-//        val currentTotalLike = likeInfo.status.totalLike
-//        val currentTotalLikeFmt = likeInfo.status.totalLikeFormatted
-//        if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-//            val finalTotalLike = (currentTotalLike + (if (shouldLike) 1 else -1)).coerceAtLeast(0)
-//            _observableLikeInfo.value = likeInfo.copy(
-//                    status = PlayLikeStatusInfoUiModel(
-//                            totalLike = finalTotalLike,
-//                            totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
-//                            isLiked = shouldLike,
-//                            source = LikeSource.UserAction
-//                    )
-//            )
-//        } else {
-//            _observableLikeInfo.value = likeInfo.copy(
-//                    status = PlayLikeStatusInfoUiModel(
-//                            totalLike = likeInfo.status.totalLike,
-//                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
-//                            isLiked = shouldLike,
-//                            source = LikeSource.UserAction
-//                    )
-//            )
-//        }
-//    }
-
     /**
      * @return true means that back has been consumed/handled
      * false means that back is allowed
@@ -818,6 +788,10 @@ class PlayViewModel @Inject constructor(
     /**
      * Handle existing channel data
      */
+    private fun handleChannelDetail(channelDetail: PlayChannelDetailUiModel) {
+        _channelDetail.value = channelDetail
+    }
+
     private fun handleStatusInfo(statusInfo: PlayStatusInfoUiModel) {
         _observableStatusInfo.value = statusInfo
     }
@@ -846,10 +820,6 @@ class PlayViewModel @Inject constructor(
                 _observableOnboarding.value = Event(Unit)
             }
         }
-    }
-
-    private fun handleShareInfo(shareInfo: PlayShareInfoUiModel) {
-        _observableShareInfo.value = shareInfo
     }
 
     private fun handleChannelReportInfo(channelReport: PlayChannelReportUiModel) {
@@ -1442,6 +1412,23 @@ class PlayViewModel @Inject constructor(
                     shouldLike = newStatus == PlayLikeStatus.Liked
             )
         }
+    }
+
+    private fun handleClickShare() {
+        val shareInfo = _channelDetail.value.shareInfo
+
+        viewModelScope.launch {
+            _uiEvent.emit(
+                    CopyToClipboardEvent(shareInfo.content)
+            )
+
+            _uiEvent.emit(
+                    ShowToasterEvent.Info(
+                            UiString.Resource(R.string.play_link_copied)
+                    )
+            )
+        }
+
     }
 
     /**
