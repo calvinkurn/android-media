@@ -126,7 +126,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun scrollToCopyAWB(activity: AppCompatActivity) {
-        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.icBuyerOrderDetailCopyAwb)))
+        scrollThroughUntilViewVisible(activity, firstView(allOf(withId(R.id.icBuyerOrderDetailCopy), withTagStringValue(activity.getString(R.string.copy_label_awb_number)))))
     }
 
     private fun waitUntilViewVisible(matcher: Matcher<View>) {
@@ -144,7 +144,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun waitUntilToolbarChatIconVisible() {
-        waitUntilViewVisible(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+        waitUntilViewVisible(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun waitUntilSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity) {
@@ -192,7 +192,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickToolbarChatIcon() {
-        clickView(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+        clickView(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun clickSeeDetail() {
@@ -223,8 +223,8 @@ class BuyerOrderDetailAction {
         clickView(firstView(withText(startsWith(BuyerOrderDetailTrackerValidationConstant.TICKER_SHIPMENT_INFO_TNC_TEXT))))
     }
 
-    private fun clickCopyAWB() {
-        clickView(firstView(withId(R.id.icBuyerOrderDetailCopyAwb)))
+    private fun clickCopyAWB(context: Context) {
+        clickView(firstView(allOf(withId(R.id.icBuyerOrderDetailCopy), withTagStringValue(context.getString(R.string.copy_label_awb_number)))))
     }
 
     private fun clickPrimaryActionButton() {
@@ -237,13 +237,13 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet() {
-        val matcher = withId(R.id.btnFinishOrderPrimary)
+        val matcher = withId(R.id.btnFinishOrderRight)
         waitUntilViewVisible(matcher)
         clickView(matcher)
     }
 
     private fun clickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet() {
-        val matcher = withId(R.id.btnFinishOrderSecondary)
+        val matcher = withId(R.id.btnFinishOrderLeft)
         waitUntilViewVisible(matcher)
         clickView(matcher)
     }
@@ -254,6 +254,7 @@ class BuyerOrderDetailAction {
                 BuyerOrderDetailTrackerValidationConstant.cartString,
                 BuyerOrderDetailTrackerValidationConstant.orderId,
                 BuyerOrderDetailTrackerValidationConstant.paymentId))
+        Thread.sleep(5000)
     }
 
     fun blockAllIntent() {
@@ -302,7 +303,7 @@ class BuyerOrderDetailAction {
 
     fun testClickCopyAWB(activity: AppCompatActivity) {
         scrollToCopyAWB(activity)
-        clickCopyAWB()
+        clickCopyAWB(activity)
     }
 
     fun testClickPrimaryActionButton() {

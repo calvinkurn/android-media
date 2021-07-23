@@ -9,7 +9,7 @@
             android:name=".ovoactivation.view.IntroOvoActivity"
             android:label="@string/wallet_title_header_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" >
+            android:theme="@style/Theme.WhiteUnify" >
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW"/>
@@ -27,7 +27,7 @@
             android:name=".ovoactivation.view.ActivationOvoActivity"
             android:label="@string/wallet_title_header_activation_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" >
+            android:theme="@style/Theme.WhiteUnify" >
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW"/>
@@ -45,7 +45,7 @@
             android:name=".ovoactivationflashdeals.InactiveOvoActivity"
             android:label="@string/wallet_title_header_activation_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" >
+            android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW"/>

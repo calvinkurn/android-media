@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.view.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -592,37 +591,31 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun onDrawClicked(intent: Intent) {
-        val userSession = UserSession(context)
-        if (userSession.hasPassword()) {
+        val sellerBalance = getSellerSaldoBalance()
+        val buyerBalance = getBuyerSaldoBalance()
 
-            val sellerBalance = getSellerSaldoBalance()
-            val buyerBalance = getBuyerSaldoBalance()
-
-            val minSaldoLimit: Long = 10000
-            if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
-                showErrorMessage(getString(com.tokopedia.saldodetails.R.string.saldo_min_withdrawal_error))
-            } else {
-                val withdrawActivityBundle = Bundle()
-                withdrawActivityBundle.putBoolean(
-                    FIREBASE_FLAG_STATUS,
-                    showMclBlockTickerFirebaseFlag
-                )
-                withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock)
-                withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount)
-                withdrawActivityBundle.putBoolean(IS_SELLER, isSellerEnabled)
-                withdrawActivityBundle.putLong(
-                    BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT,
-                    getBuyerSaldoBalance()
-                )
-                withdrawActivityBundle.putLong(
-                    BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT,
-                    getSellerSaldoBalance()
-                )
-                intent.putExtras(withdrawActivityBundle)
-                startActivityForResult(intent, REQUEST_WITHDRAW_CODE)
-            }
+        val minSaldoLimit: Long = 10000
+        if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
+            showErrorMessage(getString(com.tokopedia.saldodetails.R.string.saldo_min_withdrawal_error))
         } else {
-            showWithdrawalNoPassword()
+            val withdrawActivityBundle = Bundle()
+            withdrawActivityBundle.putBoolean(
+                FIREBASE_FLAG_STATUS,
+                showMclBlockTickerFirebaseFlag
+            )
+            withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock)
+            withdrawActivityBundle.putInt(MCL_LATE_COUNT, mclLateCount)
+            withdrawActivityBundle.putBoolean(IS_SELLER, isSellerEnabled)
+            withdrawActivityBundle.putLong(
+                BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT,
+                getBuyerSaldoBalance()
+            )
+            withdrawActivityBundle.putLong(
+                BUNDLE_SALDO_SELLER_TOTAL_BALANCE_INT,
+                getSellerSaldoBalance()
+            )
+            intent.putExtras(withdrawActivityBundle)
+            startActivityForResult(intent, REQUEST_WITHDRAW_CODE)
         }
     }
 
@@ -746,36 +739,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.getUserSaldoBalance()
         saldoDetailViewModel.getTickerWithdrawalMessage()
         saldoDetailViewModel.getMerchantCreditLateCountValue()
-    }
-
-    private fun showWithdrawalNoPassword() {
-        context?.let {
-            DialogUnify(
-                it,
-                actionType = DialogUnify.HORIZONTAL_ACTION,
-                imageType = DialogUnify.NO_IMAGE
-            ).apply {
-                setTitle(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_title))
-                setDescription(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_deposit_no_password_content))
-                setPrimaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_error_no_password_yes))
-                setSecondaryCTAText(resources.getString(com.tokopedia.saldodetails.R.string.sp_cancel))
-                setPrimaryCTAClickListener {
-                    intentToAddPassword(it)
-                    dismiss()
-                }
-                setSecondaryCTAClickListener { dismiss() }
-                show()
-            }
-        }
-    }
-
-    private fun intentToAddPassword(context: Context) {
-        context.startActivity(
-            RouteManager.getIntent(
-                context,
-                ApplinkConstInternalGlobal.ADD_PASSWORD
-            )
-        )
     }
 
     private fun setBalance(summaryUsebleDepositIdr: String) {

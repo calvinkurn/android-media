@@ -212,14 +212,16 @@
                             app:typographyType="heading_2"
                             tools:text="Avissa Suites" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
+                        <com.tokopedia.iconunify.IconUnify
                             android:id="@+id/hotel_share_button"
                             android:layout_width="@dimen/layout_lvl3"
                             android:layout_height="@dimen/layout_lvl3"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_hotel_share" />
+                            app:icon_name="SHARE_MOBILE"
+                            app:icon_color_light_enable="@color/hotel_dms_icon_color"
+                            app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
@@ -410,11 +412,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/layout_lvl1">
 
-                            <androidx.appcompat.widget.AppCompatImageView
+                            <com.tokopedia.unifycomponents.ImageUnify
                                 android:id="@+id/iv_hotel_detail_location"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/hotel_100dp"
-                                android:scaleType="centerCrop" />
+                                android:scaleType="centerCrop"
+                                app:unify_image_type="rect"
+                                app:unify_image_corner_radius="8"/>
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -487,7 +491,7 @@
                             android:paddingTop="@dimen/layout_lvl1">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/hotel_facility_title"
@@ -531,7 +535,7 @@
                             android:paddingTop="@dimen/layout_lvl1">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/hotel_policy_title"

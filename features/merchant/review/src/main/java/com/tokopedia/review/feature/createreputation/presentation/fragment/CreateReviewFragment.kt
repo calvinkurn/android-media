@@ -110,7 +110,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
                 putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
-                putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
+                putString(ReviewConstants.PARAM_SOURCE, utmSource)
             }
         }
     }
@@ -206,7 +206,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             reputationId = it.getString(REPUTATION_ID, "")
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getString(ReviewConstants.PARAM_FEEDBACK_ID, "")
-            utmSource = it.getString(ReviewConstants.PARAM_UTM_SOURCE, "")
+            utmSource = it.getString(ReviewConstants.PARAM_SOURCE, "")
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {

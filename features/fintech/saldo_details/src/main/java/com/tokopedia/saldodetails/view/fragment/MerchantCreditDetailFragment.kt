@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -27,6 +26,7 @@ import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.Companion.BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     private var mclBoxLayout: RelativeLayout? = null
     private var mclboxTitleTV: TextView? = null
     private var mclBoxDescTV: TextView? = null
-    private var mclParentCardView: CardView? = null
+    private var mclParentCardView: CardUnify? = null
 
     private var mclBlockedStatusTV: TextView? = null
     private var saveInstanceCacheManager: SaveInstanceCacheManager? = null

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -44,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -98,9 +100,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, R.color.shop_score_page_dms_background))
-        }
+        setPageBackground()
         setupActionBar()
         setupAdapter()
         onSwipeRefreshShopPerformance()
@@ -310,6 +310,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onImpressHelpCenter() {
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
+    }
+
+    private fun setPageBackground() {
+        try {
+            context?.let {
+                activity?.window?.decorView?.setBackgroundColor(it.getResColor(R.color.shop_score_page_dms_background))
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
     }
 
     private fun goToFaqSection() {

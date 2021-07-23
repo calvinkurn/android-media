@@ -797,6 +797,27 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
+    private fun trackClickAddToCartPersonalizationReminder(
+            dataModelAtc: DataModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
+        shopPageHomeTracking.addToCartPersonalizationProductReminder(
+                isOwner,
+                isLogin,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                dataModelAtc?.quantity ?: 1,
+                shopName,
+                viewModel?.userId.orEmpty(),
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
+                dataModelAtc?.cartId ?: "",
+                shopHomeProductViewModel?.recommendationType ?: "",
+                customDimensionShopPage
+        )
+    }
+
     private fun onErrorAddToCart(
             exception: Throwable
     ) {
@@ -846,7 +867,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 val listCampaignNplWidget = data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()
                 listCampaignNplWidget.forEach { nplCampaignUiModel ->
                     nplCampaignUiModel.data?.firstOrNull()?.let { nplCampaignItem ->
-                        if (nplCampaignItem.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase())
+                        if (nplCampaignItem.statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, ignoreCase = true))
                             viewModel?.getCampaignNplRemindMeStatus(nplCampaignItem)
                     }
                 }
@@ -1173,6 +1194,30 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onPersonalizationReminderCarouselProductItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeProductViewModel?.let {
+            shopPageHomeTracking.clickProductPersonalizationReminder(
+                    isOwner,
+                    isLogin,
+                    shopHomeProductViewModel.name ?: "",
+                    shopHomeProductViewModel.id ?: "",
+                    shopHomeProductViewModel.displayedPrice ?: "",
+                    shopHomeProductViewModel.recommendationType ?: "",
+                    shopName,
+                    viewModel?.userId.orEmpty(),
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    customDimensionShopPage
+            )
+            goToPDP(it.id ?: "")
+        }
+    }
+
     override fun onCarouselPersonalizationProductItemClickAddToCart(
             parentPosition: Int,
             itemPosition: Int,
@@ -1250,6 +1295,46 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onCarouselPersonalizationReminderProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        if (isLogin) {
+            shopHomeProductViewModel?.let { product ->
+                viewModel?.addProductToCart(
+                        product,
+                        shopId,
+                        {
+                            trackClickAddToCartPersonalizationReminder(it, shopHomeProductViewModel, shopHomeCarousellProductUiModel)
+                            view?.let { view ->
+                                NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            }
+                        },
+                        {
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                        tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                        functionName = ShopHomeViewModel::addProductToCart.name,
+                                        liveDataName = "",
+                                        userId = userId,
+                                        shopId = shopId,
+                                        shopName = shopName,
+                                        errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                        stackTrace = Log.getStackTraceString(it),
+                                        errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                                )
+                            }
+                            onErrorAddToCart(it)
+                        }
+                )
+            }
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
     override fun onCarouselProductPersonalizationItemImpression(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         shopPageHomeTracking.impressionProductPersonalization(
                 isOwner,
@@ -1263,6 +1348,27 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 itemPosition + 1,
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.name ?: "",
+                customDimensionShopPage
+        )
+    }
+
+    override fun onCarouselProductPersonalizationReminderItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    ) {
+        shopPageHomeTracking.impressionProductPersonalizationReminder(
+                isOwner,
+                isLogin,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                shopHomeProductViewModel?.recommendationType ?: "",
+                viewModel?.userId.orEmpty(),
+                shopName,
+                itemPosition + 1,
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
                 customDimensionShopPage
         )
     }

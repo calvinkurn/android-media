@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.sort.di.component.DaggerShopProductSortComponent
 import com.tokopedia.shop.sort.di.module.ShopProductSortModule
@@ -46,6 +47,7 @@ class ShopProductSortFragment : BaseListFragment<ShopProductSortModel, ShopProdu
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopProductFilterPresenter?.attachView(this)
+        activity?.window?.decorView?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun renderList(list: List<ShopProductSortModel?>, hasNextPage: Boolean) {

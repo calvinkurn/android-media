@@ -168,13 +168,13 @@ data class RecommendationEntity (
         @SerializedName("landingPageLink")
         val landingPageLink: String = ""
         @SerializedName("assets")
-        val assets: Assets = Assets()
+        val assets: Assets? = Assets()
         @SerializedName("foreignTitle")
         val foreignTitle: String = ""
 
         class Assets {
             @SerializedName("banner")
-            val banner: Banner = Banner()
+            val banner: Banner? = Banner()
         }
 
         class Banner {

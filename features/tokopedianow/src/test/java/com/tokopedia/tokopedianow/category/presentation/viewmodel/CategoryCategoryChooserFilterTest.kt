@@ -1,0 +1,52 @@
+package com.tokopedia.tokopedianow.category.presentation.viewmodel
+
+import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.searchcategory.CategoryChooserFilterTestHelper
+import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.usecase.RequestParams
+import io.mockk.verify
+import org.junit.Test
+
+class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooserFilterTestHelper.Callback {
+
+    private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+
+    private lateinit var categoryChooserFilterPageTestHelper: CategoryChooserFilterTestHelper
+
+    override fun setUp() {
+        super.setUp()
+
+        categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
+                tokoNowCategoryViewModel,
+                this
+        )
+    }
+
+    override fun `Given first page use case will be successful`() {
+        `Given get category first page use case will be successful`(categoryModel)
+    }
+
+    override fun `Then assert first page use case is called twice`(
+            requestParamsSlot: MutableList<RequestParams>
+    ) {
+        verify (exactly = 2) {
+            getCategoryFirstPageUseCase.cancelJobs()
+            getCategoryFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
+        }
+    }
+
+    @Test
+    fun `test category chooser cannot be spammed`() {
+        categoryChooserFilterPageTestHelper.`test category chooser cannot be spammed`()
+    }
+
+    @Test
+    fun `test apply filter from category chooser`() {
+        categoryChooserFilterPageTestHelper.`test apply filter from category chooser`()
+    }
+
+    @Test
+    fun `test dismiss category chooser`() {
+        categoryChooserFilterPageTestHelper.`test dismiss category chooser`()
+    }
+}

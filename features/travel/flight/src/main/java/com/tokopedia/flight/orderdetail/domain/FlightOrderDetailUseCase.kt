@@ -3,7 +3,6 @@ package com.tokopedia.flight.orderdetail.domain
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.data.*
@@ -14,6 +13,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 /**
@@ -357,8 +357,8 @@ class FlightOrderDetailUseCase @Inject constructor(
                             orderId = it.flight.invoiceId,
                             cancellationDetail = FlightOrderCancellationDetailModel(
                                     refundId = item.cancelId,
-                                    createTime = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                                            FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, item.createTime),
+                                    createTime = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                                            DateUtil.DEFAULT_VIEW_TIME_FORMAT, item.createTime),
                                     realRefund = item.realRefund,
                                     status = item.status,
                                     statusStr = item.statusStr,

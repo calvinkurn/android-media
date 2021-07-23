@@ -19,7 +19,7 @@ class SmartBillsEmptyStateViewHolder(itemView: View) : AbstractViewHolder<EmptyM
     override fun bind(element: EmptyModel) {
         with (itemView) {
             smart_bills_empty_state_button.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
             }
         }
     }

@@ -80,9 +80,10 @@ class BuyerOrderDetailStickyActionButtonHandler(
     private fun onTrackShipmentActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
+                val newUrl = button.url.substringAfter("url=", "")
                 navigator.goToTrackShipmentPage(
                         it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                        button.url)
+                        newUrl)
             }
         }
     }

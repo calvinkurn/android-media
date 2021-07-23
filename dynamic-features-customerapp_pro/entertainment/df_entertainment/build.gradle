@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -48,8 +49,8 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
-    implementation project(rootProject.ext.features.event)
-    implementation project(rootProject.ext.features.deals)
-    implementation project(rootProject.ext.features.digitalDeals)
+    implementation projectOrAar(rootProject.ext.features.event)
+    implementation projectOrAar(rootProject.ext.features.deals)
+    implementation projectOrAar(rootProject.ext.features.digitalDeals)
 
 }

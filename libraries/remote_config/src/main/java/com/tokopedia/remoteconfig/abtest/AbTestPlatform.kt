@@ -10,6 +10,9 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.EXPERIMENT_NAME_TOKOPOINT
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -207,43 +210,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
         private const val CONSUMER_PRO_APPLICATION = 3;
         private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
-
-        const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
-        const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
-        const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
-
-        const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
-
-        //home component rollence section
-
-        const val HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test"
-        const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
-        const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-        const val HOME_COMPONENT_CATEGORYWIDGET_EXP= "cat_test"
-        const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "control"
-        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE = "text_inside"
-        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX = "text_box"
-
-        // end of home component rollence section
-
-        //TBD
-        const val BALANCE_EXP = "Balance Widget"
-        const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
-        const val BALANCE_VARIANT_NEW = "New Balance Widget"
-
-        const val HOME_EXP = "Home Revamp 2021"
-        const val HOME_VARIANT_OLD = "Existing Home"
-        const val HOME_VARIANT_REVAMP = "home revamp"
-
-        const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
-        const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
-        const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
-
-        const val KEY_NEW_NOTFICENTER = "NotifCenter_New"
-        const val VARIANT_NEW_NOTFICENTER = "NotifCenter_New"
-        const val VARIANT_OLD_NOTFICENTER = "NotifCenter_Old"
-
-        const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
     }
 
 }

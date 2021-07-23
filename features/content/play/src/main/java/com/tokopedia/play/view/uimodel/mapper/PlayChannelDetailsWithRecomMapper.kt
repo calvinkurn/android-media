@@ -105,14 +105,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             )
     )
 
-    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedMessage(
+    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
             applink = pinnedMessageResponse.redirectUrl,
             partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = pinnedMessageResponse.title,
     )
 
-    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedProduct(
+    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedProductUiModel(
             partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = configResponse.pinnedProductConfig.pinTitle,
             hasPromo = configResponse.hasPromo,

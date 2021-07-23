@@ -28,7 +28,7 @@ import com.tokopedia.flight.cancellation_navigation.presentation.bottomsheet.Fli
 import com.tokopedia.flight.cancellation_navigation.presentation.bottomsheet.FlightCancellationChooseReasonBottomSheet.Companion.TAG_CANCELLATION_CHOOSE_REASON
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_CANCEL_WRAPPER
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_INVOICE_ID
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -51,7 +51,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     private lateinit var adapter: FlightCancellationAttachmentAdapter
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.FLIGHT_CANCELLATION_STEP_TWO
+    override fun getScreenName(): String = FlightAnalyticsScreenName.FLIGHT_CANCELLATION_STEP_TWO
 
     override fun initInjector() {
         getComponent(FlightCancellationComponent::class.java).inject(this)

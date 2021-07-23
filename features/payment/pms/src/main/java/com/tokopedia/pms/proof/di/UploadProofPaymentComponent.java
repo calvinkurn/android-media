@@ -1,7 +1,6 @@
 package com.tokopedia.pms.proof.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-
 import com.tokopedia.pms.proof.view.UploadProofPaymentFragment;
 
 import dagger.Component;

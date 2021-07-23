@@ -9,7 +9,8 @@ import com.tokopedia.gm.common.constant.PMStatusConst
  */
 
 data class PMStatusUiModel(
-        val status: String = "",
+        val shopId: String = "",
+        val status: String = PMStatusConst.INACTIVE,
         val pmTier: Int = PMConstant.PMTierType.NA,
         val expiredTime: String = "",
         val isOfficialStore: Boolean = false,
@@ -28,5 +29,5 @@ data class PMStatusUiModel(
         }
     }
 
-    fun isPmActive(): Boolean = status == PMStatusConst.ACTIVE
+    fun isPowerMerchant(): Boolean = status == PMStatusConst.ACTIVE || status == PMStatusConst.IDLE
 }

@@ -83,8 +83,9 @@ class ShopGradeWidget(
         } else {
             R.string.pm_shop_performance_sum
         }
+        val shopScoreFmt = PMCommonUtils.getShopScoreFmt(element.shopScore)
 
-        tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
+        tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), shopScoreFmt).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
 
         if (isPmActive && isPmPro) {
@@ -147,13 +148,6 @@ class ShopGradeWidget(
                 PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             }
             else -> PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        }
-    }
-
-    private fun getShopScoreFmt(shopScore: Int): String {
-        return when {
-            (shopScore <= 0) -> "-"
-            else -> shopScore.toString()
         }
     }
 

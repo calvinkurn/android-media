@@ -106,12 +106,6 @@ class GmCommonModule {
         return UserSession(context)
     }
 
-    @Provides
-    @Named(GMParamConstant.RAW_GM_STATUS)
-    fun provicePmStatusRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status)
-    }
-
     @GmCommonQualifier
     @Provides
     fun provideGqlRepository(): GraphqlRepository {

@@ -80,7 +80,6 @@ class PlayViewModelRobot(
                 getProductTagItemsUseCase,
                 trackProductTagBroadcasterUseCase,
                 trackVisitChannelBroadcasterUseCase,
-                playSocket,
                 playSocketToModelMapper,
                 playUiModelMapper,
                 userSession,

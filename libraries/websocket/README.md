@@ -4,7 +4,7 @@
 
 ```
 dependencies {
-    implementation project(rootProject.ext.libraries.websocket)
+    implementation projectOrAar(rootProject.ext.libraries.websocket)
 }
 ```
 

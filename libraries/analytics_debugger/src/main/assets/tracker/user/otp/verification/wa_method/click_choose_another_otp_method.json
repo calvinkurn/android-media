@@ -1,0 +1,56 @@
+{
+  "readme": "Choose another otp method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP whatsapp",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "click metode otp",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - whatsapp"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "click gunakan metode lain",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - whatsapp"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    }
+  ]
+}

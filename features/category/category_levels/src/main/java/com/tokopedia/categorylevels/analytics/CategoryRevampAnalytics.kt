@@ -367,7 +367,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
         if(applink?.contains("shop") == true && position == 0) {
             sendShopHeadlineClickEvent(position, cpmData, true)
         } else if(applink?.contains("shop") == true && position == 1){

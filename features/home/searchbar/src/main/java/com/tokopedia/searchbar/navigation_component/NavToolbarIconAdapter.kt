@@ -213,7 +213,6 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         }
 
         (iconImage.notificationRef.parent as? ViewGroup)?.layoutTransition = LayoutTransition()
-        iconImage.notificationRef.invisible()
 
         when {
             iconToolbar.badgeCounter.isZero() -> {

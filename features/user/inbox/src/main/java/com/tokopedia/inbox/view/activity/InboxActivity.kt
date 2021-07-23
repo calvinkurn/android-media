@@ -373,7 +373,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     private fun setupOnBoarding() {
-        if (!viewModel.hasShowOnBoarding()) {
+        if (!viewModel.hasShowOnBoarding() && isShowBottomNav) {
             onBoardingCoachMark = CoachMark2(this)
             if (userSession.hasShop()) {
                 showOnBoardingSeller()

@@ -11,10 +11,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
-import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
-import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
@@ -120,7 +117,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
         }
     }
 
-    internal inner class TicketItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView), CloseServicePrioritiesBottomSheet {
+    internal inner class TicketItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         private var tvTicketStatus: Typography? = null
         private var tvTicketTitle: Typography? = null
         private var tvTicketDate: Typography? = null
@@ -128,7 +125,6 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
         private var group: Group? = null
         private var layoutItemTicket: ConstraintLayout? = null
         private var isOfficialStore = false
-        private var servicePrioritiesBottomSheet: CloseableBottomSheetDialog? = null
         val utils by lazy { Utils() }
 
         private fun findingViewsId(view: View) {
@@ -169,9 +165,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                 group?.show()
                 itemView.post {
                     group?.setAllOnClickListener {
-                        servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(mContext)
-                        servicePrioritiesBottomSheet?.setCustomContentView(ServicePrioritiesBottomSheet(mContext, this@TicketItemHolder), "", false)
-                        servicePrioritiesBottomSheet?.show()
+                        mPresenter.showSerVicePriorityBottomSheet()
                     }
                 }
             } else {
@@ -215,10 +209,6 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
 
         private fun clickItem() {
             mPresenter.onClickTicket(adapterPosition, isOfficialStore)
-        }
-
-        override fun onClickClose() {
-            servicePrioritiesBottomSheet?.dismiss()
         }
 
         init {

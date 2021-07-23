@@ -25,34 +25,24 @@
         ],
         "promos": [
           {
-            "id": 2300,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2021/4/7/22885574/22885574_de60a0e2-37db-4082-b66c-c0b7843efe86.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
-            "status": 1,
-            "title": "Top Up, Tagihan, Travel, Entertainment cashback hingga Rp400rb.",
-            "subtitle": "Kode Promo: {DGTOPED}",
-            "promo_code": "DGTOPED"
-          },
-          {
-            "id": 2978,
-            "filename": "",
+            "id": 2249,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/28/66931192/66931192_e94bef41-f13d-4cbb-a9c8-27bbefff308b.jpg",
             "filename_webp": "",
             "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
             "status": 1,
-            "title": "[Pengguna Baru] Top Up Pulsa & Token Listrik Diskon Rp15rb",
-            "subtitle": "kode promo : {DISKON15}",
-            "promo_code": "DISKON15"
+            "title": "Cashback hingga Rp350.000 untuk transaksi Top Up, Tagihan, Travel, Entertainment.",
+            "subtitle": "Kode promo: {TOPED}",
+            "promo_code": "TOPED"
           },
           {
-            "id": 2897,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/18/144156949/144156949_ad533a35-5890-4f34-9718-d1ba140cd64f.jpg",
+            "id": 2800,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/10/66931192/66931192_1e5c920d-3380-46a4-8d4b-9b32fdcbc22d.jpg",
             "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-cashback-10",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-16",
             "status": 1,
-            "title": "[DGELECTRO]. Bayar Tagihan Dapat Kupon Cashback Belanja Elektronik",
-            "subtitle": "Kode Promo: {DGELECTRO}",
-            "promo_code": "DGELECTRO"
+            "title": "[DGSHOPPING]. Bayar Tagihan Dapat Kupon Belanja di Official Store",
+            "subtitle": "Kode Promo: (DGSHOPPING}",
+            "promo_code": "DGSHOPPING"
           },
           {
             "id": 2476,
@@ -73,6 +63,26 @@
             "title": "[COBABAYAR] Bayar Tagihan, Cashback hingga Rp100.000. ",
             "subtitle": "Kode Promo: {COBABAYAR}",
             "promo_code": "COBABAYAR"
+          },
+          {
+            "id": 2982,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-kartu-kredit-2",
+            "status": 1,
+            "title": "Beli Pulsa hingga Bayar Tagihan diskon hingga 50rb dengan Kartu Debit/Kredit VISA Korporat",
+            "subtitle": "Kode Promo: {PAYWITHVISA}",
+            "promo_code": "PAYWITHVISA"
+          },
+          {
+            "id": 2987,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-kartu-kredit-3",
+            "status": 1,
+            "title": "Beli Pulsa dan Bayar Tagihan hemat hingga 50rb dengan Kartu Debit/Kredit VISA",
+            "subtitle": "Kode Promo: {VISAHEMAT}",
+            "promo_code": "VISAHEMAT"
           },
           {
             "id": 2093,
@@ -135,16 +145,6 @@
             "promo_code": "OCBCDBTAGIHAN"
           },
           {
-            "id": 2835,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/11/66931192/66931192_864e5831-2b17-463d-9eee-e69001446da0.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-bca/",
-            "status": 1,
-            "title": "Khusus hari Minggu, diskon Rp50rb Top Up, Tagihan, Travel, Entertainment dengan Kartu Kredit BCA.",
-            "subtitle": "Kode promo: {BCADIGI}",
-            "promo_code": "BCADIGI"
-          },
-          {
             "id": 2810,
             "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
             "filename_webp": "",
@@ -156,16 +156,16 @@
           }
         ],
         "tickers": [
-          {
-            "ID": 137,
-            "Name": "Proteksi Tagihan",
-            "Content": "Air mati? Pakai Proteksi Tagihan, bisa klaim hingga 500rb.",
-            "Type": "info",
-            "Environment": "all",
-            "ActionText": "",
-            "ActionLink": ""
-          }
-        ],
+           {
+             "ID": 137,
+             "Name": "Proteksi Tagihan",
+             "Content": "Air mati? Pakai Proteksi Tagihan, bisa klaim hingga 500rb.",
+             "Type": "info",
+             "Environment": "all",
+             "ActionText": "",
+             "ActionLink": ""
+           }
+         ],
         "banners": [],
         "express_checkout": false
       }

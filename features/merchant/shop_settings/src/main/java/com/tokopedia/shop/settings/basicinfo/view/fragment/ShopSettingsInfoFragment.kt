@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.header.HeaderUnify
@@ -274,21 +274,20 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeShopStatus() {
-        shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, Observer {
+        shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    val shopStatusData = it.data.result.data
-                    userSession.setIsGoldMerchant(!(shopStatusData.isRegularMerchantOrPending()
-                            ?: true))
+                    val pmStatus = it.data
+                    userSession.setIsGoldMerchant(pmStatus.isPowerMerchant())
 
-                    if (shopStatusData.isRegularMerchantOrPending()) {
-                        showRegularMerchantMembership(shopStatusData)
-                    } else {
+                    if (pmStatus.isPowerMerchant()) {
                         shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
                             if (!isOfficialStore) {
                                 showPowerMerchant()
                             }
                         }
+                    } else {
+                        showRegularMerchantMembership(pmStatus)
                     }
                 }
                 is Fail -> {
@@ -335,7 +334,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data.getIsOfficial.let { osData ->
+                    it.data.let { osData ->
                         val errMessage = osData.messageError
                         val isOS = osData.data.isOfficial
                         val expiration = osData.data.expiredDate
@@ -442,7 +441,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel?) {
+    private fun showRegularMerchantMembership(shopStatusModel: PMStatusUiModel?) {
         shopStatusModel?.let {
             container_regular_merchant.visibility = View.VISIBLE
             container_power_merchant.visibility = View.GONE

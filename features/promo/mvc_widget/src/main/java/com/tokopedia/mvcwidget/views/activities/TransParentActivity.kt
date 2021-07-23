@@ -2,6 +2,7 @@ package com.tokopedia.mvcwidget.views.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -16,6 +17,7 @@ import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 
@@ -78,12 +80,12 @@ class TransParentActivity : BaseActivity() {
 
     fun showMvcDetailDialog() {
         val bottomSheet = BottomSheetUnify()
-        bottomSheet.isDragable = false
+        bottomSheet.isDragable = true
         bottomSheet.isHideable = true
         bottomSheet.showKnob = true
         bottomSheet.showCloseIcon = false
-        bottomSheet.isFullpage = true
         bottomSheet.bottomSheet.isGestureInsetBottomIgnored = true
+        bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
 
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))
         childView = MvcDetailView(this)

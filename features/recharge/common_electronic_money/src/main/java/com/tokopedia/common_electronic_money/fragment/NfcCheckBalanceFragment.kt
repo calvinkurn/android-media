@@ -94,6 +94,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                     action = EmoneyAnalytics.Action.FAILED_CLICK_CLOSE_PAGE
                     screenName = EmoneyAnalytics.Screen.FAILED_NFC
                 }
+                NOT_SUPPORT_CLOSE_BTN -> {
+                    action = EmoneyAnalytics.Action.FAILED_CLICK_CLOSE_PAGE_NFC_NOT_SUPPORTED
+                    screenName = EmoneyAnalytics.Screen.FAILED_NFC
+                }
             }
             emoneyAnalytics.clickBtnCloseCheckSaldoNFC(action, screenName, ETOLL_CATEGORY_ID,
                     operatorName, userSession.userId, irisSessionId)
@@ -210,8 +214,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     protected fun showErrorDeviceUnsupported(errorMessage: String) {
-        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
-        statusCloseBtn = FAILED_CLOSE_BTN
+        emoneyAnalytics.onShowErrorTrackingNFCNotSupproted(userSession.userId, irisSessionId)
+        statusCloseBtn = NOT_SUPPORT_CLOSE_BTN
         tapETollCardView.visibility = View.VISIBLE
         tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
@@ -330,6 +334,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         private const val INITIAL_CLOSE_BTN = "initial"
         private const val SUCCESS_CLOSE_BTN = "success"
         private const val FAILED_CLOSE_BTN = "failed"
+        private const val NOT_SUPPORT_CLOSE_BTN = "not support"
 
     }
 }

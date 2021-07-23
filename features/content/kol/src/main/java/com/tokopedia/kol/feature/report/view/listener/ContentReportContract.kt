@@ -30,6 +30,6 @@ interface ContentReportContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun sendReport(contentId: Int, reasonType: String, reasonMessage: String)
+        fun sendReport(contentId: Int, reasonType: String, reasonMessage: String,contentType:String)
     }
 }

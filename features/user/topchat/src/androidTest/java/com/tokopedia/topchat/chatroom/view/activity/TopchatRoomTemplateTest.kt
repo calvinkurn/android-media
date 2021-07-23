@@ -20,30 +20,26 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickTemplateChatAt(0)
 
         // Then
         assertTemplateChatVisibility(isDisplayed())
-        onView(withId(R.id.new_comment)).check(
-                matches(withText(" Hi barang ini ready gk? "))
-        )
+        assertComposedTextValue(" Hi barang ini ready gk? ")
     }
 
     @Test
     fun template_chat_hidden_if_disabled() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(enable = false)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
 
@@ -56,19 +52,16 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickTemplateChatAt(0)
 
         // Then
-        onView(withId(R.id.new_comment)).check(
-                matches(withText(" Hi barang ini ready gk? "))
-        )
+        assertComposedTextValue(" Hi barang ini ready gk? ")
         DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn)
     }
 
@@ -78,11 +71,10 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Test"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         val count = activityTestRule.activity
@@ -98,6 +90,6 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
                 ))
                 .check(matches(withText("Test ")))
         onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count+1)))
-        onView(withId(R.id.new_comment)).check(matches(withText("")))
+        assertComposedTextValue("")
     }
 }

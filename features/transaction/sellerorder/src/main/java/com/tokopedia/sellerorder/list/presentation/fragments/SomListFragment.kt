@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.fragments
 import android.animation.Animator
 import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
@@ -11,10 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -76,6 +74,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
@@ -133,6 +132,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         private const val COACHMARK_INDEX_ITEM_BULK_ACCEPT = 3
         private const val COACHMARK_ITEM_COUNT_SELLERAPP = 4
         private const val COACHMARK_ITEM_COUNT_MAINAPP = 3
+        private const val RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD = 100
         private const val KEY_LAST_ACTIVE_FILTER = "lastActiveFilter"
 
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
@@ -163,6 +163,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private val maskTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            view.hideKeyboard()
+        }
+        false
+    }
+
     private val somListLayoutManager by lazy { rvSomList?.layoutManager as? LinearLayoutManager }
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
@@ -171,7 +179,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (coachMark?.currentIndex == newOrderCoachMarkItemPosition) {
-                    if (coachMark?.isDismissed == true && abs(dy) <= 100) {
+                    if (coachMark?.isDismissed == true && abs(dy) <= RECYCLER_VIEW_MIN_VERTICAL_SCROLL_THRESHOLD) {
                         reshowNewOrderCoachMark(dy < 0)
                     } else if (coachMark?.isDismissed == false) {
                         if (somListLayoutManager == null) {
@@ -399,6 +407,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         super.onPause()
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        return dismissBottomSheets()
     }
 
     override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
@@ -830,6 +842,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         setupToolbar()
         setupSearchBar()
         setupListeners()
+        setupMasks()
+    }
+
+    private fun setupMasks() {
+        somListUpperMask?.setOnTouchListener(maskTouchListener)
+        somListLowerMask?.setOnTouchListener(maskTouchListener)
+        somListLeftMask?.setOnTouchListener(maskTouchListener)
+        somListRightMask?.setOnTouchListener(maskTouchListener)
     }
 
     private fun setupSearchBar() {
@@ -2025,7 +2045,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     somListLayoutManager?.findViewByPosition(firstNewOrderPosition)?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
                         if (getVisiblePercent(it) == 0) {
                             CoachMarkPreference.setShown(it.context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
-                            rvSomList?.clearOnScrollListeners()
+                            rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
                             rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                             currentNewOrderWithCoachMark = firstNewOrderPosition
                             shouldShowCoachMark = false
@@ -2254,6 +2274,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 somOrderHasCancellationRequestDialog.apply {
                     setupActionButton(pendingAction.actionName, pendingAction.action)
                     setupGoToOrderDetailButton {
+                        selectedOrderId = pendingAction.orderId
                         goToSomOrderDetail(this@SomListFragment, pendingAction.orderId)
                     }
                     show()
@@ -2300,13 +2321,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
 
-    protected fun dismissBottomSheets() {
+    protected fun dismissBottomSheets(): Boolean {
+        var bottomSheetDismissed = false
         childFragmentManager.fragments.forEach {
-            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) it.dismiss()
+            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) {
+                it.dismiss()
+                bottomSheetDismissed = true
+            }
         }
-        somListBulkProcessOrderBottomSheet?.dismiss()
-        orderRequestCancelBottomSheet?.dismiss()
-        somOrderEditAwbBottomSheet?.dismiss()
+        bottomSheetDismissed = somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somOrderEditAwbBottomSheet?.dismiss() == true || bottomSheetDismissed
+        return bottomSheetDismissed
     }
 
     protected open fun loadAllInitialData() {
