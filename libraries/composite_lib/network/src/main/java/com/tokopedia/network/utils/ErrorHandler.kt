@@ -17,6 +17,8 @@ import java.net.UnknownHostException
 
 object ErrorHandler {
 
+    const val ERROR_HANDLER = "ERROR_HANDLER"
+
     fun getErrorMessage(context: Context, e: Throwable): String {
         return getErrorMessage(context, e, Builder())
     }
@@ -45,7 +47,7 @@ object ErrorHandler {
             mapParam.plus("error_code" to errorCode)
         }
         if (builder.sendToScalyr) {
-            LogManager.log(Priority.P2, "ERROR_HANDLER", mapParam)
+            LogManager.log(Priority.P2, ERROR_HANDLER, mapParam)
         }
         return "$errorMessageString <$errorCode-$errorIdentifier>"
     }
