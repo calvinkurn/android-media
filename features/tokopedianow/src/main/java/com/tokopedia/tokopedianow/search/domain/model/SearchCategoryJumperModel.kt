@@ -13,7 +13,12 @@ data class SearchCategoryJumperModel(
             @SerializedName("data")
             @Expose
             val data: SearchCategoryJumper = SearchCategoryJumper(),
-    )
+    ) {
+
+        fun getTitle() = data.title
+
+        fun getJumperItemList() = data.data
+    }
 
     data class SearchCategoryJumper(
             @SerializedName("title")

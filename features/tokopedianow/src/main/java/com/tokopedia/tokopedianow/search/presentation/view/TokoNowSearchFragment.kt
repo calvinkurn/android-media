@@ -259,6 +259,7 @@ class TokoNowSearchFragment:
     override fun onCategoryJumperItemClick(item: CategoryJumperDataView.Item) {
         val context = context ?: return
 
+        SearchTracking.sendClickCategoryJumperEvent(item.title)
         RouteManager.route(context, item.applink)
     }
 }

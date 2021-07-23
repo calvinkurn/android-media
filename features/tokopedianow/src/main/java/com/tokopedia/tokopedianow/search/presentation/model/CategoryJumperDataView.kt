@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
 
 data class CategoryJumperDataView(
+        val title: String = "",
         val itemList: List<Item> = listOf(),
 ): Visitable<SearchTypeFactory> {
 

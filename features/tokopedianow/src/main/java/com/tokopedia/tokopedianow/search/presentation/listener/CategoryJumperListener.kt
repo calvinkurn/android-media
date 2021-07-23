@@ -5,4 +5,6 @@ import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataVi
 interface CategoryJumperListener {
 
     fun onCategoryJumperItemClick(item: CategoryJumperDataView.Item)
+
+    fun onSeeAllCategoryClicked()
 }

@@ -29,6 +29,10 @@ class SearchCategoryJumperViewHolder(
         itemView.findViewById(R.id.tokoNowSearchCategoryJumperTitle)
     }
 
+    private val seeAllCategoryTypography: Typography? by lazy {
+        itemView.findViewById(R.id.tokoNowSearchCategoryJumperSeeAll)
+    }
+
     private val recyclerView: RecyclerView? by lazy {
         itemView.findViewById(R.id.tokoNowSearchCategoryJumperRecyclerView)
     }
@@ -45,9 +49,28 @@ class SearchCategoryJumperViewHolder(
     )
 
     override fun bind(element: CategoryJumperDataView?) {
-        val itemList = element?.itemList ?: return
-        if (itemList.isEmpty()) return
+        element ?: return
+
+        bindTitle(element)
+        bindSeeAllCategory()
+        bindItemList(element)
+    }
+
+    private fun bindTitle(element: CategoryJumperDataView) {
+        titleTypography?.text = element.title
+    }
+
+    private fun bindSeeAllCategory() {
+        seeAllCategoryTypography?.setOnClickListener {
+            categoryJumperListener.onSeeAllCategoryClicked()
+        }
+    }
+
+    private fun bindItemList(element: CategoryJumperDataView) {
         val recyclerView = recyclerView ?: return
+
+        val itemList = element.itemList
+        if (itemList.isEmpty()) return
 
         recyclerView.adapter = Adapter(itemList, categoryJumperListener)
         recyclerView.layoutManager = layoutManager
