@@ -124,6 +124,7 @@ class TroubleshootViewModelTest {
         viewModel.troubleshoot()
 
         verify { troubleshootError.onChanged(expectedValue) }
+        viewModel.troubleshootError isEqualsTo expectedValue
     }
 
     @Test fun `it should return new token`() {
