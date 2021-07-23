@@ -847,15 +847,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            if (result.miniCartItems.isEmpty()) {
-                _miniCartData.postValue(false)
-            } else {
-                val data = result.miniCartItems.associateBy({ it.productId }) {
-                    it
-                }
-                _p2Data.value?.miniCart = data.toMutableMap()
-                _miniCartData.postValue(true)
+            val data = result.miniCartItems.associateBy({ it.productId }) {
+                it
             }
+            _p2Data.value?.miniCart = data.toMutableMap()
+            _miniCartData.postValue(true)
         }) {
         }
     }

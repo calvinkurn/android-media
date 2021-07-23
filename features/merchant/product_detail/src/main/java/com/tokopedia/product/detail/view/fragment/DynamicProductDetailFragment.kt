@@ -1387,9 +1387,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeATCRecomTokonowNonLogin() {
         viewLifecycleOwner.observe(viewModel.atcRecomTokonowNonLogin) {
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            goToLogin()
             pdpUiUpdater?.resetFailedRecomTokonowCard(it)
-            updateUi()
         }
     }
 
