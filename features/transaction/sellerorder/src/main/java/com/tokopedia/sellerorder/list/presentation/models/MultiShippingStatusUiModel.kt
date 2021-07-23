@@ -10,6 +10,6 @@ data class MultiShippingStatusUiModel(
 ) {
     data class ErrorMultiShippingStatusUiModel(
             val message: String = "",
-            val orderId: Long = 0
+            val orderId: String = ""
     )
 }

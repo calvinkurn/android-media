@@ -41,7 +41,7 @@ data class SomListGetMultiShippingResponse(
                 val message: String = "",
                 @Expose
                 @SerializedName("order_id")
-                val orderId: Long = 0
+                val orderId: String = ""
         )
     }
 }

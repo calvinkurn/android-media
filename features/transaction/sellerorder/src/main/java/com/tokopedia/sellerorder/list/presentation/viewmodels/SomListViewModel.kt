@@ -223,7 +223,7 @@ class SomListViewModel @Inject constructor(
                     val requestPickupUiModel =
                         (_bulkRequestPickupResult.value as? Success)?.data
                     val orderIdListFail =
-                        it.data.listError.map { listError -> listError.orderId.toString() }
+                        it.data.listError.map { listError -> listError.orderId }
                     val totalNotEligible = requestPickupUiModel?.errors?.size?.toLong().orZero()
                     val totalOrderIds =
                         requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
