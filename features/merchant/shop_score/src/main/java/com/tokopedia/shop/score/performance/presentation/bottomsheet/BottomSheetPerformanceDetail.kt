@@ -85,8 +85,9 @@ class BottomSheetPerformanceDetail: BaseBottomSheetShopScore() {
             tvDescCalculationDetail?.text = MethodChecker.fromHtml(descCalculation?.let { getString(it) })
             tvDescTipsDetail?.text = MethodChecker.fromHtml(descTips?.let { getString(it) })
             tvMoreInfoPerformanceDetail?.showWithCondition(moreInformation != null)
-            separatorTips?.showWithCondition(moreInformation != null || descTips != null)
+            separatorTips?.showWithCondition(moreInformation != null && descTips != null)
             tvTitleTipsDetail?.showWithCondition(descTips != null)
+            tvDescTipsDetail?.showWithCondition(descTips != null)
             moreInformation?.let {
                 tvMoreInfoPerformanceDetail?.setTextMakeHyperlink(getString(it, urlLink)) {
                     if (urlLink.isNotBlank()) {
