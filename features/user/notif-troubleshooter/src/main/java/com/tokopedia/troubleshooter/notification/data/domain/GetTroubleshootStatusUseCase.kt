@@ -15,8 +15,8 @@ open class GetTroubleshootStatusUseCase constructor(
         return graphQuery
     }
 
-    override suspend fun execute(params: Unit?): NotificationTroubleshoot {
-        return repository.request(params)
+    override suspend fun execute(params: Unit): NotificationTroubleshoot {
+        return request(repository, params)
     }
 
 }
