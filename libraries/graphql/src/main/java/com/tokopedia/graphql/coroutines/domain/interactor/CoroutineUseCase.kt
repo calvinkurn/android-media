@@ -34,4 +34,13 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
         }
     }
 
+    /*
+    * Getting the request result without state Result<>
+    * */
+    suspend fun statelessResult(params: P? = null): R {
+        return withContext(dispatcher) {
+            execute(params)
+        }
+    }
+
 }
