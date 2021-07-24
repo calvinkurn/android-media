@@ -120,16 +120,15 @@ class TroubleshootViewModel @Inject constructor(
     }
 
     override fun troubleshoot() {
-        launch {
-            val result = troubleshootStatus()
+        launchCatchError(block = {
+            val result = troubleshootStatus.statelessResult(Unit)
 
             withContext(dispatcher.main) {
-                when (result) {
-                    is Success -> _troubleshoot.value = result.data.mapToSendTroubleshoot()
-                    is Fail -> _troubleshootError.value = result.throwable // fail from backend response
-                }
+                _troubleshoot.value = result.mapToSendTroubleshoot()
             }
-        }
+        }, onError = {
+            _troubleshootError.value = it
+        })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
