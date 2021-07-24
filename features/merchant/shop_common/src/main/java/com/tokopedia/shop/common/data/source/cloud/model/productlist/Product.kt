@@ -30,7 +30,9 @@ data class Product(
     @SerializedName("topads")
     val topAds: ProductTopAds?,
     @SerializedName("isCampaign")
-    val isCampaign: Boolean
+    val isCampaign: Boolean,
+    @SerializedName("campaignType")
+    val campaignTypeList: List<ProductCampaignType>?
 ) {
 
     fun isTopAds(): Boolean {

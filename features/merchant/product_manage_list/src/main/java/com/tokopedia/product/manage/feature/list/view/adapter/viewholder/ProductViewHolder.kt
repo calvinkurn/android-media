@@ -4,13 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
-import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
@@ -23,6 +22,8 @@ class ProductViewHolder(
         var LAYOUT = R.layout.item_manage_product_list
         const val MAX_SHOWING_STOCK = 999_999
     }
+
+    private val campaignCountText: Typography? = itemView.findViewById(R.id.tv_manage_product_item_campaign_count)
 
     override fun bind(product: ProductUiModel) {
         setTitleAndPrice(product)
@@ -38,6 +39,7 @@ class ProductViewHolder(
         showStockHintImage(product)
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
+        showCampaignCountText(product.campaignTypeList)
 
         setOnClickListeners(product)
     }
@@ -64,7 +66,6 @@ class ProductViewHolder(
         itemView.labelBanned.showWithCondition(product.isViolation())
         itemView.labelInactive.showWithCondition(product.isInactive())
         itemView.labelActive.showWithCondition(product.isActive())
-        itemView.labelCampaign.showWithCondition(product.isCampaign)
     }
 
     private fun showVariantLabel(product: ProductUiModel) {
@@ -168,6 +169,19 @@ class ProductViewHolder(
 
     private fun showProductTopAdsIcon(product: ProductUiModel) {
         itemView.imageTopAds.showWithCondition(product.hasTopAds())
+    }
+
+    private fun showCampaignCountText(campaignList: List<ProductCampaignType>?) {
+        val shouldShowCampaignCount = !campaignList.isNullOrEmpty()
+        campaignCountText?.run {
+            showWithCondition(shouldShowCampaignCount)
+            if (shouldShowCampaignCount) {
+                text = getString(R.string.product_manage_campaign_count, campaignList?.count().orZero().toString())
+                setOnClickListener {
+                    // TODO: Show bottomsheet
+                }
+            }
+        }
     }
 
     private fun toggleCheckBox() {

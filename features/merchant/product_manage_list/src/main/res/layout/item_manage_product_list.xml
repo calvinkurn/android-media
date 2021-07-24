@@ -185,24 +185,27 @@
         app:labelTitle="@string/product_manage_variant"
         app:labelType="general_dark_grey"
         app:layout_constraintLeft_toRightOf="@id/labelDraft"
-        app:layout_constraintRight_toLeftOf="@id/labelCampaign"
+        app:layout_constraintRight_toLeftOf="@id/tv_manage_product_item_campaign_count"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelCampaign"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_manage_product_item_campaign_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
         android:layout_marginTop="@dimen/product_manage_item_label_horizontal_spacing"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_G500"
         android:visibility="gone"
-        app:labelTitle="@string/product_manage_campaign"
-        app:labelType="general_light_red"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         app:layout_constraintLeft_toRightOf="@id/labelVariant"
-        app:layout_constraintRight_toLeftOf="@id/labelCampaign"
+        app:layout_constraintRight_toLeftOf="@id/tv_manage_product_item_campaign_count"
         app:layout_constraintTop_toBottomOf="@id/textPrice"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        tools:text="1 Promosi"
+        />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageStockInformation"
