@@ -419,6 +419,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setIconOldTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
                 .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
     }
@@ -984,7 +985,7 @@ class TokoNowHomeFragment: Fragment(),
                             if (linkerShareData.url != null) {
                                 shareData(
                                     activity,
-                                    shareHomeTokonow?.sharingText ?: "",
+                                    shareHomeTokonow?.sharingText +" "+ linkerShareData.shareUri ?: "",
                                     linkerShareData.url
                                 )
                             }
