@@ -15,7 +15,7 @@ abstract class FlowUseCase<P, out R: Any> constructor(
     * override this to set the code to be executed
     * */
     @Throws(RuntimeException::class)
-    protected abstract suspend fun execute(params: P?): Flow<Result<R>>
+    protected abstract suspend fun execute(params: P): Flow<Result<R>>
 
     /*
     * Executes the use case based on dispatcher's flow
@@ -23,7 +23,7 @@ abstract class FlowUseCase<P, out R: Any> constructor(
     * @param params the input parameters to run the use case with
     * @return an generic class comes from P
     * */
-    suspend operator fun invoke(params: P? = null): Flow<Result<R>> {
+    suspend operator fun invoke(params: P): Flow<Result<R>> {
         return execute(params)
             .catch { e -> emit(Fail(e)) }
             .flowOn(dispatcher)

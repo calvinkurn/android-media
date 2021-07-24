@@ -15,7 +15,7 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
     * override this to set the code to be executed
     * */
     @Throws(RuntimeException::class)
-    protected abstract suspend fun execute(params: P?): R
+    protected abstract suspend fun execute(params: P): R
 
     /*
     * Executes the use case synchronously
@@ -23,7 +23,7 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
     * @param params the input parameters to run the use case with
     * @return an generic class comes from P
     * */
-    suspend operator fun invoke(params: P? = null): Result<R> {
+    suspend operator fun invoke(params: P): Result<R> {
         return try {
             withContext(dispatcher) {
                 Success(execute(params))
@@ -37,7 +37,7 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
     /*
     * Getting the request result without state Result<>
     * */
-    suspend fun statelessResult(params: P? = null): R {
+    suspend fun statelessResult(params: P): R {
         return withContext(dispatcher) {
             execute(params)
         }
