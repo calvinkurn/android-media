@@ -10,6 +10,7 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
+import kotlin.math.abs
 import com.tokopedia.media.loader.tracker.PerformanceTracker.postRender as trackPerformancePostRender
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
@@ -44,7 +45,7 @@ object MediaListenerBuilder {
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
             // save for an accumulative bitmap size in local
-            Loader.bitmapSize()?.save(fileSize.toInt())
+            Loader.bitmapSize()?.save(abs(fileSize.toInt()))
 
             // only track if the URL from CDN service
             trackPerformancePostRender(

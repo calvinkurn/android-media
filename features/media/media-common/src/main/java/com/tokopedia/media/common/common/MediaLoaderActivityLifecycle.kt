@@ -86,7 +86,7 @@ class MediaLoaderActivityLifecycle(
         if (logger.running) return
 
         Thread {
-            logger.updatedAdditionalData(
+            logger.addLogItem(
                 KEY_ACCUMULATIVE_SIZE,
                 bitmapSize.size().toString()
             )

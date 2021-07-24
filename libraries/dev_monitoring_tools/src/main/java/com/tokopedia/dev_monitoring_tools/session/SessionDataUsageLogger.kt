@@ -29,7 +29,7 @@ class SessionDataUsageLogger constructor(
     var running = false
     var returnFromOtherActivity = false
 
-    fun updatedAdditionalData(key: String, value: String) {
+    fun addLogItem(key: String, value: String) {
         additionalData[key] = value
     }
 
