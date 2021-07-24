@@ -13,9 +13,10 @@ class SessionDataUsageLogger constructor(
     private val priority: Priority,
     private val sessionName: String,
     private val dataUsageName: String,
-    private val intervalSession: Long,
-    private val additionalData: Map<String, String> = mapOf()
+    private val intervalSession: Long
 ) {
+
+    private val additionalData: MutableMap<String, String> = mutableMapOf()
 
     var lastSessionMillis: Long = -1
     var sessionCount: Long = 0
@@ -27,6 +28,10 @@ class SessionDataUsageLogger constructor(
     var lastSumRx: Long = 0
     var running = false
     var returnFromOtherActivity = false
+
+    fun updatedAdditionalData(key: String, value: String) {
+        additionalData[key] = value
+    }
 
     fun addJourney(activity: Activity) {
         var bundle = Bundle()

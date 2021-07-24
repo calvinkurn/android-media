@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
+import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.R
 import com.tokopedia.media.common.data.HIGH_QUALITY
@@ -38,10 +39,7 @@ class MediaLoaderActivityLifecycle(
             priority = Priority.P2,
             sessionName = "MEDIALOADER_ACTIVE_SESSION",
             dataUsageName = "MEDIALOADER_DATA_USAGE",
-            intervalSession = INTERVAL_SESSION,
-            additionalData = mapOf(
-                "accumulative_size" to bitmapSize.size().toString()
-            )
+            intervalSession = INTERVAL_SESSION
         )
     }
 
@@ -87,12 +85,15 @@ class MediaLoaderActivityLifecycle(
         if (logger.returnFromOtherActivity) logger.addJourney(activity)
         if (logger.running) return
 
-        logger.running = true
-
         Thread {
+            logger.updatedAdditionalData(
+                KEY_ACCUMULATIVE_SIZE,
+                bitmapSize.size().toString()
+            )
+
             logger.checkSession(
                 activityName = activity.javaClass.simpleName,
-                connectionType = "" //getConnectionType(activity)
+                connectionType = getConnectionType(activity)
             )
         }.start()
     }
@@ -122,6 +123,7 @@ class MediaLoaderActivityLifecycle(
 
     companion object {
         private const val DELAY_PRE_SHOW_TOAST = 2500L
+        private const val KEY_ACCUMULATIVE_SIZE = "accumulative_size"
 
         private val INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1)
 
