@@ -186,10 +186,14 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         launch {
             retry(
                 times = config.maxRetry,
-                reconnectDelay = config.reconnectDelay.toLong()
-            ) {
-                createConnection()
-            }
+                reconnectDelay = config.reconnectDelay.toLong(),
+                block = {
+                    createConnection()
+                },
+                onError = {
+                    broadcastState(BroadcasterState.Error("network: streamer cannot connected."))
+                }
+            )
         }
     }
 

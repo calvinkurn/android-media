@@ -11,18 +11,18 @@ import java.io.IOException
 suspend fun <T> retry(
     times: Int = Int.MAX_VALUE,
     initialDelay: Long = 100, // 0.1 second
-    reconnectDelay: Long = 1000,    // 1 second
+    reconnectDelay: Long = 1000, // 1 second
     factor: Double = 2.0,
-    block: suspend () -> T): T
-{
+    block: suspend () -> T,
+    onError: () -> Unit
+): T {
     var currentDelay = initialDelay
 
     repeat(times - 1) {
         try {
             return block()
         } catch (e: IOException) {
-            // you can log an error here and/or make a more finer-grained
-            // analysis of the cause to see if retry is needed
+            onError()
         }
 
         delay(currentDelay)
@@ -31,5 +31,7 @@ suspend fun <T> retry(
             .toLong()
             .coerceAtMost(reconnectDelay)
     }
-    return block() // last attempt
+
+    // last attempt
+    return block()
 }
