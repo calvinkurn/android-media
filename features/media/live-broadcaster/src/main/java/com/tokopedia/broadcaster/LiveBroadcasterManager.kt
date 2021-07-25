@@ -14,15 +14,17 @@ import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.utils.retry
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.*
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
-class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
+class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScope {
 
     private var streamer: StreamerGL? = null
-
     private var mListener: BroadcasterListener? = null
     private var mState: BroadcasterState = BroadcasterState.Idle
     private var mConfig = BroadcasterConfig()
@@ -35,8 +37,12 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
     private var canSwitchCamera = false
 
     private var mAvailableCameras = emptyList<CameraInfo>()
-
     private var statisticUpdateTimer: Timer? = null
+
+    private val job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
 
     private fun createStreamer(surfaceView: SurfaceView) {
         val context = surfaceView.context
@@ -177,13 +183,21 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
     }
 
     override fun reconnect() {
-        createConnection() // TODO: handling max retry & reconnectDelay
+        launch {
+            retry(
+                times = config.maxRetry,
+                reconnectDelay = config.reconnectDelay.toLong()
+            ) {
+                createConnection()
+            }
+        }
     }
 
     override fun stop() {
         stopStream()
         broadcastState(BroadcasterState.Stop)
         streamer?.release()
+        job.cancel()
     }
 
     override fun getHandler(): Handler {
