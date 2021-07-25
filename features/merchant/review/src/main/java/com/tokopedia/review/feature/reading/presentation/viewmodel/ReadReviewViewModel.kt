@@ -154,7 +154,7 @@ class ReadReviewViewModel @Inject constructor(
     fun getSelectedTopicFilter(): Set<String> {
         val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() } ?: return setOf()
         val topicsMap = getTopicsMap()
-        if(topicsMap.isEmpty()) return emptySet()
+        if (topicsMap.isEmpty()) return emptySet()
         var result = emptySet<String>()
         selectedFilters.forEach {
             result = result.plus(getKey(topicsMap, it))

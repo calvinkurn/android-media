@@ -97,7 +97,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun onImageSwiped(previousIndex: Int, index: Int) {
-        if(index != RecyclerView.NO_POSITION) {
+        if (index != RecyclerView.NO_POSITION) {
             ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
             reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
         }
@@ -198,7 +198,9 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
-        imagesRecyclerView?.scrollToPosition(index - 1)
+        if (index != 0) {
+            imagesRecyclerView?.scrollToPosition(index - 1)
+        }
     }
 
     private fun addPagerSnapHelperToRecyclerView() {

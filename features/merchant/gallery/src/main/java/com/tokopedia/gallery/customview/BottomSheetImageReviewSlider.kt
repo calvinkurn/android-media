@@ -114,7 +114,9 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
     }
 
     override fun displayImage(position: Int) {
-        recyclerView?.scrollToPosition(position)
+        if (position != RecyclerView.NO_POSITION) {
+            recyclerView?.scrollToPosition(position)
+        }
         showBottomSheet()
     }
 
@@ -134,6 +136,6 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
     override fun onLoadDataFailed() {
         adapter?.removeLoading()
         loadMoreTriggerListener?.updateStateAfterGetData()
-        recyclerView?.scrollToPosition(adapter?.galleryItemCount ?: 0 - 1)
+        recyclerView?.scrollToPosition(adapter?.galleryItemCount ?: 0)
     }
 }
