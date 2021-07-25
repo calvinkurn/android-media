@@ -309,8 +309,16 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     }
 
     private fun configureStreamer(config: BroadcasterConfig) {
-        // TODO: change audio, video configuration
-        // errorMessage: Error preparing stream, This device cant do it
+        mConfig.apply {
+            videoWidth = config.videoWidth
+            videoHeight = config.videoHeight
+            fps = config.fps
+            videoBitrate = config.videoBitrate
+            audioRate = config.audioRate
+            audioType = config.audioType
+            maxRetry = config.maxRetry
+            reconnectDelay = config.reconnectDelay
+        }
     }
 
     private fun configureMirrorFrontCamera() {
