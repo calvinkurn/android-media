@@ -95,6 +95,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
+import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
@@ -125,6 +126,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
@@ -159,6 +161,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppSignatureAsync();
 
         Loader.init(this);
+        if (getUserSession().isLoggedIn()) {
+            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
+        }
     }
 
     private void checkAppSignatureAsync() {
@@ -519,6 +524,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+            }
+
+            @NotNull
+            @Override
+            public String getEmbraceConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
     }

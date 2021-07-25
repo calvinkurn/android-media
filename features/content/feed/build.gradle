@@ -108,6 +108,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
 
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
+
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
     implementation rootProject.ext.networkDependencies.glide

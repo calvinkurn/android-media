@@ -110,6 +110,7 @@ object ProductDetailConstant {
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
 
     const val BEST_SELLER = "best_seller"
+    const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
 
     //Arguments
@@ -163,12 +164,6 @@ object ProductDetailConstant {
     const val PARAMS_PAGE_PDP = "pdp"
 
     const val KEY_PRODUCT_DETAIL = "product detail"
-
-    //bo type
-    const val NO_BEBAS_ONGKIR = 0
-    const val BEBAS_ONGKIR_NORMAL = 1
-    const val BEBAS_ONGKIR_EXTRA = 2
-    const val BO_TOKONOW = 3
 
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503

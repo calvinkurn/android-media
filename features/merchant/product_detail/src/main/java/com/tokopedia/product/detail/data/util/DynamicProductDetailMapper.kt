@@ -114,7 +114,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                        BestSellerInfoDataModel(type = component.type, name = component.componentName)
+                        OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
             }
@@ -136,20 +136,8 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val bestSellerComponent = data.components.find {
-            it.componentName == ProductDetailConstant.BEST_SELLER
-        }?.componentData?.map {
-            BestSellerInfoContent (
-                productID = it.productId,
-                content = it.oneLinerContent,
-                linkText = it.linkText,
-                color = it.color,
-                applink = it.applink,
-                separator = it.separator,
-                icon = it.icon,
-                isVisible = it.isVisible
-            )
-        }?.associateBy { it.productID }
+        val bestSellerComponent = mapToOneLinersComponent(ProductDetailConstant.BEST_SELLER, data)
+        val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
@@ -160,8 +148,29 @@ object DynamicProductDetailMapper {
             basic = data.basicInfo,
             data = newDataWithMedia,
             pdpSession = data.pdpSession,
-            bestSellerContent = bestSellerComponent
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent
         )
+    }
+
+    private fun mapToOneLinersComponent(
+        componentName: String,
+        data: PdpGetLayout
+    ): Map<String, OneLinersContent>? {
+        return data.components.find {
+            it.componentName == componentName
+        }?.componentData?.map {
+            OneLinersContent(
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible
+            )
+        }?.associateBy { it.productID }
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>) {
