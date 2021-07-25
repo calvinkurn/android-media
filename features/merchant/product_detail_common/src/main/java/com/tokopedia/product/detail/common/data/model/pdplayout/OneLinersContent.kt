@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
-data class BestSellerInfoContent(
+data class OneLinersContent(
     val productID: String = "",
     val content: String = "",
     val linkText: String = "",

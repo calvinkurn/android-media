@@ -99,6 +99,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
+
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
