@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_interactive_setup"
@@ -32,9 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_dp_12"
         android:background="@color/Neutral_N75"
-        app:cornerRadius="@dimen/play_interactive_time_radius"
+        app:rcl_cornerRadius="@dimen/play_interactive_time_radius"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_interactive_title">
+        app:layout_constraintTop_toBottomOf="@id/et_interactive_title"
+        >
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_interactive_start_in"
@@ -56,10 +58,11 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl0"
             android:background="@color/Unify_Static_White"
-            app:cornerRadius="@dimen/play_dp_10"
+            app:rcl_cornerRadius="@dimen/play_dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/icon_clock"

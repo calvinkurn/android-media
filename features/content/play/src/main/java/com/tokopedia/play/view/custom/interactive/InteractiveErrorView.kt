@@ -34,10 +34,6 @@ class InteractiveErrorView : RoundedConstraintLayout {
     }
 
     private fun setupView(view: View) {
-        setCornerRadius(
-                resources.getDimension(commonR.dimen.play_interactive_common_radius)
-        )
-
         btnInteractiveRetry.setOnClickListener {
             mListener?.onRetryButtonClicked(this)
         }

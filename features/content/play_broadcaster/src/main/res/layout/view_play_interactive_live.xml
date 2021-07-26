@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Static_White"
-    app:cornerRadius="@dimen/play_interactive_live_radius"
+    app:rcl_cornerRadius="@dimen/play_interactive_live_radius"
     >
 
     <com.tokopedia.unifyprinciples.Typography
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:background="@color/Neutral_N75"
-        app:cornerRadius="@dimen/play_interactive_time_radius"
+        app:rcl_cornerRadius="@dimen/play_interactive_time_radius"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_interactive_title"

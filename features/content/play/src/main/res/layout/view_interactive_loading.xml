@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_play_interactive"
-    app:cornerRadius="@dimen/play_interactive_common_radius"
+    app:rfl_cornerRadius="@dimen/play_interactive_common_radius"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -28,7 +28,7 @@
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl2"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -37,7 +37,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -46,7 +46,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -56,11 +56,9 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
     </LinearLayout>
-
-
 
 </com.tokopedia.play_common.view.RoundedFrameLayout>

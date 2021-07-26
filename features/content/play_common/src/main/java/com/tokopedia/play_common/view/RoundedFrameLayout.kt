@@ -28,7 +28,7 @@ open class RoundedFrameLayout : FrameLayout {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedFrameLayout)
 
             roundedHelper.setCornerRadius(
-                    attributeArray.getDimension(R.styleable.RoundedFrameLayout_cornerRadius, 0f)
+                    attributeArray.getDimension(R.styleable.RoundedFrameLayout_rfl_cornerRadius, 0f)
             )
             attributeArray.recycle()
         }

@@ -26,14 +26,6 @@ class InteractiveFinishView : RoundedConstraintLayout {
     private var mListener: Listener? = null
 
     init {
-        setCornerRadius(
-                resources.getDimension(R.dimen.play_interactive_loading_radius)
-        )
-
-        binding.viewPlayInteractiveInit.root.setCornerRadius(
-                resources.getDimension(R.dimen.play_interactive_create_radius)
-        )
-
         binding.viewPlayInteractiveInit.root.setOnClickListener {
             mListener?.onCreateNewGameClicked(this)
         }
