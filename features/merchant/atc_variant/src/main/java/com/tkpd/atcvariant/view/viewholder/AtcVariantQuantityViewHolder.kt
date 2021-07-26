@@ -11,7 +11,6 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRODUCT_ID_ONLY
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
