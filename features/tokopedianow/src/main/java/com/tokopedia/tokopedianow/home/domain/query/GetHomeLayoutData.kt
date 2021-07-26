@@ -19,6 +19,7 @@ internal object GetHomeLayoutData {
              showPromoBadge
              categoryID
              perso_type
+             pageName
              campaignCode
              has_close_button
              header {
