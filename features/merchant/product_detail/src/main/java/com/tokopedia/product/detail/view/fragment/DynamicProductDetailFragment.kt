@@ -362,6 +362,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeATCTokonowData()
         observeATCTokonowResetCard()
         observeATCRecomTokonowNonLogin()
+        observeATCRecomSendTracker()
         observeDiscussionData()
         observeP2Other()
         observeTopAdsImageData()
@@ -1375,6 +1376,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 view?.showToasterError(it.message?: "", ctaText = getString(R.string.label_oke_pdp))
                 logException(it)
             })
+        }
+    }
+
+    private fun observeATCRecomSendTracker() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonowSendTracker) { data ->
+            data.doSuccessOrFail({
+                DynamicProductDetailTracking.Click.eventClickRecomAddToCart(it.data, viewModel.userId, it.data.minOrder)
+            },{})
         }
     }
 

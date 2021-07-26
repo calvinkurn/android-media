@@ -221,6 +221,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _atcRecomTokonow = MutableLiveData<Result<String>>()
     val atcRecomTokonow: LiveData<Result<String>> get() = _atcRecomTokonow
 
+    private val _atcRecomTokonowSendTracker = MutableLiveData<Result<RecommendationItem>>()
+    val atcRecomTokonowSendTracker: LiveData<Result<RecommendationItem>> get() = _atcRecomTokonowSendTracker
+
     private val _atcRecomTokonowResetCard = SingleLiveEvent<RecommendationItem>()
     val atcRecomTokonowResetCard: LiveData<RecommendationItem> get() = _atcRecomTokonowResetCard
 
@@ -1016,7 +1019,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (result.isStatusError()) {
                 onFailedATCRecomTokonow(Throwable(result.errorMessage.firstOrNull() ?: result.status), recomItem)
             } else {
-                updateMiniCartAfterATCRecomTokonow(result.data.message.first())
+                recomItem.cartId = result.data.cartId
+                updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
             }
         }) {
             onFailedATCRecomTokonow(it, recomItem)
@@ -1045,8 +1049,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     }
 
-    private fun updateMiniCartAfterATCRecomTokonow(message: String) {
+    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
         _atcRecomTokonow.value = message.asSuccess()
+        if (isAtc) {
+            _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
+        }
         getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
     }
 

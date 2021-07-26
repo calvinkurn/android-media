@@ -23,6 +23,7 @@ import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -490,6 +491,40 @@ object DynamicProductDetailTracking {
                     ""
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, recomSeeAllAction)
+        }
+
+        fun eventClickRecomAddToCart(recomItem: RecommendationItem, userId: String, quantity: Int) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.RecomTokonow.KEY_EVENT_ATC,
+                    ProductTrackingConstant.RecomTokonow.KEY_EVENT_CATEGORY_ATC,
+                    ProductTrackingConstant.RecomTokonow.KEY_EVENT_ACTION_ATC,
+                    String().format(ProductTrackingConstant.RecomTokonow.KEY_EVENT_LABEL_ATC, recomItem.name, "")
+            )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.RecomTokonow.KEY_EVENT_PAGE_SOURCE] = String().format(ProductTrackingConstant.RecomTokonow.PARAM_EVENT_PAGE_SOURCE, "PDP", recomItem.recommendationType)
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
+                ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
+                DataLayer.mapOf(
+                        ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                        ProductTrackingConstant.Tracking.CATEGORY, "",
+                        ProductTrackingConstant.Tracking.KEY_CATEGORY_ID, "",
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_40, String().format(ProductTrackingConstant.RecomTokonow.PARAM_ATC_DIMENS_40, recomItem.pageName, recomItem.recommendationType),
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_45, recomItem.cartId,
+                        ProductTrackingConstant.Tracking.ID, recomItem.productId,
+                        ProductTrackingConstant.Tracking.NAME, recomItem.name,
+                        ProductTrackingConstant.Tracking.PRICE, recomItem.priceInt,
+                        ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                        ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, recomItem.shopId,
+                        ProductTrackingConstant.Tracking.KEY_SHOP_NAME, recomItem.shopName,
+                        ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, recomItem.shopType,
+                        ProductTrackingConstant.Tracking.VARIANT, ""
+                ))))
+
         }
 
         fun eventClickSeeFilterAnnotation(chipValue: String) {

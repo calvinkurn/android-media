@@ -15,6 +15,7 @@ object ProductTrackingConstant {
     object Tracking {
         const val KEY_SHOP_ID_SELLER = "shopId"
         const val KEY_SHOP_TYPE = "shopType"
+        const val KEY_SHOP_NAME = "shopName"
         const val KEY_PAGE_TYPE = "pageType"
         const val KEY_PRODUCT_ID_ = "productId"
         const val KEY_EVENT = "event"
@@ -99,6 +100,8 @@ object ProductTrackingConstant {
 
         const val CONTENT_TYPE = "product"
         const val BRANCH_QUANTITY ="1"
+
+
     }
     object Action {
         const val CLICK = "click"
@@ -225,7 +228,6 @@ object ProductTrackingConstant {
         const val EVENT_COMPONENT_CLICK_BEST_SELLER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
-
     }
 
     object Report {
@@ -271,4 +273,18 @@ object ProductTrackingConstant {
         const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
+
+    object RecomTokonow {
+
+        //recomatc
+        const val KEY_EVENT_ATC = "addToCart"
+        const val KEY_EVENT_PAGE_SOURCE = "pageSource"
+        const val KEY_EVENT_CATEGORY_ATC = "tokonow product detail page"
+        const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation"
+        const val KEY_EVENT_LABEL_ATC = "%s, %s" //recom title, chips value
+
+        // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
+        const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
+        const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
 }
