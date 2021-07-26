@@ -26,6 +26,7 @@
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
     <string name="tokopedianow_category_aisle_header">Lihat kategori lainnya</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
+    <string name="tokopedianow_find_item_in_tokopedia_now">Cari barang di Tokopedia NOW!</string>
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
@@ -34,12 +35,12 @@
     <string name="tokopedianow_empty_product_filter_price_name">Filter Harga</string>
 
     <string name="tokopedianow_global_search_button">Cari di Tokopedia</string>
-    <string name="tokopedianow_change_keyword_button">Ganti Kata Kunci</string>
+    <string name="tokopedianow_explore_tokopedia_now_button">Jelajahi Tokopedia NOW</string>
     <string name="tokopedianow_city_name_empty_state_no_address">Jakarta Barat</string>
     <string name="tokopedianow_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
-    <string name="tokopedianow_category_is_failed_to_display_description">Klik iklan di samping untuk coba lagi</string>
+    <string name="tokopedianow_category_is_failed_to_display_description">Klik ikon di samping untuk coba lagi</string>
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
-    <string name="tokopedianow_oke">Oke</string>
+    <string name="tokopedianow_lihat">Lihat</string>
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>

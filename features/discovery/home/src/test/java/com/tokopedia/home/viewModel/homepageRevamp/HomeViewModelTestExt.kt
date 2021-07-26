@@ -68,7 +68,8 @@ fun createHomeViewModel(
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
+        getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
@@ -100,7 +101,8 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase }
+            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase },
+            getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase }
     )
 }
 

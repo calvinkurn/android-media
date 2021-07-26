@@ -425,6 +425,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
         getViewModel().routeApplinkLiveData.observe(this::routeApplink)
+        getViewModel().deleteCartTrackingLiveData.observe(this::sendDeleteCartTrackingEvent)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -637,7 +638,9 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_oke))
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_lihat)) {
+            miniCartWidget?.showMiniCartListBottomSheet(this)
+        }
     }
 
     protected open fun showToaster(
@@ -706,6 +709,8 @@ abstract class BaseSearchCategoryFragment:
         RouteManager.route(context, applink)
     }
 
+    protected abstract fun sendDeleteCartTrackingEvent(productId: String)
+
     override fun onPause() {
         super.onPause()
 
@@ -718,12 +723,12 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewResumed()
     }
 
-    override fun onGoToGlobalSearch() {
-
+    override fun onFindInTokopediaClick() {
+        routeApplink(ApplinkConst.HOME)
     }
 
-    override fun onChangeKeywordButtonClick() {
-        onSearchBarClick()
+    override fun goToTokopediaNowHome() {
+        routeApplink(ApplinkConstInternalTokopediaNow.HOME)
     }
 
     override fun onRemoveFilterClick(option: Option) {

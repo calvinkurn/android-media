@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -32,6 +33,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     private var categoryChooserView: View? = null
     private var adapter: CategoryChooserAdapter? = null
     private var recyclerView: RecyclerView? = null
+    private var buttonApplyContainer: LinearLayout? = null
     private var buttonApply: UnifyButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +59,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
         recyclerView = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserRecyclerView)
         buttonApply = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserButtonApply)
+        buttonApplyContainer = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserButtonApplyContainer)
     }
 
     private fun configureViews() {
@@ -85,8 +88,8 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     private fun configureButtonApplyVisibility(position: Int) {
         val shouldShowButtonApply = initialSelectedOptionIndex != position
 
-        if (shouldShowButtonApply) buttonApply?.show()
-        else buttonApply?.invisible()
+        if (shouldShowButtonApply) buttonApplyContainer?.show()
+        else buttonApplyContainer?.invisible()
     }
 
     private fun onButtonApplyClicked(view: View) {

@@ -224,7 +224,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CREATE_REVIEW_REQUEST_CODE) {
-            loadInitialData()
             reviewInboxListener?.reloadCounter()
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()

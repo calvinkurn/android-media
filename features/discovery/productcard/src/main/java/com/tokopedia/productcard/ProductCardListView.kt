@@ -140,6 +140,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun recycle() {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
+        cartExtension.clear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

@@ -133,6 +133,4 @@ interface ICartListView : CustomerView {
     fun reCollapseExpandedDeletedUnavailableItems()
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
-
-
 }

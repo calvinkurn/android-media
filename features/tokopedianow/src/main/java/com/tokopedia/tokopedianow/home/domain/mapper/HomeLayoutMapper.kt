@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -11,6 +12,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.BANNER_
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.CATEGORY
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.LEGO_6_IMAGE
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -20,6 +22,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TIC
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
@@ -46,7 +49,8 @@ object HomeLayoutMapper {
         CATEGORY,
         LEGO_3_IMAGE,
         LEGO_6_IMAGE,
-        BANNER_CAROUSEL
+        BANNER_CAROUSEL,
+        PRODUCT_RECOM
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -81,6 +85,10 @@ object HomeLayoutMapper {
         updateItemById(item.visitableId()) { mapToHomeUiModel(response, HomeLayoutItemState.LOADED) }
     }
 
+    fun MutableList<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(item: HomeLayoutUiModel, response: HomeLayoutResponse) {
+        updateItemById(item.visitableId) { mapToHomeUiModel(response, HomeLayoutItemState.LOADED) }
+    }
+
     fun MutableList<HomeLayoutItemUiModel>.updateStateToLoading(item: HomeLayoutItemUiModel) {
         item.layout.let { layout ->
             updateItemById(layout.getVisitableId()) {
@@ -106,6 +114,13 @@ object HomeLayoutMapper {
         updateItemById(item.visitableId) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
             HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapProductRecomData(item: HomeProductRecomUiModel, recommendationWidget: RecommendationWidget) {
+        updateItemById(item.visitableId) {
+            val productRecom = HomeProductRecomUiModel(id = item.visitableId, recomWidget = recommendationWidget)
+            HomeLayoutItemUiModel(productRecom, HomeLayoutItemState.LOADED)
         }
     }
 
@@ -137,6 +152,7 @@ object HomeLayoutMapper {
             CATEGORY -> mapToCategoryLayout(response, state)
             LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, state)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, state)
+            PRODUCT_RECOM -> mapProductRecomDataModel(response, state)
             else -> null
         }
     }
