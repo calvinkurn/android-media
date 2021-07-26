@@ -226,7 +226,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
         viewBinding.rvListDistrict.addOnScrollListener(mEndlessListener)
 
         viewBinding.btnChooseZipcode.setOnClickListener {
-            if (viewBinding.etKodepos.textFieldInput.text.toString().length < 4) {
+            if (viewBinding.etKodepos.textFieldInput.text.toString().length < MIN_TEXT_LENGTH) {
                 AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
@@ -389,6 +389,8 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     companion object {
         private const val SUCCESS = "success"
         private const val NOT_SUCCESS = "not success"
+
+        private const val MIN_TEXT_LENGTH = 4
 
     }
 }
