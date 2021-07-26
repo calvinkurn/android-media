@@ -64,14 +64,12 @@ class FlightModule {
     @FlightScope
     @Provides
     fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-//                            flightAuthInterceptor: FlightAuthInterceptor,
                             @FlightChuckQualifier chuckInterceptor: Interceptor,
                             @FlightQualifier okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-//                .addInterceptor(flightAuthInterceptor)
                 .addInterceptor(ErrorResponseInterceptor(FlightErrorResponse::class.java))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
