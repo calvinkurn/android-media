@@ -19,8 +19,7 @@ buildscript {
 }
 
 dependencies {
-    implementation files('libs/libstream-release.aar')
-    implementation files('libs/libudpsender-release.aar')
+    implementation files('libs/libstream-release.jar')
 
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
