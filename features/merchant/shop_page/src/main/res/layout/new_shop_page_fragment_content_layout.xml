@@ -68,7 +68,7 @@
             android:contentDescription="@string/content_desc_button_chat" />
 
         <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-            android:id="@+id/fab_bottom_end"
+            android:id="@+id/fab_shop_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

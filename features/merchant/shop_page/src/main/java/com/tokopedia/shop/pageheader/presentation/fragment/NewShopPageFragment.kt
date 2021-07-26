@@ -360,7 +360,7 @@ class NewShopPageFragment :
     private fun initViews(view: View) {
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
-        shopPageFab = view.findViewById(R.id.fab_bottom_end)
+        shopPageFab = view.findViewById(R.id.fab_shop_page)
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(
                 view,
