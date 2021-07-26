@@ -2,14 +2,9 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-        google()
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
 buildscript {
     repositories {
         google()
-        mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
@@ -21,7 +16,7 @@ project.ext {
     artifactId = 'abstraction'
     groupId = 'com.tokopedia.abstraction'
     versionName = "0.0.2"
-    artifactName ="tkpdabstraction-release"
+    artifactName = "tkpdabstraction-release"
 }
 
 dependencies {
@@ -48,7 +43,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.core
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -58,8 +53,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
-
 }
 
 apply from: '../publish_local.gradle'
