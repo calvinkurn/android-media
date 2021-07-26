@@ -6,9 +6,12 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 data class OrderProduct(
         var cartId: String = "",
         var productId: Long = 0,
+        var parentId: String = "",
         var productName: String = "",
         var productPrice: Long = 0,
-        var wholesalePrice: List<WholesalePrice> = arrayListOf(),
+        var finalPrice: Long = 0,
+        var wholesalePrice: Long = 0,
+        var wholesalePriceList: List<WholesalePrice> = arrayListOf(),
         var originalPrice: Long = 0,
         var initialPrice: Long = 0,
         var isSlashPrice: Boolean = false,
@@ -47,8 +50,8 @@ data class OrderProduct(
 
     fun getPrice(): Long {
         var finalPrice = productPrice
-        if (wholesalePrice.isNotEmpty()) {
-            for (price in wholesalePrice) {
+        if (wholesalePriceList.isNotEmpty()) {
+            for (price in wholesalePriceList) {
                 if (quantity.orderQuantity >= price.qtyMin) {
                     finalPrice = price.prdPrc
                 }

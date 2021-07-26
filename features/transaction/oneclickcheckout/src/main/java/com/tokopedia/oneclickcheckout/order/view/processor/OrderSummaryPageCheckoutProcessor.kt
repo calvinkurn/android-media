@@ -63,7 +63,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                 if (!it.isError) {
                     checkoutProducts.add(ProductData(
                             it.productId,
-                            it.quantity.orderQuantity,
+                            it.orderQuantity,
                             it.notes,
                             it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
                     ))

@@ -43,7 +43,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -252,7 +251,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val address = OrderProfileAddress(addressId = 1)
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
-        val cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))))
+        val cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1, orderQuantity = 1)))
         val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
         val response = OrderData(cart = cart, preference = profile, promo = promo)
         every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
@@ -316,12 +315,12 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         assertEquals(OccButtonState.LOADING, orderSummaryPageViewModel.orderTotal.value.buttonState)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
-        assertEquals(10, orderSummaryPageViewModel.orderProducts.value.first().quantity.orderQuantity)
+        assertEquals(10, orderSummaryPageViewModel.orderProducts.value.first().orderQuantity)
         verify { ratesUseCase.execute(any()) }
         coVerify { updateCartOccUseCase.executeSuspend(any()) }
     }
@@ -335,7 +334,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0, false)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0, false)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -352,9 +351,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceTimeBy(500)
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 20)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 20), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then

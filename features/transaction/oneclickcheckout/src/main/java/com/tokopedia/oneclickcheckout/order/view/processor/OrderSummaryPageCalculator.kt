@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -29,7 +30,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     }
 
     fun validatePaymentState(orderCart: OrderCart, orderProfile: OrderProfile, shipping: OrderShipment): Boolean {
-        return shipping.isValid() && shipping.serviceErrorMessage.isNullOrEmpty() && !orderCart.shop.isError && orderCart.shop.overweight == 0.0 && orderCart.products.all { it.isError || it.quantity.orderQuantity > 0 } && orderProfile.isValidProfile
+        return shipping.isValid() && shipping.serviceErrorMessage.isNullOrEmpty() && !orderCart.shop.isError && orderCart.shop.overweight == 0.0 && orderCart.products.all { it.isError || it.orderQuantity > 0 } && orderProfile.isValidProfile
     }
 
     suspend fun calculateTotal(orderCart: OrderCart, orderProfile: OrderProfile, shipping: OrderShipment,
@@ -42,7 +43,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (!isValidState) {
                 return@withContext payment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
             }
-            val (orderCost, newPayment) = calculateOrderCost(orderCart, shipping, validateUsePromoRevampUiModel, payment)
+            val (orderCost, newPayment, _) = calculateOrderCost(orderCart, shipping, validateUsePromoRevampUiModel, payment)
             val subtotal = orderCost.totalPrice
             payment = newPayment
             var currentState = OccButtonState.NORMAL
@@ -164,31 +165,72 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return if (currentState == OccButtonState.NORMAL) OccButtonState.DISABLE else currentState
     }
 
-    fun calculateOrderCost(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Pair<OrderCost, OrderPayment> {
-        var payment = orderPayment
-        var totalProductPrice = 0.0
-        var totalPurchaseProtectionPrice = 0
-        for (product in orderCart.products) {
-            if (!product.isError) {
-                totalProductPrice += product.quantity.orderQuantity * product.getPrice().toDouble()
-                var purchaseProtectionPriceMultiplier = product.quantity.orderQuantity
-                if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
-                    purchaseProtectionPriceMultiplier = 1
+    suspend fun calculateOrderCost(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Triple<OrderCost, OrderPayment, ArrayList<Int>> {
+        return withContext(executorDispatchers.default) {
+            var payment = orderPayment
+            var totalProductPrice = 0.0
+            var totalProductWholesalePrice = 0.0
+            val mapParentWholesalePrice: HashMap<String, Double> = HashMap()
+            val updatedProductIndex = arrayListOf<Int>()
+            var totalPurchaseProtectionPrice = 0
+            for (productIndex in orderCart.products.indices) {
+                val product = orderCart.products[productIndex]
+                if (!product.isError) {
+                    var itemQty = 0
+                    if (product.parentId.isNotEmpty() && product.parentId != "0") {
+                        Log.i("qwertyuiop", "items ${orderCart.products.filter { !it.isError && it.parentId == product.parentId }.size}")
+                        orderCart.products.filter { !it.isError && it.parentId == product.parentId }
+                                .forEach { itemQty += it.orderQuantity }
+                    } else {
+                        itemQty = product.orderQuantity
+                    }
+                    Log.i("qwertyuiop", "item qty $itemQty")
+                    if (product.wholesalePriceList.isNotEmpty()) {
+                        var finalPrice = product.productPrice
+                        product.wholesalePrice = 0
+                        for (price in product.wholesalePriceList) {
+                            if (itemQty >= price.qtyMin) {
+                                finalPrice = price.prdPrc
+                                product.wholesalePrice = finalPrice
+                            }
+                        }
+                        if (product.finalPrice != finalPrice) {
+                            product.finalPrice = finalPrice
+                            updatedProductIndex.add(productIndex)
+                        }
+                        if (!mapParentWholesalePrice.containsKey(product.parentId)) {
+                            val totalPrice = itemQty * product.finalPrice.toDouble()
+                            totalProductWholesalePrice += totalPrice
+                            Log.i("qwertyuiop", "totalProductWholesalePrice $totalProductWholesalePrice")
+                            mapParentWholesalePrice[product.parentId] = totalPrice
+                        }
+                    } else {
+                        product.wholesalePrice = 0
+                        product.finalPrice = product.productPrice
+                        totalProductPrice += itemQty * product.finalPrice.toDouble()
+                    }
+                    var purchaseProtectionPriceMultiplier = product.orderQuantity
+                    if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
+                        purchaseProtectionPriceMultiplier = 1
+                    }
+                    totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
                 }
-                totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             }
+            Log.i("qwertyuiop", "totalProductPrice $totalProductPrice")
+            totalProductPrice += totalProductWholesalePrice
+            Log.i("qwertyuiop", "totalProductPrice 2 = $totalProductPrice")
+            val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
+            val insurancePrice = shipping.getRealInsurancePrice().toDouble()
+            val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
+            var subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
+            payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
+            val fee = payment.getRealFee()
+            subtotal += fee
+            subtotal -= productDiscount
+            subtotal -= shippingDiscount
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
+            return@withContext Triple(orderCost, payment, updatedProductIndex)
         }
-        val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
-        val insurancePrice = shipping.getRealInsurancePrice().toDouble()
-        val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-        var subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
-        payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
-        val fee = payment.getRealFee()
-        subtotal += fee
-        subtotal -= productDiscount
-        subtotal -= shippingDiscount
-        val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
-        return orderCost to payment
     }
 
     private fun calculatePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Int, Int, ArrayList<OrderCostCashbackData>> {

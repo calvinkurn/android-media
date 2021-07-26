@@ -14,7 +14,10 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.confirmVerified
+import io.mockk.mockk
+import io.mockk.verifyOrder
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,7 +46,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = true)
 
         // Success Express Checkout
-        coEvery{ getAtcUseCase.executeOnBackground() } returns mockk()
+        coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
@@ -69,7 +72,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = true)
 
         // Success Express Checkout
-        coEvery{ getAtcUseCase.executeOnBackground() } returns mockk()
+        coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
@@ -96,7 +99,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = false)
 
         // Success Express Checkout
-        coEvery{ getAtcUseCase.executeOnBackground() } returns mockk()
+        coEvery{ getAtcUseCase.executeOnBackground().mapToAddToCartDataModel() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)

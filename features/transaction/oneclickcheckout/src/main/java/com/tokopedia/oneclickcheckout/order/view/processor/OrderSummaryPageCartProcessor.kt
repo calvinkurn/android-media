@@ -89,7 +89,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                     cart.add(
                             UpdateCartOccCartRequest(
                                     it.cartId,
-                                    it.quantity.orderQuantity,
+                                    it.orderQuantity,
                                     it.notes,
                                     it.productId.toString()
                             )

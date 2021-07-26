@@ -90,7 +90,8 @@ const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_SHIPMENT_RESPONSE_PATH = "car
 
 const val GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH = "cart/get_occ_cart_page_shop_type_pm_pro_response.json"
 
-const val GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH = "cart/get_occ_cart_page_single_product_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_WHOLESALE_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_wholesale_response.json"
 
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"
