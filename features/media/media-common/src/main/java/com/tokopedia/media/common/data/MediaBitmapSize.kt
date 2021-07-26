@@ -6,7 +6,7 @@ class MediaBitmapSize(context: Context?) : MediaPreferences(context) {
 
     fun save(value: String) {
         val currentSize = getString(KEY_BITMAP_SIZE)
-        insert(KEY_BITMAP_SIZE, currentSize + value)
+        insert(KEY_BITMAP_SIZE, (currentSize.toLong() + value.toLong()).toString())
     }
 
     fun size() = getInt(KEY_BITMAP_SIZE)
