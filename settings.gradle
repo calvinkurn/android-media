@@ -6,11 +6,11 @@ gradleEnterprise {
     server = "http://172.21.57.32"
     buildScan {
         publishAlways()
-        tag (System.getenv('BUILD_URL') ? 'CI' : 'LOCAL')
-        if (System.getenv('BUILD_URL')) {
-            if (System.getenv('BUILD_URL')) {
-                link 'Jenkins build', System.getenv('BUILD_URL')
-            }
+
+        def isCiBuild = System.getenv('BUILD_URL')
+        tag(isCiBuild ? 'CI' : 'LOCAL')
+        if (isCiBuild) {
+            link 'Jenkins build', System.getenv('BUILD_URL')
             if (System.getenv('BUILD_NUMBER')) {
                 value 'CI build number', System.getenv('BUILD_NUMBER')
             }
