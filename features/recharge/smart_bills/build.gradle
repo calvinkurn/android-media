@@ -66,6 +66,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     testImplementation rootProject.ext.testDependencies.mockk

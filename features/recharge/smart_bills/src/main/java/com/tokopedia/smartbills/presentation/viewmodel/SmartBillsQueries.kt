@@ -15,6 +15,22 @@ object SmartBillsQueries {
         """.trimIndent()
     }
 
+    val GET_CATALOG_ADD_BILLS by lazy {
+        """
+            query rechargeCatalog(${'$'}platformID: Int!){ 
+              rechargeCatalogMenu(platformID:${'$'}platformID){ 
+                id 
+                name 
+                label 
+                icon 
+                style 
+                app_link 
+                slug_name 
+                }
+               }
+        """.trimIndent()
+    }
+
     val STATEMENT_BILLS_QUERY by lazy {
         """
             query rechargeStatementBills(${'$'}month: Int!, ${'$'}year: Int!, ${'$'}source: Int){

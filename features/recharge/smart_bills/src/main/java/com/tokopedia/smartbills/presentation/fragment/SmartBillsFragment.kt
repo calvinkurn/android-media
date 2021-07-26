@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -46,6 +47,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsAccord
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsEmptyStateViewHolder
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
+import com.tokopedia.smartbills.presentation.widget.SmartBillsCatalogBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.smartbills.util.DividerSBMItemDecoration
@@ -264,6 +266,30 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 }
             }
         })
+
+        viewModel.catalogList.observe(viewLifecycleOwner, Observer {
+            hideProgressBar()
+            when(it){
+                is Success -> {
+                    if(it.data.isNotEmpty()) {
+                        clickEmptyorAddButton(it.data)
+                    } else {
+                        view?.let { view ->
+                            Toaster.build(view,getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty) , Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
+                    }
+                }
+
+                is Fail -> {
+                    view?.let { view ->
+                        Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+                }
+            }
+
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -428,11 +454,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun clickEmptyButton() {
+        showProgressBar()
+        viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID))
+    }
+
+    private fun clickEmptyorAddButton(catalogList: List<SmartBillsCatalogMenu>){
         if(getRemoteConfigAddBillsEnabler()){
-            view?.let {
-                Toaster.build(it,"Check Remote Config",Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
-            }
+            val catalogBottomSheet = SmartBillsCatalogBottomSheet()
+            catalogBottomSheet.showSBMCatalog(catalogList)
+            catalogBottomSheet.show(requireFragmentManager(), "")
         } else {
             RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
         }
@@ -626,6 +656,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true))
     }
 
+    private fun showProgressBar(){
+        sbm_progress_bar.show()
+    }
+
+    private fun hideProgressBar(){
+        sbm_progress_bar.hide()
+    }
     companion object {
         const val EXTRA_SOURCE_TYPE = "source"
 
@@ -634,6 +671,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val PAID_TYPE = 1
 
         const val SOURCE = 1
+
+        const val PLATFORM_ID = 5
 
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
