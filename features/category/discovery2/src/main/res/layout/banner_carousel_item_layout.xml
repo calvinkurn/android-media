@@ -30,7 +30,7 @@
         android:maxLines="2"
         android:ellipsize="end"
         app:typographyType="body_2"
-        android:textColor="@color/clr_f231353b"
+        android:textColor="@color/Unify_N700_96"
         app:typographyWeight="bold"
         android:paddingHorizontal="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_2"

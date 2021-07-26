@@ -23,11 +23,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReadReviewViewModel @Inject constructor(
-        private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
-        private val getProductReviewListUseCase: GetProductReviewListUseCase,
-        private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
+    private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
+    private val getProductReviewListUseCase: GetProductReviewListUseCase,
+    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -50,6 +50,7 @@ class ReadReviewViewModel @Inject constructor(
         get() = _toggleLikeReview
 
     private val currentPage = MutableLiveData<Int>()
+
     private var productId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
     private var filter: SelectedFilters = SelectedFilters()
@@ -77,18 +78,38 @@ class ReadReviewViewModel @Inject constructor(
         currentPage.value = page
     }
 
-    fun mapProductReviewToReadReviewUiModel(productReviews: List<ProductReview>, shopId: String, shopName: String): List<ReadReviewUiModel> {
+    fun mapProductReviewToReadReviewUiModel(
+        productReviews: List<ProductReview>,
+        shopId: String,
+        shopName: String
+    ): List<ReadReviewUiModel> {
         return productReviews.map {
-            ReadReviewUiModel(it, false, shopId, shopName)
+            ReadReviewUiModel(
+                reviewData = it,
+                isShopViewHolder = false,
+                shopId = shopId,
+                shopName = shopName,
+                productId = productId.value ?: ""
+            )
         }
     }
 
     fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
         launchCatchError(block = {
-            toggleLikeReviewUseCase.setParams(reviewId, shopId, productId.value
-                    ?: "", ReadReviewUtils.invertLikeStatus(likeStatus))
+            toggleLikeReviewUseCase.setParams(
+                reviewId, shopId, productId.value
+                    ?: "", ReadReviewUtils.invertLikeStatus(likeStatus)
+            )
             val data = toggleLikeReviewUseCase.executeOnBackground()
-            _toggleLikeReview.postValue(Success(ToggleLikeUiModel(data.toggleProductReviewLike.likeStatus, data.toggleProductReviewLike.totalLike, index)))
+            _toggleLikeReview.postValue(
+                Success(
+                    ToggleLikeUiModel(
+                        data.toggleProductReviewLike.likeStatus,
+                        data.toggleProductReviewLike.totalLike,
+                        index
+                    )
+                )
+            )
         }) {
             _toggleLikeReview.postValue(Fail(it))
         }
@@ -126,14 +147,15 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     fun getSelectedRatingFilter(): Set<String> {
-        val selectedFilters = filter.rating?.value
-        return selectedFilters?.split(",")?.map { it.trim() }?.toSet() ?: setOf()
+        val selectedFilters = filter.rating?.value ?: return emptySet()
+        return selectedFilters.split(",").map { it.trim() }.toSet()
     }
 
     fun getSelectedTopicFilter(): Set<String> {
-        val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() } ?: listOf()
+        val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() } ?: return setOf()
         val topicsMap = getTopicsMap()
-        var result = setOf<String>()
+        if (topicsMap.isEmpty()) return emptySet()
+        var result = emptySet<String>()
         selectedFilters.forEach {
             result = result.plus(getKey(topicsMap, it))
         }
@@ -159,8 +181,12 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun getProductReviews(page: Int) {
         launchCatchError(block = {
-            getProductReviewListUseCase.setParams(productId.value
-                    ?: "", page, sort, filter.mapFilterToRequestParams())
+            getProductReviewListUseCase.setParams(
+                productId.value ?: "",
+                page,
+                sort,
+                filter.mapFilterToRequestParams()
+            )
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))
         }) {

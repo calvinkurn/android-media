@@ -377,6 +377,7 @@
     <string name="review_reading_topic_filter_title">Topik ulasan</string>
     <string name="review_reading_sort_title">Urutkan</string>
     <string name="review_reading_like">Membantu</string>
+    <string name="review_reading_like_count">%d orang terbantu</string>
     <string name="review_reading_show_response">Lihat Balasan</string>
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>
@@ -387,6 +388,7 @@
     <string name="review_reading_empty_filter_title">Oops, nggak ada ulasan yang sesuai filter</string>
     <string name="review_reading_empty_filter_subtitle">Coba reset atau ubah filter kamu, ya.</string>
     <string name="review_reading_success_submit_report">Kamu berhasil melaporkan ulasan ini.</string>
+    <string name="review_reading_collapse">&lt;a href="#"&gt;Tutup Ulasan&lt;/a&gt;</string>
 
     <!-- Gallery    -->
     <string name="review_gallery_image_count">%d/%d</string>

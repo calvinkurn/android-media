@@ -11,6 +11,11 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewRatingBar : BaseCustomView {
 
+    companion object {
+        const val ZERO_PERCENT = 0F
+        const val ONE_PERCENT = 1F
+    }
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -44,8 +49,17 @@ class ReadReviewRatingBar : BaseCustomView {
         ratingTypography?.text = rating.toString()
     }
 
-    fun setProgressAndRatingCount(progress: Int, formattedRatingCount: String) {
-        progressBar?.setValue(progress)
+
+    private fun getAdjustedProgress(percentage: Float): Int {
+        return if (percentage < ONE_PERCENT && percentage != ZERO_PERCENT) {
+            ONE_PERCENT.toInt()
+        } else {
+            percentage.toInt()
+        }
+    }
+
+    fun setProgressAndRatingCount(percentage: Float, formattedRatingCount: String) {
+        progressBar?.setValue(getAdjustedProgress(percentage))
         ratingCountTypography?.text = formattedRatingCount
     }
 }

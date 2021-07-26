@@ -51,7 +51,7 @@ object ReadReviewTracking {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_FILTER,
-                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_FILTER, filterName, isActive.toString()),
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_FILTER, filterName, (!isActive).toString()),
                 productId
         ))
     }
@@ -87,7 +87,7 @@ object ReadReviewTracking {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
-                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_LIKE_REVIEW, feedbackId, isLiked.toString()),
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_LIKE_REVIEW, feedbackId, (!isLiked).toString()),
                 productId
         ))
     }

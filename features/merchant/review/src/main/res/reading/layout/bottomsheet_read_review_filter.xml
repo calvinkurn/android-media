@@ -18,6 +18,8 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/review_reading_submit_filter"
         android:enabled="false"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintTop_toBottomOf="@id/read_review_filter_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

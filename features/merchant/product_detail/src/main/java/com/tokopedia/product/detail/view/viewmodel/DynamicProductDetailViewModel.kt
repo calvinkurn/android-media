@@ -42,7 +42,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -759,12 +759,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
                         recomWidget
                     }
-
-                    if (recomData.recommendationItemList.isNotEmpty()) {
-                        _loadTopAdsProduct.value = recomData.asSuccess()
-                    } else {
-                        _loadTopAdsProduct.value = Throwable(pageName).asFail()
-                    }
+                    //since there is posibility gql return empty page name and recom list
+                    //we append UI Page Name to be validated
+                    recomData.recomUiPageName = pageName
+                    _loadTopAdsProduct.value = recomData.asSuccess()
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = Throwable(pageName).asFail()
                 }

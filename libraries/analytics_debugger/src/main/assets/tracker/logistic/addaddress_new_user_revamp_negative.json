@@ -1,0 +1,59 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/user/address/create/cart"
+    },
+    {
+      "eventCategory": "search page",
+      "eventAction": "click isi alamat manual",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative",
+      "eventAction": "click field nama penerima",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative",
+      "eventAction": "click field nomor hp",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative",
+      "eventAction": "click field kota dan kecamatan",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative, kota kecamatan page",
+      "eventAction": "click field cari kota kecamatan",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative, kota kecamatan page",
+      "eventAction": "click dropdown suggestion kota kecamatan",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative, kode pos page",
+      "eventAction": "click field kode pos",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative, kode pos page",
+      "eventAction": "click chips kode pos",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative, kode pos page",
+      "eventAction": "click pilih",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address negative",
+      "eventAction": "click field alamat",
+      "eventLabel" : ".*"
+    }
+  ],
+  "readme": "Logistic Add New Address Revamp user funnel Tracking & verifies CVR"
+}

@@ -92,7 +92,7 @@ class ReviewGalleryReviewDetailWidget : BaseCustomView {
         }
         reviewText?.apply {
             isEnabled = true
-            val formattingResult = ReviewUtil.reviewDescFormatter(context, reviewMessage, MAX_CHAR, ALLOW_CLICK)
+            val formattingResult = ReviewUtil.formatReviewExpand(context, reviewMessage, MAX_CHAR, ALLOW_CLICK)
             maxLines = MAX_LINES
             text = formattingResult.first
             if (formattingResult.second) {

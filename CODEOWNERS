@@ -191,7 +191,7 @@
 /features/user/logout/                          		@tokopedia/android-minionkevin-dev
 /features/user/loginregister/                   		@tokopedia/android-minionkevin-dev
 /features/user/sessioncommon/                   		@tokopedia/android-minionkevin-dev
-/features/user/loginphone/                      		@tokopedia/android-minionkevin-dev
+/features/user/chooseaccount/                      		@tokopedia/android-minionkevin-dev
 /features/user/managename/                      		@tokopedia/android-minionkevin-dev
 /features/user/managepassword/                          @tokopedia/android-minionkevin-dev
 /features/user/notif-troubleshooter/                    @tokopedia/android-minionkevin-dev
@@ -218,6 +218,7 @@
 /features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
 /features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
+/features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
 
 /features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
 /features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev

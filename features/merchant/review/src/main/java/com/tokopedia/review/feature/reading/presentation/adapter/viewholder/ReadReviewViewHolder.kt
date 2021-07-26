@@ -118,19 +118,32 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             }
             return
         }
+        setExpandableReview(message, feedbackId, productId)
+    }
+
+    private fun setExpandableReview(message: String, feedbackId: String, productId: String) {
         reviewMessage?.apply {
             isEnabled = true
-            val formattingResult = ReviewUtil.reviewDescFormatter(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
+            val formattingResult = ReviewUtil.formatReviewExpand(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
             maxLines = MAX_LINES_REVIEW
             text = formattingResult.first
             if (formattingResult.second) {
                 setOnClickListener {
                     ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
-                    maxLines = Integer.MAX_VALUE
-                    text = message
+                    setCollapsableReview(message, feedbackId, productId)
                 }
             }
             show()
+        }
+    }
+
+    private fun setCollapsableReview(message: String, feedbackId: String, productId: String) {
+        reviewMessage?.apply {
+            text = ReviewUtil.formatReviewCollapse(context, message)
+            maxLines = Integer.MAX_VALUE
+            setOnClickListener {
+                setExpandableReview(message, feedbackId, productId)
+            }
         }
     }
 
@@ -149,7 +162,10 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             text = if (likeDislike.totalLike == 0) {
                 getString(R.string.review_reading_like)
             } else {
-                likeDislike.totalLike.toString()
+                String.format(getString(R.string.review_reading_like_count), likeDislike.totalLike)
+            }
+            setOnClickListener {
+                readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
             }
         }
     }

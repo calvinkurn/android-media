@@ -123,6 +123,32 @@
                 app:typographyWeight="bold"
                 tools:text="Rp1.000.000" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPaymentAmountAction"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintBottom_toBottomOf="@+id/tvTotalPaymentAmount"
+                app:layout_constraintEnd_toStartOf="@+id/ivAmountAction"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="Salin" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ivAmountAction"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                app:icon_color_light_disabled="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_color_night_disabled="@color/Unify_G500"
+                app:icon_color_night_enable="@color/Unify_G500"
+                app:layout_constraintBottom_toBottomOf="@+id/tvPaymentAmountAction"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvPaymentAmountAction" />
+
+
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tickerAmountNote"
                 android:layout_width="@dimen/layout_lvl0"

@@ -18,8 +18,8 @@
             android:id="@+id/read_review_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/layout_lvl7"
-            android:paddingBottom="@dimen/layout_lvl2"
+            android:minHeight="50dp"
+            android:paddingBottom="@dimen/layout_lvl1"
             app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
             <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
@@ -47,7 +47,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/read_review_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="-8dp"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <include
