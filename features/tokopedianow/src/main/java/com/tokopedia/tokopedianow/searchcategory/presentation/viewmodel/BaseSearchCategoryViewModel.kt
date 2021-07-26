@@ -1034,9 +1034,9 @@ abstract class BaseSearchCategoryViewModel(
                 pageName = TOKONOW_CLP,
                 categoryIds = getRecomCategoryId(),
                 xSource = RECOM_WIDGET,
-//                isTokonow = true,
+                isTokonow = true,
                 pageNumber = PAGE_NUMBER_RECOM_WIDGET,
-//                keywords = getRecomKeywords(),
+                keywords = getRecomKeywords(),
                 xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
         )
         val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
@@ -1046,20 +1046,24 @@ abstract class BaseSearchCategoryViewModel(
                 recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
         )
 
-        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+        withContext(baseDispatcher.main) {
+            updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+        }
     }
 
     protected open fun getRecomCategoryId() = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
 
-    protected open fun getRecommendationCarouselError(
+    protected open suspend fun getRecommendationCarouselError(
             element: RecommendationCarouselDataView,
             adapterPosition: Int,
     ) {
         element.carouselData = RecommendationCarouselData(state = RecommendationCarouselData.STATE_FAILED)
 
-        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+        withContext(baseDispatcher.main) {
+            updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+        }
     }
 
     protected class HeaderDataView(

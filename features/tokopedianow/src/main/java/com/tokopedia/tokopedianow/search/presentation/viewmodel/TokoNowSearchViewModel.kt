@@ -216,4 +216,6 @@ class TokoNowSearchViewModel @Inject constructor (
     private fun onGetSearchLoadMorePageError(throwable: Throwable) {
 
     }
+
+    override fun getRecomKeywords() = listOf(query)
 }

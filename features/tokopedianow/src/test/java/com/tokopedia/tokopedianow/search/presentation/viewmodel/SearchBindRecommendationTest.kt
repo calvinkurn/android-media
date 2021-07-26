@@ -5,7 +5,9 @@ import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.BindRecommendationCarouselTestHelper
 import com.tokopedia.tokopedianow.searchcategory.assertTokonowRecommendationCarouselRequestParams
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import org.junit.Assert.assertThat
 import org.junit.Test
+import org.hamcrest.core.Is.`is` as shouldBe
 
 class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCarouselTestHelper.Callback {
 
@@ -33,7 +35,7 @@ class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCaro
     ) {
         assertTokonowRecommendationCarouselRequestParams(getRecommendationRequestParam)
 
-//        assertThat(getRecommendationRequestParam.keywords, `is`(listOf(defaultKeyword)))
+        assertThat(getRecommendationRequestParam.keywords, shouldBe(listOf(defaultKeyword)))
     }
 
     @Test

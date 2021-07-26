@@ -213,7 +213,7 @@ fun assertTokonowRecommendationCarouselRequestParams(
 ) {
     assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
     assertThat(getRecommendationRequestParam.pageName, shouldBe(TOKONOW_CLP))
-//        assertThat(getRecommendationParams.isTokonow, shouldBe(true))
+    assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
     assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
     assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
 }
