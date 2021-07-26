@@ -19,7 +19,7 @@ import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardListView
-import com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
 import java.util.*
 
@@ -82,9 +82,9 @@ class ProductHighlightComponentViewHolder(
                 itemView.deals_count_down?.run {
                     val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
                     timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
-                        TimerUnifyHighlight.VARIANT_ALTERNATE
+                        TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
-                        TimerUnifyHighlight.VARIANT_DARK_RED
+                        TimerUnifySingle.VARIANT_MAIN
                     }
 
                     visibility = View.VISIBLE
