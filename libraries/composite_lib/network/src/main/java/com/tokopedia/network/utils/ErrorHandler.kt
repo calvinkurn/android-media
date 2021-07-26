@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.tokopedia.logger.LogManager
+import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.R
 import com.tokopedia.network.constant.ResponseStatus
@@ -42,7 +43,7 @@ open class ErrorHandler {
                 sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
             }
 
-            return Pair(errorMessageString, errorCode)
+            return Pair(errorMessageString, "$errorCode-$errorIdentifier")
         }
 
         @JvmStatic
@@ -126,7 +127,7 @@ open class ErrorHandler {
                     "error_code" to if(errorCode) errorCode else "",
                     "stack_trace" to stackTraceString
             )
-            LogManager.log(Priority.P2, ERROR_HANDLER, mapParam as Map<String, String>)
+            ServerLogger.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
         }
     }
 
