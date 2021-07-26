@@ -55,6 +55,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -96,6 +97,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Inject
     RemoteConfig remoteConfig;
+
+    @Inject
+    UserSessionInterface userSessionInterface;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
@@ -222,7 +226,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         presenter.setView(this);
 
         List<Visitable> dataInbox = getData();
-        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this, this, this);
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(userSessionInterface,this, this, this, this);
         adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
