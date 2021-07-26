@@ -180,18 +180,26 @@ class GetOccCartMapper @Inject constructor() {
         orderProduct.apply {
             cartId = product.cartId
             productId = product.productId
+            parentId = product.parentId
             productName = product.productName
             productPrice = product.productPrice
+            finalPrice = product.productPrice
             productImageUrl = product.productImage.imageSrc200Square
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
+            maxOrderStock = if (product.productSwitchInvenage == 0) {
+                product.productMaxOrder
+            } else {
+                min(product.productMaxOrder, product.productInvenageValue)
+            }
+            orderQuantity = product.productQuantity
             originalPrice = product.productOriginalPrice
             initialPrice = product.initialPrice
             weight = product.productWeight
             weightActual = product.productWeightActual
             isFreeOngkirExtra = product.freeShippingExtra.eligible
             isFreeOngkir = product.freeShipping.eligible
-            wholesalePrice = mapWholesalePrice(product.wholesalePrice)
+            wholesalePriceList = mapWholesalePrice(product.wholesalePrice)
             maxCharNote = data.maxCharNote
             notes = if (product.productNotes.length > data.maxCharNote) {
                 product.productNotes.substring(0, data.maxCharNote)
@@ -208,7 +216,6 @@ class GetOccCartMapper @Inject constructor() {
             isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
             preOrderDuration = product.productPreorder.durationDay.toIntOrZero()
-            quantity = mapQuantity(product)
             purchaseProtectionPlanData = mapPurchaseProtectionPlanData(product.purchaseProtectionPlanDataResponse)
             variant = product.variantDescriptionDetail.variantName.joinToString(", ")
             productWarningMessage = product.productWarningMessage

@@ -93,7 +93,7 @@ class OrderSummaryPageViewModelTestHelper {
             logisticPromoViewModel = logisticPromo,
             logisticPromoTickerMessage = "Tersedia bbo")
 
-    val product = OrderProduct(productId = Long.MAX_VALUE, quantity = QuantityUiModel(orderQuantity = 1))
+    val product = OrderProduct(productId = Long.MAX_VALUE, orderQuantity = 1)
 
     val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE),products = mutableListOf(product)), preference = preference)
 }

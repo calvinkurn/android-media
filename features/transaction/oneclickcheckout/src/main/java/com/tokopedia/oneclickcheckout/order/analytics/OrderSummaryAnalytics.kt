@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.analytics
 
+import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
@@ -17,7 +18,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
-                EventAction.EDIT_QUANTITY_INCRESE,
+                EventAction.EDIT_QUANTITY_INCREASE,
                 "$productId - $shopId - $productQuantity"
         )
     }
@@ -77,6 +78,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     fun eventClickBayarNotSuccess(isButtonPilihPembayaran: Boolean, eventId: String) {
+        Log.i("qwertyuiop", "not success")
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
@@ -204,6 +206,7 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     fun eventViewErrorMessage(error: String) {
+        Log.i("qwertyuiop", "view error")
         sendEventCategoryActionLabel(
                 EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
                 EventCategory.ORDER_SUMMARY,

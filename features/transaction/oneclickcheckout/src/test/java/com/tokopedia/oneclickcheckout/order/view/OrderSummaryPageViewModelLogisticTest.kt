@@ -19,7 +19,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -117,7 +116,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceTimeBy(100)
         orderSummaryPageViewModel.reloadRates()
         testDispatchers.main.advanceUntilIdle()
@@ -136,7 +135,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
         orderSummaryPageViewModel.reloadRates()
 
@@ -1280,7 +1279,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1333,7 +1332,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         ))), status = "OK"))
 
         // When Update Quantity
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1370,7 +1369,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1399,7 +1398,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         )), status = "OK"))
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1427,7 +1426,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1453,7 +1452,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1485,7 +1484,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then

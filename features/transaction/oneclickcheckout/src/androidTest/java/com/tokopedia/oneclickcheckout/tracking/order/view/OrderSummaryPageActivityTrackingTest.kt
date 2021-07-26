@@ -96,6 +96,8 @@ class OrderSummaryPageActivityTrackingTest {
                 chooseCourierWithText("AnterAja")
             }
 
+            // wait for bottom sheet to fully close
+            Thread.sleep(2000)
             clickButtonPromo()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
@@ -105,7 +107,7 @@ class OrderSummaryPageActivityTrackingTest {
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
             pay()
-            closeBottomSheet()
+//            closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()
@@ -128,7 +130,7 @@ class OrderSummaryPageActivityTrackingTest {
             pay()
             clickButtonContinueWithRedPromo()
             closeBottomSheet()
-            closeBottomSheet()
+//            closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()

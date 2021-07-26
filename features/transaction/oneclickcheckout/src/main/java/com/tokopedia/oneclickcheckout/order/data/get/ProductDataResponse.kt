@@ -13,6 +13,8 @@ class ProductDataResponse(
         @SerializedName("product_id")
         @SuppressLint("Invalid Data Type")
         val productId: Long = 0,
+        @SerializedName("parent_id")
+        val parentId: String = "",
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("product_price")

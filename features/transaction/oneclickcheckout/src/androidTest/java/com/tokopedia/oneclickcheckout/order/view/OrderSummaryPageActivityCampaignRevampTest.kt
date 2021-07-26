@@ -76,7 +76,7 @@ class OrderSummaryPageActivityCampaignRevampTest {
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = "Rp200.000",
-                    productSlashPriceLabel = null,
+                    productSlashPriceLabel = "50%",
                     productVariant = null,
                     productWarningMessage = null,
                     productAlertMessage = null,

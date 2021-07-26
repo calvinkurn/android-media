@@ -554,7 +554,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
         coEvery {
-            addToCartOccUseCase.setParams(any()).executeOnBackground()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseError
 
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
@@ -572,7 +572,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.setParams(any()).executeOnBackground()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
@@ -590,7 +590,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.setParams(any()).executeOnBackground()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", false)

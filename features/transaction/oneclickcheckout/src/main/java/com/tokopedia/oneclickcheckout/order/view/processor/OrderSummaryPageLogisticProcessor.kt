@@ -39,15 +39,15 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: CoroutineDispatchers) {
 
-    private fun generateRatesParam(orderCart: OrderCart, orderProfile: OrderProfile, listShopShipment: List<ShopShipment>): Pair<RatesParam?, Double> {
-        val (shipping, overweight) = generateShippingParam(orderCart, orderProfile)
+    private fun generateRatesParam(orderCart: OrderCart, orderProfile: OrderProfile, orderCost: OrderCost, listShopShipment: List<ShopShipment>): Pair<RatesParam?, Double> {
+        val (shipping, overweight) = generateShippingParam(orderCart, orderProfile, orderCost)
         if (shipping == null) return null to overweight
         return RatesParam.Builder(listShopShipment, shipping).build().apply {
             occ = "1"
         } to 0.0
     }
 
-    private fun generateShippingParam(orderCart: OrderCart, orderProfile: OrderProfile): Pair<ShippingParam?, Double> {
+    private fun generateShippingParam(orderCart: OrderCart, orderProfile: OrderProfile, orderCost: OrderCost): Pair<ShippingParam?, Double> {
         val address = orderProfile.address
         val orderShop = orderCart.shop
         val orderProducts = orderCart.products
@@ -63,13 +63,12 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         val categoryList: ArrayList<String> = ArrayList()
         orderProducts.forEach {
             if (!it.isError) {
-                totalWeight += it.quantity.orderQuantity * it.weight
+                totalWeight += it.orderQuantity * it.weight
                 totalWeightActual += if (it.weightActual > 0) {
-                    it.quantity.orderQuantity * it.weightActual
+                    it.orderQuantity * it.weightActual
                 } else {
-                    it.quantity.orderQuantity * it.weight
+                    it.orderQuantity * it.weight
                 }
-                totalValue += it.quantity.orderQuantity * it.getPrice()
                 if (it.productFinsurance == 1) {
                     productFInsurance = 1
                 }
@@ -138,11 +137,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return data
     }
 
-    suspend fun getRates(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>): ResultRates {
+    suspend fun getRates(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderCost: OrderCost, listShopShipment: List<ShopShipment>): ResultRates {
         OccIdlingResource.increment()
         val result: ResultRates = withContext(executorDispatchers.io) {
             try {
-                val (param, overweight) = generateRatesParam(orderCart, orderProfile, listShopShipment)
+                val (param, overweight) = generateRatesParam(orderCart, orderProfile, orderCost, listShopShipment)
                 if (param == null) {
                     // overweight
                     return@withContext ResultRates(

@@ -60,6 +60,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
+                t.printStackTrace()
                 return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),
@@ -88,7 +89,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                     cart.add(
                             UpdateCartOccCartRequest(
                                     it.cartId,
-                                    it.quantity.orderQuantity,
+                                    it.orderQuantity,
                                     it.notes,
                                     it.productId.toString()
                             )
@@ -115,7 +116,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             }
             val realServiceId = orderShipment.getRealServiceId()
             val profile = UpdateCartOccProfileRequest(
-                    orderProfile.profileId.toString(),
                     orderProfile.payment.gatewayCode,
                     metadata,
                     orderProfile.address.addressId.toString(),

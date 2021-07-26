@@ -13,42 +13,20 @@
               "title": "ticker title"
             }
           ],
-          "max_quantity": 32767,
           "max_char_note": 144,
           "occ_main_onboarding": {
             "force_show_coachmark": false,
             "show_onboarding_ticker": true,
             "onboarding_ticker": {
-              "title": "Baru!",
-              "message": "Cara lain belanja untuk 1 barang dan bisa bayar lebih cepat.",
+              "title": "",
+              "message": "Ini halaman terakhir dari proses belanjamu. Pastikan semua sudah benar, ya. :)",
               "image": "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png",
-              "show_coachmark_link_text": true,
-              "coachmark_link_text": "Yuk, Mulai Coba!"
+              "show_coachmark_link_text": false,
+              "coachmark_link_text": ""
             },
             "onboarding_coachmark": {
-              "skip_button_text": "Lewati",
-              "detail": [
-                {
-                  "step": 1,
-                  "title": "Pengiriman \u0026 pembayaran jadi satu",
-                  "message": "Alamat pengiriman \u0026 metode pembayaran yang sudah dipilih sebelumnya telah digabung jadi satu."
-                },
-                {
-                  "step": 2,
-                  "title": "Bebas atur pengiriman \u0026 pembayaran",
-                  "message": "Kamu bisa ubah alamat, durasi pengiriman \u0026 metode pembayaran dengan klik ikon Pengaturan."
-                },
-                {
-                  "step": 3,
-                  "title": "Bisa cepat ganti kurir",
-                  "message": "Kamu bisa ganti pilihan kurir berdasarkan durasi pengiriman yang sudah disimpan."
-                },
-                {
-                  "step": 4,
-                  "title": "Cuma 1 klik untuk bayar",
-                  "message": "Pesanan akan diproses setelah kamu klik Bayar, \u0026 rekomendasi pilihanmu akan otomatis tersimpan."
-                }
-              ]
+              "skip_button_text": "",
+              "detail": []
             }
           },
           "kero_token": "Tokopedia+Kero:Z4S2NplQ5MOwfgkg1ZtgYCBCSzk\u003d",
@@ -58,22 +36,46 @@
           "group_shop_occ": [
             {
               "errors": [],
-              "cart_string": "480176-0-2034-4678943",
               "shipment_information": {
                 "shop_location": "Kota Yogyakarta",
+                "estimation": "Estimasi Tiba: 2 hari",
                 "free_shipping": {
                   "eligible": true,
                   "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "free_shipping_extra": {
-                  "eligible": true,
-                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "eligible": false,
+                  "badge_url": ""
                 },
                 "preorder": {
-                  "is_preorder": false,
-                  "duration": ""
+                  "is_preorder": true,
+                  "duration": "Pre Order 3 hari"
                 }
               },
+              "errors_unblocking": [],
+              "is_disable_change_courier": false,
+              "auto_courier_selection": false,
+              "courier_selection_error": {
+                "title": "Pengiriman tidak tersedia.",
+                "description": "Berat belanjaanmu melebihi batas untuk satu kali pengiriman."
+              },
+              "bo_metadata": {
+                "bo_type": 3,
+                "bo_eligibilities": [
+                  {
+                    "key": "is_tokonow",
+                    "value": "true"
+                  }
+                ],
+                "additional_attributes": [
+                  {
+                    "key": "is_tokonow",
+                    "value": "true"
+                  }
+                ]
+              },
+              "cart_string": "480176-0-2034-4678943",
+              "payment_profile": "",
               "shop": {
                 "shop_id": 480176,
                 "user_id": 5513284,
@@ -84,23 +86,23 @@
                 "shop_status": 1,
                 "is_gold": 1,
                 "is_gold_badge": true,
-                "is_official": 0,
+                "is_official": 1,
                 "is_free_returns": 0,
                 "gold_merchant": {
-                  "is_gold": 1,
-                  "is_gold_badge": true,
-                  "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  "is_gold": 0,
+                  "is_gold_badge": false,
+                  "gold_merchant_logo_url": ""
                 },
                 "official_store": {
-                  "is_official": 0,
-                  "os_logo_url": ""
+                  "is_official": 1,
+                  "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
                 },
                 "shop_type_info": {
-                  "shop_tier": 1,
+                  "shop_tier": 2,
                   "shop_grade": 0,
-                  "badge": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
-                  "badge_svg": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
-                  "title": "Power Merchant"
+                  "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                  "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                  "title": "Official Store"
                 },
                 "address_id": 3608,
                 "postal_code": "55212",
@@ -320,7 +322,8 @@
                       }
                     ]
                   }
-                ]
+                ],
+                "shop_alert_message": "Alert"
               },
               "warehouse": {
                 "warehouse_id": 2034,
@@ -344,11 +347,14 @@
                 "country_name": "Indonesia",
                 "is_fulfillment": false
               },
+              "toko_cabang": {
+                "message": "",
+                "badge_url": ""
+              },
               "cart_details": [
                 {
                   "products": [
                     {
-                      "cart_id": 33442037,
                       "product_tracker_data": {
                         "attribution": "none/other",
                         "tracker_list_name": "none/other"
@@ -356,13 +362,26 @@
                       "isWishlist": false,
                       "product_id": 15147773,
                       "product_name": "Product1",
-                      "product_price_fmt": "Rp100.000",
-                      "product_price": 100000,
-                      "parent_id": 0,
+                      "product_price_fmt": "Rp10.000",
+                      "product_price": 10000,
+                      "parent_id": 15147772,
                       "category_id": 580,
                       "category": "Kamera, Foto \u0026 Video / Lensa \u0026 Aksesoris / Lensa",
                       "catalog_id": 0,
-                      "wholesale_price": [],
+                      "wholesale_price": [
+                        {
+                          "qty_min": 3,
+                          "prd_prc": 9000
+                        },
+                        {
+                          "qty_min": 5,
+                          "prd_prc": 5000
+                        },
+                        {
+                          "qty_min": 10,
+                          "prd_prc": 1000
+                        }
+                      ],
                       "product_weight_fmt": "10gr",
                       "product_weight": 10,
                       "product_condition": 1,
@@ -413,7 +432,7 @@
                         "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg"
                       },
                       "product_all_images": "[{\"file_name\":\"5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg\",\"file_path\":\"product-1/2017/11/30/5513284\",\"status\":2}]",
-                      "product_notes": "",
+                      "product_notes": "notes apa aja yang isinya panjang banget sekali jauh disana",
                       "product_quantity": 1,
                       "product_weight_unit_code": 1,
                       "product_weight_unit_text": "gr",
@@ -433,8 +452,9 @@
                       "product_alias": "cpl-konven",
                       "sku": "",
                       "campaign_id": 0,
-                      "product_original_price": 0,
-                      "product_price_original_fmt": "",
+                      "product_original_price": 100000,
+                      "product_price_original_fmt": "Rp100.000",
+                      "slash_price_label": "5%",
                       "is_slash_price": false,
                       "free_returns": {
                         "free_returns_logo": ""
@@ -457,7 +477,184 @@
                         "default_child": 0,
                         "variant": [],
                         "children": []
-                      }
+                      },
+                      "purchase_protection_plan_data": {
+                        "protection_available": false,
+                        "protection_type_id": 0,
+                        "protection_price_per_product": 0,
+                        "protection_price": 0,
+                        "protection_title": "",
+                        "protection_subtitle": "",
+                        "protection_link_text": "",
+                        "protection_link_url": "",
+                        "protection_opt_in": false,
+                        "protection_checkbox_disabled": false,
+                        "unit": ""
+                      },
+                      "variant_description_detail": {
+                        "variant_name": [
+                          "hitam",
+                          "putih"
+                        ],
+                        "variant_description": "Varian: blue,23"
+                      },
+                      "product_information": [
+                        "cashback 10%",
+                        "harga berubah"
+                      ],
+                      "product_warning_message": "sisa < 1",
+                      "product_alert_message": "alert"
+                    },
+                    {
+                      "product_tracker_data": {
+                        "attribution": "none/other",
+                        "tracker_list_name": "none/other"
+                      },
+                      "isWishlist": false,
+                      "product_id": 15147774,
+                      "product_name": "Product2",
+                      "product_price_fmt": "Rp10.000",
+                      "product_price": 10000,
+                      "parent_id": 15147772,
+                      "category_id": 580,
+                      "category": "Kamera, Foto \u0026 Video / Lensa \u0026 Aksesoris / Lensa",
+                      "catalog_id": 0,
+                      "wholesale_price": [
+                        {
+                          "qty_min": 3,
+                          "prd_prc": 9000
+                        },
+                        {
+                          "qty_min": 5,
+                          "prd_prc": 5000
+                        },
+                        {
+                          "qty_min": 10,
+                          "prd_prc": 1000
+                        }
+                      ],
+                      "product_weight_fmt": "10gr",
+                      "product_weight": 10,
+                      "product_condition": 1,
+                      "product_status": 1,
+                      "product_url": "https://staging.tokopedia.com/tokocgk/cpl-konven",
+                      "product_returnable": 0,
+                      "is_freereturns": 0,
+                      "is_preorder": 0,
+                      "product_cashback": "",
+                      "product_min_order": 1,
+                      "product_max_order": 32767,
+                      "product_rating": "0.000000",
+                      "product_invenage_value": 32766,
+                      "product_switch_invenage": 1,
+                      "product_invenage_total": {
+                        "by_user": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_user_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_user": false,
+                        "by_product": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_product_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_product": false
+                      },
+                      "price_changes": {
+                        "changes_state": 0,
+                        "amount_difference": 0,
+                        "original_amount": 100000,
+                        "description": "Harga Normal"
+                      },
+                      "product_price_currency": 1,
+                      "product_image": {
+                        "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
+                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
+                        "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
+                        "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg"
+                      },
+                      "product_all_images": "[{\"file_name\":\"5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg\",\"file_path\":\"product-1/2017/11/30/5513284\",\"status\":2}]",
+                      "product_notes": "notes apa aja yang isinya panjang banget sekali jauh disana",
+                      "product_quantity": 1,
+                      "product_weight_unit_code": 1,
+                      "product_weight_unit_text": "gr",
+                      "last_update_price": "1512021695",
+                      "is_update_price": false,
+                      "product_preorder": {
+                        "duration_text": "",
+                        "duration_day": "0",
+                        "duration_unit_code": "0",
+                        "duration_unit_text": "",
+                        "duration_value": "0"
+                      },
+                      "product_showcase": {
+                        "name": "mainan",
+                        "id": 1403015
+                      },
+                      "product_alias": "cpl-konven",
+                      "sku": "",
+                      "campaign_id": 0,
+                      "product_original_price": 100000,
+                      "product_price_original_fmt": "Rp100.000",
+                      "is_slash_price": false,
+                      "free_returns": {
+                        "free_returns_logo": ""
+                      },
+                      "product_finsurance": 1,
+                      "is_wishlisted": true,
+                      "is_ppp": false,
+                      "is_cod": true,
+                      "warehouse_id": 2034,
+                      "is_parent": false,
+                      "is_campaign_error": false,
+                      "is_blacklisted": false,
+                      "free_shipping": {
+                        "eligible": true,
+                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "booking_stock": 0,
+                      "product_variant": {
+                        "parent_id": 0,
+                        "default_child": 0,
+                        "variant": [],
+                        "children": []
+                      },
+                      "purchase_protection_plan_data": {
+                        "protection_available": false,
+                        "protection_type_id": 0,
+                        "protection_price_per_product": 0,
+                        "protection_price": 0,
+                        "protection_title": "",
+                        "protection_subtitle": "",
+                        "protection_link_text": "",
+                        "protection_link_url": "",
+                        "protection_opt_in": false,
+                        "protection_checkbox_disabled": false,
+                        "unit": ""
+                      },
+                      "variant_description_detail": {
+                        "variant_name": [
+                          "hitam",
+                          "putih"
+                        ],
+                        "variant_description": "Varian: blue,23"
+                      },
+                      "product_information": [
+                        "cashback 10%",
+                        "harga berubah"
+                      ],
+                      "product_warning_message": "sisa < 1",
+                      "product_alert_message": "alert",
+                      "slash_price_label": "5%"
                     }
                   ]
                 }
@@ -465,21 +662,6 @@
             }
           ],
           "profile": {
-            "has_preference": true,
-            "is_changed_profile": false,
-            "message": "",
-            "onboarding_header_message": "Pref Header Message",
-            "onboarding_component": {
-              "header_title": "Pref Header Title",
-              "body_image": "http://pref-ecs.tokopedia.com",
-              "body_message": "Pref Body Message......",
-              "info_component": {
-                "text": "Selengkapnya pref",
-                "link": "http://pref-ecs.tokopedia.com"
-              }
-            },
-            "profile_id": 1,
-            "status": 2,
             "address": {
               "address_id": 1,
               "receiver_name": "User 1",
@@ -495,78 +677,40 @@
               "longitude": "1",
               "latitude": "1",
               "postal_code": "1",
-              "geolocation": "1,1"
+              "geolocation": "1,1",
+              "status": 2,
+              "tokonow": {
+                "shop_id": 123,
+                "warehouse_id": 123
+              }
             },
             "payment": {
               "enable": 1,
               "active": 1,
-              "gateway_code": "CREDITCARD",
-              "gateway_name": "Kartu Kredit",
-              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png",
-              "description": "Kartu Kredit (************1841)",
-              "url": "https://pay.tokopedia.com/v2/api/payment/CREDITCARD",
-              "fee": 0,
-              "minimum_amount": 50000,
-              "maximum_amount": 50000000,
+              "gateway_code": "PAYMENT1",
+              "gateway_name": "Payment 1",
+              "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+              "description": "",
+              "url": "",
+              "fee": 1000,
+              "minimum_amount": 10000,
+              "maximum_amount": 100000000,
               "flags": {
                 "pin": false
               },
               "wallet_amount": 0,
-              "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"CREDITCARD\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"1841\",\"issuer\":\"bni\",\"card_token\":\"ced46df1-d3f9-4fbb-b540-951c74834660\",\"card_type\":\"mastercard\",\"total_saved_card\":\"2\",\"installment_term\":\"0\",\"expiry\":\"06/21\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/CREDITCARD\",\"high_risk_flag\":\"\",\"description\":\"Kartu Kredit\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png\",\"signature\":\"53fb901330881ed14c755fbfab125b41a26d0990\",\"customer_name\":\"Jk Buyer\",\"customer_email\":\"jean.karunadewi+jkb@tokopedia.com\",\"user_id\":7977933}",
-              "mdr": 1.5,
+              "metadata": "",
+              "mdr": 0,
               "credit_card": {
                 "number_of_cards": {
-                  "available": 2,
+                  "available": 0,
                   "unavailable": 0,
-                  "total": 2
+                  "total": 0
                 },
-                "available_terms": [
-                  {
-                    "term": 0,
-                    "mdr": 1.5,
-                    "mdr_subsidized": 1.5,
-                    "min_amount": 50000,
-                    "is_selected": true
-                  },
-                  {
-                    "term": 3,
-                    "mdr": 2.5,
-                    "mdr_subsidized": 0,
-                    "min_amount": 500000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 6,
-                    "mdr": 3.5,
-                    "mdr_subsidized": 0,
-                    "min_amount": 500000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 12,
-                    "mdr": 6,
-                    "mdr_subsidized": 0,
-                    "min_amount": 500000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 18,
-                    "mdr": 8,
-                    "mdr_subsidized": 0,
-                    "min_amount": 3000000,
-                    "is_selected": false
-                  },
-                  {
-                    "term": 24,
-                    "mdr": 10,
-                    "mdr_subsidized": 0,
-                    "min_amount": 5000000,
-                    "is_selected": false
-                  }
-                ],
-                "bank_code": "bni",
-                "card_type": "MasterCard",
-                "is_expired": false,
+                "available_terms": [],
+                "bank_code": "",
+                "card_type": "",
+                "is_expired": true,
                 "tnc_info": "\u003cul\u003e\u003cli\u003e\u003ch1\u003eKonversi Cicilan 0%\u003c/h1\u003e\u003col\u003e\u003cli\u003ePihak bank butuh 7-14 hari kerja untuk mengubah tagihanmu dari pembayaran penuh (full payment) jadi cicilan\u003c/li\u003e\u003cli\u003eJika tagihan kartu kreditmu terbit dan ditagih secara penuh, kamu bisa lakukan pembayaran minimum dulu.\u003c/li\u003e\u003c/ol\u003e\u003c/li\u003e\u003cli\u003e\u003ch1\u003eBiaya Layanan\u003c/h1\u003e\u003cp\u003eBiaya layanan ini diberlakukan untuk tujuan pemeliharaan sistem dan peningkatan layanan dalam bertransaksi melalui Tokopedia.\u003c/p\u003e\u003c/li\u003e\u003c/ul\u003e"
               },
               "error_message": {
@@ -584,7 +728,11 @@
             "shipment": {
               "service_id": 1104,
               "service_duration": "Reguler (2-4 hari)",
-              "service_name": "Reguler"
+              "service_name": "Reguler",
+              "sp_id": 0,
+              "is_free_shipping_selected": false,
+              "recommendation_sp_id": 0,
+              "recommendation_service_id": 0
             }
           },
           "promo": {
@@ -667,9 +815,8 @@
           "payment_additional_data": {
             "merchant_code": "tokopedia",
             "profile_code": "TKPD_DEFAULT",
-            "signature": "681f804316cb384bde0a69d731daed7811a6bf64",
-            "change_cc_link": "https://pay.tokopedia.com/v3/cardlist",
-            "callback_url": "https://api.tokopedia.com/cart/v2/cart/v2/receiver"
+            "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
+            "change_cc_link": ""
           },
           "error_ticker": "",
           "prompt": {
