@@ -286,12 +286,12 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadHeaderBackground() {
         ivHeaderBackground?.show()
-        ivHeaderBackground?.loadImage(R.drawable.tokopedianow_ic_header_background_shimmering)
+        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background_shimmering)
     }
 
     private fun showHeaderBackground() {
         ivHeaderBackground?.show()
-        ivHeaderBackground?.loadImage(R.drawable.tokopedianow_ic_header_background)
+        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
     }
 
     private fun hideHeaderBackground() {
