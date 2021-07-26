@@ -417,7 +417,7 @@ class DigitalTopupAnalytics {
         )
     }
 
-    fun impressionViewMccmProduct(mccmProducts: List<DigitalTrackProductTelco>, operatorName: String, userId: String, categoryId: Int) {
+    fun impressionViewMccmProduct(mccmProducts: List<DigitalTrackProductTelco>, operatorName: String, userId: String, titleProduct: String) {
         val mccmTrackingProductList = mccmProducts.map {
             Bundle().apply {
                 putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME, "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName")
@@ -431,7 +431,7 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.VIEW_ITEM)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.VIEW_PROMO_CARD)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
-            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName")
+            putString(TrackAppUtils.EVENT_LABEL, "${titleProduct.toLowerCase()} - $operatorName")
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
@@ -441,7 +441,7 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.VIEW_ITEM, eventDataLayer)
     }
 
-    fun clickOnMccmProduct(itemProduct: TelcoProduct, operatorName: String, position: Int, userId: String, categoryId: Int) {
+    fun clickOnMccmProduct(itemProduct: TelcoProduct, operatorName: String, position: Int, userId: String, titleProduct: String) {
         val product = Bundle().apply {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME, "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName")
             putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, position.toString())
@@ -453,7 +453,7 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.SELECT_CONTENT)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_PROMO_CARD)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
-            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName")
+            putString(TrackAppUtils.EVENT_LABEL, "${titleProduct.toLowerCase()} - $operatorName")
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
@@ -463,12 +463,12 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.SELECT_CONTENT, eventDataLayer)
     }
 
-    fun clickSeeMoreOnMccmProductItem(categoryId: Int, operatorName: String, userId: String) {
+    fun clickSeeMoreOnMccmProductItem(titleProduct: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(TrackAppUtils.EVENT to DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_ACTION to DigitalTopupEventTracking.Action.CLICK_DETAIL_IN_PROMO_CARD,
                         TrackAppUtils.EVENT_CATEGORY to DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
-                        TrackAppUtils.EVENT_LABEL to "${getTrackingCategoryName(categoryId)} - $operatorName",
+                        TrackAppUtils.EVENT_LABEL to "${titleProduct.toLowerCase()} - $operatorName",
                         DigitalTopupEventTracking.Additional.BUSINESS_UNIT to DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
                         DigitalTopupEventTracking.Additional.CURRENT_SITE to DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
                         DigitalTopupEventTracking.Additional.USER_ID to userId,

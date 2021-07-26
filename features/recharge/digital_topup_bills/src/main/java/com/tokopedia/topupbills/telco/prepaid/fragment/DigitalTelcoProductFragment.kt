@@ -166,7 +166,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     }
 
     override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int) {
-        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName, position, userSession.userId, categoryId)
+        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName, position, userSession.userId, titleProduct)
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
         telcoTelcoProductView.selectMccmProductItem(position)
     }
@@ -186,7 +186,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     }
 
     override fun onSeeMoreMccmProduct(itemProduct: TelcoProduct, position: Int) {
-        topupAnalytics.clickSeeMoreOnMccmProductItem(categoryId, selectedOperatorName, userSession.userId)
+        topupAnalytics.clickSeeMoreOnMccmProductItem(titleProduct, selectedOperatorName, userSession.userId)
         renderSeeMoreBottomSheet(itemProduct, object : DigitalProductBottomSheet.ActionListener {
             override fun onClickOnProduct() {
                 activity?.run {
@@ -205,7 +205,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     }
 
     override fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
-        topupAnalytics.impressionViewMccmProduct(digitalTrackProductTelcoList, selectedOperatorName, userSession.userId, categoryId)
+        topupAnalytics.impressionViewMccmProduct(digitalTrackProductTelcoList, selectedOperatorName, userSession.userId, titleProduct)
     }
 
     override fun onScrollToPositionItem(position: Int) {
