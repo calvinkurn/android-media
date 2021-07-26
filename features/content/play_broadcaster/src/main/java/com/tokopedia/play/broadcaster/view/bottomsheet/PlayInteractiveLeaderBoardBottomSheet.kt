@@ -58,8 +58,8 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         }
     })
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onChanged() {
-            if (leaderboardAdapter.itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            if (itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
         }
     }
 
