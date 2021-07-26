@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,6 +38,11 @@ class PlayInteractiveLeaderboardViewComponent(
             listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
         }
     })
+    private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() {
+            if (leaderboardAdapter.itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
+        }
+    }
 
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
@@ -51,6 +58,7 @@ class PlayInteractiveLeaderboardViewComponent(
         findViewById<UnifyButton>(R.id.btn_action_leaderboard_error).setOnClickListener {
             listener.onRefreshButtonClicked(this)
         }
+        registerAdapterObserver()
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
@@ -83,6 +91,19 @@ class PlayInteractiveLeaderboardViewComponent(
             errorView.hide()
             rvLeaderboard.show()
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        unregisterAdapterObserver()
+    }
+
+    private fun registerAdapterObserver() {
+        leaderboardAdapter.registerAdapterDataObserver(leaderboardAdapterObserver)
+    }
+
+    private fun unregisterAdapterObserver() {
+        leaderboardAdapter.unregisterAdapterDataObserver(leaderboardAdapterObserver)
     }
 
     interface Listener {

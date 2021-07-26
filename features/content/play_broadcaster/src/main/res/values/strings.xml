@@ -192,6 +192,7 @@
     <string name="play_interactive_broadcast_onboarding_title">Baru! Main game di live streaming</string>
     <string name="play_interactive_broadcast_onboarding_subtitle">Bikin penontonmu betah nonton lama dengan buat Game Hadiah.</string>
 
+    <string name="play_interactive_broadcast_not_allowed">Oops, siarannya sebentar lagi akan habis.</string>
     <string name="play_interactive_broadcast_create_fail">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya</string>
 
     <string name="play_interactive_leaderboard_default">0</string>

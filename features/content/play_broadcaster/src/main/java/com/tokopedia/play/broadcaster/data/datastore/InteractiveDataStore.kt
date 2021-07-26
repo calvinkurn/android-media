@@ -6,11 +6,15 @@ package com.tokopedia.play.broadcaster.data.datastore
  */
 interface InteractiveDataStore {
 
+    fun getInteractiveId(): String
+
     fun getInteractiveTitle(): String
 
     fun getSelectedInteractiveDuration(): Long
 
     fun getInteractiveDurations(): List<Long>
+
+    fun setInteractiveId(id: String)
 
     fun setInteractiveTitle(title: String)
 

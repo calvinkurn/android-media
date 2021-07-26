@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -66,5 +67,7 @@ interface PlayBroadcastMapper {
 
     fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
 
-    fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean
+    fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
+                              title: String,
+                              durationInMs: Long): InteractiveSessionUiModel
 }

@@ -23,7 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -39,10 +39,16 @@ import com.tokopedia.play_common.R as commonR
  */
 class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
+    private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
+            analytic.onClickChatWinnerIcon(
+                parentViewModel.channelId,
+                parentViewModel.interactiveId,
+                parentViewModel.interactiveTitle
+            )
             RouteManager.route(
                 requireContext(),
                 ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG,
@@ -51,6 +57,11 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             )
         }
     })
+    private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() {
+            if (leaderboardAdapter.itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
+        }
+    }
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -71,7 +82,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            R.layout.view_play_interactive_leaderboard,
+            commonR.layout.view_play_interactive_leaderboard,
             container,
             false
         )
@@ -83,6 +94,11 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         setupView(view)
 
         observeLeaderboardInfo()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterAdapterObserver()
     }
 
     private fun setupView(view: View) {
@@ -104,6 +120,8 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             }
 
             rvLeaderboard.adapter = leaderboardAdapter
+
+            registerAdapterObserver()
         }
     }
 
@@ -156,6 +174,14 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
+    }
+
+    private fun registerAdapterObserver() {
+        leaderboardAdapter.registerAdapterDataObserver(leaderboardAdapterObserver)
+    }
+
+    private fun unregisterAdapterObserver() {
+        leaderboardAdapter.unregisterAdapterDataObserver(leaderboardAdapterObserver)
     }
 
     companion object {
