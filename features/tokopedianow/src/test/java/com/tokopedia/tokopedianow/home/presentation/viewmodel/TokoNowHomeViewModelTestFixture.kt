@@ -1,6 +1,9 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -53,6 +56,12 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
     @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+    @RelaxedMockK
+    lateinit var updateCartUseCase: UpdateCartUseCase
+    @RelaxedMockK
+    lateinit var deleteCartUseCase: DeleteCartUseCase
+    @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -74,6 +83,9 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getKeywordSearchUseCase,
                 getTickerUseCase,
                 getMiniCartUseCase,
+                addToCartUseCase,
+                updateCartUseCase,
+                deleteCartUseCase,
                 getChooseAddressWarehouseLocUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        tools:src="@drawable/ic_som_list_success_bulk_accept" />
+        tools:src="@drawable/ic_som_bulk_success" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSomListBulkActionDialogTitle"

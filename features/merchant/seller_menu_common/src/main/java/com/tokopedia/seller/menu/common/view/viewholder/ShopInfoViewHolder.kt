@@ -58,6 +58,8 @@ class ShopInfoViewHolder(
         private const val TAB_PM_PARAM = "tab"
         private const val TAB_PM = "pm"
         private const val TAB_PM_PRO = "pm_pro"
+
+        private const val SHOP_AGE_SIXTY = 60
     }
 
     private val context by lazy { itemView.context }
@@ -79,7 +81,7 @@ class ShopInfoViewHolder(
 
                         localLoadOthers?.gone()
                         shopStatus?.visible()
-                        saldoBalance?.visible()
+                        layout_sah_other_saldo?.visible()
                     }
                     partialResponseStatus.first -> {
                         showNameAndAvatar()
@@ -96,7 +98,7 @@ class ShopInfoViewHolder(
                             setup()
                             visible()
                         }
-                        saldoBalance?.gone()
+                        layout_sah_other_saldo?.gone()
                     }
                     partialResponseStatus.second -> {
                         showNameAndAvatar()
@@ -109,7 +111,7 @@ class ShopInfoViewHolder(
                             setup()
                             visible()
                         }
-                        saldoBalance?.visible()
+                        layout_sah_other_saldo?.visible()
                     }
                 }
                 showShopScore(uiModel)
@@ -135,9 +137,8 @@ class ShopInfoViewHolder(
     }
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
-        val shopAgeSixty = 60
         with(itemView) {
-            if (uiModel.shopAge < shopAgeSixty || uiModel.shopScore < 0) {
+            if (uiModel.shopAge < SHOP_AGE_SIXTY || uiModel.shopScore < 0) {
                 shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
                 shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                 shopScoreMaxLabel?.hide()
@@ -191,7 +192,7 @@ class ShopInfoViewHolder(
     }
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.saldoBalance.run {
+        itemView.layout_sah_other_saldo.run {
             balanceTitle?.text = context.resources.getString(R.string.setting_balance)
             balanceValue?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
@@ -312,15 +313,13 @@ class ShopInfoViewHolder(
             }
         }
 
-        val thresholdTransaction = 110
-        val maxTransaction = 100
         val totalTransaction = userShopInfo?.totalTransaction ?: 0
-        if (totalTransaction >= thresholdTransaction) {
+        if (totalTransaction >= Constant.ShopStatus.THRESHOLD_TRANSACTION) {
             hideTransactionSection()
         } else {
             if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
                 showTransactionSection()
-                if (totalTransaction > maxTransaction) {
+                if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                     txStatsRM.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
@@ -422,10 +421,9 @@ class ShopInfoViewHolder(
             }
         }
 
-        val roundedRadius = 16F
         ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
                 .toBuilder()
-                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, Constant.ShopStatus.ROUNDED_RADIUS)
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
