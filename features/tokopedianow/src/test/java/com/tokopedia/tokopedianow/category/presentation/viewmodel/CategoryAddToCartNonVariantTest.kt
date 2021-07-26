@@ -100,4 +100,19 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
     fun `add to cart recom item with current quantity should do nothing`() {
         addToCartTestHelper.`add to cart recom item with current quantity should do nothing`()
     }
+
+    @Test
+    fun `add to cart recom item to decrease quantity success`() {
+        addToCartTestHelper.`add to cart recom item to decrease quantity success`()
+    }
+
+    @Test
+    fun `add to cart recom item to increase quantity success`() {
+        addToCartTestHelper.`add to cart recom item to increase quantity success`()
+    }
+
+    @Test
+    fun `add to cart recom item to update quantity failed`() {
+        addToCartTestHelper.`add to cart recom item to update quantity failed`()
+    }
 }

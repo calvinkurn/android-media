@@ -1143,15 +1143,54 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         if (recommendationItem.quantity == quantity) return
 
+        if (recommendationItem.quantity == 0) {
+            addToCartRecommendationItem(recommendationItem, quantity)
+        }
+        else {
+            updateCartRecommendationItem(recommendationItem, quantity)
+        }
+    }
+
+    private fun addToCartRecommendationItem(
+            recommendationItem: RecommendationItem,
+            quantity: Int,
+    ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
                 productId = recommendationItem.productId.toString(),
                 shopId = recommendationItem.shopId.toString(),
                 quantity = quantity,
         )
+
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             recommendationItem.quantity = quantity
             updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            refreshMiniCart()
+        }, {
+            onAddToCartFailed(it)
+        })
+    }
+
+    private fun updateCartRecommendationItem(
+            recommendationItem: RecommendationItem,
+            quantity: Int,
+    ) {
+        val productId = recommendationItem.productId.toString()
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId }
+                ?: return
+        setMiniCartItemQuantity(miniCartItem, quantity)
+
+        val updateCartRequest = UpdateCartRequest(
+                cartId = miniCartItem.cartId,
+                quantity = miniCartItem.quantity,
+                notes = miniCartItem.notes
+        )
+        updateCartUseCase.setParams(
+                updateCartRequestList = listOf(updateCartRequest),
+                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
+        updateCartUseCase.execute({
+            recommendationItem.quantity = quantity
             refreshMiniCart()
         }, {
             onAddToCartFailed(it)
