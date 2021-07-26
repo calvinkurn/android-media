@@ -73,9 +73,11 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         recyclerView.adapter = adapter
 
         if (productType == TelcoProductType.PRODUCT_GRID) {
-            val gridLayout = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+            val gridLayout = GridLayoutManager(context, PRODUCT_GRID_SPAN_LAYOUT, RecyclerView.VERTICAL, false)
             gridLayout.spanSizeLookup = object : SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int { return if (hasMccmProduct && position == 0) 2 else 1 }
+                override fun getSpanSize(position: Int): Int {
+                    return if (hasMccmProduct && position == 0) PRODUCT_GRID_SPAN_LAYOUT else SINGLE_PRODUCT_GRID_SPAN_LAYOUT
+                }
             }
             recyclerView.layoutManager = gridLayout
         } else {
@@ -115,7 +117,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     fun trackFirstMccmVisibleItemToUser() {
         if (hasMccmProduct) {
-            recyclerView.findViewHolderForAdapterPosition(0)?.let {
+            recyclerView.findViewHolderForAdapterPosition(MCCM_WIDGET_POSITION)?.let {
                 (it as TelcoProductMccmListViewHolder).trackCurrentVisibleMccmProduct()
             }
         }
@@ -135,7 +137,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         override fun onClickItemProduct(element: TelcoProduct, position: Int) {
             val label = getLabelProductItem(element.id)
             listener.onClickProduct(element, position, label)
-            adapter.selectedMccmPosition = -1
+            adapter.selectedMccmPosition = RecyclerView.NO_POSITION
         }
 
         override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
@@ -175,7 +177,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
 
         for (i in firstPos..lastPos) {
-            if (firstPos >= 0 && lastPos <= productList.size - 1) {
+            if (firstPos >= 0 && lastPos < productList.size) {
                 val product = productList[i]
                 if (product is TelcoProduct) {
                     digitalTrackProductTelcoList.add(DigitalTrackProductTelco(product, product.productPosition))
@@ -183,7 +185,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
             }
         }
-        if (digitalTrackProductTelcoList.size > 0) {
+        if (digitalTrackProductTelcoList.isNotEmpty()) {
             listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
         }
     }
@@ -191,15 +193,15 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     fun selectProductItem(position: Int) {
         adapter.selectItemProduct(position)
         if (hasMccmProduct) {
-            recyclerView.findViewHolderForAdapterPosition(0)?.let {
-                (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(-1)
+            recyclerView.findViewHolderForAdapterPosition(MCCM_WIDGET_POSITION)?.let {
+                (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(RecyclerView.NO_POSITION)
             }
         }
     }
 
     fun selectMccmProductItem(position: Int) {
-        adapter.selectItemProduct(-1)
-        recyclerView.findViewHolderForAdapterPosition(0)?.let {
+        adapter.selectItemProduct(RecyclerView.NO_POSITION)
+        recyclerView.findViewHolderForAdapterPosition(MCCM_WIDGET_POSITION)?.let {
             (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(position)
         }
     }
@@ -268,6 +270,13 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)
+    }
+
+    companion object {
+        const val MCCM_WIDGET_POSITION = 0
+
+        const val PRODUCT_GRID_SPAN_LAYOUT = 2
+        const val SINGLE_PRODUCT_GRID_SPAN_LAYOUT = 2
     }
 
 }

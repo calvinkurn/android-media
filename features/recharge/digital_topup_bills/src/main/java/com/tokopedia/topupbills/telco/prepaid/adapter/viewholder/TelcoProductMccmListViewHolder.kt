@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.item_telco_mccm_list_section_product.view.
 
 class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListener?) : AbstractViewHolder<TelcoCatalogDataCollection>(itemView) {
 
-    var selectedMccmPosition = -1
+    var selectedMccmPosition = RecyclerView.NO_POSITION
     lateinit var adapter: TelcoProductAdapter
 
     override fun bind(element: TelcoCatalogDataCollection) {
@@ -98,13 +98,13 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
 
         for (i in firstPos..lastPos) {
-            if (firstPos >= 0 && lastPos <= productList.size - 1) {
+            if (firstPos >= 0 && lastPos < productList.size) {
                 if (productList[i] is TelcoProduct) {
                     digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i] as TelcoProduct, i))
                 }
             }
         }
-        if (digitalTrackProductTelcoList.size > 0) {
+        if (digitalTrackProductTelcoList.isNotEmpty()) {
             listener?.onTrackImpressionMccmProductsList(digitalTrackProductTelcoList)
         }
     }
