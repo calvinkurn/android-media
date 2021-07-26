@@ -45,6 +45,7 @@
     <string name="smart_bills_clustering_local_load_desc">Klik ikon di samping untuk coba lagi.</string>
     <string name="smart_bills_clustering_price">-</string>
 
+    <string name="smart_bills_add_bills_title">Tambah Tagihan</string>
     <string name="smart_bills_add_bills_title_bottom_sheet_catalog">Mau tambah tagihan apa?</string>
     <string name="smart_bills_add_bills_bottom_sheet_catalog_empty">Maaf, katalog produk sedang kosong</string>
 </resources>

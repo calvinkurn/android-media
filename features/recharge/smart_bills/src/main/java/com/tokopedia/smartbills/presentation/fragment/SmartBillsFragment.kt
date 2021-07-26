@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -269,13 +268,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
         viewModel.catalogList.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
-            when(it){
+            when (it) {
                 is Success -> {
                     if(it.data.isNotEmpty()) {
-                        clickEmptyorAddButton(it.data)
+                        showCatalogBottomSheet(it.data)
                     } else {
                         view?.let { view ->
-                            Toaster.build(view,getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty) , Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            Toaster.build(view, getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
                     }
@@ -336,6 +335,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
                     }
                 })
+
+                tv_sbm_add_bills.setOnClickListener {
+                    getCatalogData()
+                }
 
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
@@ -436,8 +439,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
-        if(position>=0)
-        adapter.updateListByCheck(isChecked, position)
+        if (position >= 0)
+            adapter.updateListByCheck(isChecked, position)
     }
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
@@ -454,18 +457,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun clickEmptyButton() {
+        if (getRemoteConfigAddBillsEnabler()) {
+            getCatalogData()
+        } else {
+            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
+        }
+    }
+
+    private fun getCatalogData() {
         showProgressBar()
         viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID))
     }
 
-    private fun clickEmptyorAddButton(catalogList: List<SmartBillsCatalogMenu>){
-        if(getRemoteConfigAddBillsEnabler()){
-            val catalogBottomSheet = SmartBillsCatalogBottomSheet()
-            catalogBottomSheet.showSBMCatalog(catalogList)
-            catalogBottomSheet.show(requireFragmentManager(), "")
-        } else {
-            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
-        }
+    private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
+        val catalogBottomSheet = SmartBillsCatalogBottomSheet()
+        catalogBottomSheet.showSBMCatalog(catalogList)
+        catalogBottomSheet.show(requireFragmentManager(), "")
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -663,6 +670,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private fun hideProgressBar(){
         sbm_progress_bar.hide()
     }
+
     companion object {
         const val EXTRA_SOURCE_TYPE = "source"
 
