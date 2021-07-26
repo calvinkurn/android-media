@@ -118,6 +118,11 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
 
+        const val SHARE_URL = "https://www.tokopedia.com/now"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.jpg"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
+        const val MAIN_SHOP_ID = "11530573"
+
         fun newInstance() = TokoNowHomeFragment()
     }
 
@@ -1038,16 +1043,16 @@ class TokoNowHomeFragment: Fragment(),
     private fun shareHomeTokonow(){
         shareHomeTokonow = ShareHomeTokonow(
                 "Sharing Text Here",
-                "https://www.tokopedia.com/now",
+                SHARE_URL,
                 userSession.userId,
-                "pageId001",
-                "Thumbnail Title Here",
-                "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
-                "https://images.tokopedia.net/img/cache/750/coCfvv/2021/7/22/6734d6aa-19a8-429a-8b43-00004c350198.jpg",
-                "specPageId001",
-                "Spesific page name",
-                "https://www.tokopedia.com/now",
-                "This is Spesific page desc",
+                MAIN_SHOP_ID,
+                resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
+                THUMBNAIL_IMAGE_SHARE_URL,
+                OG_IMAGE_SHARE_URL,
+                MAIN_SHOP_ID,
+                resources.getString(R.string.tokopedianow_home_share_title),
+                SHARE_URL,
+                resources.getString(R.string.tokopedianow_home_share_desc),
                 "This is Share String"
         )
     }
