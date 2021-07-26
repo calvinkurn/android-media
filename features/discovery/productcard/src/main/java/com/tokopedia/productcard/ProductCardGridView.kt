@@ -23,6 +23,12 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
