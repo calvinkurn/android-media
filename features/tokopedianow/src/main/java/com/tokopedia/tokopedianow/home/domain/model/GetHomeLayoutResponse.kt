@@ -18,6 +18,9 @@ data class HomeLayoutResponse(
     @SerializedName("id")
     val id: String = "",
     @Expose
+    @SerializedName("pageName")
+    val pageName: String = "",
+    @Expose
     @SerializedName("group_id")
     val groupId: String = "",
     @Expose
