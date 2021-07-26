@@ -8,10 +8,6 @@ data class ShareHomeTokonow(
         val thumbNailTitle: String = "",
         val thumbNailImage: String = "",
         val ogImageUrl: String = "",
-        val specificPageId: String = "",
         val specificPageName: String = "",
-        val completePageUrl: String = "",
         val specificPageDescription: String = "",
-        val shareString: String = ""
-
 )

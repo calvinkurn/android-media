@@ -121,6 +121,8 @@ class TokoNowHomeFragment: Fragment(),
         const val SHARE_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.jpg"
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
+        const val PAGE_SHARE_NAME = "TokoNow"
+        const val SHARE = "Share"
         const val MAIN_SHOP_ID = "11530573"
 
         fun newInstance() = TokoNowHomeFragment()
@@ -976,10 +978,8 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    //call this when share icon is click
-    //for "{sharing_text}" string ask PO he/she will give you the format in which sharing string is to be created
     private fun shareIconClicked(shareHomeTokonow: ShareHomeTokonow?){
-        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){//this method has two parameters please use your own key as feature flag
+        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
             showUniversalShareBottomSheet(shareHomeTokonow)
         }
         else {
@@ -990,21 +990,22 @@ class TokoNowHomeFragment: Fragment(),
                             if (linkerShareData.url != null) {
                                 shareData(
                                     activity,
-                                    shareHomeTokonow?.sharingText +" "+ linkerShareData.shareUri ?: "",
+                                    String.format("%s %s", shareHomeTokonow?.sharingText,
+                                            linkerShareData.shareUri),
                                     linkerShareData.url
                                 )
                             }
                         }
 
                         override fun onError(linkerError: LinkerError) {
-                            shareData(activity, shareHomeTokonow?.sharingText ?: "", shareHomeTokonow?.sharingUrl ?: "")
+                            shareData(activity, shareHomeTokonow?.sharingText ?: "",
+                                    shareHomeTokonow?.sharingUrl ?: "")
                         }
                     })
             )
         }
     }
 
-    //feel free to move this method to Util
     fun shareData(context: Context?, shareTxt: String?, pageUri: String?) {
         val share = Intent(Intent.ACTION_SEND)
         share.type = "text/plain"
@@ -1012,11 +1013,10 @@ class TokoNowHomeFragment: Fragment(),
         context?.startActivity(Intent.createChooser(share, shareTxt))
     }
 
-    //method to init and feed data to Universal sharing
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData("TokoNow", shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", "Share")
+            setUtmCampaignData(PAGE_SHARE_NAME, shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
             setMetaData(
                 shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
             )
@@ -1026,14 +1026,12 @@ class TokoNowHomeFragment: Fragment(),
         universalShareBottomSheet?.show(fragmentManager)
     }
 
-    //please discuss with PO for setting the data of this method. I have copied the Discovery template
-    //you can check the Discovery integration in DiscoveryFragment
     private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
         val linkerData = LinkerData()
-        linkerData.id = shareHomeTokonow?.specificPageId ?: "" //page specific id
-        linkerData.name = shareHomeTokonow?.specificPageName ?: "" //specific page name
-        linkerData.uri = shareHomeTokonow?.completePageUrl ?: ""
-        linkerData.description = shareHomeTokonow?.specificPageDescription ?: "" //specific page description
+        linkerData.id = shareHomeTokonow?.pageId ?: ""
+        linkerData.name = shareHomeTokonow?.specificPageName ?: ""
+        linkerData.uri = shareHomeTokonow?.sharingUrl ?: ""
+        linkerData.description = shareHomeTokonow?.specificPageDescription ?: ""
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
@@ -1042,18 +1040,15 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun shareHomeTokonow(){
         shareHomeTokonow = ShareHomeTokonow(
-                "Sharing Text Here",
+                resources.getString(R.string.tokopedianow_home_share_main_text),
                 SHARE_URL,
                 userSession.userId,
                 MAIN_SHOP_ID,
                 resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
                 THUMBNAIL_IMAGE_SHARE_URL,
                 OG_IMAGE_SHARE_URL,
-                MAIN_SHOP_ID,
                 resources.getString(R.string.tokopedianow_home_share_title),
-                SHARE_URL,
                 resources.getString(R.string.tokopedianow_home_share_desc),
-                "This is Share String"
         )
     }
 
@@ -1070,7 +1065,7 @@ class TokoNowHomeFragment: Fragment(),
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = shareHomeTokonow?.shareString + " " + linkerShareData?.shareUri
+                    val shareString = String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData?.shareUri)
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     universalShareBottomSheet?.dismiss()
                 }
