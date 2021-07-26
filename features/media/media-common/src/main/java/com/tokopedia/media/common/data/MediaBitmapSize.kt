@@ -4,8 +4,8 @@ import android.content.Context
 
 class MediaBitmapSize(context: Context?) : MediaPreferences(context) {
 
-    fun save(value: Int) {
-        val currentSize = getInt(KEY_BITMAP_SIZE)
+    fun save(value: String) {
+        val currentSize = getString(KEY_BITMAP_SIZE)
         insert(KEY_BITMAP_SIZE, currentSize + value)
     }
 

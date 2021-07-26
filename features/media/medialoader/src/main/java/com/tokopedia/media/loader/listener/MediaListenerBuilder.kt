@@ -41,18 +41,21 @@ object MediaListenerBuilder {
                 isFirstResource: Boolean
         ): Boolean {
             val pageName = context.javaClass.name.split(".").last()
+
             val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it).toString() }?: "0"
+            val fileSizeInMb = abs(fileSize.toLong() * 1024L * 1024L)
+
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
             // save for an accumulative bitmap size in local
-            Loader.bitmapSize()?.save(abs(fileSize.toInt()))
+            Loader.bitmapSize()?.save(fileSizeInMb.toString())
 
             // only track if the URL from CDN service
             trackPerformancePostRender(
                 performanceMonitoring,
                 pageName,
                 loadTime,
-                fileSize
+                fileSizeInMb.toString()
             )
 
             // override the load time into properties
