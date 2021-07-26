@@ -34,16 +34,24 @@ open class WhatsappVerificationFragment : VerificationFragment() {
     }
 
     override fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
-        if (otpRequestData.success &&
+        if (otpRequestData.errorCode == WA_NOT_REGISTERED_ERROR_CODE &&
                 modeListData.modeText == OtpConstant.OtpMode.WA &&
-                otpRequestData.isWaNotRegistered) {
-            (activity as VerificationActivity).goToWhatsappNotRegistered()
+                otpRequestData.messageTitle.isNotEmpty() &&
+                otpRequestData.messageSubTitle.isNotEmpty() &&
+                otpRequestData.messageImgLink.isNotEmpty()) {
+            (activity as VerificationActivity).goToWhatsappNotRegistered(
+                    otpRequestData.messageTitle,
+                    otpRequestData.messageSubTitle,
+                    otpRequestData.messageImgLink
+            )
         } else {
             super.onSuccessSendOtp(otpRequestData)
         }
     }
 
     companion object {
+
+        const val WA_NOT_REGISTERED_ERROR_CODE = "030002"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = WhatsappVerificationFragment()
