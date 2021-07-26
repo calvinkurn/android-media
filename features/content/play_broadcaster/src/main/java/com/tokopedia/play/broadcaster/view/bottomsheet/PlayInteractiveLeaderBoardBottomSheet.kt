@@ -23,7 +23,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -51,6 +50,11 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             )
         }
     })
+    private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() {
+            if (leaderboardAdapter.itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
+        }
+    }
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -85,6 +89,11 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         observeLeaderboardInfo()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterAdapterObserver()
+    }
+
     private fun setupView(view: View) {
         with(view) {
             rvLeaderboard = findViewById(commonR.id.rv_leaderboard)
@@ -104,6 +113,8 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             }
 
             rvLeaderboard.adapter = leaderboardAdapter
+
+            registerAdapterObserver()
         }
     }
 
@@ -156,6 +167,14 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
+    }
+
+    private fun registerAdapterObserver() {
+        leaderboardAdapter.registerAdapterDataObserver(leaderboardAdapterObserver)
+    }
+
+    private fun unregisterAdapterObserver() {
+        leaderboardAdapter.unregisterAdapterDataObserver(leaderboardAdapterObserver)
     }
 
     companion object {
