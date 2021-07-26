@@ -5,15 +5,14 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.media.MediaScannerConnection
 import android.os.Build
-import android.os.Environment
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.utils.file.PublicFolderUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.coroutines.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
 class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHelper.PermissionCheckListener, CoroutineScope {
@@ -66,41 +65,23 @@ class ScreenshotHelper(private val onSuccess: () -> Unit) : PermissionCheckerHel
     }
 
     private fun saveToExtDirectory(bitmap: Bitmap?) {
-        bitmap?.let {
-            val applicationContext = view?.context?.applicationContext
+        val applicationContext = view?.context?.applicationContext
+        if (bitmap != null && applicationContext != null)  {
             launchCatchError(block = {
-                val dest = getDestinationFile()
-                writeBitmapToFile(bitmap, dest)
-                applicationContext?.let {
-                    MediaScannerConnection.scanFile(applicationContext,
-                            arrayOf(dest.toString()), null, null)
+                val filename = "$filePrefix${System.currentTimeMillis()}$fileExt"
+                val result = PublicFolderUtil.putImageToPublicFolder(applicationContext,
+                        bitmap,
+                        filename)
+                val outputFile = result.first
+                if (outputFile != null) {
+                    MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
                 }
                 onSuccess.invoke()
                 bitmap.recycle()
             }, onError = {
                 it.stackTrace
             })
-
         }
-    }
-
-    private suspend fun writeBitmapToFile(bitmap: Bitmap, file: File) = withContext(Dispatchers.IO) {
-        try {
-            val out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
-            out.flush()
-            out.close()
-        } catch (e: IOException) {
-        }
-    }
-
-    private suspend fun getDestinationFile(): File = withContext(Dispatchers.IO) {
-        val filename = "$filePrefix${System.currentTimeMillis()}$fileExt"
-        val root = Environment.getExternalStorageDirectory().toString()
-        val sd = File("$root/${Environment.DIRECTORY_PICTURES}")
-        if (!sd.exists())
-            sd.mkdir()
-        return@withContext File(sd, filename)
     }
 
     fun cancel() {

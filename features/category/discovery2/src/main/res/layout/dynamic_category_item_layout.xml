@@ -15,7 +15,7 @@
         android:paddingLeft="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_3"
         tools:text="@string/action_report" />
 

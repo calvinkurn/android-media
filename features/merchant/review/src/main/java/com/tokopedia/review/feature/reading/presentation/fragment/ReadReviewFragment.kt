@@ -10,20 +10,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -106,6 +107,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var goToTopFab: FloatingButtonUnify? = null
     private var errorType = GlobalError.NO_CONNECTION
 
+    private var currentScrollPosition = 0
+
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
     }
@@ -167,6 +170,24 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentScrollPosition += dy
+                if(currentScrollPosition == 0) {
+                    goToTopFab?.hide()
+                } else {
+                    goToTopFab?.show()
+                }
+            }
+        }
+    }
+
     override fun onLikeButtonClicked(
         reviewId: String,
         shopId: String,
@@ -201,7 +222,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    override fun onHeaderClicked() {
+    override fun openStatisticsBottomSheet() {
         ReadReviewTracking.trackOnClickPositiveReviewPercentage(
             getSatisfactionRate(),
             getRatingAndTopics().rating.totalRating,
@@ -431,7 +452,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         observeRatingAndTopics()
         observeProductReviews()
         observeToggleLikeReview()
-        observePage()
     }
 
     override fun loadInitialData() {
@@ -502,7 +522,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             hideFullPageLoading()
             when (it) {
                 is Success -> onSuccessGetRatingAndTopic(it.data)
-                is Fail -> onFailGetRatingAndTopic()
+                is Fail -> onFailGetRatingAndTopic(it.throwable)
             }
         })
     }
@@ -512,7 +532,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             hideListOnlyLoading()
             when (it) {
                 is Success -> onSuccessGetProductReviews(it.data)
-                is Fail -> onFailGetProductReviews()
+                is Fail -> onFailGetProductReviews(it.throwable)
             }
         })
     }
@@ -523,12 +543,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 is Success -> updateLike(it.data)
                 is Fail -> logToCrashlytics(it.throwable)
             }
-        })
-    }
-
-    private fun observePage() {
-        viewModel.page.observe(viewLifecycleOwner, {
-            goToTopFab?.showWithCondition(it > ReadReviewViewModel.INITIAL_PAGE)
         })
     }
 
@@ -546,6 +560,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 show()
             }
             hideListOnlyLoading()
+            swipeToRefresh?.hide()
             return
         }
         reviewHeader?.apply {
@@ -556,11 +571,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 ratingAndTopics.availableFilters,
                 this@ReadReviewFragment
             )
+            getRecyclerView(view)?.show()
             show()
         }
     }
 
-    private fun onFailGetRatingAndTopic() {
+    private fun onFailGetRatingAndTopic(throwable: Throwable) {
+        logToCrashlytics(throwable)
         showError()
     }
 
@@ -570,6 +587,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         hideError()
         if (productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
             showFilteredEmpty()
+            swipeToRefresh?.isRefreshing = false
             return
         }
         hideFilteredEmpty()
@@ -581,11 +599,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                     shopInfo.name
                 ), hasNext
             )
-            if (isListEmpty) hideFab()
+            if (isListEmpty || currentPage == 0) hideFab() else showFab()
         }
     }
 
-    private fun onFailGetProductReviews() {
+    private fun onFailGetProductReviews(throwable: Throwable) {
+        logToCrashlytics(throwable)
         if (currentPage == 0) {
             showError()
         } else {
@@ -608,13 +627,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun showToasterError(message: String, action: () -> Unit) {
         reviewReadingCoordinatorLayout?.let {
-            Toaster.build(
-                it,
-                message,
-                Toaster.toasterLength,
-                Toaster.TYPE_ERROR,
-                getString(R.string.review_refresh)
-            ) { action.invoke() }.show()
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_refresh)) { action.invoke() }.show()
         }
     }
 
@@ -700,10 +713,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toLongOrZero())
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
     }
 

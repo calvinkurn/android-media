@@ -20,6 +20,7 @@ ext {
             agerestriction                  : ":features:category:age_restriction",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
+            moneyIn                         : ":features:category:moneyin",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",

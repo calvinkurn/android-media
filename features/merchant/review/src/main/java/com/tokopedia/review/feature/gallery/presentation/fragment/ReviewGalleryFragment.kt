@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -20,7 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.ToggleProductReviewLike
@@ -30,6 +29,7 @@ import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
+import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryLayoutManager
 import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageListener
@@ -97,8 +97,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun onImageSwiped(previousIndex: Int, index: Int) {
-        ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
-        reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+        if (index != RecyclerView.NO_POSITION) {
+            ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
+            reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,14 +135,16 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun disableScroll() {
-        imagesRecyclerView?.layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
-            override fun canScrollHorizontally(): Boolean = false
-        }
+        (imagesRecyclerView?.layoutManager as? ReviewGalleryLayoutManager)?.setScrollEnabled(false)
     }
 
     override fun enableScroll() {
-        imagesRecyclerView?.layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
-            override fun canScrollHorizontally(): Boolean = true
+        (imagesRecyclerView?.layoutManager as? ReviewGalleryLayoutManager)?.setScrollEnabled(true)
+    }
+
+    override fun onImageLoadFailed(index: Int) {
+        showErrorToaster(getString(R.string.review_reading_connection_error), getString(R.string.review_refresh)) {
+            adapter.reloadImageAtIndex(index)
         }
     }
 
@@ -190,11 +194,13 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private fun setupRecyclerView() {
         imagesRecyclerView?.apply {
             adapter = this@ReviewGalleryFragment.adapter
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            layoutManager = ReviewGalleryLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
-        imagesRecyclerView?.scrollToPosition(index - 1)
+        if (index != 0) {
+            imagesRecyclerView?.scrollToPosition(index - 1)
+        }
     }
 
     private fun addPagerSnapHelperToRecyclerView() {
@@ -223,10 +229,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun observeToggleLikeReviewResult() {
-        viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
+        viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessLikeReview(it.data)
-                is Fail -> onFailLikeReview()
+                is Fail -> onFailLikeReview(it.throwable)
             }
         })
     }
@@ -240,8 +246,8 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
-    private fun onFailLikeReview() {
-        // No Op
+    private fun onFailLikeReview(throwable: Throwable) {
+        logToCrashlytics(throwable)
     }
 
     private fun setThreeDotsVisibility(isReportable: Boolean) {
@@ -263,7 +269,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private fun goToReportReview(reviewId: String, shopId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toLongOrZero())
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
     }
 
@@ -311,6 +317,12 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
+    private fun showErrorToaster(message: String, actionText: String = "", onClickListener: View.OnClickListener = View.OnClickListener {  }) {
+        coordinatorLayout?.let {
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, actionText, onClickListener).show()
+        }
+    }
+
     private fun showToaster(message: String) {
         coordinatorLayout?.let {
             Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL).show()
@@ -319,5 +331,13 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     private fun isLiked(likeStatus: Int): Boolean {
         return likeStatus == LikeDislike.LIKED
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 }

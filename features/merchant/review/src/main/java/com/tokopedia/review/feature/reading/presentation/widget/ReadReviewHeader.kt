@@ -165,7 +165,10 @@ class ReadReviewHeader : BaseCustomView {
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
         satisfactionRate?.setOnClickListener {
-            readReviewHeaderListener.onHeaderClicked()
+            readReviewHeaderListener.openStatisticsBottomSheet()
+        }
+        chevron?.setOnClickListener {
+            readReviewHeaderListener.openStatisticsBottomSheet()
         }
     }
 

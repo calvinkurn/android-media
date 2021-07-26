@@ -368,7 +368,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
         tv_hotel_address.text = data.property.address
 
-        iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
+        iv_hotel_detail_location.setImageUrl(data.property.locationImageStatic)
 
         setupSafetyBadgeLayout(data.safetyBadge)
         setupPolicySwitcher(data)
@@ -462,7 +462,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 1 -> {
-                    iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_first_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     iv_first_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_first_photo_preview)
@@ -470,7 +470,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 2 -> {
-                    iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_second_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     iv_second_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_second_photo_preview)
@@ -478,7 +478,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 3 -> {
-                    iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_third_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     iv_third_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_third_photo_preview)
@@ -487,7 +487,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
-                iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                iv_main_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                 iv_main_photo_preview.setOnClickListener {
                     onPhotoClicked()
                     openImagePreview(imageList, imageIndex, iv_main_photo_preview)

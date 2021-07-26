@@ -1,7 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.domain.mapper
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.data.notification.NotifcenterUnread
 import com.tokopedia.searchbar.navigation_component.data.notification.NotificationResponse
@@ -48,9 +48,8 @@ object NotificationRequestMapper {
         try {
             return RemoteConfigInstance.getInstance().abTestPlatform
                 .getString(
-                    AbTestPlatform.KEY_NEW_NOTFICENTER,
-                    AbTestPlatform.VARIANT_OLD_NOTFICENTER
-                ) == AbTestPlatform.VARIANT_NEW_NOTFICENTER
+                    RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
+                ) == RollenceKey.VARIANT_NEW_NOTFICENTER
         } catch (e: Exception) {
             e.printStackTrace()
         }

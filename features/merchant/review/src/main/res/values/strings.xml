@@ -388,6 +388,7 @@
     <string name="review_reading_empty_filter_title">Oops, nggak ada ulasan yang sesuai filter</string>
     <string name="review_reading_empty_filter_subtitle">Coba reset atau ubah filter kamu, ya.</string>
     <string name="review_reading_success_submit_report">Kamu berhasil melaporkan ulasan ini.</string>
+    <string name="review_reading_collapse">&lt;a href="#"&gt;Tutup Ulasan&lt;/a&gt;</string>
 
     <!-- Gallery    -->
     <string name="review_gallery_image_count">%d/%d</string>
