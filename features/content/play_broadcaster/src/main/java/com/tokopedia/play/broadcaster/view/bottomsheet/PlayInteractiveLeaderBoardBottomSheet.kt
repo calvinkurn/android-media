@@ -23,6 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -38,10 +39,16 @@ import com.tokopedia.play_common.R as commonR
  */
 class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
+    private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
+            analytic.onClickChatWinnerIcon(
+                parentViewModel.channelId,
+                parentViewModel.interactiveId,
+                parentViewModel.interactiveTitle
+            )
             RouteManager.route(
                 requireContext(),
                 ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG,

@@ -94,6 +94,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
                     interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
                     interactiveSetupView.show()
+                    analytic.onClickInteractiveTool(parentViewModel.channelId)
                 } else {
                     showToaster(
                         message = getString(R.string.play_interactive_broadcast_not_allowed),
@@ -104,6 +105,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onSeeWinnerClicked(view: BroadcastInteractiveViewComponent) {
                 openInteractiveLeaderboardSheet()
+                analytic.onClickWinnerIcon(
+                    parentViewModel.channelId,
+                    parentViewModel.interactiveId,
+                    parentViewModel.interactiveTitle
+                )
             }
         })
     }
@@ -565,6 +571,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             when (state) {
                 is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
+                    analytic.onStartInteractive(
+                        channelId = parentViewModel.channelId,
+                        interactiveId = parentViewModel.interactiveId,
+                        interactiveTitle = parentViewModel.interactiveTitle,
+                        durationInMs = state.data.durationInMs
+                    )
                     interactiveSetupView.setLoading(false)
                     interactiveSetupView.reset()
                 }
@@ -609,10 +621,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
+                analytic.onImpressInteractiveTool(parentViewModel.channelId)
                 interactiveView.setInit(state.showOnBoarding)
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
+                analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.interactiveTitle)
                 interactiveView.setFinish(state.title, state.subtitle)
             }
         }

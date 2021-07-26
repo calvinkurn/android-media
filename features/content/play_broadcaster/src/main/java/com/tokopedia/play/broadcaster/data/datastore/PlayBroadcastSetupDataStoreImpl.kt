@@ -187,6 +187,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
     /**
      * Interactive
      */
+    override fun getInteractiveId(): String {
+        return interactiveDataStore.getInteractiveId()
+    }
+
     override fun getInteractiveTitle(): String {
         return interactiveDataStore.getInteractiveTitle()
     }
@@ -197,6 +201,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override fun getInteractiveDurations(): List<Long> {
         return interactiveDataStore.getInteractiveDurations()
+    }
+
+    override fun setInteractiveId(id: String) {
+        interactiveDataStore.setInteractiveId(id)
     }
 
     override fun setInteractiveTitle(title: String) {

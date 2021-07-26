@@ -8,11 +8,16 @@ import javax.inject.Inject
  */
 class InteractiveDataStoreImpl @Inject constructor() : InteractiveDataStore {
 
+    private var interactiveId: String = ""
     private var mTitle = DEFAULT_INTERACTIVE_TITLE
     private var mDurationInMs = DEFAULT_INTERACTIVE_DURATION
     private var mRemainingLiveDuration = 0L
 
     private val mAvailableDurations = mutableListOf<Long>()
+
+    override fun getInteractiveId(): String {
+        return interactiveId
+    }
 
     override fun getInteractiveTitle(): String {
         return mTitle
@@ -41,6 +46,10 @@ class InteractiveDataStoreImpl @Inject constructor() : InteractiveDataStore {
 
     override fun getInteractiveDurations(): List<Long> {
         return mAvailableDurations.filter { it < mRemainingLiveDuration }
+    }
+
+    override fun setInteractiveId(id: String) {
+        interactiveId = id
     }
 
     companion object {

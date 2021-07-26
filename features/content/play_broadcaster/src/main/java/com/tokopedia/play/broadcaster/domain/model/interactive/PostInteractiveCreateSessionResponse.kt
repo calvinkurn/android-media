@@ -13,7 +13,9 @@ data class PostInteractiveCreateSessionResponse(
 
     data class InteractiveSellerCreateSession(
         @SerializedName("header")
-        val header: Header = Header()
+        val header: Header = Header(),
+        @SerializedName("data")
+        val data: Data = Data()
     )
 
     data class Header(
@@ -25,7 +27,7 @@ data class PostInteractiveCreateSessionResponse(
     )
 
     data class Data(
-        @SerializedName("interactive_id")
+        @SerializedName("interactiveID")
         val interactiveId: String = ""
     )
 
