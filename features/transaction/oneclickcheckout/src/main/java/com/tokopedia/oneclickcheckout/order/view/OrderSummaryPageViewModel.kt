@@ -54,6 +54,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     var orderCart: OrderCart = OrderCart()
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
+    val updateOrderProducts: OccMutableLiveData<List<Int>> = OccMutableLiveData(emptyList())
 
     var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
@@ -101,6 +102,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderCart = result.orderCart
             orderShop.value = orderCart.shop
             orderProducts.value = orderCart.products
+            updateOrderProducts.value = emptyList()
             orderProfile.value = result.orderProfile
             orderPreferenceData = result.orderPreference
             orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderProfile, result.addressState)) {
@@ -174,7 +176,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderShop.value.shopShipment)
+            val (orderCost, _, updatedProductIndex) = calculator.calculateOrderCost(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
+            updateOrderProducts.value = updatedProductIndex
+            logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
         if (result.clearOldPromoCode.isNotEmpty()) {
             clearOldLogisticPromo(result.clearOldPromoCode)
@@ -675,7 +679,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setBrand(null)
                 setCategory(orderProduct.category)
                 setVariant(null)
-                setQuantity(orderProduct.quantity.orderQuantity.toString())
+                setQuantity(orderProduct.orderQuantity.toString())
                 setListName(orderProduct.productTrackerData.trackerListName)
                 setAttribution(orderProduct.productTrackerData.attribution)
                 setDiscountedPrice(orderProduct.isSlashPrice)

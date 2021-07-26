@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -383,6 +383,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 newSize < oldSize -> {
                     adapter.notifyItemRangeChanged(adapter.productStartIndex, newSize)
                     adapter.notifyItemRangeRemoved(adapter.productStartIndex + newSize, oldSize - newSize)
+                }
+            }
+        }
+
+        viewModel.updateOrderProducts.observe(viewLifecycleOwner) {
+            Log.i("qwertyuiop", "update order products $it")
+            if (it.isNotEmpty()) {
+                var startGroupIndex = -1
+                var lastGroupIndex = startGroupIndex
+                for (index in it) {
+                    if (startGroupIndex == -1) {
+                        startGroupIndex = index
+                        lastGroupIndex = index
+                    } else if (index == lastGroupIndex + 1) {
+                        lastGroupIndex = index
+                    } else {
+                        adapter.notifyItemRangeChanged(adapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
+                        startGroupIndex = -1
+                        lastGroupIndex = startGroupIndex
+                    }
+                }
+                if (startGroupIndex > -1 && lastGroupIndex > -1) {
+                    adapter.notifyItemRangeChanged(adapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
                 }
             }
         }

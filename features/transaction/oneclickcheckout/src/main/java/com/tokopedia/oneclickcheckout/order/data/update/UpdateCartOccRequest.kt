@@ -33,8 +33,6 @@ data class UpdateCartOccCartRequest(
 )
 
 data class UpdateCartOccProfileRequest(
-        @SerializedName("profile_id")
-        val profileId: String = "",
         @SerializedName("gateway_code")
         val gatewayCode: String = "",
         @SerializedName("metadata")

@@ -1,8 +1,8 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
-import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -25,10 +25,10 @@ class HomeViewModelOneClickCheckoutTest {
 
     @Test
     fun `one click checkout success`(){
-        val atc = AddToCartOccMultiDataModel(status = AddToCartOccMultiDataModel.STATUS_OK, data = AddToCartOccMultiData(
+        val atc = AddToCartDataModel(status = AddToCartDataModel.STATUS_OK, data = DataModel(
                 success = 1
         ))
-        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns atc
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns atc
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)
         assert(homeViewModel.oneClickCheckoutHomeComponent.value?.peekContent() !is Throwable)
@@ -37,8 +37,8 @@ class HomeViewModelOneClickCheckoutTest {
 
     @Test
     fun `one click checkout error response`(){
-        val atc = AddToCartOccMultiDataModel(status = AddToCartOccMultiDataModel.STATUS_ERROR)
-        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns atc
+        val atc = AddToCartDataModel(status = AddToCartDataModel.STATUS_ERROR)
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns atc
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)
         assert(homeViewModel.oneClickCheckoutHomeComponent.value?.peekContent() != null)
@@ -46,7 +46,7 @@ class HomeViewModelOneClickCheckoutTest {
 
     @Test
     fun `one click checkout error`(){
-        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } throws Throwable()
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } throws Throwable()
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)
         assert(homeViewModel.oneClickCheckoutHomeComponent.value?.peekContent() != null)

@@ -160,7 +160,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val productDetails: ArrayList<ProductDetail> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
-                productDetails.add(ProductDetail(it.productId, it.quantity.orderQuantity))
+                productDetails.add(ProductDetail(it.productId, it.orderQuantity))
             }
         }
         ordersItem.product_details = productDetails
@@ -226,7 +226,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val productDetails: ArrayList<ProductDetailsItem> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
-                productDetails.add(ProductDetailsItem(it.quantity.orderQuantity, it.productId))
+                productDetails.add(ProductDetailsItem(it.orderQuantity, it.productId))
             }
         }
         ordersItem.productDetails = productDetails

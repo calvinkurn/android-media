@@ -100,7 +100,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
     private fun renderPrice() {
         binding.apply {
-            tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
+            tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.finalPrice, false).removeDecimalSuffix()
 
             if (!product.isError && product.slashPriceLabel.isNotBlank()) {
                 lblProductSlashPricePercentage.setLabel(product.slashPriceLabel)
@@ -114,12 +114,12 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             } else if (!product.isError) {
                 lblProductSlashPricePercentage.gone()
-                if (product.getPrice() < product.productPrice) {
-                    var originalPrice = product.productPrice
-                    if (product.initialPrice > 0 && product.initialPrice < product.productPrice) {
-                        originalPrice = product.initialPrice
-                    }
-                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
+                if (product.wholesalePrice > 0 && product.wholesalePrice < product.productPrice) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.wholesalePrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else if (product.initialPrice > 0 && product.initialPrice < product.productPrice) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.initialPrice, false).removeDecimalSuffix()
                     tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvProductSlashPrice.visible()
                 } else {
@@ -137,7 +137,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     private fun renderProductInfo() {
         binding.apply {
             flexboxOrderProductInfo.removeAllViews()
-            if (!product.isError && product.getPrice() < product.productPrice) {
+            if (!product.isError && product.wholesalePrice > 0) {
                 val textView = Typography(flexboxOrderProductInfo.context).apply {
                     setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     setType(Typography.BODY_3)
@@ -240,7 +240,6 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     product.isEditingNotes = false
                     renderNotes()
-                    v.clearFocus()
                     KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
                     listener.forceUpdateCart()
                     true
@@ -261,25 +260,26 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 qtyEditorProduct.editText.removeTextChangedListener(quantityTextWatcher)
                 qtyEditorProduct.setValueChangedListener { _, _, _ -> }
             }
+            qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             qtyEditorProduct.autoHideKeyboard = true
-            qtyEditorProduct.minValue = product.quantity.minOrderQuantity
-            qtyEditorProduct.maxValue = product.quantity.maxOrderStock
-            oldQtyValue = product.quantity.orderQuantity
-            qtyEditorProduct.setValue(product.quantity.orderQuantity)
+            qtyEditorProduct.minValue = product.minOrderQuantity
+            qtyEditorProduct.maxValue = product.maxOrderStock
+            oldQtyValue = product.orderQuantity
+            qtyEditorProduct.setValue(product.orderQuantity)
             qtyEditorProduct.setValueChangedListener { newValue, _, _ ->
                 // prevent multiple callback with same newValue
-                if (product.quantity.orderQuantity != newValue) {
-                    product.quantity.orderQuantity = newValue
+                if (product.orderQuantity != newValue) {
+                    product.orderQuantity = newValue
                     listener.onProductChange(product, productIndex)
                     renderPrice()
                     renderProductInfo()
                 }
             }
             qtyEditorProduct.setAddClickListener {
-                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.orderQuantity.toString())
             }
             qtyEditorProduct.setSubstractListener {
-                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.orderQuantity.toString())
             }
             quantityTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -295,7 +295,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                         resetQuantityJob = launch {
                             delay(DEBOUNCE_RESET_QUANTITY_MS)
                             if (isActive) {
-                                qtyEditorProduct.setValue(product.quantity.minOrderQuantity)
+                                qtyEditorProduct.setValue(product.minOrderQuantity)
                             }
                         }
                     }
