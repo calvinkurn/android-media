@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.campaignstock.domain.model.response
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.network.data.model.response.Header
+import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 
 data class GetStockAllocationResponse(
         @SerializedName("GetStockAllocation")
@@ -50,7 +51,9 @@ data class GetStockAllocationDetailSellable(
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("stock")
-        val stock: String = ""
+        val stock: String = "",
+        @SerializedName("campaign_types")
+        val campaignTypeList: List<CampaignType>? = listOf()
 )
 
 data class GetStockAllocationDetailReserve(

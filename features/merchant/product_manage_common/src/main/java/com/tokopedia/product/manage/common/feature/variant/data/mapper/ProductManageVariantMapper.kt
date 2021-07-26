@@ -36,7 +36,8 @@ object ProductManageVariantMapper {
                 it.stock,
                 it.pictures,
                 isAllStockEmpty,
-                access
+                access,
+                it.campaignTypeList
             )
         }
 

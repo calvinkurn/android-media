@@ -16,6 +16,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
+import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
@@ -25,6 +26,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Ca
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignMainStockViewModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -125,6 +127,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             onActiveStockChanged = ::onActiveStockChanged,
             onVariantStockChanged = ::onVariantStockChanged,
             onVariantStatusChanged = ::onVariantStatusChanged,
+            onOngoingPromotionClicked = ::onOngoingPromotionClicked,
             source = source ?: CampaignStockFragment.DEFAULT_SOURCE,
             shopId = shopId ?: ""
     )
@@ -168,7 +171,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
                 addAll(listOf(
                     ActiveProductSwitchUiModel(isActive, access),
-                    TotalStockEditorUiModel(stockCount.orZero(), isCampaign, access)
+                    TotalStockEditorUiModel(stockCount.orZero(), isCampaign, access, sellableProductList.firstOrNull()?.campaignTypeList)
                 ))
             }
         }
@@ -224,7 +227,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
     private fun updateStockEditorItem(totalStock: Int) {
         adapter.apply {
             data.firstOrNull { it is TotalStockEditorUiModel }?.let {
-                val item = TotalStockEditorUiModel(totalStock, isCampaign, access)
+                val item = TotalStockEditorUiModel(totalStock, isCampaign, access, sellableProductList.firstOrNull()?.campaignTypeList)
                 val index = data.indexOf(it)
                 data[index] = item
                 notifyItemChanged(index)
@@ -245,6 +248,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
         campaignStockListener?.onVariantStatusChanged(productId, status)
     }
 
+    private fun onOngoingPromotionClicked(campaignTypeList: List<ProductCampaignType>)  {
+        showOngoingPromotionBottomSheet(campaignTypeList)
+    }
+
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
         with(adapter) {
             val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
@@ -258,6 +265,12 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                 data[index] = tickerUiModel
                 notifyItemChanged(index)
             }
+        }
+    }
+
+    private fun showOngoingPromotionBottomSheet(campaignTypeList: List<ProductCampaignType>) {
+        context?.let {
+            OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
         }
     }
 

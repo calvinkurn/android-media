@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailReserve
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationReservedProduct
@@ -8,6 +9,8 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Re
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 object CampaignStockMapper {
@@ -35,7 +38,8 @@ object CampaignStockMapper {
                             isActive = variant.status == ProductStatus.ACTIVE,
                             isAllStockEmpty = isAllStockEmpty,
                             access = variant.access,
-                            isCampaign = variant.isCampaign
+                            isCampaign = variant.isCampaign,
+                            campaignTypeList = mapVariantCampaignTypeToProduct(variant.campaignTypeList)
                         )
                 }
                 .toList()
@@ -54,6 +58,37 @@ object CampaignStockMapper {
                         products = product.map { mapToParcellableReservedProduct(it) } as ArrayList<ReservedStockProductModel>
                 )
             }
+
+    fun getSellableProduct(id: Long,
+                           isActive: Boolean,
+                           access: ProductManageAccess,
+                           isCampaign: Boolean,
+                           sellableList: List<GetStockAllocationDetailSellable>): List<SellableStockProductUIModel> {
+        return sellableList
+                .filter { it.productId == id.toString() }
+                .map { sellable ->
+                    SellableStockProductUIModel(
+                            productId = sellable.productId,
+                            productName = sellable.productName,
+                            stock = sellable.stock,
+                            isActive = isActive,
+                            isAllStockEmpty = sellable.stock.toIntOrZero() == 0,
+                            access = access,
+                            isCampaign = isCampaign,
+                            campaignTypeList = mapVariantCampaignTypeToProduct(sellable.campaignTypeList)
+                    )
+                }
+    }
+
+    private fun mapVariantCampaignTypeToProduct(campaignList: List<CampaignType>?): List<ProductCampaignType>? {
+        return campaignList?.map {
+            ProductCampaignType(
+                    id = it.id,
+                    iconUrl = it.iconUrl,
+                    name = it.name
+            )
+        }
+    }
 
     private fun mapToParcellableReservedProduct(product: GetStockAllocationReservedProduct): ReservedStockProductModel =
             with(product) {

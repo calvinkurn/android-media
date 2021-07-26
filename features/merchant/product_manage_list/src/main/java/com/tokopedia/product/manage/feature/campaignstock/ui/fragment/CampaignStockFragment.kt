@@ -14,11 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
@@ -316,12 +312,21 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                         CampaignStockMapper.mapToParcellableReserved(reserved)
                     } as ArrayList<ReservedEventInfoUiModel>
                     val isCampaign = otherCampaignStockData.campaign?.isActive == true
+
+                    val sellableProducts = CampaignStockMapper.getSellableProduct(
+                            id = productIds?.firstOrNull().toLongOrZero(),
+                            isActive = otherCampaignStockData.getIsActive(),
+                            access = access,
+                            isCampaign = isCampaign,
+                            sellableList = getStockAllocation.detail.sellable
+                    )
+
                     CampaignStockAdapter(it, getFragmentList(
                             summary.isVariant,
                             otherCampaignStockData.getIsActive(),
                             nonVariantStock,
                             isCampaign,
-                            arrayListOf(),
+                            ArrayList(sellableProducts),
                             reservedProduct,
                             access
                     ))

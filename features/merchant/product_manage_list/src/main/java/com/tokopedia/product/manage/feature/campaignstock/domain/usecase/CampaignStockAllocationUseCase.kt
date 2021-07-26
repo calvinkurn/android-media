@@ -37,6 +37,11 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 "          warehouse_id\n" +
                 "          product_name\n" +
                 "          stock\n" +
+                "          campaign_types {\n" +
+                "            id\n" +
+                "            name\n" +
+                "            icon_url\n" +
+                "          }\n" +
                 "        }\n" +
                 "        reserve {\n" +
                 "          event_info {\n" +

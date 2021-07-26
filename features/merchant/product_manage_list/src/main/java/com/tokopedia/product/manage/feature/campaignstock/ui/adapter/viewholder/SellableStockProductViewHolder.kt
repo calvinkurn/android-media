@@ -6,26 +6,28 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
 
 class SellableStockProductViewHolder (itemView: View?,
-                                     private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
-                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
-                                     private val source: String,
-                                     private val shopId: String
+                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
+                                      private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
+                                      private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit,
+                                      private val source: String,
+                                      private val shopId: String
 ): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
     private var stockEditTextWatcher: TextWatcher? = null
+
+    private val ongoingPromotionCountText: Typography? = itemView?.findViewById(R.id.tv_campaign_stock_count_variant)
 
     companion object {
         @LayoutRes
@@ -45,7 +47,17 @@ class SellableStockProductViewHolder (itemView: View?,
             tv_campaign_stock_variant_editor_name?.text = element.productName
             qte_campaign_stock_variant_editor?.setElement(element)
             label_campaign_stock_inactive.showWithCondition(!element.isActive)
-            label_campaign_stock.showWithCondition(element.isCampaign)
+            ongoingPromotionCountText?.run {
+                showWithCondition(element.isCampaign)
+                if (element.isCampaign) {
+                    element.campaignTypeList?.let { campaignList ->
+                        text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
+                        setOnClickListener {
+                            onOngoingPromotionClicked(campaignList)
+                        }
+                    }
+                }
+            }
             switch_campaign_stock_variant_editor?.run {
                 isChecked = element.isActive
                 setOnCheckedChangeListener { _, isChecked ->
