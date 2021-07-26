@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
@@ -143,6 +144,10 @@ class TokoNowHomeFragment: Fragment(),
     private var movingPosition = 0
     private var isVariantAdded = false
     private var isFirstImpressionOnBanner = false
+    private var headerName = ""
+    private var channelId: String = ""
+    private var productPosition: String = ""
+    private var recomItem: RecommendationItem? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -249,13 +254,65 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickCategory(position, userSession.userId, categoryId)
     }
 
-    override fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int) {
+    override fun onRecomProductCardClicked(
+        recomItem: RecommendationItem,
+        channelId: String,
+        headerName: String,
+        position: String
+    ) {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            recomItem.productId.toString()
+        )
+        analytics.onClickProductRecom(
+            channelId = channelId,
+            headerName = headerName,
+            userId = userSession.userId,
+            recommendationItem = recomItem,
+            position = position
+        )
+    }
+
+    override fun onRecomProductCardImpressed(
+        recomItems: List<RecommendationItem>,
+        channelId: String,
+        headerName: String,
+        pageName: String
+    ) {
+        analytics.onImpressProductRecom(
+            channelId = channelId,
+            headerName = headerName,
+            userId = userSession.userId,
+            recomItems = recomItems,
+            pageName = pageName
+        )
+    }
+
+    override fun onSeeAllBannerClicked(channelId: String, headerName: String) {
+        analytics.onClickAllProductRecom(
+            channelId = channelId,
+            headerName = headerName
+        )
+    }
+
+    override fun onProductRecomNonVariantClick(
+        recomItem: RecommendationItem,
+        quantity: Int,
+        headerName: String,
+        channelId: String,
+        position: String
+    ) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(recomItem, quantity)
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
+        this.headerName = headerName
+        this.recomItem = recomItem
+        this.productPosition = position
     }
+
 
     override fun isMainViewVisible(): Boolean = true
 
@@ -547,6 +604,18 @@ class TokoNowHomeFragment: Fragment(),
                     )
                     adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
                     getMiniCart()
+
+                    recomItem?.apply {
+                        analytics.onClickProductRecomAddToCart(
+                            channelId = channelId,
+                            headerName = headerName,
+                            userId = userSession.userId,
+                            quantity = it.data.data.quantity.toString(),
+                            recommendationItem = this,
+                            position = productPosition,
+                            cartId = it.data.data.cartId
+                        )
+                    }
                 }
                 is Fail -> {
                     showToaster(

@@ -1,14 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
-import com.tokopedia.home_component.model.ChannelBanner
-import com.tokopedia.home_component.model.ChannelBenefit
-import com.tokopedia.home_component.model.ChannelConfig
-import com.tokopedia.home_component.model.ChannelCtaData
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.LabelGroup
-import com.tokopedia.home_component.model.TrackingAttributionModel
+import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 
@@ -20,6 +12,7 @@ object ChannelMapper {
             groupId = response.groupId,
             type = response.type,
             layout = response.layout,
+            pageName = response.pageName,
             channelHeader = ChannelHeader(
                 response.header.id,
                 response.header.name,

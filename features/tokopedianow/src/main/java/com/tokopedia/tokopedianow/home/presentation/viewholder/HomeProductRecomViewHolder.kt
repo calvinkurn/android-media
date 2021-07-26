@@ -30,10 +30,11 @@ class HomeProductRecomViewHolder(
 
     private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
 
-    private var recomWidget: RecommendationWidget? = null
+    private var channelId = ""
+    private var isFirstShowed = true
 
     override fun bind(element: HomeProductRecomUiModel) {
-        recomWidget = element.recomWidget
+        channelId = element.id
         productRecom.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
@@ -51,11 +52,26 @@ class HomeProductRecomViewHolder(
 
     override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) { /* nothing to do */ }
 
-    override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) { /* nothing to do */ }
-
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) { /* nothing to do */ }
 
-    override fun onRecomProductCardImpressed(data: RecommendationCarouselData, recomItem: RecommendationItem, itemPosition: Int, adapterPosition: Int) { /* nothing to do */ }
+    override fun onRecomProductCardImpressed(
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) {
+        if (isFirstShowed) {
+            listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName)
+            isFirstShowed = false
+        }
+    }
+
+    override fun onSeeAllBannerClicked(
+        data: RecommendationCarouselData,
+        applink: String
+    ) {
+        listener?.onSeeAllBannerClicked(channelId, data.recommendationData.title)
+    }
 
     override fun onRecomProductCardClicked(
         data: RecommendationCarouselData,
@@ -64,13 +80,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        recomWidget?.apply {
-            RouteManager.route(
-                itemView.context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                recomItem.productId.toString()
-            )
-        }
+        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString())
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -79,7 +89,7 @@ class HomeProductRecomViewHolder(
         adapterPosition: Int,
         quantity: Int
     ) {
-        listener?.onProductRecomNonVariantClick(recomItem, quantity)
+        listener?.onProductRecomNonVariantClick(recomItem, quantity, data.recommendationData.title, channelId, adapterPosition.toString())
     }
 
     override fun onRecomProductCardAddVariantClick(
@@ -87,19 +97,20 @@ class HomeProductRecomViewHolder(
         recomItem: RecommendationItem,
         adapterPosition: Int
     ) {
-        recomWidget?.apply {
-            AtcVariantHelper.goToAtcVariant(
-                context = itemView.context,
-                productId = recomItem.productId.toString(),
-                pageSource = SOURCE,
-                isTokoNow = true,
-                shopId = recomItem.shopId.toString(),
-                startActivitResult = (tokoNowListener?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
-            )
-        }
+        AtcVariantHelper.goToAtcVariant(
+            context = itemView.context,
+            productId = recomItem.productId.toString(),
+            pageSource = SOURCE,
+            isTokoNow = true,
+            shopId = recomItem.shopId.toString(),
+            startActivitResult = (tokoNowListener?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
+        )
     }
 
     interface HomeProductRecomListener {
-        fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int)
+        fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String)
+        fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String)
+        fun onSeeAllBannerClicked(channelId: String, headerName: String)
+        fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)
     }
 }
