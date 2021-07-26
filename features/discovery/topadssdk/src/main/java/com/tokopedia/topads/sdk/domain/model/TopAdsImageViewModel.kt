@@ -10,5 +10,6 @@ data class TopAdsImageViewModel(
         var adClickUrl: String? = "",
         var nextPageToken: String? = "",
         var applink: String? = "",
-        var position: Int = 0
+        var position: Int = 0,
+        var shopId: String = ""
 )

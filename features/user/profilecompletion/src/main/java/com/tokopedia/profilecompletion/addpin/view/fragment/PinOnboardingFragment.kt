@@ -21,6 +21,7 @@ import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.view.activity.PinOnboardingActivity
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
@@ -53,6 +54,11 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
 
     private var isSkipOtp: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

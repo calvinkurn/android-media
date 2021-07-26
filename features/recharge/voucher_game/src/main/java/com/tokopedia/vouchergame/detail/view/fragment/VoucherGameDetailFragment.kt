@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
@@ -39,6 +38,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Comp
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -139,6 +139,23 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        voucherGameViewModel.voucherGameOperatorDetails.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    voucherGameOperatorData = it.data.attributes
+                    setupOperatorDetail()
+                }
+                is Fail -> {
+                    val message = if (it.throwable.message == VoucherGameDetailViewModel.VOUCHER_NOT_FOUND_ERROR) {
+                        getString(R.string.vg_empty_state_title)
+                    } else {
+                        ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                    }
+                    Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
+            }
+        })
+
         voucherGameViewModel.voucherGameProducts.observe(viewLifecycleOwner, Observer {
             it.run {
                 input_field_container_shimmering.visibility = View.GONE
@@ -175,6 +192,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
+        if (voucherGameOperatorData.name.isEmpty()) {
+            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
+                    voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntOrZero()), false, voucherGameExtraParam.operatorId)
+        }
 
         adapter.showLoading()
         loadData()
@@ -277,14 +299,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

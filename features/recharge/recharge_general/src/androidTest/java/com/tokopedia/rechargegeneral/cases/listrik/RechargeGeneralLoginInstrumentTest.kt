@@ -6,17 +6,13 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -29,9 +25,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.RechargeGeneralLoginMockResponseConfig
-import com.tokopedia.rechargegeneral.RechargeGeneralMockResponseConfig
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
-import com.tokopedia.rechargegeneral.cases.pbb.RechargeGeneralLoginInstrumentTest
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
@@ -75,10 +69,21 @@ class RechargeGeneralLoginInstrumentTest {
     fun validate_login() {
         validate_favorite_number()
         validate_select_product_token()
+        validate_recent_number()
         validate_promo()
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
                 hasAllSuccess())
+    }
+
+    private fun validate_recent_number() {
+        Thread.sleep(1000)
+        onView(AllOf.allOf(
+                withId(R.id.recycler_view_menu_component),
+                ViewMatchers.isDescendantOfA(withId(R.id.recent_transaction_widget))
+        )).check(matches(isDisplayed())).perform(
+                RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                        0, click()))
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {

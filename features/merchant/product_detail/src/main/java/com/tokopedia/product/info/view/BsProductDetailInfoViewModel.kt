@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
@@ -22,8 +23,13 @@ import javax.inject.Inject
  */
 class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                        private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
-                                                       val userSession: UserSessionInterface)
+                                                       val userSession: UserSessionInterface
+)
     : BaseViewModel(dispatchers.io) {
+
+    companion object {
+        private const val ERROR_TYPE_DESCRIPTION_INFO = "error_description_info"
+    }
 
     private val parcelData = MutableLiveData<ProductInfoParcelData>()
 
@@ -36,6 +42,7 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
 
             bottomSheetData.postValue(visitableData.asSuccess())
         }) {
+            logProductDetailBottomSheet(it)
             bottomSheetData.postValue(it.asFail())
         }
         bottomSheetData
@@ -43,5 +50,9 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDis
 
     fun setParams(parcelData: ProductInfoParcelData) {
         this.parcelData.value = parcelData
+    }
+
+    private fun logProductDetailBottomSheet(throwable: Throwable) {
+        ProductDetailLogger.logThrowable(throwable, ERROR_TYPE_DESCRIPTION_INFO,  parcelData.value?.productId ?: "", userSession.deviceId)
     }
 }

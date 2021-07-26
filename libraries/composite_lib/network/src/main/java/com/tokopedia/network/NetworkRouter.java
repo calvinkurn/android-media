@@ -31,6 +31,8 @@ public interface NetworkRouter {
 
     void logInvalidGrant(Response response);
 
+    void logRefreshTokenException(String error, String type, String path, String accessToken);
+
     FingerprintModel getFingerprintModel();
 
     void doRelogin(String newAccessToken);

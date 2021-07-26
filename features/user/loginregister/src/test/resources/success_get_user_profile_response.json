@@ -1,0 +1,20 @@
+{
+  "userProfileCompletion": {
+    "isActive": true,
+    "fullName": "",
+    "birthDate": "",
+    "birthDay": "",
+    "birthMonth": "",
+    "birthYear": "",
+    "gender": 1,
+    "email": "",
+    "msisdn": "",
+    "isMsisdnVerified": true,
+    "isCreatedPassword": true,
+    "isBiodataDone": true,
+    "isEmailDone": true,
+    "isMsisdnDone": true,
+    "completionScore": 1,
+    "completionDone": true
+  }
+}

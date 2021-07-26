@@ -20,7 +20,7 @@ class NotificationTabLayout(val context: Context) {
 
     fun selected(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(context, Resources.Green_G500))
+        titleView?.setTextColor(MethodChecker.getColor(context, Resources.Green_G600))
     }
 
     fun unselected(customView: View?) {

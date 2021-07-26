@@ -1,23 +1,18 @@
 package com.tokopedia.sellerorder.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import com.tokopedia.sellerorder.common.domain.model.*
-import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomEditRefNumUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
-import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
+import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     @get:Rule
@@ -36,6 +31,9 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
 
     @RelaxedMockK
+    lateinit var somValidateOrderUseCase: SomValidateOrderUseCase
+
+    @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
 
     lateinit var viewModel: T
@@ -44,10 +42,20 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     var orderId = "1234567890"
     var invoice = "INV/20200922/XX/IX/123456789"
 
+    protected lateinit var lifecycle: LifecycleRegistry
+
     @Before
     open fun setUp() {
         MockKAnnotations.init(this)
         listMsg = arrayListOf("msg1")
+        lifecycle = LifecycleRegistry(mockk()).apply {
+            handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        }
+    }
+
+    @After
+    fun finish() {
+        unmockkAll()
     }
 
     @Test
@@ -150,5 +158,44 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
         viewModel.rejectCancelOrder(orderId)
 
         assert(viewModel.rejectCancelOrderResult.value is Fail)
+    }
+
+    @Test
+    fun validateOrders_shouldReturnSuccess() {
+        val orderIds = listOf(orderId)
+        val param = SomValidateOrderRequest(orderIds)
+        coEvery {
+            somValidateOrderUseCase.execute(param)
+        } returns true
+
+        viewModel.validateOrders(orderIds)
+
+        coVerify {
+            somValidateOrderUseCase.execute(param)
+        }
+
+        val result = viewModel.validateOrderResult.observeAwaitValue()
+        assert(result is Success && result.data)
+    }
+
+    @Test
+    fun validateOrders_shouldReturnFail() {
+        val orderIds = listOf(orderId)
+        val param = SomValidateOrderRequest(orderIds)
+        coEvery {
+            somValidateOrderUseCase.execute(param)
+        } throws Throwable()
+
+        viewModel.validateOrders(orderIds)
+
+        coVerify {
+            somValidateOrderUseCase.execute(param)
+        }
+
+        assert(viewModel.validateOrderResult.observeAwaitValue() is Fail)
+    }
+
+    companion object {
+        const val DELAY_REQUEST_PICK_UP = 500L
     }
 }

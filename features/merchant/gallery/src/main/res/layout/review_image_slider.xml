@@ -15,8 +15,8 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="39dp"
+            android:layout_marginTop="@dimen/dp_39"
+            android:contentDescription="@null"
             android:src="@drawable/icon_back_white"/>
         
         <androidx.recyclerview.widget.RecyclerView

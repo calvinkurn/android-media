@@ -30,10 +30,12 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
                 (intent.getAction() == NfcAdapter.ACTION_TAG_DISCOVERED ||
                         intent.getAction() == NfcAdapter.ACTION_TECH_DISCOVERED)) {
             Intent newIntent;
-            if (CardUtils.cardIsEmoney(intent)) {
+            if (CardUtils.isEmoneyCard(intent)) {
                 newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, DigitalExtraParam.EXTRA_NFC);
-            } else {
+            } else if (CardUtils.isBrizziCard(intent)){
                 newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, DigitalExtraParam.EXTRA_NFC);
+            } else {
+                newIntent = RouteManager.getIntent(context, ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, DigitalExtraParam.EXTRA_NFC);
             }
             newIntent.replaceExtras(intent);
             newIntent.setAction(intent.getAction());

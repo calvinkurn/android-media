@@ -4,16 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.FrameLayout
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
 import com.tokopedia.product.detail.data.model.financing.FtTncData
@@ -57,7 +53,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 }
             }
 
-            ImageHandler.loadImage(mContext, vHolder.ivMainIcon, item.partnerIcon, com.tokopedia.design.R.drawable.ic_loading_image)
+            vHolder.ivMainIcon.loadIcon(item.partnerIcon)
             vHolder.tvInstallmentTitle.text = String.format(mContext.getString(R.string.ft_installment_heading), item.partnerName)
             vHolder.llInstallmentContainer.hide()
 
@@ -160,7 +156,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 instructionDesc.text = instructionData.description
 
                 val instructionIcon: ImageView = view.findViewById(R.id.iv_instruction_icon)
-                ImageHandler.loadImage(context, instructionIcon, instructionData.insImageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+                instructionIcon.loadIcon(instructionData.insImageUrl)
 
                 vHolder.llInstructionDetailContainer.addView(view)
             }

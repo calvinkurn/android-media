@@ -3,64 +3,64 @@
   "mode": "subset",
   "query": [
     {
-      "networkSpeed": "{{.+}}",
-      "clientId": "{{.+}}",
-      "isLoggedInStatus": "{{.+}}",
-      "appsflyerId": "{{.+}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
       "screenName": "Login page",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.+}}"
+      "userId": ".*",
+      "sessionIris": ".+"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button selanjutnya - email",
       "eventLabel": "success",
-      "sessionIris": "{{.*}}",
-      "user_id": "{{.*}}"
+      "sessionIris": ".*",
+      "user_id": ".*"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button ubah",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "enter login phone number",
       "eventLabel": "click",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button masuk",
       "eventLabel": "click",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on lupa kata sandi",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button socmed",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button google",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "click"
     },
 
@@ -69,7 +69,7 @@
       "eventCategory": "login page",
       "eventAction": "click daftar bottom",
       "eventLabel": "",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

@@ -228,10 +228,10 @@ class PdpGamificationView : LinearLayout {
                         productIdString,
                         item.recommendationType,
                         position,
-                        "",
-                        "",
+                        "none / other",
+                        item.categoryBreadcrumbs,
                         item.name,
-                        "",
+                        "none / other",
                         item.price,
                         item.isTopAds)
             }
@@ -247,10 +247,10 @@ class PdpGamificationView : LinearLayout {
                         productIdString,
                         item.recommendationType,
                         position[0],
-                        "",
-                        "",
+                        "none / other",
+                        item.categoryBreadcrumbs,
                         item.name,
-                        "",
+                        "none / other",
                         item.price,
                         item.isTopAds)
 

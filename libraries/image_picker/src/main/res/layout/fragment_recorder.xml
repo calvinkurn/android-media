@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/cameraView"
+        android:keepScreenOn="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        app:cameraPlaySounds="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16">
+
+        <LinearLayout
+            android:layout_above="@+id/containerRecord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <View
+                android:id="@+id/vwRecord"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:background="@drawable/ic_record"/>
+
+            <TextView
+                android:id="@+id/txtDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                android:layout_margin="6dp"
+                android:textColor="@android:color/white"
+                tools:text="01:00"
+                android:text="@string/vidpick_duration_default" />
+
+        </LinearLayout>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btnFlash"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="@dimen/dp_8"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_8"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true"
+            app:srcCompat="@drawable/ic_auto_flash"
+            tools:visibility="visible" />
+
+        <RelativeLayout
+            android:id="@+id/containerRecord"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_16">
+
+            <FrameLayout
+                android:id="@+id/btnRecord"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_56"
+                android:clickable="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:focusable="true">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/selector_photo_button"
+                    android:padding="@dimen/dp_4" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/take_photo_button" />
+
+            </FrameLayout>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@style/ProgressBar.Tokopedia"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:progressDrawable="@drawable/vr_circular_progress_bar_green"
+                android:max="100"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:progress="0"
+                android:rotation="-90"
+                tools:progress="55"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btnFlip"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/dp_8"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_8"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            app:srcCompat="@drawable/ic_flip_camera" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

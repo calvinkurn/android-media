@@ -13,7 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,6 +24,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -57,6 +58,7 @@ import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
+import com.tokopedia.home.account.presentation.view.GeneralSettingMenuLabel
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.internal_review.factory.createReviewHelper
@@ -141,12 +143,30 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                             .baseAppComponent).settingsModule(SettingsModule(activity)).build()
             component.inject(this)
             settingsPresenter.attachView(this)
-            settingsPresenter.verifyUserAge()
-
+            if (savedInstanceState == null) {
+                settingsPresenter.verifyUserAge()
+            } else {
+                setupSafeSearchLocally()
+            }
         }
         presenter.attachView(this)
 
         return inflater.inflate(R.layout.fragment_general_setting, container, false)
+    }
+
+    private fun setupSafeSearchLocally() {
+        val isAdultAge = isItemSelected(
+                SettingsPresenter.PREFERENCE_ADULT_AGE_VERIFIED_KEY, false)
+        settingsPresenter.adultAgeVerified = isAdultAge
+        if(isAdultAge) {
+            refreshSafeSearchOption()
+        }
+    }
+
+    //Request to hide Dark Mode regardless RemoteConfig
+    private fun showDarkModeSetting(): Boolean {
+        val showDarkModeSetting = false
+        return showDarkModeSetting
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -186,9 +206,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
         }
 
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
-                getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
-
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -196,9 +213,20 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
 
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_IMAGE_QUALITY,
+                getString(R.string.image_quality_setting_screen), getString(R.string.image_quality_setting_title)))
+
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
+
+        val isShowDarkMode = remoteConfig.getBoolean(
+                RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+        if(isShowDarkMode && showDarkModeSetting()) {
+            settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
+                    getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
+                    GeneralSettingMenuLabel.LABEL_BETA))
+        }
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
                 getString(R.string.title_about_us)))
@@ -293,8 +321,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_FEEDBACK_FORM -> {
                 RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
             }
-            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
+            SettingConstant.SETTING_IMAGE_QUALITY -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             else -> {
             }
@@ -389,6 +417,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_SHAKE_ID -> return isItemSelected(getString(R.string.pref_receive_shake), true)
             SettingConstant.SETTING_GEOLOCATION_ID -> return hasLocationPermission()
             SettingConstant.SETTING_SAFE_SEARCH_ID -> return isItemSelected(getString(R.string.pref_safe_mode), false)
+            SettingConstant.SETTING_DARK_MODE -> return isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false)
             else -> return false
         }
     }
@@ -400,12 +429,23 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 saveSettingValue(getString(R.string.pref_receive_shake), value)
             }
             SettingConstant.SETTING_SAFE_SEARCH_ID ->
-                    accountAnalytics.eventClickSetting(SAFE_MODE)
+                accountAnalytics.eventClickSetting(SAFE_MODE)
+            SettingConstant.SETTING_DARK_MODE -> setupDarkMode(value)
             else -> {
             }
         }
     }
 
+    private fun setupDarkMode(isDarkMode: Boolean) {
+        setAppCompatMode(isDarkMode)
+        saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
+        accountAnalytics.eventClickThemeSetting(isDarkMode)
+    }
+
+    private fun setAppCompatMode(isDarkMode: Boolean) {
+        val screenMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        AppCompatDelegate.setDefaultNightMode(screenMode)
+    }
 
     override fun onClicked(settingId: Int, currentValue: Boolean) {
         when (settingId) {
@@ -476,7 +516,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accessDialog.setBodyText(dialogBodyMsg)
         accessDialog.setPositiveButton(dialogPositiveButton)
         accessDialog.setNegativeButton(dialogNegativeButton)
-        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+        accessDialog.show(requireActivity().supportFragmentManager, AccessRequestDialogFragment.TAG)
     }
 
     override fun refreshSafeSearchOption() {
@@ -503,7 +543,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+            Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 

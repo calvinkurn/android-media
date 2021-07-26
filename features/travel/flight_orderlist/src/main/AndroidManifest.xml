@@ -6,7 +6,7 @@
             android:name=".view.FlightOrderListActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

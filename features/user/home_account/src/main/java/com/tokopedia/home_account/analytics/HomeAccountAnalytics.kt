@@ -13,10 +13,13 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_SCREEN_RECORDER
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_SIMPAN_THEME_SELECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.HOME_AND_BROWSE
 import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.home_account.AccountConstants.Analytics.CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.CURRENCY_CODE
@@ -24,6 +27,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_A
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_ACCOUNT_PAGE_BUYER
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_OVO_HOMEPAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.Category.CATEGORY_SETTING_PAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.CurrentSite.TOKOPEDIA_MARKETPLACE_SITE
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_ATTRIBUTION
 import com.tokopedia.home_account.AccountConstants.Analytics.DATA_BRAND
@@ -44,6 +48,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_LABEL
 import com.tokopedia.home_account.AccountConstants.Analytics.EVENT_USER_ID
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_ACCOUNT
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_HOME_PAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_CLICK_SETTING
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Event.EVENT_PRODUCT_VIEW
 import com.tokopedia.home_account.AccountConstants.Analytics.IDR
@@ -62,6 +67,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_GET_TO_
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IMAGE_QUALITY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_BUY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
+import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_IP
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_MEMBER_STORE
@@ -526,6 +532,20 @@ class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInt
         analytics.sendGeneralEvent(map)
     }
 
+    fun eventClickAppSettingScreenRecord() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                EVENT_CLICK_SETTING,
+                CATEGORY_SETTING_PAGE,
+                ACTION_CLICK_SCREEN_RECORDER,
+                ""
+        )
+        map[EVENT_BUSINESS_UNIT] = HOME_AND_BROWSE
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
     fun eventClickAppSettingViewMode() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
@@ -596,6 +616,20 @@ class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInt
         analytics.sendGeneralEvent(map)
     }
 
+    fun eventClickIpAboutTokopedia() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_BUYER,
+                ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION,
+                LABEL_IP
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
     fun eventClickReviewAboutTokopedia() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
@@ -622,5 +656,16 @@ class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInt
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
+    }
+
+    fun eventClickThemeSetting(isDarkMode: Boolean) {
+        val label: String = if (isDarkMode) "dark" else "light"
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_SETTING,
+                CATEGORY_SETTING_PAGE,
+                ACTION_SIMPAN_THEME_SELECTION,
+                label
+        ))
     }
 }

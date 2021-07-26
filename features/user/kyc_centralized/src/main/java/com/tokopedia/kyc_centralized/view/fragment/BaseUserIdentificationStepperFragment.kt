@@ -40,6 +40,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var projectId = 0
     protected var stepperModel: T? = null
     private var stepperListener: StepperListener? = null
+    private var allowedSelfie = false
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -55,6 +56,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         }
         if (activity != null) {
             projectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1)?: -1
+            allowedSelfie = activity?.intent?.getBooleanExtra(UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA, false)?: false
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         }
 
@@ -141,6 +143,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected val isKycSelfie: Boolean
         get() {
             try {
+                if(allowedSelfie) return allowedSelfie
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }

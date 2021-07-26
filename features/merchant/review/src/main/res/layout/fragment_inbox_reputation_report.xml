@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N50"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/send_button"
@@ -35,7 +34,7 @@
             android:layout_height="wrap_content"
             >
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/question"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,8 +44,8 @@
                 android:padding="@dimen/padding_activity"
                 android:text="@string/review_report_question"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/font_medium"
-                android:textStyle="normal"
+                app:typographyWeight="reguler"
+                app:typographyType="body_1"
                 />
 
             <RadioGroup

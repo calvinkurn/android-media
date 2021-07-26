@@ -2,7 +2,9 @@ package com.tokopedia.sellerorder.list.presentation.dialogs
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.unifyprinciples.Typography
@@ -18,8 +20,14 @@ class SomListBulkPrintDialog(context: Context) {
     init {
         childViews = View.inflate(context, com.tokopedia.sellerorder.R.layout.dialog_multi_print_awb, null)
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            if (DeviceScreenInfo.isTablet(context)) {
+                dialogMaxWidth = getScreenWidth() / 2
+            }
             dialogPrimaryCTA.gone()
             dialogSecondaryCTA.gone()
+            dialogSecondaryLongCTA.gone()
+            dialogCTAContainer.gone()
+            setUnlockVersion()
             setOverlayClose(false)
             setCancelable(false)
             setChild(childViews)

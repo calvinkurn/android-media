@@ -3,18 +3,19 @@ package com.tokopedia.discovery2.viewcontrollers.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -65,9 +66,14 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -78,7 +84,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -89,9 +94,9 @@ const val PAGE_REFRESH_LOGIN = 35771
 private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
-private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
+private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
+private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
 
 class DiscoveryFragment :
         BaseDaggerFragment(),
@@ -114,6 +119,9 @@ class DiscoveryFragment :
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
+    private var shouldShowChooseAddressWidget:Boolean = true
+    private lateinit var coordinatorLayout:CoordinatorLayout
+    private lateinit var parentLayout: FrameLayout
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -129,7 +137,7 @@ class DiscoveryFragment :
     private var pinnedAlreadyScrolled = false
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
-    private var userAddressData : LocalCacheModel? = null
+    private var userAddressData: LocalCacheModel? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -168,7 +176,7 @@ class DiscoveryFragment :
 
     override fun initInjector() {
         with(context) {
-            if(this is DiscoveryActivity) {
+            if (this is DiscoveryActivity) {
                 this.discoveryComponent
                         .inject(this@DiscoveryFragment)
             }
@@ -187,17 +195,13 @@ class DiscoveryFragment :
         chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
         chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
         chooseAddressWidget?.bindChooseAddress(this)
-        context?.let {
-            if (ChooseAddressUtils.isRollOutUser(it)) {
-                fetchUserLatestAddressData()
-            }
-        }
     }
 
     private fun initToolbar(view: View) {
         showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
+        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
         if (showOldToolbar) {
             oldToolbar.visibility = View.VISIBLE
             navToolbar.visibility = View.GONE
@@ -223,10 +227,14 @@ class DiscoveryFragment :
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
         ivToTop = view.findViewById(R.id.toTopImg)
+        coordinatorLayout = view.findViewById(R.id.parent_coordinator)
+        parentLayout = view.findViewById(R.id.parent_frame)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var scrollDist = 0
+            val MINIMUM = 25.toPx()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
@@ -234,6 +242,7 @@ class DiscoveryFragment :
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
+                scrollDist += dy
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -242,6 +251,19 @@ class DiscoveryFragment :
                         && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     ivToTop.hide()
                 }
+                if (scrollDist > MINIMUM) {
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
+                    shouldShowChooseAddressWidget = false
+                    scrollDist = 0
+                } else if (scrollDist < -MINIMUM) {
+                    if (discoveryViewModel.getAddressVisibilityValue()) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
+                        shouldShowChooseAddressWidget = true
+                    }
+                    scrollDist = 0
+                }
             }
         })
     }
@@ -249,6 +271,7 @@ class DiscoveryFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
@@ -280,16 +303,19 @@ class DiscoveryFragment :
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
+                            discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
                             scrollToPinnedComponent(listComponent)
                         }
                     }
+                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     mProgressBar.hide()
+                    setPageErrorState(it)
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -315,6 +341,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
+                    discoveryAdapter.addDataList(ArrayList())
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
                 }
@@ -346,15 +373,17 @@ class DiscoveryFragment :
 
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
-                if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
-                    chooseAddressWidget?.show()
-                    chooseAddressWidgetDivider?.show()
+                if (widgetVisibilityStatus) {
+                    if(shouldShowChooseAddressWidget) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
+                    }
                     if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
                     fetchUserLatestAddressData()
-                }else{
+                } else {
                     chooseAddressWidget?.hide()
                     chooseAddressWidgetDivider?.hide()
                 }
@@ -364,18 +393,18 @@ class DiscoveryFragment :
 
     private fun showLocalizingAddressCoachMark() {
         chooseAddressWidget?.let {
-                val coachMarkItem = ArrayList<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
-                coachMark.isOutsideTouchable = true
-                coachMarkItem.add(
-                        CoachMark2Item(
-                                it,
-                                getString(R.string.choose_address_title),
-                                getString(R.string.choose_address_description)
-                        )
-                )
-                coachMark.showCoachMark(coachMarkItem)
-            }
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            val coachMark = CoachMark2(requireContext())
+            coachMark.isOutsideTouchable = true
+            coachMarkItem.add(
+                    CoachMark2Item(
+                            it,
+                            getString(R.string.choose_address_title),
+                            getString(R.string.choose_address_description)
+                    )
+            )
+            coachMark.showCoachMark(coachMarkItem)
+        }
     }
 
     private fun setBottomNavigationComp(it: Success<ComponentsItem>) {
@@ -433,6 +462,7 @@ class DiscoveryFragment :
                                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
+                navToolbar.updateNotification()
             }
         } else {
             if (showOldToolbar) {
@@ -452,21 +482,23 @@ class DiscoveryFragment :
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 linkerDataMapper(data), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
-                if(linkerShareData.url != null) {
+                if (linkerShareData.url != null) {
                     Utils.shareData(activity, data?.share?.description, linkerShareData.url)
                 }
             }
+
             override fun onError(linkerError: LinkerError) {
                 Utils.shareData(activity, data?.share?.description, data?.share?.url)
             }
         }))
     }
 
-    private fun linkerDataMapper(data : PageInfo?): LinkerShareData {
+    private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
         val linkerData = LinkerData()
         linkerData.id = data?.id?.toString() ?: ""
         linkerData.name = data?.name ?: ""
-        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url ?: "", discoComponentQuery)
+        linkerData.uri = Utils.getShareUrlQueryParamAppended(data?.share?.url
+                ?: "", discoComponentQuery)
         linkerData.description = data?.share?.description ?: ""
         linkerData.isThrowOnError = true
         val linkerShareData = LinkerShareData()
@@ -493,6 +525,7 @@ class DiscoveryFragment :
                         .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                         .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
+        navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
@@ -538,7 +571,13 @@ class DiscoveryFragment :
             }
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
-                Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+                ServerLogger.log(Priority.P2, "DISCOVERY_PAGE_ERROR",
+                        mapOf(
+                                "identifier" to discoveryViewModel.pageIdentifier,
+                                "path" to discoveryViewModel.pagePath,
+                                "type" to discoveryViewModel.pageType,
+                                "err" to Log.getStackTraceString(it.throwable)
+                        ))
             }
         }
         globalError.show()
@@ -546,6 +585,10 @@ class DiscoveryFragment :
             globalError.hide()
             showLoadingWithRefresh()
         }
+    }
+
+    private fun hideGlobalError(){
+        globalError.hide()
     }
 
     private fun fetchDiscoveryPageData() {
@@ -631,6 +674,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun refreshCarouselData(componentPosition: Int = -1) {
+        if (componentPosition >= 0) {
+            discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -641,7 +690,14 @@ class DiscoveryFragment :
         }
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
-                discoveryBaseViewModel?.loggedInCallback()
+                if (resultCode == Activity.RESULT_OK) {
+                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                        discoveryBaseViewModel?.loggedInCallback()
+                    }else{
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                    }
+                }
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -652,6 +708,7 @@ class DiscoveryFragment :
             }
             PAGE_REFRESH_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     refreshPage()
                 }
             }
@@ -740,7 +797,7 @@ class DiscoveryFragment :
             }
         })
         context?.let {
-            if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+            if (discoveryViewModel.getAddressVisibilityValue()) {
                 updateChooseAddressWidget()
                 checkAddressUpdate()
             }
@@ -799,11 +856,16 @@ class DiscoveryFragment :
 
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
-            Color.parseColor(textColor)
+            if(textColor.isNullOrEmpty()){
+                ContextCompat.getColor(context, R.color.Unify_G500)
+            }else{
+                Color.parseColor(textColor)
+            }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, R.color.Green_G500)
+            ContextCompat.getColor(context, R.color.Unify_G500)
         }
     }
+
 
     override fun onLocalizingAddressUpdatedFromWidget() {
         updateChooseAddressWidget()
@@ -816,13 +878,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-        if(isRollOutUser && discoveryViewModel.getAddressVisibilityValue()){
-            chooseAddressWidget?.show()
-            chooseAddressWidgetDivider?.show()
-        }else{
-            chooseAddressWidget?.hide()
-            chooseAddressWidgetDivider?.hide()
-        }
+
     }
 
     override fun getLocalizingAddressHostFragment(): Fragment {
@@ -830,11 +886,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return analytics.getHostSource()
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return analytics.getHostTrackingSource()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -842,6 +898,10 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressUpdatedFromBackground() {
 
+    }
+
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
     }
 
     private fun fetchUserLatestAddressData() {
@@ -852,8 +912,8 @@ class DiscoveryFragment :
 
     private fun checkAddressUpdate() {
         context?.let {
-            if(userAddressData != null){
-                if(ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
+            if (userAddressData != null) {
+                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
                     userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
                     showLoadingWithRefresh()
                 }
@@ -861,7 +921,63 @@ class DiscoveryFragment :
         }
     }
 
-    private fun updateChooseAddressWidget(){
+    private fun updateChooseAddressWidget() {
         chooseAddressWidget?.updateWidget()
     }
+
+    fun showCustomContent(view: View){
+        hideSystemUi()
+        coordinatorLayout.hide()
+        view.rotation = 90f
+        val width = Resources.getSystem().displayMetrics.widthPixels
+        val height = activity?.let {
+            val metrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getRealMetrics(metrics)
+            metrics.heightPixels
+        }?:Resources.getSystem().displayMetrics.heightPixels
+        val offset = width-height
+        view.translationX = offset.toFloat() / 2
+        view.translationY = -offset.toFloat() / 2
+
+        val layoutParams = FrameLayout.LayoutParams(height,width)
+        view.layoutParams = layoutParams
+
+        parentLayout.setBackgroundColor(Color.BLACK)
+        parentLayout.addView(view)
+        parentLayout.requestFocus()
+    }
+
+    fun hideCustomContent(){
+        showSystemUi()
+        parentLayout.setBackgroundColor(Color.WHITE)
+        coordinatorLayout.show()
+        if(parentLayout.childCount>1){
+            parentLayout.removeViewAt(1)
+        }
+    }
+
+    private fun hideSystemUi() {
+        activity?.window?.apply {
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val params: WindowManager.LayoutParams = attributes
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                attributes = params
+            }
+        }
+
+    }
+
+    private fun showSystemUi() {
+        activity?.window?.decorView?.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+    }
+
+
 }

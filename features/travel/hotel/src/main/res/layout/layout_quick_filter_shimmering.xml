@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:background="@color/Unify_N0"
     android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl3"
     android:paddingEnd="@dimen/spacing_lvl2"
-    android:paddingRight="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl3"
     android:weightSum="4">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView

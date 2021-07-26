@@ -27,7 +27,7 @@ class UploadImageUseCaseTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val context: Context = mockk()
+    private val context: Context = mockk(relaxed = true)
     private val uploadImageUseCase = mockk<UploadImageUseCase<UploadImageResponse>>(relaxed = true)
     private var contactUsUploadImageUseCase = spyk(ContactUsUploadImageUseCase(context, uploadImageUseCase))
     private lateinit var userSession: UserSessionInterface

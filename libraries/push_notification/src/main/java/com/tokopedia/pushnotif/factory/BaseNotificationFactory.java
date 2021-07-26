@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.tokopedia.pushnotif.util.NotificationRingtoneUtil.ringtoneUri;
+
 /**
  * @author ricoharisin .
  */
@@ -89,7 +91,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp_ramadhan;
+            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp;
         } else {
             return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
         }
@@ -164,6 +166,18 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Boolean isAllowBell() {
+        if (isRevert()) {
+            return checkCacheAllowBell();
+        } else {
+            return true;
+        }
+    }
+
+    protected Boolean isRevert() {
+        return false;
+    }
+
+    protected Boolean checkCacheAllowBell() {
         LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
         long prevTime = cache.getLong(Constant.PREV_TIME);
         long currTIme = System.currentTimeMillis();
@@ -203,35 +217,7 @@ public abstract class BaseNotificationFactory {
     }
 
     protected Uri getRingtoneUri() {
-        Uri actualDefaultNotificationRingtone = null;
-        Uri defaultUri = null;
-        Uri validRingtone = null;
-        Uri actualDefaultAlarmRingtone = null;
-
-        try {
-            actualDefaultNotificationRingtone = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_NOTIFICATION);
-        } catch (Exception ignored) { }
-        try {
-            defaultUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        } catch (Exception ignored) { }
-        try {
-            validRingtone = RingtoneManager.getValidRingtoneUri(context);
-        } catch (Exception ignored) { }
-        try {
-            actualDefaultAlarmRingtone = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM);
-        } catch (Exception ignored) { }
-
-        if (actualDefaultNotificationRingtone != null) {
-            return actualDefaultNotificationRingtone;
-        }
-        if (defaultUri != null) {
-            return defaultUri;
-        }
-        if (validRingtone != null) {
-            return validRingtone;
-        }
-
-        return actualDefaultAlarmRingtone;
+        return ringtoneUri(context);
     }
 
     protected void createNotificationChannel() {

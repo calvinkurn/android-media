@@ -45,28 +45,46 @@ open class RightChatMessageViewHolder constructor(
         bindBackground(message)
     }
 
-    protected open fun bindBackground(message: MessageViewModel) {
-        fxChat?.background = bg
+    protected fun bindHeader(message: MessageViewModel) {
+        bindHeaderSmartReply(message)
+        bindHeaderAutoReply(message)
+        bindHeaderVisibility(message)
     }
 
-    protected fun bindHeader(message: MessageViewModel) {
-        if (
-                (message.isFromAutoReply() || message.isFromSmartReply()) &&
-                message.isSender &&
-                commonListener.isSeller()
-        ) {
-            val headerRoleText = if (message.isFromSmartReply()) {
-                itemView.context?.getString(R.string.tittle_header_smart_reply)
-            } else {
-                itemView.context?.getString(R.string.tittle_header_auto_reply)
-            } ?: ""
+    private fun bindHeaderSmartReply(message: MessageViewModel) {
+        if (fromSmartReply(message)) {
+            val headerText = itemView.context?.getString(R.string.tittle_header_smart_reply)
+            headerRole?.text = headerText
+        }
+    }
+
+    private fun bindHeaderAutoReply(message: MessageViewModel) {
+        if (fromAutoReply(message)) {
+            val headerText = itemView.context?.getString(R.string.tittle_header_auto_reply)
+            headerRole?.text = headerText
+        }
+    }
+
+    private fun bindHeaderVisibility(message: MessageViewModel) {
+        if (fromAutoReply(message) || fromSmartReply(message)) {
             bindBlueDot(message)
             header?.show()
             headerRole?.show()
-            headerRole?.text = headerRoleText
         } else {
             header?.hide()
         }
+    }
+
+    private fun fromAutoReply(message: MessageViewModel): Boolean {
+        return message.isSender && commonListener.isSeller() && message.isFromAutoReply()
+    }
+
+    private fun fromSmartReply(message: MessageViewModel): Boolean {
+        return message.isSender && commonListener.isSeller() && message.isFromSmartReply()
+    }
+
+    protected open fun bindBackground(message: MessageViewModel) {
+        fxChat?.background = bg
     }
 
     private fun bindBlueDot(message: MessageViewModel) {

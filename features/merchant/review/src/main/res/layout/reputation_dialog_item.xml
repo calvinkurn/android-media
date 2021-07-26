@@ -1,4 +1,5 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,4 +8,5 @@
     android:paddingLeft="0dp"
     android:paddingRight="@dimen/padding_vs"
     android:paddingTop="0dp"
-    android:textSize="@dimen/font_medium" />
+    android:textSize="@dimen/font_medium"
+    app:typographyType="body_1" />

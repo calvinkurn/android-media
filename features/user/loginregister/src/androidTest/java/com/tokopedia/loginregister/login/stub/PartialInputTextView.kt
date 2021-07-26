@@ -23,7 +23,7 @@ fun PartialInputTextView(): ViewAction? {
         }
 
         override fun perform(uiController: UiController?, view: View) {
-            (view as EditText).setText("yorisprayogo@gmail.com")
+            (view as EditText).setText("yoris.prayogo+3@tokopedia.com")
         }
 
         override fun getDescription(): String {

@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -12,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_HIDE_LOADING_RECOMMENDATION
@@ -29,13 +31,15 @@ import kotlinx.android.synthetic.main.best_seller_view_holder.view.*
  * Created by Lukas on 05/11/20.
  */
 class BestSellerViewHolder (view: View, private val listener: RecommendationWidgetListener): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
+
+    private val minChipsToShow = 1
+
     private var recommendationTypeFactory = RecommendationCarouselTypeFactoryImpl(this)
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter = AnnotationChipFilterAdapter(this)
     private var recommendationAdapter: RecommendationCarouselAdapter = RecommendationCarouselAdapter(recommendationTypeFactory)
 
     private var bestSellerDataModel: BestSellerDataModel? = null
-
     init {
         view.hide()
     }
@@ -72,18 +76,19 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         }
         itemView.best_seller_subtitle.shouldShowWithAction(element.subtitle.isNotBlank()){
             itemView.best_seller_subtitle.text = element.subtitle
+            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
         }
         itemView.best_seller_see_more.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
             itemView.best_seller_see_more.setOnClickListener {
                 listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
             }
         }
-        itemView.root.show()
+        itemView.container_best_seller_widget.show()
         itemView.show()
     }
 
     private fun initFilterChip(element: BestSellerDataModel){
-        itemView.best_seller_chip_filter_recyclerview.shouldShowWithAction(element.filterChip.isNotEmpty()){
+        itemView.best_seller_chip_filter_recyclerview.shouldShowWithAction(element.filterChip.size > minChipsToShow){
             if (itemView.best_seller_chip_filter_recyclerview?.adapter == null) {
                 itemView.best_seller_chip_filter_recyclerview?.adapter = annotationChipAdapter
             }
@@ -95,6 +100,20 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         itemView.best_seller_recommendation_recycler_view.shouldShowWithAction(element.recommendationItemList.isNotEmpty()){
             if(itemView.best_seller_recommendation_recycler_view.adapter == null) {
                 itemView.best_seller_recommendation_recycler_view.adapter = recommendationAdapter
+            }
+            if (itemView.best_seller_recommendation_recycler_view.itemDecorationCount == 0) {
+                itemView.best_seller_recommendation_recycler_view.addItemDecoration(
+                        CommonMarginStartDecoration(
+                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+                        )
+                )
+            }
+            if (itemView.best_seller_chip_filter_recyclerview.itemDecorationCount == 0) {
+                itemView.best_seller_chip_filter_recyclerview.addItemDecoration(
+                        CommonMarginStartDecoration(
+                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                        )
+                )
             }
             val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
                 RecommendationCarouselItemDataModel(it.value, element.productCardModelList[it.index])
@@ -108,6 +127,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         }
     }
 
+    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(itemView.container_best_seller_widget)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(itemView.container_best_seller_widget)
+    }
+
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
         bestSellerDataModel?.let {
             annotationChipAdapter.submitList(
@@ -118,9 +145,10 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
                         )
                     }
             )
-            listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition)
+            listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition, position)
             itemView.best_seller_loading_recommendation.show()
             itemView.best_seller_recommendation_recycler_view.hide()
+            bestSellerDataModel?.chipsPosition = (position+1)
         }
     }
 

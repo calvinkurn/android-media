@@ -12,7 +12,7 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
 
     companion object {
         const val QUERY = "query GetTopAdsAutoTopup(\$shopId: String!) {\n" +
-                "  topAdsAutoTopup(shop_id: \$shopId) {\n" +
+                "  topAdsAutoTopupV2(shop_id: \$shopId) {\n" +
                 "    data {\n" +
                 "      status\n" +
                 "    }\n" +

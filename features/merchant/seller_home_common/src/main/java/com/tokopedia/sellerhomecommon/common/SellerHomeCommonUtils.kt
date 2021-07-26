@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.common
 
+import android.view.View
+import android.widget.FrameLayout
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

@@ -17,8 +17,6 @@ interface InboxBaseContract {
         fun hideProgressBar()
         fun getRootView(): View?
         fun getRequestCode(): Int
-        fun showBottomFragment()
-        fun hideBottomFragment()
         fun updateDataSet()
         fun setSnackBarErrorMessage(message: String, clickable: Boolean)
         fun clearSearch()
@@ -37,7 +35,6 @@ interface InboxBaseContract {
     interface InboxBasePresenter : CustomerPresenter<InboxBaseView> {
         fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
         fun onDestroy()
-        fun getBottomFragment(resID: Int): BottomSheetDialogFragment?
         fun onOptionsItemSelected(item: MenuItem): Boolean
         fun reAttachView()
         fun clickCloseSearch()

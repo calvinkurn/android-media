@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -49,13 +50,13 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.productAddEdit)
-    implementation project(rootProject.ext.features.productManageList)
-    implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.shopSettings)
-    implementation project(rootProject.ext.features.topAdsDashboard)
-    implementation project(rootProject.ext.features.sellerorder)
-    implementation project(rootProject.ext.features.editshipping)
-    implementation project(rootProject.ext.features.shopScore)
-    implementation project(rootProject.ext.features.sellerMenu)
+    implementation projectOrAar(rootProject.ext.features.productAddEdit)
+    implementation projectOrAar(rootProject.ext.features.productManageList)
+    implementation projectOrAar(rootProject.ext.features.powerMerchantSubscribe)
+    implementation projectOrAar(rootProject.ext.features.shopSettings)
+    implementation projectOrAar(rootProject.ext.features.topAdsDashboard)
+    implementation projectOrAar(rootProject.ext.features.sellerorder)
+    implementation projectOrAar(rootProject.ext.features.editshipping)
+    implementation projectOrAar(rootProject.ext.features.shopScore)
+    implementation projectOrAar(rootProject.ext.features.sellerMenu)
 }

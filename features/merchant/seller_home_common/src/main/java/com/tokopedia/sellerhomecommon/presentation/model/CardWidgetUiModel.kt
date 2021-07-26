@@ -22,6 +22,7 @@ data class CardWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
@@ -30,7 +31,7 @@ data class CardWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<CardDataUiModel> {
-        return CardWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return CardWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<CardDataUiModel>): Boolean {

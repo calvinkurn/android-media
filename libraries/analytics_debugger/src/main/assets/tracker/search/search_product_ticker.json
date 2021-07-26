@@ -6,15 +6,15 @@
       "event": "viewSearchResultIris",
       "eventCategory": "search result",
       "eventAction": "impression - ticker",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click - ticker",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     }
   ]
 }

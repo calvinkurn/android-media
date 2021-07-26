@@ -16,13 +16,15 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 class ShopHeaderActionButtonWidgetAdapterTypeFactory(
         private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
         private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
-        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener
+        private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+        private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
 ) : BaseAdapterTypeFactory(), ShopHeaderButtonComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ShopActionButtonWidgetNoteButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetNoteButtonComponentViewHolder(
-                    parent
+                    parent,
+                    shopActionButtonWidgetNoteButtonComponentListener
             )
             ShopActionButtonWidgetChatButtonComponentViewHolder.LAYOUT -> ShopActionButtonWidgetChatButtonComponentViewHolder(
                     parent,

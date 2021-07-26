@@ -142,12 +142,14 @@ class CustomFieldSettingProfile : LinearLayout {
     }
 
     override fun setEnabled(enabled: Boolean) {
-        if (isEmptyField()) {
-            btnAdd.isEnabled = enabled
-            valueEmpty.isEnabled = enabled
-        } else {
-            btnEdit.isEnabled = enabled
-            valueFilled.isEnabled = enabled
+        if(!enabled) {
+            if (isEmptyField()) {
+                btnAdd.setOnClickListener(null)
+                valueEmpty.setOnClickListener(null)
+            } else {
+                btnEdit.setOnClickListener(null)
+                valueFilled.setOnClickListener(null)
+            }
         }
 
         if(enabled){

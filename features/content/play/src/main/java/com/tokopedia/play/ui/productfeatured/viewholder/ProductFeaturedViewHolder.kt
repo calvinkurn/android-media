@@ -9,7 +9,7 @@ import com.tokopedia.play.ui.product.ProductBasicViewHolder
  */
 class ProductFeaturedViewHolder(
         itemView: View,
-        listener: ProductBasicViewHolder.Listener
+        listener: Listener,
 ) : ProductBasicViewHolder(itemView, listener) {
 
     companion object {

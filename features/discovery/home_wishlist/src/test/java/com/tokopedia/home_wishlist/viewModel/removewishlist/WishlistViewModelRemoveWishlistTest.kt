@@ -88,7 +88,7 @@ class WishlistViewModelRemoveWishlistTest {
         wishlistViewModel.removeWishlistedProduct(mockSelectedPosition)
 
         // Expect that unwishlisted product is removed from wishlistLiveData
-        Assert.assertEquals(41, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(42, wishlistViewModel.wishlistLiveData.value!!.size)
         wishlistViewModel.wishlistLiveData.value!!.forEach {
             if (it is WishlistItemDataModel) {
                 if (it.productItem.id == mockProductId) {
@@ -200,7 +200,7 @@ class WishlistViewModelRemoveWishlistTest {
         wishlistViewModel.removeWishlistedProduct(mockSelectedPosition)
 
         // Expect that unwishlisted product is removed from wishlistLiveData
-        Assert.assertEquals(20, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
         wishlistViewModel.wishlistLiveData.value!!.forEach {
             if (it is WishlistItemDataModel) {
                 if (it.productItem.id == mockProductId) {

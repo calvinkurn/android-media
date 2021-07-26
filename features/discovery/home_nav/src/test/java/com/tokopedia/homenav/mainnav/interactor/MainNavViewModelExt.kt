@@ -1,5 +1,7 @@
 package com.tokopedia.homenav.mainnav.interactor
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -8,7 +10,6 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
-import com.tokopedia.homenav.rule.TestDispatcherProvider
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
@@ -23,7 +24,7 @@ fun createViewModel (
         getProfileDataUseCase: GetProfileDataUseCase? = null,
         getProfileDataCacheUseCase: GetProfileDataCacheUseCase? = null,
         getBuListUseCase: GetCategoryGroupUseCase? = null,
-        dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         userSession: UserSessionInterface? = null,
         clientMenuGenerator: ClientMenuGenerator? = null,
         getNavNotification: GetNavNotification? = null,
@@ -43,6 +44,7 @@ fun createViewModel (
                 .answers { HomeNavTickerDataModel() }
         every { it.getSectionTitle(identifier = any()) }
                 .answers { HomeNavTitleDataModel(identifier = firstArg()) }
+
     }
     val getNavNotificationMock = getOrUseDefault(getNavNotification) {
         coEvery { it.executeOnBackground() }.answers { NavNotificationModel(0) }
@@ -92,4 +94,13 @@ inline fun <reified T : Any> getOrUseDefault(any: T?, runObjectMockSetup: (obj: 
     } else {
         Lazy { any!! }
     }
+}
+
+fun getDefaultClientGeneratorMockValue(clientMenuGenerator: ClientMenuGenerator) {
+    every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+    every { clientMenuGenerator.getTicker(menuId = any()) }
+            .answers { HomeNavTickerDataModel() }
+    every { clientMenuGenerator.getSectionTitle(identifier = any()) }
+            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
 }

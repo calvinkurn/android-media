@@ -2,20 +2,15 @@ package com.tokopedia.recentview
 
 import android.content.Intent
 import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.recentview.view.activity.RecentViewActivity
-import com.tokopedia.recentview.view.adapter.viewholder.RecentViewDetailProductViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert
@@ -55,11 +50,8 @@ class RecentViewAnalyticsTest {
     @Test
     fun testRecentView() {
         initTest()
-
         doActivityTest()
-
-        doHomeCassavaTest()
-
+        assertCassava()
         addDebugEnd()
     }
 
@@ -78,42 +70,25 @@ class RecentViewAnalyticsTest {
     }
 
     private fun doActivityTest() {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.list)
-        val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
-        for (i in 0 until itemCount) {
-            scrollRecyclerViewToPosition(homeRecyclerView, i)
-            checkProductOnDynamicChannel(homeRecyclerView, i)
-        }
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_recent_view_page)
+            CommonActions.clickOnEachItemRecyclerView(
+                    homeRecyclerView.rootView,
+                    R.id.rv_recent_view_page,
+                    0
+            )
         activityRule.activity.finish()
         logTestMessage("Done UI Test")
     }
 
-    private fun doHomeCassavaTest() {
+    private fun assertCassava() {
         waitForData()
         //worked
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECENT_VIEW),
                 hasAllSuccess())
     }
 
-    private fun scrollRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
-        val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
-        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
-    }
-
     private fun logTestMessage(message: String) {
         TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
         Log.d(TAG, message)
     }
-
-    private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
-        when (homeRecyclerView.findViewHolderForAdapterPosition(i)) {
-            is RecentViewDetailProductViewHolder -> {
-                val holderName = "RecentViewDetailProductViewHolder"
-                logTestMessage("VH $holderName")
-                Espresso.onView(ViewMatchers.withId(R.id.list))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
-            }
-        }
-    }
-
 }

@@ -7,8 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.projection.MediaProjectionManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,20 +28,13 @@ class ScreenRecorderActivity : AppCompatActivity() {
         )
 
         private const val REQUEST_MEDIA_PROJECTION = 123
+        private const val REQUEST_MANAGE_OVERLAY_PERMISSION = 2323
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_recorder_activity_screen_record)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            showFeatureNotSupported()
-            finish()
-        }
         findViewById<Button>(R.id.btnActivate).setOnClickListener { v -> activateScreenRecorder() }
-    }
-
-    private fun showFeatureNotSupported() {
-        Toast.makeText(this, getString(R.string.screen_recorder_os_below_lollipop_info), Toast.LENGTH_SHORT).show()
     }
 
     private fun activateScreenRecorder() {
@@ -62,7 +57,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
                     REQUEST_PERMISSION_RECORD_SCREEN
             );
         } else {
-            requestProjectScreen()
+            requestOverlayPermission()
         }
     }
 
@@ -80,7 +75,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
                     return
                 }
             }
-            requestProjectScreen()
+            requestOverlayPermission()
         }
     }
 
@@ -90,12 +85,31 @@ class ScreenRecorderActivity : AppCompatActivity() {
         startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION)
     }
 
+    fun requestOverlayPermission() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName"))
+                startActivityForResult(intent, REQUEST_MANAGE_OVERLAY_PERMISSION)
+            } else {
+                requestProjectScreen()
+            }
+        } catch (e: Exception) {}
+    }
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_MEDIA_PROJECTION) {
             if (resultCode == Activity.RESULT_OK) {
                 startScreenRecordService(resultCode, data)
                 finish()
+            } else {
+                showNeedPermissionsInfo()
+            }
+        } else if (requestCode == REQUEST_MANAGE_OVERLAY_PERMISSION) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this)) {
+                requestProjectScreen()
             } else {
                 showNeedPermissionsInfo()
             }

@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.suggestion
 
-import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import io.mockk.confirmVerified
 import io.mockk.verify
@@ -16,7 +16,7 @@ internal class OnSuggestionTopShopClickTest: SuggestionPresenterTestFixtures() {
             it[SearchApiConst.Q] = "ps4"
         }
 
-        val card = SuggestionTopShopCardViewModel(
+        val card = SuggestionTopShopCardDataView(
                 type = "top_shop",
                 id = "428718",
                 applink = "tokopedia://shop/428718/etalase/all?keyword=ps4",
@@ -32,16 +32,16 @@ internal class OnSuggestionTopShopClickTest: SuggestionPresenterTestFixtures() {
         suggestionPresenter.setSearchParameter(searchParameter)
     }
 
-    private fun `when suggestion top shop card clicked`(card: SuggestionTopShopCardViewModel) {
-        suggestionPresenter.onTopShopCardClicked(card)
+    private fun `when suggestion top shop card clicked`(cardData: SuggestionTopShopCardDataView) {
+        suggestionPresenter.onTopShopCardClicked(cardData)
     }
 
-    private fun `then verify view tracking click top shop card is correct`(card: SuggestionTopShopCardViewModel) {
-        val expectedEventLabel = "${card.id} - keyword: $keywordTopShop"
+    private fun `then verify view tracking click top shop card is correct`(cardData: SuggestionTopShopCardDataView) {
+        val expectedEventLabel = "${cardData.id} - keyword: $keywordTopShop"
 
         verify {
             suggestionView.trackEventClickTopShopCard(expectedEventLabel)
-            suggestionView.onClickSuggestion(card.applink)
+            suggestionView.onClickSuggestion(cardData.applink)
         }
 
         confirmVerified(suggestionView)
@@ -53,7 +53,7 @@ internal class OnSuggestionTopShopClickTest: SuggestionPresenterTestFixtures() {
             it[SearchApiConst.Q] = "ps4"
         }
 
-        val card = SuggestionTopShopCardViewModel(
+        val card = SuggestionTopShopCardDataView(
                 type = "top_shop_all",
                 applink = "tokopedia://search?q=ps4&st=shop"
         )
@@ -64,12 +64,12 @@ internal class OnSuggestionTopShopClickTest: SuggestionPresenterTestFixtures() {
         `then verify view tracking click top shop see more is correct`(card)
     }
 
-    private fun `then verify view tracking click top shop see more is correct`(card: SuggestionTopShopCardViewModel) {
+    private fun `then verify view tracking click top shop see more is correct`(cardData: SuggestionTopShopCardDataView) {
         val expectedEventLabel = "keyword: $keywordTopShop"
 
         verify {
             suggestionView.trackEventClickTopShopSeeMore(expectedEventLabel)
-            suggestionView.onClickSuggestion(card.applink)
+            suggestionView.onClickSuggestion(cardData.applink)
         }
 
         confirmVerified(suggestionView)

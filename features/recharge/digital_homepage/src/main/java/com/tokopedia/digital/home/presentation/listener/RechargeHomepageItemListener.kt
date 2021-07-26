@@ -3,7 +3,7 @@ package com.tokopedia.digital.home.presentation.listener
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 
 interface RechargeHomepageItemListener {
-    fun loadRechargeSectionData(sectionID: String, isLoadFromCloud: Boolean = false)
+    fun loadRechargeSectionData(sectionID: String)
     fun onRechargeSectionEmpty(sectionID: String)
 
     fun onRechargeSectionItemClicked(element: RechargeHomepageSections.Item)

@@ -3,8 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/setting_status_padding_top"
-    android:paddingBottom="@dimen/setting_status_padding_bottom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,14 +24,6 @@
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-            app:srcCompat="@drawable/setting_tip_bar_os"/>
 
         <View
             android:id="@+id/badgeBorder"

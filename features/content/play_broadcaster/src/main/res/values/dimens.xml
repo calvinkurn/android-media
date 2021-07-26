@@ -10,7 +10,8 @@
     <dimen name="play_dp_20">20dp</dimen>
     <dimen name="play_dp_22">22dp</dimen>
     <dimen name="play_dp_26">26dp</dimen>
-    <dimen name="play_dp_28">26dp</dimen>
+    <dimen name="play_dp_28">28dp</dimen>
+    <dimen name="play_dp_30">30dp</dimen>
     <dimen name="play_dp_34">34dp</dimen>
     <dimen name="play_dp_55">55dp</dimen>
 
@@ -80,4 +81,8 @@
 
     <!--Schedule-->
     <dimen name="play_broadcast_schedule_icon_size">18dp</dimen>
+
+    <!--Tags-->
+    <dimen name="play_tag_recommendation_stroke_width">1dp</dimen>
+    <dimen name="play_tag_recommendation_radius">12dp</dimen>
 </resources>

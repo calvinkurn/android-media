@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingViewModel
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
 import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewModel
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
+import com.tokopedia.tokopoints.view.merchantcoupon.MerchantCouponViewModel
 import com.tokopedia.tokopoints.view.sendgift.SendGiftViewModel
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinViewModel
@@ -71,5 +72,11 @@ abstract class ViewModelModule {
     @TokoPointScope
     @ViewModelKey(SendGiftViewModel::class)
     abstract fun getSendGift(viewModel: SendGiftViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(MerchantCouponViewModel::class)
+    abstract fun getMerchantCouponViewmodel(viewModel: MerchantCouponViewModel) : ViewModel
 
 }

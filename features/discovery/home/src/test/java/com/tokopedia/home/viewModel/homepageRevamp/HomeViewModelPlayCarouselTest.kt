@@ -6,8 +6,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.rules.TestDispatcherProvider
-import com.tokopedia.home.viewModel.homepage.givenPlayWidgetToolsReturn
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -30,7 +29,7 @@ class HomeViewModelPlayCarouselTest {
     private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
     private val playWidgetTools = mockk<PlayWidgetTools>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
-    private val dispatchers = TestDispatcherProvider()
+    private val dispatchers = CoroutineTestDispatchersProvider
 
     @Test
     fun `Get play data from home skeleton`() {
@@ -49,7 +48,7 @@ class HomeViewModelPlayCarouselTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, playWidgetTools = playWidgetTools)
 
-        coVerify { playWidgetTools.getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io()) }
+        coVerify { playWidgetTools.getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) }
     }
 
     @Test
@@ -65,7 +64,7 @@ class HomeViewModelPlayCarouselTest {
 
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, playWidgetTools = playWidgetTools)
 
-        coVerify(exactly = 0) { playWidgetTools.getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io()) }
+        coVerify(exactly = 0) { playWidgetTools.getWidgetFromNetwork(PlayWidgetUseCase.WidgetType.Home, dispatchers.io) }
 
         confirmVerified(playWidgetTools)
     }

@@ -2,6 +2,7 @@ package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
@@ -20,7 +21,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertFalse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
@@ -33,7 +33,6 @@ import kotlin.test.assertEquals
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-@ExperimentalCoroutinesApi
 class HomeAccountUserViewModelTest {
 
     @get:Rule
@@ -51,6 +50,8 @@ class HomeAccountUserViewModelTest {
     private val userPageAssetConfigObserver = mockk<Observer<Result<UserPageAssetConfig>>>(relaxed = true)
     private val saldoBalanceObserver = mockk<Observer<Result<Balance>>>(relaxed = true)
     private val tokopointsDrawerListObserver = mockk<Observer<Result<TokopointsDrawerList>>>(relaxed = true)
+    private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
+    private val ovoBalanceResponse = mockk<Observer<Result<WalletModel>>>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val walletPref = mockk<WalletPref>(relaxed = true)
@@ -86,6 +87,8 @@ class HomeAccountUserViewModelTest {
         )
 
         viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
+        viewModel.shortcutData.observeForever(shortCutResponse)
+        viewModel.ovoBalance.observeForever(ovoBalanceResponse)
     }
 
     @Test
@@ -282,6 +285,77 @@ class HomeAccountUserViewModelTest {
 
         val result = viewModel.tokopointsDrawerList.value as Fail
         assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
+    fun `Set safe mode success`() {
+        val data = SetUserProfileSetting(isSuccess = true, error = "")
+        val setUserProfileResponse = SetUserProfileSettingResponse(data)
+
+        val isActive = true
+        /* When */
+        every { homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(any(), any(), any()) } answers {
+            firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        verify {
+            accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+            accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+        }
+    }
+
+    @Test
+    fun `get shortcut data success`() {
+        /* When */
+        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+
+        viewModel.getShortcutData()
+
+        verify {
+            shortCutResponse.onChanged(Success(shortcut))
+        }
+    }
+
+    @Test
+    fun `get shortcut data fail`() {
+        /* When */
+        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwableResponse
+
+        viewModel.getShortcutData()
+
+        verify {
+            shortCutResponse.onChanged(Fail(throwableResponse))
+        }
+    }
+
+    @Test
+    fun `get ovo balance success`() {
+        val walletModel = WalletModel().apply {
+            text = "test text"
+        }
+        /* When */
+        every { viewModel.getBuyerOvoBalance() } returns walletModel
+
+        viewModel.getOvoBalance()
+
+        verify {
+            ovoBalanceResponse.onChanged(Success(walletModel))
+            walletPref.saveWallet(walletModel)
+        }
+    }
+
+    @Test
+    fun `get ovo balance fail`() {
+        /* When */
+        coEvery { viewModel.getBuyerOvoBalance() } throws throwableResponse
+
+        viewModel.getOvoBalance()
+
+        verify {
+            ovoBalanceResponse.onChanged(Fail(throwableResponse))
+        }
     }
 
     companion object {

@@ -76,9 +76,11 @@ class OrderSummaryPageViewModelTestHelper {
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
     }
 
+    val address = OrderProfileAddress(addressId = 1)
+
     val shipment = OrderProfileShipment(serviceId = 1)
 
-    val preference = OrderProfile(shipment = shipment, profileId = 1)
+    val preference = OrderProfile(address = address, shipment = shipment)
 
     val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
             serviceName = firstDuration.serviceData.serviceName,
@@ -87,7 +89,7 @@ class OrderSummaryPageViewModelTestHelper {
             shipperProductId = firstCourierFirstDuration.productData.shipperProductId,
             shippingRecommendationData = shippingRecommendationData,
             logisticPromoViewModel = logisticPromo,
-    logisticPromoTickerMessage = "Tersedia bbo")
+            logisticPromoTickerMessage = "Tersedia bbo")
 
     val product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))
 

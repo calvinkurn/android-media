@@ -10,7 +10,7 @@
             android:name=".presentation.activity.TravelContactDataActivity"
             android:label="@string/travel_contact_data_activity_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.TravelPassenger" />
+            android:theme="@style/Theme.WhiteUnify" />
 
     </application>
 

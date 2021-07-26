@@ -4,6 +4,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailRouteAdapterTypeFactory
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailRouteTypeFactory
@@ -22,6 +23,9 @@ class FlightOrderCancellationDetailJourneyViewHolder(private val listener: Liste
 
     override fun bind(element: FlightOrderDetailJourneyModel) {
         with(itemView) {
+            container_flight_detail_order.setBackgroundColor(
+                    MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
             // journey routes
             val detailRouteTypeFactory: FlightOrderCancellationDetailRouteTypeFactory =
                     FlightOrderCancellationDetailRouteAdapterTypeFactory(

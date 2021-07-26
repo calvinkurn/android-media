@@ -88,6 +88,8 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     public void requestReverseGeoCode(Context context, Destination destination) {
         String keyword = String.format("%s,%s", destination.getLatitude(), destination.getLongitude());
         revGeocodeUseCase.execute(keyword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<KeroMapsAutofill>() {
                     @Override
                     public void onCompleted() {
@@ -179,7 +181,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         param.put(PARAM_POSTAL_CODE, (address.getPostalCode() != null) ? address.getPostalCode() : "");
         param.put(PARAM_RECEIVER_NAME, (address.getReceiverName() != null) ? address.getReceiverName() : "");
         param.put(PARAM_RECEIVER_PHONE, (address.getReceiverPhone() != null) ? address.getReceiverPhone() : "");
-        if (address.getLatitude() != null && address.getLongitude() != null) {
+        if (address.getLatitude() != null && address.getLongitude() != null && !address.getLatitude().equals("0.0") && !address.getLongitude().equals("0.0")) {
             param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
             param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));
         }

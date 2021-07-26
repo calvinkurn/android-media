@@ -5,18 +5,18 @@
     {
       "customProperties": {
         "nameValuePairs": {
-          "product_id": "{{.*}}",
-          "price": "{{.*}}",
-          "Category Level 1": "{{.*}}",
-          "userId": "{{.*}}",
-          "description": "{{.*}}",
-          "shop_id": "{{.*}}",
-          "currency": "{{.*}}"
+          "product_id": ".*",
+          "price": ".*",
+          "Category Level 1": ".*",
+          "userId": ".*",
+          "description": ".*",
+          "shop_id": ".*",
+          "currency": ".*"
         }
       },
       "eventName": "VIEW_ITEM",
       "buoList": [],
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {}
       }

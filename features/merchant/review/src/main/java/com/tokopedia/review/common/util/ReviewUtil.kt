@@ -1,7 +1,6 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
-import android.text.Spanned
 import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -53,23 +52,39 @@ object ReviewUtil {
         bottomSheet?.dismiss()
         return RouteManager.route(context, webviewUrl)
     }
+
+    fun formatReviewExpand(context: Context, review: String, maxChar: Int, allowClick: Boolean): Pair<CharSequence?, Boolean> {
+        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
+        return if (formattedText.length > maxChar) {
+            val subDescription = formattedText.substring(0, maxChar)
+            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context
+                    .getString(R.string.review_expand)).spannedString, allowClick)
+        } else {
+            Pair(formattedText, !allowClick)
+        }
+    }
+
+    fun formatReviewCollapse(context: Context, review: String): CharSequence? {
+        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
+        return HtmlLinkHelper(context, formattedText.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
+    }
 }
 
 fun getReviewStar(ratingCount: Int): Int {
     return when (ratingCount) {
-        1 -> {
+        ReviewConstants.RATING_ONE -> {
             R.drawable.review_ic_rating_star_one
         }
-        2 -> {
+        ReviewConstants.RATING_TWO -> {
             R.drawable.review_ic_rating_star_two
         }
-        3 -> {
+        ReviewConstants.RATING_THREE -> {
             R.drawable.review_ic_rating_star_three
         }
-        4 -> {
+        ReviewConstants.RATING_FOUR -> {
             R.drawable.review_ic_rating_star_four
         }
-        5 -> {
+        ReviewConstants.RATING_FIVE -> {
             R.drawable.review_ic_rating_star_five
         }
         else -> {

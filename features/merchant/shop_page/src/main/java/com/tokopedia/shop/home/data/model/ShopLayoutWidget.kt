@@ -53,7 +53,9 @@ data class ShopLayoutWidget(
                 @SerializedName("ratio")
                 val ratio: String = "",
                 @SerializedName("isATC")
-                val isAtc: Int = 0
+                val isAtc: Int = 0,
+                @SerializedName("etalaseID")
+                val etalaseId: String = ""
         )
 
         data class Data(
@@ -108,7 +110,7 @@ data class ShopLayoutWidget(
                 @SerializedName("isSoldOut")
                 val isSoldOut: Boolean = false,
                 @SerializedName("rating")
-                val rating: Double = 0.0,
+                val rating: String = "",
                 @SerializedName("totalReview")
                 val totalReview: String = "",
                 @SerializedName("isPO")
@@ -150,7 +152,7 @@ data class ShopLayoutWidget(
                     @SerializedName("imageURL")
                     val imageUrl: String = "",
                     @SerializedName("price")
-                    val price: String = "",
+                    val displayedPrice: String = "",
                     @SerializedName("countSold")
                     val countSold: Int = -1,
                     @SerializedName("stock")

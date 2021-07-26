@@ -22,10 +22,6 @@ class OrderInsuranceCard(private val view: View, private val listener: OrderInsu
     private val imgBtInsuranceInfo by lazy { view.findViewById<IconUnify>(R.id.img_bt_insurance_info) }
     private val tvInsurancePrice by lazy { view.findViewById<Typography>(R.id.tv_insurance_price) }
 
-    fun setGroupInsuranceVisible(isVisible: Boolean) {
-        groupInsurance?.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
     fun setupInsurance(insuranceData: InsuranceData?, productId: String) {
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {

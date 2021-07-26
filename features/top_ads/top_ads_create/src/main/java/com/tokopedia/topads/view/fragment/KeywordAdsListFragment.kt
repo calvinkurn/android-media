@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.UNKNOWN_SEARCH
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.SearchData
@@ -23,7 +24,6 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
-import com.tokopedia.topads.view.adapter.bidinfo.viewholder.UNKNOWN_SEARCH
 import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapter
 import com.tokopedia.topads.view.adapter.keyword.KeywordSearchAdapter
 import com.tokopedia.topads.view.model.KeywordAdsViewModel
@@ -84,8 +84,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onCheckedItem(pos: Int, isChecked: Boolean) {
-        if(isChecked)
-        addToMainList(pos)
+        if (isChecked)
+            addToMainList(pos)
         else
             removeFromMainList(pos)
         showSelectMessage()
@@ -140,6 +140,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun showSelectMessage() {
         val count = keywordListAdapter.getSelectedItems().count()
         selected_info?.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_kata_kunci_lihat), count))
+        if(count == 0)
+            selected_info?.text = getString(R.string.topads_common_kata_kunci_dipilih_no_keyword)
         btn_next?.isEnabled = count < 50
     }
 
@@ -165,7 +167,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onEmptySuggestion() {
         startLoading(false)
-        setEmptyView(true)
+        setEmptyView()
         showSelectMessage()
     }
 
@@ -278,7 +280,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         val item = KeywordDataItem()
         item.keyword = searchBar.searchBarTextField.text.toString()
         item.onChecked = true
-        item.totalSearch = UNKNOWN_SEARCH
+        item.totalSearch = "-"
         keywordSearchAdapter.items.add(0, item)
         keywordSearchAdapter.notifyItemInserted(0)
         addToMainList(0)
@@ -329,6 +331,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun showSearchResult(data: List<SearchData>) {
         keywordSearchAdapter.items.clear()
+        emptyLayout?.gone()
         startLoading(false)
         val listKeywords: MutableList<String> = mutableListOf()
         if (searchBar.searchBarTextField.text.toString().isNotEmpty() && data.isNotEmpty()) {
@@ -340,8 +343,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                         ?: "", item.onChecked, fromSearch = true))
             }
             keywordSearchAdapter.setSearchList(list)
-        } else {
-            setEmpty(data.isEmpty())
         }
         checkIfNeedsManualAddition(listKeywords)
     }
@@ -362,14 +363,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
 
-    private fun setEmptyView(empty: Boolean) {
-        if (empty) {
-            headlineList?.gone()
-            emptyLayout?.visible()
-
-        } else {
-            headlineList?.visible()
-            emptyLayout?.gone()
-        }
+    private fun setEmptyView() {
+        headlineList?.gone()
+        emptyLayout?.visible()
     }
 }

@@ -21,4 +21,8 @@ data class SomProcessReqPickupParam (
 
         @SerializedName("is_active_saldo_prioritas")
         @Expose
-        var isActiveSaldoPrioritas: Boolean = false)
+        var isActiveSaldoPrioritas: Boolean = false,
+
+        @SerializedName("schedule_pickup_time")
+        @Expose
+        var schedulePickupTime: String = "")

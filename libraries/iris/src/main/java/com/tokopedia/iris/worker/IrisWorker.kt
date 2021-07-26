@@ -5,6 +5,8 @@ import androidx.work.*
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.DEFAULT_MAX_ROW
 import com.tokopedia.iris.util.MAX_ROW
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -19,7 +21,7 @@ class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorke
                 val maxRow = inputData.getInt(MAX_ROW, DEFAULT_MAX_ROW)
                 IrisServiceCore.run(applicationContext, maxRow)
             } catch (e: Exception) {
-                Timber.e("P1#IRIS#worker %s", e.toString())
+                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "worker", "err" to e.toString()))
             }
             isWorkerRunning = false
             Result.success()
@@ -78,7 +80,7 @@ class IrisWorker(appContext: Context, params: WorkerParameters) : CoroutineWorke
                     lastSchedule = System.currentTimeMillis()
                 }
             } catch (ex: Exception) {
-                Timber.e("P1#IRIS#scheduleError %s", ex.toString())
+                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "scheduleError", "err" to ex.toString()))
             }
         }
 

@@ -5,21 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
-import com.db.williamchart.util.GoldMerchantDateUtils;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.kotlin.extensions.view.ImageViewExtKt;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.reputationhistory.util.DateHeaderFormatter;
+import com.tokopedia.review.feature.reputationhistory.util.GoldMerchantDateUtils;
 import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationDatePickerActivity;
 import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationAdapter;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,7 +43,7 @@ public class GMStatHeaderViewHelper {
     private static final String MIN_DATE = "25/07/2015";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale locale = new Locale("in", "ID");
-    protected TextView calendarRange;
+    protected Typography calendarRange;
     protected ImageView calendarIcon;
     protected View itemView;
     private String[] monthNamesAbrev;
@@ -64,14 +64,10 @@ public class GMStatHeaderViewHelper {
         resetToLoading();
     }
 
-    public void setSelectionType(int selectionType) {
-        this.selectionType = selectionType;
-    }
-
     private void initView(View itemView) {
         monthNamesAbrev = itemView.getResources().getStringArray(com.tokopedia.datepicker.range.R.array.lib_date_picker_month_entries);
 
-        calendarRange = (TextView) itemView.findViewById(R.id.calendar_range);
+        calendarRange = (Typography) itemView.findViewById(R.id.calendar_range);
 
         calendarIcon = (ImageView) itemView.findViewById(R.id.calendar_icon);
 
@@ -146,36 +142,6 @@ public class GMStatHeaderViewHelper {
         String endDate = null;
         if (eDate != -1) {
             endDate = dateHeaderFormatter.getEndDateFormat(eDate);
-        }
-
-        calendarRange.setText(startDate + " - " + endDate);
-
-        setImageIcon();
-        stopLoading();
-    }
-
-    public void bindDate(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
-        this.sDate = sDate;
-        this.eDate = eDate;
-        this.lastSelection = lastSelectionPeriod;
-        this.selectionType = selectionType;
-
-        String startDate = null;
-        if (sDate != -1) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(sDate);
-            DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
-            startDate = dateFormat.format(cal.getTime());
-            startDate = GoldMerchantDateUtils.getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
-        }
-
-        String endDate = null;
-        if (eDate != -1) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(eDate);
-            DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
-            endDate = dateFormat.format(cal.getTime());
-            endDate = GoldMerchantDateUtils.getDateWithYear(endDate, monthNamesAbrev);
         }
 
         calendarRange.setText(startDate + " - " + endDate);
@@ -281,13 +247,5 @@ public class GMStatHeaderViewHelper {
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_MONTH);
         periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago)));
         return periodRangeList;
-    }
-
-    public long geteDate() {
-        return eDate;
-    }
-
-    public long getsDate() {
-        return sDate;
     }
 }

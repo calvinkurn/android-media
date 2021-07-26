@@ -6,20 +6,20 @@
       "eventCategory": "chat detail",
       "item_list": "/chat - buy again",
       "event": "view_item_list",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "view on product history order",
       "eventLabel": "buyer",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "items": [
         {
-          "item_id": "{{.+}}",
-          "price": "{{.+}}",
+          "item_id": ".+",
+          "price": ".+",
           "dimension40": "/chat - buy again",
-          "index": "{{.+}}",
-          "item_name": "{{.+}}",
-          "item_brand": "{{.+}}",
-          "item_variant": "{{.+}}",
-          "item_category": "{{.+}}"
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ".+"
         }
       ]
     }

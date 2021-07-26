@@ -45,7 +45,7 @@ class GetNavNotification @Inject constructor(
                             }
                             inbox {
                                 inbox_ticket
-                                review
+                                inbox_review
                             }
                     }
                 }""".trimIndent()

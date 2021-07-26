@@ -17,14 +17,14 @@ object OfficialStoreDynamicChannelComponentMapper {
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),
                         channel.header?.name?:"",
-                        "",
+                        channel.header?.subtitle?:"",
                         channel.header?.expiredTime?:"",
                         channel.header?.serverTime?:0,
                         channel.header?.applink?:"",
                         channel.header?.url?:"",
                         channel.header?.backColor?:"",
                         channel.header?.backImage?:"",
-                        ""
+                        channel.header?.textColor?:""
                 ),
                 channelBanner = ChannelBanner(
                         id = channel.banner?.id.toString(),
@@ -73,7 +73,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                             cashback = it.cashback,
                             rating = it.rating,
                             countReview = it.countReview,
-                            ratingFloat = it.ratingAverage,
+                            ratingFloat = it.ratingAverage?:"",
                             productClickUrl = it.productClickUrl,
                             isFreeOngkirActive = it.freeOngkir?.isActive?:false,
                             freeOngkirImageUrl = it.freeOngkir?.imageUrl?:"",
@@ -84,7 +84,10 @@ object OfficialStoreDynamicChannelComponentMapper {
                                         type = label.type,
                                         url = label.imageUrl
                                 )
-                            }
+                            },
+                            backColor = it.backColor,
+                            productImageUrl = it.productImageUrl,
+                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value)
                     )
                 }
         )

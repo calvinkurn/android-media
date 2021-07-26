@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderActionButtonWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPerformanceWidgetViewHolder
@@ -27,8 +24,10 @@ class ShopPageHeaderAdapterTypeFactory(
         private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
         private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+        private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
         private val sgcPlayWidget: ShopPageTrackingSGCPlayWidget?,
-        private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener
+        private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
+        private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory() {
 
     private var adapterShopHeader: ShopPageHeaderAdapter? = null
@@ -54,12 +53,14 @@ class ShopPageHeaderAdapterTypeFactory(
             ShopHeaderPerformanceWidgetViewHolder.LAYOUT -> ShopHeaderPerformanceWidgetViewHolder(
                     parent,
                     shopPerformanceWidgetBadgeTextValueListener,
-                    shopPerformanceWidgetImageOnlyListener
+                    shopPerformanceWidgetImageOnlyListener,
+                    shopPerformanceWidgetImageTextListener
             )
             ShopHeaderActionButtonWidgetViewHolder.LAYOUT -> ShopHeaderActionButtonWidgetViewHolder(
                     parent,
                     shopActionButtonWidgetChatButtonComponentListener,
                     shopActionButtonWidgetFollowButtonComponentListener,
+                    shopActionButtonWidgetNoteButtonComponentListener,
                     adapterShopHeader
             )
             ShopHeaderPlayWidgetViewHolder.LAYOUT -> ShopHeaderPlayWidgetViewHolder(

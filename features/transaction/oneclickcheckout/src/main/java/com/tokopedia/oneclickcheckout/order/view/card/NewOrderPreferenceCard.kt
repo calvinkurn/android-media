@@ -13,9 +13,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -30,15 +28,15 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel.Companion.MAIN_PROFILE_STATUS
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.AddressListBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
+import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -48,13 +46,17 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private var shipment: OrderShipment? = null
     private var payment: OrderPayment? = null
 
+    private val tvHeader by lazy { view.findViewById<Typography>(R.id.tv_new_header) }
     private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_new_card_header) }
     private val lblDefaultPreference by lazy { view.findViewById<Label>(R.id.lbl_new_default_preference) }
     private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_new_choose_preference) }
 
+    private val lblMainAddress by lazy { view.findViewById<Label>(R.id.lbl_new_main_address) }
     private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_new_address_name) }
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
     private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
+
+    private val loaderShipping by lazy { view.findViewById<LoaderUnify>(R.id.loader_shipping) }
 
     private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_new_shipping_promo) }
     private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description) }
@@ -92,9 +94,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
 
-    fun setPreference(preference: OrderPreference, revampData: OccRevampData) {
+    fun setPreference(preference: OrderPreference) {
         this.preference = preference
-        showPreference(revampData)
+        showPreference()
     }
 
     fun setShipment(shipment: OrderShipment?) {
@@ -111,8 +113,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    private fun showPreference(revampData: OccRevampData) {
-        showHeader(revampData)
+    private fun showPreference() {
+        showHeader()
 
         showAddress()
 
@@ -121,32 +123,19 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         showPayment()
     }
 
-    private fun showHeader(revampData: OccRevampData) {
-        if (preference.preference.profileRevampWording.isNotEmpty()) {
-            tvCardHeader?.text = preference.preference.profileRevampWording
-        } else {
-            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-        }
-        if (!preference.preference.isRecom && preference.preference.status == MAIN_PROFILE_STATUS) {
-            lblDefaultPreference?.visible()
-        } else {
-            lblDefaultPreference?.gone()
-        }
-        tvChoosePreference?.text = revampData.changeTemplateText
-        tvChoosePreference?.setOnClickListener {
-            if (revampData.totalProfile > 1) {
-                listener.onChangePreferenceClicked()
-            } else {
-                listener.onAddPreferenceClicked(preference)
-            }
-        }
+    private fun showHeader() {
+        tvHeader?.visible()
+        tvCardHeader?.gone()
+        lblDefaultPreference?.gone()
+        tvChoosePreference?.gone()
     }
 
     @SuppressLint("SetTextI18n")
     private fun showShipping() {
         val shipping = shipment
 
-        if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
+        if (shipping?.serviceName == null) {
+            tvShippingDuration?.gone()
             tvShippingDurationEta?.gone()
             btnChangeDuration?.gone()
             tvShippingCourier?.gone()
@@ -157,7 +146,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             btnReloadShipping?.gone()
             iconReloadShipping?.gone()
             tickerShippingPromo?.gone()
+            loaderShipping?.visible()
         } else {
+            loaderShipping?.gone()
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
@@ -212,8 +203,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 } else if (shipping.shippingEta != null) {
                     tvShippingCourier?.text = "${shipping.shipperName} (${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
-                            ?: 0, false).removeDecimalSuffix()
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                                ?: 0, false).removeDecimalSuffix()
                     })"
                     if (shipping.shippingEta.isNotEmpty()) {
                         tvShippingCourierEta?.text = shipping.shippingEta
@@ -378,19 +369,23 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     btnChangePayment?.invisible()
                     tvPaymentOvoErrorAction?.gone()
                     setPaymentErrorAlpha()
-                } else if (payment.ovoErrorData != null) {
+                } else if (payment.walletErrorData != null) {
                     // ovo error
-                    val message = payment.ovoErrorData.message
-                    val button = payment.ovoErrorData.buttonTitle
+                    val message = payment.walletErrorData.message
+                    val button = payment.walletErrorData.buttonTitle
 
                     val span = SpannableString("$message $button")
                     if (message.isBlank() && button.isNotBlank()) {
                         // only show button
                         tvPaymentOvoErrorAction?.setOnClickListener {
-                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
+                                if (payment.walletErrorData.isOvo) {
+                                    listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                } else {
+                                    listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                }
                             }
                         }
                         tvPaymentOvoErrorAction?.text = button
@@ -404,16 +399,20 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                             span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         tvPaymentErrorMessage?.setOnClickListener {
-                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
+                                if (payment.walletErrorData.isOvo) {
+                                    listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                } else {
+                                    listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                }
                             }
                         }
                         tvPaymentErrorMessage?.text = span
                         tvPaymentErrorMessage?.visible()
                         tvPaymentOvoErrorAction?.gone()
-                        if (payment.ovoErrorData.type != OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                        if (payment.walletErrorData.type != OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                             tvPaymentDetail?.gone()
                         }
                     } else {
@@ -427,7 +426,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvPaymentOvoErrorAction?.gone()
                     }
                     btnChangePayment?.visible()
-                    if (payment.ovoErrorData.isBlockingError) {
+                    if (payment.walletErrorData.isBlockingError) {
                         setPaymentErrorAlpha()
                     } else {
                         setPaymentActiveAlpha()
@@ -447,6 +446,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
         val selectedTerm = creditCard.selectedTerm
         if (!creditCard.isDebit && selectedTerm != null) {
@@ -546,6 +546,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address
         val receiverName = addressModel.receiverName
@@ -562,9 +563,17 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         tvAddressName?.text = span
         tvAddressDetail?.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
 
+        lblMainAddress?.visibility = if (addressModel.isMainAddress) View.VISIBLE else View.GONE
+        setAddressNameMargin(addressModel.isMainAddress)
+
         setMultiViewsOnClickListener(tvAddressName, tvAddressDetail, btnChangeAddress) {
             listener.chooseAddress(addressModel.addressId.toString())
         }
+    }
+
+    private fun setAddressNameMargin(isMainAddress: Boolean) {
+        val displayMetrics = tvAddressName?.context?.resources?.displayMetrics ?: return
+        tvAddressName?.setMargin(if (isMainAddress) MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics) else NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics), ADDRESS_TOP_MARGIN.dpToPx(displayMetrics), ADDRESS_RIGHT_MARGIN, ADDRESS_BOTTOM_MARGIN)
     }
 
     fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
@@ -592,7 +601,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     break
                 }
             }
-            ShippingCourierOccBottomSheet().showBottomSheet(fragment, true, list, object : ShippingCourierOccBottomSheetListener {
+            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
                     listener.onCourierChange(shippingCourierViewModel)
                 }
@@ -622,7 +631,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                 }
             }
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, true, list, object : ShippingDurationOccBottomSheetListener {
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
                 }
@@ -647,13 +656,15 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     companion object {
         private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
+
+        private const val MAIN_ADDRESS_LEFT_MARGIN = 8
+        private const val NOT_MAIN_ADDRESS_LEFT_MARGIN = 16
+        private const val ADDRESS_TOP_MARGIN = 12
+        private const val ADDRESS_RIGHT_MARGIN = 0
+        private const val ADDRESS_BOTTOM_MARGIN = 0
     }
 
     interface OrderPreferenceCardListener {
-
-        fun onChangePreferenceClicked()
-
-        fun onAddPreferenceClicked(preference: OrderPreference)
 
         fun onAddAddress(token: Token?)
 
@@ -675,8 +686,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         fun choosePayment(preference: OrderPreference)
 
-        fun onPreferenceEditClicked(preference: OrderPreference)
-
         fun onInstallmentDetailClicked()
 
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
@@ -684,6 +693,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 
         fun onOvoActivateClicked(callbackUrl: String)
+
+        fun onWalletActivateClicked(activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
     }

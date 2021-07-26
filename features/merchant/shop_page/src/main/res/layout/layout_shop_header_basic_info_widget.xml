@@ -63,13 +63,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shop_page_chevron_shop_info"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_18"
-        android:paddingLeft="@dimen/dp_6"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_6"
-        android:paddingBottom="@dimen/dp_4"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
         android:visibility="visible"
+        app:layout_constraintVertical_bias="0.7"
         app:layout_constraintBottom_toBottomOf="@id/text_shop_name"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toRightOf="@id/text_shop_name"
@@ -78,11 +75,26 @@
         tools:srcCompat="@drawable/ic_shop_page_chevron_shop_info"
         tools:visibility="visible" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_online_icon"
+        android:layout_width="@dimen/dp_6"
+        android:layout_height="@dimen/dp_6"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="@id/text_shop_basic_info_additional_info"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
+        app:layout_constraintRight_toLeftOf="@id/text_shop_basic_info_additional_info"
+        app:layout_constraintTop_toTopOf="@id/text_shop_basic_info_additional_info"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_goneMarginLeft="@dimen/dp_12" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_shop_basic_info_additional_info"
         android:layout_width="wrap_content"
+        android:gravity="center_vertical"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
+        app:layout_goneMarginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_4"
         android:ellipsize="end"
         android:lines="1"
@@ -90,7 +102,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/image_shop_logo"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
+        app:layout_constraintLeft_toRightOf="@id/iv_online_icon"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_shop_name"
         app:layout_constraintVertical_bias="0"

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hotelRoomDetailView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -206,7 +207,8 @@
                                 android:layout_height="@dimen/layout_lvl2"
                                 android:layout_marginTop="@dimen/hotel_1dp"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="ContentDescription"/>
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/pay_at_hotel_desc"
@@ -345,9 +347,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/hotel_room_list_choose_room_button"
-            app:unifyButtonType="transaction"
+            app:unifyButtonType="main"
             app:unifyButtonSize="large"
-            />
+            app:unifyButtonVariant="filled" />
 
     </LinearLayout>
 

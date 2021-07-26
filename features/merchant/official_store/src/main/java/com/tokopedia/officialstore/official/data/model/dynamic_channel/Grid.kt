@@ -18,7 +18,7 @@ data class Grid(
         @Expose @SerializedName("productImageUrl") val productImageUrl: String,
         @Expose @SerializedName("back_color") val backColor: String,
         @Expose @SerializedName("rating") val rating: Int,
-        @Expose @SerializedName("ratingAverage") val ratingAverage: String,
+        @Expose @SerializedName("ratingAverage") val ratingAverage: String? = "",
         @Expose @SerializedName("count_review") val countReview: Int,
         @Expose @SerializedName("warehouseID") val warehouseID: String,
         @Expose @SerializedName("label") val label: String,
@@ -29,6 +29,8 @@ data class Grid(
         @Expose @SerializedName("cashback") val cashback: String,
         @Expose @SerializedName("discountPercentage") val discountPercentage: String,
         @Expose @SerializedName("labelGroup") val labelGroup: List<LabelGroup> = arrayListOf(),
+        @Expose @SerializedName("benefit") val benefit: GridBenefit = GridBenefit(),
+
         // Impression purposed
         var isImpressed: Boolean = false
 ) : Parcelable

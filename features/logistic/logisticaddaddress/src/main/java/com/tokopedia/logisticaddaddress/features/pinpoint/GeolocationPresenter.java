@@ -1,12 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint;
 
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -70,7 +69,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                 AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 new RetrofitInteractor.GenerateLatLongListener() {
                     @Override
-                    public void onSuccess(CoordinateViewModel model) {
+                    public void onSuccess(CoordinateUiModel model) {
                         view.moveMap(model.getCoordinate());
                     }
 

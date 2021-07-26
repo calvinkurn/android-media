@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/unify_space_8">
+
+    <EditText
+        android:id="@+id/edtUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:inputType="textUri"
+        android:autofillHints=""
+        android:hint="@string/hint_medialoader_url"/>
+
+    <ImageView
+        android:id="@+id/imgTest"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:contentDescription="@string/desc_medialoader_image_test"
+        android:src="@drawable/imagestate_placeholder"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/unify_space_4"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBlurHashFromLoader1"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_blurhash_loader"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBlurHashFromLoader2"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_blurhash_loader_ratio"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnNormal"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_loadimage"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnRoundedProperties"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_loadimage_rounded"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnFitCenterProperties"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_loadimage_fit_center"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnCenterCropProperties"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_loadimage_center_crop"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnCircle"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_loadimagecircle"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnTopRightCrop"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_toprightcrop"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/unify_space_4"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBlurHashFromNative1"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_blurhash_native"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBlurHashFromNative2"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_medialoader_blurhash_native_ratio"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnError"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="@string/btn_medialoader_loadimage_invalid_url"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnCustomError"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="@string/btn_medialoader_loadimage_custom_error"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnWithoutPlaceHolder"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="@string/btn_medialoader_loadimagewithoutplaceholder"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnCustomTarget"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="@string/btn_medialoader_loadimagewithtarget"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBlurHash"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="@string/btn_medialoader_loadimage_blurhash"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnLoadIcon"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonType="transaction"
+                android:text="@string/btn_medialoader_loadicon"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

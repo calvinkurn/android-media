@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -40,6 +41,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val getLocalSearchRecommendationUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
+    protected val getInspirationCarouselChipsProductsUseCase = mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>()
@@ -61,12 +63,13 @@ internal open class ProductListPresenterTestFixtures {
                 recommendationUseCase,
                 userSession,
                 searchCoachMarkLocalCache,
-                dagger.Lazy { getDynamicFilterUseCase },
-                dagger.Lazy { getProductCountUseCase },
-                dagger.Lazy { getLocalSearchRecommendationUseCase },
+                { getDynamicFilterUseCase },
+                { getProductCountUseCase },
+                { getLocalSearchRecommendationUseCase },
+                { getInspirationCarouselChipsProductsUseCase },
                 topAdsUrlHitter,
                 testSchedulersProvider,
-                dagger.Lazy { remoteConfig }
+                { remoteConfig }
         )
         productListPresenter.attachView(productListView)
 

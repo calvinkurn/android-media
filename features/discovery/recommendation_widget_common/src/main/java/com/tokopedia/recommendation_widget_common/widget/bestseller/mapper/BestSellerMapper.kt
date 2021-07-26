@@ -20,6 +20,7 @@ class BestSellerMapper (
         val productList = mappingProductCards(recommendationWidget.recommendationItemList)
         return BestSellerDataModel(
                 title = recommendationWidget.title,
+                subtitle = recommendationWidget.subtitle,
                 height = getMaxHeightProductCards(productList),
                 pageName = recommendationWidget.pageName,
                 productCardModelList = productList,

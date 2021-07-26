@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -32,8 +31,9 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
+import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
@@ -73,7 +73,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private val adapter = ManageAddressItemAdapter(this)
 
     private val viewModel: ManageAddressViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[ManageAddressViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ManageAddressViewModel::class.java]
     }
 
     private var searchAddress: SearchBarUnify? = null
@@ -104,6 +104,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var prevState: Int = -1
     private var localChosenAddr: LocalCacheModel? = null
     private var isFromEditAddress: Boolean? = false
+    private var isFromDeleteAddress: Boolean? = false
+    private var isStayOnPageState: Boolean? = false
 
     override fun getScreenName(): String = ""
 
@@ -148,6 +150,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
+            } else {
+                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
@@ -155,6 +159,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bottomSheetLainnya = null
     }
 
     private fun openSoftKeyboard() {
@@ -282,7 +291,14 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                             _selectedAddressItem = newRecipientAddressModel
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
+
+                        if (isFromDeleteAddress == true) {
+                            context?.let {
+                                viewModel.searchAddress("", prevState, data.addressId, ChooseAddressUtils.isRollOutUser(it))
+                            }
+                        }
                     }
                 }
 
@@ -303,7 +319,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     context?.let {
                         context ->
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
@@ -452,10 +469,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
         if (data == null) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                intent.putExtra(KERO_TOKEN, token)
+                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            } else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                intent.putExtra(KERO_TOKEN, token)
+                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            }
         } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
             val mapper = AddressModelMapper()
@@ -469,26 +493,38 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
             if (data.addressStatus == 2) {
-                layout_utama?.gone()
-                layout_utama_choose?.gone()
+                btn_alamat_utama?.gone()
+                divider?.gone()
+                btn_alamat_utama_choose?.gone()
+                divider_utama_choose?.gone()
             } else {
                 if (!data.isStateChosenAddress) {
-                    layout_utama_choose?.visible()
-                    layout_utama?.gone()
+                    btn_alamat_utama?.gone()
+                    divider?.gone()
+                    btn_alamat_utama_choose?.visible()
+                    divider_utama_choose?.visible()
                 } else {
-                    layout_utama?.visible()
-                    layout_utama_choose?.gone()
+                    btn_alamat_utama?.visible()
+                    divider?.visible()
+                    btn_alamat_utama_choose?.gone()
+                    divider_utama_choose?.gone()
                 }
             }
             btn_alamat_utama?.setOnClickListener {
-                viewModel.setDefaultPeopleAddress(data.id, false, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                if (isFromCheckoutChangeAddress == true || isLocalization == true) {
+                    _selectedAddressItem = data
+                }
+                isStayOnPageState = true
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
                 viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
                 bottomSheetLainnya?.dismiss()
+                isFromDeleteAddress = true
             }
             btn_alamat_utama_choose?.setOnClickListener {
+                isStayOnPageState = false
                 context?.let {
                     viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
                 }
@@ -582,23 +618,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setChosenAddress() {
-        if (isLocalization == true) {
-            val resultIntent = Intent().apply {
-                putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+        if (isStayOnPageState == false) {
+            if (isLocalization == true) {
+                val resultIntent = Intent().apply {
+                    putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
+                }
+                activity?.setResult(Activity.RESULT_OK, resultIntent)
+                activity?.finish()
+            } else {
+                _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
             }
-            activity?.setResult(Activity.RESULT_OK, resultIntent)
-            activity?.finish()
-        } else {
-            viewModel.setStateChosenAddress(
-                    status = _selectedAddressItem?.addressStatus,
-                    addressId = _selectedAddressItem?.id,
-                    receiverName = _selectedAddressItem?.recipientName,
-                    addressName = _selectedAddressItem?.addressName,
-                    latitude = _selectedAddressItem?.latitude,
-                    longitude = _selectedAddressItem?.longitude,
-                    districtId = _selectedAddressItem?.destinationDistrictId,
-                    postalCode = _selectedAddressItem?.postalCode
-            )
+        } else if (isFromCheckoutChangeAddress == true) {
+            _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
         }
     }
 
@@ -606,7 +637,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         context?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
                     addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}", addressDataModel.postalCode)
+                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString())
         }
 
         if (isLocalization == true) {
@@ -635,6 +667,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun setButtonEnabled(isEnabled: Boolean) {
         if (isEnabled) {
+            isStayOnPageState = false
             buttonChooseAddress?.apply {
                 setEnabled(true)
                 setOnClickListener { setChosenAddress() }

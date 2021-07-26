@@ -48,7 +48,9 @@ class MovetoGroupSheetList {
             it.btn_close.setOnClickListener { dismissDialog() }
             it.submit_butt.setOnClickListener {
                 if (groupId.toString() == "0") {
-                    groupId = (adapter?.items?.get(0) as MovetoGroupItemModel).result.groupId.toInt()
+                    adapter?.items?.firstOrNull()?.let { model ->
+                        groupId = (model as MovetoGroupItemModel).result.groupId.toInt()
+                    }
                 }
                 onItemClick?.invoke()
                 dismissDialog()

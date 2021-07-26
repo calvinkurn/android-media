@@ -78,5 +78,21 @@ data class ServiceProduct(
 
         @SerializedName("cod")
         @Expose
-        val cod: COD = COD()
+        val cod: COD = COD(),
+
+        @SerializedName("features")
+        @Expose
+        val features: Features = Features()
+)
+
+data class Features(
+        @SerializedName("dynamic_price")
+        @Expose
+        val dynamicPrice: DynamicPrice = DynamicPrice()
+)
+
+data class DynamicPrice(
+        @SerializedName("text_label")
+        @Expose
+        val dynamicPriceString: String = ""
 )

@@ -27,6 +27,8 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
@@ -245,9 +247,9 @@ internal class ShopListFragment:
             }
 
             if (isSearchShopDataEmpty(searchShopLiveData)) {
-                showNetworkErrorOnEmptyList(activity, retryClickedListener)
+                showNetworkErrorOnEmptyList(activity, retryClickedListener, searchShopLiveData.throwable)
             } else {
-                showNetworkErrorOnLoadMore(activity, retryClickedListener)
+                showNetworkErrorOnLoadMore(activity, retryClickedListener, searchShopLiveData.throwable)
             }
         }
     }
@@ -256,10 +258,13 @@ internal class ShopListFragment:
         return searchShopLiveData.data?.size == 0
     }
 
-    private fun showNetworkErrorOnEmptyList(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener) {
+    private fun showNetworkErrorOnEmptyList(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
         hideViewOnError()
-
-        NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+        if (throwable != null) {
+            NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(requireContext(), throwable), retryClickedListener)
+        } else {
+            NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+        }
     }
 
     private fun hideViewOnError() {
@@ -268,8 +273,12 @@ internal class ShopListFragment:
         refreshLayout?.hide()
     }
 
-    private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+    private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
+        if (throwable != null) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable), retryClickedListener).showRetrySnackbar()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+        }
     }
 
     private fun observeGetDynamicFilterEvent() {
@@ -281,7 +290,7 @@ internal class ShopListFragment:
     private fun handleEventGetDynamicFilter(isSuccessGetDynamicFilter: Boolean) {
         activity?.let { activity ->
             if (!isSuccessGetDynamicFilter) {
-                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_get_dynamic_filter))
+                NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_get_dynamic_filter))))
             }
         }
     }
@@ -304,7 +313,7 @@ internal class ShopListFragment:
         }
         else {
             activity?.let { activity ->
-                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_filter_data_not_ready))
+                NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_filter_data_not_ready))))
             }
         }
     }

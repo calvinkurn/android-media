@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.TickerMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTickerResponse
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -33,7 +34,7 @@ class GetTickerUseCase(
             val data = gqlResponse.getData<GetTickerResponse>()
             return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 

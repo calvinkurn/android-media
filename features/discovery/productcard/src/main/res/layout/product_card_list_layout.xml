@@ -6,6 +6,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -76,7 +77,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_label_campaign_height"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_8"
             android:visibility="gone"
             android:contentDescription="null"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
@@ -107,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:background="@drawable/product_card_best_seller_background"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingTop="@dimen/product_card_label_best_seller_paddingtop"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
@@ -119,6 +120,14 @@
             tools:text="# 1"
             tools:visibility="visible" />
 
+        <Space
+            android:id="@+id/spaceCampaignBestSeller"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_content_margin_top"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
+            app:layout_constraintStart_toEndOf="@id/imageProduct" />
+
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
@@ -127,10 +136,8 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginTop="@dimen/product_card_content_margin_top"
-            app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
+            app:layout_constraintTop_toBottomOf="@id/spaceCampaignBestSeller"
             app:layout_constraintEnd_toEndOf="parent"
             layout="@layout/product_card_content_layout" />
 

@@ -10,6 +10,7 @@ class AddEditProductAddingMockResponseConfig: MockModelConfig() {
     companion object {
         private const val VALIDATE_SHOP_INFO = "shopInfoByID"
         private const val UPLOADPEDIA_POLICY = "uploadpedia_policy"
+        private const val PRODUCT_ADD_RULE = "ProductAddRule"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -21,6 +22,11 @@ class AddEditProductAddingMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 UPLOADPEDIA_POLICY,
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_uploadpedia_policy),
+                FIND_BY_CONTAINS
+        )
+        addMockResponse(
+                PRODUCT_ADD_RULE,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_product_add_rule),
                 FIND_BY_CONTAINS
         )
 

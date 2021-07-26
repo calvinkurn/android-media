@@ -8,7 +8,9 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class CategoryModel(var category: EventHomeDataResponse.Data.EventChildCategory) : HomeEventItem<HomeTypeFactory> {
+class CategoryModel(var category: EventHomeDataResponse.Data.EventChildCategory =
+                            EventHomeDataResponse.Data.EventChildCategory()
+) : HomeEventItem() {
 
     var items: MutableList<CategoryEventViewHolder.CategoryItemModel> = mutableListOf()
 

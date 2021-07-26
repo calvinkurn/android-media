@@ -39,7 +39,7 @@
                     android:layout_height="wrap_content"
                     app:unify_header_is_show_back_button="true"
                     app:unify_header_is_show_shadow="false"
-                    app:unify_header_title="@string/topads_group_detail" />
+                    app:unify_header_title="@string/topads_headline_detail_title" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

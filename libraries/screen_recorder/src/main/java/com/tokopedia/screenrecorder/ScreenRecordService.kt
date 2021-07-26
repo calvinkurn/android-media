@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.PixelFormat
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.CamcorderProfile
@@ -14,8 +15,13 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Environment
 import android.os.IBinder
+import android.view.Gravity
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
+import com.tokopedia.utils.file.PublicFolderUtil
 import kotlinx.coroutines.*
 import java.io.File
 import java.text.DateFormat
@@ -32,6 +38,9 @@ class ScreenRecordService : Service(), CoroutineScope {
         const val EXTRA_MEDIA_PROEJECTION_RESULT_DATA = "EXTRA_MEDIA_PROEJECTION_RESULT_DATA"
 
         private const val MAX_RECORD_DURATION_SECOND = 60
+        private const val PRE_RECORD_COUNTDOWN_SECOND = 3
+
+        private const val PRE_RECORD_COUNTDOWN_TEXT_SIZE_SP = 32f
 
         private const val VIDEO_WIDTH = 480
         private const val VIDEO_HEIGHT = 720
@@ -68,9 +77,13 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     lateinit var notificationManager: NotificationManager
     lateinit var ongoingNotifBuilder: NotificationCompat.Builder
+    lateinit var preparationNotifBuilder: NotificationCompat.Builder
 
     private lateinit var internalStoragePath: String
     private lateinit var resultVideoPath: String
+
+    lateinit var preRecordCountDownText: TextView
+    lateinit var mWindowManager: WindowManager
 
     override fun onCreate() {
         super.onCreate()
@@ -85,7 +98,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
         when (action) {
             ACTION_INIT -> init(projectionResultCode, projectionResultData!!)
-            ACTION_START_RECORD -> startRecord()
+            ACTION_START_RECORD -> startPreRecordCountDown()
             ACTION_STOP_RECORD -> {
                 masterJob.cancel()
                 stopRecord()
@@ -145,6 +158,10 @@ class ScreenRecordService : Service(), CoroutineScope {
                 .addAction(R.drawable.screen_recorder_ic_stop_black_24dp,
                         getString(R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
                 .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
+        preparationNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setContentTitle(getString(R.string.screen_record_notif_title_preparation))
+                .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
 
         val startServiceNotif = NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
                 .setContentTitle(getString(R.string.screen_record_notif_title_ready_to_record))
@@ -168,6 +185,33 @@ class ScreenRecordService : Service(), CoroutineScope {
     private fun startRecord() {
         mediaRecorder.start()
         startDurationCountDown()
+    }
+
+    private fun startPreRecordCountDown() {
+        try {
+            showPreparationNotif()
+            showPreRecordCountDown()
+            var remainingDurationSecond = PRE_RECORD_COUNTDOWN_SECOND
+            launch {
+                while (remainingDurationSecond > 0) {
+                    preRecordCountDownText.text = remainingDurationSecond.toString()
+                    withContext(backgroundCoroutineContext) {
+                        Thread.sleep(1000)
+                    }
+                    remainingDurationSecond--
+                }
+                hidePreRecordCountDown()
+                startRecord()
+            }
+        } catch (e: Exception) {
+            hidePreRecordCountDown()
+            startRecord()
+        }
+    }
+
+    private fun showPreparationNotif() {
+        val notif = preparationNotifBuilder.build()
+        notificationManager.notify(NOTIF_ID, notif)
     }
 
     private fun startDurationCountDown() {
@@ -200,7 +244,7 @@ class ScreenRecordService : Service(), CoroutineScope {
             releaseResources()
 
             withContext(Dispatchers.IO) {
-                resultVideoPath = writeResultToGallery()
+                resultVideoPath = writeResultToMovies()
                 cleanUnusedFiles()
             }
 
@@ -222,21 +266,19 @@ class ScreenRecordService : Service(), CoroutineScope {
         virtualDisplay.release()
     }
 
-    private fun writeResultToGallery(): String {
-
-        val movieDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-        val outputFile = File(movieDir, "${getOutputPathName()}/${getOutputFileName()}_${getTimestamp()}.mp4")
-
+    private fun writeResultToMovies(): String {
         val srcFile = File(internalStoragePath + FILENAME_RESULT)
-        srcFile.copyTo(target = outputFile)
-
-        MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
-
-        return outputFile.absolutePath
-    }
-
-    private fun getOutputPathName(): String {
-        return "Tokopedia"
+        val result = PublicFolderUtil.putFileToPublicFolder(applicationContext,
+                srcFile,
+                "${getOutputFileName()}_${getTimestamp()}.mp4",
+                "video/mp4")
+        val outputFile = result.first
+        if (outputFile != null) {
+            MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
+            return outputFile.absolutePath
+        } else {
+            return ""
+        }
     }
 
     private fun getTimestamp(): String {
@@ -309,5 +351,39 @@ class ScreenRecordService : Service(), CoroutineScope {
             manager?.createNotificationChannel(normalChannel)
             manager?.createNotificationChannel(highPrioChannel)
         }
+    }
+
+    private fun showPreRecordCountDown() {
+        try {
+            preRecordCountDownText = TextView(this)
+            preRecordCountDownText.textSize = PRE_RECORD_COUNTDOWN_TEXT_SIZE_SP
+            preRecordCountDownText.setTextColor(resources.getColor(R.color.pre_record_countdown_text_color))
+            preRecordCountDownText.setLayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            preRecordCountDownText.setGravity(Gravity.CENTER)
+
+            mWindowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+            preRecordCountDownText.setText(PRE_RECORD_COUNTDOWN_SECOND.toString())
+
+            val params = WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    PixelFormat.TRANSLUCENT)
+
+            params.gravity = Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL
+
+            params.x = 0
+            params.y = 0
+
+            mWindowManager.addView(preRecordCountDownText, params)
+        } catch (e: Exception) {}
+    }
+
+    fun hidePreRecordCountDown() {
+        try {
+            mWindowManager.removeView(preRecordCountDownText)
+        } catch (e: Exception) {}
     }
 }

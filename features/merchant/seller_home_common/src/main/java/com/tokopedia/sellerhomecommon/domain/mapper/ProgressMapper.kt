@@ -26,7 +26,7 @@ class ProgressMapper @Inject constructor(): BaseResponseMapper<GetProgressDataRe
                     maxValueTxt = it.maxValueText.orEmpty(),
                     value = it.value.toZeroIfNull(),
                     maxValue = it.maxValue.toZeroIfNull(),
-                    colorState = mapState(it.state.orEmpty()),
+                    colorState = mapState(it.state),
                     error = it.errorMessage.orEmpty(),
                     subtitle = it.subtitle.orEmpty(),
                     dataKey = it.dataKey.orEmpty(),
@@ -38,10 +38,10 @@ class ProgressMapper @Inject constructor(): BaseResponseMapper<GetProgressDataRe
 
     private fun mapState(state: String?) : ShopScorePMWidget.State {
         return when(state) {
-            GOOD -> ShopScorePMWidget.State.GOOD
-            WARNING -> ShopScorePMWidget.State.WARNING
-            DANGER -> ShopScorePMWidget.State.DANGER
-            else -> ShopScorePMWidget.State.GOOD
+            GOOD -> ShopScorePMWidget.State.Good
+            WARNING -> ShopScorePMWidget.State.Warning
+            DANGER -> ShopScorePMWidget.State.Danger
+            else -> ShopScorePMWidget.State.Good
         }
     }
 }

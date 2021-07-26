@@ -1,48 +1,54 @@
 package com.tokopedia.loginfingerprint.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginfingerprint.R
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
-import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintPojo
+import com.tokopedia.loginfingerprint.data.model.RemoveFingerprintPojo
+import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
+import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
+import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
+import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
+import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
-import dagger.multibindings.StringKey
-
 
 @Module
 class LoginFingerprintQueryModule {
 
     @LoginFingerprintSettingScope
     @Provides
-    @IntoMap
-    @StringKey(LoginFingerprintQueryConstant.QUERY_REGISTER_FINGERPRINT)
-    fun provideRawQueryRegisterFingerprint(@LoginFingerprintContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_register_fingerprint)
+    fun provideRegisterFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): RegisterFingerprintUseCase {
+        val useCase = GraphqlUseCase<RegisterFingerprintPojo>(graphqlRepository)
+        return RegisterFingerprintUseCase(useCase, dispatchers)
+    }
 
     @LoginFingerprintSettingScope
     @Provides
-    @IntoMap
-    @StringKey(LoginFingerprintQueryConstant.QUERY_VALIDATE_FINGERPRINT)
-    fun provideRawQueryValidateFingerprint(@LoginFingerprintContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_validate_fingerprint)
+    fun provideVerifyFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): VerifyFingerprintUseCase {
+        val useCase = GraphqlUseCase<VerifyFingerprintPojo>(graphqlRepository)
+        return VerifyFingerprintUseCase(useCase, dispatchers)
+    }
 
     @LoginFingerprintSettingScope
     @Provides
-    fun provideRegisterFingerprintUsecase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<RegisterFingerprintPojo> = GraphqlUseCase(graphqlRepository)
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun provideValidateFingerprintUsecase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ValidateFingerprintPojo> = GraphqlUseCase(graphqlRepository)
+    fun provideCheckFingerprintToggleUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): CheckFingerprintToggleStatusUseCase {
+        val useCase = GraphqlUseCase<CheckFingerprintPojo>(graphqlRepository)
+        return CheckFingerprintToggleStatusUseCase(useCase, dispatchers)
+    }
 
     @LoginFingerprintSettingScope
     @Provides
     fun provideLoginTokenUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<LoginTokenPojo> = GraphqlUseCase(graphqlRepository)
+
+    @LoginFingerprintSettingScope
+    @Provides
+    fun provideRemoveFingerprintUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): RemoveFingerprintUsecase {
+        val useCase = GraphqlUseCase<RemoveFingerprintPojo>(graphqlRepository)
+        return RemoveFingerprintUsecase(useCase, dispatchers)
+    }
+
 }

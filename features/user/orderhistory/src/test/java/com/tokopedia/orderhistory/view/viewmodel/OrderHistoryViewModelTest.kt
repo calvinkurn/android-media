@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.FileUtil
-import com.tokopedia.orderhistory.TestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import com.tokopedia.usecase.RequestParams
@@ -26,7 +26,6 @@ class OrderHistoryViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher: TestCoroutineContextDispatcher = TestCoroutineContextDispatcher()
     private val productHistoryUseCase: GetProductOrderHistoryUseCase = mockk(relaxed = true)
     private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val addToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
@@ -46,7 +45,7 @@ class OrderHistoryViewModelTest {
     @Before
     fun setup() {
         viewModel = OrderHistoryViewModel(
-                testDispatcher,
+                CoroutineTestDispatchersProvider,
                 productHistoryUseCase,
                 addWishListUseCase,
                 addToCartUseCase

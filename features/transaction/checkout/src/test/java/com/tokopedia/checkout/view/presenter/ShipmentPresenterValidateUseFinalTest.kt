@@ -18,6 +18,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
@@ -242,6 +243,7 @@ class ShipmentPresenterValidateUseFinalTest {
     @Test
     fun `WHEN validate use success with ticker data and current ticker not exist THEN should update promo button and update ticker`() {
         // Given
+        presenter.tickerAnnouncementHolderData = null
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
         val promoUiModel = PromoUiModel(
@@ -335,6 +337,41 @@ class ShipmentPresenterValidateUseFinalTest {
     }
 
     @Test
+    fun `WHEN validate use success and has mvc data but uniqueId not matched THEN should not reload rates`() {
+        // Given
+        val lastSelectedCourierOrderIndex = 1
+        val cartString = "123-abc"
+        val promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+                ),
+                additionalInfoUiModel = AdditionalInfoUiModel(
+                        promoSpIds = ArrayList<PromoSpIdUiModel>().apply {
+                            add(
+                                    PromoSpIdUiModel(
+                                            uniqueId = "other cartString"
+                                    )
+                            )
+                        }
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), lastSelectedCourierOrderIndex, cartString)
+
+        // Then
+        verify(inverse = true) {
+            view.prepareReloadRates(lastSelectedCourierOrderIndex, false)
+        }
+    }
+
+    @Test
     fun `WHEN validate use success and clashing THEN should update promo button and reload rates`() {
         // Given
         val promoUiModel = PromoUiModel(
@@ -420,11 +457,22 @@ class ShipmentPresenterValidateUseFinalTest {
     @Test
     fun `WHEN validate use status get akamai exception THEN should show error and reset courier and clear promo`() {
         // Given
+        val validateUsePromoRequest = ValidateUsePromoRequest().apply {
+            codes = mutableListOf("a", "b")
+            orders = mutableListOf(
+                    OrdersItem().apply {
+                        codes = mutableListOf("c")
+                    }
+            )
+        }
+        presenter.setLatValidateUseRequest(validateUsePromoRequest)
         val message = "error"
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(message))
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // When
-        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+        presenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
 
         // Then
         verifySequence {

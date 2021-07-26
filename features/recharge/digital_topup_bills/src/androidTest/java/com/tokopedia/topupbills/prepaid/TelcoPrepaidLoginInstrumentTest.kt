@@ -155,7 +155,7 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Recents"))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
     }
@@ -213,7 +213,7 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
 
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Recents"))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(R.id.layout_widget)),
                 withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions

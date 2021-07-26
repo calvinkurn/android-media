@@ -2,18 +2,17 @@ package com.tokopedia.imagepicker.picker.main.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.ViewGroup;
+
+import androidx.collection.SparseArrayCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.collection.SparseArrayCompat;
-import android.view.ViewGroup;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
-import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 
 /**
  * Created by hendry on 19/04/18.
@@ -39,10 +38,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return createGalleryFragment();
             case TYPE_CAMERA:
                 return createCameraFragment();
-            case TYPE_INSTAGRAM:
-                return createInstagramFragment();
-            case TYPE_RECORDER:
-                return createVideoFragment();
             default:
                 return new Fragment();
         }
@@ -63,17 +58,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
         return ImagePickerCameraFragment.newInstance();
     }
 
-    @SuppressLint("MissingPermission")
-    protected Fragment createInstagramFragment(){
-        return ImagePickerInstagramFragment.newInstance(
-                imagePickerBuilder.supportMultipleSelection() ,
-                imagePickerBuilder.getMinResolution());
-    }
-
-    protected Fragment createVideoFragment(){
-        return new VideoRecorderFragment();
-    }
-
     @Override
     public CharSequence getPageTitle(int position) {
         switch (imagePickerBuilder.getImagePickerTab()[position]) {
@@ -81,10 +65,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return context.getString(R.string.gallery);
             case TYPE_CAMERA:
                 return context.getString(R.string.camera);
-            case TYPE_INSTAGRAM:
-                return context.getString(R.string.instagram);
-            case TYPE_RECORDER:
-                return context.getString(R.string.recorder);
             default:
                 return context.getString(R.string.gallery);
         }

@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom|center_vertical"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:orientation="horizontal">
 
@@ -33,7 +32,7 @@
             android:layout_height="@dimen/dp_topchat_14"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl1"
+            android:contentDescription="@null"
             tools:srcCompat="@drawable/ic_chat_read" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -53,12 +52,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_marginTop="@dimen/dp_topchat_6"
-        android:text="@string/tittle_info_auto_reply"
         android:textColor="@color/Unify_N700_44"
         android:textIsSelectable="true"
         android:visibility="gone"
         app:typographyType="body_3"
-        tools:ignore="RtlHardcoded,RtlSymmetry"
+        tools:text="Pesan ini dibalas oleh sistem"
         tools:visibility="visible" />
 
 </merge>

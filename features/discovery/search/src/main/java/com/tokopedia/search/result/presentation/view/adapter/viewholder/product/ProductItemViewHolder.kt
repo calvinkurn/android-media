@@ -15,7 +15,10 @@ abstract class ProductItemViewHolder(
 
     protected val context = itemView.context!!
 
-    protected fun ProductItemDataView.toProductCardModel(productImage: String): ProductCardModel {
+    protected fun ProductItemDataView.toProductCardModel(
+            productImage: String,
+            isWideContent: Boolean,
+    ): ProductCardModel {
         return ProductCardModel(
                 productImageUrl = productImage,
                 productName = productName,
@@ -24,13 +27,14 @@ abstract class ProductItemViewHolder(
                 formattedPrice = price,
                 priceRange = priceRange ?: "",
                 shopBadgeList = badgesList.toProductCardModelShopBadges(),
-                shopLocation = shopCity,
+                shopLocation = if (shopCity.isNotEmpty()) shopCity else shopName,
                 freeOngkir = freeOngkirDataView.toProductCardModelFreeOngkir(),
                 isTopAds = isTopAds || isOrganicAds,
                 countSoldRating = ratingString,
                 hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
-                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant()
+                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
+                isWideContent = isWideContent,
         )
     }
 

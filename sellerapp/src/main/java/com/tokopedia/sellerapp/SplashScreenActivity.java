@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
@@ -17,13 +18,13 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
-import com.tokopedia.graphql.util.LoggingUtils;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -31,7 +32,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.ArrayList;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * Created by normansyahputa on 11/29/16.
@@ -41,10 +41,15 @@ public class SplashScreenActivity extends SplashScreen {
 
     private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
-    private static String KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        boolean defaultInteraction = false;
+        NewRelic
+                .withApplicationToken(Keys.NEW_RELIC)
+                .withDefaultInteractions(defaultInteraction)
+                .start(this.getApplication());
+
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
@@ -80,7 +85,7 @@ public class SplashScreenActivity extends SplashScreen {
                 ArrayList<String> remainingAppLinks = getIntent().getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA);
                 if (remainingAppLinks == null || remainingAppLinks.size() == 0) {
                     Intent intent = RouteManager.getIntent(this, uri.toString());
-                    if (intent!= null &&intent.resolveActivity(this.getPackageManager()) != null) {
+                    if (intent != null && intent.resolveActivity(this.getPackageManager()) != null) {
                         startActivity(intent);
                         return true;
                     }
@@ -142,7 +147,7 @@ public class SplashScreenActivity extends SplashScreen {
         boolean hasOnboarding = new SellerOnboardingPreference(this)
                 .getBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING);
         Intent intent;
-        if (isAutoLoginSeamless){
+        if (isAutoLoginSeamless) {
             intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SEAMLESS_LOGIN);
             Bundle b = new Bundle();
             b.putBoolean(KEY_AUTO_LOGIN, true);
@@ -175,8 +180,10 @@ public class SplashScreenActivity extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
-                LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
+                LogManager logManager = LogManager.instance;
+                if (logManager != null) {
+                    logManager.refreshConfig();
+                }
             }
 
             @Override

@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.text.Html
@@ -16,6 +17,8 @@ import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
+import kotlinx.coroutines.Runnable
+
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
@@ -56,19 +59,24 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false, @MvcSource source: Int) {
         this.source = source
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvTitle.text = HtmlUtil.fromHtml(mvcData.title).trim()
-        } else {
-            tvTitle.text = Html.fromHtml(mvcData.title).trim()
-        }
-
-        tvSubTitle.text = mvcData.subTitle
         this.shopId = shopId
+        setMVCData(mvcData.title, mvcData.subTitle, mvcData.imageUrl)
+    }
 
-        Glide.with(imageCoupon)
-                .load(mvcData.imageUrl)
+    private fun setMVCData(titles:String, subTitle:String,imageUrl:String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tvTitle.text = HtmlUtil.fromHtml(titles).trim()
+        } else {
+            tvTitle.text = Html.fromHtml(titles).trim()
+        }
+        tvSubTitle.text = subTitle
+
+        if (!(context as Activity).isFinishing) {
+            Glide.with(imageCoupon.context)
+                .load(imageUrl)
                 .dontAnimate()
                 .into(imageCoupon)
+        }
     }
 
 }

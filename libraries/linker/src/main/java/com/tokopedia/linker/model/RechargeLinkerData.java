@@ -1,9 +1,11 @@
 package com.tokopedia.linker.model;
 
+import java.util.List;
+
 public class RechargeLinkerData {
 
     private LinkerData linkerData;
-    private String categoryId;
+    private String categoryIds;
 
     public LinkerData getLinkerData() {
         return linkerData;
@@ -13,12 +15,12 @@ public class RechargeLinkerData {
         this.linkerData = linkerData;
     }
 
-    public String getCategoryId() {
-        return categoryId;
+    public String getCategoryIds() {
+        return categoryIds;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryIds(String categoryId) {
+        this.categoryIds = categoryId;
     }
 
 }

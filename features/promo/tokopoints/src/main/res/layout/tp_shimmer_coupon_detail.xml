@@ -128,7 +128,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
-            android:background="@color/bg_label_grey_tokopoints" />
+            android:background="@color/Unify_N50" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/dp_220"

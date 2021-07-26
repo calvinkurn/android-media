@@ -7,10 +7,10 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventLocationModel
@@ -22,7 +22,8 @@ import kotlinx.android.synthetic.main.ent_layout_viewholder_event_location_adape
  * Author errysuprayogi on 27,January,2020
  */
 class EventLocationEventViewHolder(itemView: View,
-                                   val locationListener: TrackingListener) : HomeEventViewHolder<EventLocationModel>(itemView) {
+                                   locationListener: TrackingListener)
+    : AbstractViewHolder<EventLocationModel>(itemView) {
 
     var itemAdapter = InnerItemAdapter(locationListener)
 

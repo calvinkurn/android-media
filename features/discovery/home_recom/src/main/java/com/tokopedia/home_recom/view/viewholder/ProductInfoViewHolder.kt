@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.empty_product_info.view.*
 import kotlinx.android.synthetic.main.fragment_product_info.view.*
 
+
 class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : AbstractViewHolder<ProductInfoDataModel>(view) {
 
     init {
@@ -28,6 +29,10 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
         }
     }
 
+    override fun bind(element: ProductInfoDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun initView(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let {productDetailData ->
             itemView.show()
@@ -41,6 +46,10 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
                 }
             } else {
                 itemView.badge?.hide()
+            }
+            itemView.textTopAds.gone()
+            if (productDetailData.isTopads) {
+                itemView.textTopAds.visible()
             }
             setRatingReviewCount(productDetailData.rating, productDetailData.countReview)
             itemView.context?.let{
@@ -126,11 +135,15 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
     }
 
     private fun onProductImpression(productInfoDataModel: ProductInfoDataModel){
-        itemView.product_image?.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
-            override fun onViewHint() {
-                listener.onProductAnchorImpression(productInfoDataModel)
+        productInfoDataModel.productDetailData?.let {
+            if (it.isTopads) {
+                itemView.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
+                    override fun onViewHint() {
+                        listener.onProductAnchorImpression(productInfoDataModel)
+                    }
+                })
             }
-        })
+        }
     }
 
     private fun onClickProductCard(productInfoDataModel: ProductInfoDataModel){

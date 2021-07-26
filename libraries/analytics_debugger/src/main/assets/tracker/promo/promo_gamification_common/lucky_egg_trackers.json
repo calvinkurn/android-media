@@ -6,13 +6,13 @@
       "event": "luckyEggView",
       "eventCategory": "lucky egg - homepage entry point",
       "eventAction": "impression on egg",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "event": "luckyEggClick",
       "eventCategory": "lucky egg - homepage entry point",
       "eventAction": "click egg on homepage",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

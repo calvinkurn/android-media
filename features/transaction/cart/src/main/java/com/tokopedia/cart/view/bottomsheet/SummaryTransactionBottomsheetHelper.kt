@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.bottomsheet
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
@@ -17,10 +18,14 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 fun showSummaryTransactionBottomsheet(cartListData: CartListData, fragmentManager: FragmentManager, context: Context) {
 
-    val bottomSheet = BottomSheetUnify()
-    bottomSheet.showKnob = true
-    bottomSheet.showCloseIcon = false
-    bottomSheet.showHeader = false
+    val bottomSheet = BottomSheetUnify().apply {
+        showKnob = true
+        showCloseIcon = false
+        showHeader = false
+        isDragable = true
+        isHideable = true
+        customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+    }
 
     val binding = LayoutBottomsheetSummaryTransactionBinding.inflate(LayoutInflater.from(context))
 

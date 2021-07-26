@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -18,6 +19,7 @@ import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.LineChartConfigModel
 import com.tokopedia.charts.model.LineChartData
 import com.tokopedia.charts.model.LineChartEntry
+import com.tokopedia.charts.renderer.EllipsizedXAxisRenderer
 import kotlinx.android.synthetic.main.view_line_chart.view.*
 
 /**
@@ -35,7 +37,10 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         private set
 
     init {
-        View.inflate(context, R.layout.view_line_chart, this)
+        View.inflate(context, R.layout.view_line_chart, this).apply {
+            val xAxisRenderer = EllipsizedXAxisRenderer(lineChart.viewPortHandler, lineChart.xAxis, lineChart.getTransformer(YAxis.AxisDependency.LEFT))
+            lineChart.setXAxisRenderer(xAxisRenderer)
+        }
     }
 
     fun init(mConfig: LineChartConfigModel? = null) {

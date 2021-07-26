@@ -8,7 +8,8 @@ import androidx.annotation.IntDef
     InboxFragmentType.NONE,
     InboxFragmentType.NOTIFICATION,
     InboxFragmentType.CHAT,
-    InboxFragmentType.DISCUSSION
+    InboxFragmentType.DISCUSSION,
+    InboxFragmentType.REVIEW
 ])
 annotation class InboxFragmentType {
     companion object {
@@ -16,5 +17,6 @@ annotation class InboxFragmentType {
         const val NOTIFICATION: Int = 0
         const val CHAT: Int = 1
         const val DISCUSSION: Int = 2
+        const val REVIEW: Int = 3
     }
 }

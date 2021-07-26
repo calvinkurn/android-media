@@ -1,6 +1,15 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WIDGET_BROADCAST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_WIDGET_BROADCAST
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 

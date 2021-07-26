@@ -80,7 +80,7 @@ class PltSellerHomePerformanceTest {
 
     @Test
     fun testPageLoadTimePerformance() {
-        login()
+        PltSellerHomePerformanceUtils.login()
         Espresso.onIdle() // wait for login to complete
         activityRule.launchActivity(createIntent(InstrumentationRegistry.getInstrumentation().targetContext))
         Espresso.onIdle() // wait for seller home render process to complete

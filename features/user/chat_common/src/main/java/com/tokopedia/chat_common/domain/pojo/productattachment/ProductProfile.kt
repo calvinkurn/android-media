@@ -34,10 +34,10 @@ class ProductProfile {
     val variant: List<AttachmentVariant>? = listOf()
     @SerializedName("drop_percentage")
     @Expose
-    val dropPercentage: String = ""
+    var dropPercentage: String = ""
     @SerializedName("price_before")
     @Expose
-    val priceBefore: String = ""
+    var priceBefore: String = ""
     @SerializedName("shop_id")
     @Expose
     val shopId: Long = 0
@@ -49,10 +49,10 @@ class ProductProfile {
     val playStoreData: PlayStoreData = PlayStoreData()
     @SerializedName("remaining_stock")
     @Expose
-    val remainingStock: Int = 1
+    var remainingStock: Int = 1
     @SerializedName("status")
     @Expose
-    val status: Int = 1
+    var status: Int = 1
     @SerializedName("wishlist")
     @Expose
     val wishList: Boolean = false
@@ -67,5 +67,14 @@ class ProductProfile {
     val isPreOrder: Boolean = false
     @SerializedName("campaign_id")
     @Expose
-    val campaignId: Long = 0
+    var campaignId: Long = 0
+    @SerializedName("is_fulfillment")
+    @Expose
+    var isFulFillment: Boolean = false
+    @SerializedName("icon_tokocabang")
+    @Expose
+    var urlTokocabang: String = ""
+    @SerializedName("parent_id")
+    @Expose
+    var parentId: String = "0"
 }

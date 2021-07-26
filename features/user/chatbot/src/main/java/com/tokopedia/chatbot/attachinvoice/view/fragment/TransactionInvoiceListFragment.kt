@@ -96,7 +96,7 @@ class TransactionInvoiceListFragment : BaseListFragment<Visitable<*>, BaseAdapte
                 }
             }
         })
-        getRecyclerView(view).addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+        getRecyclerView(view)?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
             }
 

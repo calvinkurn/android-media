@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingEnd="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -38,7 +37,8 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        tools:ignore="RtlSymmetry">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -96,7 +96,7 @@
         app:layout_constraintHorizontal_bias="0"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bottom_sheet_filter_bottom_bar_shadow" />
+        android:background="@color/Unify_N75" />
 
     <ViewStub
         android:id="@+id/view_stub_content_layout"

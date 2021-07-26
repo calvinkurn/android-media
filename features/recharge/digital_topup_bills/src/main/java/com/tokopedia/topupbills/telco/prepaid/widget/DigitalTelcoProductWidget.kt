@@ -12,7 +12,6 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
-import com.tokopedia.topupbills.telco.prepaid.adapter.DigitalProductGridDecorator
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapterFactory
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
@@ -68,9 +67,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
-            if (recyclerView.itemDecorationCount == 0) {
-                recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
-            }
         } else {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = linearLayoutManager
@@ -123,7 +119,17 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
     }
 
+    fun removePaddingTop(remove: Boolean) {
+        if (remove) {
+            recyclerView.setPadding(0, 0, 0, recyclerView.paddingBottom)
+        } else {
+            recyclerView.setPadding(0, resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.unify_space_12), 0, recyclerView.paddingBottom)
+        }
+    }
+
     fun getLabelProductItem(productId: String): String {
+        if (!::adapter.isInitialized) return ""
+
         var label = ""
         var itemTitle = ""
 
@@ -145,6 +151,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     fun selectProductFromFavNumber(productId: String) {
         val label = getLabelProductItem(productId)
+        if (!::adapter.isInitialized) return
         for (i in adapter.data.indices) {
             if (adapter.data[i] is TelcoProduct) {
                 val itemProduct = adapter.data[i] as TelcoProduct
@@ -170,8 +177,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     companion object {
-        const val CELL_MARGIN_DP: Int = 2
-
         //add default pos first and last to fire tracking visible item for first time
         const val DEFAULT_POS_FIRST_ITEM = 0
         const val DEFAULT_POS_LAST_ITEM = 3

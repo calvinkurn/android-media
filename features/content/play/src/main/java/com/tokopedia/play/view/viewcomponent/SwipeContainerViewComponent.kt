@@ -19,8 +19,8 @@ class SwipeContainerViewComponent(
         container: ViewGroup,
         @IdRes rootId: Int,
         private val fragmentManager: FragmentManager,
-        lifecycle: Lifecycle,
-        dataSource: DataSource,
+        private val lifecycle: Lifecycle,
+        private val dataSource: DataSource,
         listener: Listener
 ) : ViewComponent(container, rootId) {
 
@@ -29,7 +29,7 @@ class SwipeContainerViewComponent(
 
     private val vpFragment = rootView as ViewPager2
 
-    private val adapter = SwipeContainerStateAdapter(fragmentManager, lifecycle, dataSource::getFragment)
+    private var adapter = SwipeContainerStateAdapter(fragmentManager, lifecycle, dataSource::getFragment)
 
     private var isLoading: Boolean = false
 
@@ -41,6 +41,7 @@ class SwipeContainerViewComponent(
 
             override fun onPageSelected(position: Int) {
                 val totalItem = adapter.itemCount
+                if (totalItem == 0) return
                 if (!isLoading && position + PAGE_LOAD_THRESHOLD >= totalItem) {
                     isLoading = true
                     listener.onShouldLoadNextPage()
@@ -85,6 +86,11 @@ class SwipeContainerViewComponent(
                 },
                 isSmoothScroll = isSmoothScroll
         )
+    }
+
+    fun reset() {
+        adapter = SwipeContainerStateAdapter(fragmentManager, lifecycle, dataSource::getFragment)
+        vpFragment.adapter = adapter
     }
 
     private fun scrollToPosition(position: Int, isSmoothScroll: Boolean = false) {

@@ -1,4 +1,4 @@
-package chatbot
+package com.tokopedia.applink.chatbot
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal

@@ -1,0 +1,181 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parent_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_mvc_bg">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_shop_icon"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="@id/iv_shop_icon"
+            app:layout_constraintEnd_toStartOf="@id/iv_shop_arrow"
+            app:layout_constraintStart_toEndOf="@id/iv_shop_icon"
+            app:layout_constraintTop_toTopOf="@id/iv_shop_icon"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
+            tools:text="Arthurshopbless" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_shop_arrow"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_24"
+            app:layout_constraintBottom_toBottomOf="@id/dashed_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_saving_arrow_right_grey" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dashed_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_24"
+            android:layerType="software"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
+            app:srcCompat="@drawable/bg_dash_spacing" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cashback_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toStartOf="@id/dashed_divider"
+            app:layout_constraintTop_toBottomOf="@id/dashed_divider"
+            app:typographyType="body_3"
+            tools:text="Arthurshopbless" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cashback_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintStart_toStartOf="@id/dashed_divider"
+            app:layout_constraintTop_toBottomOf="@id/tv_cashback_title"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="Arthurshopbless" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_coupon_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toStartOf="@id/dashed_divider"
+            app:layout_constraintTop_toBottomOf="@id/tv_cashback_value"
+            app:typographyType="small"
+            tools:text="Arthurshopbless" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashed_divider">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_coupon1"
+                android:layout_width="@dimen/dp_64"
+                android:layout_height="@dimen/dp_64"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/container_coupon2"
+                app:layout_constraintTop_toBottomOf="@id/dashed_divider">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/iv_coupon1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_deals_coupon1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@drawable/bg_textview_deals"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingTop="@dimen/dp_2"
+                    android:paddingRight="@dimen/dp_6"
+                    android:paddingBottom="@dimen/dp_2"
+                    android:textColor="@color/Unify_N0"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:typographyType="small"
+                    app:typographyWeight="bold" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_coupon2"
+                android:layout_width="@dimen/dp_64"
+                android:layout_height="@dimen/dp_64"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dashed_divider">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/iv_coupon2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    tools:src="@drawable/img_giftsent_fail" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_deals_coupon2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@drawable/bg_textview_deals"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingTop="@dimen/dp_2"
+                    android:paddingRight="@dimen/dp_6"
+                    android:paddingBottom="@dimen/dp_2"
+                    android:visibility="gone"
+                    android:textColor="@color/Unify_N0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:typographyType="small"
+                    app:typographyWeight="bold" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
+
+

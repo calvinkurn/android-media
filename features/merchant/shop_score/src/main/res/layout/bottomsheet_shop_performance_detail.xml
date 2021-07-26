@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl5"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleCalculationDetail"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N700_96"
+        android:text="@string/title_calculation_shop_performance"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescCalculationDetail"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleCalculationDetail"
+        tools:text="@string/desc_calculation_success_order" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/separatorCalculation"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDescCalculationDetail" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleTipsDetail"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N700_96"
+        android:text="@string/title_tips_shop_performance"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separatorCalculation"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescTipsDetail"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleTipsDetail"
+        tools:text="@string/desc_tips_level_reply_chat" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/separatorTips"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDescTipsDetail" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMoreInfoPerformanceDetail"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separatorTips"
+        tools:text="@string/read_tips_more_info_performance_detail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

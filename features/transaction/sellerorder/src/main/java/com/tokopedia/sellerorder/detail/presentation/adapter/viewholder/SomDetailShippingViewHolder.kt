@@ -125,7 +125,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         itemView.no_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                     }
                     no_resi_copy?.setOnClickListener {
-                        actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
+                        actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb, itemView.context.getString(R.string.readable_awb_label))
                     }
                 } else {
                     rl_no_resi?.visibility = View.GONE
@@ -165,21 +165,26 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 // booking online - booking code
                 if (item.dataObject.onlineBookingState == 0) {
                     booking_code_title?.hide()
+                    booking_code_copy?.hide()
                     booking_code_value?.hide()
                 } else {
                     if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
                         booking_code_title?.hide()
+                        booking_code_copy?.hide()
                         booking_code_value?.hide()
                     } else {
                         booking_code_title?.show()
+                        booking_code_copy?.show()
                         booking_code_value?.show()
 
                         if (item.dataObject.onlineBookingCode.isEmpty()) {
                             booking_code_title?.hide()
+                            booking_code_copy?.hide()
                             booking_code_value?.hide()
                         } else {
-                            booking_code_value?.show()
-
+                            booking_code_copy?.setOnClickListener {
+                                actionListener?.onTextCopied(itemView.context.getString(R.string.booking_code_label), item.dataObject.onlineBookingCode, itemView.context.getString(R.string.readable_booking_code_label))
+                            }
                             booking_code_value.apply {
                                 text = StringBuilder("${item.dataObject.onlineBookingCode} >")
                                 setOnClickListener {

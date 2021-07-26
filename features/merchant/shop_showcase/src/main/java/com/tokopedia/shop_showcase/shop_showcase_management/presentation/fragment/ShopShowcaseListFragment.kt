@@ -30,7 +30,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_DEFAULT
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
@@ -66,7 +66,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
                            isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false,
-                           isSellerNeedToHideShowcaseGroupValue: Boolean = false
+                           isNeedToOpenCreateShowcase: Boolean? = false, isSellerNeedToHideShowcaseGroupValue: Boolean = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -77,6 +77,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE, isNeedToOpenCreateShowcase ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE,
@@ -119,6 +120,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
+    private var isNeedToOpenCreateShowcase = false
     private var isReorderList = false
     private var isSellerNeedToHideShowcaseGroupValue = false
 
@@ -190,6 +192,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
+            isNeedToOpenCreateShowcase = it.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE)
             isSellerNeedToHideShowcaseGroupValue = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE)
         }
         super.onCreate(savedInstanceState)
@@ -245,6 +248,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun refreshData() {
         showLoadingSwipeToRefresh(true)
+        showLoading(true)
         loadData()
     }
 
@@ -392,7 +396,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                                         useAce = showcaseItem.useAce,
                                         aceDefaultSort = showcaseItem.aceDefaultSort,
                                         uri = showcaseItem.uri,
-                                        badge = showcaseItem.badge
+                                        badge = showcaseItem.badge,
+                                        imageUrl = showcaseItem.imageUrl
                                 ))
                             }
 
@@ -458,6 +463,9 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
+        if (isNeedToOpenCreateShowcase && isMyShop) {
+            checkTotalProduct()
+        }
         if (isNeedToGoToAddShowcase && isMyShop) {
             checkTotalProduct()
             Handler().postDelayed({

@@ -5,23 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.DispatcherProvider
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
@@ -29,8 +31,6 @@ import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConsta
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
@@ -72,10 +72,10 @@ class RegisterInitialViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        dispatcherProvider: DispatcherProvider) : BaseViewModel(dispatcherProvider.ui()) {
+        dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
 
-    private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemViewModel>>>()
-    val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemViewModel>>>
+    private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemDataModel>>>()
+    val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemDataModel>>>
         get() = mutableGetProviderResponse
 
     private val mutableGetFacebookCredentialResponse = MutableLiveData<Result<FacebookCredentialData>>()
@@ -262,18 +262,20 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun registerCheck(id: String) {
-        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
-            val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
+        launchCatchError(coroutineContext, {
+            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
+                val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
+                registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
+                registerCheckUseCase.setRequestParams(params)
+                registerCheckUseCase.setGraphqlQuery(query)
+                idlingResourceProvider?.increment()
+                val response = registerCheckUseCase.executeOnBackground()
+                onSuccessRegisterCheck().invoke(response)
 
-            registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
-            registerCheckUseCase.setRequestParams(params)
-            registerCheckUseCase.setGraphqlQuery(query)
-            idlingResourceProvider?.increment()
-            registerCheckUseCase.execute(
-                    onSuccessRegisterCheck(),
-                    onFailedRegisterCheck()
-            )
-        }
+            }
+        }, {
+            onFailedRegisterCheck().invoke(it)
+        })
     }
 
     private fun createRegisterBasicParams(
@@ -298,20 +300,19 @@ class RegisterInitialViewModel @Inject constructor(
             fullname: String,
             validateToken: String
     ){
-        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
-            val params = createRegisterBasicParams(email, password, fullname, validateToken)
-            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-            registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
-            registerRequestUseCase.setRequestParams(params)
-            registerRequestUseCase.setGraphqlQuery(query)
-            registerRequestUseCase.execute(
-                {
-                    onSuccessRegisterRequest(it.data)
-                }, {
-                    onFailedRegisterRequest(it)
-                }
-            )
-        }
+        launchCatchError(coroutineContext, {
+            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
+                val params = createRegisterBasicParams(email, password, fullname, validateToken)
+                userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+                registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
+                registerRequestUseCase.setRequestParams(params)
+                registerRequestUseCase.setGraphqlQuery(query)
+                val response = registerRequestUseCase.executeOnBackground()
+                onSuccessRegisterRequest(response.data)
+            }
+        }, {
+            onFailedRegisterRequest(it)
+        })
     }
 
     fun registerRequestV2(
@@ -344,24 +345,19 @@ class RegisterInitialViewModel @Inject constructor(
             validateToken: String
     ) {
         launchCatchError(coroutineContext, {
-            val params = activateUserUseCase.getParams(email, validateToken)
-            val data: ActivateUserData? = activateUserUseCase.getData(params).data
-            if (data != null) {
+            activateUserUseCase.setParams(email, validateToken)
+            val result = activateUserUseCase.executeOnBackground().data
                 when {
-                    data.isSuccess == 1 -> {
-                        onSuccessActivateUser().invoke(data)
+                    result.isSuccess == 1 -> {
+                        onSuccessActivateUser().invoke(result)
                     }
-                    data.message.isNotEmpty() -> {
-                        onFailedActivateUser().invoke(MessageErrorException(data.message))
+                    result.message.isNotEmpty() -> {
+                        onFailedActivateUser().invoke(MessageErrorException(result.message))
                     }
                     else -> {
                         onFailedActivateUser().invoke(Throwable())
                     }
                 }
-            } else {
-                onFailedActivateUser().invoke(Throwable())
-            }
-
         }, {
             onFailedActivateUser().invoke(it)
         })
@@ -400,7 +396,7 @@ class RegisterInitialViewModel @Inject constructor(
         })
     }
 
-    private fun onSuccessGetProvider(): (DiscoverViewModel) -> Unit {
+    private fun onSuccessGetProvider(): (DiscoverDataModel) -> Unit {
         return {
             if (!it.providers.isEmpty()) {
                 mutableGetProviderResponse.value = Success(it.providers)
@@ -573,7 +569,7 @@ class RegisterInitialViewModel @Inject constructor(
                 mutableActivateUserResponse.value = Success(it)
             } else if (it.message.isNotEmpty()) {
                 mutableActivateUserResponse.value =
-                        Fail(com.tokopedia.network.exception.MessageErrorException(it.message))
+                        Fail(MessageErrorException(it.message))
             } else mutableActivateUserResponse.value = Fail(RuntimeException())
         }
     }
@@ -618,17 +614,18 @@ class RegisterInitialViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        activateUserUseCase.cancelJobs()
+    fun clearBackgroundTask() {
         registerRequestUseCase.cancelJobs()
-        registerRequestUseCaseV2.cancelJobs()
         registerCheckUseCase.cancelJobs()
         tickerInfoUseCase.unsubscribe()
         discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
-        dynamicBannerUseCase.cancelJobs()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        clearBackgroundTask()
     }
 
     companion object {

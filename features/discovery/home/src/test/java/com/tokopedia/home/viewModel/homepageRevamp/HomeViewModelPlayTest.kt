@@ -11,7 +11,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
-import com.tokopedia.home.viewModel.homepage.givenGetPlayLiveDynamicUseCaseReturn
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -90,7 +89,6 @@ class HomeViewModelPlayTest{
                     list = listOf(playDataModel),
                     isProcessingAtf = false
             ))
-            delay(400)
             emit(HomeDataModel(
                     list = listOf(playDataModel),
                     isProcessingAtf = false
@@ -112,7 +110,6 @@ class HomeViewModelPlayTest{
             // Image valid should submit the data on live data home
             homeViewModel.setPlayBanner(it.peekContent())
         }
-        Thread.sleep(500)
         // Expect the event on live data available
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == playDataModel::class.java } as? PlayCardDataModel)?.playCardHome != null

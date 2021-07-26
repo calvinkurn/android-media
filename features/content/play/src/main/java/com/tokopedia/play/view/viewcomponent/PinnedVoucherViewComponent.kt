@@ -25,6 +25,10 @@ class PinnedVoucherViewComponent(
     private val rvPinnedVoucherList: RecyclerView = findViewById(R.id.rv_pinned_voucher_list)
 
     private val pinnedVoucherAdapter = PinnedVoucherAdapter(object : PinnedVoucherViewHolder.Listener {
+        override fun onVoucherImpressed(voucher: MerchantVoucherUiModel, position: Int) {
+            listener.onVoucherImpressed(this@PinnedVoucherViewComponent, voucher, position)
+        }
+
         override fun onVoucherClicked(voucher: MerchantVoucherUiModel) {
             listener.onVoucherClicked(this@PinnedVoucherViewComponent, voucher)
         }
@@ -62,6 +66,7 @@ class PinnedVoucherViewComponent(
 
     interface Listener {
 
+        fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int)
         fun onVoucherClicked(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel)
     }
 

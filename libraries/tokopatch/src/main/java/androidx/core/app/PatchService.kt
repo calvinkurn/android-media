@@ -2,6 +2,8 @@ package androidx.core.app
 
 import android.app.Application
 import android.content.Intent
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.tokopatch.domain.data.DataResponse
 import com.tokopedia.tokopatch.domain.data.RobustDatabase
 import com.tokopedia.tokopatch.domain.repository.PatchRepository
@@ -39,7 +41,8 @@ class PatchService : JobIntentService() {
                         JOB_ID, work
                 )
             } catch (e: Exception){
-                Timber.e(e, "P1#ROBUST#exceptionNotify where: ${e.message}")
+                ServerLogger.log(Priority.P1, "ROBUST", mapOf("type" to "service",
+                        "err" to e.message.toString()))
             }
         }
     }

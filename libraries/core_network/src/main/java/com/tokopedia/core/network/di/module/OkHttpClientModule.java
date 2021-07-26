@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.di.module;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
@@ -24,10 +23,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
-import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
-import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.validator.CacheApiTKPDResponseValidator;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
@@ -66,17 +62,14 @@ public class OkHttpClientModule {
                                                   TkpdBaseInterceptor tkpdBaseInterceptor,
                                                   OkHttpRetryPolicy okHttpRetryPolicy,
                                                   ChuckerInterceptor chuckInterceptor,
-                                                  DebugInterceptor debugInterceptor,
-                                                  CacheApiInterceptor cacheApiInterceptor) {
+                                                  DebugInterceptor debugInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
         return OkHttpFactory.create().buildDaggerClientNoAuthWithBearer(tkpdBearerWithAuthInterceptor,
                 fingerprintInterceptor,
                 tkpdBaseInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
+                debugInterceptor);
     }
 
     @DefaultAuth
@@ -86,16 +79,13 @@ public class OkHttpClientModule {
                                                       TkpdAuthInterceptor tkpdAuthInterceptor,
                                                   OkHttpRetryPolicy okHttpRetryPolicy,
                                                   ChuckerInterceptor chuckInterceptor,
-                                                  DebugInterceptor debugInterceptor,
-                                                       CacheApiInterceptor cacheApiInterceptor) {
+                                                  DebugInterceptor debugInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
         return OkHttpFactory.create().buildDaggerClientDefaultAuth(fingerprintInterceptor,
                 tkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
+                debugInterceptor);
     }
 
     @DefaultAuthWithErrorHandler
@@ -106,15 +96,13 @@ public class OkHttpClientModule {
                                                                        OkHttpRetryPolicy okHttpRetryPolicy,
                                                                        ChuckerInterceptor chuckInterceptor,
                                                                        DebugInterceptor debugInterceptor,
-                                                                       TkpdErrorResponseInterceptor errorHandlerInterceptor,
-                                                                       CacheApiInterceptor cacheApiInterceptor){
+                                                                       TkpdErrorResponseInterceptor errorHandlerInterceptor){
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(fingerprintInterceptor,
                 tkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
                 debugInterceptor,
-                errorHandlerInterceptor,
-                cacheApiInterceptor);
+                errorHandlerInterceptor);
     }
 
     @BearerAuth
@@ -141,16 +129,13 @@ public class OkHttpClientModule {
                                                       @Named(AuthUtil.KEY.KEY_MOJITO) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                                        OkHttpRetryPolicy okHttpRetryPolicy,
                                                        ChuckerInterceptor chuckInterceptor,
-                                                       DebugInterceptor debugInterceptor,
-                                                      CacheApiInterceptor cacheApiInterceptor) {
+                                                       DebugInterceptor debugInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
         return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
+                debugInterceptor);
     }
 
     @MojitoNoRetryAuth
@@ -160,16 +145,13 @@ public class OkHttpClientModule {
                                                              @Named(AuthUtil.KEY.KEY_MOJITO) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                                              OkHttpRetryPolicy okHttpRetryPolicy,
                                                              ChuckerInterceptor chuckInterceptor,
-                                                             DebugInterceptor debugInterceptor,
-                                                             CacheApiInterceptor cacheApiInterceptor) {
+                                                             DebugInterceptor debugInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
         return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 OkHttpRetryPolicy.createdOkHttpRetryPolicyQuickNoRetry(),
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
+                debugInterceptor);
     }
 
     @MojitoSmallTimeoutNoAuth
@@ -178,17 +160,14 @@ public class OkHttpClientModule {
     public OkHttpClient provideOkHttpClientMojitoSmallTimeoutNoAuth(FingerprintInterceptor fingerprintInterceptor,
                                                                     @Named(AuthUtil.KEY.KEY_MOJITO) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                                                     ChuckerInterceptor chuckInterceptor,
-                                                                    DebugInterceptor debugInterceptor,
-                                                                    CacheApiInterceptor cacheApiInterceptor) {
+                                                                    DebugInterceptor debugInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
         return OkHttpFactory.create().buildDaggerClientNoAuth(
                 fingerprintInterceptor,
                 globalTkpdAuthInterceptor,
                 OkHttpRetryPolicy.createdOkHttpRetryPolicyQuickTimeOut(),
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor
+                debugInterceptor
         );
     }
 
@@ -224,15 +203,12 @@ public class OkHttpClientModule {
     public OkHttpClient provideOkHttpClientWithAuthTypeJsonUt(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                               OkHttpRetryPolicy okHttpRetryPolicy,
                                                               ChuckerInterceptor chuckInterceptor,
-                                                              DebugInterceptor debugInterceptor,
-                                                              CacheApiInterceptor cacheApiInterceptor) {
+                                                              DebugInterceptor debugInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
         return OkHttpFactory.create().buildDaggerClientBearerWithClientDefaultAuth(tkpdBearerWithAuthTypeJsonUtInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
+                debugInterceptor);
     }
 
     @UploadWsV4Auth
@@ -257,14 +233,11 @@ public class OkHttpClientModule {
     public OkHttpClient provideOkHttpClientTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
                                                       TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
-                                                      @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor,
-                                                      CacheApiInterceptor cacheApiInterceptor) {
+                                                      @TopAdsQualifier TkpdErrorResponseInterceptor errorResponseInterceptor) {
 
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TopAdsResponseError.class));
         return OkHttpFactory.create().buildDaggerClientBearerTopAdsAuth(fingerprintInterceptor,
                 topAdsAuthInterceptor,
                 okHttpRetryPolicy,
-                errorResponseInterceptor,
-                cacheApiInterceptor);
+                errorResponseInterceptor);
     }
 }

@@ -1,15 +1,8 @@
 package com.tokopedia.saldodetails.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.saldodetails.data.GqlUseCaseWrapper
 import com.tokopedia.saldodetails.di.GqlQueryModule
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
-import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 

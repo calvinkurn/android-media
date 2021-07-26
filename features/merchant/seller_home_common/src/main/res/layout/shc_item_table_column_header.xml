@@ -13,6 +13,6 @@
     android:paddingLeft="@dimen/spacing_lvl2"
     android:paddingEnd="@dimen/spacing_lvl2"
     android:paddingRight="@dimen/spacing_lvl2"
-    android:textColor="@color/Neutral_N700_96"
+    android:textColor="@color/Unify_N700_96"
     app:typographyType="body_3"
     tools:text="Header Of Table" />

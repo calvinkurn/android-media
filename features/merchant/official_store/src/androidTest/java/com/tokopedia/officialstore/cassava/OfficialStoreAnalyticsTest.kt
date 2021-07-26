@@ -4,11 +4,9 @@ import android.content.Intent
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -28,9 +26,9 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewholder.Offi
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -68,11 +66,8 @@ class OfficialStoreAnalyticsTest {
     @Test
     fun testOfficialStore() {
         initTest()
-
         doActivityTest()
-
-        doHomeCassavaTest()
-
+        assertCassava()
         addDebugEnd()
     }
 
@@ -83,7 +78,7 @@ class OfficialStoreAnalyticsTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
     private fun addDebugEnd() {
@@ -96,21 +91,21 @@ class OfficialStoreAnalyticsTest {
         // 2. scroll and click item at OS
         // Scroll to bottom first and then back to top for load all data (recom case)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        var itemCount = recyclerView.adapter?.itemCount ?: 0
-        recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, itemCount - 1)
-        Thread.sleep(1000)
+        onView(firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeUp())
+        Thread.sleep(2500)
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
-        Thread.sleep(1000)
-        itemCount = recyclerView.adapter?.itemCount ?: 0
-        for (i in 0 until itemCount) {
+        Thread.sleep(2500)
+        val itemCount = recyclerView.adapter?.itemCount ?: 0
+        val productRecommendationOffset = 5
+        for (i in 0 until (itemCount + productRecommendationOffset)) {
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
-        activityRule.activity.finish()
+        activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
     }
 
-    private fun doHomeCassavaTest() {
+    private fun assertCassava() {
         waitForData()
         //worked
         MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
@@ -130,7 +125,7 @@ class OfficialStoreAnalyticsTest {
     private fun checkProductOnDynamicChannel(officialStoreRecyclerView: RecyclerView, i: Int) {
         when (val viewHolder = officialStoreRecyclerView.findViewHolderForAdapterPosition(i)) {
             is MixLeftComponentViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, MixLeftComponentViewHolder.RECYCLER_VIEW_ID, 0)
             }
             is MixTopComponentViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
@@ -157,10 +152,10 @@ class OfficialStoreAnalyticsTest {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView,0)
             }
             is OfficialProductRecommendationViewHolder -> {
-                Espresso.onView(allOf(isDisplayed(), withId(R.id.recycler_view)))
-                        .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                activityRule.runOnUiThread {
+                    viewHolder.itemView.performClick()
+                }
             }
         }
     }
-
 }

@@ -20,5 +20,6 @@ data class CommonDataView(
         val isBodyBold: Boolean = false,
         val titleColor: String = "",
         val bodyColor: String = "",
+        var labelText: String = "",
         override var type: Int = CommonViewHolder.TYPE_DEFAULT
 ): BaseItemDataView()

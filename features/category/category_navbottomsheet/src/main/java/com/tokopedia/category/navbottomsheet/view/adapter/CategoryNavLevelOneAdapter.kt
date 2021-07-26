@@ -50,9 +50,9 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.white))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.Unify_N0))
         } else {
-            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.category_unselected_background))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
         }
     }
 
@@ -67,12 +67,12 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
         }
         if (item?.isSelected == true) {
             holder.categoryImage.loadImage(item.iconImageUrl ?:"", R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
-            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, R.color.category_L1_selected_title))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.Unify_N0))
+            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         } else {
             holder.categoryImage.loadImage(item?.iconImageUrlGray ?:"", R.drawable.square_shimmer)
-            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
-            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, R.color.category_L1_unselected_title))
+            holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50_68))
+            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
 
         with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item?.name ?: ""), R.string.nbs_content_desc_name)}

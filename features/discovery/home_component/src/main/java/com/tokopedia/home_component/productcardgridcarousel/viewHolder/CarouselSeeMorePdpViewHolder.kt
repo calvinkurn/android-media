@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class CarouselSeeMorePdpViewHolder(view: View,
                                    private val channels: ChannelModel)

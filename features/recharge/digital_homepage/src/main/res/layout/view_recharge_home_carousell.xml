@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/view_recharge_home_carousell"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingRight="@dimen/spacing_lvl4">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_container_recharge_home_carousell"
@@ -18,6 +16,7 @@
             android:id="@+id/tv_recharge_home_carousell_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl4"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3" />
@@ -28,6 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_carousell_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

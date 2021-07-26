@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.reviewreply.data
 import com.google.gson.annotations.SerializedName
 
 data class ReviewReplyUpdateResponse(
-        @SerializedName("productrevUpdateSellerResponse")
+        @SerializedName("productrevUpdateSellerResponseV2")
         val productrevUpdateSellerResponse: ProductrevUpdateSellerResponse = ProductrevUpdateSellerResponse()
 ) {
     data class ProductrevUpdateSellerResponse(
@@ -13,14 +13,14 @@ data class ReviewReplyUpdateResponse(
             val success: Boolean = false
     ) {
         data class DataFeedback(
-                @SerializedName("feedbackID")
-                val feedbackID: Int? = 0,
-                @SerializedName("responseBy")
-                val responseBy: Int? = 0,
+                @SerializedName("feedbackIDStr")
+                val feedbackID: String? ="",
+                @SerializedName("responseByStr")
+                val responseBy: String? = "",
                 @SerializedName("responseMessage")
                 val responseMessage: String? = "",
-                @SerializedName("shopID")
-                val shopID: Int? = 0
+                @SerializedName("shopIDStr")
+                val shopID: String? = ""
         )
     }
 }

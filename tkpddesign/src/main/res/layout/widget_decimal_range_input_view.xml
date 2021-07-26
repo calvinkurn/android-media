@@ -87,8 +87,8 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_centerVertical="true"
-            app:dbsb_background_color="@color/grey_300"
-            app:dbsb_foreground_color="@color/tkpd_main_green" />
+            app:dbsb_background_color="@color/Unify_N100"
+            app:dbsb_foreground_color="@color/Unify_G500" />
 
         <View
             android:id="@+id/min_button"

@@ -116,6 +116,7 @@ internal open class ProductWidget(
         // set pending intent of product image and content
         view.setOnClickPendingIntent(R.id.iv_productImage, contract.productDetailIntent(product))
         view.setOnClickPendingIntent(R.id.ll_content, contract.productDetailIntent(product))
+        view.setOnClickPendingIntent(R.id.status_bar_latest_event_content, contract.productDetailIntent(product))
 
         // action button
         if (product.actionButton.onlyOne()) {

@@ -16,15 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker" />
 
-    <com.tokopedia.sellerhome.view.viewhelper.KetupatLottieView
-        android:id="@+id/lottie_seller_home_ketupat"
-        android:layout_width="@dimen/sah_thematic_width"
-        android:layout_height="@dimen/sah_thematic_height"
-        android:translationY="@dimen/sah_thematic_translation_y"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        app:layout_constraintTop_toBottomOf="@id/relTicker"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <RelativeLayout
         android:id="@+id/relTicker"
         android:layout_width="match_parent"
@@ -75,6 +66,18 @@
 
                     <com.tokopedia.globalerror.GlobalError
                         android:id="@+id/sahGlobalError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.empty_state.EmptyStateUnify
+                        android:id="@+id/empty_state_seller_home"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"

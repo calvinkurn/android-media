@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import util.TestAppDispatchProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import util.isEqualsTo
 
 @ExperimentalCoroutinesApi
@@ -31,7 +31,7 @@ class UserIdentificationViewModelTest {
     @Before fun setup() {
         viewModel = UserIdentificationViewModel(
                 getUserProjectInfoUseCase,
-                TestAppDispatchProvider
+                CoroutineTestDispatchersProvider
         )
         viewModel.userProjectInfo.observeForever(userProjectInfoObservable)
     }

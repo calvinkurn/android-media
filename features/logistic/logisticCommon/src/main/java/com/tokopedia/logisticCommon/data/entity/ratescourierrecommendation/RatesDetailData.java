@@ -35,6 +35,9 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("promo_stacking")
     @Expose
     private PromoStacking promoStacking;
+    @SerializedName("pre_order")
+    @Expose
+    private PreOrder preOrder;
 
     public RatesDetailData() {
     }
@@ -46,6 +49,7 @@ public class RatesDetailData implements Parcelable {
         services = in.createTypedArrayList(ServiceData.CREATOR);
         info = in.readParcelable(InfoRatesDetailData.class.getClassLoader());
         error = in.readParcelable(ErrorRatesDetailData.class.getClassLoader());
+        preOrder = in.readParcelable(PreOrder.class.getClassLoader());
     }
 
     @Override
@@ -56,6 +60,7 @@ public class RatesDetailData implements Parcelable {
         dest.writeTypedList(services);
         dest.writeParcelable(info, flags);
         dest.writeParcelable(error, flags);
+        dest.writeParcelable(preOrder, flags);
     }
 
     @Override
@@ -126,4 +131,12 @@ public class RatesDetailData implements Parcelable {
     public InfoRatesDetailData getInfo() { return info; }
 
     public void setInfo(InfoRatesDetailData info) { this.info = info; }
+
+    public PreOrder getPreOrder() {
+        return preOrder;
+    }
+
+    public void setPreOrder(PreOrder preOrder) {
+        this.preOrder = preOrder;
+    }
 }

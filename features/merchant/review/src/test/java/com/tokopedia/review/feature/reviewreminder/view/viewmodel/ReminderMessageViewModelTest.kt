@@ -4,11 +4,8 @@ import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCou
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderListResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplateResponseWrapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.verify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 
@@ -20,6 +17,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         viewModel.fetchReminderCounter()
         coVerify { productrevGetReminderCounterUseCase.executeOnBackground() }
         viewModel.getEstimation().verifyValueEquals(responseWrapper.productrevGetReminderCounter)
+        viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
     @Test
@@ -29,6 +27,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         viewModel.fetchReminderCounter()
         coVerify { productrevGetReminderCounterUseCase.executeOnBackground() }
         viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
     @Test
@@ -38,6 +37,7 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         viewModel.fetchReminderTemplate()
         coVerify { productrevGetReminderTemplateUseCase.executeOnBackground() }
         viewModel.getTemplate().verifyValueEquals(responseWrapper.productrevGetReminderTemplate)
+        viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
     @Test
@@ -47,15 +47,17 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         viewModel.fetchReminderTemplate()
         coVerify { productrevGetReminderTemplateUseCase.executeOnBackground() }
         viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
     @Test
-    fun `when fetch product list success should update products value`(){
+    fun `when fetch product list success should update products value`() {
         val responseWrapper = ProductrevGetReminderListResponseWrapper()
         coEvery { productrevGetReminderListUseCase.executeOnBackground() } returns responseWrapper
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
         viewModel.getProducts().verifyValueEquals(responseWrapper.productrevGetReminderList)
+        viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
     @Test
@@ -65,10 +67,11 @@ class ReminderMessageViewModelTest : ReminderMessageViewModelTestFixture() {
         viewModel.fetchProductList()
         coVerify { productrevGetReminderListUseCase.executeOnBackground() }
         viewModel.getError().verifyValueEquals(errorMessage)
+        viewModel.getFetchingStatus().verifyValueEquals(false)
     }
 
     @Test
-    fun `when send reminder should call usecase`(){
+    fun `when send reminder should call usecase`() {
         viewModel.sendReminder(anyString())
         coVerify { productrevSendReminderUseCase.executeOnBackground() }
     }

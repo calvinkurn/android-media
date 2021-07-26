@@ -1,7 +1,7 @@
 package com.tokopedia.webview.download
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.webkit.WebView
 import com.google.gson.Gson
@@ -31,7 +31,7 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val converter = Gson()
-        extArray= converter.fromJson<Array<String>>(arguments!!.getString(ARGS_EXT),Array<String>::class.java)
+        extArray= converter.fromJson(requireArguments().getString(ARGS_EXT),Array<String>::class.java)
     }
 
     override fun shouldOverrideUrlLoading(webView: WebView?, url: String): Boolean {
@@ -43,23 +43,34 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
     }
 
     private fun checkPermissionAndDownload(url: String) {
-        permissionCheckerHelper = PermissionCheckerHelper()
-        permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+            permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                }
 
-            override fun onNeverAskAgain(permissionText: String) {
-            }
+                override fun onNeverAskAgain(permissionText: String) {
+                }
 
-            override fun onPermissionGranted() {
-                downloadFile(url)
-            }
-        })
+                override fun onPermissionGranted() {
+                    downloadFile(url)
+                }
+            })
+        } else {
+            downloadFile(url)
+        }
     }
 
-    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(requireActivity().applicationContext, requestCode, permissions, grantResults)
+        }
+    }
+
     private fun downloadFile(url: String) {
-        val downloadHelper = DownloadHelper(activity!!, url, fetchFileName(url), object : DownloadHelper.DownloadHelperListener {
+        val downloadHelper = DownloadHelper(requireActivity(), url, fetchFileName(url), object : DownloadHelper.DownloadHelperListener {
             override fun onDownloadComplete() {
             }
         })
@@ -76,14 +87,6 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
             }
         }
         return false
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(activity!!.applicationContext, requestCode, permissions, grantResults)
-        }
     }
 
     private fun fetchFileName(uri: String): String {

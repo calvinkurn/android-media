@@ -34,9 +34,6 @@ public class WalletModel {
     @SerializedName("cash_balance")
     @Expose
     private String cashBalance = "";
-    @SerializedName("raw_cash_balance")
-    @Expose
-    private Long rawCashBalance = 0L;
     @SerializedName("wallet_type")
     @Expose
     private String walletType = "";
@@ -138,13 +135,5 @@ public class WalletModel {
 
     public void setAmountPendingCashback(int amountPendingCashback) {
         this.amountPendingCashback = amountPendingCashback;
-    }
-
-    public Long getRawCashBalance() {
-        return rawCashBalance;
-    }
-
-    public void setRawCashBalance(Long rawCashBalance) {
-        this.rawCashBalance = rawCashBalance;
     }
 }

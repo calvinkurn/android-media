@@ -10,4 +10,8 @@ object CoroutineTestDispatchersProvider: CoroutineDispatchers {
     override val io = Dispatchers.Unconfined
 
     override val default = Dispatchers.Unconfined
+
+    override val immediate = Dispatchers.Unconfined
+
+    override val computation = Dispatchers.Unconfined
 }

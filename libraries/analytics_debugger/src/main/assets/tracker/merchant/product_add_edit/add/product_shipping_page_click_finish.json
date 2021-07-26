@@ -6,8 +6,8 @@
       "event" : "clickAddProduct",
       "eventCategory" : "add product page",
       "eventAction" : "click finish success",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}",
+      "eventLabel" : ".*",
+      "shopId" : ".+",
       "screenName":"/addproductpage - shipping"
     }
   ]

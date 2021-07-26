@@ -54,8 +54,11 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
         fun bind(data: SomFilterChipsUiModel.ChildStatusUiModel) {
             with(itemView) {
                 label_checkbox.text = data.text
-                cb_filter.setOnCheckedChangeListener(null)
-                cb_filter.isChecked = data.isChecked
+                cb_filter.apply {
+                    setOnCheckedChangeListener(null)
+                    isChecked = data.isChecked
+                    skipAnimation()
+                }
 
                 subChildFilterList.filter { it.isChecked }.forEach {
                     val id = it.childId.firstOrNull()

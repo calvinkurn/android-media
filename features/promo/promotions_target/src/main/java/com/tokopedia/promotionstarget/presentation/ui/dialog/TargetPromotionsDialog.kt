@@ -526,6 +526,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
 
         if (couponDetailList.isEmpty()) {
+            imageView.visibility = View.VISIBLE
             imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
                 viewFlipper.displayedChild = CONTAINER_IMAGE

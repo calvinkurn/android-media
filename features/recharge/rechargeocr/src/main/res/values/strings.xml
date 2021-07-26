@@ -3,5 +3,5 @@
     <string name="ocr_title">Pindai Nomor Kartu Anda</string>
     <string name="ocr_subtitle">Gambar kartu anda tidak akan disimpan dan Pusatkan kartu anda ke dalam bingkai</string>
     <string name="ocr_error_card_unreadable">Kartu tidak terbaca, silakan coba lagi</string>
-    <string name="ocr_default_error_message">Terjadi kesalahan, silahkan coba lagi</string>
+    <string name="ocr_default_error_message">Maaf, belum berhasil upload gambar. Coba lagi, yuk!</string>
 </resources>

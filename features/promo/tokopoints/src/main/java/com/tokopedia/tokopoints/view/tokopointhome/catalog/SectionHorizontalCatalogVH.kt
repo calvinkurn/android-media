@@ -17,12 +17,8 @@ import com.tokopedia.tokopoints.view.adapter.CatalogListCarouselAdapter
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
-import com.tokopedia.tokopoints.view.util.CustomConstraintProvider
-import com.tokopedia.tokopoints.view.util.convertDpToPixel
-import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
-import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
@@ -51,7 +47,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             val timerStr = countDownInfo?.countdownStr
             val timerType = countDownInfo?.type
             val timerFlagType = countDownInfo?.backgroundColor
-            if (timerFlagType == TIMER_RED_BACKGROUND_HEX) {
+            if (timerFlagType == CommonConstant.HASH + TIMER_RED_BACKGROUND_HEX) {
                 countDownView.timerVariant = TimerUnifySingle.VARIANT_MAIN
             } else {
                 countDownView.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE

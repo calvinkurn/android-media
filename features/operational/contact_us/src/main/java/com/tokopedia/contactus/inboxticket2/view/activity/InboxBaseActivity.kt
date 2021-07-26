@@ -25,12 +25,10 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
     abstract fun getPresenter(): InboxBasePresenter
     abstract fun initView()
     abstract fun getMenuRes(): Int
-    abstract fun getBottomSheetLayoutRes(): Int
     abstract fun doNeedReattach(): Boolean
     @JvmField
     @Inject
     var mPresenter: InboxBasePresenter? = null
-    private var bottomFragment: BottomSheetDialogFragment? = null
     @JvmField
     var mMenu: Menu? = null
 
@@ -97,17 +95,6 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
         component = DaggerInboxComponent.builder()
                 .inboxModule(InboxModule(this))
                 .build()
-    }
-
-    override fun showBottomFragment() {
-        val BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment"
-        bottomFragment = supportFragmentManager.findFragmentByTag(BOTTOM_FRAGMENT) as BottomSheetDialogFragment?
-        if (bottomFragment == null) bottomFragment = mPresenter?.getBottomFragment(getBottomSheetLayoutRes())
-        bottomFragment?.show(supportFragmentManager, BOTTOM_FRAGMENT)
-    }
-
-    override fun hideBottomFragment() {
-        bottomFragment?.dismiss()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

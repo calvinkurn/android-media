@@ -36,6 +36,6 @@
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="kesehatan"
-        tools:textColor="@color/black" />
+        tools:textColor="@color/Unify_N700" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

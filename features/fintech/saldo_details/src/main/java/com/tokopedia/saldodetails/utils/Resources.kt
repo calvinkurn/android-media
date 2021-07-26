@@ -1,7 +1,5 @@
 package com.tokopedia.saldodetails.utils
 
-import android.drm.DrmStore
-import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 
 sealed class Resources<T>

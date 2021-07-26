@@ -93,9 +93,9 @@ class ReminderMessageViewModel @Inject constructor(
     }
 
     private fun checkFetchStatus() {
-        if (isLoadEstimation || isLoadTemplate || isLoadProducts) {
-            isFetching.postValue(true)
-        } else isFetching.postValue(false)
+        if (!(isLoadEstimation || isLoadTemplate || isLoadProducts)) {
+            isFetching.postValue(false)
+        }
     }
 
 }

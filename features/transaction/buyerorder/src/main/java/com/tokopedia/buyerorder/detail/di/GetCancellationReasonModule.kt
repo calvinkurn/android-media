@@ -1,7 +1,5 @@
 package com.tokopedia.buyerorder.detail.di
 
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
-import com.tokopedia.buyerorder.common.BuyerProductionDispatcherProvider
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
 import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
@@ -29,10 +27,6 @@ class GetCancellationReasonModule {
     fun providesGraphqlRepository(): GraphqlRepository {
         return Interactor.getInstance().graphqlRepository
     }
-
-    @OrderListModuleScope
-    @Provides
-    fun provideBuyerDispatcherProvider(): BuyerDispatcherProvider = BuyerProductionDispatcherProvider()
 
     @OrderListModuleScope
     @Provides

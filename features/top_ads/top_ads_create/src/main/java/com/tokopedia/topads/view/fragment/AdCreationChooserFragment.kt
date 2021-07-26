@@ -48,9 +48,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         private const val TOGGLE_OFF = "toggle_off"
         private const val AUTO_ADS_DISABLED = 111
-        private const val MANUAL = 3
         private const val AUTO = 4
-        private const val NO_ADS = 2
 
         fun newInstance(): AdCreationChooserFragment {
             val args = Bundle()
@@ -109,12 +107,12 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             view.top_corner_bg2.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
         }
 
-        view.top_corner_icon1.setImageResource(R.drawable.icon_otomatis_onboarding)
+        view.top_corner_icon1.setImageResource(R.drawable.ic_iklan_otomatis)
         view.icon2.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
-        view.top_corner_icon2.setImageResource(R.drawable.icon_manual_onboarding)
+        view.top_corner_icon2.setImageResource(R.drawable.ic_iklan_manual)
         view.icon6.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)
@@ -130,8 +128,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                     }
                     startActivityForResult(this, AUTO_ADS_DISABLED)
                 }
-            }
-            if (adStatus == MANUAL || adStatus == NO_ADS) {
+            } else {
                 RouteManager.getIntent(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
                     if (isFromPdpSellerMigration(activity?.intent?.extras)) {
                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
@@ -144,21 +141,21 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         btn_start_manual_ads?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
-            if (adStatus == MANUAL || adStatus == NO_ADS) {
-                Intent(activity, StepperActivity::class.java).apply {
-                    if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                        putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                        putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                    }
-                    startActivity(this)
-                }
-            } else if (adStatus == AUTO) {
+             if (adStatus == AUTO) {
                 val sheet = ManualAdsConfirmationCommonSheet.newInstance()
                 sheet.show(childFragmentManager, "")
                 sheet.manualClick = {
                     viewModel.postAutoAds(TOGGLE_OFF, dailyBudget)
                 }
-            }
+            } else {
+                 Intent(activity, StepperActivity::class.java).apply {
+                     if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                         putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                         putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                     }
+                     startActivity(this)
+                 }
+             }
         }
     }
 

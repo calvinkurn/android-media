@@ -14,8 +14,8 @@ public class InboxReputationItemUiModel implements Visitable<InboxReputationType
     public static final int ROLE_BUYER = 1;
     private final RevieweeBadgeCustomerUiModel revieweeBadgeCustomerUiModel;
     private final RevieweeBadgeSellerUiModel revieweeBadgeSellerUiModel;
-    private final int shopId;
-    private final int userId;
+    private final long shopId;
+    private final long userId;
     private String revieweeName;
     private String createTime;
     private String revieweePicture;
@@ -33,7 +33,7 @@ public class InboxReputationItemUiModel implements Visitable<InboxReputationType
             int role,
             RevieweeBadgeCustomerUiModel revieweeBadgeCustomerUiModel,
             RevieweeBadgeSellerUiModel revieweeBadgeSellerUiModel,
-            int shopId, int userId) {
+            long shopId, long userId) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
         this.createTime = createTime;
@@ -48,7 +48,7 @@ public class InboxReputationItemUiModel implements Visitable<InboxReputationType
         this.userId = userId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -89,7 +89,7 @@ public class InboxReputationItemUiModel implements Visitable<InboxReputationType
         return revieweeBadgeSellerUiModel;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 

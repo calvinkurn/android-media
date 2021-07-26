@@ -49,7 +49,7 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     override fun setUp() {
         super.setUp()
         viewModel = SomDetailViewModel(somAcceptOrderUseCase, somRejectOrderUseCase, somEditRefNumUseCase,
-                somRejectCancelOrderUseCase, userSessionInterface, dispatcher,
+                somRejectCancelOrderUseCase, somValidateOrderUseCase, userSessionInterface, dispatcher,
                 somGetOrderDetailUseCase, somReasonRejectUseCase, somSetDeliveredUseCase,
                 authorizeSomDetailAccessUseCase, authorizeChatReplyAccessUseCase)
 
@@ -61,6 +61,22 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     // order_detail
+    @Test
+    fun getOrderDetail_shouldCancelOldProcess() {
+        //given
+        coEvery {
+            somGetOrderDetailUseCase.execute(any())
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
+
+        //when
+        viewModel.loadDetailOrder("")
+        viewModel.loadDetailOrder("")
+
+        //then
+        assert(viewModel.orderDetailResult.value is Success)
+        assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
+    }
+
     @Test
     fun getOrderDetail_shouldReturnSuccess() {
         //given

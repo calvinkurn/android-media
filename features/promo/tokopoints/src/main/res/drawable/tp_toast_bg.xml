@@ -1,5 +1,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="@color/tp_loyalty_color" />
+    <solid android:color="@color/Unify_N700_96" />
     <corners android:radius="@dimen/dp_8" />
 </shape>

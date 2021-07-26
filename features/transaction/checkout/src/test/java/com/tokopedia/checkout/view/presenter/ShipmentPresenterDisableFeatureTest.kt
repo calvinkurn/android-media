@@ -3,9 +3,9 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
@@ -14,6 +14,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -23,7 +24,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.utils.each

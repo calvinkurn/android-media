@@ -3,19 +3,17 @@ package com.tokopedia.play.broadcaster.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStore
-import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStoreImpl
-import com.tokopedia.play.broadcaster.model.ModelBuilder
+import com.tokopedia.play.broadcaster.data.datastore.*
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockProductDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
-import com.tokopedia.play.broadcaster.util.TestCoroutineDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.event.Event
 import io.mockk.mockk
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
@@ -29,8 +27,7 @@ class PlayEditProductViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = TestCoroutineDispatcherProvider(testDispatcher)
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var channelConfigStore: ChannelConfigStore
 
@@ -38,10 +35,12 @@ class PlayEditProductViewModelTest {
     private lateinit var coverDataStore: MockCoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var mockSetupDataStore: MockSetupDataStore
+    private lateinit var titleDataStore: TitleDataStore
+    private lateinit var tagsDataStore: TagsDataStore
 
     private lateinit var viewModel: PlayEditProductViewModel
 
-    private val modelBuilder = ModelBuilder()
+    private val modelBuilder = UiModelBuilder()
 
     private val channelId = "12345"
 
@@ -56,7 +55,9 @@ class PlayEditProductViewModelTest {
         productDataStore = MockProductDataStore(dispatcherProvider)
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
 
         productDataStore.setSelectedProducts(productDataList)
 

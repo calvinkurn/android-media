@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -19,7 +20,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -46,7 +46,7 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -72,7 +72,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     lateinit var analytic: PlayBroadcastAnalytic
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     private val job = SupervisorJob()
     private val scope = object: CoroutineScope {
@@ -108,8 +108,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
-    private lateinit var loadingFragment: LoadingDialogFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -129,7 +127,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             return
         }
 
-        initPushStream()
         setupContent()
         initView()
         setupView()
@@ -142,32 +139,26 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.resumePushStream()
+        viewModel.checkShouldContinueLiveStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.pausePushStream()
-    }
-
-    override fun onStop() {
-        viewModel.pausePushStream()
-        super.onStop()
+        viewModel.pauseLiveStream()
     }
 
     override fun onDestroy() {
-        viewModel.destroyPushStream()
         super.onDestroy()
         job.cancelChildren()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         try {
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
         } catch (e: Throwable) {}
+        super.onSaveInstanceState(outState)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -220,11 +211,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
-    }
-
-    private fun initPushStream() {
-        viewModel.initPushStream()
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     private fun setFragmentFactory() {
@@ -342,11 +329,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
         when (channelType) {
-            ChannelType.Pause -> {
-                showDialogContinueLiveStreaming()
-                openBroadcastActivePage()
-                analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-            }
+            ChannelType.Pause -> openBroadcastActivePage()
             ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
@@ -375,12 +358,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
                 surfaceStatus != SurfaceStatus.DESTROYED) {
-            viewModel.startPreview(surfaceView)
+            viewModel.startCameraPreview(surfaceView)
         }
     }
 
     fun stopPreview() {
-        viewModel.stopPreview()
+        viewModel.stopCameraPreview()
     }
 
     fun checkAllPermission() {
@@ -419,25 +402,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         ).show()
     }
 
-    private fun showDialogContinueLiveStreaming() {
-        getDialog(
-                actionType = DialogUnify.HORIZONTAL_ACTION,
-                title = getString(R.string.play_dialog_continue_live_title),
-                desc = getString(R.string.play_dialog_continue_live_desc),
-                primaryCta = getString(R.string.play_next),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel.startPushStream()
-                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-                },
-                secondaryCta = getString(R.string.play_broadcast_end),
-                secondaryListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel.stopPushStream(shouldNavigate = true)
-                }
-        ).show()
-    }
-
     private fun showDialogWhenActiveOnOtherDevices() {
         getDialog(
                 title = getString(R.string.play_dialog_error_active_other_devices_title),
@@ -472,18 +436,27 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {
-        if (!::loadingFragment.isInitialized) {
+        val loadingFragment = getAddedLoadingDialog()
+        return if (loadingFragment == null) {
             val setupClass = LoadingDialogFragment::class.java
             val fragmentFactory = supportFragmentManager.fragmentFactory
-            loadingFragment = fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
-        }
-        return loadingFragment
+            fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
+        } else loadingFragment
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        val loadingDialog = getAddedLoadingDialog()
+        return loadingDialog != null && loadingDialog.isVisible
+    }
+
+    private fun getAddedLoadingDialog(): LoadingDialogFragment? {
+        return LoadingDialogFragment.get(supportFragmentManager)
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading && !getLoadingFragment().isVisible) {
+        if (isLoading && !isLoadingDialogVisible()) {
             getLoadingFragment().show(supportFragmentManager)
-        } else if (getLoadingFragment().isVisible) {
+        } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
         }
     }

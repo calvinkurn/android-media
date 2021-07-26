@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentProductEntity
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelProduct
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,7 +27,7 @@ class UmrahTravelProductViewModelTest{
 
     @RelaxedMockK
     lateinit var mGraphqlRepository: GraphqlRepository
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahTravelProductViewModel: UmrahTravelProductViewModel
 
     private val umrahTravelProducts = listOf(UmrahTravelProduct())

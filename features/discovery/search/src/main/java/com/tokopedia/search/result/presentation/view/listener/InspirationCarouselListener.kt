@@ -1,9 +1,12 @@
 package com.tokopedia.search.result.presentation.view.listener
 
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 
 interface InspirationCarouselListener {
+
+    val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 
     fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product)
 
@@ -21,4 +24,15 @@ interface InspirationCarouselListener {
 
     fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option)
 
+    fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product)
+
+    fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product)
+
+    fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option)
+
+    fun onInspirationCarouselChipsClicked(
+            inspirationCarouselAdapterPosition: Int,
+            inspirationCarouselViewModel: InspirationCarouselDataView,
+            inspirationCarouselOption: InspirationCarouselDataView.Option,
+    )
 }

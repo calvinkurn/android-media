@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class AutoClearedNullableValue<T : Any?>(val fragment: Fragment) : ReadWriteProperty<Fragment, T?> {
+class AutoClearedNullableValue<T : Any?>(val fragment: Fragment, val onClear: ((T) -> Unit)?) : ReadWriteProperty<Fragment, T?> {
     private var _value: T? = null
 
     init {
@@ -15,6 +15,7 @@ class AutoClearedNullableValue<T : Any?>(val fragment: Fragment) : ReadWriteProp
                 fragment.viewLifecycleOwnerLiveData.observe(fragment, { viewLifecycleOwner ->
                     viewLifecycleOwner?.lifecycle?.addObserver(object : DefaultLifecycleObserver {
                         override fun onDestroy(owner: LifecycleOwner) {
+                            _value?.let { onClear?.invoke(it) }
                             _value = null
                         }
                     })
@@ -35,4 +36,4 @@ class AutoClearedNullableValue<T : Any?>(val fragment: Fragment) : ReadWriteProp
 /**
  * Creates an [AutoClearedNullableValue] associated with this fragment.
  */
-fun <T : Any?> Fragment.autoClearedNullable() = AutoClearedNullableValue<T>(this)
+fun <T : Any?> Fragment.autoClearedNullable(onClear: ((T) -> Unit)? = null) = AutoClearedNullableValue<T>(this, onClear)

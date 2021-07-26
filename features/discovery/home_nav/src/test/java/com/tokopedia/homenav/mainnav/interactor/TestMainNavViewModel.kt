@@ -14,9 +14,11 @@ import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
-import com.tokopedia.homenav.rule.CoroutinesTestRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
@@ -40,7 +42,7 @@ class TestMainNavViewModel {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val rule = CoroutinesTestRule()
+    val rule = CoroutineTestRule()
 
     @ApplicationContext
     lateinit var context: Context
@@ -170,6 +172,7 @@ class TestMainNavViewModel {
         Assert.assertEquals(mockUnreadCount.toString(), complainVisitable.notifCount)
     }
 
+
     //transaction section
     @Test
     fun `test when viewmodel created and user does not ongoing order and payment transaction then only create transaction menu item`() {
@@ -260,6 +263,159 @@ class TestMainNavViewModel {
         Assert.assertNotNull(transactionDataModel)
     }
 
+    //user menu section
+    @Test
+    fun `test when data loaded complete then check account header menu section is available`() {
+        viewModel = createViewModel(
+        )
+        viewModel.getMainNavData(true)
+
+        val headerModelPosition = viewModel.findHeaderModelPosition()
+
+        Assert.assertNotNull(headerModelPosition)
+    }
+
+    @Test
+    fun `test when first load init viewmodel data then check data not null`() {
+        viewModel = createViewModel()
+        viewModel.setInitialState()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        Assert.assertNotNull(visitableList)
+    }
+
+    @Test
+    fun `test when success refresh uoh and transaction then check result not null`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val getNavOrderUseCase = mockk<GetUohOrdersNavUseCase>()
+        val getPaymentUseCase = mockk<GetPaymentOrdersNavUseCase>()
+        val userSession = mockk<UserSessionInterface>()
+
+        every { userSession.isLoggedIn() } returns true
+        coEvery { getNavOrderUseCase.executeOnBackground() } returns listOf(NavProductOrder())
+        coEvery { getPaymentUseCase.executeOnBackground() } returns listOf(NavPaymentOrder())
+        viewModel = createViewModel(
+                getPaymentOrdersNavUseCase = getPaymentUseCase,
+                getUohOrdersNavUseCase = getNavOrderUseCase)
+        viewModel.refreshTransactionListData()
+
+
+        val menuList = viewModel.mainNavLiveData.value?.dataList?.filter {
+            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.ORDER
+        }?: listOf()
+
+        val transactionDataModel = viewModel.mainNavLiveData.value?.dataList?.find {
+            it is TransactionListItemDataModel
+        }
+
+        Assert.assertFalse(menuList.isEmpty());
+        Assert.assertNotNull(transactionDataModel)
+    }
+
+    @Test
+    fun `test when success refresh data after login then check data not null`(){
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+                userName = "Joko",
+                userImage = "Tingkir",
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100",
+                badge = "kucing",
+                shopName = "binatang",
+                shopId = "1234")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
+        viewModel.reloadMainNavAfterLogin()
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel} as AccountHeaderDataModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isNotEmpty()
+                && accountHeaderViewModel.userImage.isNotEmpty()
+                && accountHeaderViewModel.ovoSaldo.isNotEmpty()
+                && accountHeaderViewModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.badge.isNotEmpty()
+                && accountHeaderViewModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.shopName.isNotEmpty()
+                && accountHeaderViewModel.userName == "Joko"
+                && accountHeaderViewModel.userImage == "Tingkir"
+                && accountHeaderViewModel.ovoSaldo == "Rp 100"
+                && accountHeaderViewModel.ovoPoint == "Rp 100"
+                && accountHeaderViewModel.badge == "kucing"
+                && accountHeaderViewModel.shopId == "1234"
+                && accountHeaderViewModel.shopName == "binatang")
+    }
+
+    @Test
+    fun `test when success refresh shop data then check shop name and id changed`() {
+        val newShopName = "binatang kucing"
+        val newShopId = "123123"
+        val isLocationAdmin: Boolean = true
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        val shopInfoRefreshData = mockk<GetShopInfoUseCase>()
+        val expectedAdminRoleText = "Joko Tingkir"
+        val adminDataResponse =
+                AdminDataResponse(
+                        data = AdminData(
+                                adminTypeText = expectedAdminRoleText,
+                                detail = AdminDetailInformation(
+                                        roleType = AdminRoleType(
+                                                isLocationAdmin = isLocationAdmin
+                                        )
+                                ),
+                                status = "1"
+                        )
+                )
+        val accountInfoPair = Pair(adminDataResponse, null)
+        val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
+        val gqlRepository = mockk<GraphqlRepository>()
+        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
+
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+                userName = "Joko",
+                userImage = "Tingkir",
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100",
+                badge = "kucing",
+                shopName = "binatang",
+                hasShop = true,
+                shopId = "1234")
+
+        coEvery {
+            shopInfoRefreshData.executeOnBackground()
+        } returns Success(ShopData(
+                ShopData.ShopInfoPojo(
+                        ShopData.ShopInfoPojo.Info(
+                                shopName = newShopName,
+                                shopId = newShopId
+                        )
+                ),
+                ShopData.NotificationPojo()))
+        coEvery {
+            accountAdminInfoUseCase.executeOnBackground()
+        } returns accountInfoPair
+        viewModel = createViewModel(
+                getProfileDataUseCase = getProfileDataUseCase,
+                getShopInfoUseCase = shopInfoRefreshData,
+                accountAdminInfoUseCase = accountAdminInfoUseCase)
+        viewModel.getMainNavData(true)
+        viewModel.refreshUserShopData()
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel} as AccountHeaderDataModel
+        Assert.assertTrue(visitableList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.shopId == newShopId
+                && accountHeaderViewModel.shopName.isNotEmpty()
+                && accountHeaderViewModel.shopName == newShopName)
+    }
+
     @Test
     fun `Success getProfileFullData`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
@@ -286,9 +442,52 @@ class TestMainNavViewModel {
                 && accountHeaderViewModel.ovoPoint.isNotEmpty()
                 && accountHeaderViewModel.badge.isNotEmpty()
                 && accountHeaderViewModel.shopId.isNotEmpty()
-                && accountHeaderViewModel.shopName.isNotEmpty())
+                && accountHeaderViewModel.shopName.isNotEmpty()
+                && accountHeaderViewModel.userName == "Joko"
+                && accountHeaderViewModel.userImage == "Tingkir"
+                && accountHeaderViewModel.ovoSaldo == "Rp 100"
+                && accountHeaderViewModel.ovoPoint == "Rp 100"
+                && accountHeaderViewModel.badge == "kucing"
+                && accountHeaderViewModel.shopId == "1234"
+                && accountHeaderViewModel.shopName == "binatang")
     }
 
+    @Test
+    fun `test when success refresh profile after login then data not null and have exact result`(){
+        val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
+        coEvery {
+            getProfileDataUseCase.executeOnBackground()
+        } returns AccountHeaderDataModel(
+                userName = "Joko",
+                userImage = "Tingkir",
+                ovoSaldo = "Rp 100",
+                ovoPoint = "Rp 100",
+                badge = "kucing",
+                shopName = "binatang",
+                shopId = "1234")
+        viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
+        viewModel.getMainNavData(true)
+        viewModel.refreshProfileData()
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderDataModel} as AccountHeaderDataModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isNotEmpty()
+                && accountHeaderViewModel.userImage.isNotEmpty()
+                && accountHeaderViewModel.ovoSaldo.isNotEmpty()
+                && accountHeaderViewModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.badge.isNotEmpty()
+                && accountHeaderViewModel.shopId.isNotEmpty()
+                && accountHeaderViewModel.shopName.isNotEmpty()
+                && accountHeaderViewModel.userName == "Joko"
+                && accountHeaderViewModel.userImage == "Tingkir"
+                && accountHeaderViewModel.ovoSaldo == "Rp 100"
+                && accountHeaderViewModel.ovoPoint == "Rp 100"
+                && accountHeaderViewModel.badge == "kucing"
+                && accountHeaderViewModel.shopId == "1234"
+                && accountHeaderViewModel.shopName == "binatang")
+    }
 
     @Test
     fun `Success getUserNameAndPictureData`(){

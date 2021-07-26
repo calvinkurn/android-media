@@ -36,6 +36,7 @@ import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_pilgrims.*
 import kotlinx.android.synthetic.main.widget_umrah_autocomplete_edit_text.view.*
@@ -91,7 +92,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -229,6 +230,9 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN -> {
                             datePickerUnify.show(activity!!.supportFragmentManager, "")
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            v?.performClick()
                         }
                     }
                     return v?.onTouchEvent(event) ?: true

@@ -1,0 +1,61 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        jcenter()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.features.mediaCommon)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+
+    kapt rootProject.ext.networkDependencies.glideProcessor
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.networkDependencies.glideOkhttp
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+}
+
+project.ext {
+    artifactId = 'medialoader'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.2"
+    artifactName = "medialoader-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

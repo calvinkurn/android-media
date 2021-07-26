@@ -29,6 +29,7 @@ import com.tokopedia.profilecompletion.addpin.data.ValidatePinData
 import com.tokopedia.profilecompletion.addpin.view.fragment.PinCompleteFragment
 import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
@@ -91,6 +92,11 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
@@ -104,6 +110,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         initObserver()
+        ColorUtils.setBackgroundColor(context, activity)
     }
 
     override fun onResume() {

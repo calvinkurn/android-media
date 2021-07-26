@@ -41,6 +41,7 @@ class ShopHeaderBasicInfoWidgetViewHolder(
     private val shopBadgeImageView: ImageView? = itemView.findViewById(R.id.image_shop_badge)
     private val shopChevronImageView: ImageView? = itemView.findViewById(R.id.shop_page_chevron_shop_info)
     private val shopNameTextView: Typography? = itemView.findViewById(R.id.text_shop_name)
+    private val shopOnlineImageView: ImageView? = itemView.findViewById(R.id.iv_online_icon)
     private val shopBasicInfoAdditionalInfoTextView: Typography? = itemView.findViewById(R.id.text_shop_basic_info_additional_info)
     private var shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel? = null
 
@@ -72,6 +73,7 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         val shopName = component?.text?.getOrNull(0)?.textHtml.orEmpty()
         val shopChevronImageUrl = component?.ctaIcon.orEmpty()
         val shopAdditionalInfo = component?.text?.getOrNull(1)?.textHtml.orEmpty()
+        val shopOnlineIcon = component?.text?.getOrNull(1)?.icon.orEmpty()
         shopBadgeImageView?.apply {
             if (badgeImageUrl.isNotEmpty()) {
                 show()
@@ -107,6 +109,14 @@ class ShopHeaderBasicInfoWidgetViewHolder(
                     )
                 }
             } else {
+                hide()
+            }
+        }
+        shopOnlineImageView?.apply {
+            if(shopOnlineIcon.isNotEmpty()){
+                show()
+                loadImage(shopOnlineIcon)
+            }else{
                 hide()
             }
         }

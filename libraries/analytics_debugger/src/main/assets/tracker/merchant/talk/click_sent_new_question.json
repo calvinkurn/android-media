@@ -6,13 +6,13 @@
       "event" : "clickPDP",
       "eventCategory" : "talk question form",
       "eventAction" : "click - kirim new question",
-      "eventLabel" : "{{talk category:.*;success:.*;error message:.*;variant selected:.*;variant available:.*;}}",
+      "eventLabel" : "talk category:.*;success:.*;error message:.*;variant selected:.*;variant available:.*;",
       "screenName" : "/talk-question-form",
       "currentSite" : "tokopediamarketplace",
-      "userId" : "{{\\d{1,}}}",
+      "userId" : "\\d{1,}",
       "businessUnit" : "physical goods",
-      "sessionIris": "{{.{1,}}}",
-      "productId" : "{{\\d{1,}}}"
+      "sessionIris": ".{1,}",
+      "productId" : "\\d{1,}"
     }
   ]
 }

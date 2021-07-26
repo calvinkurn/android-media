@@ -9,7 +9,6 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
-import com.tokopedia.purchase_platform.common.constant.Constant
 import javax.inject.Inject
 
 open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
@@ -23,7 +22,7 @@ open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        orderSummaryAnalytics = OrderSummaryAnalytics()
+        component.inject(this)
     }
 
     override fun getComponent(): OrderSummaryPageComponent {

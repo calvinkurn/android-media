@@ -7,28 +7,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/shopStatusHeader"
+        android:id="@+id/iv_sah_other_status_header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_header_height_extra"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        app:srcCompat="@drawable/setting_rm_header_background_ramadhan"
+        app:srcCompat="@drawable/setting_regular_header"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_other_menu_thematic"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:translationY="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="@id/shopStatusHeader"
-        app:layout_constraintTop_toTopOf="@id/shopStatusHeader"
-        app:layout_constraintEnd_toEndOf="@id/shopStatusHeader"
-        tools:src="@tools:sample/avatars"/>
+        android:id="@+id/iv_sah_other_status_icon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.117"
+        app:layout_constraintHorizontal_bias="0.867"
+        app:layout_constraintBottom_toBottomOf="@id/iv_sah_other_status_header"
+        app:layout_constraintStart_toStartOf="@id/iv_sah_other_status_header"
+        app:layout_constraintEnd_toEndOf="@id/iv_sah_other_status_header"
+        tools:src="@drawable/ic_pm_icon_header"/>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/otherMenuScrollView"
+        android:id="@+id/sv_sah_other_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -44,12 +45,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_header_height_extra"
                 android:layout_marginTop="@dimen/setting_header_height"
-                android:background="@color/Neutral_N0"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <include
-                android:id="@+id/shopInfoLayout"
-                layout="@layout/setting_partial_shop_info_success"
+                android:id="@+id/view_sah_other_shop_info"
+                layout="@layout/view_sah_other_header"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -57,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
+                app:layout_constraintTop_toBottomOf="@id/view_sah_other_shop_info"/>
 
             <View
                 android:layout_width="match_parent"
@@ -69,11 +70,11 @@
     </androidx.core.widget.NestedScrollView>
 
     <View
-        android:id="@+id/statusBarBackground"
+        android:id="@+id/view_sah_other_status_bar_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_status_bar_height"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

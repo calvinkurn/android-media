@@ -51,6 +51,7 @@ query get_notification_update($page: Int, $typeId: Int, $tagId: Int, $lastNotifI
         is_wishlist
         rating
         count_review
+        has_reminder
         labels {
             title
             color

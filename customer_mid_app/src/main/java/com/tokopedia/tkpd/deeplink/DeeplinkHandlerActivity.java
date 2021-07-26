@@ -22,6 +22,7 @@ import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
@@ -34,8 +35,8 @@ import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -55,6 +56,9 @@ import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -67,7 +71,6 @@ import timber.log.Timber;
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        LoginRegisterApplinkModule.class,
         HomeCreditAppLinkModule.class,
         WebViewApplinkModule.class,
 })
@@ -75,7 +78,6 @@ import timber.log.Timber;
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
-    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
     private static ApplinkDelegate applinkDelegate;
@@ -88,7 +90,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new LoginRegisterApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
             );
@@ -295,16 +296,30 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private void iniBranchIO(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)) {
-            LinkerManager.getInstance().initSession();
+            LinkerManager.getInstance().initSession(this, uriHaveCampaignData());
         }
+    }
+
+    private boolean uriHaveCampaignData(){
+        boolean uriHaveCampaignData = false;
+        if (getIntent() != null && getIntent().getData()!= null) {
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
+            uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
+        }
+        return uriHaveCampaignData;
     }
 
     private void logDeeplink() {
         String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
-        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
-                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", getClass().getSimpleName());
+        messageMap.put("referrer", referrer);
+        messageMap.put("extra_referrer", extraReferrer.toString());
+        messageMap.put("uri", uri.toString());
+        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_APP", messageMap);
     }
 
     private void logWebViewApplink() {
@@ -315,7 +330,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 String domain = urlToLoad.getHost();
                 if(domain != null) {
                     if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
-                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "applink");
+                        messageMap.put("domain", domain);
+                        messageMap.put("url", uri.toString());
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
                     }
                 }
             }

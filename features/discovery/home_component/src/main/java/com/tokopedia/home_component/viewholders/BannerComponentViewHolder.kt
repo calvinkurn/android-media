@@ -12,6 +12,7 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.removeAllItemDecoration
 import com.tokopedia.home_component.viewholders.adapter.BannerChannelAdapter
 import com.tokopedia.home_component.viewholders.adapter.BannerItemListener
@@ -21,10 +22,9 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import kotlinx.android.synthetic.main.home_component_banner.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
-
 
 /**
  * @author by devarafikry on 11/28/20.
@@ -77,6 +77,7 @@ class BannerComponentViewHolder(itemView: View,
     override fun bind(element: BannerDataModel) {
         try {
             setHeaderComponent(element)
+            setChannelDivider(element)
             setViewPortImpression(element)
             channelModel = element.channelModel
             isCache = element.isCache
@@ -109,9 +110,21 @@ class BannerComponentViewHolder(itemView: View,
         bind(element)
     }
 
+    fun scrollTo(position: Int) {
+        rvBanner.smoothScrollToPosition(position)
+    }
+
+    private fun setChannelDivider(element: BannerDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
+    }
+
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if (isAutoScroll) {
-            rvBanner.smoothScrollToPosition(currentPagePosition)
+            scrollTo(currentPagePosition)
 
             channelModel?.let {
                 val size = channelModel?.channelGrids?.size?:0

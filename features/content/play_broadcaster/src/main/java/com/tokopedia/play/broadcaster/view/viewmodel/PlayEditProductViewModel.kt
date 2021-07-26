@@ -1,15 +1,13 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -19,7 +17,7 @@ import javax.inject.Inject
  */
 class PlayEditProductViewModel @Inject constructor(
         private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore
 ) : ViewModel() {
 
@@ -29,8 +27,8 @@ class PlayEditProductViewModel @Inject constructor(
     private val job: Job = SupervisorJob()
     private val scope = CoroutineScope(job + dispatcher.main)
 
-    val observableSelectedProducts: LiveData<List<ProductData>>
-        get() = setupDataStore.getObservableSelectedProducts()
+    val observableSelectedProducts: LiveData<List<ProductData>> = setupDataStore.getObservableSelectedProducts()
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     private val _selectedProductData: List<ProductData> = setupDataStore.getSelectedProducts()
     val selectedProducts: List<ProductContentUiModel> = _selectedProductData.map {

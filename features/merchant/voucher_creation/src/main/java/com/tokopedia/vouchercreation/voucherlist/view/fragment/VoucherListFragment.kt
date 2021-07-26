@@ -26,6 +26,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -98,8 +101,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         const val IS_UPDATE_VOUCHER = "is_update"
         const val VOUCHER_ID_KEY = "voucher_id"
 
-        private const val ERROR_GET_VOUCHER = "Error get voucher list"
-        private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
+        private const val GET_VOUCHER_LIST_ERROR = "Get voucher list error"
+        private const val GET_VOUCHER_DETAIL_ERROR = "Get voucher list error"
+        private const val GET_SHOP_BASIC_DATA_ERROR = "Get shop basic data error - voucher list"
+        private const val CANCEL_VOUCHER_ERROR = "Cancel voucher error - voucher list"
+        private const val STOP_VOUCHER_ERROR = "Stop voucher error - voucher list"
 
         fun newInstance(): VoucherListFragment = VoucherListFragment()
     }
@@ -152,6 +158,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     @VoucherTypeConst
     private var voucherType: Int? = null
     private var voucherTarget: List<Int>? = null
+
     @VoucherSort
     private var voucherSort: String = VoucherSort.FINISH_TIME
     private var isInverted: Boolean = false
@@ -1000,7 +1007,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun setOnErrorGetVoucherList(throwable: Throwable) {
         clearAllData()
         renderList(listOf(ErrorStateUiModel()))
-        MvcErrorHandler.logToCrashlytics(throwable, ERROR_GET_VOUCHER)
+        // send crash report to firebase crashlytics
+        MvcErrorHandler.logToCrashlytics(throwable, GET_VOUCHER_LIST_ERROR)
+        // log error type to scalyr
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        ServerLogger.log(Priority.P2, "MVC_VALIDATE_VOUCHER_TARGET_ERROR", mapOf("type" to errorMessage))
     }
 
     private fun onSuccessUpdateVoucherPeriod() {
@@ -1039,7 +1050,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     if (result.throwable is VoucherCancellationException) {
                         showCancellationFailToaster(true, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
-                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_STOP_VOUCHER)
+                    // send crash report to firebase crashlytics
+                    MvcErrorHandler.logToCrashlytics(result.throwable, CANCEL_VOUCHER_ERROR)
+                    // log error type to scalyr
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    ServerLogger.log(Priority.P2, "MVC_CANCEL_VOUCHER_ERROR", mapOf("type" to errorMessage))
                 }
             }
         })
@@ -1054,14 +1069,24 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     if (result.throwable is VoucherCancellationException) {
                         showCancellationFailToaster(false, (result.throwable as? VoucherCancellationException)?.voucherId.toZeroIfNull())
                     }
-                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_STOP_VOUCHER)
+                    // send crash report to firebase crashlytics
+                    MvcErrorHandler.logToCrashlytics(result.throwable, STOP_VOUCHER_ERROR)
+                    // log error type to scalyr
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    ServerLogger.log(Priority.P2, "MVC_STOP_VOUCHER_ERROR", mapOf("type" to errorMessage))
                 }
             }
         })
         mViewModel.shopBasicLiveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> shopBasicData = result.data
-                is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
+                is Fail -> {
+                    // send crash report to firebase crashlytics
+                    MvcErrorHandler.logToCrashlytics(result.throwable, GET_SHOP_BASIC_DATA_ERROR)
+                    // log error type to scalyr
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    ServerLogger.log(Priority.P2, "MVC_GET_SHOP_BASIC_DATA_ERROR", mapOf("type" to errorMessage))
+                }
             }
         })
         mViewModel.successVoucherLiveData.observe(viewLifecycleOwner, Observer { result ->
@@ -1109,7 +1134,13 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                         }
                     }
                 }
-                is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_GET_VOUCHER)
+                is Fail -> {
+                    // send crash report to firebase crashlytics
+                    MvcErrorHandler.logToCrashlytics(result.throwable, GET_VOUCHER_DETAIL_ERROR)
+                    // log error type to scalyr
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    ServerLogger.log(Priority.P2, "MVC_GET_VOUCHER_DETAIL_ERROR", mapOf("type" to errorMessage))
+                }
             }
         })
         mViewModel.broadCastMetadata.observe(viewLifecycleOwner, Observer { result ->

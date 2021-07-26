@@ -2,12 +2,10 @@ package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
-import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
@@ -21,7 +19,6 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 
 class HomeDynamicChannelVisitableFactoryImpl(
         val userSessionInterface: UserSessionInterface?,
@@ -34,13 +31,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object{
-        private const val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
-        private const val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
-        private const val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
-
-        private const val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
         private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
         private const val PROMO_NAME_LEGO_6_AUTO_IMAGE = "/ - p%s - lego banner 6 auto - %s - %s"
 
@@ -85,7 +75,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             val position = index+ 1 + startPosition
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
-                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
+                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
                 DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
                     createDynamicChannel(
                             channel = channel,
@@ -320,11 +310,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 visitableList.size, channel) }
     }
 
-    private fun createBusinessUnitWidget(position: Int) {
+    private fun createBusinessUnitWidget(channel: DynamicHomeChannel.Channels, position: Int) {
         if (!isCache) {
             visitableList.add(NewBusinessUnitWidgetDataModel(
-                    position = position,
-                    isCache = false))
+                channel = channel,
+                position = position,
+                isCache = false)
+            )
         }
     }
 
@@ -398,6 +390,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                       isCombined: Boolean,
                                       isCache: Boolean): Visitable<*> {
         val viewModel = DynamicChannelDataModel()
+        channel.isCache = isCache
         viewModel.channel = channel
         if (!isCache) {
             viewModel.trackingData = trackingData
@@ -488,7 +481,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+        if (!isCache) visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
@@ -500,7 +493,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createReminderWidget(source: ReminderEnum){
-        if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
+        if (!isCache) visitableList.add(ReminderWidgetModel(source=source, id = generateReminderWidgetId(source)))
+    }
+
+    private fun generateReminderWidgetId(source: ReminderEnum): String {
+        val numberOfExistingSource = visitableList.filter {
+            it is ReminderWidgetModel && it.source.name == source.name
+        }.size
+        return source.name+(numberOfExistingSource+1)
     }
 
     private fun createRechargeBUWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {

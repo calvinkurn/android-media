@@ -3,15 +3,23 @@ package com.tokopedia.mvcwidget.views
 import android.content.Context
 import android.os.Build
 import android.text.Html
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.promoui.common.dpToPx
@@ -21,6 +29,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.android.synthetic.main.mvc_tokomember_follow.view.*
 
 class MvcFollowViewContainer @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -57,19 +67,31 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                         }
                     }
                     FollowWidgetType.MEMBERSHIP_OPEN -> {
-                        twoActionView.visibility = View.VISIBLE
-                        oneActionView.visibility = View.GONE
-                        twoActionView.setData(followWidget, shopId, source)
-                        divider.visibility = View.VISIBLE
+                        commonViewVisibility(followWidget,shopId,source)
 
                         if (!widgetImpression.sentJadiMemberImpression) {
                             Tracker.viewWidgetImpression(FollowWidgetType.MEMBERSHIP_OPEN, shopId, UserSession(context).userId, source)
                             widgetImpression.sentJadiMemberImpression = true
                         }
                     }
+                    FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                        commonViewVisibility(followWidget,shopId,source)
+
+                        if (!widgetImpression.sentJadiMemberImpression) {
+                            Tracker.viewWidgetImpression(FollowWidgetType.MEMBERSHIP_CLOSE, shopId, UserSession(context).userId, source)
+                            widgetImpression.sentJadiMemberImpression = true
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private fun commonViewVisibility(followWidget: FollowWidget, shopId: String, source: Int) {
+        twoActionView.visibility = View.VISIBLE
+        oneActionView.visibility = View.GONE
+        twoActionView.setData(followWidget, shopId, source)
+        divider.visibility = View.VISIBLE
     }
 
 }
@@ -111,7 +133,14 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     private var tvTitle: Typography
     private var icon: AppCompatImageView
     private var btnFirst: UnifyButton
+    private var collapsableContainer : LinearLayout
+    private var iconBackground: AppCompatImageView
+    var iconBackgroundContainer: FrameLayout
+
+    var tvList : Typography
+    private var tvSubTitle : Typography
     var btnSecond: UnifyButton
+    var containerContent : ConstraintLayout
 
     init {
         View.inflate(context, layout, this)
@@ -121,28 +150,88 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         icon = findViewById(R.id.image_icon)
         btnFirst = findViewById(R.id.btnFirst)
         btnSecond = findViewById(R.id.btnSecond)
+        collapsableContainer = findViewById(R.id.container_collapsable)
+        tvList = findViewById(R.id.tvList)
+        tvSubTitle = findViewById(R.id.tvSubTitle)
+        iconBackground = findViewById(R.id.iconBackground)
+        containerContent = findViewById(R.id.container_content)
+        iconBackgroundContainer = findViewById(R.id.fm_image)
+
+        if (context.isDarkMode()){
+            iconBackground.setColorFilter(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.dark_N75))
+        }
         radius = dpToPx(8)
         type = TYPE_LARGE
     }
 
     fun setData(followWidget: FollowWidget, shopId: String, @MvcSource mvcSource: Int) {
         val t = followWidget.content ?: ""
+        val st = followWidget.contentDetails ?: ""
+
         followWidget.content?.let {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                tvTitle.text = HtmlUtil.fromHtml(t).trim()
-            } else {
-                tvTitle.text = Html.fromHtml(t).trim()
+            tvTitle.text = returnTextFromHtml(t)
+        }
+
+        if (!followWidget.contentDetails.isNullOrEmpty()){
+            val s = returnTextFromHtml(st)
+            val minTransLabel = "{{MinimumTransaction}}"
+            val indexMinTransLabel = s.indexOf(minTransLabel)
+            if (indexMinTransLabel >= 0) {
+                val highLightColor =
+                    context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500)
+                val sb = SpannableStringBuilder(s).replace(
+                    indexMinTransLabel,
+                    indexMinTransLabel + minTransLabel.length,
+                    followWidget.membershipMinimumTransactionLabel
+                )
+                sb.setSpan(
+                    ForegroundColorSpan(highLightColor),
+                    indexMinTransLabel,
+                    indexMinTransLabel + followWidget.membershipMinimumTransactionLabel?.length!!,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                tvSubTitle.text = sb
+            }
+            else{
+                tvSubTitle.text=returnTextFromHtml(st)
             }
         }
+
+        when (followWidget.type) {
+            FollowWidgetType.MEMBERSHIP_OPEN -> {
+                collapsableContainer.visibility = View.GONE
+                containerContent.visibility = View.VISIBLE
+                tvSubTitle.visibility = View.GONE
+                setAdjustableMargin()
+                btnSecond.text = context.resources.getString(R.string.mvc_jadi_member)
+            }
+            FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                collapsableContainer.visibility = View.VISIBLE
+                containerContent.visibility = View.GONE
+                btnSecond.text = context.resources.getString(R.string.mvc_mulai_belanja)
+
+                if (mvcSource == MvcSource.PDP || mvcSource == MvcSource.REWARDS) {
+                    btnSecond.visibility = View.GONE
+                }
+            }
+        }
+
         if (!followWidget.iconURL.isNullOrEmpty()) {
             Glide.with(icon)
                     .load(followWidget.iconURL)
                     .into(icon)
         }
         btnFirst.setOnClickListener {
-
             if (context is AppCompatActivity) {
                 showTokomemberBottomSheet(followWidget, context as AppCompatActivity, shopId, mvcSource)
+            }
+            when(followWidget.type){
+                FollowWidgetType.MEMBERSHIP_OPEN->{
+                    Tracker.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
+                }
+                FollowWidgetType.MEMBERSHIP_CLOSE->{
+                    Tracker.clickCekInfoButtonClose(shopId, UserSession(context).userId, mvcSource)
+                }
             }
         }
     }
@@ -151,7 +240,6 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         if (followWidget.membershipHowTo.isNullOrEmpty()) {
             return
         }
-        Tracker.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
         val bottomsheet = BottomSheetUnify()
         bottomsheet.setTitle(context.getString(R.string.mvc_tentang_toko_member))
         bottomsheet.isSkipCollapseState = true
@@ -175,11 +263,36 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             }
         }
         val caroRef = child.findViewById<CarouselUnify>(R.id.carousel)
-        val cta = child.findViewById<View>(R.id.btn)
-        cta.setOnClickListener {
-            Tracker.clickDaftarJadiMember(shopId,UserSession(context).userId,mvcSource)
-            bottomsheet.dismiss()
+        val cta = child.findViewById<UnifyButton>(R.id.btn)
+
+        when (followWidget.type) {
+            FollowWidgetType.MEMBERSHIP_OPEN -> {
+                cta.setOnClickListener {
+                    Tracker.clickDaftarJadiMember(shopId, UserSession(context).userId, mvcSource)
+                    bottomsheet.dismiss()
+                }
+            }
+            FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                if (mvcSource == MvcSource.PDP) {
+                    cta.visibility = View.GONE
+                } else {
+                    cta.text = context.resources.getString(R.string.mvc_mulai_belanja)
+                    cta.setOnClickListener {
+                        RouteManager.route(
+                            context,
+                            ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,
+                            shopId
+                        )
+                        Tracker.clickDaftarJadiMember(
+                            shopId,
+                            UserSession(context).userId,
+                            mvcSource
+                        )
+                    }
+                }
+            }
         }
+
         caroRef.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
@@ -197,5 +310,20 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
         bottomsheet.show(activity.supportFragmentManager, "btm_mvc_tokomember")
 
+    }
+
+    private fun returnTextFromHtml(t: String) : CharSequence{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            HtmlUtil.fromHtml(t).trim()
+        } else {
+            Html.fromHtml(t).trim()
+        }
+    }
+
+    private fun setAdjustableMargin() {
+        val marginLayoutParams = containerContent.layoutParams as ViewGroup.MarginLayoutParams
+        marginLayoutParams.bottomMargin =
+            containerContent.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+        containerContent.layoutParams = marginLayoutParams
     }
 }

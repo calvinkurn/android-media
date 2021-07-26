@@ -47,6 +47,7 @@
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_voucher_description"

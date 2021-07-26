@@ -5,16 +5,16 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.model;
  */
 
 public class InboxReputationItemDomain {
-    private int inboxId;
-    private int shopId;
-    private int userId;
-    private int reputationId;
+    private long inboxId;
+    private long shopId;
+    private long userId;
+    private long reputationId;
     private OrderDataDomain orderData;
     private RevieweeDataDomain revieweeData;
     private ReputationDataDomain reputationData;
 
-    public InboxReputationItemDomain(int inboxId, int shopId, int userId,
-                                     int reputationId, OrderDataDomain orderData,
+    public InboxReputationItemDomain(long inboxId, long shopId, long userId,
+                                     long reputationId, OrderDataDomain orderData,
                                      RevieweeDataDomain revieweeData,
                                      ReputationDataDomain reputationData) {
         this.inboxId = inboxId;
@@ -26,19 +26,19 @@ public class InboxReputationItemDomain {
         this.reputationData = reputationData;
     }
 
-    public int getInboxId() {
+    public long getInboxId() {
         return inboxId;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public int getReputationId() {
+    public long getReputationId() {
         return reputationId;
     }
 

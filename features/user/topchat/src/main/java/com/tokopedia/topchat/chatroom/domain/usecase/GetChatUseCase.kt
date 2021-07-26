@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 open class GetChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
         private val mapper: TopChatRoomGetExistingChatMapper,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     var minReplyTime = "" // for param beforeReplyTime for top
@@ -28,7 +28,7 @@ open class GetChatUseCase @Inject constructor(
     var hasNext = false // has next top
     var hasNextAfter = false // has next bottom
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getFirstPageChat(
             messageId: String,
@@ -75,7 +75,7 @@ open class GetChatUseCase @Inject constructor(
             onResponseReady: (ChatroomViewModel, GetExistingChatPojo) -> Unit
     ) {
         launchCatchError(
-                dispatchers.IO,
+                dispatchers.io,
                 {
                     val response = gqlUseCase.apply {
                         setTypeClass(GetExistingChatPojo::class.java)
@@ -84,12 +84,12 @@ open class GetChatUseCase @Inject constructor(
                     }.executeOnBackground()
                     val chatroomViewModel = mapper.map(response)
                     onResponseReady(chatroomViewModel, response)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(chatroomViewModel, response.chatReplies)
                     }
                 },
                 {
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onErrorGetChat(it)
                     }
                 }
@@ -228,6 +228,7 @@ open class GetChatUseCase @Inject constructor(
                   isRead
                   blastId
                   source
+                  label
                   attachment {
                     id
                     type

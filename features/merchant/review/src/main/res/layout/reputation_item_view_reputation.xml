@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
@@ -13,13 +14,14 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reputation_points"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="16sp"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
         tools:text="500.007 poin" />
 </LinearLayout>

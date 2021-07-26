@@ -284,11 +284,6 @@
         "type": "social_proof_mini"
       },
       {
-        "data": [],
-        "name": "shop_info_mini",
-        "type": "shop_info_mini"
-      },
-      {
         "data": [
           {
             "children": [
@@ -706,11 +701,6 @@
         "data": [],
         "name": "pdp_2",
         "type": "product_list"
-      },
-      {
-        "data": [],
-        "name": "most_helpful_review",
-        "type": "most_helpful_review"
       },
       {
         "data": [],

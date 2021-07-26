@@ -6,25 +6,25 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "input from favorite number",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
     },
     {
       "event": "select_content",
       "eventCategory": "digital - homepage",
       "eventAction": "click recent icon",
-      "eventLabel": "{{.* - .*}}",
-      "sessionIris": "{{.*}}",
-      "item_list": "{{.* - .* - .* - .*}}",
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*",
+      "item_list": ".* - .* - .* - .*",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ]
     },
@@ -32,42 +32,42 @@
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab promo",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickHomepage",
       "eventCategory": "digital - homepage",
       "eventAction": "click tab recent",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "businessUnit": "recharge",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "add_to_cart",
       "eventCategory": "digital - homepage",
       "eventAction": "click pilih detail cluster",
-      "clientId": "{{.*}}",
-      "screenName": "{{pulsa|paket data|roaming}}",
-      "eventLabel": "{{.* - .* - .*}}",
+      "clientId": ".*",
+      "screenName": "pulsa|paket data|roaming",
+      "eventLabel": ".* - .* - .*",
       "currentSite": "tokopediadigital",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}",
+      "userId": ".*",
+      "sessionIris": ".*",
       "businessUnit": "recharge",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "quantity": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ]
     }

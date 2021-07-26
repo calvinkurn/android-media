@@ -1,7 +1,7 @@
 package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.usecase.GetFlightFareUseCase
 import com.tokopedia.flight.shouldBe
@@ -21,7 +21,7 @@ class FlightFareCalendarViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcherProvider = TravelTestDispatcherProvider()
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: FlightFareCalendarViewModel
 

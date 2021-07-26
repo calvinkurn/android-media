@@ -14,8 +14,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-import java.util.*
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -61,6 +61,8 @@ interface ICartListView : CustomerView {
     fun showToastMessageRed(message: String, actionText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
+
+    fun showToastMessageRed()
 
     fun showToastMessageGreen(message: String, actionText: String = "", onClickListener: View.OnClickListener? = null)
 
@@ -126,9 +128,9 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 
+    fun sendATCTrackingURL(bannerShopProductViewModel: BannerShopProductViewModel)
+
     fun reCollapseExpandedDeletedUnavailableItems()
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
-
-
 }

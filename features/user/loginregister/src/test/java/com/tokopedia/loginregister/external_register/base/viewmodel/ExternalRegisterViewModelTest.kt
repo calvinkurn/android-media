@@ -12,6 +12,7 @@ import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,14 +21,11 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
-
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.RuntimeException
 
 /**
  * Created by Yoris Prayogo on 28/01/21.
@@ -46,8 +44,6 @@ class ExternalRegisterViewModelTest {
 
     lateinit var viewModel: ExternalRegisterViewModel
 
-    private val dispatcher = Dispatchers.Unconfined
-
     private var registerResponse = mockk<Observer<Result<RegisterPojo>>>(relaxed = true)
     private var getUserInfoResponse = mockk<Observer<Result<ProfileInfoData>>>(relaxed = true)
 
@@ -58,7 +54,7 @@ class ExternalRegisterViewModelTest {
                 externalRegisterPreference,
                 getProfileUseCase,
                 userSession,
-                dispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.registerRequestResponse.observeForever(registerResponse)
         viewModel.getUserInfoResponse.observeForever(getUserInfoResponse)

@@ -56,7 +56,6 @@ open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchCom
         setContentView(R.layout.activity_chat_search)
         bindView()
         initWindowBackground()
-        useLightNotificationBar()
         setupToolbar()
     }
 
@@ -99,13 +98,6 @@ open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchCom
 
     private fun initWindowBackground() {
         window.decorView.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
     }
 
     private fun setupToolbar() {

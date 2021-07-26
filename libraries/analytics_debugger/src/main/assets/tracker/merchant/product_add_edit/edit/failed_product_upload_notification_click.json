@@ -6,8 +6,8 @@
       "event" : "clickEditProduct",
       "eventCategory" : "edit product page",
       "eventAction" : "click failed edit product notification",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

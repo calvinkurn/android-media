@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingBottom="16dp"
@@ -18,16 +19,16 @@
         android:orientation="vertical">
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/fontvs"
+            app:typographyType="body_3"
             tools:text="19/10/2019 15:12"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,10 +36,10 @@
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/fonts"
+            app:typographyType="body_2"
             tools:text="Penjual mengabaikan pesanan"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,12 +47,12 @@
             android:background="@android:drawable/list_selector_background"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/fontvs"
+            app:typographyType="body_3"
             tools:text="INV/2019018/XIX/X/38239348473"/>
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:maxLines="1"
         android:singleLine="true"
         android:layout_centerVertical="true"
@@ -63,7 +64,8 @@
         android:background="@android:drawable/list_selector_background"
         android:gravity="end|center_vertical"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontl"
+        app:typographyType="heading_3"
+        app:typographyWeight="reguler"
         tools:text="0" />
 
 </RelativeLayout>

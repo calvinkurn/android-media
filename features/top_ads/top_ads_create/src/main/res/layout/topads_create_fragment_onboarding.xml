@@ -113,15 +113,22 @@
                     app:typographyType="body_3"
                     tools:layout_editor_absoluteX="16dp" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/top_corner_icon1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
+                    app:cardCornerRadius="@dimen/dp_16"
+                    app:cardElevation="@dimen/dp_2"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/top_corner_icon1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </androidx.cardview.widget.CardView>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon2"
@@ -261,16 +268,22 @@
                     app:layout_constraintTop_toBottomOf="@id/typography9"
                     app:typographyType="body_3" />
 
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/top_corner_icon2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
+                    app:cardCornerRadius="@dimen/dp_16"
+                    app:cardElevation="@dimen/dp_2"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/top_corner_icon2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </androidx.cardview.widget.CardView>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon6"

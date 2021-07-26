@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_card_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    tools:ignore="Overdraw"
     android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.common_electronic_money.compoundview.ETollCardInfoView
@@ -22,7 +24,7 @@
         android:layout_margin="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:padding="@dimen/spacing_lvl4"
-        android:text="@string/emoney_button_topup"
+        android:text="@string/emoney_nfc_button_topup"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
@@ -34,15 +36,17 @@
         android:gravity="center"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
-        app:typographyType="body_1" />
+        app:typographyWeight="bold"
+        app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_label_progress_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:gravity="center"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
 </LinearLayout>

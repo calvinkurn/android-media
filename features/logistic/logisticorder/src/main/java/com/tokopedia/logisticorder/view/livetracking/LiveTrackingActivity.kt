@@ -19,7 +19,7 @@ class LiveTrackingActivity : BaseSimpleActivity() {
 
     companion object {
 
-        fun createIntent(context: Context, trackingUrl: String): Intent {
+        fun createIntent(context: Context, trackingUrl: String?): Intent {
             return Intent(context, LiveTrackingActivity::class.java).putExtra(EXTRA_TRACKING_URL, trackingUrl)
         }
     }

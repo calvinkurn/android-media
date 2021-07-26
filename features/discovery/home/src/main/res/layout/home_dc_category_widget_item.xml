@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl2"
+    android:id="@+id/card_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <ImageView
@@ -12,7 +13,8 @@
         tools:background="@color/Unify_R200"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/content_desc_home_category_widget"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_item_name"

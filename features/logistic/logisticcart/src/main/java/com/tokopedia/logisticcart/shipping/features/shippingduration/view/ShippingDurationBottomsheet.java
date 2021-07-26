@@ -1,50 +1,53 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
+import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+
 /**
  * Created by Irfan Khoirul on 06/08/18.
  */
 
-public class ShippingDurationBottomsheet extends BottomSheets
-        implements ShippingDurationContract.View, ShippingDurationAdapterListener {
+public class ShippingDurationBottomsheet implements ShippingDurationContract.View, ShippingDurationAdapterListener {
 
     private static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
     private static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
@@ -69,7 +72,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private LinearLayout llNetworkErrorView;
     private LinearLayout llContent;
     private RecyclerView rvDuration;
+    private Bundle bundle;
 
+    private Activity activity;
+    private BottomSheetUnify bottomSheet;
     private ShippingDurationBottomsheetListener shippingDurationBottomsheetListener;
 
     private PerformanceMonitoring chooseCourierTracePerformance;
@@ -89,18 +95,60 @@ public class ShippingDurationBottomsheet extends BottomSheets
     CheckoutAnalyticsCourierSelection mPromoTracker;
     private boolean mIsCorner = false;
 
-    public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
-                                                          int selectedServiceId,
-                                                          List<ShopShipment> shopShipmentList,
-                                                          RecipientAddressModel recipientAddressModel,
-                                                          int cartPosition, int codHistory,
-                                                          boolean isLeasing, String pslCode,
-                                                          ArrayList<Product> products, String cartString,
-                                                          boolean isDisableOrderPrioritas,
-                                                          boolean isTradeInDropOff, boolean isFulFillment,
-                                                          int preOrderTime, String mvc) {
-        ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
-        Bundle bundle = new Bundle();
+    public void show(Activity activity,
+                     FragmentManager fragmentManager,
+                     ShippingDurationBottomsheetListener shippingDurationBottomsheetListener,
+                     ShipmentDetailData shipmentDetailData,
+                     int selectedServiceId,
+                     List<ShopShipment> shopShipmentList,
+                     RecipientAddressModel recipientAddressModel,
+                     int cartPosition, int codHistory,
+                     boolean isLeasing, String pslCode,
+                     ArrayList<Product> products, String cartString,
+                     boolean isDisableOrderPrioritas,
+                     boolean isTradeInDropOff, boolean isFulFillment,
+                     int preOrderTime, String mvc) {
+        this.activity = activity;
+        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
+
+        initData(shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
+                cartPosition, codHistory, isLeasing, pslCode, products, cartString,
+                isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc);
+        initBottomSheet(activity);
+        initView(activity);
+
+        bottomSheet.show(fragmentManager, this.getClass().getSimpleName());
+    }
+
+    private void initBottomSheet(Activity activity) {
+        bottomSheet = new BottomSheetUnify();
+        bottomSheet.setShowCloseIcon(true);
+        bottomSheet.setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration));
+        bottomSheet.setClearContentPadding(true);
+        bottomSheet.setCustomPeekHeight(Resources.getSystem().getDisplayMetrics().heightPixels / 2);
+        bottomSheet.setDragable(true);
+        bottomSheet.setHideable(true);
+        bottomSheet.setShowListener(() -> {
+            chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
+            presenter.attachView(this);
+            loadData();
+            return Unit.INSTANCE;
+        });
+        bottomSheet.setOnDismissListener(() -> {
+            presenter.detachView();
+            return Unit.INSTANCE;
+        });
+        bottomSheet.setCloseClickListener(view -> {
+            if (shippingDurationBottomsheetListener != null) {
+                shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
+            }
+            bottomSheet.dismiss();
+            return Unit.INSTANCE;
+        });
+    }
+
+    private void initData(ShipmentDetailData shipmentDetailData, int selectedServiceId, List<ShopShipment> shopShipmentList, RecipientAddressModel recipientAddressModel, int cartPosition, int codHistory, boolean isLeasing, String pslCode, ArrayList<Product> products, String cartString, boolean isDisableOrderPrioritas, boolean isTradeInDropOff, boolean isFulFillment, int preOrderTime, String mvc) {
+        bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
         bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
@@ -116,22 +164,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment);
         bundle.putInt(ARGUMENT_PO_TIME, preOrderTime);
         bundle.putString(ARGUMENT_MVC, mvc);
-        shippingDurationBottomsheet.setArguments(bundle);
-
-        return shippingDurationBottomsheet;
-    }
-
-    public static ShippingDurationBottomsheet newInstance() {
-        return new ShippingDurationBottomsheet();
-    }
-
-    @Override
-    protected BottomSheetsState state() {
-        return BottomSheetsState.FLEXIBLE;
-    }
-
-    public void setShippingDurationBottomsheetListener(ShippingDurationBottomsheetListener shippingDurationBottomsheetListener) {
-        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener;
     }
 
     private void initializeInjector() {
@@ -144,93 +176,53 @@ public class ShippingDurationBottomsheet extends BottomSheets
         component.inject(this);
     }
 
-    @Override
-    public int getLayoutResourceId() {
-        return R.layout.fragment_shipment_duration_choice;
-    }
+    private void initView(Activity activity) {
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_shipment_duration_choice, null);
 
-    @Override
-    public int getBaseLayoutResourceId() {
-        return R.layout.widget_bottomsheet_shipping;
-    }
-
-    @Override
-    public void setupDialog(android.app.Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        if (dialog != null) {
-            dialog.findViewById(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent);
-        }
-    }
-
-    @Override
-    protected String title() {
-        return getString(R.string.title_bottomsheet_shipment_duration);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
-    }
-
-    @Override
-    public void initView(View view) {
         pbLoading = view.findViewById(R.id.pb_loading);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         llContent = view.findViewById(R.id.ll_content);
         rvDuration = view.findViewById(R.id.rv_duration);
 
+        bottomSheet.setChild(view);
+
         initializeInjector();
-        presenter.attachView(this);
-        if (getArguments() != null) {
-            mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
-            mCartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
-            int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
-            int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
+    }
+
+    private void loadData() {
+        if (bundle != null) {
+            mRecipientAddress = bundle.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
+            mCartPosition = bundle.getInt(ARGUMENT_CART_POSITION);
+            int selectedServiceId = bundle.getInt(ARGUMENT_SELECTED_SERVICE_ID);
+            int codHistory = bundle.getInt(ARGUMENT_COD_HISTORY);
             if (mRecipientAddress != null) {
                 mIsCorner = mRecipientAddress.isCornerAddress();
             }
-            isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
+            isDisableCourierPromo = bundle.getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(mCartPosition);
-            ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
-            List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
-            boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
-            String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
-            ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
-            String cartString = getArguments().getString(ARGUMENT_CART_STRING);
-            isDisableOrderPrioritas = getArguments().getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS);
-            boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
-            String mvc = getArguments().getString(ARGUMENT_MVC, "");
-            boolean isFulfillment = getArguments().getBoolean(ARGUMENT_IS_FULFILLMENT);
-            int preOrderTime = getArguments().getInt(ARGUMENT_PO_TIME);
-            if (shipmentDetailData != null) {
-                // Called from checkout
-                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc);
-            }
-        }
-    }
+            ShipmentDetailData shipmentDetailData = bundle.getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
+            List<ShopShipment> shopShipments = bundle.getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
+            boolean isLeasing = bundle.getBoolean(ARGUMENT_IS_LEASING);
+            String pslCode = bundle.getString(ARGUMENT_PSL_CODE, "");
+            ArrayList<Product> products = bundle.getParcelableArrayList(ARGUMENT_PRODUCTS);
+            String cartString = bundle.getString(ARGUMENT_CART_STRING);
+            isDisableOrderPrioritas = bundle.getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS);
+            boolean isTradeInDropOff = bundle.getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
+            String mvc = bundle.getString(ARGUMENT_MVC, "");
+            boolean isFulfillment = bundle.getBoolean(ARGUMENT_IS_FULFILLMENT);
+            int preOrderTime = bundle.getInt(ARGUMENT_PO_TIME);
 
-    @Override
-    protected void configView(View parentView) {
-        super.configView(parentView);
-        parentView.findViewById(R.id.layout_title).setOnClickListener(null);
-        parentView.findViewById(R.id.btn_close).setOnClickListener(view -> onCloseButtonClick());
-    }
-
-    @Override
-    protected void onCloseButtonClick() {
-        if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
+            presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
+                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc);
         }
-        dismiss();
     }
 
     private void setupRecyclerView(int cartPosition) {
         shippingDurationAdapter.setShippingDurationAdapterListener(this);
         shippingDurationAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                getContext(), LinearLayoutManager.VERTICAL, false);
+                activity, LinearLayoutManager.VERTICAL, false);
         rvDuration.setLayoutManager(linearLayoutManager);
         rvDuration.setAdapter(shippingDurationAdapter);
     }
@@ -254,43 +246,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
-        NetworkErrorHelper.showEmptyState(getContext(), llNetworkErrorView, message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        if (getArguments() != null) {
-                            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
-                            ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
-                            List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
-                            int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
-                            int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
-                            boolean isLeasing = getArguments().getBoolean(ARGUMENT_IS_LEASING);
-                            String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
-                            ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
-                            String cartString = getArguments().getString(ARGUMENT_CART_STRING);
-                            boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
-                            boolean isFulfillment = getArguments().getBoolean(ARGUMENT_IS_FULFILLMENT);
-                            int preOrderTime = getArguments().getInt(ARGUMENT_PO_TIME);
-                            String mvc = getArguments().getString(ARGUMENT_MVC, "");
-                            if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(
-                                        shipmentDetailData, selectedServiceId, shopShipments,
-                                        codHistory, mIsCorner, isLeasing, pslCode,
-                                        products, cartString, isTradeInDropOff, recipientAddressModel,
-                                        isFulfillment, preOrderTime, mvc
-                                );
-                            }
-                        }
-                    }
-                });
-        updateHeight();
+        NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message, this::loadData);
     }
 
     @Override
-    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel) {
-        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas);
-        if (promoViewModel != null && promoViewModel.getEtaData() != null && promoViewModel.getEtaData().getTextEta().isEmpty() && promoViewModel.getEtaData().getErrorCode() == 1) shippingDurationAdapter.initiateShowcase();
-        updateHeight();
+    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel, PreOrderModel preOrderModel) {
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas, preOrderModel);
+        if (promoViewModel != null && promoViewModel.getEtaData() != null && promoViewModel.getEtaData().getTextEta().isEmpty() && promoViewModel.getEtaData().getErrorCode() == 1)
+            shippingDurationAdapter.initiateShowcase();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationUiModelList);
         if (hasCourierPromo) {
             sendAnalyticCourierPromo(shippingDurationUiModelList);
@@ -326,7 +289,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void showNoCourierAvailable(String message) {
         shippingDurationBottomsheetListener.onNoCourierAvailable(message);
-        dismiss();
+        bottomSheet.dismiss();
     }
 
     @Override
@@ -340,6 +303,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public boolean isDisableCourierPromo() {
         return isDisableCourierPromo;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return activity;
     }
 
     @Override
@@ -373,7 +341,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                         shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
                         mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                         flagNeedToSetPinpoint, true, true);
-                dismiss();
+                bottomSheet.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -395,12 +363,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
         // Project Army
         ShippingDurationUiModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
         if (serviceData == null) {
-            showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+            showErrorPage(activity.getString(R.string.logistic_promo_serviceid_mismatch_message));
             return;
         }
         CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
         if (courierData == null) {
-            showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
+            showErrorPage(activity.getString(R.string.logistic_promo_serviceid_mismatch_message));
             return;
         }
 
@@ -423,42 +391,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         } catch (Exception e) {
             e.printStackTrace();
         }
-        dismiss();
-    }
 
-    private void showPslDialog(LogisticPromoUiModel data) {
-        Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
-        tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
-        tkpdDialog.setBtnOk(getString(R.string.shiprecc_next));
-        tkpdDialog.setBtnCancel(getString(R.string.shiprecc_cancel));
-        tkpdDialog.setOnCancelClickListener(view -> {
-            mPromoTracker.eventClickBatalTerapkanPromo(data.getPromoCode());
-            tkpdDialog.dismiss();
-        });
-        tkpdDialog.setOnOkClickListener(view -> {
-            ShippingDurationUiModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
-            if (serviceData == null) {
-                showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
-                tkpdDialog.dismiss();
-                return;
-            }
-            CourierItemData courierData = presenter.getCourierItemDataById(data.getShipperProductId(), serviceData.getShippingCourierViewModelList());
-            if (courierData == null) {
-                showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
-                tkpdDialog.dismiss();
-                return;
-            }
-            courierData.setLogPromoCode(data.getPromoCode());
-            courierData.setLogPromoMsg(data.getDisableText());
-            shippingDurationBottomsheetListener.onLogisticPromoChosen(
-                    serviceData.getShippingCourierViewModelList(), courierData,
-                    mRecipientAddress, mCartPosition,
-                    serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
-            tkpdDialog.dismiss();
-            dismiss();
-        });
-        tkpdDialog.show();
+        bottomSheet.dismiss();
     }
 
 }

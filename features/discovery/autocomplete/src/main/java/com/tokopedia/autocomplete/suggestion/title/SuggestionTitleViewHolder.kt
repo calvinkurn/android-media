@@ -7,9 +7,9 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.layout_title_suggestion.view.*
 
-class SuggestionTitleViewHolder(itemView: View) : AbstractViewHolder<SuggestionTitleViewModel>(itemView) {
+class SuggestionTitleViewHolder(itemView: View) : AbstractViewHolder<SuggestionTitleDataView>(itemView) {
 
-    override fun bind(element: SuggestionTitleViewModel) {
+    override fun bind(element: SuggestionTitleDataView) {
         itemView.suggestionTitleTextView?.let {TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.title, getString(R.string.content_desc_suggestionTitleTextView))}
     }
 

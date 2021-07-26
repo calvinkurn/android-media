@@ -10,7 +10,6 @@ import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
@@ -57,6 +56,10 @@ class HomeVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
 
         private const val LAYOUT_FLOATING = "floating"
+        private const val BE_TICKER_ANNOUNCEMENT = 0
+        private const val BE_TICKER_INFORMATION = 1
+        private const val BE_TICKER_WARNING = 2
+        private const val BE_TICKER_ERROR = 3
     }
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context, dynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeVisitableFactory {
@@ -223,10 +226,10 @@ class HomeVisitableFactoryImpl(
     }
 
     private fun mapTickerType(ticker: Tickers): Int = when(ticker.tickerType) {
-        0 -> TYPE_ANNOUNCEMENT
-        1 -> TYPE_INFORMATION
-        2 -> TYPE_WARNING
-        3 -> TYPE_ERROR
+        BE_TICKER_ANNOUNCEMENT -> TYPE_ANNOUNCEMENT
+        BE_TICKER_INFORMATION -> TYPE_INFORMATION
+        BE_TICKER_WARNING -> TYPE_WARNING
+        BE_TICKER_ERROR -> TYPE_ERROR
         else -> TYPE_ANNOUNCEMENT
     }
 
@@ -237,11 +240,6 @@ class HomeVisitableFactoryImpl(
             headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
             visitableList.add(headerViewModel)
         }
-        return this
-    }
-
-    override fun addGeolocationVisitable(): HomeVisitableFactory {
-        visitableList.add(GeoLocationPromptDataModel())
         return this
     }
 
@@ -301,12 +299,14 @@ class HomeVisitableFactoryImpl(
                                         }
                                     },
                                     onSuccess = {
-                                        addDynamicChannelData(
+                                        if (data.getAtfContent<DynamicHomeChannel>() != null) {
+                                            addDynamicChannelData(
                                                 false,
                                                 data.getAtfContent<DynamicHomeChannel>(),
                                                 false,
                                                 index
-                                        )
+                                            )
+                                        }
                                     }
                             )
                             channelPosition++

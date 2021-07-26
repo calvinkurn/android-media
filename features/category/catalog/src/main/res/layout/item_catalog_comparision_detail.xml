@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        >
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:id="@+id/base_catalog_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:card_type="border"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing_lvl3">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/first_catalog_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_160"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/first_catalog_product_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_8"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="small"
+                    tools:text="Apple" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/first_catalog_product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_4"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    app:typographyType="body_3"
+                    tools:text="iPhone 12 - 64GB" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/first_catalog_product_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_4"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp15.500.000 - Rp16.150.000" />
+
+
+            </LinearLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        >
+
+        <com.tokopedia.unifycomponents.CardUnify
+            android:id="@+id/comparision_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing_lvl3">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/second_catalog_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_160"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/second_catalog_product_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_8"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="small"
+                    tools:text="Apple" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/second_catalog_product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_4"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    app:typographyType="body_3"
+                    tools:text="iPhone 12 - 64GB" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/second_catalog_product_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_4"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp15.500.000 - Rp16.150.000" />
+
+            </LinearLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify>
+
+    </LinearLayout>
+
+</LinearLayout>

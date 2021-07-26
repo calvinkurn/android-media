@@ -6,15 +6,15 @@
       "eventAction": "leave room",
       "event": "clickBack",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - \\d+ - (vod|live|unknown)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - \\d+ - (vod|live|unknown)",
+      "sessionIris": ".*"
     },
     {
       "eventAction": "error state",
       "event": "viewGroupChat",
       "eventCategory": "groupchat room",
-      "eventLabel": "{{\\d+ - .+ - (vod|live|unknown)}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d+ - .+ - (vod|live|unknown)",
+      "sessionIris": ".*"
     }
   ]
 }

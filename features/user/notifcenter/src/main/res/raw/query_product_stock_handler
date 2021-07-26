@@ -25,6 +25,7 @@ query notifcenter_productStock($notif_id: String!) {
                 is_wishlist
                 rating
                 count_review
+                has_reminder
                 labels {
                     title
                     color

@@ -23,7 +23,7 @@ class NotificationDotBadge(private val context: Context) : Drawable() {
     private var willDraw = false
 
     init {
-        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, R.color.green_500)
+        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         mBadgePaint.isAntiAlias = true
         mBadgePaint.style = Paint.Style.FILL
     }

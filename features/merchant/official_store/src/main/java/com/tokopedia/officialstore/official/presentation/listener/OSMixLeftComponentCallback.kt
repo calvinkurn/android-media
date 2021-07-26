@@ -34,6 +34,7 @@ class   OSMixLeftComponentCallback(private val dcEventHandler: DynamicChannelEve
     }
 
     override fun onImageBannerImpressed(channelModel: ChannelModel, position: Int) {
+        dcEventHandler.onMixLeftBannerImpressed(channelModel, position)
     }
 
     override fun onImageBannerClicked(channelModel: ChannelModel, position: Int, applink: String) {

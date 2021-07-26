@@ -8,8 +8,8 @@ import com.tokopedia.settingnotif.usersetting.data.mapper.UserSettingMapper
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.util.SingleLiveEvent
-import com.tokopedia.settingnotif.usersetting.util.dispatcher.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.settingnotif.usersetting.analytics.MoengageManager
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
@@ -17,6 +17,7 @@ import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError
 import com.tokopedia.track.TrackApp
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Companion.params as settingParams
@@ -24,8 +25,9 @@ import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Compa
 class UserSettingViewModel @Inject constructor(
         private val getUserSettingUseCase: GetUserSettingUseCase,
         private val setUserSettingUseCase: SetUserSettingUseCase,
-        private val dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), SettingFieldContract.UserSetting {
+        private val moengageManager: MoengageManager,
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io), SettingFieldContract.UserSetting {
 
     private val _userSetting = SingleLiveEvent<UserSettingDataView>()
     val userSetting: LiveData<UserSettingDataView> get() = _userSetting
@@ -46,7 +48,7 @@ class UserSettingViewModel @Inject constructor(
         )
         launchCatchError(block = {
             val result = setUserSettingUseCase.executeOnBackground()
-            withContext(dispatcher.ui()) {
+            withContext(dispatcher.main) {
                 _setUserSetting.value = result
             }
         }, onError = {
@@ -57,7 +59,7 @@ class UserSettingViewModel @Inject constructor(
     override fun loadUserSettings() {
         launchCatchError(block = {
             val result = getUserSettingUseCase.executeOnBackground()
-            withContext(dispatcher.ui()) {
+            withContext(dispatcher.main) {
                 val mapToDataView = UserSettingMapper.map(result)
                 _userSetting.setValue(mapToDataView)
             }
@@ -66,28 +68,11 @@ class UserSettingViewModel @Inject constructor(
         })
     }
 
-    override fun requestUpdateMoengageUserSetting(
-            updatedSettingIds: List<Map<String, Any>>
-    ) {
-        for (setting in updatedSettingIds) {
-            val name = setting[SettingViewHolder.PARAM_SETTING_KEY]
-            val value = setting[SettingViewHolder.PARAM_SETTING_VALUE]
-
-            if (name !is String || value !is Boolean) continue
-
-            when (name) {
-                SETTING_PUSH_NOTIFICATION_PROMO -> setMoengagePromoPreference(value)
-                SETTING_EMAIL_BULLETIN -> setMoengageEmailPreference(value)
-            }
+    override fun requestUpdateMoengageUserSetting(name: String, value: Boolean) {
+        when (name) {
+            SETTING_PUSH_NOTIFICATION_PROMO -> moengageManager.setPushPreference(value)
+            SETTING_EMAIL_BULLETIN -> moengageManager.setNewsletterEmailPref(value)
         }
-    }
-
-    private fun setMoengageEmailPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setNewsletterEmailPref(checked)
-    }
-
-    private fun setMoengagePromoPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setPushPreference(checked)
     }
 
     companion object {

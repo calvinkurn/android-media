@@ -82,6 +82,10 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
         if (number.isNotEmpty()) {
             searchInputNumber.searchBarTextField.setText(number)
             searchInputNumber.searchBarTextField.setSelection(number.length)
+            searchInputNumber.searchBarIcon.clearAnimation()
+            searchInputNumber.searchBarIcon.post {
+                searchInputNumber.searchBarIcon.animate().scaleX(1f).scaleY(1f).start()
+            }
         }
         searchInputNumber.searchBarTextField.addTextChangedListener(getSearchTextWatcher)
         searchInputNumber.searchBarTextField.setOnEditorActionListener(getSearchNumberListener)

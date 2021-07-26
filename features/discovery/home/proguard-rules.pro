@@ -20,4 +20,3 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontwarn kotlinx.coroutines.flow.**
--dontwarn kotlinx.coroutines.reactive.**

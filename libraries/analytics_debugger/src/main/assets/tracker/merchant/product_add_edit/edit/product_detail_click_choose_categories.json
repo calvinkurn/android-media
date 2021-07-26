@@ -6,8 +6,8 @@
       "event" : "clickEditProduct",
       "eventCategory" : "edit product page",
       "eventAction" : "click choose other categories",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

@@ -9,6 +9,8 @@ import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisWorker
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -34,7 +36,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Dispatchers.IO +
             CoroutineExceptionHandler { _, ex ->
-                Timber.e("P1#IRIS#CoroutineExceptionIrisAnalytics %s", ex.toString())
+                ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "CoroutineExceptionIrisAnalytics", "err" to ex.toString()))
             }
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
@@ -95,7 +97,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 try {
                     saveEventSuspend(map)
                 } catch (e: Exception) {
-                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
                 }
             }
         }
@@ -107,7 +109,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 try {
                     saveEventSuspend(Utils.bundleToMap(bundle))
                 } catch (e: Exception) {
-                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
                 }
             }
         }

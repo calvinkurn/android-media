@@ -95,6 +95,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         verifyShopIdEquals(shopId)
     }
 
+    @Test
+    fun `check whether shopBadgeReputation value is success`() {
+        val shopId = "2913"
+        onGetShopReputation_thenReturn(ShopBadge())
+        viewModel.getShopReputationBadge(shopId)
+        assert(viewModel.shopBadgeReputation.value is Success)
+    }
+
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo

@@ -95,7 +95,7 @@ object CartListPresenterFollowShopTest : Spek({
             Then("should render success") {
                 verifyOrder {
                     view.hideProgressLoading()
-                    view.showToastMessageGreen(dataFollowShop.followShop.message)
+                    view.showToastMessageGreen(dataFollowShop.followShop?.message.orEmpty())
                 }
             }
         }

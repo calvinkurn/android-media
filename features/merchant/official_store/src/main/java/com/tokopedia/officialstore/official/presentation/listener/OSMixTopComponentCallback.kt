@@ -15,7 +15,7 @@ class OSMixTopComponentCallback (private val dcEventHandler: DynamicChannelEvent
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
-        dcEventHandler.onMixFlashSaleSeeAllClickedComponent(channel, applink)
+        dcEventHandler.onSeeAllBannerClickedComponent(channel, applink)
     }
 
     override fun onMixtopButtonClicked(channel: ChannelModel) {
@@ -27,7 +27,8 @@ class OSMixTopComponentCallback (private val dcEventHandler: DynamicChannelEvent
                         channel.channelBanner.cta.couponCode
                 ),
                 channel.id,
-                channel.channelBanner.applink
+                channel.channelBanner.applink,
+                channel.channelBanner.attribution
         )
     }
 
@@ -43,10 +44,10 @@ class OSMixTopComponentCallback (private val dcEventHandler: DynamicChannelEvent
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, adapterPosition: Int, position: Int, applink: String) {
-        dcEventHandler.onFlashSaleCardClickedComponent(position, channel, channelGrid, applink)
+        dcEventHandler.onFlashSaleCardClickedComponent(position + 1, channel, channelGrid, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        dcEventHandler.onSeeAllBannerClickedComponent(channel, applink)
+        dcEventHandler.onMixFlashSaleSeeAllClickedComponent(channel, applink)
     }
 }

@@ -6,6 +6,7 @@
     android:id="@+id/globalNavCardItemCardView"
     android:layout_width="136dp"
     android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/global_nav_dms_card_background"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_4"
     app:cardUseCompatPadding="true"
@@ -19,6 +20,7 @@
 
         <ImageView
             android:id="@+id/globalNavCardItemBackground"
+            android:contentDescription="@string/content_desc_globalNavCardItemBackground"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:scaleType="fitCenter"
@@ -30,6 +32,7 @@
 
         <ImageView
             android:id="@+id/globalNavCardItemLogo"
+            android:contentDescription="@string/content_desc_globalNavCardItemLogo"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:adjustViewBounds="true"

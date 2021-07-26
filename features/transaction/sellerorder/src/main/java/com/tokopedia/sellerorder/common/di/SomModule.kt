@@ -2,8 +2,6 @@ package com.tokopedia.sellerorder.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -27,8 +25,4 @@ class SomModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @SomScope
-    @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

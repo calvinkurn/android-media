@@ -58,7 +58,7 @@ class RechargeHomepageSingleBannerViewHolder(itemView: View?, val listener: Rech
                 view_recharge_home_single_banner_container.hide()
                 view_recharge_home_single_banner_shimmering.show()
 
-                listener.loadRechargeSectionData(element.visitableId(), element.isLoadFromCloud)
+                listener.loadRechargeSectionData(element.visitableId())
             }
         }
     }

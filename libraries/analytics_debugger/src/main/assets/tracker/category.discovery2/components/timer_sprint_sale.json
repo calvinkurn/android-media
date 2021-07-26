@@ -3,11 +3,11 @@
   "mode": "exact",
   "query": [
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "click reminder notification",
       "event": "clickDiscovery",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

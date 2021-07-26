@@ -131,7 +131,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId, true)
         }
     }
 

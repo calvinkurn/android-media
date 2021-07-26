@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.common.CMNotificationUtils
@@ -24,7 +26,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
-import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -44,8 +45,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         launchCatchError(block = {
             sendFcmTokenToServerGQL(token)
         }, onError = {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "exception", "err" to Log.getStackTraceString(it)
+                    .take(CMConstant.TimberTags.MAX_LIMIT), "data" to ""))
         })
     }
 
@@ -61,18 +62,21 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 try {
                     adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
                 } catch (e: IOException) {
-                    Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesNotAvailableException) {
-                    Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesRepairableException) {
-                    Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                     e.printStackTrace()
                     return ""
                 }
@@ -107,8 +111,9 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             this.token = token
             handler.postDelayed(runnable, delay)
         } catch (e: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""))
         }
 
     }
@@ -119,8 +124,9 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             if (::graphQlUseCase.isInitialized)
                 graphQlUseCase.unsubscribe()
         } catch (e: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""))
         }
     }
 
@@ -166,8 +172,9 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     }
 
                     override fun onError(e: Throwable) {
-                        Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                                .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                        ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                                mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                        "data" to ""))
                     }
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
@@ -175,9 +182,11 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                         if (!gqlError.isNullOrEmpty()) {
                             val errorStr = gqlError[0].message
                             if (errorStr.isNullOrEmpty())
-                                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='cm_gql_error_thrown';data=''")
+                                ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "cm_gql_error_thrown",
+                                        "data" to ""))
                             else
-                                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='cm_gql_error_thrown';data='${errorStr.take(CMConstant.TimberTags.MAX_LIMIT)}'")
+                                ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "cm_gql_error_thrown",
+                                        "data" to errorStr.take(CMConstant.TimberTags.MAX_LIMIT)))
                         } else {
                             val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
                             if (tokenResponse?.cmAddToken != null && tokenResponse.cmAddToken.error.isNullOrEmpty()) {
@@ -187,9 +196,11 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                                 CMNotificationUtils.saveAppVersion(mContext, appVersionName)
                             } else {
                                 if (tokenResponse == null) {
-                                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_response_cm_add_token';data=''")
+                                    ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "no_response_cm_add_token",
+                                            "data" to ""))
                                 } else {
-                                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_response_cm_add_token';data='${tokenResponse.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
+                                    ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "no_response_cm_add_token",
+                                            "data" to tokenResponse.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
                                 }
 
                             }
@@ -199,8 +210,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
             }
         } catch (e: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "exception", "err" to Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT), "data" to ""))
             e.printStackTrace()
         }
 

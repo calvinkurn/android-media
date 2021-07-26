@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
@@ -30,7 +30,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 03/07/20.
  */
-class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
+class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
@@ -39,7 +39,7 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
                                            private val flightResendEmailUseCase: FlightResendEmailUseCase,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.ui()) {
+                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>

@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="@color/Unify_B100" />
-    <corners android:topRightRadius="@dimen/layout_lvl1"
-        android:bottomRightRadius="@dimen/layout_lvl1"/>
+    <corners android:topRightRadius="@dimen/layout_lvl3"
+        android:bottomRightRadius="@dimen/layout_lvl3"/>
 </shape>

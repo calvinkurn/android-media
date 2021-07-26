@@ -32,7 +32,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     )
 
     private val localSearchRecomRequestParamsSlot = mutableListOf<RequestParams>()
-    private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val visitableListSlot = mutableListOf<List<Visitable<*>>>()
 
     @Test
     fun `Get empty local search recommendation success during local search - page 1`() {
@@ -107,7 +107,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
     }
 
     private fun `Then verify visitable list for set empty recommendation page 1`(localSearchRecommendationModel: SearchProductModel) {
-        val visitableList = visitableListSlot.captured
+        val visitableList = visitableListSlot.last()
 
         visitableList.first().shouldBeInstanceOf<SearchProductTitleDataView>()
         visitableList.first().assertSearchProductTitle()
@@ -202,7 +202,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
             productListView.addLocalSearchRecommendation(capture(visitableListSlot))
         }
 
-        val visitableList = visitableListSlot.captured
+        val visitableList = visitableListSlot.last()
 
         visitableList.size shouldBe localSearchRecommendationModel.searchProduct.data.productList.size
 

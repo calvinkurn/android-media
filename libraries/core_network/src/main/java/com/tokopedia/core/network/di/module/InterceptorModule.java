@@ -4,9 +4,8 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.chuckerteam.chucker.api.RetentionManager;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
@@ -24,7 +23,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -42,12 +40,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @Deprecated
 @Module
 public class InterceptorModule {
-
-    @ApplicationScope
-    @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context);
-    }
 
     @ApplicationScope
     @Provides

@@ -33,7 +33,7 @@ class CustomToast {
             val textView = Typography(activityContext)
             textView.text = text
             textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
-            textView.setTextColor(ContextCompat.getColor(activityContext, R.color.tp_toast_text_color))
+            textView.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             textView.setBackgroundResource(bg)
             textView.fontType = Typography.BODY_3
             val fm = FrameLayout(activityContext)

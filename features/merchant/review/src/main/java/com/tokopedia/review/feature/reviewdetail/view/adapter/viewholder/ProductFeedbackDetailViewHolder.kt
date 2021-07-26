@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
@@ -47,8 +48,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
         setFeedbackReply(element)
         setupVariant(element.variantName ?: "")
-        setupFeedbackReview(element.reviewText ?: "", element.feedbackID.toString())
+        setupFeedbackReview(element.reviewText ?: "", element.feedbackID)
         setImageAttachment(element)
+        showLabelKejarUlasan(element.isKejarUlasan)
     }
 
     private fun setupVariant(variantName: String) {
@@ -124,7 +126,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
                 rvItemAttachmentFeedback?.hide()
             } else {
                 reviewDetailFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
-                reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID.toString())
+                reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID)
                 reviewDetailFeedbackImageAdapter?.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }
@@ -157,5 +159,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             tvReplyDate?.show()
             tvReplyComment?.show()
         }
+    }
+
+    private fun showLabelKejarUlasan(isKejarUlasan: Boolean) {
+        itemView.kejarUlasanLabel?.showWithCondition(isKejarUlasan)
     }
 }

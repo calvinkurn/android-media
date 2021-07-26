@@ -6,6 +6,8 @@ object CatalogConstant {
     // Mapper
     const val FULL_CATALOG_SPECIFICATION = "catalog-spec-full-data"
     const val TOP_SPECIFICATIONS = "catalog-spec-horizontal-scroll"
+    const val VIDEO = "catalog-video-horizontal-scroll"
+    const val COMPARISION = "catalog-product-recommendation"
     const val CATALOG_PRODUCT_FILTER = "product-filter"
     const val CATALOG_PRODUCT_LIST = "product-list-infinite-scroll"
     // Self Made
@@ -35,4 +37,9 @@ object CatalogConstant {
 
     const val SHIMMER_ITEMS_INDEX_START = 0
     const val SHIMMER_ITEMS_INDEX_END = 5
+
+    const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
+
+    const val COMPARISION_DETAIL = "comparision-detail"
+
 }

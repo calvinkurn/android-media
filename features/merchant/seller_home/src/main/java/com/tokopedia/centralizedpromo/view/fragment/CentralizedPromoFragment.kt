@@ -178,7 +178,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     private fun Fail.onFailedGetLayoutData(layoutType: LayoutType) {
-        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
+        SellerHomeErrorHandler.logException(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
         partialViews[layoutType]?.renderError(this.throwable)
         showErrorToaster()
     }

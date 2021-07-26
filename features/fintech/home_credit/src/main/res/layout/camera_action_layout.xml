@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_flash_control"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"

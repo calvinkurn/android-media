@@ -3,6 +3,7 @@ package com.tokopedia.troubleshooter.notification.ui.viewmodel
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
@@ -18,16 +19,13 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.troubleshooter.notification.util.dispatchers.TestDispatcherProvider
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -48,6 +46,7 @@ class TroubleshootViewModelTest {
     private val ringtoneMode: RingtoneModeService = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
+    private val notificationStatus: Observer<Boolean> = mockk(relaxed = true)
     private val notificationSetting: Observer<Result<UserSettingUIView>> = mockk(relaxed = true)
     private val deviceSetting: Observer<Result<DeviceSettingState>> = mockk(relaxed = true)
     private val notificationRingtoneUri: Observer<Pair<Uri?, RingtoneState>> = mockk(relaxed = true)
@@ -55,7 +54,7 @@ class TroubleshootViewModelTest {
     private val tokenObserver: Observer<Result<String>> = mockk(relaxed = true)
     private val dndMode: Observer<Boolean> = mockk(relaxed = true)
 
-    private val dispatcherProvider = TestDispatcherProvider()
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: TroubleshootViewModel
 
@@ -73,12 +72,31 @@ class TroubleshootViewModelTest {
                 dispatcherProvider
         )
 
+        viewModel.notificationStatus.observeForever(notificationStatus)
         viewModel.notificationSetting.observeForever(notificationSetting)
         viewModel.deviceSetting.observeForever(deviceSetting)
         viewModel.notificationRingtoneUri.observeForever(notificationRingtoneUri)
         viewModel.troubleshoot.observeForever(troubleshoot)
         viewModel.token.observeForever(tokenObserver)
         viewModel.dndMode.observeForever(dndMode)
+    }
+
+    @Test fun `it should return notification status as true`() {
+        val expectedValue = true
+        every { notificationCompat.isNotificationEnabled() } returns expectedValue
+
+        viewModel.isNotificationEnabled()
+
+        verify { notificationStatus.onChanged(expectedValue) }
+    }
+
+    @Test fun `it should return notification status as false`() {
+        val expectedValue = false
+        every { notificationCompat.isNotificationEnabled() } returns expectedValue
+
+        viewModel.isNotificationEnabled()
+
+        verify { notificationStatus.onChanged(expectedValue) }
     }
 
     @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
@@ -166,7 +184,61 @@ class TroubleshootViewModelTest {
         viewModel.deviceSetting isEqualsTo expectedValue
     }
 
-    @Test fun `it should return user settings properly`() {
+    @Test fun `it should get fail of device setting if notification disabled`() {
+        val expectedValue = Fail(Throwable(""))
+        every { notificationCompat.isNotificationEnabled() } returns false
+
+        viewModel.deviceSetting()
+
+        viewModel.deviceSetting.value isEqualsTo expectedValue
+    }
+
+    @Test fun `it should get fail of device setting if notification channel disabled`() {
+        val expectedValue = Fail(Throwable(""))
+
+        every { notificationCompat.isNotificationEnabled() } returns true
+        every { notificationChannel.hasNotificationChannel() } returns true
+        every { notificationChannel.isNotificationChannelEnabled() } returns true
+
+        viewModel.deviceSetting()
+
+        viewModel.deviceSetting.value isEqualsTo expectedValue
+    }
+
+    @Test fun `it should return user settings for seller app properly`() {
+        runBlockingTest {
+            val userSettingMock = UserSettingUIView()
+            val expectedValue = Success(userSettingMock)
+
+            mockkStatic(GlobalConfig::class)
+
+            every { GlobalConfig.isSellerApp() } returns true
+            coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+
+            viewModel.userSetting()
+
+            verify { notificationSetting.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `it should return user settings as buyer and have shop properly`() {
+        runBlockingTest {
+            val userSettingMock = UserSettingUIView()
+            val expectedValue = Success(userSettingMock)
+
+            mockkStatic(GlobalConfig::class)
+
+            every { GlobalConfig.isSellerApp() } returns false
+            every { userSession.hasShop() } returns true
+            coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+
+            viewModel.userSetting()
+
+            verify { notificationSetting.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `it should return user settings as buyer and did not have shop properly`() {
         val userSettingMock = UserSettingUIView()
         val expectedValue = Success(userSettingMock)
 

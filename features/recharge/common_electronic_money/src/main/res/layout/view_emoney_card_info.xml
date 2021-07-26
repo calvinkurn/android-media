@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardElevation="@dimen/spacing_lvl2"
     app:cardUseCompatPadding="true">
 
@@ -26,7 +26,25 @@
                 android:layout_height="@dimen/layout_lvl6"
                 android:layout_weight="1"
                 android:padding="@dimen/spacing_lvl2"
+                android:contentDescription="@string/emoney_nfc_button_topup"
                 tools:src="@drawable/digital_ic_emoney" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/image_issuer_loader"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="@dimen/layout_lvl6"
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl2"
+                android:paddingBottom="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:corners="16" />
+
+            <View
+                android:layout_width="@dimen/nfc_common_dp_local_1"
+                android:layout_height="match_parent"
+                android:background="@color/Unify_N75" />
 
             <LinearLayout
                 android:layout_width="@dimen/layout_lvl0"
@@ -35,26 +53,39 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_lvl4">
 
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_label_card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl2"
-                    android:text="@string/emoney_card_info_label_card_number"
-                    android:textSize="@dimen/fontSize_lvl2"
-                    app:corners="16"
-                    app:width_weight="0.5" />
+                    android:text="@string/emoney_nfc_card_info_label_card_number"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3" />
 
                 <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:id="@+id/text_label_card_number_loader"
+                    android:layout_width="@dimen/unify_space_96"
+                    android:layout_height="@dimen/spacing_lvl3"
+                    android:layout_marginBottom="@dimen/spacing_lvl2"
+                    android:visibility="gone"
+                    app:corners="16" />
+
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700"
-                    android:textSize="@dimen/fontSize_lvl3"
-                    android:textStyle="bold"
-                    app:corners="16"
-                    app:width_weight="1.0"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyWeight="bold"
+                    app:typographyType="body_2"
                     tools:text="1234 - 1234 - 1234 - 1234" />
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:id="@+id/text_card_number_loader"
+                    android:layout_width="@dimen/nfc_common_dp_local_168"
+                    android:layout_height="@dimen/unify_space_12"
+                    android:visibility="gone"
+                    app:corners="16" />
 
             </LinearLayout>
 
@@ -62,8 +93,8 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="0.5dp"
-            android:background="@color/Unify_N700" />
+            android:layout_height="@dimen/nfc_common_dp_local_1"
+            android:background="@color/Unify_N75" />
 
         <LinearLayout
             android:id="@+id/view_remaining_balance"
@@ -74,36 +105,66 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_lvl4">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_label_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:gravity="center"
-                android:text="@string/emoney_card_info_label_card_balance"
-                app:corners="16"
-                app:height_weight="1"
-                app:width_weight="1" />
+                android:textColor="@color/Unify_N700_68"
+                android:text="@string/emoney_nfc_card_info_label_card_balance"
+                app:typographyType="body_3"
+                />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/text_label_balance_loader"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/layout_lvl8"
+                android:layout_marginRight="@dimen/layout_lvl8"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:visibility="gone"
+                app:corners="16" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_remaining_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:gravity="center"
-                android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/fontSize_lvl8"
-                app:corners="16"
-                app:height_weight="1"
-                app:width_weight="1"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyWeight="bold"
+                app:typographyType="heading_2"
                 tools:text="Rp 800.000" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/text_remaining_balance_loader"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/layout_lvl7"
+                android:layout_marginLeft="@dimen/layout_lvl7"
+                android:layout_height="@dimen/unify_space_12"
+                android:visibility="gone"
+                app:corners="16" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_date"
-                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:corners="16"
-                tools:text="12 Mei 2018, 06:50" />
+                app:typographyType="body_3"
+                android:textColor="@color/Unify_N700_68"
+                tools:text="(12 Mei 2018, 06:50)" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/text_date_loader"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/layout_lvl8"
+                android:layout_marginRight="@dimen/layout_lvl8"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:corners="16" />
 
         </LinearLayout>
 

@@ -8,8 +8,9 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout)
-    : HomeEventItem<HomeTypeFactory> {
+class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
+            EventHomeDataResponse.Data.EventHome.Layout())
+    : HomeEventItem() {
 
     var id : String = ""
     var title : String = ""
@@ -29,7 +30,8 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout)
                         it.price,
                         it.schedule,
                         it.isLiked,
-                        it.appUrl
+                        it.appUrl,
+                        it.seoUrl
                 ))
             }
         }

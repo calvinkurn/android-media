@@ -13,19 +13,21 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
@@ -100,7 +102,7 @@ public interface ShipmentContract {
         void cancelAllCourierPromo();
 
         void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition,
-                                              ShipmentCartItemModel shipmentCartItemModel);
+                                              ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel);
 
         void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel);
 
@@ -126,7 +128,7 @@ public interface ShipmentContract {
 
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId,
                                                                               String deviceModel,
-                                                                              int devicePrice,
+                                                                              long devicePrice,
                                                                               String diagnosticId);
 
         void removeIneligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
@@ -152,6 +154,14 @@ public interface ShipmentContract {
         void updateLocalCacheAddressData(UserAddress userAddress);
 
         void resetAllCourier();
+
+        void setStateLoadingCourierStateAtIndex(int index, boolean isLoading);
+
+        void logOnErrorLoadCheckoutPage(Throwable throwable);
+
+        void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
+
+        void logOnErrorCheckout(Throwable throwable, String request);
     }
 
     interface AnalyticsActionListener {
@@ -226,7 +236,7 @@ public interface ShipmentContract {
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
-        void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
+        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -256,6 +266,8 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         EgoldAttributeModel getEgoldAttributeModel();
+
+        ShipmentTickerErrorModel getShipmentTickerErrorModel();
 
         TickerAnnouncementHolderData getTickerAnnouncementHolderData();
 
@@ -289,9 +301,9 @@ public interface ShipmentContract {
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
 
         void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
-                                               int itemPosition);
+                                               int orderNumber);
 
-        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition);
+        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int orderNumber);
 
         void setCouponStateChanged(boolean appliedCoupon);
 
@@ -338,6 +350,8 @@ public interface ShipmentContract {
         ValidateUsePromoRequest getLastValidateUseRequest();
 
         String generateRatesMvcParam(String cartString);
+
+        void setCheckoutData(CheckoutData checkoutData);
     }
 
 }

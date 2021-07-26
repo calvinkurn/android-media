@@ -22,7 +22,7 @@
         android:id="@+id/choosee_address_widget_bottom_shadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bottom_sheet_filter_bottom_bar_shadow"
+        android:background="@color/Unify_N75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/shop_page_header_content" />
 

@@ -10,7 +10,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       kero_unix_time
       is_robinhood
       is_hide_courier_name
-      is_blackbox
       is_show_onboarding
       is_ineligible_promo_dialog_enabled
       disabled_features
@@ -18,6 +17,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       open_prerequisite_site
       eligible_new_shipping_experience
       pop_up_message
+      error_ticker
       group_address {
         errors
         user_address {
@@ -42,9 +42,14 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           is_corner
           state
           state_detail
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         group_shop {
           errors
+          errors_unblocking
           shipping_id
           sp_id
           is_insurance
@@ -71,6 +76,19 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               duration
             }
           }
+          is_disable_change_courier
+          auto_courier_selection
+          courier_selection_error {
+            title
+            description
+          }
+          bo_metadata {
+            bo_type
+            bo_eligibilities {
+              key
+              value
+            }
+          }
           save_state_flag
           promo_codes
           vehicle_leasing {
@@ -79,16 +97,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           }
           shop {
             shop_id
-            user_id
             shop_name
             shop_image
             shop_url
             shop_status
-            is_gold
-            is_gold_badge
-            is_official
-            is_free_returns
-            address_id
             postal_code
             latitude
             longitude
@@ -99,16 +111,16 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             province_id
             city_id
             city_name
-            gold_merchant {
-              is_gold
-              is_gold_badge
-              gold_merchant_logo_url
-            }
-            official_store {
-              is_official
-              os_logo_url
-            }
             shop_alert_message
+            is_gold
+            is_official
+            shop_type_info {
+              shop_tier
+              shop_grade
+              badge
+              badge_svg
+              title
+            }
           }
           shop_shipments {
             ship_id
@@ -141,6 +153,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_wholesale_price_fmt
             product_weight_fmt
             product_weight
+            product_weight_actual
             product_condition
             product_url
             product_returnable
@@ -160,18 +173,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_cat_id
             product_catalog_id
             product_category
-            product_shipment {
-              shipment_id
-              service_id
-            }
-            product_shipment_mapping {
-              shipment_id
-              shipping_ids
-              service_ids {
-                service_id
-                sp_ids
-              }
-            }
             purchase_protection_plan_data {
               protection_available
               protection_type_id
@@ -183,9 +184,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               protection_link_url
               protection_opt_in
               protection_checkbox_disabled
-            }
-            free_returns {
-              free_returns_logo
             }
             product_tracker_data {
               attribution

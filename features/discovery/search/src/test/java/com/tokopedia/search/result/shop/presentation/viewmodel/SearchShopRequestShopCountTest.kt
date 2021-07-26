@@ -72,7 +72,6 @@ internal class SearchShopRequestShopCountTest : SearchShopDataViewTestFixtures()
 
     private fun `Then verify request params sent to API`(requestParamsSlot: CapturingSlot<RequestParams>) {
         val requestParams = requestParamsSlot.captured
-        requestParams.parameters[SearchApiConst.ROWS] shouldBe "0"
 
         mapParameter.forEach { (key, expectedValue) ->
             val actualValue = requestParams.parameters[key]

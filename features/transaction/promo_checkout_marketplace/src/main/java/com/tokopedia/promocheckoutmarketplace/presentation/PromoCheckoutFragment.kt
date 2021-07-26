@@ -48,6 +48,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
@@ -115,7 +116,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     // Use single recycler view to prevent memory leak & OOM caused by nested recyclerview
-    private lateinit var recyclerView: RecyclerView
+    private var recyclerView: RecyclerView? = null
     private lateinit var adapter: PromoCheckoutAdapter
 
     // Main Section
@@ -155,12 +156,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
+        private const val DESTINATION_BACK = "back"
+        private const val DESTINATION_REFRESH = "refresh"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
                            validateUsePromoRequest: ValidateUsePromoRequest,
                            bboPromoCodes: ArrayList<String>,
-                           promoMvcLockCourierFlow: Boolean = false): PromoCheckoutFragment {
+                           promoMvcLockCourierFlow: Boolean = false,
+                           chosenAddress: ChosenAddress?): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
@@ -168,6 +172,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     putStringArrayList(ARGS_BBO_PROMO_CODES, bboPromoCodes)
                     putBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
+                    // Add chosen address for trade in indomaret case, will be null for other case
+                    putParcelable(ARGS_CHOSEN_ADDRESS, chosenAddress)
                 }
             }
         }
@@ -197,8 +203,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.promo_checkout_marketplace_module_fragment, container, false)
         recyclerView = getRecyclerView(view)
-        recyclerView.addItemDecoration(itemDecorator)
-        (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        recyclerView?.addItemDecoration(itemDecorator)
+        (recyclerView?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
@@ -226,6 +232,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBackground()
+
         // Initialize hansel helper
         initializeHanselHelper()
 
@@ -243,6 +251,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observePromoRecommendationUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
+        observeErrorStateUiModel()
         observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
@@ -252,6 +261,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoLastSeenResult()
+    }
+
+    private fun setBackground() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+        }
     }
 
     private fun initializeHanselHelper() {
@@ -275,6 +290,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, isPromoMvcLockCourierFlow)
     }
 
+    private fun setResultErrorPromo(intent: Intent) {
+        intent.putExtra(ARGS_PROMO_ERROR, ARGS_FINISH_ERROR)
+    }
+
     override fun getRecyclerViewResourceId() = R.id.promo_checkout_marketplace_module_recycler_view
 
     private fun initializeSwipeRefreshLayout() {
@@ -287,7 +306,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
             }
@@ -485,6 +504,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         } else {
             adapter.addVisitable(it)
         }
+    }
+
+    private fun observeErrorStateUiModel() {
+        viewModel.promoErrorStateUiModel.observe(viewLifecycleOwner, Observer {
+            addOrModify(it)
+        })
     }
 
     private fun observeEmptyStateUiModel() {
@@ -687,8 +712,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun snapToPromoInput() {
-        recyclerView.layoutManager?.let { layoutManager ->
-            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+        recyclerView?.layoutManager?.let { layoutManager ->
+            val linearSmoothScroller = object : LinearSmoothScroller(recyclerView?.context) {
                 override fun getVerticalSnapPreference(): Int {
                     return SNAP_TO_START
                 }
@@ -827,7 +852,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, "")
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress)
         }
     }
 
@@ -921,9 +947,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             val scrollPosition = if (adapter.list.size > promoWithCoachMarkIndex) promoWithCoachMarkIndex + 1 else promoWithCoachMarkIndex
-            recyclerView.smoothScrollToPosition(scrollPosition)
+            recyclerView?.smoothScrollToPosition(scrollPosition)
             Handler().postDelayed({
-                val holder = recyclerView.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
+                val holder = recyclerView?.findViewHolderForAdapterPosition(promoWithCoachMarkIndex)
                 val coachMarkData = adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel
                 holder?.let {
                     val coachMarkItem = arrayListOf(
@@ -938,7 +964,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     context?.let {
                         promoCoachMark = CoachMark2(it)
                         promoCoachMark.showCoachMark(coachMarkItem)
-                        recyclerView.addOnScrollListener(coachMarkRecyclerListener)
+                        recyclerView?.addOnScrollListener(coachMarkRecyclerListener)
                         localCacheHandler.apply {
                             putBoolean(KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED, true)
                             applyEditor()
@@ -1005,7 +1031,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, promoCode)
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress)
         }
     }
 
@@ -1019,14 +1046,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
         viewModel.updatePromoListAfterClickPromoItem(element)
-        renderStickyPromoHeader(recyclerView)
+        recyclerView?.let { renderStickyPromoHeader(it) }
 
         // dismiss coachmark if user click promo with coachmark
-        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] is PromoListItemUiModel &&
-                promoWithCoachMarkIndex == position &&
-                (adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel).id == element.id &&
-                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
-            promoCoachMark.dismissCoachMark()
+        val adapterItems = adapter.list
+        if (promoWithCoachMarkIndex < adapterItems.size && promoWithCoachMarkIndex == position) {
+            val data = adapterItems[promoWithCoachMarkIndex]
+            if (data is PromoListItemUiModel && data.id == element.id && ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+                promoCoachMark.dismissCoachMark()
+            }
         }
     }
 
@@ -1056,4 +1084,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
+    override fun onClickErrorStateButton(destination: String) {
+        if (destination.equals(DESTINATION_BACK, true)) {
+            val intent = Intent()
+            setResultErrorPromo(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else if (destination.equals(DESTINATION_REFRESH, true)) {
+            reloadData()
+        }
+    }
 }

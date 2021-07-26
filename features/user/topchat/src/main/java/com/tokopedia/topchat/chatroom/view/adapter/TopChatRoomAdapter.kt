@@ -6,6 +6,8 @@ import android.os.Looper
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -15,28 +17,37 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusActive
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusWarehouse
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 /**
  * @author : Steven 02/01/19
  */
 class TopChatRoomAdapter constructor(
-        private val context: Context?,
-        private val adapterTypeFactory: TopChatTypeFactoryImpl
+    private val context: Context?,
+    private val adapterTypeFactory: TopChatTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
-        AdapterListener {
+    AdapterListener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
@@ -44,6 +55,10 @@ class TopChatRoomAdapter constructor(
     private var topMostHeaderDateIndex: Int? = null
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val handler = Handler(Looper.getMainLooper())
+    private var offset = 0
+    private var offsetUiModelMap = ArrayMap<Visitable<*>, Int>()
+    private var _srwUiModel: MutableLiveData<SrwBubbleUiModel?> = MutableLiveData()
+    val srwUiModel: LiveData<SrwBubbleUiModel?> get() = _srwUiModel
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -53,7 +68,10 @@ class TopChatRoomAdapter constructor(
         return adapterTypeFactory.getItemViewType(visitables, position, default)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<out Visitable<*>> {
         return adapterTypeFactory.createViewHolder(parent, viewType, this, this)
     }
 
@@ -148,14 +166,19 @@ class TopChatRoomAdapter constructor(
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
             val previousChatTime = bottomMostHeaderDate?.dateTimestamp ?: return
             if (!sameDay(chatTime, previousChatTime)) {
+                val indexToAdd = getOffsetSafely()
                 bottomMostHeaderDate = HeaderDateUiModel(chatTime)
-                visitables.add(0, bottomMostHeaderDate)
-                notifyItemInserted(0)
+                visitables.add(indexToAdd, bottomMostHeaderDate)
+                notifyItemInserted(indexToAdd)
             }
         }
     }
 
-    fun updateAttachmentView(firstVisible: Int, lastVisible: Int, attachments: ArrayMap<String, Attachment>) {
+    fun updateAttachmentView(
+        firstVisible: Int,
+        lastVisible: Int,
+        attachments: ArrayMap<String, Attachment>
+    ) {
         if (firstVisible > lastVisible) return
         if (firstVisible < 0 || lastVisible >= visitables.size) return
         for (itemPosition in firstVisible..lastVisible) {
@@ -300,19 +323,51 @@ class TopChatRoomAdapter constructor(
 
 
     fun updateReviewState(
-            review: ReviewUiModel,
-            lastKnownPosition: Int,
-            reviewClickAt: Int,
-            state: Int
+        review: ReviewUiModel,
+        lastKnownPosition: Int,
+        reviewClickAt: Int,
+        state: Int
     ) {
         handler.post {
             postUpdateReviewState(lastKnownPosition, review, state, reviewClickAt)
         }
     }
 
+    fun updateProductStock(
+        updateProductResult: UpdateProductStockResult, stockCount: Int, status: String
+    ) {
+        val itemPair = getUpToDateUiModelPosition(
+            updateProductResult.lastKnownPosition, updateProductResult.product
+        )
+        val parentPair: Pair<Int, Visitable<*>?>? = updateProductResult.parentMetaData?.let {
+            getUpToDateUiModelPosition(
+                it.lastKnownPosition, it.uiModel
+            )
+        }
+        val position = if (parentPair != null && parentPair.first != RecyclerView.NO_POSITION) {
+            parentPair.first
+        } else {
+            itemPair.first
+        }
+        if (position == RecyclerView.NO_POSITION) return
+        val item = itemPair.second ?: updateProductResult.product
+        when (status) {
+            ProductStatus.ACTIVE.name -> {
+                item.status = statusActive
+                item.remainingStock = stockCount
+            }
+            ProductStatus.INACTIVE.name -> {
+                item.remainingStock = 0
+                item.status = statusWarehouse
+            }
+        }
+        val payload = SingleProductAttachmentContainer.PayloadUpdateStock(item.productId)
+        notifyItemChanged(position, payload)
+    }
+
     private fun postUpdateReviewState(
-            lastKnownPosition: Int, review: ReviewUiModel,
-            state: Int, reviewClickAt: Int
+        lastKnownPosition: Int, review: ReviewUiModel,
+        state: Int, reviewClickAt: Int
     ) {
         val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
         val position = itemPair.first
@@ -337,6 +392,103 @@ class TopChatRoomAdapter constructor(
         handler.post {
             postResetReviewState(lastKnownPosition, review)
         }
+    }
+
+    fun addSrwBubbleUiModel(
+        srwState: SrwFrameLayout.SrwState?,
+        products: List<SendablePreview>
+    ) {
+        srwState ?: return
+        val srwModel = SrwBubbleUiModel(srwState, products)
+        val indexToAdd = getOffsetSafely()
+        _srwUiModel.value = srwModel
+        visitables.add(indexToAdd, srwModel)
+        notifyItemInserted(indexToAdd)
+        offset++
+        offsetUiModelMap[srwModel] = indexToAdd
+    }
+
+    override fun addElement(item: Visitable<*>) {
+        val indexToAdd = getOffsetSafely()
+        visitables.add(indexToAdd, item)
+        notifyItemInserted(indexToAdd)
+        updateSrwTopMargin()
+    }
+
+    fun hasSrwBubble(): Boolean {
+        return _srwUiModel.value != null
+    }
+
+    fun removeSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        visitables.removeAt(srwModelPosition)
+        notifyItemRemoved(srwModelPosition)
+        offset--
+        offsetUiModelMap.remove(srwModel)
+        _srwUiModel.value = null
+    }
+
+    /**
+     * Remove SRW bubble if [productId] is not relevant with
+     * current visible SRW bubble
+     */
+    fun removeSrwBubble(productId: String) {
+        val srwModel = srwUiModel.value ?: return
+        if (!srwModel.isRelatedTo(productId)) {
+            removeSrwBubble()
+        }
+    }
+
+    fun isLastMsgSrwBubble(): Boolean {
+        return visitables.getOrNull(0) is SrwBubbleUiModel
+    }
+
+    fun setSrwBubbleState(expanded: Boolean) {
+        if (expanded) {
+            expandSrwBubble()
+        } else {
+            collapseSrwBubble()
+        }
+    }
+
+    fun collapseSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        srwModel.isExpanded = false
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.COLLAPSED)
+    }
+
+    fun expandSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        srwModel.isExpanded = true
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.EXPANDED)
+    }
+
+    private fun getUpToDateSrwUiModelPosition(
+        uiModel: SrwBubbleUiModel
+    ): Int? {
+        var lastKnownPosition = offsetUiModelMap[uiModel] ?: return null
+        val upToDateUiModelData = getUpToDateUiModelPosition(lastKnownPosition, uiModel)
+        if (lastKnownPosition != upToDateUiModelData.first) {
+            lastKnownPosition = upToDateUiModelData.first
+        }
+        return lastKnownPosition
+    }
+
+    private fun getOffsetSafely(): Int {
+        return if (visitables.size < offset) {
+            visitables.size
+        } else {
+            offset
+        }
+    }
+
+    private fun updateSrwTopMargin() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.UPDATE_TOP_MARGIN)
     }
 
     private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
@@ -377,8 +529,13 @@ class TopChatRoomAdapter constructor(
         return visitables.isNotEmpty() && visitables.size >= 2
     }
 
-    private inline fun <reified T : Visitable<TopChatTypeFactory>> getUpToDateUiModelPosition(
-            lastKnownPosition: Int, element: T
+    /**
+     * return Pair<Int, T?>.
+     * the first Int is the latest / up-to-date ui model position
+     * the second T? is the ui model at the up-to-date position
+     */
+    private inline fun <reified T : Visitable<*>> getUpToDateUiModelPosition(
+        lastKnownPosition: Int, element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
         if (item == element) {

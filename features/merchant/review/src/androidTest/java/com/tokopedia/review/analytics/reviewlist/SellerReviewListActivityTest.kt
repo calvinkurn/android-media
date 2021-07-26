@@ -1,10 +1,8 @@
 package com.tokopedia.review.analytics.reviewlist
 
 import android.app.Activity
-import android.app.Application
 import android.app.Instrumentation
 import android.content.Intent
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -25,7 +23,6 @@ import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxRepu
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.fragment_rating_product.view.*
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -83,10 +80,11 @@ class SellerReviewListActivityTest {
                 clickAction(com.tokopedia.coachmark.R.id.text_skip)
             }
             waitForData()
-            scrollAndWait(getRatingProductItemCount())
-            scrollAndWait(getRatingProductItemCount())
-            scrollAndWait(getRatingProductItemCount())
-            scrollAndWait(getRatingProductItemCount())
+            minimizeAppBarLayout()
+            scrollAndWait()
+            scrollAndWait()
+            scrollAndWait()
+            scrollAndWait()
             Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.rvRatingProduct)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(getRatingProductItemCount() - 1, ViewActions.click()))
         } assertTest {
             waitForData()
@@ -175,9 +173,13 @@ class SellerReviewListActivityTest {
         Thread.sleep(3000)
     }
 
-    private fun scrollAndWait(itemCount: Int) {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.rvRatingProduct)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(itemCount - 1))
-        waitForData()
+    private fun scrollAndWait() {
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.rvRatingProduct)).perform(ViewActions.swipeUp())
+        waitForLoading()
+    }
+
+    private fun minimizeAppBarLayout() {
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.review.R.id.appBar_layout_reviewSeller)).perform(ViewActions.swipeUp())
     }
 
     private fun getRatingProductItemCount(): Int  {

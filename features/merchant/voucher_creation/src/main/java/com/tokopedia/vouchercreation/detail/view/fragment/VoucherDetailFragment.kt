@@ -18,6 +18,9 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -80,8 +83,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
         private const val VOUCHER_ID_KEY = "voucher_id"
 
-        private const val ERROR_DETAIL = "Error get voucher detail"
-        private const val ERROR_CANCEL = "Error cancel voucher"
+        private const val GET_VOUCHER_DETAIL_ERROR = "Get voucher detail error"
+        private const val GET_BASIC_SHOP_INFO_ERROR = "Get basic shop info error"
+        private const val CANCEL_VOUCHER_ERROR = "Cancel voucher error"
     }
 
     private var voucherUiModel: VoucherUiModel? = null
@@ -367,7 +371,11 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                     is Fail -> {
                         clearAllData()
                         renderList(listOf(ErrorDetailUiModel))
-                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
+                        // send crash report to firebase crashlytics
+                        MvcErrorHandler.logToCrashlytics(result.throwable, GET_VOUCHER_DETAIL_ERROR)
+                        // log error type to scalyr
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        ServerLogger.log(Priority.P2, "MVC_GET_VOUCHER_DETAIL_ERROR", mapOf("type" to errorMessage))
                     }
                 }
             }
@@ -389,14 +397,24 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                                 VoucherStatusConst.NOT_STARTED -> showCancellationFailToaster(true)
                             }
                         }
-                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_CANCEL)
+                        // send crash report to firebase crashlytics
+                        MvcErrorHandler.logToCrashlytics(result.throwable, CANCEL_VOUCHER_ERROR)
+                        // log error type to scalyr
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        ServerLogger.log(Priority.P2, "MVC_CANCEL_VOUCHER_ERROR", mapOf("type" to errorMessage))
                     }
                 }
             }
             observe(viewModel.shopBasicLiveData) { result ->
                 when(result) {
                     is Success -> shopBasicData = result.data
-                    is Fail -> MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_DETAIL)
+                    is Fail -> {
+                        // send crash report to firebase crashlytics
+                        MvcErrorHandler.logToCrashlytics(result.throwable, GET_BASIC_SHOP_INFO_ERROR)
+                        // log error type to scalyr
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        ServerLogger.log(Priority.P2, "MVC_GET_VOUCHER_DETAIL_ERROR", mapOf("type" to errorMessage))
+                    }
                 }
             }
             observe(viewModel.broadCastMetadata) { result ->

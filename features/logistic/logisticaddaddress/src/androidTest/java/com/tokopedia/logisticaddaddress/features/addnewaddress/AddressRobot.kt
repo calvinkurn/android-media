@@ -2,19 +2,20 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.anything
 import org.hamcrest.MatcherAssert.assertThat
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
@@ -33,7 +34,7 @@ class AddressRobot {
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
-        waitForData()
+        Thread.sleep(7000)
     }
 
     fun selectFirstItem() {
@@ -99,7 +100,7 @@ class AddressRobot {
 }
 
 class ResultRobot {
-    fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
-        assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
+    fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
+        assertThat(rule.validate(path), hasAllSuccess())
     }
 }

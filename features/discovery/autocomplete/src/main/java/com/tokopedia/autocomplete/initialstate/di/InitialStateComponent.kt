@@ -14,7 +14,6 @@ import dagger.Component
     InitialStateMapperModule::class,
     InitialStateNetModule::class,
     InitialStateUserSessionInterfaceModule::class,
-    InitialStateDataMapperModule::class,
     InitialStateContextModule::class,
     InitialStateIrisAnalyticsModule::class
 ], dependencies = [BaseAppComponent::class])

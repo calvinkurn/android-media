@@ -34,7 +34,7 @@ object AddNewAddressUtils {
         val snackbar = view.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT) }
         val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
-        snackbar.view.background = ContextCompat.getDrawable(activity, com.tokopedia.design.R.drawable.bg_snackbar_error)
+        snackbar.view.background = ContextCompat.getDrawable(activity, R.drawable.bg_snackbar_error)
         snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         snackbarTextView?.maxLines = 5

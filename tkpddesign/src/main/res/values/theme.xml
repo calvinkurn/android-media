@@ -3,25 +3,25 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Unify" parent="Base.Toolbar.Theme">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/green_600</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G500</item>
     </style>
 
     <style name="Unify.Light">
-        <item name="android:background">@color/default_light_bg</item>
-        <item name="actionModeBackground">@color/default_light_bg</item>
-        <item name="android:actionModeBackground">@color/default_light_bg</item>
-        <item name="android:textColorPrimary">@color/light_primary</item>
-        <item name="android:actionMenuTextColor">@color/light_primary</item>
-        <item name="android:textColorSecondary">@color/light_secondary</item>
+        <item name="android:background">@color/Unify_N50</item>
+        <item name="actionModeBackground">@color/Unify_N50</item>
+        <item name="android:actionModeBackground">@color/Unify_N50</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_68</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_68</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_44</item>
     </style>
 
     <style name="Unify.Dark">
-        <item name="android:background">@color/default_dark_bg</item>
-        <item name="actionModeBackground">@color/default_dark_bg</item>
-        <item name="android:actionModeBackground">@color/default_dark_bg</item>
-        <item name="android:textColorPrimary">@color/dark_primary</item>
-        <item name="android:actionMenuTextColor">@color/dark_primary</item>
-        <item name="android:textColorSecondary">@color/dark_secondary</item>
+        <item name="android:background">@color/Unify_N700</item>
+        <item name="actionModeBackground">@color/Unify_N700</item>
+        <item name="android:actionModeBackground">@color/Unify_N700</item>
+        <item name="android:textColorPrimary">@color/Unify_N0</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N0</item>
+        <item name="android:textColorSecondary">@color/Unify_N0_44</item>
     </style>
 
     <style name="Base.Theme" parent="Theme.AppCompat.DayNight.NoActionBar">

@@ -105,7 +105,7 @@ data class ProductDetailData(
         val duration: String = "",
         @SerializedName("facilities")
         @Expose
-        val facilities: List<Facilities> = emptyList(),
+        val facilities: List<Facilities>? = emptyList(),
         @SerializedName("facility_group_id")
         @Expose
         val facilityGroupId: String = "",
@@ -816,12 +816,7 @@ data class PackageV3(
         @Expose
         val formsPackages: List<Form> = emptyList(),
         var isRecommendationPackage: Boolean = false
-) : EventPDPTicketModel() {
-
-    override fun type(typeFactory: PackageTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-}
+): EventPDPTicketModel()
 
 data class PackageItem(
         @SerializedName("id")

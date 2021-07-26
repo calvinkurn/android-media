@@ -4,15 +4,13 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IdRes
-import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -27,7 +25,7 @@ class PinnedViewComponent(
     private val tvPinnedMessage: TextView = findViewById(R.id.tv_pinned_message)
     private val tvPinnedAction: TextView = findViewById(R.id.tv_pinned_action)
 
-    fun setPinnedMessage(pinnedMessage: PlayPinnedUiModel.PinnedMessage) {
+    fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
         val partnerName = pinnedMessage.partnerName
         val spannableString = SpannableString(
                 buildString {

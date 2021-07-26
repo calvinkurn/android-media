@@ -1,58 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/channel_title"
-    android:descendantFocusability="blocksDescendants"
-    android:id="@+id/content_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-        android:id="@+id/home_component_header_view"
+    android:layout_height="wrap_content">
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toTopOf="parent"/>
-
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_Static_Black"/>
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/gridHolder"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/Unify_N75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/item_lego_auto_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            app:unify_image_corner_radius="0"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/recycleList"
-            />
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        android:descendantFocusability="blocksDescendants"
+        android:id="@+id/content_container"
+        android:paddingBottom="@dimen/unify_space_8"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleList"
-            app:layout_constraintHorizontal_weight="2"
-            android:paddingStart="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/home_component_margin_default"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_2"
-            android:layout_width="0dp"
+        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+            android:id="@+id/home_component_header_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gridHolder"
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@color/Unify_N75"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/item_lego_auto_image"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/item_lego_auto_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                app:unify_image_corner_radius="0"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/recycleList"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycleList"
+                app:layout_constraintHorizontal_weight="2"
+                android:paddingStart="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/home_component_margin_default"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/item_lego_auto_image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_B500"/>
+</LinearLayout>

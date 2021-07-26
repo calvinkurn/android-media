@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.CommonNetwork
@@ -16,10 +15,10 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.di.ChatListScope
+import com.tokopedia.topchat.chatlist.domain.websocket.*
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
-import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -51,6 +50,17 @@ class ChatListNetworkModuleStub(
         )
     }
 
+    @ChatListScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatListScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
 
     @ChatListScope
     @Provides
@@ -102,7 +112,7 @@ class ChatListNetworkModuleStub(
     @Provides
     fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
-                                  userSession: UserSession):
+                                  userSession: UserSessionInterface):
             XUserIdInterceptor {
         return XUserIdInterceptor(context, networkRouter, userSession)
     }
@@ -136,7 +146,6 @@ class ChatListNetworkModuleStub(
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
@@ -148,5 +157,19 @@ class ChatListNetworkModuleStub(
                     .addInterceptor(httpLoggingInterceptor)
         }
         return builder.build()
+    }
+
+    // TODO: switch to fake
+    @ChatListScope
+    @Provides
+    fun provideTopChatWebSocket(
+            userSession: UserSessionInterface,
+            client: OkHttpClient
+    ): TopchatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+                "?os_type=1" +
+                "&device_id=" + userSession.deviceId +
+                "&user_id=" + userSession.userId
+        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken)
     }
 }

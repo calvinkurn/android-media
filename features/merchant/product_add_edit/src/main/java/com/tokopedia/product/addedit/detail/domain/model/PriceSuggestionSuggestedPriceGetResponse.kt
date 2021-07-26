@@ -10,6 +10,12 @@ data class PriceSuggestionSuggestedPriceGetResponse (
         val priceSuggestionSuggestedPriceGet: PriceSuggestionSuggestedPriceGet = PriceSuggestionSuggestedPriceGet()
 )
 
+data class PriceSuggestionSuggestedPriceGetByKeywordResponse (
+        @SerializedName("PriceSuggestionSuggestedPriceGetByKeyword")
+        @Expose
+        val priceSuggestionSuggestedPriceGet: PriceSuggestionSuggestedPriceGet = PriceSuggestionSuggestedPriceGet()
+)
+
 data class PriceSuggestionSuggestedPriceGet (
         @SerializedName("suggestedPrice")
         @Expose
@@ -26,5 +32,9 @@ data class PriceSuggestionSuggestedPriceGet (
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
-        val price: Double = 0.0
+        val price: Double = 0.0,
+
+        @SerializedName("title")
+        @Expose
+        val title: String = ""
 )

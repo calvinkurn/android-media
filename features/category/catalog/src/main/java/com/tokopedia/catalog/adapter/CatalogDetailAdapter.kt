@@ -13,9 +13,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactory
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.catalog.viewholder.CatalogInfoViewHolder
-import com.tokopedia.catalog.viewholder.CatalogProductsContainerViewHolder
+import com.tokopedia.catalog.viewholder.containers.CatalogProductsContainerViewHolder
 
 class CatalogDetailAdapter (val context : FragmentActivity, val catalogDetailListener: CatalogDetailListener, val catalogId: String ,asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel>,
                             private val catalogAdapterTypeFactory: CatalogDetailAdapterFactory)

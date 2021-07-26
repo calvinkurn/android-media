@@ -1,98 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mcl_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_4">
-
-    <ViewFlipper
-        android:id="@+id/container_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:measureAllChildren="false">
+    android:layout_margin="@dimen/unify_space_4"
+    app:card_type="shadow">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:padding="@dimen/dp_8">
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:padding="@dimen/unify_space_8">
 
             <ImageView
                 android:id="@+id/mcl_logo"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                app:srcCompat="@drawable/ic_refund_disbursement" />
+                app:srcCompat="@drawable/ic_refund_disbursement"
+                android:contentDescription="@string/merchant_credit_mcl_logo_text" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mcl_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_toEndOf="@+id/mcl_logo"
-                android:layout_toRightOf="@+id/mcl_logo"
                 android:text="@string/modal_toko"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="heading_5"
                 tools:text="Modal Toko" />
 
-            <TextView
+            <com.tokopedia.unifycomponents.Label
                 android:id="@+id/mcl_blocked_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_toEndOf="@+id/mcl_title"
-                android:layout_toRightOf="@+id/mcl_title"
-                android:background="@drawable/bg_round_corner_solid_grey"
-                android:paddingStart="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_3"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_3"
-                android:textColor="@color/black_36"
+                android:paddingStart="@dimen/unify_space_8"
+                android:paddingLeft="@dimen/unify_space_8"
+                android:paddingTop="@dimen/sd_dp_3"
+                android:paddingEnd="@dimen/unify_space_8"
+                android:paddingRight="@dimen/unify_space_8"
+                android:paddingBottom="@dimen/sd_dp_3"
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"
-                tools:text="Terblokir"
-                tools:visibility="visible"/>
+                app:labelTitle="Terblokir"
+                app:labelType="general_light_grey"
+                tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mcl_action_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_toEndOf="@+id/mcl_blocked_status"
-                android:layout_toRightOf="@+id/mcl_blocked_status"
                 android:gravity="end"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_10"
-                android:textStyle="bold"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="small"
+                app:typographyWeight="bold"
                 tools:text="Pelajari" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mcl_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mcl_title"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:lineSpacingExtra="@dimen/sp_4"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
-                tools:text="ncsdn njvksnv svksvkjv "
+                tools:text="description"
+                app:typographyType="body_3"
                 tools:visibility="visible" />
 
             <LinearLayout
@@ -101,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@+id/mcl_description"
-                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginTop="@dimen/sd_dp_6"
                 android:divider="@android:color/transparent"
                 android:orientation="vertical"
                 android:scrollbars="vertical"
@@ -113,40 +98,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mcl_info_list"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:background="@drawable/bg_round_corner_solid_grey"
-                android:padding="@dimen/dp_8"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:background="@drawable/bg_saldo_round_corner_solid_grey"
+                android:padding="@dimen/unify_space_8"
                 android:visibility="visible">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/mcl_box_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginStart="@dimen/unify_space_4"
                     android:lineSpacingExtra="@dimen/sp_4"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/sp_12"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3"
                     tools:text="Status: Menunggu Verifikasi Aplikasi" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/mcl_box_Desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/mcl_box_title"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginTop="@dimen/dp_4"
-                    android:fontFamily="sans-serif"
+                    android:layout_marginStart="@dimen/unify_space_4"
+                    android:layout_marginTop="@dimen/unify_space_4"
                     android:lineSpacingExtra="@dimen/sp_4"
-                    android:textColor="@color/black_38"
-                    android:textSize="@dimen/sp_11"
-                    android:textStyle="normal"
+                    android:textColor="@color/Unify_N700_44"
+                    app:typographyType="small"
                     tools:text="Status: Menunggu Verifikasi Aplikasi" />
             </RelativeLayout>
         </RelativeLayout>
-    </ViewFlipper>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

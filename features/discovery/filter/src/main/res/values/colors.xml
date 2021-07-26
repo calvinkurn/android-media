@@ -4,5 +4,6 @@
     <color name="white_four">@color/Unify_N100</color>
     <color name="price_pills_text_color_normal">@color/Unify_N700_68</color>
     <color name="filter_general_detail_search_bar_text">@color/Unify_N700_96</color>
+    <color name="filter_dms_transparent">#00000000</color>
 
 </resources>

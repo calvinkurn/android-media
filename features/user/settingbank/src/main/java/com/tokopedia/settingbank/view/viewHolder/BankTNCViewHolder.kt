@@ -5,6 +5,7 @@ import android.text.Spanned
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.domain.model.TemplateData
@@ -21,7 +22,6 @@ class BankTNCViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             ticker.tickerTitle = context?.getString(R.string.sbank_catatan)
             ticker.setHtmlDescription(templateData.template)
             ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text = fromHtml(templateData.template)
-            ticker.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).setTextColor(context.resources.getColor(com.tokopedia.design.R.color.grey_796))
         } ?: ticker.gone()
     }
 

@@ -25,6 +25,7 @@ data class PlayProductTagsBasicInfoUiModel(
 )
 
 fun PlayProductTagsUiModel.setContent(
+        basicInfo: PlayProductTagsBasicInfoUiModel = this.basicInfo,
         productList: List<PlayProductUiModel> = emptyList(),
         voucherList: List<PlayVoucherUiModel> = emptyList()
 ) = PlayProductTagsUiModel.Complete(basicInfo, productList, voucherList)

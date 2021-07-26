@@ -9,36 +9,38 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.suggestion.SuggestionListener
 import com.tokopedia.autocomplete.util.safeSetSpan
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.layout_autocomplete_single_line_item.view.*
 import java.util.*
 
 class SuggestionSingleLineViewHolder(
         itemView: View,
-        private val clickListener: SuggestionClickListener
-): AbstractViewHolder<SuggestionSingleLineViewModel>(itemView) {
+        private val listener: SuggestionListener
+): AbstractViewHolder<SuggestionSingleLineDataDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_single_line_item
     }
 
-    override fun bind(item: SuggestionSingleLineViewModel) {
+    override fun bind(item: SuggestionSingleLineDataDataView) {
         bindIconImage(item)
         bindTextTitle(item)
         bindShortcutButton(item)
         bindListener(item)
     }
 
-    private fun bindIconImage(item: SuggestionSingleLineViewModel){
+    private fun bindIconImage(item: SuggestionSingleLineDataDataView){
         itemView.iconImage?.let {
             ImageHandler.loadImage2(it, item.imageUrl, R.drawable.autocomplete_ic_time)
         }
     }
 
-    private fun bindTextTitle(item: SuggestionSingleLineViewModel){
+    private fun bindTextTitle(item: SuggestionSingleLineDataDataView){
         val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
         if (startIndex == -1) {
             itemView.singleLineTitle?.text = item.title
@@ -59,19 +61,25 @@ class SuggestionSingleLineViewHolder(
         } else -1
     }
 
-    private fun bindShortcutButton(item: SuggestionSingleLineViewModel){
+    private fun bindShortcutButton(item: SuggestionSingleLineDataDataView){
         itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
             ImageHandler.loadImage2(itemView.actionShortcutButton, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
-    private fun bindListener(item: SuggestionSingleLineViewModel){
+    private fun bindListener(item: SuggestionSingleLineDataDataView){
         itemView.autocompleteSingleLineItem?.setOnClickListener {
-            clickListener.onItemClicked(item)
+            listener.onItemClicked(item)
         }
 
         itemView.actionShortcutButton?.setOnClickListener {
-            clickListener.copyTextToSearchView(item.title)
+            listener.copyTextToSearchView(item.title)
         }
+
+        itemView.autocompleteSingleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
+            override fun onViewHint() {
+                listener.onItemImpressed(item)
+            }
+        })
     }
 }

@@ -27,12 +27,6 @@
     <string name="title_verification_timeout">Maaf, Telah terjadi masalah koneksi</string>
     <string name="error_shipping_dialog_webview">Terdapat kesalahan dalam pengisian form mohon coba sekali lagi</string>
 
-
-    <!--Charge BO-->
-    <string name="charge_bo_ticker_title">Bebas Ongkir untuk PM akan dikenai biaya</string>
-    <string name="charge_bo_ticker_content">Power Merchant (PM) bisa nonaktifkan Bebas Ongkir saja tanpa harus nonaktifkan SiCepat &amp; AntarAja &lt;a href="#"&gt;di sini.&lt;/a&gt;</string>
-
-
     <!--Shop Edit Address-->
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
     <string name="tv_pinpoint_location">Pinpoint Lokasi</string>

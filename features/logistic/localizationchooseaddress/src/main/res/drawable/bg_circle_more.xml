@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
-<!-- "shadow" -->
-<item>
-    <shape android:shape="oval" >
-        <solid android:color="@color/Unify_N700"/>
-        <size
-            android:width="@dimen/dp_36"
-            android:height="@dimen/dp_36" />
-    </shape>
-</item>
-
-
 <item>
     <shape android:shape="oval" >
         <solid android:color="@color/Unify_N0"/>

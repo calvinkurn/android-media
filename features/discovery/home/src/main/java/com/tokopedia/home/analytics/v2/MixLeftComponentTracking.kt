@@ -188,7 +188,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                         channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
                                 name = PROMOTION_BANNER_NAME.format(position, channel.channelHeader.name),
-                                position = position.toString()
+                                position = "1"
                         )
                 ))
                 .appendUserId(userId)
@@ -216,7 +216,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                         channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
                                 name = PROMOTION_BANNER_NAME.format(position, channel.channelHeader.name),
-                                position = position.toString()
+                                position = "1"
                         )
                 ))
                 .appendUserId(userId)

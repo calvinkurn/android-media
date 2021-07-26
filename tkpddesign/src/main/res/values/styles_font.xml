@@ -5,7 +5,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextView.Display3">
@@ -24,7 +24,7 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Headline.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.SubHeadline">
@@ -35,10 +35,10 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.SubHeadline.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
     <style name="TextView.SubHeadline.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.TitleBig">
@@ -52,10 +52,10 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.TitleBig.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.TitleBig.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.TitleMedium">
@@ -65,7 +65,7 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.TitleMedium.OrangeRed">
-        <item name="android:textColor">@color/tkpd_main_orange</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
     </style>
     <style name="TextView.TitleMedium.OrangeRed.Bold">
         <item name="android:textStyle">bold</item>
@@ -81,26 +81,26 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Title.Bold.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.Title.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
     <style name="TextView.Title.BlackSecondary.Bold">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Title.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
     <style name="TextView.Title.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
     </style>
     <style name="TextView.Title.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.Title.OrangeRed">
-        <item name="android:textColor">@color/tkpd_main_orange</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
     </style>
     <style name="TextView.Title.OrangeRed.Bold">
         <item name="android:textStyle">bold</item>
@@ -114,31 +114,31 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
     <style name="TextView.Small.Bold.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.Small.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
     <style name="TextView.Small.Green.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.Orange">
-        <item name="android:textColor">@color/tkpd_main_orange</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
     </style>
     <style name="TextView.Small.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.Small.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
     </style>
     <style name="TextView.Small.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.WhitePrimary">
-        <item name="android:textColor">@color/font_white_primary_70</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
     <style name="TextView.Small.WhitePrimary.Bold">
         <item name="android:textStyle">bold</item>
@@ -150,13 +150,13 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.OrangeRed">
-        <item name="android:textColor">@color/tkpd_main_orange</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
     </style>
     <style name="TextView.Small.OrangeRed.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Small.WhiteDisabled">
-        <item name="android:textColor">@color/font_white_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N0_44</item>
     </style>
 
     <style name="TextView.Micro">
@@ -167,47 +167,47 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.Micro.Green.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
     <style name="TextView.Micro.Orange">
-        <item name="android:textColor">@color/tkpd_main_orange</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
     </style>
     <style name="TextView.Micro.Orange.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
     <style name="TextView.Micro.BlackSecondary.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
     </style>
     <style name="TextView.Micro.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.WhitePrimary">
-        <item name="android:textColor">@color/font_white_primary_70</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
     <style name="TextView.Nano">
         <item name="android:textSize">@dimen/sp_8</item>
     </style>
     <style name="TextView.Nano.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
     </style>
     <style name="TextView.Nano.Red">
-        <item name="android:textColor">@color/colorRed</item>
+        <item name="android:textColor">@color/Unify_R500</item>
     </style>
     <style name="TextView.Nano.Green">
-        <item name="android:textColor">@color/green_400</item>
+        <item name="android:textColor">@color/Unify_G500</item>
     </style>
     <style name="TextView.Nano.Red.Bold">
         <item name="android:textStyle">bold</item>
@@ -220,11 +220,11 @@
     </style>
 
     <style name="TextView.TitleBig.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextView.TitleBig.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
 
@@ -238,20 +238,20 @@
     </style>
 
     <style name="TextView.Medium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextView.Medium.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
 
     <style name="TextView.Medium.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.Medium.FontMedium.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.Title.FontMedium">
@@ -259,20 +259,20 @@
     </style>
 
     <style name="TextView.Title.FontMedium.WhitePrimary">
-        <item name="android:textColor">@color/font_white_primary_70</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
 
     <style name="TextView.Title.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextView.Small.Black38">
-        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
 
     </style>
 
     <style name="TextView.Small.Black40">
-        <item name="android:textColor">@color/black_40</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Small.FontMedium">
@@ -280,21 +280,21 @@
     </style>
 
     <style name="TextView.Small.FontMedium.Black40">
-        <item name="android:textColor">@color/black_40</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
 
     <style name="TextView.Small.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
 
     <style name="TextView.Small.FontMedium.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.Small.FontMedium.WhitePrimary">
-        <item name="android:textColor">@color/font_white_primary_70</item>
+        <item name="android:textColor">@color/Unify_N0</item>
     </style>
 
 
@@ -303,11 +303,11 @@
     </style>
 
     <style name="TextView.Micro.Black40">
-        <item name="android:textColor">@color/black_40</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Micro.Bold.Black40">
-        <item name="android:textColor">@color/black_40</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Micro.FontMedium">
@@ -319,19 +319,19 @@
     </style>
 
     <style name="TextView.Micro.FontMedium.Black40">
-        <item name="android:textColor">@color/black_40</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Micro.FontMedium.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.Micro.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextView.Micro.FontMedium.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Micro.FontMedium.BlackSecondary.Bold">
@@ -339,7 +339,7 @@
     </style>
 
     <style name="TextView.Micro.FontMedium.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
     </style>
 
     <style name="TextView.Micro10">
@@ -348,7 +348,7 @@
     </style>
 
     <style name="TextView.Micro10.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
 
@@ -358,11 +358,11 @@
     </style>
 
     <style name="TextView.Micro11.Black40">
-        <item name="android:textColor">@color/black_40</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Micro11.Red">
-        <item name="android:textColor">@color/colorRed</item>
+        <item name="android:textColor">@color/Unify_R500</item>
     </style>
 
     <style name="TextView.Micro11.Bold">
@@ -370,7 +370,7 @@
     </style>
 
     <style name="TextView.Micro11.Bold.Red">
-        <item name="android:textColor">@color/colorRed</item>
+        <item name="android:textColor">@color/Unify_R500</item>
     </style>
 
     <style name="TextView.Micro11.FontMedium">
@@ -382,7 +382,7 @@
     </style>
 
     <style name="TextView.Micro11.FontMedium.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
+        <item name="android:textColor">@color/Unify_G400</item>
     </style>
 
     <style name="TextView.Micro11.FontMedium.White">
@@ -390,11 +390,11 @@
     </style>
 
     <style name="TextView.Micro11.FontMedium.BlackPrimary">
-        <item name="android:textColor">@color/font_black_primary_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="TextView.Micro11.FontMedium.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/Unify_N700_44</item>
     </style>
 
     <style name="TextView.Micro11.FontMedium.BlackSecondary.Bold">
@@ -402,7 +402,7 @@
     </style>
 
     <style name="TextView.Micro11.FontMedium.BlackDisabled">
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Unify_N700_32</item>
     </style>
 
 </resources>

@@ -4,7 +4,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalPromo {
 
-    const val HOST_PROMO = "promo"
+    private const val HOST_PROMO = "promo"
 
     const val INTERNAL_PROMO = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_PROMO}"
 

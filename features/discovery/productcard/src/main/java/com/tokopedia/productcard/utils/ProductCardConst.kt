@@ -1,5 +1,8 @@
 package com.tokopedia.productcard.utils
 
+import androidx.annotation.DimenRes
+import com.tokopedia.productcard.R
+
 internal const val LIGHT_GREY = "lightGrey"
 internal const val LIGHT_BLUE = "lightBlue"
 internal const val LIGHT_GREEN = "lightGreen"
@@ -21,11 +24,14 @@ internal const val LABEL_CAMPAIGN = "campaign"
 internal const val LABEL_BEST_SELLER = "best_seller"
 internal const val LABEL_ETA = "eta"
 internal const val LABEL_FULFILLMENT = "fulfillment"
+internal const val LABEL_CATEGORY = "category"
+internal const val LABEL_COST_PER_UNIT = "costperunit"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
 internal const val TEXT_DARK_GREY = "textDarkGrey"
 internal const val TEXT_LIGHT_GREY = "textLightGrey"
+internal const val TEXT_GREEN = "textGreen"
 
 internal const val ROBOTO_BOLD = "RobotoBold.ttf"
 internal const val ROBOTO_REGULAR = "RobotoRegular.ttf"
@@ -36,5 +42,21 @@ internal const val CLOSE_BOLD_TAG = "</b>"
 internal const val TYPE_VARIANT_COLOR = "colour"
 internal const val TYPE_VARIANT_SIZE = "size"
 internal const val TYPE_VARIANT_CUSTOM = "custom"
+internal const val MIN_LABEL_VARIANT_COUNT = 2
+internal const val MAX_LABEL_VARIANT_COUNT = 5
+internal const val LABEL_VARIANT_CHAR_LIMIT = 18
+internal const val EXTRA_CHAR_SPACE = 2
 
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
+
+internal const val WORDING_SEGERA_HABIS = "Segera Habis"
+
+@DimenRes
+internal val FIRE_WIDTH = R.dimen.dp_12
+
+@DimenRes
+internal val FIRE_HEIGHT = R.dimen.dp_13
+
+internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
+
+internal const val MAX_VARIANT_QUANTITY = 99

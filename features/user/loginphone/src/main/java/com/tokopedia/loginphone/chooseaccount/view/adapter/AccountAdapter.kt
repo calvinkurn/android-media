@@ -1,7 +1,6 @@
 package com.tokopedia.loginphone.chooseaccount.view.adapter
 
 import android.content.Context
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.loginphone.chooseaccount.view.adapter.AccountAdapter.ViewHolder
-import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountListener
 import com.tokopedia.unifyprinciples.Typography
 
 class AccountAdapter private constructor(
-        private val viewListener: ChooseAccountContract.ViewAdapter,
-        private val list: MutableList<UserDetail>, private var phone: String?
+        private val viewListener: ChooseAccountListener,
+        private val list: MutableList<UserDetailDataModel>,
+        private var phone: String
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     private var context: Context? = null
@@ -48,7 +48,7 @@ class AccountAdapter private constructor(
         ImageHandler.loadImageCircle2(context, holder.avatar, userDetail.image)
         holder.name.text = MethodChecker.fromHtml(userDetail.fullname)
         holder.email.text = userDetail.email
-        val shopDetail = userDetail.shopDetail
+        val shopDetail = userDetail.shopDetailDataModel
         if (shopDetail != null && shopDetail.name.isNotEmpty()) {
             holder.shopView.visibility = View.VISIBLE
             holder.shopName.text = shopDetail.name
@@ -61,7 +61,7 @@ class AccountAdapter private constructor(
         return list.size
     }
 
-    fun setList(list: List<UserDetail>, phone: String) {
+    fun setList(list: List<UserDetailDataModel>, phone: String) {
         this.phone = phone
         this.list.clear()
         this.list.addAll(list)
@@ -70,9 +70,11 @@ class AccountAdapter private constructor(
 
     companion object {
 
-        fun createInstance(viewListener: ChooseAccountContract.ViewAdapter,
-                           listAccount: MutableList<UserDetail>,
-                           phone: String): AccountAdapter {
+        fun createInstance(
+                viewListener: ChooseAccountListener,
+                listAccount: MutableList<UserDetailDataModel>,
+                phone: String
+        ): AccountAdapter {
             return AccountAdapter(viewListener, listAccount, phone)
         }
     }

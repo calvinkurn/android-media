@@ -34,7 +34,7 @@ abstract class ShopSettingsEtalaseTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        val context = mockk<Context>()
+        val context = mockk<Context>(relaxed = true)
         userSession = UserSession(context)
 
         shopSettingsEtalaseAddEditViewModel = ShopSettingsEtalaseAddEditViewModel(

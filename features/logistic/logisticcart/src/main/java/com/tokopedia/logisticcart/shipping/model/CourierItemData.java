@@ -42,6 +42,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private int benefitAmount;
     private String promoTitle;
     private boolean hideShipperName;
+    private String logPromoDesc;
 
     private String checksum;
     private String ut;
@@ -62,6 +63,8 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private int etaErrorCode;
     private String shipperName;
     private MerchantVoucherProductModel merchantVoucherProductModel;
+
+    private PreOrderModel preOrderModel;
 
     public CourierItemData() {
     }
@@ -422,6 +425,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.hideShipperName = hideShipperName;
     }
 
+    public String getLogPromoDesc() {
+        return logPromoDesc;
+    }
+
+    public void setLogPromoDesc(String logPromoDesc) {
+        this.logPromoDesc = logPromoDesc;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -460,6 +471,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeInt(this.benefitAmount);
         dest.writeString(this.promoTitle);
         dest.writeByte(this.hideShipperName ? (byte) 1 : (byte) 0);
+        dest.writeString(this.logPromoDesc);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
@@ -475,6 +487,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.priorityPdpMessage);
         dest.writeParcelable(this.ontimeDelivery, flags);
         dest.writeParcelable(this.codProductData, flags);
+        dest.writeParcelable(this.preOrderModel, flags);
     }
 
     protected CourierItemData(Parcel in) {
@@ -509,6 +522,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.benefitAmount = in.readInt();
         this.promoTitle = in.readString();
         this.hideShipperName = in.readByte() != 0;
+        this.logPromoDesc = in.readString();
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();
@@ -524,6 +538,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityPdpMessage = in.readString();
         this.ontimeDelivery = in.readParcelable(OntimeDelivery.class.getClassLoader());
         this.codProductData = in.readParcelable(CodProductData.class.getClassLoader());
+        this.preOrderModel = in.readParcelable(PreOrderModel.class.getClassLoader());
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -576,5 +591,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setMerchantVoucherProductModel(MerchantVoucherProductModel merchantVoucherProductModel) {
         this.merchantVoucherProductModel = merchantVoucherProductModel;
+    }
+
+    public PreOrderModel getPreOrderModel() {
+        return preOrderModel;
+    }
+
+    public void setPreOrderModel(PreOrderModel preOrderModel) {
+        this.preOrderModel = preOrderModel;
     }
 }

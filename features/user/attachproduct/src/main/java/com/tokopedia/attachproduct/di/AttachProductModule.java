@@ -16,7 +16,6 @@ import com.tokopedia.attachproduct.data.source.service.GetShopProductService;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.attachproduct.domain.model.mapper.DataModelToDomainModelMapper;
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase;
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -105,11 +104,6 @@ public class AttachProductModule {
         return new FingerprintInterceptor(networkRouter, userSession);
     }
 
-    @Provides
-    CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
-        return new CacheApiInterceptor(context);
-    }
-
     @AttachProductScope
     @Provides
     @AttachProductQualifier
@@ -119,12 +113,10 @@ public class AttachProductModule {
                                              chuckInterceptor,
                                      @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                      TkpdAuthInterceptor tkpdAuthInterceptor,
-                                     FingerprintInterceptor fingerprintInterceptor,
-                                     CacheApiInterceptor cacheApiInterceptor) {
+                                     FingerprintInterceptor fingerprintInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)

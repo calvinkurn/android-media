@@ -90,7 +90,6 @@ class RegisterInitialSuccessTest {
     @Test
     fun `check_register_email_success_tracker`() {
         checkClickButtonLoginTop()
-        checkClickButtonLoginBottom()
 
         checkRegisterEmail()
 
@@ -102,11 +101,6 @@ class RegisterInitialSuccessTest {
 
     private fun checkClickButtonLoginTop() {
         Espresso.onView(ViewMatchers.withId(112))
-                .perform(ViewActions.click())
-    }
-
-    private fun checkClickButtonLoginBottom() {
-        Espresso.onView(ViewMatchers.withId(R.id.login_button))
                 .perform(ViewActions.click())
     }
 

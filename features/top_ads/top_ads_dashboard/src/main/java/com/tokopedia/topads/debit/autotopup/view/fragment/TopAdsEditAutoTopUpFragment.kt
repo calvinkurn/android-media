@@ -45,7 +45,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var userSession: UserSession? = null
     private var selectedItem = AutoTopUpItem()
-    private var bonus = 1
+    private var bonus = 1.0
     private var autoTopupStatus: AutoTopUpStatus? = null
     private var autoTopupEnabled = true
 

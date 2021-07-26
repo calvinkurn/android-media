@@ -13,12 +13,16 @@ import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +35,7 @@ import timber.log.Timber;
 public class FCMCacheManager {
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
     public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
-    private String NOTIFICATION_CODE = "tkp_code";
+    private final String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
@@ -173,7 +177,9 @@ public class FCMCacheManager {
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {
-        Timber.w("P2#PUSH_NOTIF_UNUSED#'FCMCacheManager_saveIncomingNotification'");
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "FCMCacheManager_saveIncomingNotification");
+        ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
         boolean isExist = false;
         List<NotificationEntity> notificationEntities = getHistoryPushNotification();
         for (int i = 0; i < notificationEntities.size(); i++) {

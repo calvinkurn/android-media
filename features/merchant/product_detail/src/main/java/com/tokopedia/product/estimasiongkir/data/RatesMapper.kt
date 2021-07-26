@@ -29,7 +29,8 @@ object RatesMapper {
                 tokoCabangContent = ratesModel.tokoCabangData.content,
                 tokoCabangIcon = ratesModel.tokoCabangData.iconUrl,
                 tokoCabangTitle = ratesModel.tokoCabangData.title,
-                uspTokoCabangImgUrl = request.uspImageUrl
+                uspTokoCabangImgUrl = request.uspImageUrl,
+                freeOngkirTokoNowText =ratesModel.freeShipping.title
         )
         val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(ratesModel.rates)
         productServiceData.add(0, productShippingHeader)
@@ -39,7 +40,7 @@ object RatesMapper {
     private fun mapToServicesData(rates: RatesModel): MutableList<ProductShippingVisitable> {
         return rates.services.map { service ->
             val servicesDetail = service.products.map {
-                ProductServiceDetailDataModel(it.name, it.eta.textEta, it.price.priceFmt, it.cod.isCodAvailable == 1, it.cod.text)
+                ProductServiceDetailDataModel(it.name, it.eta.textEta, it.price.priceFmt, it.cod.isCodAvailable == 1, it.cod.text, it.features.dynamicPrice.dynamicPriceString)
             }
             ProductShippingServiceDataModel(service.id.toLong(), service.name, servicesDetail)
         }.toMutableList()

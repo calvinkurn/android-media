@@ -1,0 +1,41 @@
+package com.tokopedia.buyerorderdetail.cassava
+
+object BuyerOrderDetailTrackerValidationConstant {
+    const val clickToolbarChatIconQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_chat_icon_on_toolbar.json"
+    const val clickSeeDetailQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_see_order_detail_history.json"
+    const val clickCopyInvoiceQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_copy_invoice.json"
+    const val clickSeeInvoiceQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_see_invoice.json"
+    const val clickShopNameQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_shop_name.json"
+    const val clickProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_product.json"
+    const val clickSeeSimilarProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_product_action_button_see_similar_product.json"
+    const val clickBuyAgainProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_product_action_button_buy_again.json"
+    const val clickShipmentInfoTnCQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_shipment_info_tnc.json"
+    const val clickCopyAWBQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_copy_awb.json"
+    const val clickPrimaryActionButtonChatSellerQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_chat_seller.json"
+    const val clickPrimaryActionButtonGiveReviewQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_give_review.json"
+    const val clickPrimaryActionButtonTrackQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_track.json"
+    const val clickPrimaryActionButtonSeeComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_action_button_see_complaint.json"
+    const val clickPrimaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_help.json"
+    const val clickPrimaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_finish_order.json"
+    const val clickSecondaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_help.json"
+    const val clickSecondaryActionButtonRequestCancelQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_cancel.json"
+    const val clickSecondaryActionButtonRequestComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_complaint.json"
+    const val clickSecondaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_finish_order.json"
+    const val clickSecondaryActionButtonTrackQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_track.json"
+    const val clickFinishOrderOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_confirm_finish.json"
+    const val clickRequestComplaintOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_request_complaint.json"
+
+    const val orderId = "8176123125"
+    const val paymentId = "11824472"
+    const val cartString = "480946-4647129-11-18-regular-0-19469"
+
+    const val TICKER_SHIPMENT_INFO_TNC_TEXT = "Jaminan Tepat Waktu akan berlaku"
+    const val SECONDARY_ACTION_BUTTON_BOTTOMSHEET_TITLE = "Lainnya"
+    const val FINISH_ORDER_CONFIRMATION_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+
+    const val ACTION_BUTTON_HELP_TEXT = "Bantuan"
+    const val ACTION_BUTTON_REQUEST_CANCEL_TEXT = "Batalkan Pesanan"
+    const val ACTION_BUTTON_REQUEST_COMPLAINT_TEXT = "Komplain"
+    const val ACTION_BUTTON_FINISH_ORDER_TEXT = "Selesai"
+    const val ACTION_BUTTON_TRACK_TEXT = "Lacak"
+}

@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
@@ -104,11 +105,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                    /* no-op */
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    /* no-op */
                 }
             }
             tfNote?.textFieldInput?.addTextChangedListener(noteTextWatcher)
@@ -158,11 +159,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                    /* no-op */
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    /* no-op */
                 }
             }
             qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)
@@ -237,6 +238,12 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 it.setImageUrl(product.freeOngkirImg)
                 it.visible()
             }
+            val contentDescriptionStringResource = if (product.isFreeOngkirExtra) {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+            } else {
+                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+            }
+            iuFreeShipping?.contentDescription = view.context.getString(contentDescriptionStringResource)
             separatorFreeShipping?.visible()
         } else {
             iuFreeShipping?.gone()
@@ -249,6 +256,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (orderShop.shopBadge.isNotEmpty()) {
             ivShop?.setImageUrl(orderShop.shopBadge)
             ivShop?.visible()
+            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.toLowerCase(Locale.ROOT))
         } else {
             ivShop?.gone()
         }

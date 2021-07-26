@@ -37,5 +37,7 @@ data class ChannelGrid(
         val benefit: ChannelBenefit = ChannelBenefit(),
         val recommendationType: String = "",
         val shop: ChannelShop = ChannelShop(),
-        val campaignCode: String = ""
+        val campaignCode: String = "",
+        val badges: List<ChannelGridBadges> = listOf(),
+        val productImageUrl: String = "" //used for image featured brand, otherwise please use imageUrl
 ): ImpressHolder()

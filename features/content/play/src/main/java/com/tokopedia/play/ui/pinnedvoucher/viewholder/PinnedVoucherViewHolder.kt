@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.pinnedvoucher.viewholder
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
@@ -19,6 +20,10 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
     private val tvVoucherDescription = itemView.findViewById<Typography>(R.id.tv_pinned_voucher_description)
 
     fun bind(item: MerchantVoucherUiModel) {
+        itemView.addOnImpressionListener(item.impressHolder) {
+            listener.onVoucherImpressed(item, adapterPosition)
+        }
+
         tvVoucherTitle.text = item.title
         tvVoucherDescription.text = item.description
 
@@ -36,6 +41,7 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
     }
 
     interface Listener {
+        fun onVoucherImpressed(voucher: MerchantVoucherUiModel, position: Int)
         fun onVoucherClicked(voucher: MerchantVoucherUiModel)
     }
 }

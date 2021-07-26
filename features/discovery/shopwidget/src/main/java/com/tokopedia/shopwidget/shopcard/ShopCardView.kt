@@ -7,9 +7,12 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shopwidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toPx
@@ -56,9 +59,7 @@ class ShopCardView: BaseCustomView {
     }
 
     private fun initImageShopAvatar(shopCardModel: ShopCardModel, shopCardListener: ShopCardListener) {
-        shopWidgetImageViewShopAvatar?.let {
-            ImageHandler.loadImageCircle2(context, it, shopCardModel.image)
-        }
+        shopWidgetImageViewShopAvatar?.loadImageCircle(shopCardModel.image)
 
         shopCardModel.impressHolder?.let { impressHolder ->
             shopWidgetImageViewShopAvatar?.addOnImpressionListener(impressHolder) {
@@ -73,8 +74,9 @@ class ShopCardView: BaseCustomView {
 
             imageViewShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
-                    shopCardModel.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.shopwidget_ic_official_store))
-                    shopCardModel.isGoldShop -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
+                    shopCardModel.isOfficial -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_official_store)
+                    shopCardModel.isPMPro -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_pm_pro)
+                    shopCardModel.isGoldShop -> imageViewShopBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
                 }
             }
         }
@@ -82,6 +84,7 @@ class ShopCardView: BaseCustomView {
 
     private fun getIsImageShopBadgeVisible(shopCardModel: ShopCardModel): Boolean {
         return shopCardModel.isOfficial
+                || shopCardModel.isPMPro
                 || shopCardModel.isGoldShop
     }
 
@@ -99,7 +102,7 @@ class ShopCardView: BaseCustomView {
 
     private fun initImageShopReputation(shopCardModel: ShopCardModel) {
         shopWidgetImageViewShopReputation?.shouldShowWithAction(shopCardModel.reputationImageUri.isNotEmpty()) {
-            ImageHandler.loadImageThumbs(context, shopWidgetImageViewShopReputation, shopCardModel.reputationImageUri)
+            shopWidgetImageViewShopReputation.loadIcon(shopCardModel.reputationImageUri)
         }
     }
 
@@ -202,8 +205,8 @@ class ShopCardView: BaseCustomView {
             productPreviewIndex: Int,
             shopCardListener: ShopCardListener
     ) {
-        imageViewShopItemProductImage?.let {
-            ImageHandler.loadImageRounded2(context, imageViewShopItemProductImage, productPreviewItem.imageUrl, 6.toPx().toFloat())
+        imageViewShopItemProductImage?.loadImageRounded(productPreviewItem.imageUrl, 6.toPx().toFloat()) {
+            setPlaceHolder(R.drawable.media_placeholder_grey)
         }
 
         productPreviewItem.impressHolder?.let { impressHolder ->

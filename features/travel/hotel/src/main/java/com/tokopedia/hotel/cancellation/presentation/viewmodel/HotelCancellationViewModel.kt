@@ -3,16 +3,16 @@ package com.tokopedia.hotel.cancellation.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.cancellation.HotelCancellationQuery
 import com.tokopedia.hotel.cancellation.data.*
 import com.tokopedia.hotel.common.data.HotelErrorException
+import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class HotelCancellationViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                      private val graphqlUseCase: MultiRequestGraphqlUseCase,
-                                                     val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
+                                                     val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     private val mutableCancellationData = MutableLiveData<Result<HotelCancellationModel>>()
     val cancellationData: LiveData<Result<HotelCancellationModel>>
@@ -42,7 +42,7 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         launchCatchError(block = {
             graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
             graphqlUseCase.clearRequest()
-            val graphqlRequest = GraphqlRequest(HotelCancellationQuery.getCancellationQuery(), HotelCancellationModel.Response::class.java, params)
+            val graphqlRequest = GraphqlRequest(HotelGqlMutation.getCancellationQuery(), HotelCancellationModel.Response::class.java, params)
             graphqlUseCase.addRequest(graphqlRequest)
 
             val graphqlResponse = graphqlUseCase.executeOnBackground()
@@ -64,8 +64,8 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
         val params = mapOf(GET_CANCELLATION_SUBMIT_DATA_PARAM to cancellationSubmitParam)
 
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui()) {
-                val graphqlRequest = GraphqlRequest(HotelCancellationQuery.getSubmitCancellationQuery(), HotelCancellationSubmitResponse::class.java, params)
+            val data = withContext(dispatcher.main) {
+                val graphqlRequest = GraphqlRequest(HotelGqlMutation.getSubmitCancellationQuery(), HotelCancellationSubmitResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCancellationSubmitResponse>()
             mutableCancellationSubmitData.postValue(Success(data.response.data))

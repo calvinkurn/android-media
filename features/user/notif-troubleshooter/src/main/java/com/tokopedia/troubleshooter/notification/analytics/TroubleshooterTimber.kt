@@ -1,5 +1,7 @@
 package com.tokopedia.troubleshooter.notification.analytics
 
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
 import com.tokopedia.troubleshooter.notification.util.isNotNull
@@ -22,12 +24,13 @@ object TroubleshooterTimber {
             device: Result<DeviceSettingState>?
     ) {
         if (token.isNotNull() && notification.isNotNull() && device.isNotNull()) {
-            Timber.w("P2#LOG_PUSH_NOTIF#'Troubleshooter';token='%s';setting='%s';device='%s';",
-                    token,
-                    notification,
-                    device
-            )
+            ServerLogger.log(Priority.P2, "LOG_PUSH_NOTIF", mapOf("type" to "Troubleshooter",
+                    "token" to token?.toString().orEmpty(),
+                    "setting" to notification?.toString().orEmpty(),
+                    "device" to device?.toString().orEmpty()
+            ))
         }
     }
+
 
 }

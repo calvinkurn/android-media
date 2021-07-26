@@ -166,6 +166,7 @@
     <string name="topads_dash_group_item_progress_text">Anggaran harian terpakai hari ini</string>
     <string name="topads_dashboard_empty_product_title">Pastikan produkmu selalu tampil teratas</string>
     <string name="topads_dashboard_empty_product_desc">Beriklan dengan TopAds bikin produkmu menjangkau banyak pembeli. Yuk, mulai beriklan!</string>
+    <string name="topads_dashboard_empty_ads_desc">Dengan TopAds produkmu akan selalu tampil \nteratas dengan biaya yang dapat kamu sesuaikan. \nYuk, mulai beriklan!</string>
     <string name="topads_dash_empty_keyword_title">Belum ada kata kunci</string>
     <string name="topads_dash_empty_keyword_desc">Gunakan kata kunci spesifik agar produkmu lebih mudah ditemukan pembeli</string>
     <string name="topads_dash_empty_neg_keyword_title">Belum ada kata kunci negatif</string>
@@ -264,8 +265,6 @@
     <string name="topads_dash_insight_dialog_btn">Cek Rekomendasi</string>
     <string name="topads_dash_product_suggestion_insight_count">Produk Berpotensi (%d)</string>
     <string name="topads_dash_bid_suggestion_insight_count">Anggaran Harian  (%d)</string>
-    <string name="topads_dash_insight_empty_title">Yay, performa iklanmu sudah bagus!</string>
-    <string name="topads_dash_insight_empty_desc">Rutin pantau rekomendasi TopAds agar iklanmu semakin optimal.</string>
     <string name="topads_dash_insight_widget_title">Rekomendasi TopAds</string>
     <string name="topads_dash_insight_widget_desc">Performa iklanmu kurang maksimal? Rekomendasi berikut bisa meningkatkan performa iklanmu.</string>
     <string name="topads_dash_insight_key_item_tampil_potensi">Potensi tampil +%s kali /bulan</string>
@@ -301,7 +300,7 @@
     <string name="topads_insight_add_bid">Biaya untuk [%d] kata kunci rekomendasi berhasil diterapkan ke grup iklanmu.</string>
     <string name="topads_insight_invalid_key_tag_pos">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci negatif di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
     <string name="topads_insight_invalid_key_tag_neg">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
-    <string name="topads_auto_topup_widget">Dapatkan bonus kredit 10% dengan Tambah Kredit Otomatis</string>
+    <string name="topads_auto_topup_widget">Dapatkan bonus kredit %s dengan Tambah Kredit Otomatis</string>
     <string name="topads_dash_reload_btn">Muat Ulang Halaman</string>
     <string name="topads_dash_reload_title">Sedang diproses</string>
     <string name="topads_dash_auto_ads_enable_msg">Iklanmu sedang dibuat. Setelah 5-10 menit, coba muat ulang halaman.</string>

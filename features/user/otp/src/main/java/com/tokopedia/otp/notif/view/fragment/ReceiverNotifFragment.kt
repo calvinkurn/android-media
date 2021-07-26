@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +16,7 @@ import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
+import com.tokopedia.otp.common.SignatureUtil
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
@@ -32,10 +32,6 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.PublicKey
-import java.security.Signature
 import javax.inject.Inject
 
 /**
@@ -181,46 +177,8 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun signDataVerifyPushNotif(challangeCode: String, status: String): SignResult {
-        val datetime = (System.currentTimeMillis() / 1000).toString()
         val data = challangeCode + status
-        return signData(data, datetime)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun signData(data: String, datetime: String): SignResult {
-        val signResult = SignResult()
-        try {
-            signResult.datetime = datetime
-
-            val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEY_STORE).apply {
-                load(null)
-            }
-
-            val privateKey: PrivateKey = keyStore.getKey(PUSH_NOTIF_ALIAS, null) as PrivateKey
-
-            val publicKey: PublicKey = keyStore.getCertificate(PUSH_NOTIF_ALIAS).publicKey
-            signResult.publicKey = publicKeyToString(publicKey.encoded)
-
-            val signature: ByteArray? = Signature.getInstance(SHA_256_WITH_RSA).run {
-                initSign(privateKey)
-                update(data.toByteArray())
-                sign()
-            }
-
-            if (signature != null) {
-                signResult.signature = Base64.encodeToString(signature, Base64.DEFAULT)
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return signResult
-    }
-
-    private fun publicKeyToString(input: ByteArray): String {
-        val encoded = Base64.encodeToString(input, Base64.NO_WRAP)
-        return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
+        return SignatureUtil.signData(data, PUSH_NOTIF_ALIAS)
     }
 
     private fun goToResultNotif(imglink: String, messageTitle: String, messageBody: String, ctaType: String, status: String) {
@@ -287,11 +245,7 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         private const val KEY_PARAM_TIME = "time"
         private const val KEY_PARAM_IP = "ip"
         private const val KEY_PARAM_CHALLANGE_CODE = "challenge_code"
-        private const val ANDROID_KEY_STORE = "AndroidKeyStore"
         private const val PUSH_NOTIF_ALIAS = "PushNotif"
-        private const val SHA_256_WITH_RSA = "SHA256withRSA"
-        private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
-        private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
         fun createInstance(bundle: Bundle): ReceiverNotifFragment {
             val fragment = ReceiverNotifFragment()

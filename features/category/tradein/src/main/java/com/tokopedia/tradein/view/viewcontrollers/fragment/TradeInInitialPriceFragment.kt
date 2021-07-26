@@ -23,12 +23,14 @@ import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.GetImeiBS
+import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.ShowSessionIdBs
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.TradeInInitialPriceViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.*
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.btn_continue
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.iv_back
+import kotlinx.android.synthetic.main.tradein_initial_price_fragment.btn_session_id
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.product_name
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.product_price
 import kotlinx.android.synthetic.main.tradein_initial_price_fragment.progress_bar_layout
@@ -94,6 +96,13 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
                 tradeinHomeViewModel.onInitialPriceClick(null)
             }
         }
+
+        //triggering sessionid bottomsheet
+        btn_session_id.setOnClickListener(View.OnClickListener {
+            val showSidBs = ShowSessionIdBs.newInstance(tradeinHomeViewModel.xSessionId)
+            fragmentManager?.let { fm -> showSidBs.show(fm, "") }
+        })
+
     }
 
     private fun initCollapse() {

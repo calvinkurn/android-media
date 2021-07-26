@@ -24,7 +24,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="#de000000"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="15sp" />
 
 

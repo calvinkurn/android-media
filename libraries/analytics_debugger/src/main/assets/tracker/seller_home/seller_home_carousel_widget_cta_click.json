@@ -5,9 +5,9 @@
     {
       "event": "clickSellerWidget",
       "eventCategory": "seller app - home",
-      "eventAction": "{{click widget banner - .{1,} - see more}}",
+      "eventAction": "click widget banner - .{1,} - see more",
       "eventLabel": "",
-      "sessionIris": "{{.{1,}}}"
+      "sessionIris": ".{1,}"
     }
   ]
 }

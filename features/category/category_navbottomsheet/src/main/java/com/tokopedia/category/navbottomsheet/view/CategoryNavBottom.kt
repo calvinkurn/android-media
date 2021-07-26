@@ -37,6 +37,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     private var listener: CategorySelected? = null
     private var gtmListener: GtmProviderListener? = null
     private var catId: String = ""
+    private var source: String = ""
     private var shouldHideL1: Boolean = false
     private val model = CategoryNavStateModel()
     private var selectedLevelOnePosition: Int = 0
@@ -74,12 +75,13 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     private fun initData() {
         arguments?.let {
             catId = it.getString(CATEGORY_ID, "")
+            source = it.getString(SOURCE, DEFAULT_SOURCE)
             shouldHideL1 = it.getBoolean(SHOULD_HIDE_L1, false)
         }
     }
 
     private fun getCategories() {
-        categoryNavBottomViewModel.getCategoriesFromServer(catId)
+        categoryNavBottomViewModel.getCategoriesFromServer(catId, source)
         categoryNavBottomViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -126,7 +128,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
                 master_list.show()
             slave_list.show()
             global_error.hide()
-            categoryNavBottomViewModel.getCategoriesFromServer(catId)
+            categoryNavBottomViewModel.getCategoriesFromServer(catId, source)
         }
     }
 
@@ -266,13 +268,16 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
 
     companion object {
         const val CATEGORY_ID = "catID"
+        const val SOURCE = "source"
+        const val DEFAULT_SOURCE = "not-best-seller"
         const val SHOULD_HIDE_L1 = "shouldHideL1"
         const val NOTHING_SELECTED = -1
         const val DELAY_TO_SHOW_CHANGING_CHECKBOXES:Long = 200
-        fun getInstance(selectedCatId: String, categoryListener: CategorySelected? = null, gtmProviderListener: GtmProviderListener? = null, shouldHideL1View: Boolean = false): CategoryNavBottomSheet {
+        fun getInstance(selectedCatId: String, categoryListener: CategorySelected? = null, gtmProviderListener: GtmProviderListener? = null, shouldHideL1View: Boolean = false, source : String = DEFAULT_SOURCE): CategoryNavBottomSheet {
             return CategoryNavBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(CATEGORY_ID, selectedCatId)
+                    putString(SOURCE, source)
                     putBoolean(SHOULD_HIDE_L1, shouldHideL1View)
                 }
                 listener = categoryListener

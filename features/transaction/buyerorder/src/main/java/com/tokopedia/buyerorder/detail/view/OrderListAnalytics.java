@@ -13,7 +13,6 @@ import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationsItem;
-import com.tokopedia.buyerorder.detail.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -453,21 +452,22 @@ public class OrderListAnalytics {
                         recomTitle));
     }
 
-    public static void eventWidgetListView(@NotNull WidgetGridItem contentItemTab, int position) {
-
+    public static void eventWidgetListView(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem contentItemTab, int position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, "my purchase list - " + contentItemTab.getName(),
+                EVENT_CATEGORY, "my purchase list - " + contentItemTab.getTitle(),
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "historical - " + contentItemTab.getName() + " - " + (1 + position),
+                EVENT_LABEL, contentItemTab.getTrackingData().getItemType() + " - " + contentItemTab.getTrackingData().getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                                NAME, contentItemTab.getName(),
-                                ID, contentItemTab.getId(),
-                                PRICE, contentItemTab.getPrice(),
-                                LIST, contentItemTab.getName(),
-                                POSITION, position + 1
+                                NAME, contentItemTab.getSubtitle(),
+                                ID, contentItemTab.getTrackingData().getProductID(),
+                                PRICE, 0,
+                                LIST, contentItemTab.getTitle(),
+                                POSITION, position + 1,
+                                CATEGORY, contentItemTab.getTrackingData().getCategoryName(),
+                                VARIANT, contentItemTab.getTrackingData().getItemType()
                                 )
                         )
                 )
@@ -476,27 +476,26 @@ public class OrderListAnalytics {
 
     }
 
-    public static void eventWidgetClick(@NotNull WidgetGridItem item, int position) {
-
+    public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "recommendation - " + item.getName() + " - " + (1 + position),
+                EVENT_LABEL, item.getTrackingData().getItemType() + " - " + item.getTrackingData().getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, item.getName()
+                                        LIST, item.getTitle()
                                 ),
                                 PRODUCTS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                NAME, item.getName(),
-                                                ID, item.getId(),
-                                                PRICE, item.getPrice(),
+                                                NAME, item.getSubtitle(),
+                                                ID, item.getTrackingData().getProductID(),
+                                                PRICE, 0,
                                                 BRAND, "none",
-                                                CATEGORY, item.getName(),
-                                                VARIANT, "none",
-                                                LIST, item.getName(),
+                                                CATEGORY, item.getTrackingData().getCategoryName(),
+                                                VARIANT, item.getTrackingData().getItemType(),
+                                                LIST, item.getTitle(),
                                                 POSITION, position + 1,
                                                 ATTRIBUTION, "none"
                                         )

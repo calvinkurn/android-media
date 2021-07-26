@@ -10,7 +10,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.home.benchmark.network_request.HomeMockResponseList.getDynamicHomeChannel
 import com.tokopedia.home.benchmark.prepare_page.TestQuery.dynamicChannelQuery
 import com.tokopedia.home.benchmark.prepare_page.TestQuery.homeQuery
-import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
@@ -22,8 +22,8 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.model.HomeAtfData
-import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
+import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.module.query.QueryHome
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
@@ -59,7 +59,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
         get() = Dispatchers.Main + masterJob
 
     companion object {
-        private lateinit var homeUseCase: HomeUseCase
+        private lateinit var homeUseCase: HomeRevampUseCase
         private lateinit var homeDao: HomeDao
         private lateinit var context: Context
         private lateinit var gson: Gson
@@ -119,7 +119,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
             val getHomeBannerUseCase = GetHomePageBannerUseCase(homeBannerData)
 
             val homeRemoteDataSource = HomeRemoteDataSource(
-                    dispatchers = HomeDispatcherProviderImpl(),
+                    dispatchers = CoroutineDispatchersProvider,
                     getHomeDynamicChannelsRepository = getDynamicChannelRepository,
                     getHomeDataUseCase = getHomeDataUseCase,
                     getAtfDataUseCase = getAtfUseCase,
@@ -130,7 +130,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
             val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
                 GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
             }
-            val homeRepository = HomeRepositoryImpl(
+            val homeRepository = HomeRevampRepositoryImpl(
                     homeCachedDataSource,
                     homeRemoteDataSource,
                     HomeDefaultDataSource(),
@@ -139,7 +139,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                     context,
                     remoteConfig
             )
-            homeUseCase = HomeUseCase(
+            homeUseCase = HomeRevampUseCase(
                     homeRepository,
                     homeDataMapper
             )

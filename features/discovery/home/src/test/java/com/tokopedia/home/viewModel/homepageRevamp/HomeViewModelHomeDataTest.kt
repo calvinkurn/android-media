@@ -28,16 +28,14 @@ class HomeViewModelHomeDataTest {
     fun `error pagination home data`() {
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
-                        list = listOf(DynamicChannelRetryModel(true), DynamicChannelLoadingModel()),
-                        isCache = true
+                        list = listOf(DynamicChannelRetryModel(true), DynamicChannelLoadingModel())
                 )
         )
         coEvery { getHomeUseCase.updateHomeData() } returns flow{
-            emit(Result.errorPagination(Throwable(), ""))
+            emit(Result.errorPagination(Throwable(), data = null))
         }
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
 
-        verify { getHomeUseCase.updateHomeData() }
         assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelLoadingModel } != null )
         assert( homeViewModel.homeLiveData.value?.list?.find { it is DynamicChannelRetryModel } != null )
     }
@@ -46,12 +44,11 @@ class HomeViewModelHomeDataTest {
     fun `error pagination but no retry model`() {
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
-                        list = listOf(DynamicChannelLoadingModel()),
-                        isCache = true
+                        list = listOf(DynamicChannelLoadingModel())
                 )
         )
         coEvery { getHomeUseCase.updateHomeData() } returns flow{
-            emit(Result.errorPagination(Throwable(), ""))
+            emit(Result.errorPagination(Throwable(), data = null))
         }
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.refreshHomeData()

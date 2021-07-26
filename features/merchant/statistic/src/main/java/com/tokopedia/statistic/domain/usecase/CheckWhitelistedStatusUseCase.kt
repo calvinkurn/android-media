@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.statistic.di.StatisticScope
 import com.tokopedia.statistic.domain.model.CheckWhitelistedStatusResponse
 import com.tokopedia.usecase.RequestParams
@@ -18,13 +17,11 @@ import javax.inject.Inject
  */
 
 //docs : https://tokopedia.atlassian.net/wiki/spaces/~354932339/pages/896109749/Centralized+Whitelist+System
-
-@StatisticScope
 class CheckWhitelistedStatusUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository
-) : BaseGqlUseCase<Boolean>() {
+): BaseStatisticUseCase<Boolean>() {
 
-    override suspend fun executeOnBackground(): Boolean {
+    override suspend fun execute(params: RequestParams): Boolean {
         val tenMinutes = TimeUnit.MINUTES.toMillis(10)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(tenMinutes)
@@ -33,10 +30,16 @@ class CheckWhitelistedStatusUseCase @Inject constructor(
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
         val errors: List<GraphqlError>? = gqlResponse.getError(CheckWhitelistedStatusResponse::class.java)
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<CheckWhitelistedStatusResponse>()
+            val response = gqlResponse.getData<CheckWhitelistedStatusResponse>(CheckWhitelistedStatusResponse::class.java)
             return response.whitelistedStatus.isWhitelisted
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
+        }
+    }
+
+    fun createParam(whitelistName: String): RequestParams {
+        return RequestParams.create().apply {
+            putString(KEY_WHITE_LIST_NAME, whitelistName)
         }
     }
 
@@ -50,11 +53,5 @@ class CheckWhitelistedStatusUseCase @Inject constructor(
               }
             }
         """.trimIndent()
-
-        fun createParam(whitelistName: String): RequestParams {
-            return RequestParams.create().apply {
-                putString(KEY_WHITE_LIST_NAME, whitelistName)
-            }
-        }
     }
 }

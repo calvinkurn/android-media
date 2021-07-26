@@ -82,6 +82,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
+        String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -168,7 +169,11 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
+        String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
     }
 
     interface TopAdsComponent {
@@ -183,5 +188,13 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
+    }
+
+    interface ImageUrl {
+        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
+    }
+
+    interface CustomDimension {
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
     }
 }

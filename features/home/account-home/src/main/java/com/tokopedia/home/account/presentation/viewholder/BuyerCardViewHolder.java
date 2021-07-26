@@ -66,5 +66,6 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
         buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element.getCouponApplink(), element.getCouponTitle()));
         buyerCardView.setOnClickByMe(v -> listener.onByMeClicked());
         buyerCardView.setOnClickSellerAccount(v -> listener.onSellerAccountCardClicked());
+        buyerCardView.setOnclickIconWarningName(v -> listener.onIconWarningNameClick(element));
     }
 }

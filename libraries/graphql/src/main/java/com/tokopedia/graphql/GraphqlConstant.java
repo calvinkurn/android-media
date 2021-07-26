@@ -2,7 +2,6 @@ package com.tokopedia.graphql;
 
 public interface GraphqlConstant {
     String LOG_TAG = "Graphql-Datalayer ";
-    String TIMBER_JSON_PARSE_TAG = "P1#GQL_PARSE_ERROR#json;err='%s';req='%s";
     long MINUTE_MS = 1000 * 60;
     long HOUR_MS = MINUTE_MS * 60;
     long DAY_MS = 24 * HOUR_MS;

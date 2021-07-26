@@ -146,10 +146,11 @@ class SellerHomeNavigator(
     }
 
     private fun initFragments() {
+        clearFragments()
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "")
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -157,6 +158,14 @@ class SellerHomeNavigator(
         addPage(chatFragment, context.getString(R.string.sah_chat))
         addPage(somListFragment, context.getString(R.string.sah_sale))
         addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
+    }
+
+    private fun clearFragments() {
+        val transaction = fm.beginTransaction()
+        for (fragment in fm.fragments) {
+            transaction.remove(fragment)
+        }
+        transaction.commitNowAllowingStateLoss()
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {
@@ -216,7 +225,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
         return somListFragment
     }
 

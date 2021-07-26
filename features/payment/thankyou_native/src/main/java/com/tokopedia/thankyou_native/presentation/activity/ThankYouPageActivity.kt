@@ -1,6 +1,8 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
+import android.net.Uri
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -34,6 +36,9 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RollenceKey
+
 var idlingResource: TkpdIdlingResource? = null
 
 
@@ -67,11 +72,21 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         updateTitle("")
         component.inject(this)
+        sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
+
+
+    private fun setSecureWindowFlag() {
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        }
+    }
+
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 
@@ -90,6 +105,18 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         return LoaderFragment.getLoaderFragmentInstance(bundle)
     }
 
+    override fun sendScreenAnalytics() {
+        //Empty to remove double open screen events
+    }
+
+    private fun sendOpenScreenEvent(data: Uri?) {
+        data?.apply {
+            thankYouPageAnalytics.get().sendScreenAuthenticatedEvent(
+                    getQueryParameter(ARG_PAYMENT_ID),
+                    getQueryParameter(ARG_MERCHANT),
+                    SCREEN_NAME)
+        }
+    }
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
@@ -107,7 +134,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
         if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
-            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID,
+            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID.toLong(),
                     object : GratificationPresenter.AbstractGratifPopupCallback() {
                 override fun onIgnored(reason: Int) {
                     showAppFeedbackBottomSheet(thanksPageData)
@@ -214,8 +241,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 false)
         if(isNewNavigationEnabled) {
             getAbTestPlatform()?.let {
-                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+                return (it.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                        == RollenceKey.NAVIGATION_VARIANT_REVAMP)
             }
         }
         return false
@@ -232,6 +259,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun initializeGlobalNav(title: String) {
         globalNabToolbar?.apply {
+            this@ThankYouPageActivity.lifecycle.addObserver(this)
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
             setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))

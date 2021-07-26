@@ -13,8 +13,8 @@ public class InboxReputationDetailHeaderUiModel implements
 
     private final RevieweeBadgeCustomerUiModel revieweeBadgeCustomerUiModel;
     private final RevieweeBadgeSellerUiModel revieweeBadgeSellerUiModel;
-    private final int shopId;
-    private final int userId;
+    private final long shopId;
+    private final long userId;
     String avatarImage;
     String name;
     String deadline;
@@ -27,7 +27,7 @@ public class InboxReputationDetailHeaderUiModel implements
             int role,
             RevieweeBadgeCustomerUiModel revieweeBadgeCustomerUiModel,
             RevieweeBadgeSellerUiModel revieweeBadgeSellerUiModel,
-            int shopId, int userId) {
+            long shopId, long userId) {
         this.avatarImage = avatarImage;
         this.name = name;
         this.deadline = deadline;
@@ -39,7 +39,7 @@ public class InboxReputationDetailHeaderUiModel implements
         this.userId = userId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -59,7 +59,7 @@ public class InboxReputationDetailHeaderUiModel implements
         return role;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 

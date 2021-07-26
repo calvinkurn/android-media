@@ -65,6 +65,15 @@ class FreeDeliveryVoucherCreateViewModelTest {
     }
 
     @Test
+    fun `adding free delivery amount text field value to calculation with null value will keep image value null`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(null, PromotionType.FreeDelivery.Amount)
+
+            assert(voucherImageValueLiveData.value == null)
+        }
+    }
+
+    @Test
     fun `refreshing text field value will change voucher image value if amount already set`() {
         with(mViewModel) {
             addTextFieldValueToCalculation(DUMMY_AMOUNT, PromotionType.FreeDelivery.Amount)
@@ -92,6 +101,15 @@ class FreeDeliveryVoucherCreateViewModelTest {
             refreshTextFieldValue(true)
 
             assert(voucherImageValueLiveData.value is VoucherImageType.FreeDelivery && voucherImageValueLiveData.value?.value == DUMMY_AMOUNT)
+        }
+    }
+
+    @Test
+    fun `not refreshing text field value if edit voucher will keep voucher image value as null`() {
+        with(mViewModel) {
+            refreshTextFieldValue(true)
+
+            assert(voucherImageValueLiveData.value == null)
         }
     }
 
@@ -166,6 +184,34 @@ class FreeDeliveryVoucherCreateViewModelTest {
             validateFreeDeliveryValues()
 
             assert(freeDeliveryValidationLiveData.value is Fail)
+        }
+    }
+
+
+    @Test
+    fun `check freeDeliveryValidationLiveData value is null if mFreeDeliveryAmountLiveData value is null`() = runBlocking {
+        with(mViewModel) {
+            validateFreeDeliveryValues()
+            assert(freeDeliveryValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `check freeDeliveryValidationLiveData value is null if mMinimumPurchaseLiveData value is null`() = runBlocking {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_AMOUNT, PromotionType.FreeDelivery.Amount)
+            validateFreeDeliveryValues()
+            assert(freeDeliveryValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `check freeDeliveryValidationLiveData value is null if mVoucherQuotaLiveData value is null`() = runBlocking {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_AMOUNT, PromotionType.FreeDelivery.Amount)
+            addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.FreeDelivery.MinimumPurchase)
+            validateFreeDeliveryValues()
+            assert(freeDeliveryValidationLiveData.value == null)
         }
     }
 

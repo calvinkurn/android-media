@@ -1,21 +1,22 @@
 package com.tokopedia.product.detail.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import timber.log.Timber
 import javax.inject.Inject
 
 open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
@@ -27,6 +28,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  isTokoNow
                   shopName
                   productID
                   shopID
@@ -41,6 +43,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   catalogID
                   isLeasing
                   isBlacklisted
+                  totalStockFmt
                   menu {
                     id
                     name
@@ -235,6 +238,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         productName
                         productURL
                         isCOD
+                        isWishlist
                         picture {
                           url
                           url200
@@ -245,6 +249,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           stockWording
                           stockWordingHTML
                           minimumOrder
+                          maximumOrder
                         }
                         isWishlist
                         campaignInfo {
@@ -275,6 +280,16 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           additionalInfo
                         }
                       }
+                    },
+                     ... on pdpDataOneLiner {
+                       productID
+                       oneLinerContent
+                       linkText
+                       color
+                       applink
+                       separator
+                       icon
+                       isVisible
                     }
                   }
                 }
@@ -308,9 +323,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
-            Timber.w("P2#PDP_CACHE#true;productId=$productId")
+            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "true", "productId" to productId))
         } else {
-            Timber.w("P2#PDP_CACHE#false;productId=$productId")
+            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "false", "productId" to productId))
         }
         val blacklistMessage = data.basicInfo.blacklistMessage
 

@@ -43,5 +43,8 @@ data class WidgetModel(
         val emptyStateModel: WidgetEmptyStateModel,
         @Expose
         @SerializedName("comparePeriode")
-        val isComparePeriodeOnly: Boolean = false
+        val isComparePeriodeOnly: Boolean = false,
+        @Expose
+        @SerializedName("searchTableColumnFilter")
+        val searchTableColumnFilters: List<SearchTableColumnFilterModel>?
 )

@@ -15,7 +15,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -28,7 +30,10 @@ import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
@@ -71,6 +76,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
                 .operatorId(operatorId)
+                .menuId(MENU_ID_ELECTRONIC_MONEY)
                 .clientNumber(eTollUpdateBalanceResultView.cardNumber)
                 .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
                 .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
@@ -100,17 +106,26 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeMandiri(intent: Intent) {
-        if (CardUtils.cardIsEmoney(intent)) {
+        if (CardUtils.isEmoneyCard(intent)) {
             val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
             if (tag != null) {
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
             } else {
-                showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                showError(ErrorHandler.getErrorMessage(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD)),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
+                        true)
             }
-        } else {
+        } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
+        } else {
+            showError(resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_card_isnot_supported),
+                    resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_not_supported),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
+                    false
+            )
         }
         emoneyBalanceViewModel.emoneyInquiry.observe(this, Observer { emoneyInquiry ->
             emoneyInquiry.attributesEmoneyInquiry?.let { attributes ->
@@ -124,16 +139,38 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {
-            if (it is MessageErrorException) {
-                showError(it.message ?: "")
-            } else {
-                showError(getString(R.string.emoney_update_balance_failed))
+        emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {  throwable ->
+            context?.let {
+                val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                if((throwable is SocketTimeoutException)){
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                            isButtonShow = true,
+                            isGlobalErrorShow = false,
+                            mandiriGetSocketTimeout = true
+                    )
+                } else if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            "",
+                            true)
+                } else {
+                    showError(errorMessage,
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            "",
+                            true, true)
+                }
             }
+
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(it)
+            showError(ErrorHandler.getErrorMessage(context, it),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
+                    true
+            )
         })
 
         emoneyBalanceViewModel.issuerId.observe(this, Observer {
@@ -179,12 +216,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 tapETollCardView.visibility = View.GONE
 
                 AlertDialog.Builder(it)
-                        .setMessage(getString(R.string.emoney_please_activate_nfc_from_settings))
-                        .setPositiveButton(getString(R.string.emoney_activate)) { p0, p1 ->
+                        .setMessage(getString(R.string.emoney_nfc_please_activate_nfc_from_settings))
+                        .setPositiveButton(getString(R.string.emoney_nfc_activate)) { p0, p1 ->
                             emoneyAnalytics.onActivateNFCFromSetting()
                             navigateToNFCSettings()
                         }
-                        .setNegativeButton(getString(R.string.emoney_cancel)) { p0, p1 ->
+                        .setNegativeButton(getString(R.string.emoney_nfc_cancel)) { p0, p1 ->
                             emoneyAnalytics.onCancelActivateNFCFromSetting()
                             nfcDisabledView.visibility = View.VISIBLE
                         }.show()
@@ -211,20 +248,22 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN){
+            showInitialState()
+            data?.let {
                 if (userSession.isLoggedIn) {
                     data?.let {
                         processTagIntent(data)
                     }
                 }
             }
+        } else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN){
+            activity?.finish()
         }
     }
 
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
-        const val ETOLL_CATEGORY_ID = "34"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

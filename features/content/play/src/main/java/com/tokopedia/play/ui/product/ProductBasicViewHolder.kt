@@ -12,6 +12,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
 /**
@@ -27,6 +29,7 @@ open class ProductBasicViewHolder(
     private val tvProductDiscount: TextView = itemView.findViewById(R.id.tv_product_discount)
     private val tvOriginalPrice: TextView = itemView.findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = itemView.findViewById(R.id.tv_current_price)
+    private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
 
     private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
 
@@ -37,6 +40,11 @@ open class ProductBasicViewHolder(
     open fun bind(item: PlayProductUiModel.Product) {
         ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         tvProductTitle.text = item.title
+
+        when (item.stock) {
+            is OutOfStock -> tvOutOfStock.show()
+            is StockAvailable -> tvOutOfStock.hide()
+        }
 
         when (item.price) {
             is DiscountedPrice -> {

@@ -67,11 +67,13 @@ class ShopActionButtonWidgetFollowButtonComponentViewHolder(
                             shopHeaderWidgetUiModel
                     )
             }
-            addOnImpressionListener(model){
-                listener.onImpressionFollowButtonComponent(
-                        model,
-                        shopHeaderWidgetUiModel
-                )
+            if(text.isNotEmpty()) {
+                addOnImpressionListener(model) {
+                    listener.onImpressionFollowButtonComponent(
+                            model,
+                            shopHeaderWidgetUiModel
+                    )
+                }
             }
         }
     }

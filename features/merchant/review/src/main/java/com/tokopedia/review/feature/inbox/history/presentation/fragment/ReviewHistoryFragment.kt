@@ -25,7 +25,6 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
-import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTracking
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTrackingConstants
@@ -98,7 +97,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
             with(it.productrevFeedbackHistory) {
                 ReviewHistoryTracking.eventClickReviewCard(viewModel.getUserId(), product.productId, review.feedbackId)
             }
-            goToReviewDetails(it.productrevFeedbackHistory.reputationId, it.productrevFeedbackHistory.review.feedbackId)
+            goToReviewDetails(it.productrevFeedbackHistory.review.feedbackId)
         }
     }
 
@@ -138,7 +137,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         viewModel.updateKeyWord(text)
     }
 
-    override fun trackAttachedImageClicked(productId: Int?, feedbackId: Int?) {
+    override fun trackAttachedImageClicked(productId: String?, feedbackId: String?) {
         if(productId != null && feedbackId != null) {
             ReviewHistoryTracking.eventClickImageGallery(viewModel.getUserId(), productId, feedbackId)
         }
@@ -196,12 +195,9 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         })
     }
 
-    private fun goToReviewDetails(reputationId: Int, feedbackId: Int) {
+    private fun goToReviewDetails(feedbackId: String) {
         RouteManager.route(context,
-                Uri.parse(
-                        UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, reputationId.toString()))
-                        .buildUpon()
-                        .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId.toString()).toString()
+                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, feedbackId)).buildUpon().toString()
         )
     }
 

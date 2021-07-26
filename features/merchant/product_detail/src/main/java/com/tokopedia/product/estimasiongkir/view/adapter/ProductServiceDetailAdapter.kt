@@ -36,6 +36,7 @@ class ProductServiceDetailAdapter : RecyclerView.Adapter<ProductServiceDetailAda
         private val serviceDetailEstimation: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.pdp_service_detail_estimation)
         private val serviceDetailPrice: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.pdp_service_detail_price)
         private val codLabel: com.tokopedia.unifycomponents.Label? = itemView.findViewById(R.id.pdp_service_detail_cod)
+        private val dynamicPricingLabel: com.tokopedia.unifycomponents.Label? = itemView.findViewById(R.id.pdp_service_detail_dynamic_pricing)
 
         fun bind(product: ProductServiceDetailDataModel) = with(itemView) {
             serviceDetailName?.text = context.getString(R.string.location_dot_builder, product.serviceProductName)
@@ -43,6 +44,11 @@ class ProductServiceDetailAdapter : RecyclerView.Adapter<ProductServiceDetailAda
             serviceDetailEstimation?.shouldShowWithAction(product.serviceProductEstimation.isNotEmpty()) {
                 serviceDetailEstimation.text = product.serviceProductEstimation
             }
+
+            dynamicPricingLabel?.shouldShowWithAction(product.dynamicPricingText.isNotEmpty()) {
+                dynamicPricingLabel.setLabel(product.dynamicPricingText)
+            }
+
             codLabel?.shouldShowWithAction(product.isCod) {
                 if (product.codText.isEmpty()) {
                     codLabel.setLabel(context.getString(R.string.pdp_shipping_available_cod_label))

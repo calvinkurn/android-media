@@ -90,7 +90,7 @@ class PartialCentralizedPromoOnGoingPromoView(
     override fun shouldShowCoachMark(): Boolean = showCoachMark && view.layoutCentralizedPromoOnGoingPromoSuccess.isShown
 
     override fun getCoachMarkItem() = with(view) {
-        layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+        layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
                 context.getString(R.string.sh_coachmark_title_on_going_promo),
                 context.getString(R.string.sh_coachmark_desc_on_going_promo))

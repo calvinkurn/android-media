@@ -5,5 +5,5 @@
     android:id="@+id/btn_action_menus"
     android:textAllCaps="false"
     android:background="@null"
-    android:textColor="@color/tkpd_main_green"
+    android:textColor="@color/Unify_G500"
     android:layout_margin="@dimen/dp_8" />

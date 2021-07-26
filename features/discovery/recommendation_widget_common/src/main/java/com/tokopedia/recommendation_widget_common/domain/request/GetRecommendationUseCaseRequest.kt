@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -19,6 +20,15 @@ internal class GetRecommendationUseCaseRequest {
                         nextPage
                         prevPage
                         hasNext
+                      }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
                       }
                       recommendation {
                         id
@@ -101,6 +111,15 @@ internal class GetRecommendationUseCaseRequest {
                        pagination{
                             hasNext
                        }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                       }
                        recommendation {
                            id
                            name
@@ -115,6 +134,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name

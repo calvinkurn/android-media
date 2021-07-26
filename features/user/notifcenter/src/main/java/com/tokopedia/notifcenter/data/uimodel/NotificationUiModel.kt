@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.notifcenter.data.entity.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import java.util.*
@@ -112,6 +113,8 @@ data class NotificationUiModel(
         MethodChecker.fromHtml(shortDescriptionHtml)
     }
 
+    val impressHolder = ImpressHolder()
+
     var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
     val expireTimeUnixMillis: Long get() = expireTimeUnix * 1000
@@ -195,6 +198,10 @@ data class NotificationUiModel(
 
     fun hasTrackHistory(): Boolean {
         return trackHistory.isNotEmpty()
+    }
+
+    fun hasWidgetMsg(): Boolean {
+        return widget.message.isNotEmpty()
     }
 
     companion object {

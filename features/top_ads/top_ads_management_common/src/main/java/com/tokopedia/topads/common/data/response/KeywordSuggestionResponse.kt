@@ -10,7 +10,7 @@ data class KeywordSuggestionResponse(
         val result: Result = Result()
 ) {
     data class Result(
-            @field:SerializedName("topAdsGetKeywordSuggestionV3")
+            @field:SerializedName("topAdsGetKeywordSuggestionV3_1")
             val topAdsGetKeywordSuggestionV3: TopAdsGetKeywordSuggestionV3 = TopAdsGetKeywordSuggestionV3()
     )
 }
@@ -45,7 +45,7 @@ data class KeywordDataItem(
         var bidSuggest: String = "0",
 
         @field:SerializedName("total_search")
-        var totalSearch: String = "",
+        var totalSearch: String = "-",
 
         @field:SerializedName("keyword")
         var keyword: String = "",

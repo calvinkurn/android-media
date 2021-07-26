@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Transparent.Black" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Transparent.Black" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/trans_black_70</item>
+        <item name="android:windowBackground">@color/Unify_N700_68</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:backgroundDimEnabled">false</item>

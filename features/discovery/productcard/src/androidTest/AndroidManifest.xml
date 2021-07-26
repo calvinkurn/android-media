@@ -10,11 +10,11 @@
 
         <activity
             android:name=".grid.ProductCardGridActivityTest"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".list.ProductCardListActivityTest"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.White"/>
 
     </application>
 </manifest>

@@ -2,8 +2,6 @@ package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -96,11 +94,6 @@ class TopAdsDashboardModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    @TopAdsDashboardScope
-    @Named("Main")
-    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)

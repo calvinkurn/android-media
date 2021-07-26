@@ -374,7 +374,7 @@ public class TextDrawable extends Drawable {
         if (context != null) {
             newColor = mTextColors.getColorForState(stateSet, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         } else {
-            newColor = mTextColors.getColorForState(stateSet, Color.WHITE);
+            newColor = mTextColors.getColorForState(stateSet, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
         if (mTextPaint.getColor() != newColor) {
             mTextPaint.setColor(newColor);

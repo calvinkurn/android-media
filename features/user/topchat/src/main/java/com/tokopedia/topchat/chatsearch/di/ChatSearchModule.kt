@@ -26,5 +26,4 @@ class ChatSearchModule {
     fun provideGqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetChatSearchResponse> {
         return GraphqlUseCase(graphqlRepository)
     }
-
 }

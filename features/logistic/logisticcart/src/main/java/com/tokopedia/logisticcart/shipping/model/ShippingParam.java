@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata;
+
 import java.util.List;
 
 /**
@@ -19,6 +21,7 @@ public class ShippingParam implements Parcelable {
     private String destinationLatitude;
     private String destinationLongitude;
     private double weightInKilograms;
+    private double weightActualInKilograms;
     private String shopId;
     private String token;
     private String ut;
@@ -35,6 +38,8 @@ public class ShippingParam implements Parcelable {
     private String uniqueId; // this is actually cart string
     private boolean isFulfillment;
     private int preOrderDuration;
+    private int shopTier;
+    private BoMetadata boMetadata;
 
     public ShippingParam() {
     }
@@ -49,6 +54,7 @@ public class ShippingParam implements Parcelable {
         destinationLatitude = in.readString();
         destinationLongitude = in.readString();
         weightInKilograms = in.readDouble();
+        weightActualInKilograms = in.readDouble();
         shopId = in.readString();
         token = in.readString();
         ut = in.readString();
@@ -65,6 +71,8 @@ public class ShippingParam implements Parcelable {
         uniqueId = in.readString();
         isFulfillment = in.readByte() != 0;
         preOrderDuration = in.readInt();
+        shopTier = in.readInt();
+        boMetadata = in.readParcelable(BoMetadata.class.getClassLoader());
     }
 
     @Override
@@ -78,6 +86,7 @@ public class ShippingParam implements Parcelable {
         dest.writeString(destinationLatitude);
         dest.writeString(destinationLongitude);
         dest.writeDouble(weightInKilograms);
+        dest.writeDouble(weightActualInKilograms);
         dest.writeString(shopId);
         dest.writeString(token);
         dest.writeString(ut);
@@ -94,6 +103,8 @@ public class ShippingParam implements Parcelable {
         dest.writeString(uniqueId);
         dest.writeByte((byte) (isFulfillment? 1 : 0));
         dest.writeInt(preOrderDuration);
+        dest.writeInt(shopTier);
+        dest.writeParcelable(boMetadata, flags);
     }
 
     @Override
@@ -299,5 +310,30 @@ public class ShippingParam implements Parcelable {
 
     public void setPreOrderDuration(int preOrderDuration) {
         this.preOrderDuration = preOrderDuration;
+    }
+
+    public double getWeightActualInKilograms() {
+        return weightActualInKilograms;
+    }
+
+    public void setWeightActualInKilograms(double weightActualInKilograms) {
+        this.weightActualInKilograms = weightActualInKilograms;
+    }
+
+
+    public int getShopTier() {
+        return shopTier;
+    }
+
+    public void setShopTier(int shopTier) {
+        this.shopTier = shopTier;
+    }
+
+    public BoMetadata getBoMetadata() {
+        return boMetadata;
+    }
+
+    public void setBoMetadata(BoMetadata boMetadata) {
+        this.boMetadata = boMetadata;
     }
 }

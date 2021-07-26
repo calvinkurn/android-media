@@ -11,7 +11,9 @@ internal class DynamicFilterGqlMapper : Func1<GraphqlResponse?, DynamicFilterMod
     override fun call(graphqlResponse: GraphqlResponse?): DynamicFilterModel? {
         if (graphqlResponse == null) return DynamicFilterModel()
 
-        return graphqlResponse.getData<DynamicFilterModel>(DynamicFilterModel::class.java)
-                ?: DynamicFilterModel()
+        val gqlDynamicFilterResponse = graphqlResponse.getData<GqlDynamicFilterResponse>(GqlDynamicFilterResponse::class.java)
+                ?: return DynamicFilterModel()
+        
+        return gqlDynamicFilterResponse.dynamicFilterModel
     }
 }

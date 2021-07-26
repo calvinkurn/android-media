@@ -18,11 +18,14 @@ import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.viewmodel.AdDetailsViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_ad_details.*
 import javax.inject.Inject
 
+private const val view_iklan_toko = "view - buat iklan toko"
+private const val click_lanjutkan_toko = "click - lanjutkan on buat iklan toko page"
 class AdDetailsFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     @Inject
@@ -36,6 +39,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adDetailsViewModel = ViewModelProvider(this, viewModelFactory).get(AdDetailsViewModel::class.java)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(view_iklan_toko, "{${userSession.shopId}}", userSession.userId)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
@@ -111,6 +115,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() 
             if (headlineAdNameInput?.textFieldInput?.text.toString().isBlank()) {
                 onError(getString(R.string.topads_headline_ad_name_required))
             } else {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(click_lanjutkan_toko, "{${userSession.shopId}} - {${headlineAdNameInput?.textFieldInput?.text.toString()}}", userSession.userId)
                 validateGroup(headlineAdNameInput?.textFieldInput?.text.toString())
             }
         }

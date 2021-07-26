@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
@@ -110,4 +110,14 @@ public interface ShipmentAdapterActionListener {
     void onSwapInUserAddress();
 
     FragmentManager getCurrentFragmentManager();
+
+    void scrollToPositionWithOffset(int position, float dy);
+
+    void onClickLihatOnTickerOrderError(String shopId, String errorMessage);
+
+    void onClickRefreshErrorLoadCourier();
+
+    void onViewErrorInCourierSection(String errorMessage);
+
+    void onClickSetPinpoint(int position);
 }

@@ -7,7 +7,7 @@
     android:id="@+id/main_view"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,9 +15,9 @@
         android:lineSpacingExtra="7sp"
         android:padding="@dimen/padding_activity"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
         tools:text="Semua waktu"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         />
 
     <ImageView
@@ -25,9 +25,9 @@
         android:layout_width="@dimen/icon_prod_size"
         android:layout_height="@dimen/icon_prod_size"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/padding_activity"
+        android:contentDescription="@null"
         app:srcCompat="@drawable/reputation_ic_check_green_24dp"
         />
 </RelativeLayout>

@@ -3,49 +3,49 @@
   "mode": "subset",
   "query": [
     {
-      "networkSpeed": "{{.+}}",
-      "clientId": "{{.+}}",
-      "isLoggedInStatus": "{{.+}}",
-      "appsflyerId": "{{.+}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
       "screenName": "Register page",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.+}}"
+      "userId": ".*",
+      "sessionIris": ".+"
     },
     {
       "event": "clickRegister",
       "eventCategory": "register page",
       "eventAction": "click on button daftar - email",
       "eventLabel": "click",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickRegister",
       "eventCategory": "register page",
       "eventAction": "click on button daftar - email",
       "eventLabel": "success",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickRegister",
       "eventCategory": "register page",
       "eventAction": "click masuk top",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickRegister",
       "eventCategory": "register page",
       "eventAction": "click masuk bottom",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickLogin",
       "eventCategory": "register page",
       "eventAction": "click on masuk",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     }
   ]

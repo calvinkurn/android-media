@@ -6,22 +6,22 @@
       "event": "begin_checkout",
       "eventCategory": "digital - checkout",
       "eventAction": "view checkout",
-      "eventLabel": "{{.* - .*}}",
+      "eventLabel": ".* - .*",
       "checkout_step": "1",
       "checkout_option": "cart page loaded",
       "currentSite": "tokopediadigital",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [
         {
-          "cart_id": "{{.*}}",
-          "quantity": "{{\\d*.\\d*}}",
-          "category_id": "{{.*}}",
-          "item_id": "{{.*}}",
-          "item_name": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "item_category": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+          "cart_id": ".*",
+          "quantity": "\\d*.\\d*",
+          "category_id": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ]
     }

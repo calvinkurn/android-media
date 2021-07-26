@@ -1,9 +1,9 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
                                                          private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
-                                                         private val executorDispatchers: ExecutorDispatchers) {
+                                                         private val executorDispatchers: CoroutineDispatchers) {
 
     suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Throwable?, ValidateUsePromoRevampUiModel?, Boolean> {
         if (!hasPromo(validateUsePromoRequest)) return Triple(null, null, false)
@@ -138,7 +138,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val promoRequest = PromoRequest()
 
         val ordersItem = Order()
-        ordersItem.shopId = orderCart.shop.shopId.toLong()
+        ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
         ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId, orderCart.product.quantity.orderQuantity))
         ordersItem.isChecked = true
@@ -284,11 +284,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
                 if (orderCart.cartString == voucherOrdersItemUiModel.uniqueId) {
                     notEligiblePromoHolderdata.shopName = orderCart.shop.shopName
-                    if (orderCart.shop.isOfficial == 1) {
-                        notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE
-                    } else if (orderCart.shop.isGold == 1) {
-                        notEligiblePromoHolderdata.iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT
-                    }
+                    notEligiblePromoHolderdata.shopBadge = orderCart.shop.shopBadge
                 }
                 if (i == 0) {
                     notEligiblePromoHolderdata.showShopSection = true

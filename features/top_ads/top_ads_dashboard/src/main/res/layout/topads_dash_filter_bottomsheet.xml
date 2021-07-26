@@ -2,42 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/topads_bg_top_round">
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/btn_close"
-        android:layout_width="20dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:padding="@dimen/dp_2"
-        app:layout_constraintBottom_toBottomOf="@+id/title"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_16"
-        android:gravity="center_vertical"
-        android:text="@string/topads_dash_filter_sheet_title"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3" />
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/status_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
         android:text="@string/topads_dash_status"
         android:textColor="@color/topads_heading_color"
-        app:layout_constraintStart_toStartOf="@id/btn_close"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1" />
 
     <LinearLayout

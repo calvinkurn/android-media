@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -58,10 +56,4 @@ class HotelModule {
     fun provideTravelCalendarHolidayQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.travelcalendar.R.raw.query_get_travel_calendar_holiday)
     }
-
-    @HotelScope
-    @Provides
-    fun provideTravelDispatcherProvider(): TravelDispatcherProvider = TravelProductionDispatcherProvider()
-
-
 }

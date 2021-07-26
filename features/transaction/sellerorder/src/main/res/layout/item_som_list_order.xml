@@ -16,7 +16,11 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:paddingTop="@dimen/som_list_order_item_padding_top"
-            android:paddingBottom="@dimen/som_list_order_item_padding_right_left_bottom">
+            android:paddingBottom="@dimen/som_list_order_item_padding_right_left_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <View
                 android:id="@+id/somOrderListIndicator"
@@ -87,9 +91,9 @@
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintBottom_toTopOf="@id/tvSomListDeadline"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@id/tvSomListOrderStatus"
                 app:layout_constraintTop_toTopOf="@id/tvSomListOrderStatus"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="small" />
 
             <ImageView
@@ -97,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/layout_lvl0"
                 android:background="@drawable/bg_due_response_icon"
+                android:contentDescription="Ikon tenggat waktu"
                 android:paddingStart="@dimen/spacing_lvl2"
                 android:paddingTop="@dimen/spacing_lvl2"
                 android:paddingEnd="@dimen/layout_lvl0"
@@ -238,8 +243,8 @@
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
-                app:icon_enable_state="true"
                 android:layout_marginTop="@dimen/spacing_lvl2"
+                app:icon_enable_state="true"
                 app:icon_name="LOCATION"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/icSomListCourier" />
@@ -271,7 +276,6 @@
                 app:unifyButtonSize="micro"
                 tools:text="Terima Pesanan"
                 tools:visibility="visible" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 </LinearLayout>

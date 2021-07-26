@@ -38,6 +38,8 @@ class PlayVideoScalingManager(
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = true
             flYouTube.isClickable = true
+
+            listener.onAnimationFinish(false)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -46,6 +48,8 @@ class PlayVideoScalingManager(
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
             flYouTube.isClickable = false
+
+            listener.onAnimationStart(false)
         }
     }
     private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
@@ -55,6 +59,8 @@ class PlayVideoScalingManager(
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = false
             flYouTube.isClickable = true
+
+            listener.onAnimationFinish(true)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -63,6 +69,8 @@ class PlayVideoScalingManager(
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
             flYouTube.isClickable = false
+
+            listener.onAnimationStart(true)
         }
     }
 
@@ -202,5 +210,7 @@ class PlayVideoScalingManager(
     interface Listener {
 
         fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int)
+        fun onAnimationStart(isHidingInsets: Boolean)
+        fun onAnimationFinish(isHidingInsets: Boolean)
     }
 }

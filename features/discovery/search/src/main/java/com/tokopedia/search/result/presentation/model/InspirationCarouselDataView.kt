@@ -12,7 +12,7 @@ class InspirationCarouselDataView(
         val type: String = "",
         val position: Int = 0,
         val layout: String = "",
-        val options: List<Option> = listOf()
+        val options: List<Option> = listOf(),
 ) : Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {
@@ -26,11 +26,16 @@ class InspirationCarouselDataView(
             val bannerImageUrl: String = "",
             val bannerLinkUrl: String = "",
             val bannerApplinkUrl: String = "",
-            val product: List<Product> = listOf(),
+            val identifier: String = "",
+            var product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
             val layout: String = "",
             val position: Int = 0,
-            val carouselTitle: String = ""
+            val carouselTitle: String = "",
+            val optionPosition: Int = 0,
+            var isChipsActive: Boolean = false,
+            val hexColor: String = "",
+            val chipImageUrl: String = "",
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -50,6 +55,10 @@ class InspirationCarouselDataView(
             )
         }
 
+        fun hasProducts() = product.isNotEmpty()
+
+        fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
+
         class Product(
                 val id: String = "",
                 val name: String = "",
@@ -67,7 +76,11 @@ class InspirationCarouselDataView(
                 val labelGroupDataList: List<LabelGroupDataView> = listOf(),
                 val layout: String = "",
                 val originalPrice: String = "",
-                val discountPercentage: Int = 0
+                val discountPercentage: Int = 0,
+                val position: Int = 0,
+                val optionTitle: String = "",
+                val shopLocation: String = "",
+                val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -124,6 +137,33 @@ class InspirationCarouselDataView(
                         "variant", "none / other",
                         "list", "/search - carousel",
                         "position", optionPosition
+                )
+            }
+
+            fun getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams: String): Any {
+                return DataLayer.mapOf(
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+                        "id", id,
+                        "list", "/search - carousel chips",
+                        "name", name,
+                        "position", position,
+                        "price", price,
+                        "variant", "none / other"
+                )
+            }
+
+            fun getInspirationCarouselDynamicProductAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "id", id,
+                        "list", "/search - carousel",
+                        "name", name,
+                        "position", position,
+                        "price", price,
+                        "variant", "none / other"
                 )
             }
         }

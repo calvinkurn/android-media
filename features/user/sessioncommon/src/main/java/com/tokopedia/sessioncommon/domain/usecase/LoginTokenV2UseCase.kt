@@ -17,9 +17,8 @@ import javax.inject.Named
  * Created by Yoris Prayogo on 16/02/21.
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
-
-class LoginTokenV2UseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
+open class LoginTokenV2UseCase @Inject constructor(
+        val graphqlUseCase: GraphqlUseCase<LoginTokenPojoV2>,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface):
         UseCase<LoginTokenPojoV2>() {

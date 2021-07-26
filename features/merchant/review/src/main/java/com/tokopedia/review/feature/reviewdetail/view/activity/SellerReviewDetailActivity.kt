@@ -14,7 +14,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
@@ -25,7 +24,6 @@ import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetai
 import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule
 import com.tokopedia.review.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
-import com.tokopedia.seller_migration_common.presentation.util.getRegisteredMigrationApplinks
 
 /**
  * @author by milhamj on 2020-02-14.
@@ -135,7 +133,7 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
         val uri = intent.data
         productId = uri?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
         if(productId.isNotBlank()) {
-            intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId.toIntOrZero())
+            intent.putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
         }
     }
 

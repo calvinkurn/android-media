@@ -5,16 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.FilterMenuAdapter
+import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_menu_list.view.*
 
 class FilterMenu : BottomSheetUnify() {
@@ -60,11 +57,11 @@ class FilterMenu : BottomSheetUnify() {
         setChild(menuView)
     }
 
-    fun setOnItemMenuClickListener(onClick: (Menus.ItemMenus, Int) -> Unit) {
+    fun setOnItemMenuClickListener(onClick: (TopchatItemMenu, Int) -> Unit) {
         menuAdapter.setOnItemMenuClickListener(onClick)
     }
 
-    fun setItemMenuList(menus: MutableList<Menus.ItemMenus>) {
+    fun setItemMenuList(menus: MutableList<TopchatItemMenu>) {
         menuAdapter.menus = menus
         menuAdapter.notifyDataSetChanged()
     }

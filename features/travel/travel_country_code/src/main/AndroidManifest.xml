@@ -7,7 +7,7 @@
             android:name="com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity"
             android:label="@string/activity_label_travel_country_code"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 
 </manifest>

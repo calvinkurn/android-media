@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.UseCase
  * Created by Yoris Prayogo on 17/02/21.
  * Copyright (c) 2021 PT. Tokopedia All rights reserved.
  */
-class GeneratePublicKeyUseCase(private val graphqlUseCase: GraphqlUseCase<GenerateKeyPojo>): UseCase<GenerateKeyPojo>() {
+open class GeneratePublicKeyUseCase(private val graphqlUseCase: GraphqlUseCase<GenerateKeyPojo>): UseCase<GenerateKeyPojo>() {
 
     private val params = RequestParams.create()
 

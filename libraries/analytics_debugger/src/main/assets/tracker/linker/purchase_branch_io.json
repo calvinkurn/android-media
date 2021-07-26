@@ -6,21 +6,21 @@
       "buoList": [],
       "customProperties": {
         "nameValuePairs": {
-          "paymentID": "{{\\w+}}",
-          "productType": "{{\\w+}}",
-          "userId": "{{\\w+}}",
-          "new_buyer": "{{true|false}}",
-          "monthly_new_buyer": "{{true|false}}"
+          "paymentID": "\\w+",
+          "productType": "\\w+",
+          "userId": "\\w+",
+          "new_buyer": "true|false",
+          "monthly_new_buyer": "true|false"
         }
       },
       "eventName": "marketplace_first_txn",
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {
-          "transaction_id": "{{\\d+}}",
-          "currency": "{{\\w+}}",
-          "shipping": "{{\\d+}}",
-          "revenue": "{{\\d+}}"
+          "transaction_id": "\\d+",
+          "currency": "\\w+",
+          "shipping": "\\d+",
+          "revenue": "\\d+"
         }
       }
     }

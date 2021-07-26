@@ -5,6 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.domain.interactor.GetPMInterruptDataUseCase
+import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.domain.usecase.SellerAdminUseCase
@@ -14,7 +18,9 @@ import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import javax.inject.Inject
@@ -38,6 +44,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
+
     val notifications: LiveData<Result<NotificationUiModel>>
         get() = _notifications
 
@@ -133,5 +140,4 @@ class SellerHomeActivityViewModel @Inject constructor(
             setIsMultiLocationShop(isMultiLocationShop)
         }
     }
-
 }

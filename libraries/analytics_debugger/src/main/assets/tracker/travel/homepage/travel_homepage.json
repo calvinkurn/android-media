@@ -6,15 +6,15 @@
       "event": "view_item",
       "eventAction": "banner impression",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+ - slider banner}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+ - slider banner",
+          "creative_url": ".+"
         }
       ]
     },
@@ -22,15 +22,15 @@
       "event": "select_content",
       "eventAction": "click banner",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+ - slider banner}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+ - slider banner",
+          "creative_url": ".+"
         }
       ]
     },
@@ -39,21 +39,21 @@
       "eventAction": "click view all on banner",
       "eventCategory": "digital - subhomepage - travel&entertainment",
       "eventLabel": "click",
-      "sessionIris": "{{.+}}"
+      "sessionIris": ".+"
     },
     {
       "event": "select_content",
       "eventAction": "dynamic icon click",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{.+ - dynamic icon}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": ".+ - dynamic icon",
+          "creative_url": ".+"
         }
       ]
     },
@@ -61,34 +61,34 @@
       "event": "view_item",
       "eventAction": "impression on popular destination widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{.+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{popular destination widget - .+}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": "popular destination widget - .+",
+          "creative_url": ".+"
         }
       ]
     },{
       "event": "select_content",
       "eventAction": "click on dynamic banner",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{popular destination - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "popular destination - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{popular destination widget - .+}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": "popular destination widget - .+",
+          "creative_url": ".+"
         }
       ]
     },
@@ -96,50 +96,50 @@
       "event": "view_item_list",
       "eventAction": "impression on square product card widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{square product card - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "square product card - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
-      "item_list": "{{.+}}",
+      "item_list": ".+",
       "currentSite": "tokopediadigitalSubhomepage",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
-          "dimension40": "{{.+}}",
-          "index": "{{.+}}",
-          "item_name": "{{square product card widget - .+}}",
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".+",
+          "index": ".+",
+          "item_name": "square product card widget - .+",
           "item_brand": "none / other",
           "item_variant": "none / other",
-          "item_category": "{{.+}}"
+          "item_category": ".+"
         }
       ]
     }, {
       "event": "select_content",
       "eventAction": "click on square product card widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{square product card - .+ - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "square product card - .+ - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
-      "item_list": "{{.+}}",
+      "item_list": ".+",
       "currentSite": "tokopediadigitalSubhomepage",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
-          "dimension40": "{{.+}}",
-          "index": "{{.+}}",
-          "item_name": "{{square product card widget - .+}}",
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".+",
+          "index": ".+",
+          "item_name": "square product card widget - .+",
           "item_brand": "none / other",
           "item_variant": "none / other",
-          "item_category": "{{.+}}"
+          "item_category": ".+"
         }
       ]
     },{
       "event": "clickEvent",
       "eventAction": "click on view all square product card widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{square product card - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "square product card - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage"
     },
@@ -147,17 +147,17 @@
       "event": "view_item",
       "eventAction": "impression on lego banner widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{lego banner - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "lego banner - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{lego banner widget - .+}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": "lego banner widget - .+",
+          "creative_url": ".+"
         }
       ]
     },
@@ -165,17 +165,17 @@
       "event": "select_content",
       "eventAction": "click on lego banner widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{lego banner - .+ - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "lego banner - .+ - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage",
       "promotions": [
         {
-          "creative_name": "{{.+}}",
-          "creative_slot": "{{.+}}",
-          "item_id": "{{.+}}",
-          "item_name": "{{lego banner widget - .*}}",
-          "creative_url": "{{.+}}"
+          "creative_name": ".+",
+          "creative_slot": ".+",
+          "item_id": ".+",
+          "item_name": "lego banner widget - .*",
+          "creative_url": ".+"
         }
       ]
     },
@@ -183,50 +183,50 @@
       "event": "view_item_list",
       "eventAction": "impression on product card widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{product card - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "product card - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage",
-      "item_list": "{{.+}}",
+      "item_list": ".+",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
-          "dimension40": "{{.+}}",
-          "index": "{{.+}}",
-          "item_name": "{{product card widget - .+}}",
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".+",
+          "index": ".+",
+          "item_name": "product card widget - .+",
           "item_brand": "none / other",
           "item_variant": "none / other",
-          "item_category": "{{.+}}"
+          "item_category": ".+"
         }
       ]
     }, {
       "event": "select_content",
       "eventAction": "click on product card widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{product card - .+ - .+ - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "product card - .+ - .+ - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage",
-      "item_list": "{{.+}}",
+      "item_list": ".+",
       "items": [
         {
-          "item_id": "{{.*}}",
-          "price": "{{.*}}",
-          "dimension40": "{{.+}}",
-          "index": "{{.+}}",
-          "item_name": "{{product card widget - .+}}",
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".+",
+          "index": ".+",
+          "item_name": "product card widget - .+",
           "item_brand": "none / other",
           "item_variant": "none / other",
-          "item_category": "{{.+}}"
+          "item_category": ".+"
         }
       ]
     }, {
       "event": "clickEvent",
       "eventAction": "click on view all product card widget",
       "eventCategory": "digital - subhomepage - travel&entertainment",
-      "eventLabel": "{{product card - .+ - .+}}",
-      "sessionIris": "{{.+}}",
+      "eventLabel": "product card - .+ - .+",
+      "sessionIris": ".+",
       "businessUnit": "travel & entertainment",
       "currentSite": "tokopediadigitalSubhomepage"
     }

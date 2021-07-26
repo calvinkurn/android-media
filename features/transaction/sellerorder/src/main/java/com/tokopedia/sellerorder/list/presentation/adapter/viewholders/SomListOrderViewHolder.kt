@@ -34,9 +34,9 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.item_som_list_order.view.*
 
-class SomListOrderViewHolder(
+open class SomListOrderViewHolder(
         itemView: View?,
-        private val listener: SomListOrderItemListener
+        protected val listener: SomListOrderItemListener
 ) : AbstractViewHolder<SomListOrderUiModel>(itemView) {
 
     companion object {
@@ -138,36 +138,16 @@ class SomListOrderViewHolder(
         super.bind(element, payloads)
     }
 
-    private fun setupOrderCard(element: SomListOrderUiModel) {
-        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0) 0.5f else 1f
-        itemView.setOnClickListener {
-            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
-            else listener.onOrderClicked(element)
-        }
-    }
-
-    private fun touchCheckBox(element: SomListOrderUiModel) {
-        if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
-            listener.onCheckBoxClickedWhenDisabled()
-        } else {
-            itemView.checkBoxSomListMultiSelect.apply {
-                isChecked = !isChecked
-                element.isChecked = isChecked
-            }
-            listener.onCheckChanged()
-        }
-    }
-
-    private fun setupQuickActionButton(element: SomListOrderUiModel) {
+    protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
         with(itemView) {
             val firstButton = element.buttons.firstOrNull()
             if (firstButton != null && !listener.isMultiSelectEnabled()) {
-                btnQuickAction.text = firstButton.displayName
-                btnQuickAction.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
-                btnQuickAction.setOnClickListener { onQuickActionButtonClicked(element) }
-                btnQuickAction.show()
+                btnQuickAction?.text = firstButton.displayName
+                btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
+                btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
+                btnQuickAction?.show()
             } else {
-                btnQuickAction.gone()
+                btnQuickAction?.gone()
             }
         }
     }
@@ -340,9 +320,9 @@ class SomListOrderViewHolder(
         element.buttons.firstOrNull()?.let { button ->
             when (button.key) {
                 KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
-                KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(element.orderId)
-                KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(element.orderId)
-                KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(element.orderId)
+                KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
+                KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
+                KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
                 KEY_VIEW_COMPLAINT_SELLER -> listener.onViewComplaintButtonClicked(element)
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
@@ -361,12 +341,42 @@ class SomListOrderViewHolder(
         }
     }
 
-    private fun onBindFinished(element: SomListOrderUiModel) {
-        if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
-                itemView.btnQuickAction.isVisible) {
-            listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
+    protected open fun onBindFinished(element: SomListOrderUiModel) {
+        itemView.btnQuickAction?.let { btnQuickAction ->
+            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                    element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
+                    btnQuickAction.isVisible) {
+                listener.onFinishBindNewOrder(btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
+            }
         }
+    }
+
+    protected fun touchCheckBox(element: SomListOrderUiModel) {
+        if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+            listener.onCheckBoxClickedWhenDisabled()
+        } else {
+            itemView.checkBoxSomListMultiSelect.apply {
+                isChecked = !isChecked
+                element.isChecked = isChecked
+            }
+            listener.onCheckChanged()
+        }
+    }
+
+    protected open fun setupOrderCard(element: SomListOrderUiModel) {
+        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
+        itemView.setOnClickListener {
+            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+            else listener.onOrderClicked(element)
+        }
+    }
+
+    private fun hasActiveRequestCancellation(element: SomListOrderUiModel): Boolean {
+        return element.cancelRequest != 0 && element.cancelRequestStatus != 0
+    }
+
+    private fun skipValidateOrder(element: SomListOrderUiModel): Boolean {
+        return element.cancelRequest != 0 && element.cancelRequestStatus == 0
     }
 
     interface SomListOrderItemListener {
@@ -374,9 +384,9 @@ class SomListOrderViewHolder(
         fun onCheckBoxClickedWhenDisabled()
         fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(orderId: String, url: String)
-        fun onConfirmShippingButtonClicked(orderId: String)
-        fun onAcceptOrderButtonClicked(orderId: String)
-        fun onRequestPickupButtonClicked(orderId: String)
+        fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
+        fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
+        fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
         fun onViewComplaintButtonClicked(order: SomListOrderUiModel)
         fun onEditAwbButtonClicked(orderId: String)

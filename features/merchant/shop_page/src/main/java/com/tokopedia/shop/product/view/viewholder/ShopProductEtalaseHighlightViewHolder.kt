@@ -37,7 +37,7 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
     }
 
     override fun bind(shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel) {
-        var etalaseHighlightCarouselUiModelList: List<EtalaseHighlightCarouselUiModel>? = shopProductEtalaseHighlightUiModel.etalaseHighlightCarouselUiModelList
+        var etalaseHighlightCarouselUiModelList: List<EtalaseHighlightCarouselUiModel>? = shopProductEtalaseHighlightUiModel.getEtalaseHighlightCarouselUiModelList()
         if (etalaseHighlightCarouselUiModelList == null) {
             etalaseHighlightCarouselUiModelList = ArrayList()
         }

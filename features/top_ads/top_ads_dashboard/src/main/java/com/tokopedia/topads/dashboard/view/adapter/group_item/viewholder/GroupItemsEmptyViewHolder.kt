@@ -35,6 +35,6 @@ class GroupItemsEmptyViewHolder(val view: View) : GroupItemsViewHolder<GroupItem
             view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             view.btn_submit.visibility = View.GONE
         }
-        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
     }
 }

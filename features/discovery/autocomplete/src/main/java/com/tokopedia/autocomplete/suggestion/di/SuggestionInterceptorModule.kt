@@ -4,14 +4,11 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.autocomplete.initialstate.di.InitialStateScope
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor
-
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -22,12 +19,6 @@ class SuggestionInterceptorModule {
     @Provides
     fun provideDebugInterceptor(): DebugInterceptor {
         return DebugInterceptor()
-    }
-
-    @SuggestionScope
-    @Provides
-    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
-        return CacheApiInterceptor(context)
     }
 
     @SuggestionScope

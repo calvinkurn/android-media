@@ -60,11 +60,9 @@ class LeftChatMessageViewHolder(
 
     private fun bindMessageInfo(message: MessageViewModel) {
         if (
-                message.source == BaseChatViewModel.SOURCE_AUTO_REPLY &&
-                !message.isSender &&
-                !commonListener.isSeller()
+                message.hasLabel() && !message.isSender
         ) {
-            fxChat?.showInfo()
+            fxChat?.showInfo(message.label)
         } else {
             fxChat?.hideInfo()
         }

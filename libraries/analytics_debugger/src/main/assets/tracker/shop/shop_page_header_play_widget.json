@@ -6,18 +6,18 @@
       "eventAction": "view widget broadcast",
       "event": "clickShopPage",
       "eventCategory": "shop page - seller",
-      "eventLabel": "{{\\d+}}",
-      "shopId": "{{.*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+",
+      "shopId": ".*",
+      "sessionIris": ".*",
       "pageType": "/shoppage"
     },
     {
       "eventAction": "click widget broadcast",
       "event": "clickShopPage",
       "eventCategory": "shop page - seller",
-      "eventLabel": "{{\\d+}}",
-      "shopId": "{{.*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "\\d+",
+      "shopId": ".*",
+      "sessionIris": ".*",
       "pageType": "/shoppage"
     }
   ]

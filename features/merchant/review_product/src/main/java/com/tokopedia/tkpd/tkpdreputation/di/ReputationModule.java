@@ -3,8 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -26,12 +24,6 @@ import dagger.Provides;
 
 @Module(includes = {ReviewProductViewModelModule.class})
 public class ReputationModule {
-
-    @ReputationScope
-    @Provides
-    CoroutineDispatchers provideCoroutineDispatchers(){
-        return CoroutineDispatchersProvider.INSTANCE;
-    }
 
     @ReputationScope
     @Provides

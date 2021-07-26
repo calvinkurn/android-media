@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/hotel_image_list_horizontal_height"
+    app:cardCornerRadius="@dimen/layout_lvl1"
+    app:cardElevation="@dimen/hotel_3dp"
+    app:cardPreventCornerOverlap="false"
+    android:layout_margin="@dimen/spacing_lvl2"
+    app:cardBackgroundColor="@color/Unify_N0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/hotel_300dp"
+        android:layout_height="match_parent">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/hotel_image_shimmer"
+            android:layout_width="@dimen/hotel_88dp"
+            android:layout_height="@dimen/layout_lvl0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:use_gradient="true" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/hotel_title_shimmer"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/hotel_12dp"
+            android:layout_marginLeft="@dimen/hotel_12dp"
+            android:layout_marginTop="@dimen/hotel_12dp"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:corners="8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/hotel_image_shimmer"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/hotel_image_shimmer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:use_gradient="true"
+            app:width_weight="0.6" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/hotel_rate_shimmer"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:textSize="@dimen/fontSize_lvl1"
+            app:corners="8"
+            app:layout_constraintEnd_toEndOf="@+id/hotel_title_shimmer"
+            app:layout_constraintLeft_toLeftOf="@+id/hotel_title_shimmer"
+            app:layout_constraintRight_toRightOf="@+id/hotel_title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/hotel_title_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/hotel_title_shimmer"
+            app:use_gradient="true"
+            app:width_weight="0.3" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/hotel_discount_shimmer"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/spacing_lvl6"
+            app:corners="8"
+            app:layout_constraintEnd_toEndOf="@+id/hotel_title_shimmer"
+            app:layout_constraintLeft_toLeftOf="@+id/hotel_title_shimmer"
+            app:layout_constraintRight_toRightOf="@+id/hotel_title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/hotel_title_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/hotel_rate_shimmer"
+            app:use_gradient="true"
+            app:width_weight="0.8" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/hotel_price_shimmer"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:textSize="@dimen/fontSize_lvl1"
+            app:corners="8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/hotel_title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/hotel_title_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/hotel_discount_shimmer"
+            app:use_gradient="true"
+            app:width_weight="0.3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

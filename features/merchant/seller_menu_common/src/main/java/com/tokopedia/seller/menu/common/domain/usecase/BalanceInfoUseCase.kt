@@ -16,6 +16,7 @@ class BalanceInfoUseCase @Inject constructor(private val graphQlRepository: Grap
                 "    seller_usable\n" +
                 "    buyer_usable\n" +
                 "  }\n" +
+                "  status\n" + //Don't remove `status` field since it's necessary for refresh token flow
                 "}"
     }
 

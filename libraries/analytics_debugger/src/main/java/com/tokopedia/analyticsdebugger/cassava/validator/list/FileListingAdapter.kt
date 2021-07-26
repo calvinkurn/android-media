@@ -10,8 +10,8 @@ import com.tokopedia.analyticsdebugger.R
 
 class FileListingAdapter : RecyclerView.Adapter<FileListingAdapter.ItemViewHolder>() {
 
-    private val mItems: MutableList<String> = mutableListOf()
-    private var callback: ((String) -> Unit)? = null
+    private val mItems: MutableList<Pair<String, String>> = mutableListOf()
+    private var callback: ((Pair<String, String>) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list_test, parent, false)
@@ -24,14 +24,14 @@ class FileListingAdapter : RecyclerView.Adapter<FileListingAdapter.ItemViewHolde
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.itemView.findViewById<TextView>(R.id.tv_item).text =
-                mItems[position].removePrefix(ValidatorListFragment.TRACKER_ROOT_PATH)
+                mItems[position].second.removePrefix(ValidatorListFragment.TRACKER_ROOT_PATH)
     }
 
-    fun setOnItemClickListener(callback: (String) -> Unit) {
+    fun setOnItemClickListener(callback: (Pair<String, String>) -> Unit) {
         this.callback = callback
     }
 
-    fun setItems(list: List<String>) {
+    fun setItems(list: List<Pair<String, String>>) {
         val result = DiffUtil.calculateDiff(getDiffCallback(mItems, list))
         with(mItems) {
             clear()
@@ -43,16 +43,17 @@ class FileListingAdapter : RecyclerView.Adapter<FileListingAdapter.ItemViewHolde
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
 
-private fun getDiffCallback(old: List<String>, newList: List<String>) = object : DiffUtil.Callback() {
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition] == newList[newItemPosition]
-    }
+private fun getDiffCallback(old: List<Pair<String, String>>, newList: List<Pair<String, String>>) =
+        object : DiffUtil.Callback() {
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return old[oldItemPosition] == newList[newItemPosition]
+            }
 
-    override fun getOldListSize(): Int = old.size
+            override fun getOldListSize(): Int = old.size
 
-    override fun getNewListSize(): Int = newList.size
+            override fun getNewListSize(): Int = newList.size
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition] == newList[newItemPosition]
-    }
-}
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return old[oldItemPosition] == newList[newItemPosition]
+            }
+        }

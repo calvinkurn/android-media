@@ -1,10 +1,13 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.feature.list.extension.findIndex
@@ -14,7 +17,15 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl
-) : BaseProductManageAdapter<ProductUiModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
+) : BaseProductManageAdapter<Visitable<*>, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
+
+    fun updateProduct(itemList: List<Visitable<*>>) {
+        submitList(itemList)
+    }
+
+    fun updateEmptyState(emptyModel: EmptyModel) {
+        submitList(arrayListOf(emptyModel))
+    }
 
     fun updatePrice(productId: String, price: String) {
         submitList(productId) {
@@ -26,8 +37,8 @@ class ProductManageListAdapter(
 
     fun updatePrice(editResult: EditVariantResult) {
         submitList(editResult.productId) {
-            val editedMinPrice = editResult.variants.minBy { it.price }?.price.orZero()
-            val editedMaxPrice = editResult.variants.maxBy { it.price }?.price.orZero()
+            val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price.orZero()
+            val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price.orZero()
 
             val minPrice = PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
             val maxPrice = PriceUiModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
@@ -49,7 +60,7 @@ class ProductManageListAdapter(
     }
 
     fun deleteProduct(productId: String) {
-        val items = data.toMutableList()
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         items.findIndex(productId)?.let { index ->
             items.removeAt(index)
             submitList(items)
@@ -65,19 +76,19 @@ class ProductManageListAdapter(
     }
 
     fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
-        val items = data.map {
+        val items = data.filterIsInstance<ProductUiModel>().map {
             it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
         }
         submitList(items)
     }
 
     fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
-        val productList = data.filter { predicate.invoke(it) }
+        val productList = data.filterIsInstance<ProductUiModel>().filter { predicate.invoke(it) }
         submitList(productList)
     }
 
     private fun submitList(productId: String, update: (ProductUiModel) -> ProductUiModel) {
-        val items = data.toMutableList()
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val index = items.findIndex(productId)
         index?.let {
             items[it] = update.invoke(items[it])

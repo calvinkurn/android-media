@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.reputationhistory.util;
 
-import com.db.williamchart.util.GoldMerchantDateUtils;
-
 import java.util.Locale;
 
 /**

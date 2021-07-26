@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
@@ -26,6 +27,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsDailyBudgetReco
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.BUDGET_RECOM
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_list.*
 import javax.inject.Inject
@@ -35,6 +37,7 @@ import javax.inject.Inject
  * Created by Pika on 20/7/20.
  */
 
+const val CLICK_TERAPKAN = "click - terapkan"
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
@@ -43,6 +46,8 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     companion object {
         fun createInstance(bundle: Bundle): TopAdsInsightBaseBidFragment {
@@ -63,7 +68,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = TopadsDailyBudgetRecomAdapter(::onButtonClick)
+        adapter = TopadsDailyBudgetRecomAdapter(userSession, ::onButtonClick)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
@@ -146,7 +151,9 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
-        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId.toString(), ::onSuccessGroupInfo)
+        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, ::onSuccessGroupInfo)
+        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].setCurrentBid}"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {

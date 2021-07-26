@@ -24,6 +24,7 @@ import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companio
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_AGENT_QUEUE
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_SEPRATOR
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_VIEW
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
@@ -46,6 +47,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
         const val TYPE_OPTION_LIST = "22"
         const val TYPE_CSAT_OPTIONS = "23"
         const val TYPE_STICKY_BUTTON = "25"
+        const val TYPE_CSAT_VIEW = "13"
     }
 
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -59,6 +61,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_OPTION_LIST -> convertToHelpQuestionViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_OPTIONS-> convertToCsatOptionsViewModel(chatItemPojoByDateByTime)
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
+            TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }

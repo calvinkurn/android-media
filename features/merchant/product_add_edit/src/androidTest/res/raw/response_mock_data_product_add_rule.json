@@ -1,0 +1,20 @@
+{
+  "data": {
+    "ProductAddRule": {
+      "header": {
+        "reason": "",
+        "messages": [],
+        "errorCode": ""
+      },
+      "data": {
+        "eligible": {
+          "value": true,
+          "totalProduct": 106,
+          "limit": 1000,
+          "isUnlimited": false,
+          "actionItems": ["UpToPM", "Variant", "Delete", "Promotion"],
+        }
+      }
+    }
+  }
+}

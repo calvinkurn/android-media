@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/event_navigation"
+    app:startDestination="@id/homeEventFragment"
+    >
+
+    <fragment
+        android:id="@+id/homeEventFragment"
+        android:name="com.tokopedia.entertainment.home.fragment.NavEventHomeFragment"
+        tools:layout="@layout/fragment_home_event"
+        >
+        <action
+            android:id="@+id/action_homeEventFragment_to_pdpEventFragment"
+            app:destination="@id/pdpEventFragment" />
+        <deepLink
+            android:id="@+id/deepLinkHome"
+            app:uri="tokopedia-android-internal://event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pdpEventFragment"
+        android:name="com.tokopedia.entertainment.pdp.fragment.EventPDPFragment"
+        tools:layout="@layout/fragment_event_pdp">
+        <argument
+            android:name="seo"
+            android:defaultValue='""'
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLinkPDP"
+            app:uri="tokopedia-android-internal://event/detail/{seo}" />
+    </fragment>
+</navigation>

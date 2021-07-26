@@ -21,24 +21,24 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
     }
 
     fun updateSelectedItem(element: SelectUiModel): Boolean {
-        val currentData = _selectData.value
         var needSort = false
-        if(selectedElement != null) {
-            val selectIndex = currentData?.indexOf(selectedElement!!)
-            val selected = selectIndex?.let { currentData[it] }
-            if(selected == element) {
-                return needSort
+        val currentData = _selectData.value.orEmpty()
+        if(currentData.isNotEmpty()) {
+            selectedElement?.let { selectedElement ->
+                val selectIndex = currentData.indexOf(selectedElement)
+                val selected = selectIndex.let { currentData[it] }
+                if(selected == element) {
+                    return needSort
+                }
+                selected.isSelected = false
             }
-            selected?.let {
-                it.isSelected = !it.isSelected
+
+            currentData.indexOf(element).let {
+                currentData[it].isSelected = true
+                selectedElement = currentData[it]
+                _selectData.value = currentData.toMutableList()
+                needSort = it > (MAXIMUM_CHIPS - 1)
             }
-        }
-        val index = currentData?.indexOf(element)
-        index?.let {
-            currentData[it].isSelected = !currentData[it].isSelected
-            selectedElement = currentData[it]
-            _selectData.value = currentData
-            needSort = it > (MAXIMUM_CHIPS - 1)
         }
         return needSort
     }

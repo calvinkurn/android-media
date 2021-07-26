@@ -1,8 +1,8 @@
 package com.tokopedia.developer_options.presentation.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Notification;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -18,23 +18,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerActivity;
@@ -47,19 +40,23 @@ import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
-import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
-import com.tokopedia.developer_options.notification.ReviewNotificationExample;
-import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
+import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
+import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
-import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.remoteconfig.RollenceKey;
+import com.tokopedia.unifycomponents.TextFieldUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -68,58 +65,79 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
-import timber.log.Timber;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
-import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
 public class DeveloperOptionActivity extends BaseActivity {
-
-    public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
-    private static final String IP_GROUPCHAT = "ip_groupchat";
-    private static final String LOG_GROUPCHAT = "log_groupchat";
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
+    public static final String URI_HOME_MACROBENCHMARK = "home-macrobenchmark";
+    public static final String URI_COACHMARK = "coachmark";
+    public static final String URI_COACHMARK_ENABLE = "enable";
+    public static final String URI_COACHMARK_DISABLE = "disable";
+
+    String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
+    String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
+    String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
+    String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
+    String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
+
+
+    String PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK";
+    String PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV";
+    String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
+    String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
+
+    String PREFERENCE_NAME = "coahmark_choose_address";
+    String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
+
+    String EXP_TOP_NAV = NAVIGATION_EXP_TOP_NAV;
+    String VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP;
+
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
-    private TextView resetOnBoarding;
-    private TextView testOnBoarding;
-    private TextView vForceCrash;
-    private TextView reviewNotifBtn;
-    private AppCompatEditText remoteConfigPrefix;
-    private AppCompatTextView remoteConfigStartButton;
-    private AppCompatTextView abTestRollenceEditorStartButton;
-    private ToggleButton toggleTimberDevOption;
+    private UnifyButton resetOnBoarding;
+    private UnifyButton testOnBoarding;
+    private UnifyButton vForceCrash;
+    private TextFieldUnify remoteConfigPrefix;
+    private UnifyButton remoteConfigStartButton;
+    private UnifyButton abTestRollenceEditorStartButton;
     private Spinner spinnerEnvironmentChooser;
 
     private View sendTimberButton;
-    private EditText editTextTimberMessage;
+    private TextFieldUnify editTextTimberMessage;
 
-    private View sendFirebaseCrash;
-    private EditText editTextFirebaseCrash;
+    private UnifyButton sendFirebaseCrash;
+    private TextFieldUnify editTextFirebaseCrash;
 
-    private View routeManagerButton;
-    private EditText editTextRouteManager;
-    private EditText editTextChangeVersionName;
-    private EditText editTextChangeVersionCode;
+    private UnifyButton routeManagerButton;
+    private TextFieldUnify editTextRouteManager;
+    private TextFieldUnify editTextChangeVersionName;
+    private TextFieldUnify editTextChangeVersionCode;
     private View changeVersionButton;
 
-    private TextView vGoToScreenRecorder;
-    private TextView vGoTochuck;
+    private UnifyButton vGoToScreenRecorder;
+    private UnifyButton vGoTochuck;
     private CheckBox toggleChuck;
 
-    private TextView vGoToTopAdsDebugger;
-    private TextView vGoToApplinkDebugger;
-    private TextView vGoToFpm;
-    private TextView vGoToCassava;
-    private TextView vGoToAnalytics;
-    private TextView vGoToIrisSaveLogDB;
-    private TextView vGoToIrisSendLogDB;
+    private UnifyButton vGoToTopAdsDebugger;
+    private UnifyButton vGoToApplinkDebugger;
+    private UnifyButton vGoToFpm;
+    private UnifyButton vGoToCassava;
+    private UnifyButton vGoToAnalytics;
+    private UnifyButton vGoToIrisSaveLogDB;
+    private UnifyButton vGoToIrisSendLogDB;
     private CheckBox toggleDarkMode;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
@@ -127,22 +145,20 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
     private CheckBox toggleSellerAppReview;
-
-    private AppCompatEditText ipGroupChat;
-    private View saveIpGroupChat;
-    private ToggleButton groupChatLogToggle;
+    private CheckBox toggleLeakCanary;
 
     private UserSessionInterface userSession;
-    private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
-    private TextView accessTokenView;
-    private TextView appAuthSecretView;
-    private TextView tvFakeResponse;
+    private UnifyButton accessTokenView;
+    private UnifyButton appAuthSecretView;
+    private UnifyButton tvFakeResponse;
 
-    private Button requestFcmToken;
+    private UnifyButton requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
+
+    private UnifyButton alwaysOldBalanceWidget;
 
     @Override
     public String getScreenName() {
@@ -158,15 +174,25 @@ public class DeveloperOptionActivity extends BaseActivity {
             Intent intent = getIntent();
             Uri uri = null;
             boolean isChangeUrlApplink = false;
+            boolean isCoachmarkApplink = false;
+            boolean isHomeMacrobenchmarkApplink = false;
             if (intent != null) {
                 uri = intent.getData();
-                if (uri!= null) {
+                if (uri != null) {
                     isChangeUrlApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(CHANGEURL);
+                    isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(URI_COACHMARK);
+                    isHomeMacrobenchmarkApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
                 }
             }
             if (isChangeUrlApplink) {
                 handleUri(uri);
+            } else if (isHomeMacrobenchmarkApplink) {
+                handleHomeMacrobenchmarkUri(userSession);
+            } else if (isCoachmarkApplink) {
+                handleCoachmarkUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
                 setupView();
@@ -176,6 +202,13 @@ public class DeveloperOptionActivity extends BaseActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        System.out.println("++ line 206");
+        alwaysOldBalanceWidget.setEllipsize(null);
     }
 
     private void handleUri(Uri uri) {
@@ -188,6 +221,35 @@ public class DeveloperOptionActivity extends BaseActivity {
         TokopediaUrl.Companion.init(DeveloperOptionActivity.this);
         userSession.logoutSession();
         new Handler().postDelayed(() -> restart(DeveloperOptionActivity.this), 500);
+    }
+
+    private void handleCoachmarkUri(Uri uri) {
+        if (uri.getLastPathSegment().startsWith(URI_COACHMARK_DISABLE)) {
+            CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
+            SharedPreferences sharedPrefs = getSharedPreferences(
+                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+            sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                    .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+                    .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+                    .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
+        }
+        finish();
+    }
+
+    private void handleHomeMacrobenchmarkUri(UserSessionInterface userSession) {
+        CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
+        SharedPreferences sharedPrefs = getSharedPreferences(
+                KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+                .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
+
+        userSession.setFirstTimeUserOnboarding(false);
+
+        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**
@@ -231,18 +293,14 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
         toggleSellerAppReview = findViewById(R.id.toggle_seller_app_review);
+        toggleLeakCanary = findViewById(R.id.toggle_leak_canary);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
         abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
 
-        reviewNotifBtn = findViewById(R.id.review_notification);
-
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
-
-        toggleTimberDevOption = findViewById(R.id.toggle_timber_dev_options);
-        toggleTimberDevOption.setChecked(false);
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
@@ -256,50 +314,35 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextChangeVersionName = findViewById(R.id.et_change_version_name);
         editTextChangeVersionCode = findViewById(R.id.et_change_version_code);
         changeVersionButton = findViewById(R.id.btn_change_version);
-        editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
-        editTextChangeVersionCode.setText(String.valueOf(GlobalConfig.VERSION_CODE));
-
-        ipGroupChat = findViewById(R.id.ip_groupchat);
-        saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
-        groupChatLogToggle = findViewById(R.id.groupchat_log);
+        editTextChangeVersionName.getTextFieldInput().setText(GlobalConfig.VERSION_NAME);
+        editTextChangeVersionCode.getTextFieldInput().setText(String.valueOf(GlobalConfig.VERSION_CODE));
 
         accessTokenView = findViewById(R.id.access_token);
         appAuthSecretView = findViewById(R.id.app_auth_secret);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
-        ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
+        ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, R.layout.customized_spinner_item, Env.values());
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
-        Button buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
-        Button alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
-        Button alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
-        Button alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
-        Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
-        Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
-        Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
+        UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
+        UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
+        UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
+        UnifyButton alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
+        UnifyButton alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
+        alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
+        System.out.println("++ line 332");
+        UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
-        TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
-        TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
-        Button btnApplyRollence = findViewById(R.id.btn_apply_rollence);
+        setupNewInboxAbButton();
+        setupNewNotifcenterAbButton();
 
-        String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
-        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
-        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
-        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
-        String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
-
-
-        String PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK";
-        String PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV";
-        String PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX";
-        String PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE";
-
-        String PREFERENCE_NAME = "coahmark_choose_address";
-        String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
+        TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
+        TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
+        UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
         buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,17 +370,17 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
-        String VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
-        String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+        String EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV;
+        String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
+        String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-        String EXP_HOME = AbTestPlatform.HOME_EXP;
-        String HOME_VARIANT_OLD = AbTestPlatform.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = AbTestPlatform.HOME_VARIANT_REVAMP;
+        String EXP_HOME = RollenceKey.HOME_EXP;
+        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
+        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
 
-        String EXP_BALANCE_WIDGET = AbTestPlatform.BALANCE_EXP;
-        String BALANCE_WIDGET_VARIANT_OLD = AbTestPlatform.BALANCE_VARIANT_OLD;
-        String BALANCE_WIDGET_VARIANT_REVAMP = AbTestPlatform.BALANCE_VARIANT_NEW;
+        String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
+        String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
+        String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
 
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -390,21 +433,70 @@ public class DeveloperOptionActivity extends BaseActivity {
         btnApplyRollence.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (inputRollenceKey.getText().length() < 1) {
+                if (inputRollenceKey.getTextFieldInput().getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Key", Toast.LENGTH_SHORT).show();
-                } else if (inputRollenceVariant.getText().length() <1) {
+                } else if (inputRollenceVariant.getTextFieldInput().getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
                 } else {
-                    RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
+                    RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getTextFieldInput().getText().toString().trim(), inputRollenceVariant.getTextFieldInput().getText().toString().trim());
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    private void setupNewInboxAbButton() {
+        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_inbox);
+        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_inbox);
+
+        oldInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            RollenceKey.KEY_AB_INBOX_REVAMP,
+                            RollenceKey.VARIANT_OLD_INBOX
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Inbox: Old", Toast.LENGTH_SHORT).show();
+        });
+        newInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            RollenceKey.KEY_AB_INBOX_REVAMP,
+                            RollenceKey.VARIANT_NEW_INBOX
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void setupNewNotifcenterAbButton() {
+        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
+        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
+
+        oldInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_OLD_NOTFICENTER
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
+        });
+        newInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_NEW_NOTFICENTER
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
     private void initListener() {
         remoteConfigStartButton.setOnClickListener(v -> {
-            Editable prefix = remoteConfigPrefix.getText();
+            Editable prefix = remoteConfigPrefix.getTextFieldInput().getEditableText();
 
             startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
         });
@@ -423,40 +515,54 @@ public class DeveloperOptionActivity extends BaseActivity {
             Toast.makeText(this, "Reset Onboarding", Toast.LENGTH_SHORT).show();
         });
 
-        toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-                String remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_CUSTOMER_APP;
-                if (GlobalConfig.isSellerApp()) {
-                    remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_SELLER_APP;
-                }
-                TimberWrapper.initByRemoteConfig(this, remoteConfigValue);
-                Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
-            } else {
-                Timber.uprootAll();
-                Timber.plant(new Timber.DebugTree() {
-                    @Override
-                    protected String createStackElementTag(@NotNull StackTraceElement element) {
-                        return String.format("[%s:%s:%s]",
-                                super.createStackElementTag(element),
-                                element.getMethodName(),
-                                element.getLineNumber());
-                    }
-                });
-                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         sendTimberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String timberMessage = editTextTimberMessage.getText().toString();
+                String timberMessage = editTextTimberMessage.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(timberMessage)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
                 } else {
-                    Timber.w(timberMessage);
-                    Toast.makeText(DeveloperOptionActivity.this,
-                            timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                    //"Pno##TAG##message (message: abc=123##edf=456) (required Server Logging ON)"
+                    int priorityIndex = 0;
+                    int tagIndex = 1;
+                    String priority = "";
+                    String tag = "";
+                    String delimiterMessage = "##";
+                    String regexEqualSign = "=([*]*)";
+                    Map<String, String> messageMap = new HashMap<>();
+                    String[] splitMessage = timberMessage.split(delimiterMessage);
+                    for (int i = 0; i < splitMessage.length; i++) {
+                        if (i == priorityIndex) {
+                            priority = splitMessage[priorityIndex];
+                        } else if (i == tagIndex) {
+                            tag = splitMessage[tagIndex];
+                        } else {
+                            String message = splitMessage[i];
+                            if (!TextUtils.isEmpty(message)) {
+                                String[] keyValue = message.split(regexEqualSign);
+                                if (getOrNull(keyValue, 0) != null && getOrNull(keyValue, 1) != null) {
+                                    messageMap.put(keyValue[0], keyValue[1]);
+                                } else {
+                                    Toast.makeText(DeveloperOptionActivity.this,
+                                            "Invalid timber message format", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    Priority priorityLogger = null;
+                    if (priority.equals("P1")) {
+                        priorityLogger = Priority.P1;
+                    } else if (priority.equals("P2")) {
+                        priorityLogger = Priority.P2;
+                    }
+                    if (priorityLogger != null) {
+                        ServerLogger.log(priorityLogger, tag, messageMap);
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -464,7 +570,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         sendFirebaseCrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String crashMessage = editTextFirebaseCrash.getText().toString();
+                String crashMessage = editTextFirebaseCrash.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(crashMessage)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Crash message should not be empty", Toast.LENGTH_SHORT).show();
@@ -477,7 +583,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         routeManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String routeManagerString = editTextRouteManager.getText().toString();
+                String routeManagerString = editTextRouteManager.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(routeManagerString)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
@@ -490,8 +596,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         changeVersionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String versionCode = editTextChangeVersionCode.getText().toString();
-                String versionName = editTextChangeVersionName.getText().toString();
+                String versionCode = editTextChangeVersionCode.getTextFieldInput().getText().toString();
+                String versionName = editTextChangeVersionName.getTextFieldInput().getText().toString();
                 if (TextUtils.isEmpty(versionCode)) {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Version Code should not be empty", Toast.LENGTH_SHORT).show();
@@ -512,12 +618,12 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
+        SharedPreferences cache = getSharedPreferences(DevOptConfig.CHUCK_ENABLED);
 
-        toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
+        toggleChuck.setChecked(cache.getBoolean(DevOptConfig.IS_CHUCK_ENABLED, false));
 
         toggleChuck.setOnCheckedChangeListener((compoundButton, state) -> {
-            cache.edit().putBoolean(IS_CHUCK_ENABLED, state).apply();
+            cache.edit().putBoolean(DevOptConfig.IS_CHUCK_ENABLED, state).apply();
         });
 
         vGoToScreenRecorder.setOnClickListener(new OneOnClick() {
@@ -532,12 +638,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void oneOnClick(View view) {
                 startActivity(Chucker.getLaunchIntent(getApplicationContext(), Chucker.SCREEN_HTTP));
             }
-        });
-
-        reviewNotifBtn.setOnClickListener(v -> {
-            Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777, notifReview);
         });
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
@@ -591,13 +691,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
-        saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
-        groupChatLogToggle.setOnCheckedChangeListener((buttonView, isChecked) -> actionLogGroupChat(isChecked));
-
-        groupChatSf = getSharedPreferences(GROUPCHAT_PREF);
-
-        ipGroupChat.setText(groupChatSf.getString(IP_GROUPCHAT, ""));
-        groupChatLogToggle.setChecked(groupChatSf.getBoolean(LOG_GROUPCHAT, false));
 
         Env currentEnv = TokopediaUrl.Companion.getInstance().getTYPE();
         for (int i = 0; i < Env.values().length; i++) {
@@ -654,6 +747,24 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+        toggleLeakCanary.setVisibility(GlobalConfig.isSellerApp() ? View.GONE : View.VISIBLE);
+        toggleLeakCanary.setChecked(getLeakCanaryToggleValue());
+        toggleLeakCanary.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    public Object getOrNull(String[] list, int index) {
+        if (index >= 0 && index <= list.length - 1)  {
+            return list[index];
+        } else {
+            return null;
+        }
     }
 
     private void startAbTestRollenceEditor() {
@@ -707,24 +818,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    private void actionSaveIpGroupChat() {
-        String ip = ipGroupChat.getText().toString();
-        SharedPreferences.Editor editor = groupChatSf.edit();
-        if (TextUtils.isEmpty(ip)) {
-            editor.putString(IP_GROUPCHAT, null);
-        } else {
-            editor.putString(IP_GROUPCHAT, ip);
-        }
-        editor.apply();
-        Toast.makeText(this, ip + " saved", Toast.LENGTH_SHORT).show();
-    }
-
-    private void actionLogGroupChat(boolean check) {
-        SharedPreferences.Editor editor = groupChatSf.edit();
-        editor.putBoolean(LOG_GROUPCHAT, check);
-        editor.apply();
-    }
-
     private SharedPreferences getSharedPreferences(String name) {
         return getSharedPreferences(name, Context.MODE_PRIVATE);
     }
@@ -733,7 +826,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 
-    private class DeveloperOptionException extends RuntimeException{
+    private class DeveloperOptionException extends RuntimeException {
         public DeveloperOptionException(String message) {
             super(message);
         }

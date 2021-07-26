@@ -6,6 +6,7 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.HttpDataSource
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.exoplayer.TestExoPlayer
 import com.tokopedia.play.exoplayer.TestExoPlayerCreator
 import com.tokopedia.play.util.video.state.BufferSource
@@ -16,7 +17,6 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.*
@@ -37,7 +37,7 @@ class PlayViewerVideoStateProcessorTest {
     private val playVideoManager = PlayVideoManager.getInstance(appContext, testExoPlayerCreator)
     private val playbackExceptionParser = ExoPlaybackExceptionParser()
     private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcher = object : CoroutineDispatcherProvider {
+    private val dispatcher = object : CoroutineDispatchers {
         override val main: CoroutineDispatcher
             get() = testDispatcher
         override val immediate: CoroutineDispatcher
@@ -45,6 +45,8 @@ class PlayViewerVideoStateProcessorTest {
         override val io: CoroutineDispatcher
             get() = testDispatcher
         override val computation: CoroutineDispatcher
+            get() = testDispatcher
+        override val default: CoroutineDispatcher
             get() = testDispatcher
     }
 

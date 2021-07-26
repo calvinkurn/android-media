@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SPECIFIC_TYPE
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.view.fragment.BudgetingAdsFragment.Companion.BROAD_TYPE
-import com.tokopedia.topads.view.fragment.BudgetingAdsFragment.Companion.SPECIFIC_TYPE
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_choose_key_bs.*
 
-private const val EXACT_POSITIVE = 21
-private const val BROAD_POSITIVE = 11
 
 class ChooseKeyBottomSheet : BottomSheetUnify() {
     var onSelect: ((type: String) -> Unit)? = null
@@ -42,9 +41,9 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     private fun initView() {
         keySpecific?.setOnCheckedChangeListener(null)
         keyBroad?.setOnCheckedChangeListener(null)
-        desc_1?.text = MethodChecker.fromHtml(getString(R.string.topads_create_choose_type_bs_desc1))
-        desc_2?.text = MethodChecker.fromHtml(getString(R.string.topads_create_choose_type_bs_desc2))
-        goToStaticSheet?.text = MethodChecker.fromHtml(getString(R.string.topads_create_choose_type_bs_extra))
+        desc_1?.text = MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc1))
+        desc_2?.text = MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc2))
+        goToStaticSheet?.text = MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_extra))
         if (selected == BROAD_POSITIVE)
             keyBroad?.isChecked = true
         else
@@ -65,14 +64,12 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
             if (isChecked) {
                 onSelect?.invoke(SPECIFIC_TYPE)
                 dismiss()
-
             }
         }
         keyBroad?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 onSelect?.invoke(BROAD_TYPE)
                 dismiss()
-
             }
         }
         goToStaticSheet?.setOnClickListener {
@@ -80,15 +77,6 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
             sheet.show(childFragmentManager)
         }
     }
-
-    private fun getSelectedSortId(): String {
-        return when (radio_group_key?.checkedRadioButtonId) {
-            R.id.keyBroad -> BROAD_TYPE
-            R.id.keySpecific -> SPECIFIC_TYPE
-            else -> BROAD_TYPE
-        }
-    }
-
     fun show(
             fragmentManager: FragmentManager,
             currentSelected: Int) {

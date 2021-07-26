@@ -12,6 +12,10 @@ import com.tokopedia.utils.resources.DrawableUtils
  * @author by milhamj on 30/11/18.
  */
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.loadImage(url)", "com.tokopedia.media.loader")
+)
 fun ImageView.loadImage(url: String, resId: Int = R.drawable.ic_loading_placeholder) {
     if (context.isValidGlideContext()) {
         try {
@@ -22,6 +26,10 @@ fun ImageView.loadImage(url: String, resId: Int = R.drawable.ic_loading_placehol
     }
 }
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.loadImageCircle(url)", "com.tokopedia.media.loader")
+)
 fun ImageView.loadImageCircle(url: String) {
     if (context.isValidGlideContext()) {
         try {
@@ -32,6 +40,10 @@ fun ImageView.loadImageCircle(url: String) {
     }
 }
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.loadImageRounded(url, radius)", "com.tokopedia.media.loader")
+)
 fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
     if (context.isValidGlideContext()) {
         try {
@@ -42,6 +54,10 @@ fun ImageView.loadImageRounded(url: String, radius: Float = 5.0f) {
     }
 }
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.loadImage(url) { placeError = false }", "com.tokopedia.media.loader")
+)
 fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
     if (context.isValidGlideContext()) {
         try {
@@ -52,6 +68,10 @@ fun ImageView.loadImageWithoutPlaceholder(@DrawableRes drawableId: Int) {
     }
 }
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.loadImage(url) { placeError = false }", "com.tokopedia.media.loader")
+)
 fun ImageView.loadImageWithoutPlaceholder(url: String) {
     if (context.isValidGlideContext()) {
         try {
@@ -62,6 +82,10 @@ fun ImageView.loadImageWithoutPlaceholder(url: String) {
     }
 }
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.loadImageDrawable(resourceId)", "com.tokopedia.media.loader")
+)
 fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
     if (context.isValidGlideContext()) {
         try {
@@ -72,6 +96,10 @@ fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
     }
 }
 
+@Deprecated(
+        message = "Please use medialoader module instead",
+        replaceWith = ReplaceWith("imageView.clearImage()", "com.tokopedia.media.loader")
+)
 fun ImageView.clearImage() {
     if (context.isValidGlideContext()) {
         try {

@@ -14,7 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
@@ -44,7 +43,8 @@ class GetOccCartMapper @Inject constructor() {
                 mapPrompt(data.prompt),
                 mapOccRevamp(data.revamp),
                 data.errorCode,
-                data.popUpMessage)
+                data.popUpMessage,
+                mapOccRemoveProfile(data.removeProfile))
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -85,24 +85,16 @@ class GetOccCartMapper @Inject constructor() {
             shopId = shop.shopId
             userId = shop.userId
             shopName = shop.shopName
-            shopBadge = when {
-                shop.isOfficial == 1 -> shop.officialStore.osLogoUrl
-                shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
-                else -> ""
-            }
-            shopUrl = shop.shopUrl
+            shopBadge = shop.shopType.badge
+            shopTier = shop.shopType.shopTier
+            shopTypeName = shop.shopType.title
+            shopType = shop.shopType.titleFmt
             isGold = shop.isGold
             isOfficial = shop.isOfficial
-            addressId = shop.addressId
             postalCode = shop.postalCode
             latitude = shop.latitude
             longitude = shop.longitude
             districtId = shop.districtId
-            districtName = shop.districtName
-            origin = shop.origin
-            addressStreet = shop.addressStreet
-            provinceId = shop.provinceId
-            cityId = shop.cityId
             shopShipment = generateShopShipment(shop.shopShipments)
             errors = cart.errors
             isFulfillment = cart.warehouse.isFulfillment
@@ -114,7 +106,6 @@ class GetOccCartMapper @Inject constructor() {
     private fun generateOrderProduct(product: ProductDataResponse): OrderProduct {
         val orderProduct = OrderProduct()
         orderProduct.apply {
-            parentId = product.parentId
             productId = product.productId
             productName = product.productName
             productPrice = product.productPrice
@@ -123,6 +114,7 @@ class GetOccCartMapper @Inject constructor() {
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
+            weightActual = product.productWeightActual
             isFreeOngkirExtra = product.freeShippingExtra.eligible
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = when {
@@ -138,14 +130,14 @@ class GetOccCartMapper @Inject constructor() {
             }
             cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             warehouseId = product.wareHouseId
-            isPreorder = product.isPreorder
+            isPreOrder = product.isPreOrder
             categoryId = product.categoryId
             category = product.category
             campaignId = product.campaignId
             productFinsurance = product.productFinsurance
             isSlashPrice = product.productOriginalPrice > product.productPrice
             productTrackerData = ProductTrackerData(product.productTrackerData.attribution, product.productTrackerData.trackerListName)
-            preorderDuration = product.productPreorder.durationDay.toIntOrZero()
+            preOrderDuration = product.productPreorder.durationDay.toIntOrZero()
         }
         return orderProduct
     }
@@ -216,7 +208,8 @@ class GetOccCartMapper @Inject constructor() {
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
-                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data), null,
+                null, payment.bid, payment.specificGatewayCampaignOnlyType, mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -273,8 +266,21 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
+    private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData, callbackUrl: String): OrderPaymentWalletAdditionalData {
+        return OrderPaymentWalletAdditionalData(
+            walletAdditionalData.walletType, walletAdditionalData.enableWalletAmountValidation, callbackUrl,
+            activation = mapPaymentWalletActionData(walletAdditionalData.activation),
+            topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
+            phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered)
+        )
+    }
+
     private fun mapPaymentOvoActionData(ovoActionData: OvoActionData): OrderPaymentOvoActionData {
         return OrderPaymentOvoActionData(ovoActionData.isRequired, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker, ovoActionData.isHideDigital)
+    }
+
+    private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
+        return OrderPaymentWalletActionData(walletData.isRequired, walletData.buttonTitle, walletData.successToaster, walletData.errorToaster, walletData.errorMessage, walletData.isHideDigital, walletData.headerTitle, walletData.urlLink)
     }
 
     private fun mapPaymentOvoCustomerData(data: CustomerData): OrderPaymentOvoCustomerData {
@@ -284,7 +290,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
-                address.latitude, address.postalCode, address.state, address.stateDetail)
+                address.latitude, address.postalCode, address.state, address.stateDetail, address.status, address.tokoNow.shopId, address.tokoNow.warehouseId)
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {
@@ -301,5 +307,10 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
         return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
+    }
+
+    private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
+        return OccRemoveProfileData(removeProfileResponse.enable, removeProfileResponse.type,
+                OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }
