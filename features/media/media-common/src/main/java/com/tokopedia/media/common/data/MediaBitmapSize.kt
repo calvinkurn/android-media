@@ -8,7 +8,9 @@ class MediaBitmapSize constructor(
 ) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
     fun saveSize(value: String) {
-        val currentSize = getString(KEY_BITMAP_SIZE)
+        if (value.isEmpty() || value == "0") return
+
+        val currentSize = getString(KEY_BITMAP_SIZE)?: "0"
         putString(KEY_BITMAP_SIZE, (currentSize.toLong() + value.toLong()).toString())
     }
 
