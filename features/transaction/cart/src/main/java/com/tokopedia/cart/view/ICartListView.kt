@@ -23,7 +23,7 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 
 interface ICartListView : CustomerView {
 
-    fun refreshCart()
+    fun refreshCartWithSwipeToRefresh()
 
     fun getAllShopDataList(): List<CartShopHolderData>
 

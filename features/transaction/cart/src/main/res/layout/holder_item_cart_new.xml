@@ -8,347 +8,280 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/fl_cart_item_container"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_1"
-        android:layout_marginRight="@dimen/dp_1">
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/cb_select_item"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_16">
+            android:layout_marginStart="-2dp"
+            android:layout_marginTop="@dimen/dp_30"
+            android:paddingEnd="@dimen/dp_8" />
 
-            <RelativeLayout
+        <RelativeLayout
+            android:id="@+id/rl_product_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/cb_select_item">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iu_image_product"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_72"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_10" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_toEndOf="@+id/iu_image_product"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_2"
+                tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_product_variant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_product_name"
+                android:layout_toEndOf="@+id/iu_image_product"
+                android:gravity="center_vertical"
+                android:paddingTop="@dimen/dp_2"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                tools:text="Biru, XL"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_qty_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_product_name"
+                android:layout_toEndOf="@+id/text_product_variant"
+                android:gravity="center_vertical"
+                android:paddingTop="@dimen/dp_2"
+                android:textColor="@color/Unify_R600"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                tools:text="Sisa 3"
+                tools:visibility="visible" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layout_product_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16">
+                android:layout_below="@+id/text_product_variant"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_toEndOf="@+id/iu_image_product"
+                android:foregroundGravity="center_vertical"
+                android:paddingTop="@dimen/dp_2"
+                app:flexWrap="wrap"
+                tools:visibility="visible">
 
-                <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-                    android:id="@+id/cb_select_item"
+                <com.tokopedia.unifycomponents.Label
+                    android:id="@+id/label_slash_price_percentage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="-2dp"
-                    android:layout_marginTop="@dimen/dp_30"
-                    android:paddingEnd="@dimen/dp_8" />
+                    android:layout_below="@+id/text_product_variant"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_toEndOf="@+id/iu_image_product"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    app:labelType="general_dark_red"
+                    tools:labelTitle="60%"
+                    tools:visibility="visible" />
 
-                <RelativeLayout
-                    android:id="@+id/rl_product_info"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_slash_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/cb_select_item">
+                    android:layout_alignTop="@+id/text_product_price"
+                    android:layout_alignBottom="@+id/text_product_price"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_toEndOf="@+id/label_slash_price_percentage"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    tools:text="Rp300.000"
+                    tools:visibility="visible" />
 
-                    <com.tokopedia.unifycomponents.ImageUnify
-                        android:id="@+id/iu_image_product"
-                        android:layout_width="@dimen/dp_72"
-                        android:layout_height="@dimen/dp_72"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:layout_marginEnd="@dimen/dp_10" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/text_product_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_toEndOf="@+id/iu_image_product"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/Unify_N700_96"
-                        app:typographyType="body_2"
-                        tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/text_product_variant"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/text_product_name"
-                        android:layout_toEndOf="@+id/iu_image_product"
-                        android:gravity="center_vertical"
-                        android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Unify_N700_68"
-                        android:visibility="gone"
-                        app:typographyType="body_3"
-                        tools:text="Biru, XL"
-                        tools:visibility="visible" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/text_qty_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/text_product_name"
-                        android:layout_toEndOf="@+id/text_product_variant"
-                        android:gravity="center_vertical"
-                        android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Unify_R600"
-                        android:visibility="gone"
-                        app:typographyType="body_3"
-                        tools:text="Sisa 3"
-                        tools:visibility="visible" />
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/layout_product_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/text_product_variant"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:layout_toEndOf="@+id/iu_image_product"
-                        android:foregroundGravity="center_vertical"
-                        android:paddingTop="@dimen/dp_2"
-                        app:flexWrap="wrap"
-                        tools:visibility="visible">
-
-                        <com.tokopedia.unifycomponents.Label
-                            android:id="@+id/label_slash_price_percentage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_variant"
-                            android:layout_marginEnd="@dimen/dp_4"
-                            android:layout_toEndOf="@+id/iu_image_product"
-                            android:gravity="center_vertical"
-                            android:visibility="gone"
-                            app:labelType="general_dark_red"
-                            tools:labelTitle="60%"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_slash_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/text_product_price"
-                            android:layout_alignBottom="@+id/text_product_price"
-                            android:layout_marginEnd="@dimen/dp_4"
-                            android:layout_toEndOf="@+id/label_slash_price_percentage"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/Unify_N700_96"
-                            app:typographyType="body_3"
-                            tools:text="Rp300.000"
-                            tools:visibility="visible" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/text_product_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_product_variant"
-                            android:layout_alignBottom="@+id/label_slash_price_percentage"
-                            android:layout_toEndOf="@+id/text_slash_price"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/Unify_N700_96"
-                            app:typographyType="body_2"
-                            app:typographyWeight="bold"
-                            tools:text="Rp100.000" />
-
-                    </com.google.android.flexbox.FlexboxLayout>
-
-                    <com.google.android.flexbox.FlexboxLayout
-                        android:id="@+id/layout_product_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/layout_product_price"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:layout_toEndOf="@+id/iu_image_product"
-                        android:foregroundGravity="center_vertical"
-                        android:paddingTop="@dimen/dp_2"
-                        app:flexWrap="wrap"
-                        tools:visibility="visible" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/text_incident"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/layout_product_info"
-                        android:layout_toEndOf="@+id/iu_image_product"
-                        android:paddingTop="@dimen/dp_2"
-                        android:textColor="@color/Unify_N700_68"
-                        android:visibility="gone"
-                        app:typographyType="body_3"
-                        tools:text="Campaign"
-                        tools:visibility="visible" />
-
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_shop_note_section"
-                    android:layout_width="match_parent"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/text_product_price"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/rl_product_info"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:orientation="vertical"
-                    tools:visibility="visible">
+                    android:layout_below="@+id/text_product_variant"
+                    android:layout_alignBottom="@+id/label_slash_price_percentage"
+                    android:layout_toEndOf="@+id/text_slash_price"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
+                    tools:text="Rp100.000" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:visibility="visible">
+            </com.google.android.flexbox.FlexboxLayout>
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/tv_remark"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textColor="@color/Unify_N700_96"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler"
-                            tools:text="sdkjf skdjbfg jksdg kjsdbg sfdsf jksdbg!"
-                            tools:visibility="visible" />
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layout_product_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_product_price"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_toEndOf="@+id/iu_image_product"
+                android:foregroundGravity="center_vertical"
+                android:paddingTop="@dimen/dp_2"
+                app:flexWrap="wrap"
+                tools:visibility="visible" />
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/tv_label_remark_option"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_button_add_note"
-                            android:textColor="@color/Unify_N700_68"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler"
-                            tools:text="Ubah" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_incident"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_product_info"
+                android:layout_toEndOf="@+id/iu_image_product"
+                android:paddingTop="@dimen/dp_2"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                tools:text="Campaign"
+                tools:visibility="visible" />
 
-                    </LinearLayout>
+        </RelativeLayout>
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_label_remark_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_remark_title"
-                        android:textColor="@color/Unify_G500"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler" />
+        <LinearLayout
+            android:id="@+id/ll_shop_note_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_product_info"
+            android:layout_marginTop="@dimen/dp_16"
+            android:orientation="vertical"
+            tools:visibility="visible">
 
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/et_remark"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_minus4"
-                        android:layout_marginRight="@dimen/dp_minus4"
-                        android:fontFamily="sans-serif"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:maxLines="3"
-                        android:overScrollMode="always"
-                        android:paddingBottom="@dimen/dp_16"
-                        android:scrollbarStyle="insideInset"
-                        android:scrollbars="vertical"
-                        android:textColor="@color/Unify_N700_68"
-                        android:textColorHighlight="@color/Unify_G400"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal"
-                        app:backgroundTint="@color/Unify_G400"
-                        tools:ignore="TextFields"
-                        tools:text="Saya pesan warna merah yah min, jangan sampai salah kirim
-barangnya gan! coy coy coy" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                tools:visibility="visible">
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_error_form_remark_validation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:paddingStart="@dimen/dp_4"
-                        android:textColor="@color/Unify_R600"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal"
-                        android:visibility="gone"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:ignore="RtlSymmetry,SmallSp"
-                        tools:text="Maksimal 2 broh"
-                        tools:visibility="gone" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_note_char_counter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:lineSpacingExtra="0sp"
-                        android:visibility="gone"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:text="60/140"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_product_action"
-                    android:layout_width="match_parent"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_remark"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/ll_shop_note_section">
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="sdkjf skdjbfg jksdg kjsdbg sfdsf jksdbg!"
+                    tools:visibility="visible" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:orientation="vertical">
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_label_remark_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_button_add_note"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Ubah" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+            </LinearLayout>
 
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/text_move_to_wishlist"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:paddingStart="0dp"
-                                android:paddingTop="@dimen/dp_8"
-                                android:paddingEnd="@dimen/dp_16"
-                                android:paddingBottom="@dimen/dp_8"
-                                android:text="@string/label_move_to_wishlist"
-                                android:textColor="@color/Unify_N700_68"
-                                app:typographyType="body_3" />
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/et_remark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
+                app:text_field_label="Catatan untuk barang ini"
+                tools:layout_height="32dp"
+                tools:visibility="visible" />
 
-                            <View
-                                android:layout_width="0dp"
-                                android:layout_height="0dp"
-                                android:layout_weight="1" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_error_form_remark_validation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingStart="@dimen/dp_4"
+                android:textColor="@color/Unify_R600"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:ignore="RtlSymmetry,SmallSp"
+                tools:text="Maksimal 2 broh"
+                tools:visibility="gone" />
 
-                            <com.tokopedia.iconunify.IconUnify
-                                android:id="@+id/btn_delete_cart"
-                                android:layout_width="@dimen/dp_24"
-                                android:layout_height="@dimen/dp_24"
-                                android:layout_marginEnd="@dimen/dp_18"
-                                app:icon_name="DELETE" />
-
-                            <com.tokopedia.unifycomponents.QuantityEditorUnify
-                                android:id="@+id/qty_editor_cart"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                        </LinearLayout>
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/tv_error_form_validation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif"
-                            android:gravity="end"
-                            android:maxLines="2"
-                            android:textAlignment="gravity"
-                            android:textColor="@color/Unify_R600"
-                            android:textSize="@dimen/sp_12"
-                            android:visibility="gone"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler"
-                            tools:ignore="SmallSp"
-                            tools:text="Maksimal 2 broh hjadjf askjbfk kjabfdk ashfb aksbfkabsf "
-                            tools:visibility="visible" />
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-            </RelativeLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_note_char_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:lineSpacingExtra="0sp"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                tools:text="60/140"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
-    </FrameLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_shop_note_section"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_move_to_wishlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="0dp"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:text="@string/label_move_to_wishlist"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_delete_cart"
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                android:layout_marginEnd="@dimen/dp_18"
+                app:icon_name="DELETE" />
+
+            <com.tokopedia.unifycomponents.QuantityEditorUnify
+                android:id="@+id/qty_editor_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <View
         android:id="@+id/holder_item_cart_divider"

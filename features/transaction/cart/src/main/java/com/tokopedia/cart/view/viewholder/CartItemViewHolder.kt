@@ -21,51 +21,34 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
-import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
-import rx.Observable
-import rx.Subscriber
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
 @SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(private val binding: HolderItemCartNewBinding,
-                                     private val compositeSubscription: CompositeSubscription,
                                      private var actionListener: CartItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     private var context: Context? = null
     private var viewHolderListener: ViewHolderListener? = null
 
     private var cartItemHolderData: CartItemHolderData? = null
-    private var quantityTextWatcher: QuantityTextWatcher? = null
-    private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
-    private var quantityDebounceSubscription: Subscription? = null
-    private var noteDebounceSubscription: Subscription? = null
-    private var cbChangeJob: Job? = null
+    private var delayChangeCheckboxState: Job? = null
+    private var delayChangeQty: Job? = null
     private var informationLabel: MutableList<String> = mutableListOf()
+    private var qtyTextWatcher: TextWatcher? = null
 
     init {
         context = itemView.context
-
         setNoteTouchListener()
-
-        initTextWatcherDebouncer(compositeSubscription)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -85,32 +68,9 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         context = null
         actionListener = null
         viewHolderListener = null
-        compositeSubscription.remove(quantityDebounceSubscription)
-        compositeSubscription.remove(noteDebounceSubscription)
-    }
-
-    private fun initTextWatcherDebouncer(compositeSubscription: CompositeSubscription) {
-        quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber ->
-            quantityTextwatcherListener = QuantityTextWatcher.QuantityTextwatcherListener { quantity -> subscriber.onNext(quantity) }
-        })
-                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<QuantityWrapper>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Timber.d(e)
-                    }
-
-                    override fun onNext(quantity: QuantityWrapper) {
-                        itemQuantityTextWatcherAction(quantity)
-                    }
-                })
-
-        compositeSubscription.add(quantityDebounceSubscription)
+        delayChangeCheckboxState?.cancel()
+        delayChangeQty?.cancel()
+        qtyTextWatcher = null
     }
 
     fun bindData(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener, dataSize: Int) {
@@ -172,8 +132,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
-                cbChangeJob?.cancel()
-                cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
+                delayChangeCheckboxState?.cancel()
+                delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
                     delay(500L)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.cartItemData.isError) {
@@ -274,7 +234,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun renderPrice(data: CartItemHolderData) {
         if (data.cartItemData.originData.wholesalePriceFormatted != null) {
-            binding.textProductPrice.text = data.cartItemData.originData.wholesalePriceFormatted ?: ""
+            binding.textProductPrice.text = data.cartItemData.originData.wholesalePriceFormatted
+                    ?: ""
         } else {
             binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     data.cartItemData.originData.pricePlan, false).removeDecimalSuffix()
@@ -360,7 +321,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderActionNotes(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        binding.etRemark.setOnEditorActionListener { v, actionId, event ->
+        binding.etRemark.textFieldInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 data.isStateNotesOnFocuss = false
                 actionListener?.onEditNoteDone(parentPosition)
@@ -391,8 +352,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
         renderNotesViews(data)
 
-        binding.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData.maxCharRemark))
-        binding.etRemark.addTextChangedListener(object : TextWatcher {
+        binding.etRemark.textFieldInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData.maxCharRemark))
+        binding.etRemark.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 editable?.let {
                     itemNoteTextWatcherAction(it)
@@ -421,17 +382,15 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 if (data.isStateNotesOnFocuss && (data.cartItemData.originData.originalRemark.isBlank() || data.cartItemData.updatedData.remark != data.cartItemData.originData.originalRemark)) {
                     // Notes is empty after click add notes button or has value after use click change notes button
                     tvRemark.visibility = View.GONE
-                    etRemark.setText(Utils.getHtmlFormat(data.cartItemData.updatedData.remark))
+                    etRemark.textFieldInput.setText(Utils.getHtmlFormat(data.cartItemData.updatedData.remark))
                     etRemark.visibility = View.VISIBLE
-                    tvLabelRemarkTitle.visibility = View.VISIBLE
-                    etRemark.setSelection(etRemark.length())
+                    etRemark.textFieldInput.setSelection(etRemark.textFieldInput.length())
                     tvLabelRemarkOption.visibility = View.GONE
                     tvNoteCharCounter.visibility = View.VISIBLE
                     tvLabelRemarkOption.setPadding(0, 0, 0, 0)
                 } else {
                     // Has notes from pdp
                     etRemark.visibility = View.GONE
-                    tvLabelRemarkTitle.visibility = View.GONE
                     tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData.remark)
                     tvRemark.visibility = View.VISIBLE
                     tvLabelRemarkOption.visibility = View.VISIBLE
@@ -445,12 +404,11 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             } else {
                 // No notes at all
                 etRemark.visibility = View.GONE
-                tvLabelRemarkTitle.visibility = View.GONE
                 tvRemark.visibility = View.GONE
                 tvNoteCharCounter.visibility = View.GONE
                 tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_add_note)
                 tvLabelRemarkOption.visibility = View.VISIBLE
-                etRemark.setText("")
+                etRemark.textFieldInput.setText("")
                 tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 tvLabelRemarkOption.setPadding(0, 0, 0, 0)
             }
@@ -475,22 +433,41 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
         val qtyEditorCart = binding.qtyEditorCart
-        if (quantityTextWatcher != null) {
-            // remove previous listener
-            qtyEditorCart.editText.removeTextChangedListener(quantityTextWatcher)
-        }
 
         qtyEditorCart.autoHideKeyboard = true
         qtyEditorCart.minValue = data.cartItemData.originData.minOrder
         qtyEditorCart.maxValue = data.cartItemData.originData.maxOrder
-        // reset listener
-        qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
         qtyEditorCart.setValue(data.cartItemData.updatedData.quantity)
-        qtyEditorCart.setValueChangedListener { newValue, _, _ ->
-            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
-            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
-            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+        if (qtyTextWatcher != null) {
+            // reset listener
+            qtyEditorCart.editText.removeTextChangedListener(qtyTextWatcher)
         }
+        qtyTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                delayChangeQty?.cancel()
+                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500)
+                    val newValue = s.toString().replace(".", "").toIntOrZero()
+                    if (data.cartItemData.updatedData.quantity != newValue) {
+                        validateQty(newValue, data)
+                        if (newValue != 0) {
+                            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
+                            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
+                            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+                        }
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        }
+        qtyEditorCart.editText.addTextChangedListener(qtyTextWatcher)
         qtyEditorCart.setSubstractListener {
             if (!data.cartItemData.isError && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -515,9 +492,26 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 true
             } else false
         }
-        quantityTextWatcher = QuantityTextWatcher(quantityTextwatcherListener)
-        qtyEditorCart.editText.addTextChangedListener(quantityTextWatcher)
         qtyEditorCart.editText.isEnabled = data.cartItemData.isError == false
+    }
+
+    private fun validateQty(newValue: Int, element: CartItemHolderData) {
+        val qtyEditorCart = binding.qtyEditorCart
+        if (newValue == element.cartItemData.originData.minOrder && newValue == element.cartItemData.originData.maxOrder) {
+            qtyEditorCart.addButton.isEnabled = false
+            qtyEditorCart.subtractButton.isEnabled = false
+        } else if (newValue >= element.cartItemData.originData.maxOrder) {
+            qtyEditorCart.setValue(element.cartItemData.originData.maxOrder)
+            qtyEditorCart.addButton.isEnabled = false
+            qtyEditorCart.subtractButton.isEnabled = true
+        } else if (newValue <= element.cartItemData.originData.minOrder) {
+            qtyEditorCart.setValue(element.cartItemData.originData.minOrder)
+            qtyEditorCart.addButton.isEnabled = true
+            qtyEditorCart.subtractButton.isEnabled = false
+        } else {
+            qtyEditorCart.addButton.isEnabled = true
+            qtyEditorCart.subtractButton.isEnabled = true
+        }
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
@@ -528,7 +522,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
             }
         } else if (data.cartItemData.shouldValidateWeight) {
-            viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
+            viewHolderListener?.onNeedToRefreshWeight(parentPosition)
+            viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         }
@@ -565,24 +560,13 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
     }
 
-    private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
-        if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-            val qty = quantity.editable.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
-            val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
-            if (needToUpdateView) {
-                if (qty <= 0) {
-                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition)
-                }
-                binding.qtyEditorCart.setValue(qty)
-            }
-        }
-    }
-
     interface ViewHolderListener {
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
 
         fun onNeedToRefreshSingleShop(parentPosition: Int)
+
+        fun onNeedToRefreshWeight(parentPosition: Int)
 
         fun onNeedToRefreshAllShop()
 

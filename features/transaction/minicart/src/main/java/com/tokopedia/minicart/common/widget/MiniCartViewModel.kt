@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -32,6 +35,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
+                                            private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
                                             private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
@@ -306,79 +310,101 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    fun updateCart(isForCheckout: Boolean, observer: Int) {
-        var source = ""
-        if (!isForCheckout) {
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+    fun updateCart() {
+        val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+        val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
+        val visitables = getVisitables()
+        visitables.forEach {
+            if (it is MiniCartProductUiModel && !it.isProductDisabled) {
+                miniCartProductUiModels.add(
+                        UpdateCartRequest(cartId = it.cartId, quantity = it.productQty, notes = it.productNotes)
+                )
+            }
         }
+        updateCartUseCase.setParams(miniCartProductUiModels, source)
+        // No-op for booth onSuccess & onError
+        updateCartUseCase.execute(onSuccess = {}, onError = {})
+    }
 
+    fun addToCart(observer: Int) {
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-            val updateCartRequestList = mutableListOf<UpdateCartRequest>()
-            val allMiniCartItem = getMiniCartItems()
-            allMiniCartItem.forEach { miniCartItem ->
+            val miniCartItems = mutableListOf<AddToCartOccMultiCartParam>()
+            getMiniCartItems().forEach { miniCartItem ->
                 if (!miniCartItem.isError) {
-                    updateCartRequestList.add(
-                            UpdateCartRequest(
+                    miniCartItems.add(
+                            AddToCartOccMultiCartParam(
                                     cartId = miniCartItem.cartId,
-                                    quantity = miniCartItem.quantity,
-                                    notes = miniCartItem.notes
+                                    productId = miniCartItem.productId,
+                                    shopId = miniCartItem.shopId,
+                                    quantity = miniCartItem.quantity.toString(),
+                                    notes = miniCartItem.notes,
+                                    warehouseId = miniCartItem.warehouseId,
+                                    attribution = miniCartItem.attribution
                             )
                     )
                 }
             }
-            updateCartUseCase.setParams(updateCartRequestList, source)
+            val params = AddToCartOccMultiRequestParams(
+                    carts = miniCartItems,
+                    source = AddToCartOccMultiRequestParams.SOURCE_MINICART
+            )
+            addToCartOccMultiUseCase.setParams(params)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-            val updateCartRequestList = mutableListOf<UpdateCartRequest>()
+            val miniCartItems = mutableListOf<AddToCartOccMultiCartParam>()
             val visitables = getVisitables()
             visitables.forEach { visitable ->
                 if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
-                    updateCartRequestList.add(
-                            UpdateCartRequest(
-                                    cartId = visitable.cartId,
-                                    quantity = visitable.productQty,
-                                    notes = visitable.productNotes
-                            )
-                    )
+                    miniCartItems.add(AddToCartOccMultiCartParam(
+                            cartId = visitable.cartId,
+                            productId = visitable.productId,
+                            shopId = visitable.shopId,
+                            quantity = visitable.productQty.toString(),
+                            notes = visitable.productNotes,
+                            warehouseId = visitable.warehouseId,
+                            attribution = visitable.attribution
+                    ))
                 }
             }
-            updateCartUseCase.setParams(updateCartRequestList, source)
+            val params = AddToCartOccMultiRequestParams(
+                    carts = miniCartItems,
+                    source = AddToCartOccMultiRequestParams.SOURCE_MINICART
+            )
+            addToCartOccMultiUseCase.setParams(params)
         }
-        updateCartUseCase.execute(
+
+        addToCartOccMultiUseCase.execute(
                 onSuccess = {
-                    onSuccessUpdateCart(isForCheckout, it, observer)
+                    onSuccessAddToCart(it, observer)
                 },
                 onError = {
-                    onErrorUpdateCart(isForCheckout, observer, it)
+                    onErrorAddToCart(it, observer)
                 }
         )
     }
 
-    private fun onSuccessUpdateCart(isForCheckout: Boolean, updateCartV2Data: UpdateCartV2Data, observer: Int) {
-        if (isForCheckout) {
-            if (updateCartV2Data.data.status) {
-                _globalEvent.value = GlobalEvent(
-                        observer = observer,
-                        state = GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT
-                )
-            } else {
-                _globalEvent.value = GlobalEvent(
-                        observer = observer,
-                        state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
-                        data = updateCartV2Data.data
-                )
-            }
-        }
-    }
-
-    private fun onErrorUpdateCart(isForCheckout: Boolean, observer: Int, throwable: Throwable) {
-        if (isForCheckout) {
+    private fun onSuccessAddToCart(addToCartOccMultiDataModel: AddToCartOccMultiDataModel, observer: Int) {
+        if (!addToCartOccMultiDataModel.isStatusError()) {
             _globalEvent.value = GlobalEvent(
                     observer = observer,
-                    state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
-                    throwable = throwable
+                    state = GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT
+            )
+        } else {
+            _globalEvent.value = GlobalEvent(
+                    observer = observer,
+                    state = GlobalEvent.STATE_FAILED_ADD_TO_CART_FOR_CHECKOUT,
+                    data = addToCartOccMultiDataModel
             )
         }
     }
+
+    private fun onErrorAddToCart(throwable: Throwable, observer: Int) {
+        _globalEvent.value = GlobalEvent(
+                observer = observer,
+                state = GlobalEvent.STATE_FAILED_ADD_TO_CART_FOR_CHECKOUT,
+                throwable = throwable
+        )
+    }
+
 
     // User Interaction
 

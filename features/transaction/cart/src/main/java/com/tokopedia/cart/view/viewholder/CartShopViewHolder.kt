@@ -1,41 +1,57 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
+import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.lang.Math.*
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.min
 
 class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val actionListener: ActionListener,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
+    private val localCacheHandler: LocalCacheHandler by lazy {
+        LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
+    }
+
     fun bindData(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isNeedToRefreshWeight) {
+            renderMaximumWeight(cartShopHolderData)
+            cartShopHolderData.isNeedToRefreshWeight = false
+            return
+        }
         renderWarningAndError(cartShopHolderData)
-        renderErrorItemHeader(cartShopHolderData)
         renderWarningItemHeader(cartShopHolderData)
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
+        renderIconPin(cartShopHolderData)
         renderCartItems(cartShopHolderData)
+        renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
         renderFulfillment(cartShopHolderData)
         renderPreOrder(cartShopHolderData)
@@ -45,8 +61,53 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderMaximumWeight(cartShopHolderData)
     }
 
+    private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.shopGroupAvailableData?.isShowPin == true) {
+            binding.iconPin.show()
+            cartShopHolderData.shopGroupAvailableData?.pinCoachmarkMessage?.let {
+                if (it.isNotBlank()) {
+                    showIconPinOnboarding(it)
+                }
+            }
+        } else {
+            binding.iconPin.gone()
+        }
+    }
+
+    private fun showIconPinOnboarding(coachmarkMessage: String) {
+        val hasShownOnboarding = localCacheHandler.getBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, false)
+        if (hasShownOnboarding) return
+
+        itemView.context.let {
+            val onboardingItems = ArrayList<CoachMark2Item>().apply {
+                add(CoachMark2Item(binding.iconPin, coachmarkMessage, ""))
+            }
+
+            CoachMark2(it).apply {
+                showCoachMark(onboardingItems)
+            }
+
+            localCacheHandler.apply {
+                putBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, true)
+                applyEditor()
+            }
+        }
+    }
+
+    private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isCollapsed) {
+            renderCollapsedCartItems(cartShopHolderData)
+        } else {
+            renderExpandedCartItems(cartShopHolderData)
+            if (cartShopHolderData.clickedCollapsedProductIndex != RecyclerView.NO_POSITION) {
+                scrollToSelectedExpandedProduct(cartShopHolderData.clickedCollapsedProductIndex)
+                cartShopHolderData.clickedCollapsedProductIndex = RecyclerView.NO_POSITION
+            }
+        }
+    }
+
     private fun renderWarningAndError(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData?.isError == true || cartShopHolderData.shopGroupAvailableData?.isWarning == true) {
+        if (cartShopHolderData.shopGroupAvailableData?.isWarning == true) {
             binding.llWarningAndError.root.show()
         } else {
             binding.llWarningAndError.root.gone()
@@ -67,25 +128,87 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun renderShopBadge(cartShopHolderData: CartShopHolderData) {
         val shopTypeInfoData = cartShopHolderData.shopGroupAvailableData?.shopTypeInfo
         if (shopTypeInfoData?.shopBadge?.isNotBlank() == true) {
-            ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, shopTypeInfoData.shopBadge)
-            binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
-            binding.imgShopBadge.show()
+            ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopTypeInfoData.shopBadge)
+            binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
+            binding.imageShopBadge.show()
         } else {
-            binding.imgShopBadge.gone()
+            binding.imageShopBadge.gone()
         }
     }
 
-    private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
-        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener, compositeSubscription, adapterPosition)
+    private fun renderExpandedCartItems(cartShopHolderData: CartShopHolderData) {
+        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener, adapterPosition)
         cartItemAdapter.addDataList(cartShopHolderData.shopGroupAvailableData?.cartItemDataList)
         val linearLayoutManager = LinearLayoutManager(binding.rvCartItem.context)
         binding.rvCartItem.layoutManager = linearLayoutManager
         binding.rvCartItem.adapter = cartItemAdapter
         (binding.rvCartItem.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        val itemDecorationCount = binding.rvCartItem.itemDecorationCount
+        if (itemDecorationCount > 0) {
+            binding.rvCartItem.removeItemDecorationAt(0)
+        }
+    }
+
+    private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
+        val maxIndex = min(10, cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.size
+                ?: 0)
+        val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
+        cartCartCollapsedProductAdapter.parentPosition = adapterPosition
+        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.subList(0, maxIndex)
+                ?: mutableListOf()
+        val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
+        binding.rvCartItem.layoutManager = layoutManager
+        binding.rvCartItem.adapter = cartCartCollapsedProductAdapter
+        val itemDecorationCount = binding.rvCartItem.itemDecorationCount
+        if (itemDecorationCount > 0) {
+            binding.rvCartItem.removeItemDecorationAt(0)
+        }
+        val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_48)?.toInt() ?: 0
+        val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
+        binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
+    }
+
+    private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isCollapsible) {
+            var showMoreWording = ""
+            val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
+            val itemCount = cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.size ?: 0
+            showMoreWording = if (itemCount > 10) {
+                val exceedItemCount = itemCount - 10
+                itemView.context.getString(R.string.label_tokonow_show_other, exceedItemCount)
+            } else {
+                itemView.context.getString(R.string.label_tokonow_show_more)
+            }
+
+            if (cartShopHolderData.isCollapsed) {
+                binding.imageChevron.rotation = 0f
+                binding.textAccordion.text = showMoreWording
+            } else {
+                binding.imageChevron.rotation = 180f
+                binding.textAccordion.text = showLessWording
+            }
+
+            binding.layoutAccordion.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    if (cartShopHolderData.isCollapsed) {
+                        actionListener.onExpandAvailableItem(position)
+                    } else {
+                        actionListener.onCollapseAvailableItem(position)
+                    }
+                }
+            }
+
+            binding.layoutAccordion.show()
+            binding.separatorAccordion.show()
+        } else {
+            binding.layoutAccordion.gone()
+            binding.separatorAccordion.gone()
+        }
     }
 
     private fun renderCheckBox(cartShopHolderData: CartShopHolderData) {
-        binding.cbSelectShop.isEnabled = cartShopHolderData.shopGroupAvailableData?.isError == false
+        binding.cbSelectShop.isEnabled = true
         binding.cbSelectShop.isChecked = cartShopHolderData.isAllSelected
         binding.cbSelectShop.skipAnimation()
         initCheckboxWatcherDebouncer(cartShopHolderData, compositeSubscription)
@@ -142,44 +265,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         }
     }
 
-    private fun renderErrorItemHeader(data: CartShopHolderData) {
-        with(binding) {
-            if (data.shopGroupAvailableData?.isError == true) {
-                cbSelectShop.isEnabled = false
-                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
-                llShopContainer.setBackgroundResource(R.drawable.bg_error_shop)
-                if (data.shopGroupAvailableData?.errorTitle?.isNotBlank() == true) {
-                    val errorDescription = data.shopGroupAvailableData?.errorDescription
-                    if (errorDescription?.isNotBlank() == true) {
-                        llWarningAndError.tickerError.tickerTitle = data.shopGroupAvailableData?.errorTitle
-                        llWarningAndError.tickerError.setTextDescription(errorDescription)
-                    } else {
-                        llWarningAndError.tickerError.tickerTitle = null
-                        llWarningAndError.tickerError.setTextDescription(data.shopGroupAvailableData?.errorTitle
-                                ?: "")
-                    }
-                    llWarningAndError.tickerError.tickerType = TYPE_ERROR
-                    llWarningAndError.tickerError.tickerShape = SHAPE_LOOSE
-                    llWarningAndError.tickerError.closeButtonVisibility = View.GONE
-                    llWarningAndError.tickerError.show()
-                    llWarningAndError.tickerError.post {
-                        binding.llWarningAndError.tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                        binding.llWarningAndError.tickerError.requestLayout()
-                    }
-                    llWarningAndError.layoutError.show()
-                } else {
-                    llWarningAndError.layoutError.gone()
-                }
-            } else {
-                cbSelectShop.isEnabled = true
-                flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
-                llShopContainer.setBackgroundColor(ContextCompat.getColor(llShopContainer.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                llWarningAndError.layoutError.gone()
-            }
-        }
-    }
-
     private fun renderWarningItemHeader(data: CartShopHolderData) {
         with(binding.llWarningAndError) {
             when {
@@ -229,26 +314,24 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun cbSelectShopClickListener(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData?.isError == false) {
-            val isChecked: Boolean
-            if (cartShopHolderData.isPartialSelected) {
-                isChecked = true
-                cartShopHolderData.setAllItemSelected(true)
-                cartShopHolderData.isPartialSelected = false
-            } else {
-                isChecked = !cartShopHolderData.isAllSelected
+        val isChecked: Boolean
+        if (cartShopHolderData.isPartialSelected) {
+            isChecked = true
+            cartShopHolderData.setAllItemSelected(true)
+            cartShopHolderData.isPartialSelected = false
+        } else {
+            isChecked = !cartShopHolderData.isAllSelected
+        }
+        var isAllSelected = true
+        cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.forEach {
+            if (it.cartItemData.isError && it.cartItemData.isSingleChild) {
+                isAllSelected = false
+                return@forEach
             }
-            var isAllSelected = true
-            cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.forEach {
-                if (it.cartItemData.isError && it.cartItemData.isSingleChild) {
-                    isAllSelected = false
-                    return@forEach
-                }
-            }
-            cartShopHolderData.setAllItemSelected(isAllSelected)
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener.onShopItemCheckChanged(adapterPosition, isChecked)
-            }
+        }
+        cartShopHolderData.setAllItemSelected(isAllSelected)
+        if (adapterPosition != RecyclerView.NO_POSITION) {
+            actionListener.onShopItemCheckChanged(adapterPosition, isChecked)
         }
     }
 
@@ -334,10 +417,40 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         }
     }
 
+    private fun scrollToSelectedExpandedProduct(productIndex: Int) {
+        val position = adapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+            binding.rvCartItem.post {
+                if (binding.llWarningAndError.tickerWarning.isVisible) {
+                    binding.llWarningAndError.tickerWarning.post {
+                        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+                                ?: 0
+                        val tickerHeight = binding.llWarningAndError.tickerWarning.height
+                        calculateScrollOffset(productIndex, position, tickerHeight + paddingOffset)
+                    }
+                } else {
+                    calculateScrollOffset(productIndex, position, 0)
+                }
+            }
+        }
+    }
+
+    private fun calculateScrollOffset(productIndex: Int, position: Int, tickerHeight: Int) {
+        val child: View? = binding.rvCartItem.getChildAt(0)
+        val productHeight = child?.height ?: 0
+        val offset = productIndex * productHeight
+        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
+                ?: 0
+        val totalOffset = offset + paddingOffset + tickerHeight
+        actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
+    }
+
     companion object {
-        val TYPE_VIEW_ITEM_SHOP = R.layout.item_shop
+        val LAYOUT = R.layout.item_shop
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
+        const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"
+        const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
     }
 
 }

@@ -47,4 +47,7 @@
     <string name="message_no_cart_item_selected">Pilih barang dulu sebelum beli</string>
     <string name="toolbar_page_name_cart">Cart</string>
     <string name="label_cart_ticker_error_action">Lihat</string>
+    <string name="label_tokonow_show_less">Tampilkan Lebih Sedikit</string>
+    <string name="label_tokonow_show_more">Lihat selengkapnya</string>
+    <string name="label_tokonow_show_other">+ %d lainnya</string>
 </resources>
