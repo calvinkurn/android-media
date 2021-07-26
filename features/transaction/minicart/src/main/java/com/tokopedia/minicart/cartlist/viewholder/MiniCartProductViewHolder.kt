@@ -2,6 +2,7 @@ package com.tokopedia.minicart.cartlist.viewholder
 
 import android.graphics.Paint
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -263,6 +264,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
                 }
             })
+            textFieldNotes.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldNotes.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldNotes.context?.let {
                 textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->

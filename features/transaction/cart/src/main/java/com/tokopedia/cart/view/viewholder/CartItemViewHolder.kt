@@ -371,7 +371,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 }
             }
         })
-
+        binding.etRemark.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        binding.etRemark.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
         binding.llShopNoteSection.show()
     }
 
@@ -492,6 +493,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 true
             } else false
         }
+        qtyEditorCart.editText.imeOptions = EditorInfo.IME_ACTION_DONE
         qtyEditorCart.editText.isEnabled = data.cartItemData.isError == false
     }
 
