@@ -10,10 +10,10 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder.HotelNear
 /**
  * @author by astidhiyaa on 23/06/2021
  */
-class HotelNearbyPlacesSectionAdapter(private var dataList: List<HotelNearbyPlaces>, private var listener: HotelNearbyLandmarkViewHolder.NearbyListener) : RecyclerView.Adapter<HotelNearbyLandmarkViewHolder>() {
+class HotelNearbyPlacesSectionAdapter(private var dataList: List<HotelNearbyPlaces>) : RecyclerView.Adapter<HotelNearbyLandmarkViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelNearbyLandmarkViewHolder = HotelNearbyLandmarkViewHolder(
-            ItemHotelSectionNearbyLandmarkBinding.inflate(LayoutInflater.from(parent.context), parent, false), listener)
+            ItemHotelSectionNearbyLandmarkBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = dataList.size
 
