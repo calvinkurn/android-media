@@ -45,6 +45,8 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -618,14 +620,21 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        val productId = productItemDataView.id
+        val shopId = productItemDataView.shop.id
+
+        openATCVariantBottomSheet(productId, shopId)
+    }
+
+    private fun openATCVariantBottomSheet(productId: String, shopId: String) {
         val context = context ?: return
 
         AtcVariantHelper.goToAtcVariant(
                 context = context,
-                productId = productItemDataView.id,
+                productId = productId,
                 pageSource = "tokonow",
                 isTokoNow = true,
-                shopId = productItemDataView.shop.id,
+                shopId = shopId,
                 trackerCdListName = getCDListName(),
                 startActivitResult = this::startActivityForResult,
         )
@@ -764,23 +773,45 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onDismissChooseAddressBottomSheet() { }
 
-    override fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int) {
+    override fun onBindRecommendationCarousel(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
         getViewModel().onBindRecommendationCarousel(element, adapterPosition)
     }
 
-    override fun onImpressed() {
+    override fun onImpressedRecommendationCarouselItem(
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+    ) {
 
     }
 
-    override fun onClicked() {
+    override fun onClickRecommendationCarouselItem(
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+    ) {
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                recomItem.productId.toString(),
+        )
+    }
+
+    override fun onATCNonVariantRecommendationCarouselItem(
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+    ) {
 
     }
 
-    override fun onATCNonVariant() {
+    override fun onAddVariantRecommendationCarouselItem(
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+    ) {
+        val productId = recomItem.productId.toString()
+        val shopId = recomItem.shopId.toString()
 
-    }
-
-    override fun onAddVariant() {
-
+        openATCVariantBottomSheet(productId, shopId)
     }
 }

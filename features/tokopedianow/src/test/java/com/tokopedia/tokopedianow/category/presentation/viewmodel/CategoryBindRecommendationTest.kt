@@ -7,9 +7,6 @@ import com.tokopedia.tokopedianow.searchcategory.BindRecommendationCarouselTestH
 import com.tokopedia.tokopedianow.searchcategory.BindRecommendationCarouselTestHelper.Callback
 import com.tokopedia.tokopedianow.searchcategory.assertTokonowRecommendationCarouselRequestParams
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.core.Is.`is` as shouldBe
@@ -18,28 +15,19 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
 
     private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
 
-    @Test
-    fun `bind recommendation success`() {
-        val testHelper = BindRecommendationCarouselTestHelper(
-                tokoNowCategoryViewModel,
-                getRecommendationUseCase,
-                object: Callback {
-                    override fun `Given view will show recommendation carousel`() {
-                        `Given category first page will show recommendation carousel`()
-                    }
+    private val defaultTestHelperCallback = object: Callback {
+        override fun `Given view will show recommendation carousel`() {
+            `Given category first page will show recommendation carousel`()
+        }
 
-                    override fun `Then assert get recommendation request`(
-                            getRecommendationRequestParam: GetRecommendationRequestParam
-                    ) {
-                        `Then assert get recommendation request`(
-                                getRecommendationRequestParam,
-                                defaultCategoryL1,
-                        )
-                    }
-                },
-        )
-
-        testHelper.`bind recommendation success`()
+        override fun `Then assert get recommendation request`(
+                getRecommendationRequestParam: GetRecommendationRequestParam
+        ) {
+            `Then assert get recommendation request`(
+                    getRecommendationRequestParam,
+                    defaultCategoryL1,
+            )
+        }
     }
 
     private fun `Given category first page will show recommendation carousel`() {
@@ -53,53 +41,37 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
     ) {
         assertTokonowRecommendationCarouselRequestParams(getRecommendationRequestParam)
 
-        assertThat(getRecommendationRequestParam.categoryIds, shouldBe(listOf(expectedCategoryId)))
+        assertThat(
+                getRecommendationRequestParam.categoryIds,
+                shouldBe(listOf(expectedCategoryId))
+        )
+    }
+
+    private fun createTestHelper(callback: Callback = defaultTestHelperCallback) =
+            BindRecommendationCarouselTestHelper(
+                    tokoNowCategoryViewModel,
+                    getRecommendationUseCase,
+                    getMiniCartListSimplifiedUseCase,
+                    callback
+            )
+
+    @Test
+    fun `bind recommendation success`() {
+        val testHelper = createTestHelper()
+
+        testHelper.`bind recommendation success`()
     }
 
     @Test
     fun `bind recommendation fail`() {
-        val testHelper = BindRecommendationCarouselTestHelper(
-                tokoNowCategoryViewModel,
-                getRecommendationUseCase,
-                object: Callback {
-                    override fun `Given view will show recommendation carousel`() {
-                        `Given category first page will show recommendation carousel`()
-                    }
-
-                    override fun `Then assert get recommendation request`(
-                            getRecommendationRequestParam: GetRecommendationRequestParam
-                    ) {
-                        `Then assert get recommendation request`(
-                                getRecommendationRequestParam,
-                                defaultCategoryL1,
-                        )
-                    }
-                },
-        )
+        val testHelper = createTestHelper()
 
         testHelper.`bind recommendation fail`()
     }
 
     @Test
     fun `should not load recommendation again after success`() {
-        val testHelper = BindRecommendationCarouselTestHelper(
-                tokoNowCategoryViewModel,
-                getRecommendationUseCase,
-                object: Callback {
-                    override fun `Given view will show recommendation carousel`() {
-                        `Given category first page will show recommendation carousel`()
-                    }
-
-                    override fun `Then assert get recommendation request`(
-                            getRecommendationRequestParam: GetRecommendationRequestParam
-                    ) {
-                        `Then assert get recommendation request`(
-                                getRecommendationRequestParam,
-                                defaultCategoryL1,
-                        )
-                    }
-                },
-        )
+        val testHelper = createTestHelper()
 
         testHelper.`should not load recommendation again after success`()
     }
@@ -109,9 +81,7 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
         val categoryL2Id = "456"
         `Given category view model`(defaultCategoryL1, categoryL2Id)
 
-        val testHelper = BindRecommendationCarouselTestHelper(
-                tokoNowCategoryViewModel,
-                getRecommendationUseCase,
+        val testHelper = createTestHelper(
                 object: Callback {
                     override fun `Given view will show recommendation carousel`() {
                         `Given category first page will show recommendation carousel`()
@@ -141,9 +111,7 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
                 mapOf(SearchApiConst.SC to categoryL3Id)
         )
 
-        val testHelper = BindRecommendationCarouselTestHelper(
-                tokoNowCategoryViewModel,
-                getRecommendationUseCase,
+        val testHelper = createTestHelper(
                 object: Callback {
                     override fun `Given view will show recommendation carousel`() {
                         `Given category first page will show recommendation carousel`()
@@ -161,5 +129,19 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
         )
 
         testHelper.`bind recommendation success`()
+    }
+
+    @Test
+    fun `bind recommendation with quantity from mini cart`() {
+        val testHelper = createTestHelper()
+
+        testHelper.`bind recommendation with quantity from mini cart`()
+    }
+
+    @Test
+    fun `update recommendation quantity on update mini cart`() {
+        val testHelper = createTestHelper()
+
+        testHelper.`update recommendation quantity on update mini cart`()
     }
 }

@@ -1,16 +1,22 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.slot
 import org.junit.Assert.assertThat
 import org.hamcrest.core.Is.`is` as shouldBe
@@ -18,6 +24,7 @@ import org.hamcrest.core.Is.`is` as shouldBe
 class BindRecommendationCarouselTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
         private val getRecommendationUseCase: GetRecommendationUseCase,
+        private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         private val callback: Callback,
 ) {
 
@@ -129,6 +136,84 @@ class BindRecommendationCarouselTestHelper(
         coVerify(exactly = 1) {
             getRecommendationUseCase.getData(any())
         }
+    }
+
+    fun `bind recommendation with quantity from mini cart`() {
+        val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
+
+        callback.`Given view will show recommendation carousel`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given get recommendation will be successful`()
+        `Given view is resumed`()
+
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+        val recomWidget = visitableList.findRecomWidget()
+        val recomWidgetPosition = visitableList.lastIndex
+
+        `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
+
+        `Then assert quantity is updated from mini cart`(miniCartSimplifiedData)
+    }
+
+    private fun `Given get mini cart simplified use case will be successful`(
+            miniCartSimplifiedData: MiniCartSimplifiedData
+    ) {
+        every {
+            getMiniCartListSimplifiedUseCase.execute(any(), any())
+        } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
+        }
+    }
+
+    private fun `Given view is resumed`() {
+        baseViewModel.onViewResumed()
+    }
+
+    private fun `Then assert quantity is updated from mini cart`(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        recommendationWidgetList.first().recommendationItemList.forEach {
+            it.assertQuantityFromMiniCart(miniCartSimplifiedData.miniCartItems)
+        }
+    }
+
+    private fun RecommendationItem.assertQuantityFromMiniCart(
+            miniCartItemList: List<MiniCartItem>
+    ) {
+        val miniCartItem = miniCartItemList.find { it.productId == this.productId.toString() }
+        val expectedQuantity = miniCartItem?.quantity ?: 0
+
+        assertThat(this.quantity, shouldBe(expectedQuantity))
+    }
+
+    fun `update recommendation quantity on update mini cart`() {
+        val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
+
+        callback.`Given view will show recommendation carousel`()
+        `Given get recommendation will be successful`()
+
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+        val recomWidget = visitableList.findRecomWidget()
+        val recomWidgetPosition = visitableList.lastIndex
+
+        `Given recommendation carousel already success`(recomWidget, recomWidgetPosition)
+
+        `When view update cart items`(miniCartSimplifiedData)
+
+        `Then assert quantity is updated from mini cart`(miniCartSimplifiedData)
+        `Then assert updated visitable indices has recom position`(recomWidgetPosition)
+    }
+
+    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        baseViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
+    }
+
+    private fun `Then assert updated visitable indices has recom position`(
+            recomWidgetPosition: Int
+    ) {
+        val updatedVisitableIndices = baseViewModel.updatedVisitableIndicesLiveData.value!!
+        val hasRecomWidgetInUpdatedVisitableIndices =
+                updatedVisitableIndices.contains(recomWidgetPosition)
+
+        assertThat(hasRecomWidgetInUpdatedVisitableIndices, shouldBe(true))
     }
 
     interface Callback {

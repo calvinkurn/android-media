@@ -43,6 +43,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
@@ -108,6 +109,9 @@ abstract class BaseSearchCategoryViewModel(
     protected var nextPage = 1
     protected var chooseAddressData: LocalCacheModel? = null
     protected var currentProductPosition: Int = 1
+    protected var recommendationPositionInVisitableList = -1
+    protected val recommendationList = mutableListOf<RecommendationWidget>()
+    private var allMiniCartItemList: List<MiniCartItem>? = null
     private var cartItemsNonVariant: List<MiniCartItem>? = null
     private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
 
@@ -818,13 +822,11 @@ abstract class BaseSearchCategoryViewModel(
                     updateProductItemQuantity(index, visitable, updatedProductIndices)
             }
 
-            updateVisitableWithIndex(updatedProductIndices)
-        }
-    }
+            updateRecommendationListQuantity(recommendationList, allMiniCartItemList)
+            if (recommendationPositionInVisitableList != -1)
+                updatedProductIndices.add(recommendationPositionInVisitableList)
 
-    private suspend fun updateVisitableWithIndex(updatedProductIndices: List<Int>) {
-        withContext(baseDispatcher.main) {
-            updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
+            updateVisitableWithIndex(updatedProductIndices)
         }
     }
 
@@ -833,6 +835,7 @@ abstract class BaseSearchCategoryViewModel(
         val cartItemsPartition =
                 splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
 
+        viewModel.allMiniCartItemList = miniCartSimplifiedData.miniCartItems
         viewModel.cartItemsNonVariant = cartItemsPartition.first
         viewModel.cartItemsVariantGrouped =
                 cartItemsPartition.second.groupBy { it.productParentId }
@@ -879,6 +882,12 @@ abstract class BaseSearchCategoryViewModel(
         val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
 
         return totalQuantity ?: 0
+    }
+
+    private suspend fun updateVisitableWithIndex(updatedProductIndices: List<Int>) {
+        withContext(baseDispatcher.main) {
+            updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
+        }
     }
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
@@ -1037,34 +1046,80 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         if (element.carouselData.state == RecommendationCarouselData.STATE_READY) return
 
-        val getRecommendationRequestParam = GetRecommendationRequestParam(
-                pageName = TOKONOW_CLP,
-                categoryIds = getRecomCategoryId(),
-                xSource = RECOM_WIDGET,
-                isTokonow = true,
-                pageNumber = PAGE_NUMBER_RECOM_WIDGET,
-                keywords = getRecomKeywords(),
-                xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-        )
-        val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
+        recommendationPositionInVisitableList = adapterPosition
+
+        val getRecommendationRequestParam = createRecommendationRequestParam()
+        val recommendationListData =
+                getRecommendationUseCase.getData(getRecommendationRequestParam)
+
+        updateRecommendationList(recommendationListData)
+
+        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
 
         element.carouselData = RecommendationCarouselData(
                 state = RecommendationCarouselData.STATE_READY,
-                recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
+                recommendationData = recommendationData
         )
 
         updateVisitableWithIndex(listOf(adapterPosition))
     }
 
+    protected open fun createRecommendationRequestParam() = GetRecommendationRequestParam(
+            pageName = TOKONOW_CLP,
+            categoryIds = getRecomCategoryId(),
+            xSource = RECOM_WIDGET,
+            isTokonow = true,
+            pageNumber = PAGE_NUMBER_RECOM_WIDGET,
+            keywords = getRecomKeywords(),
+            xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+    )
+
     protected open fun getRecomCategoryId() = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
+
+    private fun updateRecommendationList(recommendationListData: List<RecommendationWidget>) {
+        recommendationList.clear()
+        recommendationList.addAll(recommendationListData)
+
+        updateRecommendationListQuantity(recommendationList, allMiniCartItemList)
+    }
+
+    private fun updateRecommendationListQuantity(
+            recommendationList: List<RecommendationWidget>?,
+            miniCartItemList: List<MiniCartItem>?,
+    ) {
+        recommendationList ?: return
+
+        recommendationList
+                .flatMap { it.recommendationItemList }
+                .forEach { item ->
+                    val productId = item.productId.toString()
+                    val quantity = getRecommendationItemQuantity(productId, miniCartItemList)
+
+                    item.quantity = quantity
+                }
+    }
+
+    protected open fun getRecommendationItemQuantity(
+            productId: String?,
+            miniCartItemList: List<MiniCartItem>?,
+    ): Int {
+        productId ?: return 0
+        miniCartItemList ?: return 0
+
+        val miniCartItem = miniCartItemList.find { it.productId == productId }
+
+        return miniCartItem?.quantity ?: 0
+    }
 
     protected open suspend fun getRecommendationCarouselError(
             element: RecommendationCarouselDataView,
             adapterPosition: Int,
     ) {
-        element.carouselData = RecommendationCarouselData(state = RecommendationCarouselData.STATE_FAILED)
+        element.carouselData = RecommendationCarouselData(
+                state = RecommendationCarouselData.STATE_FAILED
+        )
 
         updateVisitableWithIndex(listOf(adapterPosition))
     }

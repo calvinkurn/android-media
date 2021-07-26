@@ -203,16 +203,15 @@ class UpdateCartTestHelper(
     fun `onViewUpdateCartItems should update quantity in product list`() {
         val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
         callback.`Given first page API will be successful`()
-        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given view already created`()
 
-        `When view update cart items`()
+        `When view update cart items`(miniCartSimplifiedData)
 
         `Then assert product quantity is updated`()
         `Then assert mini cart widget visibility`(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
-    private fun `When view update cart items`() {
+    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData) {
         baseViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
     }
 

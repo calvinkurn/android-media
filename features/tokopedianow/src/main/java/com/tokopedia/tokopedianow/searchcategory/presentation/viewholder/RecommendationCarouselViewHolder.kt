@@ -47,7 +47,10 @@ class RecommendationCarouselViewHolder(
             itemPosition: Int,
             adapterPosition: Int,
     ) {
-        recommendationCarouselListener.onImpressed()
+        recommendationCarouselListener.onImpressedRecommendationCarouselItem(
+                data,
+                recomItem,
+        )
     }
 
     override fun onRecomProductCardClicked(
@@ -57,7 +60,10 @@ class RecommendationCarouselViewHolder(
             itemPosition: Int,
             adapterPosition: Int,
     ) {
-        recommendationCarouselListener.onClicked()
+        recommendationCarouselListener.onClickRecommendationCarouselItem(
+                data,
+                recomItem,
+        )
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -66,7 +72,10 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
             quantity: Int,
     ) {
-        recommendationCarouselListener.onATCNonVariant()
+        recommendationCarouselListener.onATCNonVariantRecommendationCarouselItem(
+                data,
+                recomItem,
+        )
     }
 
     override fun onRecomProductCardAddVariantClick(
@@ -74,7 +83,10 @@ class RecommendationCarouselViewHolder(
             recomItem: RecommendationItem,
             adapterPosition: Int,
     ) {
-        recommendationCarouselListener.onAddVariant()
+        recommendationCarouselListener.onAddVariantRecommendationCarouselItem(
+                data,
+                recomItem,
+        )
     }
 
     override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) {

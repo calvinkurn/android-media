@@ -21,6 +21,7 @@ class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCaro
         bindRecommendationTestHelper = BindRecommendationCarouselTestHelper(
                 tokoNowSearchViewModel,
                 getRecommendationUseCase,
+                getMiniCartListSimplifiedUseCase,
                 this,
         )
     }
@@ -51,5 +52,15 @@ class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCaro
     @Test
     fun `should not load recommendation again after success`() {
         bindRecommendationTestHelper.`should not load recommendation again after success`()
+    }
+
+    @Test
+    fun `bind recommendation with quantity from mini cart`() {
+        bindRecommendationTestHelper.`bind recommendation with quantity from mini cart`()
+    }
+
+    @Test
+    fun `update recommendation quantity on update mini cart`() {
+        bindRecommendationTestHelper.`update recommendation quantity on update mini cart`()
     }
 }
