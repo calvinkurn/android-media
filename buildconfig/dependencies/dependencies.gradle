@@ -333,6 +333,7 @@ ext {
     debugToolsDependencies = [
             stetho          : "com.facebook.stetho:stetho:1.4.2",
             chuck           : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
+            chuckNoop       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
