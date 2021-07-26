@@ -7,7 +7,8 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,14 +19,18 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 
 
-class FlexBoxChatLayout : FrameLayout {
+class FlexBoxChatLayout : ViewGroup {
 
     var checkMark: ImageView? = null
         private set
-    private var message: TextView? = null
-    private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
+
+    /**
+     * Direct child view
+     */
+    private var message: TextView? = null
+    private var status: LinearLayout? = null
     private var info: TextView? = null
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
@@ -119,9 +124,9 @@ class FlexBoxChatLayout : FrameLayout {
             return
         }
 
-        val messageLayout = message?.layoutParams as LayoutParams
-        val statusLayout = status?.layoutParams as LayoutParams
-        val infoLayout = info?.layoutParams as LayoutParams
+        val messageLayout = message?.layoutParams as MarginLayoutParams
+        val statusLayout = status?.layoutParams as MarginLayoutParams
+        val infoLayout = info?.layoutParams as MarginLayoutParams
 
         val maxWidth = MeasureSpec.getSize(widthMeasureSpec)
         val availableWidth = maxWidth - paddingLeft - paddingRight
@@ -183,18 +188,70 @@ class FlexBoxChatLayout : FrameLayout {
         val contentWidth = totalWidth - paddingLeft - paddingRight
         if (msgLineCount > 1) {
             val newInfoWidth = messageWidth - statusWidth
-            infoLayout.width = newInfoWidth
-            info?.layoutParams = infoLayout
+            val newInfoWidthSpec = MeasureSpec.makeMeasureSpec(newInfoWidth, MeasureSpec.EXACTLY)
+            info?.measure(newInfoWidthSpec, heightMeasureSpec)
         } else if ((infoWidth + messageWidth + statusWidth) > contentWidth) {
             val newInfoWidth = contentWidth - statusWidth
-            infoLayout.width = newInfoWidth
-            info?.layoutParams = infoLayout
+            val newInfoWidthSpec = MeasureSpec.makeMeasureSpec(newInfoWidth, MeasureSpec.EXACTLY)
+            info?.measure(newInfoWidthSpec, heightMeasureSpec)
         }
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
             resolveSize(totalHeight, heightMeasureSpec),
         )
     }
+
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        var topOffset = 0
+
+        /**
+         * Layout msg
+         */
+        val leftMsg = paddingStart
+        val topMsg = paddingTop
+        val rightMsg = paddingStart + message!!.measuredWidth
+        val bottomMsg = topMsg + message!!.measuredHeight
+        message?.layout(
+            leftMsg,
+            topMsg,
+            rightMsg,
+            bottomMsg
+        )
+        topOffset += bottomMsg
+
+        /**
+         * Layout info
+         */
+        if (info!!.isVisible) {
+            val infoLp = info!!.layoutParams as MarginLayoutParams
+            val leftInfo = paddingStart
+            val topInfo = topOffset + infoLp.topMargin
+            val rightInfo = paddingStart + info!!.measuredWidth
+            val bottomInfo = topInfo + info!!.measuredHeight
+            info?.layout(
+                leftInfo,
+                topInfo,
+                rightInfo,
+                bottomInfo
+            )
+        }
+
+        /**
+         * Layout status
+         */
+        val leftStatus = measuredWidth - paddingEnd - status!!.measuredWidth
+        val topStatus = measuredHeight - paddingBottom - status!!.measuredHeight
+        val rightStatus = measuredWidth - paddingEnd
+        val bottomStatus = measuredHeight - paddingBottom
+        status!!.layout(
+            leftStatus,
+            topStatus,
+            rightStatus,
+            bottomStatus
+        )
+
+    }
+
 
     fun setMessage(msg: CharSequence?) {
         message?.text = msg
@@ -232,6 +289,32 @@ class FlexBoxChatLayout : FrameLayout {
 
     fun getMsg(): String {
         return message?.text.toString()
+    }
+
+    override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
+        return p is LayoutParams
+    }
+
+    override fun generateLayoutParams(attrs: AttributeSet?): ViewGroup.LayoutParams {
+        return LayoutParams(context, attrs)
+    }
+
+    override fun generateLayoutParams(p: ViewGroup.LayoutParams?): ViewGroup.LayoutParams {
+        return LayoutParams(p)
+    }
+
+    override fun generateDefaultLayoutParams(): ViewGroup.LayoutParams {
+        return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    }
+
+    /**
+     * Per-child layout information associated with [FlexBoxChatLayout].
+     */
+    class LayoutParams : MarginLayoutParams {
+        constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
+        constructor(width: Int, height: Int) : super(width, height)
+        constructor(source: MarginLayoutParams?) : super(source)
+        constructor(source: ViewGroup.LayoutParams?) : super(source)
     }
 
     companion object {
