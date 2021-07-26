@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.product.detail.usecase.*
@@ -105,6 +105,9 @@ abstract class BasePdpViewModelTest {
 
     @RelaxedMockK
     lateinit var updateCartUseCase: UpdateCartUseCase
+
+    @RelaxedMockK
+    lateinit var deleteCartUseCase: DeleteCartUseCase
 
     lateinit var spykViewModel: DynamicProductDetailViewModel
 

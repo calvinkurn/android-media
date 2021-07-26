@@ -25,7 +25,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -115,7 +114,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val submitHelpTicketUseCase: Lazy<SubmitHelpTicketUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
-                                                             private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
                                                              private val addToCartOccUseCase: Lazy<AddToCartOccUseCase>,
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
@@ -311,7 +309,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             val selectedMiniCart =  p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "") ?: return@launchCatchError
 
-            deleteCartUseCase.get().setParams(listOf(selectedMiniCart))
+            deleteCartUseCase.get().setParams(listOf(selectedMiniCart.cartId))
             val data = deleteCartUseCase.get().executeOnBackground()
 
             _p2Data.value?.miniCart?.remove(productId)
@@ -1007,7 +1005,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem?) {
         launchCatchError(block = {
             miniCartItem?.let {
-                deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId), )
+                deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
                 val result = deleteCartUseCase.get().executeOnBackground()
                 val isFailed = result.data.success == 0 || result.status.equals("ERROR", true)
                 if (isFailed) {

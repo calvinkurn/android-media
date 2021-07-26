@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
@@ -411,21 +412,21 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow`()
         `on success atc tokonow`()
 
-        val mockData = RemoveFromCartData(data = com.tokopedia.minicart.common.data.response.deletecart.Data(message = listOf("sukses delete cart")))
+        val mockData = RemoveFromCartData(data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart")))
         coEvery {
             deleteCartUseCase.executeOnBackground()
         } returns mockData
 
         viewModel.deleteProductInCart("2147818593")
 
-        val miniCartItem = slot<List<MiniCartItem>>()
+        val cartId = slot<List<String>>()
 
         coVerify { deleteCartUseCase.executeOnBackground() }
-        verify { deleteCartUseCase.setParams(capture(miniCartItem)) }
+        verify { deleteCartUseCase.setParams(capture(cartId)) }
 
-        val dataMiniCart = miniCartItem.captured.firstOrNull()
-        Assert.assertNotNull(dataMiniCart)
-        Assert.assertEquals(dataMiniCart?.productId ?: "", "2147818593")
+        val cartIdDeleted = cartId.captured.firstOrNull()
+        Assert.assertNotNull(cartIdDeleted)
+        Assert.assertEquals(cartIdDeleted ?: "", "2147818593")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Success)
@@ -453,14 +454,14 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.deleteProductInCart("2147818593")
 
-        val miniCartItem = slot<List<MiniCartItem>>()
+        val cartId = slot<List<String>>()
 
         coVerify { deleteCartUseCase.executeOnBackground() }
-        verify { deleteCartUseCase.setParams(capture(miniCartItem)) }
+        verify { deleteCartUseCase.setParams(capture(cartId)) }
 
-        val dataMiniCart = miniCartItem.captured.firstOrNull()
-        Assert.assertNotNull(dataMiniCart)
-        Assert.assertEquals(dataMiniCart?.productId ?: "", "2147818593")
+        val cartIdDeleted = cartId.captured.firstOrNull()
+        Assert.assertNotNull(cartIdDeleted)
+        Assert.assertEquals(cartIdDeleted ?: "", "2147818593")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Fail)
@@ -480,7 +481,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         `render initial variant with given child id and hit gql tokonow`()
         val actionButtonAtc = 2
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L, cartId = "2147818593"), status = "OK")
         val slotRequest = slot<RequestParams>()
         coEvery {
             addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()

@@ -22,11 +22,10 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
@@ -352,7 +351,7 @@ class AtcVariantViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val selectedMiniCart = getSelectedMiniCartItem(productId) ?: return@launchCatchError
 
-            deleteCartUseCase.setParams(listOf(selectedMiniCart))
+            deleteCartUseCase.setParams(listOf(selectedMiniCart.cartId))
             val data = deleteCartUseCase.executeOnBackground()
 
             updateMiniCartAndButtonAfterDelete(productId)

@@ -11,9 +11,6 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -406,8 +403,8 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `on success delete cart tokonow non var`() = runBlockingTest {
         `on success get product info login`()
-        val mockData = RemoveFromCartData(data = com.tokopedia.minicart.common.data.response.deletecart.Data(message = listOf("sukses delete cart")))
-        val miniCartItem = slot<List<MiniCartItem>>()
+        val mockData = RemoveFromCartData(data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart")))
+        val cartId = slot<List<String>>()
 
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -416,11 +413,11 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.deleteProductInCart("518076293")
 
         coVerify { deleteCartUseCase.executeOnBackground() }
-        verify { deleteCartUseCase.setParams(capture(miniCartItem)) }
+        verify { deleteCartUseCase.setParams(capture(cartId)) }
 
-        val dataMiniCart = miniCartItem.captured.firstOrNull()
-        Assert.assertNotNull(dataMiniCart)
-        Assert.assertEquals(dataMiniCart?.productId ?: "", "518076293")
+        val cartIdDeleted = cartId.captured.firstOrNull()
+        Assert.assertNotNull(cartIdDeleted)
+        Assert.assertEquals(cartIdDeleted, "111")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Success)
@@ -433,7 +430,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `on error delete cart tokonow non var`() = runBlockingTest {
         `on success get product info login`()
-        val miniCartItem = slot<List<MiniCartItem>>()
+        val cartId = slot<List<String>>()
 
         coEvery {
             deleteCartUseCase.executeOnBackground()
@@ -442,11 +439,11 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.deleteProductInCart("518076293")
 
         coVerify { deleteCartUseCase.executeOnBackground() }
-        verify { deleteCartUseCase.setParams(capture(miniCartItem)) }
+        verify { deleteCartUseCase.setParams(capture(cartId)) }
 
-        val dataMiniCart = miniCartItem.captured.firstOrNull()
-        Assert.assertNotNull(dataMiniCart)
-        Assert.assertEquals(dataMiniCart?.productId ?: "", "518076293")
+        val cartIdDeleted = cartId.captured.firstOrNull()
+        Assert.assertNotNull(cartIdDeleted)
+        Assert.assertEquals(cartIdDeleted, "111")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
         Assert.assertTrue(viewModel.deleteCartLiveData.value is Fail)
