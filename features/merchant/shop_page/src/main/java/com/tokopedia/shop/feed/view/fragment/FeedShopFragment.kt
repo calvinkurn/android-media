@@ -70,8 +70,8 @@ import com.tokopedia.seller_migration_common.presentation.util.goToInformationWe
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.view.listener.InterfaceShopPageFloatingActionButtonFragment
-import com.tokopedia.shop.common.view.model.ShopPageBottomEndFabConfig
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
+import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
@@ -106,7 +106,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
         FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener,
-        InterfaceShopPageFloatingActionButtonFragment {
+        InterfaceShopPageFab {
 
     override val androidContext: Context
         get() = requireContext()
@@ -118,8 +118,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
-    private val fabConfig: ShopPageBottomEndFabConfig by lazy {
-        ShopPageBottomEndFabConfig(
+    private val fabConfig: ShopPageFabConfig by lazy {
+        ShopPageFabConfig(
             items = arrayListOf(FloatingButtonItem(iconUnifyID = IconUnify.ADD, title = "")),
             onMainCircleButtonClicked = {
                 goToCreatePost(getSellerApplink())
@@ -209,14 +209,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         super.onDestroy()
     }
 
-    override fun shouldShowBottomEndFab(): Boolean {
+    override fun shouldShowShopPageFab(): Boolean {
         val firstItem = adapter?.data?.firstOrNull()
         return !isSellerMigrationEnabled(context) && shopId == userSession.shopId &&
                 whitelistDomain.authors.isNotEmpty() && firstItem != null &&
                 firstItem !is EmptyModel && firstItem !is EmptyFeedShopUiModel
     }
 
-    override fun getBottomEndFabConfig(): ShopPageBottomEndFabConfig? {
+    override fun getShopPageFabConfig(): ShopPageFabConfig? {
         return fabConfig
     }
 
@@ -976,11 +976,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun hideFloatingActionButton() {
-        (parentFragment as? NewShopPageFragment)?.hideBottomEndFloatingActionButton()
+        (parentFragment as? NewShopPageFragment)?.hideShopPageFab()
     }
 
     private fun showFloatingActionButton() {
-        (parentFragment as? NewShopPageFragment)?.showBottomEndFloatingActionButton()
+        (parentFragment as? NewShopPageFragment)?.showShopPageFab()
     }
 
     private fun getSellerApplink(): String {
@@ -1163,8 +1163,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun reshowFloatingActionButton() {
-        if (shouldShowBottomEndFab()) {
-            (parentFragment as? NewShopPageFragment)?.setupBottomEndFloatingActionButton(fabConfig)
+        if (shouldShowShopPageFab()) {
+            (parentFragment as? NewShopPageFragment)?.setupShopPageFab(fabConfig)
             showFloatingActionButton()
         } else {
             hideFloatingActionButton()

@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 
-data class ShopPageBottomEndFabConfig(
+data class ShopPageFabConfig(
     val type: Int = FloatingButtonUnify.BASIC,
     val color: Int = FloatingButtonUnify.COLOR_GREEN,
     val items: ArrayList<FloatingButtonItem> = arrayListOf(),
