@@ -7,7 +7,7 @@ class ExceptionDictionary {
     companion object {
 
         fun getRandomString(length:Int): String{
-            val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+            val allowedChars = ('A'..'Z') + ('1'..'9')
             return (1..length)
                     .map { allowedChars.random() }
                     .joinToString("")
@@ -33,29 +33,6 @@ class ExceptionDictionary {
                 is StringIndexOutOfBoundsException -> { "SI" }
                 is UnsupportedOperationException -> { "UO" }
                 else -> "OO"
-            }
-        }
-
-        fun getErrorCodeNumeric(exception: Throwable): String {
-            return when (exception) {
-                is ArithmeticException -> { "01" }
-                is ArrayIndexOutOfBoundsException -> { "02" }
-                is ClassNotFoundException -> { "03" }
-                is FileNotFoundException -> { "04" }
-                is IOException -> { "05" }
-                is IllegalArgumentException -> { "06" }
-                is IllegalStateException -> { "07" }
-                is InstantiationException -> { "08" }
-                is InterruptedException -> { "09" }
-                is NoSuchFieldException -> { "10" }
-                is NoSuchMethodException -> { "11" }
-                is NullPointerException -> { "12" }
-                is NumberFormatException -> { "13" }
-                is RuntimeException -> { "14" }
-                is SecurityException -> { "15" }
-                is StringIndexOutOfBoundsException -> { "16" }
-                is UnsupportedOperationException -> { "17" }
-                else -> "00"
             }
         }
     }

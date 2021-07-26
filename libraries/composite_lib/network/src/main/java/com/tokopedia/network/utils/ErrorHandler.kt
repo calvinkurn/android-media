@@ -21,8 +21,28 @@ open class ErrorHandler {
         const val ERROR_HANDLER = "ERROR_HANDLER"
 
         @JvmStatic
-        fun getErrorMessage(context: Context?, e: Throwable): String {
-            return getErrorMessage(context, e, Builder())
+        fun getErrorMessage(context: Context?, e: Throwable?): String {
+            e?.let {
+                return getErrorMessage(context, e, Builder())
+            }
+            return ""
+        }
+
+        @JvmStatic
+        fun getErrorMessageMap(
+                context: Context?,
+                e: Throwable,
+                builder: Builder
+        ): Pair<String?, String> {
+            val errorMessageString = getErrorMessageString(context, e)
+            val errorCode: String = getErrorCode(context, e)
+            val errorIdentifier = getRandomString(4)
+
+            if (builder.sendToScalyr) {
+                sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
+            }
+
+            return Pair(errorMessageString, errorCode)
         }
 
         @JvmStatic
@@ -31,31 +51,24 @@ open class ErrorHandler {
             e: Throwable,
             builder: Builder
         ): String {
-            val errorMessageString =
-                getErrorMessageString(context, e)
-            val errorCode: String = if (e is MessageErrorException) {
-                //http
-                getErrorMessageHTTP(context, e)
-            } else {
-                // native
-                getErrorCodeSimple(e)
-            }
+
+            val errorMessageString = getErrorMessageString(context, e)
+
+            val errorCode: String = getErrorCode(context, e)
             val errorIdentifier = getRandomString(4)
-            val mapParam = mapOf(
-                "identifier" to errorIdentifier,
-                "class" to builder.className,
-                "error_code" to if(builder.errorCode) errorCode else "",
-                "e" to Log.getStackTraceString(e)
-            )
+
             if (builder.sendToScalyr) {
-                LogManager.log(Priority.P2, ERROR_HANDLER, mapParam as Map<String, String>)
+                sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
             }
-            return "$errorMessageString <$errorCode-$errorIdentifier>"
+            if (!builder.errorCode) {
+                return "$errorMessageString";
+            }
+            return "$errorMessageString. Kode Error :($errorCode-$errorIdentifier)"
         }
 
-        fun getErrorMessageString(context: Context?, e: Throwable?): String? {
+        private fun getErrorMessageString(context: Context?, e: Throwable?): String? {
             if (context == null || e == null) {
-                return "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                return "Terjadi kesalahan. Ulangi beberapa saat lagi."
             }
             return if (e is ResponseV4ErrorException) {
                 e.errorList[0]
@@ -90,12 +103,30 @@ open class ErrorHandler {
             }
         }
 
-        fun getErrorMessageHTTP(context: Context?, e: Throwable): String {
+        private fun getErrorCode(context: Context?, e: Throwable): String {
+            return if (e is MessageErrorException) {
+                getErrorMessageHTTP(e)
+            } else {
+                getErrorCodeSimple(e)
+            }
+        }
+
+        private fun getErrorMessageHTTP(e: Throwable): String {
             return if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
                 e.errorCode
             } else {
                 "000"
             }
+        }
+
+        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: Boolean, stackTraceString: String) {
+            val mapParam = mapOf(
+                    "identifier" to errorIdentifier,
+                    "class" to className,
+                    "error_code" to if(errorCode) errorCode else "",
+                    "stack_trace" to stackTraceString
+            )
+            LogManager.log(Priority.P2, ERROR_HANDLER, mapParam as Map<String, String>)
         }
     }
 
