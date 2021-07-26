@@ -83,16 +83,16 @@ data class VariantChild(
             }
         }
 
-    val slashPriceInt: Int
+    val slashPriceDouble: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.originalPrice?.toInt() ?: 0
+                campaign.originalPrice ?: 0.0
             } else {
-                0
+                0.0
             }
         }
 
-    val discountPercentage: String?
+    val discountPercentage: String
         get() {
             return if (campaign?.isActive == true) {
                 campaign.discountedPercentage.toString()

@@ -314,9 +314,9 @@ object AtcCommonMapper {
         val productImageUrl = productInfo?.picture?.original ?: ""
         val productName = productInfo?.name ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeInt = productInfo?.slashPriceInt ?: 0
-        val priceBefore = if (priceBeforeInt > 0) {
-            priceBeforeInt.getCurrencyFormatted()
+        val priceBeforeDouble = productInfo?.slashPriceDouble ?: 0.0
+        val priceBefore = if (priceBeforeDouble > 0) {
+            priceBeforeDouble.getCurrencyFormatted()
         } else {
             ""
         }
@@ -343,7 +343,7 @@ object AtcCommonMapper {
                 productFsIsActive = productFsIsActive,
                 productFsImageUrl = freeOngkirImgUrl,
                 priceBefore = priceBefore,
-                priceBeforeInt = priceBeforeInt,
+                priceBeforeInt = priceBeforeDouble,
                 dropPercentage = dropPercentage,
                 isActive = isActive,
                 remainingStock = productInfo?.getVariantFinalStock() ?: 1
