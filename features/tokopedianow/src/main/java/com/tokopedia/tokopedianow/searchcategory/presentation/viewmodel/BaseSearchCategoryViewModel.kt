@@ -818,9 +818,13 @@ abstract class BaseSearchCategoryViewModel(
                     updateProductItemQuantity(index, visitable, updatedProductIndices)
             }
 
-            withContext(baseDispatcher.main) {
-                updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
-            }
+            updateVisitableWithIndex(updatedProductIndices)
+        }
+    }
+
+    private suspend fun updateVisitableWithIndex(updatedProductIndices: List<Int>) {
+        withContext(baseDispatcher.main) {
+            updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
         }
     }
 
@@ -1017,7 +1021,10 @@ abstract class BaseSearchCategoryViewModel(
         filter(option, false)
     }
 
-    open fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int) {
+    open fun onBindRecommendationCarousel(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
         launchCatchError(
                 block = { getRecommendationCarousel(element, adapterPosition) },
                 onError = { getRecommendationCarouselError(element, adapterPosition) },
@@ -1046,9 +1053,7 @@ abstract class BaseSearchCategoryViewModel(
                 recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
         )
 
-        withContext(baseDispatcher.main) {
-            updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
-        }
+        updateVisitableWithIndex(listOf(adapterPosition))
     }
 
     protected open fun getRecomCategoryId() = listOf<String>()
@@ -1061,9 +1066,7 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         element.carouselData = RecommendationCarouselData(state = RecommendationCarouselData.STATE_FAILED)
 
-        withContext(baseDispatcher.main) {
-            updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
-        }
+        updateVisitableWithIndex(listOf(adapterPosition))
     }
 
     protected class HeaderDataView(
