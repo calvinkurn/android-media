@@ -90,7 +90,7 @@ class FlexBoxChatLayout : FrameLayout {
     }
 
     private fun initView(context: Context?, attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(R.layout.flexbox_chat_message, this, true).also {
+        LayoutInflater.from(context).inflate(LAYOUT, this, true).also {
             message = it.findViewById(R.id.tvMessage)
             status = it.findViewById(R.id.llStatus)
             checkMark = it.findViewById(R.id.ivCheckMark)
@@ -235,6 +235,7 @@ class FlexBoxChatLayout : FrameLayout {
     }
 
     companion object {
+        val LAYOUT = R.layout.flexbox_chat_message
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
     }
