@@ -12,12 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
@@ -25,16 +20,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletErrorData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -476,6 +462,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             }
             tvShippingCourier.visible()
             tvShippingCourierEta.visible()
+            setMultiViewsOnClickListener(tvShippingCourier, tvShippingCourierEta, tvShippingCourierNotes) {
+                /* no-op */
+            }
         }
     }
 
