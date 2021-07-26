@@ -316,7 +316,7 @@ object DynamicProductDetailTracking {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
-            val productPrice = productInfo?.finalPrice?.toString()
+            val productPrice = productInfo?.finalPrice.toString()
             val shopType = productInfo?.shopTypeString ?: ""
             val shopName = productInfo?.basic?.shopName ?: ""
 
