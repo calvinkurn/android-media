@@ -276,7 +276,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         const val MCCM_WIDGET_POSITION = 0
 
         const val PRODUCT_GRID_SPAN_LAYOUT = 2
-        const val SINGLE_PRODUCT_GRID_SPAN_LAYOUT = 2
+        const val SINGLE_PRODUCT_GRID_SPAN_LAYOUT = 1
     }
 
 }
