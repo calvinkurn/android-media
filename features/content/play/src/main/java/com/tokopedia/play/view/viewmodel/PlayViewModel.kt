@@ -215,7 +215,7 @@ class PlayViewModel @Inject constructor(
     val isCastAllowed: Boolean
         get() {
             val castState = observableCastState.value ?: return false
-            return castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE
+            return castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
         }
 
     private val isProductSheetInitialized: Boolean

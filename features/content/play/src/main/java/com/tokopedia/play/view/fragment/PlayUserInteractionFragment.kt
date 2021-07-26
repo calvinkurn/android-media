@@ -779,8 +779,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeCastState() {
         playViewModel.observableCastState.observe(viewLifecycleOwner) {
-            pipViewOnStateChanged()
             castViewOnStateChanged()
+            pipViewOnStateChanged()
         }
     }
     //endregion
@@ -1315,7 +1315,8 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed) {
+        val isCastVisible = castView?.isShown() ?: false
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || isCastVisible) {
             pipView?.hide()
             return
         }
