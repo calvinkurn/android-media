@@ -174,6 +174,26 @@ class OrderSummaryPageRobot {
         DurationBottomSheetRobot().apply(func)
     }
 
+    fun clickShipmentReloadAction() {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click shipping reload action"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_reload_shipping).performClick()
+            }
+        }))
+    }
+
     fun clickInsurance() {
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {

@@ -117,7 +117,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_N150"
             android:visibility="gone"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
