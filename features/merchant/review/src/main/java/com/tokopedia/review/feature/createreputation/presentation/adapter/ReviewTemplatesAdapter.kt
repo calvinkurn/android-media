@@ -25,7 +25,7 @@ class ReviewTemplatesAdapter(private val reviewTemplateListener: ReviewTemplateL
     }
 
     override fun onItemClicked(adapterPosition: Int) {
-        if(adapterPosition != RecyclerView.NO_POSITION) {
+        if (adapterPosition != RecyclerView.NO_POSITION) {
             reviewTemplates.removeAt(adapterPosition)
             notifyItemRemoved(adapterPosition)
         }
