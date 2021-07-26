@@ -369,8 +369,13 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showEmptyState(id: String) {
-        rvLayoutManager?.setScrollEnabled(false)
-        viewModelTokoNow.getEmptyState(id)
+        if (id != EMPTY_STATE_NO_ADDRESS) {
+            rvLayoutManager?.setScrollEnabled(false)
+            viewModelTokoNow.getEmptyState(id)
+        } else {
+            viewModelTokoNow.getEmptyState(id)
+            viewModelTokoNow.getProductRecomOoc()
+        }
         miniCartWidget?.hide()
     }
 

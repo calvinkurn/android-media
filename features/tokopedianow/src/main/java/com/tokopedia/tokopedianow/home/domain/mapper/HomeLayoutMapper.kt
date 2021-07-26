@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMP
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
@@ -42,7 +43,8 @@ object HomeLayoutMapper {
             CHOOSE_ADDRESS_WIDGET_ID,
             EMPTY_STATE_NO_ADDRESS,
             EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE,
-            EMPTY_STATE_FAILED_TO_FETCH_DATA
+            EMPTY_STATE_FAILED_TO_FETCH_DATA,
+            PRODUCT_RECOM_OOC
     )
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
@@ -63,6 +65,11 @@ object HomeLayoutMapper {
         val homeEmptyStateUiModel = HomeEmptyStateUiModel(id = id)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         add(HomeLayoutItemUiModel(homeEmptyStateUiModel, HomeLayoutItemState.LOADED))
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc(recommendationWidget: RecommendationWidget) {
+        val productRecomUiModel = HomeProductRecomUiModel(id = PRODUCT_RECOM_OOC, recommendationWidget)
+        add(HomeLayoutItemUiModel(productRecomUiModel, HomeLayoutItemState.LOADED))
     }
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(response: List<HomeLayoutResponse>, hasTickerBeenRemoved: Boolean) {
