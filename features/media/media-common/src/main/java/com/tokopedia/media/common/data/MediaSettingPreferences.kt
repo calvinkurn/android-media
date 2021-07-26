@@ -2,43 +2,34 @@ package com.tokopedia.media.common.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
-class MediaSettingPreferences(context: Context?) : MediaPreferences(context) {
+class MediaSettingPreferences constructor(
+    context: Context?
+) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
     fun qualitySettings(): Int {
-        return if (isExist(KEY_QUALITY_SETTING)) {
-            getInt(KEY_QUALITY_SETTING)
-        } else {
-            0
-        }
+        return getInt(KEY_QUALITY_SETTING)?: 0
     }
 
     fun toasterVisibility(): Boolean {
-        return if (isExist(KEY_MEDIA_TOASTER)) {
-            getString(KEY_MEDIA_TOASTER).toBoolean()
-        } else {
-            false
-        }
+        return getBoolean(KEY_MEDIA_TOASTER)?: false
     }
 
     fun glideMigration(): Boolean {
-        return if (isExist(KEY_GLIDE_CLEAR_CACHE)) {
-            getString(KEY_GLIDE_CLEAR_CACHE).toBoolean()
-        } else {
-            false
-        }
+        return getBoolean(KEY_GLIDE_CLEAR_CACHE)?: false
     }
 
     fun setQualitySettings(value: Int) {
-        insert(KEY_QUALITY_SETTING, value)
+        putInt(KEY_QUALITY_SETTING, value)
     }
 
     fun setToasterVisibilityFlag(value: Boolean) {
-        insert(KEY_MEDIA_TOASTER, value)
+        putBoolean(KEY_MEDIA_TOASTER, value)
     }
 
     fun setGlideMigration(value: Boolean) {
-        insert(KEY_GLIDE_CLEAR_CACHE, value)
+        putBoolean(KEY_GLIDE_CLEAR_CACHE, value)
     }
 
     fun getQualitySetting(index: Int): String {

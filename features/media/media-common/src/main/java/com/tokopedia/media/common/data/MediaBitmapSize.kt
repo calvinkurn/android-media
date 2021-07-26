@@ -1,15 +1,18 @@
 package com.tokopedia.media.common.data
 
 import android.content.Context
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
-class MediaBitmapSize(context: Context?) : MediaPreferences(context) {
+class MediaBitmapSize constructor(
+    context: Context?
+) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
-    fun save(value: String) {
+    fun saveSize(value: String) {
         val currentSize = getString(KEY_BITMAP_SIZE)
-        insert(KEY_BITMAP_SIZE, (currentSize.toLong() + value.toLong()).toString())
+        putString(KEY_BITMAP_SIZE, (currentSize.toLong() + value.toLong()).toString())
     }
 
-    fun size() = getInt(KEY_BITMAP_SIZE)
+    fun getSize(): Int = getInt(KEY_BITMAP_SIZE)
 
     companion object {
         private const val KEY_BITMAP_SIZE = "media_accumulative_bitmap_size"
