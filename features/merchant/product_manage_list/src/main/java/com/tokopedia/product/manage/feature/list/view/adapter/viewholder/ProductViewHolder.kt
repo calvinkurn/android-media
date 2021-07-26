@@ -176,7 +176,7 @@ class ProductViewHolder(
         campaignCountText?.run {
             showWithCondition(shouldShowCampaignCount)
             if (shouldShowCampaignCount) {
-                text = getString(R.string.product_manage_campaign_count, product.campaignTypeList?.count().orZero().toString())
+                text = String.format(getString(R.string.product_manage_campaign_count), product.campaignTypeList?.count().orZero())
                 setOnClickListener {
                     listener.onClickCampaignInfo(product)
                 }
