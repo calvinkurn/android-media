@@ -55,7 +55,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
         var totalWeight = 0.0
         var totalWeightActual = 0.0
-        var totalValue = 0L
         var productFInsurance = 0
         var preOrder = false
         var productPreOrderDuration = 0
@@ -104,7 +103,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             weightInKilograms = totalWeight / 1000.0
             weightActualInKilograms = totalWeightActual / 1000.0
             productInsurance = productFInsurance
-            orderValue = totalValue
+            orderValue = orderCost.totalItemPrice.toLong()
             isFulfillment = orderShop.isFulfillment
             preOrderDuration = productPreOrderDuration
             boMetadata = orderShop.boMetadata

@@ -434,7 +434,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
                     val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
                     val span = SpannableString("${shipping.logisticPromoShipping.productData.shipperName} ($originalPrice $finalPrice)")
-                    val originalPriceStartIndex = shipping.logisticPromoShipping.productData.shipperName.length + 1
+                    val originalPriceStartIndex = shipping.logisticPromoShipping.productData.shipperName.length + 2
                     val originalPriceEndIndex = originalPriceStartIndex + originalPrice.length + 1
                     span.setSpan(StrikethroughSpan(), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                     span.setSpan(RelativeSizeSpan(10 / 12f), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)

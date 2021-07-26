@@ -143,7 +143,7 @@ class OrderSummaryPageActivityTokonowTest {
                 assertSummary(
                         productPrice = "Rp300.000",
                         shippingPrice = "Rp20.000",
-                        shippingDiscount = "Rp10.000",
+                        shippingDiscount = "-Rp10.000",
                         insurancePrice = "Rp300",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp311.300"

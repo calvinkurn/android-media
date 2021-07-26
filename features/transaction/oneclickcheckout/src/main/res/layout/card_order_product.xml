@@ -115,6 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
             android:textColor="@color/Unify_N150"
             android:visibility="gone"
             app:typographyType="body_3"
