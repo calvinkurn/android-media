@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -31,6 +33,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun setUpWebViewClient() {
         webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                val uri = Uri.parse(url)
+                if(uri.host == "www.youtube.com" || uri.host == "m.youtube.com") {
+                    context?.let { openYoutubeVideo(it, uri) }
+                    return true
+                }
                 return false
             }
 
@@ -145,5 +152,14 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "  </body>\n" +
                 "</html>"
     }
+
+    fun openYoutubeVideo(context: Context, uri: Uri) {
+        val webIntent = Intent(
+            Intent.ACTION_VIEW,
+            uri
+        )
+        context.startActivity(webIntent)
+    }
+
 
 }
