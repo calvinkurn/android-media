@@ -14,20 +14,6 @@ import kotlinx.android.synthetic.main.item_network_error_view.view.*
  */
 
 abstract class HotelBaseFragment: BaseDaggerFragment() {
-
-    fun showErrorState(e: Throwable) {
-        try {
-            ((view?.parent) as ViewGroup).main_retry.visibility = View.VISIBLE
-            val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val errorView = inflater.inflate(R.layout.item_network_error_view, view?.parent as ViewGroup)
-            errorView.global_error.setActionClickListener {
-                errorView.global_error.main_retry.visibility = View.GONE
-            }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-
     fun showLoadingState() {
         try {
             ((view?.parent) as ViewGroup).main_loading.visibility = View.VISIBLE
