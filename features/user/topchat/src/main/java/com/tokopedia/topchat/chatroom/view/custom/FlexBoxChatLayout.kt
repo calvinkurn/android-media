@@ -22,7 +22,7 @@ class FlexBoxChatLayout : FrameLayout {
 
     var checkMark: ImageView? = null
         private set
-    var message: TextView? = null
+    private var message: TextView? = null
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
@@ -79,8 +79,10 @@ class FlexBoxChatLayout : FrameLayout {
             0
         )?.apply {
             try {
-                showCheckMark = getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
-                useMaxWidth = getBoolean(R.styleable.FlexBoxChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
+                showCheckMark =
+                    getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
+                useMaxWidth =
+                    getBoolean(R.styleable.FlexBoxChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }
@@ -98,6 +100,11 @@ class FlexBoxChatLayout : FrameLayout {
         initCheckMarkVisibility()
     }
 
+    fun setShowCheckMark(showCheckMark: Boolean) {
+        this.showCheckMark = showCheckMark
+        initCheckMarkVisibility()
+    }
+
     private fun initCheckMarkVisibility() {
         if (!showCheckMark) {
             hideReadStatus()
@@ -107,10 +114,7 @@ class FlexBoxChatLayout : FrameLayout {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var totalWidth = MeasureSpec.getSize(widthMeasureSpec)
-        var totalHeight = MeasureSpec.getSize(heightMeasureSpec)
-
-        if (message == null || status == null || info == null || totalWidth <= 0) {
+        if (message == null || status == null || info == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
@@ -119,25 +123,25 @@ class FlexBoxChatLayout : FrameLayout {
         val statusLayout = status?.layoutParams as LayoutParams
         val infoLayout = info?.layoutParams as LayoutParams
 
-        val maxWidth = totalWidth
-        val availableWidth = totalWidth - paddingLeft - paddingRight
+        val maxWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val availableWidth = maxWidth - paddingLeft - paddingRight
 
         measureChildWithMargins(message, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(status, widthMeasureSpec, 0, heightMeasureSpec, 0)
         measureChildWithMargins(info, widthMeasureSpec, 0, heightMeasureSpec, 0)
 
         val messageWidth =
-                message!!.measuredWidth + messageLayout.leftMargin + messageLayout.rightMargin
+            message!!.measuredWidth + messageLayout.leftMargin + messageLayout.rightMargin
         val messageHeight =
-                message!!.measuredHeight + messageLayout.topMargin + messageLayout.bottomMargin
+            message!!.measuredHeight + messageLayout.topMargin + messageLayout.bottomMargin
         val statusWidth =
-                status!!.measuredWidth + statusLayout.leftMargin + statusLayout.rightMargin
+            status!!.measuredWidth + statusLayout.leftMargin + statusLayout.rightMargin
         val statusHeight =
-                status!!.measuredHeight + statusLayout.topMargin + statusLayout.bottomMargin
+            status!!.measuredHeight + statusLayout.topMargin + statusLayout.bottomMargin
         val infoWidth =
-                info!!.measuredWidth + infoLayout.leftMargin + infoLayout.rightMargin - messageWidth
+            info!!.measuredWidth + infoLayout.leftMargin + infoLayout.rightMargin - messageWidth
         val infoHeight =
-                info!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
+            info!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
 
         val msgLineCount = message!!.lineCount
         val msgLastLineWidth: Float = if (msgLineCount > 0) {
@@ -146,8 +150,8 @@ class FlexBoxChatLayout : FrameLayout {
             0f
         }
 
-        totalWidth = paddingLeft + paddingRight + messageWidth
-        totalHeight = paddingTop + paddingBottom + messageHeight
+        var totalWidth = paddingLeft + paddingRight + messageWidth
+        var totalHeight = paddingTop + paddingBottom + messageHeight
         var isAddStatusHeight = false
 
         if (messageWidth + statusWidth <= availableWidth) {
@@ -186,11 +190,10 @@ class FlexBoxChatLayout : FrameLayout {
             infoLayout.width = newInfoWidth
             info?.layoutParams = infoLayout
         }
-
-        setMeasuredDimension(totalWidth, totalHeight)
-        val widthSpec = MeasureSpec.makeMeasureSpec(totalWidth, MeasureSpec.EXACTLY)
-        val heightSpec = MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.EXACTLY)
-        super.onMeasure(widthSpec, heightSpec)
+        setMeasuredDimension(
+            resolveSize(totalWidth, widthMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec),
+        )
     }
 
     fun setMessage(msg: CharSequence?) {
@@ -227,8 +230,12 @@ class FlexBoxChatLayout : FrameLayout {
         info?.show()
     }
 
+    fun getMsg(): String {
+        return message?.text.toString()
+    }
+
     companion object {
-        private const val DEFAULT_USE_MAX_WIDTH = false
-        private const val DEFAULT_SHOW_CHECK_MARK = true
+        const val DEFAULT_USE_MAX_WIDTH = false
+        const val DEFAULT_SHOW_CHECK_MARK = true
     }
 }
