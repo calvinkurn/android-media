@@ -2,13 +2,7 @@ package com.tokopedia.oneclickcheckout.order.analytics
 
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import javax.inject.Inject
 
@@ -206,7 +200,6 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
     }
 
     fun eventViewErrorMessage(error: String) {
-        Log.i("qwertyuiop", "view error")
         sendEventCategoryActionLabel(
                 EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
                 EventCategory.ORDER_SUMMARY,
