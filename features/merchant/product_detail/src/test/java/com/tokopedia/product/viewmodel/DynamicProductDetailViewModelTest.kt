@@ -1468,6 +1468,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
         val productId = "12345"
+        val paramsTest = "txsc=asdf"
         val expectedResponse = TopadsIsAdsQuery(
                 TopAdsGetDynamicSlottingData(
                         productList = listOf(TopAdsGetDynamicSlottingDataProduct(isCharge = true)),
@@ -1478,7 +1479,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 ))
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns  expectedResponse
 
-        viewModel.getProductTopadsStatus(productId)
+        viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground()}
 
         Assert.assertTrue(expectedResponse.data.status.error_code in viewModel.CODE_200 .. viewModel.CODE_300 && expectedResponse.data.productList[0].isCharge)
