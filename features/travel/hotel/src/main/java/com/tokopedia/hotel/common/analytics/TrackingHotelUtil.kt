@@ -646,7 +646,7 @@ class TrackingHotelUtil {
     fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: Long, hotelPrice: String){
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
-        map.addGeneralEvent(PROMO_VIEW, VIEW_HOTEL_PDP_NEARBY_LANDMARK, eventLabel)
+        map.addGeneralEvent(VIEW_HOTEL_IRIS, VIEW_HOTEL_PDP_NEARBY_LANDMARK, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
