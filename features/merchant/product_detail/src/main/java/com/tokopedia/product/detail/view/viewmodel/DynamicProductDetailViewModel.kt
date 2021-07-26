@@ -823,7 +823,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
                     getTopadsIsAdsUseCase.get().setParams(
                             productId = productId,
-                            urlParam = queryParams
+                            urlParam = queryParams,
+                            pageName = "im_pdp"
                     )
                     adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                     val errorCode = adsStatus.data.status.error_code
