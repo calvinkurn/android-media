@@ -37,6 +37,7 @@
     <string name="path_product_detail_affiliate" translatable="false">/product-detail/affiliate/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+    <string name="path_product_review_old" translatable="false">/product/.*\\/review-old</string>
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*\\/</string>
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>

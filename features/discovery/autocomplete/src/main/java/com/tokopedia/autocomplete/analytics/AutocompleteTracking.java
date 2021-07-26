@@ -467,6 +467,20 @@ public class AutocompleteTracking {
         );
     }
 
+    public static void eventClickChipSuggestion(String label, String pageSource) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_CHIP_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
+        );
+    }
+
     public static void eventImpressCurated(Iris iris, String label, String campaignCode, String pageSource) {
         HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, AutocompleteEventTracking.Event.VIEW_TOP_NAV_IRIS,

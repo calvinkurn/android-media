@@ -41,6 +41,11 @@ class PlayInteractiveLeaderboardViewComponent(
             listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
         }
     })
+    private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onChanged() {
+            if (leaderboardAdapter.itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
+        }
+    }
 
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
@@ -61,6 +66,8 @@ class PlayInteractiveLeaderboardViewComponent(
             v.updatePadding(bottom = insets.systemWindowInsetBottom)
             insets
         }
+
+        registerAdapterObserver()
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
@@ -95,6 +102,14 @@ class PlayInteractiveLeaderboardViewComponent(
         }
     }
 
+    private fun registerAdapterObserver() {
+        leaderboardAdapter.registerAdapterDataObserver(leaderboardAdapterObserver)
+    }
+
+    private fun unregisterAdapterObserver() {
+        leaderboardAdapter.unregisterAdapterDataObserver(leaderboardAdapterObserver)
+    }
+
     /**
      * Lifecycle Event
      */
@@ -105,6 +120,7 @@ class PlayInteractiveLeaderboardViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
+        unregisterAdapterObserver()
         ViewCompat.setOnApplyWindowInsetsListener(rootView, null)
     }
 

@@ -32,23 +32,27 @@ class RecomCarouselProductCardViewHolder (view: View,
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
-//                if(element.recomItem.isTopAds){
-//                    TopAdsUrlHitter(className).hitImpressionUrl(context, element.recomItem.impression,
-//                            element.recomItem.productId,
-//                            element.recomItem.name,
-//                            element.recomItem.imageUrl,
-//                            element.componentName)
-//                }
+                if(element.recomItem.isTopAds){
+                    TopAdsUrlHitter(context).hitImpressionUrl(
+                            className,
+                            element.recomItem.trackerImageUrl,
+                            element.recomItem.productId.toString(),
+                            element.recomItem.name,
+                            element.recomItem.imageUrl,
+                            element.componentName)
+                }
                 element.listener?.onProductCardImpressed(position = adapterPosition,data = data, recomItem = element.recomItem)
             }
             setOnClickListener {
-//                if(element.recomItem.isTopAds){
-//                    TopAdsUrlHitter(className).hitClickUrl(context, element.recomItem.productClickUrl,
-//                            element.recomItem.productId,
-//                            element.recomItem.name,
-//                            element.recomItem.imageUrl,
-//                            element.componentName)
-//                }
+                if(element.recomItem.isTopAds){
+                    TopAdsUrlHitter(context).hitClickUrl(
+                            className,
+                            element.recomItem.clickUrl,
+                            element.recomItem.productId.toString(),
+                            element.recomItem.name,
+                            element.recomItem.imageUrl,
+                            element.componentName)
+                }
                 element.listener?.onProductCardClicked(position = adapterPosition,data = data, recomItem = element.recomItem, applink = element.recomItem.appUrl)
             }
         }

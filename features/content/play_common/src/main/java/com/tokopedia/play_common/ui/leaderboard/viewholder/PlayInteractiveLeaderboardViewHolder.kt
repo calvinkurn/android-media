@@ -43,7 +43,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
 
         winnerAdapter.setItems(leaderboard.winners)
 
-        tvOtherParticipant.show()
+        if (leaderboard.otherParticipant > 0) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()
         tvEmpty.hide()
     }

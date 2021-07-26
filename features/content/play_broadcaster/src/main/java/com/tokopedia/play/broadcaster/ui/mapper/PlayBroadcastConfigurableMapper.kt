@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -125,8 +126,10 @@ class PlayBroadcastConfigurableMapper(
         else mockMapper.mapInteractiveConfig(response)
     }
 
-    override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
-        return if (!isMock) uiMapper.mapCreateInteractiveSession(response)
-        else mockMapper.mapCreateInteractiveSession(response)
+    override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
+                                       title: String,
+                                       durationInMs: Long): InteractiveSessionUiModel {
+        return if (!isMock) uiMapper.mapInteractiveSession(response, title, durationInMs)
+        else mockMapper.mapInteractiveSession(response, title, durationInMs)
     }
 }

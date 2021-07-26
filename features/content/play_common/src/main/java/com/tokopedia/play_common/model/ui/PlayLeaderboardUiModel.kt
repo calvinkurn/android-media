@@ -13,7 +13,8 @@ data class PlayLeaderboardInfoUiModel(
 data class PlayLeaderboardUiModel(
     val title: String,
     val winners: List<PlayWinnerUiModel>,
-    val otherParticipantText: String
+    val otherParticipantText: String,
+    val otherParticipant: Long
 )
 
 data class PlayWinnerUiModel(
