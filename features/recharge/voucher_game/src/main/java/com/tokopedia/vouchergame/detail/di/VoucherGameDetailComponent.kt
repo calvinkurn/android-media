@@ -9,7 +9,7 @@ import dagger.Component
  */
 
 @VoucherGameDetailScope
-@Component(modules = [VoucherGameDetailViewModelModule::class], dependencies = [VoucherGameComponent::class])
+@Component(modules = [VoucherGameDetailModule::class, VoucherGameDetailViewModelModule::class], dependencies = [VoucherGameComponent::class])
 interface VoucherGameDetailComponent {
 
     fun inject(voucherGameDetailFragment: VoucherGameDetailFragment)
