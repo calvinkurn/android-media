@@ -193,7 +193,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     telcoTelcoProductView.selectMccmProductItem(position)
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId, TelcoComponentName.SPECIAL_PROMO_MCCM)
                 }
             }
         })

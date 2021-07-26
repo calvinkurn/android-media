@@ -270,14 +270,16 @@ class DigitalTopupAnalytics {
     }
 
     fun pickProductDetail(itemProduct: TelcoProduct,
-                          operatorName: String, userId: String) {
+                          operatorName: String, userId: String, categoryName: String? = null) {
         val productTelcoList = ArrayList<Bundle>()
+
+        val trackingCategoryName = categoryName ?: getTrackingCategoryName(itemProduct.attributes.categoryId)
         productTelcoList.add(Bundle().apply {
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_PRICE, itemProduct.attributes.pricePlain)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_BRAND, operatorName)
-            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, getTrackingCategoryName(itemProduct.attributes.categoryId))
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_CATEGORY, trackingCategoryName)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_VARIANT, "none / others")
             putInt(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_QUANTITY, 1)
         })
@@ -286,8 +288,8 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.ADD_TO_CART)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_DETAIL_CLUSTER)
-            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName - ${itemProduct.attributes.desc}")
-            putString(DigitalTopupEventTracking.Additional.SCREEN_NAME, getTrackingCategoryName(itemProduct.attributes.categoryId))
+            putString(TrackAppUtils.EVENT_LABEL, "$trackingCategoryName - $operatorName - ${itemProduct.attributes.desc}")
+            putString(DigitalTopupEventTracking.Additional.SCREEN_NAME, trackingCategoryName)
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
@@ -418,21 +420,18 @@ class DigitalTopupAnalytics {
     fun impressionViewMccmProduct(mccmProducts: List<DigitalTrackProductTelco>, operatorName: String, userId: String) {
         val mccmTrackingProductList = mccmProducts.map {
             Bundle().apply {
-                putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME, "${getTrackingCategoryName(it.itemProduct.attributes.categoryId)} - $operatorName")
+                putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME, "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName")
                 putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, it.position.toString())
                 putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, it.itemProduct.id)
                 putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, it.itemProduct.attributes.desc)
             }
         }
 
-        var categoryId = 0
-        if (mccmProducts.isNotEmpty()) categoryId = mccmProducts.first().itemProduct.attributes.categoryId
-
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.VIEW_ITEM)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.VIEW_PROMO_CARD)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
-            putString(TrackAppUtils.EVENT_LABEL, "${getTrackingCategoryName(categoryId)} - $operatorName")
+            putString(TrackAppUtils.EVENT_LABEL, "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName")
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
@@ -443,9 +442,8 @@ class DigitalTopupAnalytics {
     }
 
     fun clickOnMccmProduct(itemProduct: TelcoProduct, operatorName: String, position: Int, userId: String) {
-        val categoryName = getTrackingCategoryName(itemProduct.attributes.categoryId)
         val product = Bundle().apply {
-            putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME, "$categoryName - $operatorName")
+            putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_NAME, "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName")
             putString(DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_SLOT, position.toString())
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_ID, itemProduct.id)
             putString(DigitalTopupEventTracking.EnhanceEccomerce.PARAM_ITEM_NAME, itemProduct.attributes.desc)
@@ -455,7 +453,7 @@ class DigitalTopupAnalytics {
             putString(TrackAppUtils.EVENT, DigitalTopupEventTracking.Event.SELECT_CONTENT)
             putString(TrackAppUtils.EVENT_ACTION, DigitalTopupEventTracking.Action.CLICK_PROMO_CARD)
             putString(TrackAppUtils.EVENT_CATEGORY, DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE)
-            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName")
+            putString(TrackAppUtils.EVENT_LABEL, "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName")
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
@@ -470,7 +468,7 @@ class DigitalTopupAnalytics {
                 mapOf(TrackAppUtils.EVENT to DigitalTopupEventTracking.Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_ACTION to DigitalTopupEventTracking.Action.CLICK_DETAIL_IN_PROMO_CARD,
                         TrackAppUtils.EVENT_CATEGORY to DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
-                        TrackAppUtils.EVENT_LABEL to "${getTrackingCategoryName(itemProduct.attributes.categoryId)} - $operatorName",
+                        TrackAppUtils.EVENT_LABEL to "${TelcoComponentName.SPECIAL_PROMO_MCCM} - $operatorName",
                         DigitalTopupEventTracking.Additional.BUSINESS_UNIT to DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE,
                         DigitalTopupEventTracking.Additional.CURRENT_SITE to DigitalTopupEventTracking.Additional.CURRENT_SITE_DIGITAL_RECHARGE,
                         DigitalTopupEventTracking.Additional.USER_ID to userId,
