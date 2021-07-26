@@ -132,6 +132,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
             buttonOther?.setOnClickListener {
                 listener.onOtherAddressClicked()
             }
+            //set label tokonow here
         }
     }
 

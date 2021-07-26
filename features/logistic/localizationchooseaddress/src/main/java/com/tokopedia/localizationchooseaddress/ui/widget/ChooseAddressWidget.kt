@@ -6,7 +6,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -75,15 +74,32 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private fun initObservers() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
-            viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, Observer {
+            viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
-                        if (it.data.addressId == 0) {
-                            val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-                            source?.let { it -> viewModel.getDefaultChosenAddress("", it, isSupportWarehouseLoc) }
-                        } else {
+                        if (it.data.errorCode.code == 9) {
                             val data = it.data
+                            val defaultAddress = ChooseAddressConstant.defaultAddress
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
+                                addressId = defaultAddress.address_id,
+                                cityId = defaultAddress.city_id,
+                                districtId = defaultAddress.district_id,
+                                lat = defaultAddress.lat,
+                                long = defaultAddress.long,
+                                label = defaultAddress.label,
+                                postalCode = defaultAddress.postal_code,
+                                shopId = data.tokonowModel.shopId.toString(),
+                                warehouseId = data.tokonowModel.warehouseId.toString()
+                            )
+                            chooseAddressPref?.setLocalCache(localData)
+                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                        } else {
+                            if (it.data.addressId == 0) {
+                                val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
+                                source?.let { it -> viewModel.getDefaultChosenAddress("", it, isSupportWarehouseLoc) }
+                            } else {
+                                val data = it.data
+                                val localData = ChooseAddressUtils.setLocalizingAddressData(
                                     addressId = data.addressId.toString(),
                                     cityId = data.cityId.toString(),
                                     districtId = data.districtId.toString(),
@@ -93,9 +109,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                     postalCode = data.postalCode,
                                     shopId = data.tokonowModel.shopId.toString(),
                                     warehouseId = data.tokonowModel.warehouseId.toString()
-                            )
-                            chooseAddressPref?.setLocalCache(localData)
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                                )
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            }
                         }
                     }
                     is Fail -> {
@@ -104,13 +121,30 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                 }
             })
 
-            viewModel.getDefaultAddress.observe(fragment.viewLifecycleOwner, Observer {
+            viewModel.getDefaultAddress.observe(fragment.viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
-                        if (it.data.addressData.addressId != 0) {
-                            val data = it.data.addressData
-                            val tokonowData = it.data.tokonow
+                        if (it.data.keroAddrError.code == 3 || it.data.keroAddrError.code == 4 ||
+                            it.data.keroAddrError.code == 5 || it.data.keroAddrError.code == 6) {
+                            val defaultAddress = ChooseAddressConstant.defaultAddress
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
+                                addressId = defaultAddress.address_id,
+                                cityId = defaultAddress.city_id,
+                                districtId = defaultAddress.district_id,
+                                lat = defaultAddress.lat,
+                                long = defaultAddress.long,
+                                label = defaultAddress.label,
+                                postalCode = defaultAddress.postal_code,
+                                shopId = it.data.tokonow.shopId.toString(),
+                                warehouseId = it.data.tokonow.warehouseId.toString()
+                            )
+                            chooseAddressPref?.setLocalCache(localData)
+                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                        } else {
+                            if (it.data.addressData.addressId != 0) {
+                                val data = it.data.addressData
+                                val tokonowData = it.data.tokonow
+                                val localData = ChooseAddressUtils.setLocalizingAddressData(
                                     addressId = data.addressId.toString(),
                                     cityId = data.cityId.toString(),
                                     districtId = data.districtId.toString(),
@@ -120,11 +154,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                     postalCode = data.postalCode,
                                     shopId = tokonowData.shopId.toString(),
                                     warehouseId = tokonowData.warehouseId.toString()
-                            )
-                            chooseAddressPref?.setLocalCache(localData)
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                        } else {
-                            chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
+                                )
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            } else {
+                                chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
+                            }
                         }
                     }
                     is Fail -> {
@@ -240,20 +275,20 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * Action choosen address from user by widget / bottomshet
          * Host must update content UI
          */
-        fun onLocalizingAddressUpdatedFromWidget();
+        fun onLocalizingAddressUpdatedFromWidget()
 
         /**
          * Address updated from background if device have not address saved in local cache.
          * this first user rollout
          * host can ignore this. optional to update UI
          */
-        fun onLocalizingAddressUpdatedFromBackground();
+        fun onLocalizingAddressUpdatedFromBackground()
 
         /**
          * this listen if we get server down on widget/bottomshet.
          * Host mandatory to GONE LocalizingAddressWidget
          */
-        fun onLocalizingAddressServerDown();
+        fun onLocalizingAddressServerDown()
 
         /**
          * this trigger to Host this feature active or not
