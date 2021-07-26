@@ -53,7 +53,11 @@ data class ShopPageHeaderLayoutResponse(
                         @SerializedName("buttonType")
                         val buttonType: String = "",
                         @SerializedName("label")
-                        val label: String = ""
+                        val label: String = "",
+                        @SerializedName("images")
+                        val images: Images = Images(),
+                        @SerializedName("textComponent")
+                        val textComponent: TextComponent = TextComponent()
                 )
 
                 data class Text(
@@ -66,6 +70,40 @@ data class ShopPageHeaderLayoutResponse(
                         @SerializedName("isBottomSheet")
                         val isBottomSheet: Boolean = false
                 )
+
+                data class Images(
+                        @SerializedName("data")
+                        val data: List<Data> = listOf(),
+                        @SerializedName("style")
+                        val style: Int = -1
+                ){
+                    data class Data(
+                            @SerializedName("image")
+                            val image: String = "",
+                            @SerializedName("imageLink")
+                            val imageLink: String = "",
+                            @SerializedName("isBottomSheet")
+                            val isBottomSheet: Boolean = false
+                    )
+                }
+
+                data class TextComponent(
+                        @SerializedName("data")
+                        val data: Data = Data(),
+                        @SerializedName("style")
+                        val style: Int = -1,
+                ){
+                    data class Data(
+                            @SerializedName("icon")
+                            val icon: String = "",
+                            @SerializedName("isBottomSheet")
+                            val isBottomSheet: Boolean = false,
+                            @SerializedName("textHtml")
+                            val textHtml: String = "",
+                            @SerializedName("textLink")
+                            val textLink: String = ""
+                    )
+                }
             }
         }
     }

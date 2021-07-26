@@ -37,15 +37,13 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 /**
@@ -65,7 +63,6 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        private val playSocket: PlaySocket,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -96,8 +93,10 @@ class PlayViewModel @Inject constructor(
         get() = _observableStatusInfo
     val observableBottomInsetsState: LiveData<Map<BottomInsetsType, BottomInsetsState>>
         get() = _observableBottomInsetsState
-    val observablePinned: LiveData<PlayPinnedUiModel>
-        get() = _observablePinned
+    val observablePinnedMessage: LiveData<PinnedMessageUiModel>
+        get() = _observablePinnedMessage
+    val observablePinnedProduct: LiveData<PinnedProductUiModel>
+        get() = _observablePinnedProduct
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<PlayResult<PlayProductTagsUiModel.Complete>>
@@ -224,8 +223,8 @@ class PlayViewModel @Inject constructor(
     private val _observablePartnerInfo = MutableLiveData<PlayPartnerInfoUiModel>() /**Changed**/
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
     private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>() /**Changed**/
-    private val _observablePinnedMessage = MutableLiveData<PlayPinnedUiModel.PinnedMessage>()
-    private val _observablePinnedProduct = MutableLiveData<PlayPinnedUiModel.PinnedProduct>() /**Changed**/
+    private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
+    private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>() /**Changed**/
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableProductSheetContent = MutableLiveData<PlayResult<PlayProductTagsUiModel.Complete>>() /**Changed**/
@@ -241,7 +240,6 @@ class PlayViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observablePinned = MediatorLiveData<PlayPinnedUiModel>() /**Changed**/
     private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
@@ -338,19 +336,6 @@ class PlayViewModel @Inject constructor(
         videoBufferGovernor.startBufferGovernance()
 
         stateHandler.observeForever(stateHandlerObserver)
-
-        _observablePinned.addSource(_observablePinnedMessage) {
-            _observablePinned.value = getPinnedModel(
-                    pinnedMessage = it,
-                    pinnedProduct = _observablePinnedProduct.value,
-            )
-        }
-        _observablePinned.addSource(_observablePinnedProduct) {
-            _observablePinned.value = getPinnedModel(
-                    pinnedMessage = _observablePinnedMessage.value,
-                    pinnedProduct = it,
-            )
-        }
 
         _observableChatList.value = mutableListOf()
     }
@@ -463,9 +448,9 @@ class PlayViewModel @Inject constructor(
 
     private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
         val currentBottomInsetsMap = _observableBottomInsetsState.value
-        val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: false
-        val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: false
-        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: false
+        val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
+        val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
+        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
@@ -964,19 +949,6 @@ class PlayViewModel @Inject constructor(
         stopWebSocket()
         stopPlayer()
         onKeyboardHidden()
-    }
-
-    private fun getPinnedModel(
-            pinnedMessage: PlayPinnedUiModel.PinnedMessage?,
-            pinnedProduct: PlayPinnedUiModel.PinnedProduct?,
-    ): PlayPinnedUiModel {
-        return if (
-                pinnedProduct?.shouldShow == true &&
-                (pinnedProduct.productTags is PlayProductTagsUiModel.Incomplete ||
-                        pinnedProduct.productTags is PlayProductTagsUiModel.Complete && pinnedProduct.productTags.productList.isNotEmpty())
-        ) pinnedProduct
-        else if (pinnedMessage?.shouldShow == true) pinnedMessage
-        else PlayPinnedUiModel.NoPinned
     }
     //endregion
 

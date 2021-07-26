@@ -10,6 +10,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.Window
 import android.widget.EditText
@@ -161,6 +162,12 @@ val View.globalVisibleRect: Rect
         getGlobalVisibleRect(rect)
         return rect
     }
+
+val View.visibleHeight: Int
+    get() = if (visibility == View.GONE) 0 else height
+
+val View.marginLp: ViewGroup.MarginLayoutParams
+    get() = layoutParams as ViewGroup.MarginLayoutParams
 
 var View.compatTransitionName: String?
     get() {

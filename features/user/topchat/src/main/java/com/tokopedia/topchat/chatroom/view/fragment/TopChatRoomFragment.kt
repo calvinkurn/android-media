@@ -186,15 +186,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
 
-    private val REQUEST_GO_TO_SHOP = 111
-    private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
-    private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
-    private val REQUEST_ATTACH_INVOICE = 116
-    private val REQUEST_ATTACH_VOUCHER = 117
-    private val REQUEST_REPORT_USER = 118
-    private val REQUEST_REVIEW = 119
-    private val REQUEST_UPDATE_STOCK = 120
-
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
@@ -670,8 +661,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
-        if (!isSeller()) {
-            presenter.getSmartReplyWidget(messageId)
+        when {
+            !isSeller() -> presenter.getSmartReplyWidget(messageId)
+            isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
         }
     }
 
@@ -854,13 +846,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onAttachProductClicked() {
-        val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
-            activity as Activity,
-            shopId.toString(),
-            "",
-            getUserSession().shopId == shopId.toString()
-        )
-        startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
+        context?.let {
+            val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
+                context = it,
+                shopId = shopId.toString(),
+                shopName = "",
+                isSeller = isSeller(),
+                warehouseId = presenter.attachProductWarehouseId
+            )
+            startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
+        }
     }
 
     override fun clearEditText() {
@@ -1212,7 +1207,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         } else {
             ProductStatus.ACTIVE.name
         }
-        val name = productName?.ellipsize(20) ?: return
+        val name = productName?.ellipsize(ELLIPSIZE_MAX_CHAR) ?: return
         var msg = ""
         when {
             // update active product stock
@@ -1369,7 +1364,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return ImageUploadViewModel(
             messageId,
             opponentId,
-            (System.currentTimeMillis() / 1000).toString(),
+            (System.currentTimeMillis() / SECOND_DIVIDER).toString(),
             imageUrl,
             SendableViewModel.generateStartTime()
         )
@@ -1585,36 +1580,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onVoucherCopyClicked(
-        voucherCode: String,
-        messageId: String,
-        replyId: String,
-        blastId: String,
-        attachmentId: String,
-        replyTime: String?,
-        fromUid: String?
-    ) {
-        analytics.eventVoucherCopyClicked(voucherCode)
-        presenter.copyVoucherCode(fromUid, replyId, blastId, attachmentId, replyTime)
-        activity?.run {
-            val snackbar = Snackbar.make(
-                findViewById(android.R.id.content),
-                getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
-                Snackbar.LENGTH_LONG
-            )
-            snackbar.setAction(
-                this.getString(com.tokopedia.merchantvoucher.R.string.close),
-                { snackbar.dismiss() })
-            snackbar.setActionTextColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
-                )
-            )
-            snackbar.show()
-        }
-    }
-
     override fun onVoucherClicked(data: MerchantVoucherViewModel) {
         analytics.eventVoucherThumbnailClicked()
         activity?.let {
@@ -1678,11 +1643,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session, amISeller)
-
-            // this for experimentation of DATA
-            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) == true) {
-                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
-            }
         }
     }
 
@@ -2023,7 +1983,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initInvoicePreview(savedInstanceState: Bundle?) {
-        val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        val id = getInvoicePreviewId(savedInstanceState)
         val invoiceCode = getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
         val productName = getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
         val date = getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
@@ -2034,19 +1994,28 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val totalPriceAmount =
             getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
         val invoiceViewModel = InvoicePreviewUiModel(
-            id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+            id,
             invoiceCode,
             productName,
             date,
             imageUrl,
             invoiceUrl,
-            statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+            statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_STATUS_ID,
             status,
             totalPriceAmount
         )
         if (invoiceViewModel.enoughRequiredData()) {
             presenter.clearAttachmentPreview()
             presenter.addAttachmentPreview(invoiceViewModel)
+        }
+    }
+
+    private fun getInvoicePreviewId(savedInstanceState: Bundle?): String {
+        val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        return if(id.toLongOrNull() == null) {
+            InvoicePreviewUiModel.INVALID_ID
+        } else {
+            id
         }
     }
 
@@ -2175,9 +2144,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             messageId,
             question,
             startTime,
-            opponentId,
-            onSendingMessage()
-        )
+            opponentId
+        ) {
+            analytics.eventSendMessage()
+            getViewState().scrollToBottom()
+            sellerReviewHelper.hasRepliedChat = true
+        }
     }
 
     private fun addSrwBubbleToChat() {
@@ -2228,6 +2200,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         private const val EXTRA_SOURCE_STOCK = "chat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
+
+        private const val REQUEST_GO_TO_SHOP = 111
+        private const val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
+        private const val REQUEST_GO_TO_SETTING_TEMPLATE = 113
+        private const val REQUEST_ATTACH_INVOICE = 116
+        private const val REQUEST_ATTACH_VOUCHER = 117
+        private const val REQUEST_REPORT_USER = 118
+        private const val REQUEST_REVIEW = 119
+        private const val REQUEST_UPDATE_STOCK = 120
+
+        private const val ELLIPSIZE_MAX_CHAR = 20
+        private const val SECOND_DIVIDER = 1000
+
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle

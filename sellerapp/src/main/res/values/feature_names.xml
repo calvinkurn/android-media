@@ -46,6 +46,10 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
+    <!--    Dynamic feature for Login Fingerprint-->
+    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
+    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
+
     <!-- Dynamic feature for Groupchat-->
     <string name="play_broadcaster_app_name">Play Broadcaster</string>
 
@@ -241,6 +245,7 @@
 
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
+    <string name="kol_activity_title">Komentar</string>
     <string name="kol_title_post_detail">Post Detail</string>
     <string name="kol_title_media_preview">Media Preview</string>
     <string name="kol_title_video_detail">Video Detail</string>

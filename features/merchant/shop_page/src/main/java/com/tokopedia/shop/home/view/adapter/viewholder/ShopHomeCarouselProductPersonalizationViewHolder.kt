@@ -11,6 +11,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
@@ -45,7 +46,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     shopHomeProductViewModel = it,
                     isHasATC = isHasATC(element),
                     isHasOCCButton = element.name != RECENT_ACTIVITY,
-                    occButtonText = if(element.name == BUY_AGAIN) {
+                    occButtonText = if(isAtcOcc(element.name)) {
                         itemView.context.getString(
                                 R.string.occ_text
                         )
@@ -56,38 +57,68 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         // listeners
         val productAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
             override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
-                        adapterPosition,
-                        carouselProductCardPosition,
-                        element,
-                        productItem,
-                        isOcc = element.name == BUY_AGAIN
-                )
+                val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                if (element.name == REMINDER) {
+                    shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                } else {
+                    shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem,
+                            isOcc = isAtcOcc(element.name)
+                    )
+                }
             }
         }
 
         val productClickListener = object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
-                        adapterPosition,
-                        carouselProductCardPosition,
-                        element,
-                        productItem
-                )
+                val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                if (element.name == REMINDER) {
+                    shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                } else {
+                    shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                }
             }
         }
 
         val productImpressionListener = object : CarouselProductCardListener.OnItemImpressedListener {
             override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
-                        adapterPosition,
-                        carouselProductCardPosition,
-                        element,
-                        productItem
-                )
+                val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                if (element.name == REMINDER) {
+                    shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                } else {
+                    shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                }
 
             }
 
@@ -107,7 +138,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
-            BUY_AGAIN -> {
+            BUY_AGAIN, REMINDER -> {
                 recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
@@ -123,6 +154,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         tvCarouselTitle = itemView.findViewById(R.id.tv_title)
         recyclerView = itemView.findViewById(R.id.rvCarouselRecommendation)
     }
+
+    private fun isAtcOcc(
+            widgetName: String
+    ) : Boolean = widgetName == BUY_AGAIN
 
     private fun isHasATC(
        element : ShopHomeCarousellProductUiModel?

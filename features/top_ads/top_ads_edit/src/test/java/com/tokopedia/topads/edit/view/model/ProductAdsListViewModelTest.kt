@@ -58,7 +58,7 @@ class ProductAdsListViewModelTest {
             val onSuccess = lambda<(ResponseProductList.Result) -> Unit>()
             onSuccess.invoke(data)
         }
-        viewModel.productList("key", "123", "", "", 1, 1,
+        viewModel.productList("key", "123", "", "", 1, 1,"",
                 { _: List<TopAdsProductModel>, b: Boolean -> }, {}, {})
         verify {
             getProductUseCase.execute(any(), any())

@@ -61,10 +61,20 @@ open class FollowCardView @JvmOverloads constructor(
         this.w = w
         this.h = h
         if (type == TYPE_LARGE) {
-            val paddingLarge = dpToPx(36)
-            val paddingSmall = dpToPx( 16)
-            val circleDiameterLarge = h + paddingLarge
-            val circleDiameterSmall = h - paddingSmall
+
+            var paddingFromBottom = 0F
+            var paddingSmallCircle = 0F
+            var paddingLargeCircle = 0F
+
+            if (oldh < h && oldh != 0) {
+                paddingFromBottom = dpToPx(36)
+                paddingSmallCircle = dpToPx(28)
+                paddingLargeCircle = dpToPx(18)
+            }
+
+            val paddingLarge = dpToPx(36) - paddingLargeCircle
+            val circleDiameterLarge = h + paddingLarge - paddingFromBottom
+            val circleDiameterSmall = h - paddingFromBottom -paddingSmallCircle
             rectLarge = RectF(
                 -w * 0.53f,
                 -paddingLarge,
@@ -73,7 +83,7 @@ open class FollowCardView @JvmOverloads constructor(
             )
             rectSmall = RectF(
                 -w * 0.28f,
-                paddingSmall,
+                paddingSmallCircle,
                 w * 0.0858f,
                 circleDiameterSmall
             )

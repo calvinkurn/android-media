@@ -16,6 +16,15 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
            seeMoreAppLink
            seeMoreUrlLink
            pageName
+           campaign{
+             appLandingPageLink
+             landingPageLink
+             assets {
+               banner{
+                 apps
+               }
+             }
+           }
            recommendation {
                id
                name

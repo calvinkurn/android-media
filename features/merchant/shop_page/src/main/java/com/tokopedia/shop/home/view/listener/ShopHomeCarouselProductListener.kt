@@ -18,6 +18,13 @@ interface ShopHomeCarouselProductListener {
             shopHomeProductViewModel: ShopHomeProductUiModel?
     )
 
+    fun onPersonalizationReminderCarouselProductItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    )
+
     fun onCarouselProductItemImpression(
             parentPosition: Int,
             itemPosition: Int,
@@ -26,6 +33,13 @@ interface ShopHomeCarouselProductListener {
     )
 
     fun onCarouselProductPersonalizationItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselProductPersonalizationReminderItemImpression(
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
@@ -47,6 +61,13 @@ interface ShopHomeCarouselProductListener {
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?,
             isOcc: Boolean = false
+    )
+
+    fun onCarouselPersonalizationReminderProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     )
 
     fun onThreeDotsCarouselProductItemClicked(

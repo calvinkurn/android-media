@@ -2,9 +2,7 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.DUMMY_CROSS_SELL
 import com.tokopedia.flight.dummy.DUMMY_FAILED_ORDER_DETAIL_DATA
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA
@@ -15,9 +13,13 @@ import com.tokopedia.flight.orderdetail.presentation.model.*
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toString
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -795,8 +797,8 @@ class FlightOrderDetailViewModelTest {
                                 FlightOrderDetailWebCheckInModel(
                                         "Check In",
                                         "Check In Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -3), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 3), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -3).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 3).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
                                         "",
                                         "",
                                         ""
@@ -955,8 +957,8 @@ class FlightOrderDetailViewModelTest {
                                 FlightOrderDetailWebCheckInModel(
                                         "Check In",
                                         "Check In Not Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 1), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
                                         "",
                                         "",
                                         ""
@@ -1115,8 +1117,8 @@ class FlightOrderDetailViewModelTest {
                                 FlightOrderDetailWebCheckInModel(
                                         "Check In",
                                         "Check In Not Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, 1), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, 1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
                                         "",
                                         "",
                                         ""
@@ -1275,8 +1277,8 @@ class FlightOrderDetailViewModelTest {
                                 FlightOrderDetailWebCheckInModel(
                                         "Check In",
                                         "Check In Not Available",
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -2), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
-                                        FlightDateUtil.dateToString(FlightDateUtil.addTimeToCurrentDate(Calendar.HOUR, -1), FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -2).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
+                                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.HOUR, -1).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z),
                                         "",
                                         "",
                                         ""
@@ -1319,7 +1321,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun buildPaymentDetailData_failedToFetchOrderDetail() {
         // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw UnsupportedOperationException() }
 
         // when
         val paymentData = viewModel.buildPaymentDetailData()
@@ -1369,7 +1371,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun buildAmenitiesPaymentDetailData_failedToFetchOrderDetail() {
         // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw UnsupportedOperationException() }
 
         // when
         val paymentData = viewModel.buildAmenitiesPaymentDetailData()

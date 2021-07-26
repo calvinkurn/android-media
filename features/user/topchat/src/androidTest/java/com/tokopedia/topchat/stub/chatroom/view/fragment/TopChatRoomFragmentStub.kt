@@ -10,14 +10,11 @@ import com.tokopedia.topchat.stub.chatroom.view.customview.FakeTopChatViewStateI
 
 class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(
                 view, this, this, this,
                 this, this, this, this,
                 (activity as BaseChatToolbarActivity).getToolbar(), analytics,
-                keyboardStateIdling
         ).also {
             topchatViewState = it
         }
@@ -25,12 +22,10 @@ class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): TopChatRoomFragmentStub {
             return TopChatRoomFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

@@ -523,7 +523,7 @@ class OfficialHomeFragment :
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String) {
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
                 viewModel.currentSlug,
                 cta.text,
@@ -904,6 +904,7 @@ class OfficialHomeFragment :
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun goToPDP(item: RecommendationItem, position: Int) {
         eventTrackerClickListener(item, position)
         try {
@@ -933,6 +934,7 @@ class OfficialHomeFragment :
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isChooseAddressUpdated(): Boolean {
         try {
             localChooseAddress?.let {

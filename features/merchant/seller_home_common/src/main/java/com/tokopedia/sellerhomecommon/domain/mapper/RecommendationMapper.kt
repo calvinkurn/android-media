@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.domain.model.RecommendationModel
 import com.tokopedia.sellerhomecommon.domain.model.RecommendationProgressModel
 import com.tokopedia.sellerhomecommon.domain.model.RecommendationTicker
@@ -40,11 +42,11 @@ class RecommendationMapper @Inject constructor() {
     private fun getRecommendation(recommendation: RecommendationModel?): RecommendationUiModel? {
         recommendation?.let {
             return RecommendationUiModel(
-                    title = it.title,
+                    title = it.title.orEmpty(),
                     recommendations = it.list.map { item ->
                         RecommendationItemUiModel(
-                                text = item.text,
-                                appLink = item.appLink,
+                                text = item.text.orEmpty(),
+                                appLink = item.appLink.orEmpty(),
                                 type = when (item.type) {
                                     RECOMMENDATION_TYPE_POSITIVE -> RecommendationItemUiModel.TYPE_POSITIVE
                                     RECOMMENDATION_TYPE_NEGATIVE -> RecommendationItemUiModel.TYPE_NEGATIVE
@@ -60,7 +62,7 @@ class RecommendationMapper @Inject constructor() {
     private fun getTicker(ticker: RecommendationTicker?): RecommendationTickerUiModel? {
         ticker?.let {
             return RecommendationTickerUiModel(
-                    text = it.text,
+                    text = it.text.orEmpty(),
                     type = when (ticker.type) {
                         TICKER_TYPE_INFO -> RecommendationTickerUiModel.TYPE_INFO
                         TICKER_TYPE_WARNING -> RecommendationTickerUiModel.TYPE_WARNING
@@ -74,11 +76,12 @@ class RecommendationMapper @Inject constructor() {
     private fun getRecommendationProgress(progressLevel: RecommendationProgressModel?): RecommendationProgressUiModel? {
         progressLevel?.let {
             return RecommendationProgressUiModel(
-                    isShown = it.isShown,
-                    text = it.text,
+                    isShown = it.isShown.orFalse(),
+                    text = it.text.orEmpty(),
                     bar = RecommendationProgressUiModel.ProgressBar(
-                            value = it.bar.value,
-                            maxValue = it.bar.maxValue
+                            value = it.bar?.value.orZero(),
+                            maxValue = it.bar?.maxValue.orZero(),
+                            valueToDisplay = it.bar?.valueToDisplay.orEmpty()
                     )
             )
         }

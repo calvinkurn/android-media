@@ -209,13 +209,6 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@TopchatContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-    }
-
-    @ChatScope
-    @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.PaymentType
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
@@ -49,6 +49,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     override fun getLoadingView(): View? = loadingLayout
 
     private fun inflateWaitingUI() {
+        ivPaymentProcessing.loadImage(URL_THANK_PAYMENT_PROCESSING)
         tvPaymentProcessingTimeInfo.text = getString(R.string.thank_payment_in_progress_time, thanksPageData.gatewayName)
         ivPaymentGatewayImage.loadImage(thanksPageData.gatewayImage)
         ivPaymentGatewayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
@@ -93,6 +94,8 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
             }
         }
+
+        private const val URL_THANK_PAYMENT_PROCESSING = "https://images.tokopedia.net/img/android/payment/thankyou-native/thank_payment_processing.png"
     }
 
 }

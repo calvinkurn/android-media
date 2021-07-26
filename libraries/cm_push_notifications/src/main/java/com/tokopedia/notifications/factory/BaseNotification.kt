@@ -344,7 +344,6 @@ abstract class BaseNotification internal constructor(
     internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, reqCode: Int): PendingIntent {
         var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
-        intent.putExtras(getBundle(baseNotificationModel))
         intent = updateIntentWithCouponCode(baseNotificationModel, intent)
         return getPendingIntent(context, intent, reqCode)
     }
@@ -364,41 +363,7 @@ abstract class BaseNotification internal constructor(
             intent.putExtra(CMConstant.EXTRA_BASE_MODEL,baseNotificationModel)
             intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
             intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-            intent.putExtras(getBundle(baseNotificationModel))
             return intent
-        }
-
-        /**
-         * getBundle will return a Bundle
-         * it bill create Bundle only if VideoPushModel or CustomValues
-         *
-         **/
-        private fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
-            var bundle = Bundle()
-            baseNotificationModel.videoPushModel?.let {
-                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
-            }
-            baseNotificationModel.customValues?.let {
-                if (it.isNotEmpty())
-                    bundle = jsonToBundle(bundle, JSONObject(it))
-            }
-            return bundle
-        }
-
-        /**
-         *
-         *
-         * */
-        private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
-            jsonObject?.let {
-                val iterator = it.keys()
-                while (iterator.hasNext()) {
-                    val key = iterator.next() as String
-                    val value = it.getString(key)
-                    bundle.putString(key, value)
-                }
-            }
-            return bundle
         }
 
         fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =

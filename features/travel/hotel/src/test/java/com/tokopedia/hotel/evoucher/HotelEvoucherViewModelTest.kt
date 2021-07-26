@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.evoucher
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -9,6 +8,7 @@ import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataResponse
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.usecase.GetHotelOrderDetailUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations

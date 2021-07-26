@@ -32,7 +32,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PinnedProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -360,8 +360,8 @@ class PlayBottomSheetFragment @Inject constructor(
      * Observe
      */
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
-            if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
+            if (it.productTags is PlayProductTagsUiModel.Complete) {
                 if (it.productTags.productList.isNotEmpty()) {
                     productSheetView.setProductSheet(it.productTags)
 
@@ -371,7 +371,7 @@ class PlayBottomSheetFragment @Inject constructor(
                     productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
                 }
             }
-        })
+        }
     }
 
     private fun observeProductSheetContent() {

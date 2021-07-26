@@ -8,14 +8,17 @@ import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 
 /**
@@ -974,7 +977,7 @@ class ModelBuilder {
 
     fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
 
-    fun buildProductVariant() = gson.fromJson(productVariant, ProductDetailVariantCommonResponse::class.java)
+    fun buildProductVariant() = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
     fun buildProduct() = gson.fromJson(product, Product::class.java)
 
@@ -1036,10 +1039,10 @@ class ModelBuilder {
     fun buildVariantSheetUiModel(
             product: PlayProductUiModel.Product = buildProductLineUiModel(),
             action: ProductAction = ProductAction.Buy,
-            parentVariant: ProductVariantCommon? = null,
+            parentVariant: ProductVariant? = null,
             stockWording: String? = "Stok tersedia",
             listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
+            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf()
     ) = VariantSheetUiModel(
             product = product,
             action = action,

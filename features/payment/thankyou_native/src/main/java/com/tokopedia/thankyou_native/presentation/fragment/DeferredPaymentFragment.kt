@@ -3,7 +3,6 @@ package com.tokopedia.thankyou_native.presentation.fragment
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -24,16 +23,22 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
-class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
+class DeferredPaymentFragment : ThankYouBaseFragment(),
+    ThankYouPageTimerView.ThankTimerViewListener {
 
     var paymentType: PaymentType? = null
 
     override fun getScreenName(): String = SCREEN_NAME
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.thank_fragment_deferred, container, false)
     }
 
@@ -44,24 +49,39 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
-        paymentType?.let {
-            when (it) {
+        paymentType?.let { paymentType ->
+            when (paymentType) {
                 is BankTransfer -> {
-                    inflateWaitingUI(getString(R.string.thank_account_number), isCopyVisible = true, highlightAmountDigits = true)
+                    inflateWaitingUI(
+                        getString(R.string.thank_account_number), isCopyVisible = true,
+                        highlightAmountDigits = true,
+                        paymentType = paymentType
+                    )
                     showDigitAnnouncementTicker()
                 }
                 is VirtualAccount -> inflateWaitingUI(
-                        if (thanksPageData.gatewayName == GATEWAY_KLIK_BCA)
-                            getString(R.string.thank_klikBCA_virtual_account_tag)
-                        else
-                            getString(R.string.thank_virtual_account_tag),
-                        isCopyVisible = true, highlightAmountDigits = false)
-                is Retail -> inflateWaitingUI(getString(R.string.thank_payment_code), isCopyVisible = true, highlightAmountDigits = false)
-                is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false, highlightAmountDigits = false)
+                    if (thanksPageData.gatewayName == GATEWAY_KLIK_BCA)
+                        getString(R.string.thank_klikBCA_virtual_account_tag)
+                    else
+                        getString(R.string.thank_virtual_account_tag),
+                    isCopyVisible = true, highlightAmountDigits = false,
+                    paymentType = paymentType
+                )
+                is Retail -> inflateWaitingUI(
+                    getString(R.string.thank_payment_code), isCopyVisible = true,
+                    highlightAmountDigits = false,
+                    paymentType = paymentType
+                )
+                is SmsPayment -> inflateWaitingUI(
+                    getString(R.string.thank_phone_number), isCopyVisible = false,
+                    highlightAmountDigits = false,
+                    paymentType = paymentType
+                )
             }
         }
         if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
-            tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
+            tvCheckPaymentStatusTitle.text =
+                getString(R.string.thank_processing_payment_check_order)
         } else {
             tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
         }
@@ -74,19 +94,35 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun highlightLastThreeDigits(amountStr: String) {
         context?.let {
-            tvTotalAmount.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_N700_96))
-            val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
+            tvTotalAmount.setTextColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifycomponents.R.color.Unify_N700_96
+                )
+            )
+            val spannable =
+                SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
             if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
                 val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
-                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)),
-                        startIndex, spannable.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            com.tokopedia.unifycomponents.R.color.Unify_G500
+                        )
+                    ),
+                    startIndex, spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
             tvTotalAmount.text = spannable
         }
     }
 
-    private fun inflateWaitingUI(numberTypeTitle: String?, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
+    private fun inflateWaitingUI(
+        numberTypeTitle: String?, isCopyVisible: Boolean,
+        highlightAmountDigits: Boolean, paymentType: PaymentType
+    ) {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         ivPaymentGatewayImage.loadImage(thanksPageData.gatewayImage)
         ivPaymentGatewayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
@@ -97,16 +133,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvAccountNumberTypeTag.gone()
             tvAccountNumber.gone()
         }
-        if (highlightAmountDigits)
-            highlightLastThreeDigits(thanksPageData.amountStr)
-        else
-            tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
 
-        icCopyAmount.tag = thanksPageData.amount.toString()
-        icCopyAmount.setOnClickListener {
-            val amountStr: String? = icCopyAmount.tag?.toString()
-            copyTotalAmountToClipboard(amountStr)
-        }
         if (isCopyVisible) {
             tvAccountNumberCopy.visible()
             tvAccountNumberCopy.tag = thanksPageData.additionalInfo.accountDest
@@ -123,20 +150,58 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvAccountNumberCopy.gone()
         }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
-            tvBankName.text = "${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
+            tvBankName.text =
+                "${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
         tvSeePaymentMethods.setOnClickListener { openHowToPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
         tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
+        if (paymentType == VirtualAccount
+            && (thanksPageData.combinedAmount > thanksPageData.amount)
+        ) {
+            setCombinedAmount(thanksPageData)
+        } else {
+            tvTotalAmountLabel.text = getString(R.string.thank_total_amount_label)
+            if (highlightAmountDigits)
+                highlightLastThreeDigits(thanksPageData.amountStr)
+            else
+                tvTotalAmount.text = getString(
+                    R.string.thankyou_rp_without_space,
+                    thanksPageData.amountStr
+                )
+        }
+        setClickToCopyAmount(paymentType, thanksPageData)
+    }
+
+    private fun setClickToCopyAmount(paymentType: PaymentType, thanksPageData: ThanksPageData){
+        icCopyAmount.setOnClickListener {
+            val amountStr = if (paymentType == VirtualAccount
+                && (thanksPageData.combinedAmount > thanksPageData.amount)) {
+                thanksPageData.combinedAmount.toString()
+            } else {
+                thanksPageData.amount.toString()
+            }
+            copyTotalAmountToClipboard(amountStr)
+        }
+    }
+
+
+    private fun setCombinedAmount(thanksPageData: ThanksPageData) {
+        tvTotalAmountLabel.text = getString(R.string.thanks_total_combined_amount)
+        val amountStr = CurrencyFormatUtil
+            .convertPriceValueToIdrFormat(thanksPageData.combinedAmount, false)
+        tvTotalAmount.text = amountStr
     }
 
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
             refreshThanksPageData()
-            thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+            thankYouPageAnalytics.get().onCheckPaymentStatusClick(
+                thanksPageData.profileCode,
+                thanksPageData.paymentID.toString()
+            )
         }
         setUpHomeButton(btnShopAgain)
     }
@@ -145,11 +210,13 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         tickerAnnouncementExactDigits.visible()
         tickerAnnouncementExactDigits.tickerTitle = getString(R.string.thank_pending)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tickerAnnouncementExactDigits.setTextDescription(HtmlUtil
-                    .fromHtml(getString(R.string.thank_exact_transfer_upto_3_digits)).trim())
+            tickerAnnouncementExactDigits.setTextDescription(
+                HtmlUtil
+                    .fromHtml(getString(R.string.thank_exact_transfer_upto_3_digits)).trim()
+            )
         } else {
             tickerAnnouncementExactDigits
-                    .setHtmlDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
+                .setHtmlDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
         }
         view_divider_3.gone()
     }
@@ -162,8 +229,10 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             }
         }
         thankYouPageAnalytics.get()
-                .sendSalinButtonClickEvent(thanksPageData.profileCode, thanksPageData.gatewayName,
-                        thanksPageData.paymentID.toString())
+            .sendSalinButtonClickEvent(
+                thanksPageData.profileCode, thanksPageData.gatewayName,
+                thanksPageData.paymentID.toString()
+            )
     }
 
     private fun copyTotalAmountToClipboard(amountStr: String?) {
@@ -171,8 +240,10 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             context?.let { context ->
                 copyTOClipBoard(context, str)
                 view?.let {
-                    Toaster.build(it, getString(R.string.thank_you_amount_copy_success),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                    Toaster.build(
+                        it, getString(R.string.thank_you_amount_copy_success),
+                        Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL
+                    ).show()
                 }
             }
         }

@@ -19,10 +19,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_plus_icon_once_show_attachment_menu() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickPlusIconMenu()
@@ -36,10 +35,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_plus_icon_twice_hide_chat_menu() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickPlusIconMenu()
@@ -54,10 +52,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_compose_area_when_attachment_menu_visible() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickPlusIconMenu()
@@ -73,10 +70,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_compose_area_when_sticker_menu_visible() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickStickerIconMenu()
@@ -92,12 +88,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_sticker_icon_once_show_sticker_container() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // WHen
         clickStickerIconMenu()
@@ -113,12 +108,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_sticker_icon_twice_hide_chat_menu_and_show_keyboard() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // WHen
         clickStickerIconMenu()
@@ -137,12 +131,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun test_open_attachment_menu_then_open_sticker() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         stickerGroupUseCase.response = stickerGroupAsBuyer
         chatListStickerUseCase.response = stickerListAsBuyer
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // WHen
         clickPlusIconMenu()
@@ -158,10 +151,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun click_back_btn_when_attachment_menu_opened() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // WHen
         clickPlusIconMenu()
@@ -175,10 +167,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun attachment_size_is_3_in_mainapp() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // WHen
         clickPlusIconMenu()
@@ -193,10 +184,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun attachment_size_is_4_in_sellerapp() {
         // Given
-        setupChatRoomActivity(isSellerApp = true)
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity(isSellerApp = true)
 
         // WHen
         clickPlusIconMenu()
@@ -211,10 +201,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun should_able_to_send_msg_after_typing_msg() {
         //Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         //When
         val count = activityTestRule.activity
@@ -237,10 +226,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun should_not_be_able_to_send_msg_when_msg_is_empty() {
         //Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         //When
         onView(withId(R.id.new_comment)).perform(typeText("Test"))
@@ -253,10 +241,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
     @Test
     fun test_msg_sent_error_empty_text_click() {
         //Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsSeller
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         //When
         onView(withId(R.id.send_but)).perform(click())

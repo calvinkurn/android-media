@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity.Companion.CHECK_IN_DATE
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity.Companion.CHECK_OUT_DATE
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity.Companion.EXTRA_CHECK_IN_DATE
@@ -22,6 +20,7 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchA
 import com.tokopedia.hotel.globalsearch.presentation.model.HotelGlobalSearchModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.utils.date.*
 import kotlinx.android.synthetic.main.fragment_hotel_global_search.*
 import java.util.*
 
@@ -49,13 +48,11 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
 
         arguments?.let {
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
-                    ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
-            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE)
-                    ?: ""))
+                    ?: DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD)
+            globalSearchModel.checkInDateFmt = it.getString(EXTRA_CHECK_IN_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
-                    ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2))
-            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE)
-                    ?: ""))
+                    ?: DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2).toString(DateUtil.YYYY_MM_DD)
+            globalSearchModel.checkOutDateFmt = it.getString(EXTRA_CHECK_OUT_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
 
@@ -76,18 +73,18 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
     open fun renderView() {
         val data = globalSearchModel
 
-        val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
-        val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
-        val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
+        val todayWithoutTime = DateUtil.getCurrentCalendar().time.removeTime()
+        val tomorrow = todayWithoutTime.addTimeToSpesificDate(Calendar.DATE, 1)
+        val dayAfterTomorrow = todayWithoutTime.addTimeToSpesificDate(Calendar.DATE, 2)
 
         // check in date is less than today
-        if (todayWithoutTime.after(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, data.checkInDate))) {
-            globalSearchModel.checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
-            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        if (todayWithoutTime.after(data.checkInDate.toDate(DateUtil.YYYY_MM_DD))) {
+            globalSearchModel.checkInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+            globalSearchModel.checkInDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
-            if (tomorrow.after(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, data.checkOutDate))) {
-                globalSearchModel.checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-                globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+            if (tomorrow.after(data.checkOutDate.toDate(DateUtil.YYYY_MM_DD))) {
+                globalSearchModel.checkOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
+                globalSearchModel.checkOutDateFmt = dayAfterTomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
         }
 
@@ -99,7 +96,7 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
 
     }
 
-    protected fun countRoomDuration(): Long = HotelUtils.countDayDifference(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
+    protected fun countRoomDuration(): Long = DateUtil.getDayDiff(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
 
     private fun configAndRenderCheckInDate() {
         openCalendarDialog(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
@@ -121,18 +118,13 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
-        globalSearchModel.checkInDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
-        globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+        globalSearchModel.checkInDate = newCheckInDate.toString(DateUtil.YYYY_MM_DD)
+        globalSearchModel.checkInDateFmt = newCheckInDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
-        if (newCheckInDate.after(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, globalSearchModel.checkOutDate))) {
-            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
-                    Calendar.DATE, 1)
-            globalSearchModel.checkOutDate = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        if (newCheckInDate.after(globalSearchModel.checkOutDate.toDate(DateUtil.YYYY_MM_DD))) {
+            val tomorrow = newCheckInDate.addTimeToSpesificDate(Calendar.DATE, 1)
+            globalSearchModel.checkOutDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+            globalSearchModel.checkOutDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         }
         globalSearchModel.nightCount = countRoomDuration()
 
@@ -140,10 +132,8 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        globalSearchModel.checkOutDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
-        globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        globalSearchModel.checkOutDate = newCheckOutDate.toString(DateUtil.YYYY_MM_DD)
+        globalSearchModel.checkOutDateFmt = newCheckOutDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         globalSearchModel.nightCount = countRoomDuration()
 
         renderView()

@@ -276,8 +276,11 @@ class PlayViewModelCreatePageTest {
         ) andWhen {
             createPage(channelData)
         } thenVerify {
-            pinnedResult
+            pinnedMessageResult
                     .isEqualTo(expectedModel)
+
+            pinnedProductResult
+                    .isEqualTo(channelData.pinnedInfo.pinnedProduct)
         }
     }
 

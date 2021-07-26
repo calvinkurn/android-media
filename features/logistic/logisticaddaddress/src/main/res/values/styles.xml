@@ -7,4 +7,5 @@
     <style name="LogisticTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
     </style>
+
 </resources>

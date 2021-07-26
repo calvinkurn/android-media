@@ -681,6 +681,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (goToLoginGoogle(uri)) return true;
+        if (uri.getHost() == null) {
+            return false;
+        }
 
         String queryParam = null;
         String headerText = null;
@@ -761,17 +764,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
 
-        if (!uri.getHost().contains(TOKOPEDIA_STRING)) {
-            if (isLinkAjaAppLink(url)) {
-                return redirectToExternalAppAndFinish(activity, uri);
-            } else {
-                Intent intent = WebViewHelper.externalAppIntentNotBrowser(activity, uri);
-                if (intent!= null) {
-                    hasMoveToNativePage = true;
-                    startActivity(intent);
-                    return true;
-                }
-            }
+        if (isLinkAjaAppLink(url)) {
+            return redirectToExternalAppAndFinish(activity, uri);
         }
 
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
