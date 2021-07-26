@@ -44,16 +44,20 @@ open class ErrorHandler {
             val mapParam = mapOf(
                 "identifier" to errorIdentifier,
                 "class" to builder.className,
-                "error_code" to if(builder.errorCode) errorCode else "",
+                "error_code" to errorCode,
                 "e" to Log.getStackTraceString(e)
             )
             if (builder.sendToScalyr) {
                 ServerLogger.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
             }
-            return "$errorMessageString <$errorCode-$errorIdentifier>"
+            return if (builder.errorCode) {
+                "$errorMessageString <$errorCode-$errorIdentifier>"
+            } else {
+                errorMessageString
+            }
         }
 
-        fun getErrorMessageString(context: Context?, e: Throwable?): String? {
+        fun getErrorMessageString(context: Context?, e: Throwable?): String {
             if (context == null || e == null) {
                 return "Terjadi kesalahan. Ulangi beberapa saat lagi"
             }
@@ -82,7 +86,7 @@ open class ErrorHandler {
                     context.getString(R.string.default_request_error_unknown)
                 }
             } else if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
-                e.message
+                e.message!!
             } else if (e is IOException) {
                 context.getString(R.string.default_request_error_internal_server)
             } else {
