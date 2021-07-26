@@ -16,6 +16,9 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -24,7 +27,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -67,7 +69,9 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -75,6 +79,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -110,6 +115,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val submitHelpTicketUseCase: Lazy<SubmitHelpTicketUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
+                                                             private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
                                                              private val addToCartOccUseCase: Lazy<AddToCartOccUseCase>,
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
@@ -220,6 +226,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
 
+    private val _atcRecomTokonow = MutableLiveData<Result<String>>()
+    val atcRecomTokonow: LiveData<Result<String>> get() = _atcRecomTokonow
+
+    private val _atcRecomTokonowSendTracker = MutableLiveData<Result<RecommendationItem>>()
+    val atcRecomTokonowSendTracker: LiveData<Result<RecommendationItem>> get() = _atcRecomTokonowSendTracker
+
+    private val _atcRecomTokonowResetCard = SingleLiveEvent<RecommendationItem>()
+    val atcRecomTokonowResetCard: LiveData<RecommendationItem> get() = _atcRecomTokonowResetCard
+
+    private val _atcRecomTokonowNonLogin = SingleLiveEvent<RecommendationItem>()
+    val atcRecomTokonowNonLogin: LiveData<RecommendationItem> get() = _atcRecomTokonowNonLogin
+
     var videoTrackerData: Pair<Long, Long>? = null
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
@@ -322,9 +340,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun hitUpdateCart(quantity: Int, request: MiniCartItem): Flow<Result<String>> {
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
-
+            val updateCartRequest = UpdateCartRequest(
+                    cartId = copyOfMiniCartItem.cartId,
+                    quantity = copyOfMiniCartItem.quantity,
+                    notes = copyOfMiniCartItem.notes
+            )
             updateCartUseCase.get().setParams(
-                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    updateCartRequestList = listOf(updateCartRequest),
                     source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
             )
             val result = updateCartUseCase.get().executeOnBackground()
@@ -353,6 +375,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         submitTicketSubscription?.unsubscribe()
         updateCartCounterSubscription?.unsubscribe()
         addToCartUseCase.get().unsubscribe()
+        deleteCartUseCase.get().cancelJobs()
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
@@ -756,15 +779,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                     pageName = pageName,
                                     productIDs = productIdsString,
-                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE
+                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE,
+                                    isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
                             )
                             recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
                         }
 
-                        val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
+                        val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomTokonowParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = pageName,
-                                productIds = productIds
+                                productIds = productIds,
+                                isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
                         )).toBlocking().first()
 
                         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
@@ -772,6 +797,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     recommendationFilterChips = recomFilterList,
                                     pageName = pageName
                             )
+                            if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                                recomWidget.recommendationItemList.forEach { item ->
+                                    _p2Data.value?.miniCart?.let {
+                                        item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
+                                                ?: 0)
+                                    }
+                                }
+                            }
                         }
 
                         recomWidget
@@ -953,6 +986,98 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun shouldHideFloatingButton(): Boolean {
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton
                 ?: false
+    }
+
+    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+        if (!userSessionInterface.isLoggedIn) {
+            _atcRecomTokonowNonLogin.value = recomItem
+        } else {
+            if (recomItem.quantity == quantity) return
+            val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
+            if (quantity == 0) {
+                deleteRecomItemFromCart(recomItem, miniCartItem)
+            } else if (recomItem.quantity == 0) {
+                atcRecomNonVariant(recomItem, quantity)
+            } else {
+                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+            }
+        }
+    }
+
+    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem?) {
+        launchCatchError(block = {
+            miniCartItem?.let {
+                deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId), )
+                val result = deleteCartUseCase.get().executeOnBackground()
+                val isFailed = result.data.success == 0 || result.status.equals("ERROR", true)
+                if (isFailed) {
+                    val error = result.errorMessage.firstOrNull() ?: result.data.message.firstOrNull()
+                    onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
+                } else {
+                    updateMiniCartAfterATCRecomTokonow(result.data.message.first())
+                }
+            }
+        }) {
+            onFailedATCRecomTokonow(it, recomItem)
+        }
+    }
+
+
+    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+        launchCatchError(block = {
+            val param = AddToCartUseCase.getMinimumParams(
+                    recomItem.productId.toString(),
+                    recomItem.shopId.toString(),
+                    quantity
+            )
+            val result = withContext(dispatcher.io) {
+                addToCartUseCase.get().createObservable(param).toBlocking().single()
+            }
+            if (result.isStatusError()) {
+                onFailedATCRecomTokonow(Throwable(result.errorMessage.firstOrNull() ?: result.status), recomItem)
+            } else {
+                recomItem.cartId = result.data.cartId
+                updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
+            }
+        }) {
+            onFailedATCRecomTokonow(it, recomItem)
+        }
+    }
+
+    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem?) {
+        launchCatchError(block = {
+            miniCartItem?.let {
+                val copyOfMiniCartItem = UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)
+                updateCartUseCase.get().setParams(
+                        updateCartRequestList = listOf(copyOfMiniCartItem),
+                        source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+                )
+                val result = updateCartUseCase.get().executeOnBackground()
+
+                if (result.error.isNotEmpty()) {
+                    onFailedATCRecomTokonow(Throwable(result.error.firstOrNull() ?: ""), recomItem)
+                } else {
+                    updateMiniCartAfterATCRecomTokonow(result.data.message)
+                }
+            }
+            }) {
+            onFailedATCRecomTokonow(it, recomItem)
+        }
+
+    }
+
+    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
+        _atcRecomTokonow.value = message.asSuccess()
+        if (isAtc) {
+            _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
+        }
+        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
+    }
+
+    private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
+        recomItem.onFailedUpdateCart()
+        _atcRecomTokonow.value = throwable.asFail()
+        _atcRecomTokonowResetCard.value = recomItem
     }
 
     private fun assignTradeinParams() {

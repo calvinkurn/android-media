@@ -361,6 +361,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeInitialVariantData()
         observeSingleVariantData()
         observeonVariantClickedData()
+        observeATCTokonowData()
+        observeATCTokonowResetCard()
+        observeATCRecomTokonowNonLogin()
+        observeATCRecomSendTracker()
         observeDiscussionData()
         observeP2Other()
         observeTopAdsImageData()
@@ -882,6 +886,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
+        pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
+    }
+
+    override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int) {
+        requireContext().let {
+            AtcVariantHelper.goToAtcVariant(
+                    context = it,
+                    productId = recomItem.productId.toString(),
+                    pageSource = "tokonow",
+                    isTokoNow = true,
+                    shopId = recomItem.shopId.toString(),
+                    startActivitResult = this::startActivityForResult,
+            )
+        }
+
+    }
+
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
         viewModel.getRecommendation(recommendationDataModel, annotationChip, position, filterPosition)
@@ -1260,6 +1283,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.miniCartData.observe(viewLifecycleOwner) {
             if (it) {
                 updateButtonState()
+                if (firstOpenPage == false) {
+                    pdpUiUpdater?.updateRecomTokonowQuantityData(viewModel.p2Data.value?.miniCart)
+                    updateUi()
+                }
             }
         }
     }
@@ -1361,6 +1388,41 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeonVariantClickedData() {
         viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
             updateVariantDataToExistingProductData(it)
+        }
+    }
+
+    private fun observeATCTokonowData() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
+            data.doSuccessOrFail({
+                if (it.data.isNotEmpty()) {
+                    view?.showToasterSuccess(it.data)
+                }
+            },{
+                view?.showToasterError(it.message?: "", ctaText = getString(R.string.label_oke_pdp))
+                logException(it)
+            })
+        }
+    }
+
+    private fun observeATCRecomSendTracker() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonowSendTracker) { data ->
+            data.doSuccessOrFail({
+                DynamicProductDetailTracking.Click.eventClickRecomAddToCart(it.data, viewModel.userId, it.data.minOrder)
+            },{})
+        }
+    }
+
+    private fun observeATCTokonowResetCard() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonowResetCard) {
+            pdpUiUpdater?.resetFailedRecomTokonowCard(it)
+            updateUi()
+        }
+    }
+
+    private fun observeATCRecomTokonowNonLogin() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonowNonLogin) {
+            goToLogin()
+            pdpUiUpdater?.resetFailedRecomTokonowCard(it)
         }
     }
 
