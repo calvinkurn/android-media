@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -23,8 +24,10 @@ import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR
 import com.tokopedia.saldodetails.utils.NORMAL
 import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
+import com.tokopedia.saldodetails.view.fragment.new.TransactionTitle
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
+import com.tokopedia.saldodetails.view.viewmodel.TransactionHistoryViewModel
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.unifycomponents.TabsUnify
 import java.util.*
@@ -45,6 +48,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     lateinit var viewModelFactory: ViewModelFactory
 
     private val saldoHistoryViewModel: SaldoHistoryViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(SaldoHistoryViewModel::class.java) }
+
+    private val transactionHistoryViewModel: TransactionHistoryViewModel by lazy {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory)
+        viewModelProvider.get(TransactionHistoryViewModel::class.java)
+    }
 
     private var datePicker: SaldoDatePickerUtil? = null
 
@@ -90,6 +98,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
     private fun getInitialData() {
         setActionsEnabled(false)
         saldoHistoryViewModel.setFirstDateParameter(this)
+        transactionHistoryViewModel.refreshAllTabsData(System.currentTimeMillis()
+                - (3*24*3600*1000), System.currentTimeMillis())
         saldoHistoryViewModel.getSummaryDeposit()
     }
 
@@ -108,7 +118,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         loadMultipleTabItem()
         val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
-        depositHistoryViewPager?.offscreenPageLimit = 2
+       // depositHistoryViewPager?.offscreenPageLimit = 2
         depositHistoryViewPager?.adapter = saldoHistoryPagerAdapter
         depositHistoryTabLayout?.setupWithViewPager(depositHistoryViewPager!!)
 
@@ -120,20 +130,20 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         saldoTabItems.clear()
 
         allSaldoHistoryTabItem = SaldoHistoryTabItem()
-        allSaldoHistoryTabItem!!.title = "Semua"
-        allSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel, this)
+        allSaldoHistoryTabItem!!.title = TransactionTitle.ALL_TRANSACTION
+        allSaldoHistoryTabItem!!.fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.ALL_TRANSACTION)//SaldoHistoryListFragment.createInstance(FOR_ALL, saldoHistoryViewModel, this)
 
         saldoTabItems.add(allSaldoHistoryTabItem!!)
 
         buyerSaldoHistoryTabItem = SaldoHistoryTabItem()
-        buyerSaldoHistoryTabItem!!.title = "Refund"
-        buyerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryViewModel, this)
+        buyerSaldoHistoryTabItem!!.title = TransactionTitle.SALDO_REFUND
+        buyerSaldoHistoryTabItem!!.fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_REFUND)//SaldoHistoryListFragment.createInstance(FOR_BUYER, saldoHistoryViewModel, this)
 
         saldoTabItems.add(buyerSaldoHistoryTabItem!!)
 
         sellerSaldoHistoryTabItem = SaldoHistoryTabItem()
-        sellerSaldoHistoryTabItem!!.title = "Penghasilan"
-        sellerSaldoHistoryTabItem!!.fragment = SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryViewModel, this)
+        sellerSaldoHistoryTabItem!!.title = TransactionTitle.SALDO_INCOME
+        sellerSaldoHistoryTabItem!!.fragment =  SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_INCOME)//SaldoHistoryListFragment.createInstance(FOR_SELLER, saldoHistoryViewModel, this)
 
         saldoTabItems.add(sellerSaldoHistoryTabItem!!)
         depositHistoryTabLayout?.run {
