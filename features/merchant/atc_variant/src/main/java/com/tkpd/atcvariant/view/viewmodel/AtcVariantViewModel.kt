@@ -365,7 +365,7 @@ class AtcVariantViewModel @Inject constructor(
                shopIdInt: Int,
                categoryName: String,
                userId: String,
-               shippingMinPrice: Int,
+               shippingMinPrice: Double,
                trackerAttributionPdp: String,
                trackerListNamePdp: String,
                isTokoNow: Boolean) {

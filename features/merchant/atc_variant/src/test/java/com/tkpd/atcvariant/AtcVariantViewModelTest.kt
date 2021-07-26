@@ -487,7 +487,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyAtc = true)
 
         val request = slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
@@ -508,7 +508,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "attribution", "trackerlist", false)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "attribution", "trackerlist", false)
         verifyAtcUsecase(verifyAtc = true)
 
         val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartRequestParams
@@ -528,7 +528,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyAtc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -547,7 +547,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         } returns updateAtcResponse
 
         viewModel.updateQuantity(50, "2147818576")
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
             updateCartUseCase.setParams(capture(miniCartItem), any(), any())
@@ -571,7 +571,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns failUpdataAtcResponse
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
             updateCartUseCase.setParams(capture(miniCartItem), any(), any())
@@ -595,7 +595,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOcsUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 30000, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 30000.0, "", "", true)
         verifyAtcUsecase(verifyOcs = true)
 
         val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
@@ -616,7 +616,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyOcs = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -633,7 +633,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOccUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -651,7 +651,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOccUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -669,7 +669,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOccUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", false)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", false)
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)

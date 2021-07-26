@@ -100,4 +100,6 @@ object ProductDetailCommonConstant{
 
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
+    const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
+
 }

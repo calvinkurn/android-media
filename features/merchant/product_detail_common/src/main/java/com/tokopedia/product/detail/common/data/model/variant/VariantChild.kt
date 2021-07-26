@@ -16,7 +16,7 @@ data class VariantChild(
 
         @SerializedName("price")
         @Expose
-        val price: Float = 0f, //ex: 100000000
+        val price: Double = 0.0, //ex: 100000000
 
         @SerializedName("priceFmt")
         @Expose
@@ -65,21 +65,21 @@ data class VariantChild(
         @SerializedName("thematicCampaign")
         val thematicCampaign: ThematicCampaign? = null
 ) {
-    val finalMainPrice: Float
+    val finalMainPrice: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.originalPrice ?: 0F
+                campaign.originalPrice ?: 0.0
             } else {
                 price
             }
         }
 
-    val finalPrice: Long
+    val finalPrice: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.discountedPrice?.toLong() ?: 0L
+                campaign.discountedPrice ?: 0.0
             } else {
-                price.toLong()
+                price
             }
         }
 
@@ -204,7 +204,7 @@ data class VariantCampaign(
 
         @SerializedName("originalPrice")
         @Expose
-        val originalPrice: Float? = null,
+        val originalPrice: Double? = null,
 
         @SerializedName("originalPriceFmt")
         @Expose
@@ -216,7 +216,7 @@ data class VariantCampaign(
 
         @SerializedName("discountPrice")
         @Expose
-        val discountedPrice: Float? = 0f,
+        val discountedPrice: Double? = 0.0,
 
         @SerializedName("discountPriceFmt")
         @Expose

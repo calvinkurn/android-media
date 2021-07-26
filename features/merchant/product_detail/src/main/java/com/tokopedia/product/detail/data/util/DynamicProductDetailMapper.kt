@@ -221,7 +221,7 @@ object DynamicProductDetailMapper {
             null
         } else {
             data.map {
-                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value.toFloat())
+                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value)
             }
         }
     }

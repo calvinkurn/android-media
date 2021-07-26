@@ -51,9 +51,11 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffi
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
+import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
@@ -230,7 +232,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
-    var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
+    var shippingMinimumPrice: Double = getDynamicProductInfoP1?.basic?.getDefaultOngkirDouble() ?: DEFAULT_PRICE_MINIMUM_SHIPPING
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
@@ -958,7 +960,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
             tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
-            tradeInParams.setPrice(it.data.price.value)
+            tradeInParams.setPrice(it.data.price.value.roundToIntOrZero())
             tradeInParams.productId = it.basic.getProductId()
             tradeInParams.shopId = it.basic.getShopId()
             tradeInParams.productName = it.getProductName
