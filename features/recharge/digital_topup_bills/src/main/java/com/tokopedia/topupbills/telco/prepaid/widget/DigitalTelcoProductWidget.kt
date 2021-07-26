@@ -128,7 +128,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         for (data in dataCollection) {
             if (data is TelcoProduct) {
                 data.productPosition = productCount
-                productCount += 1
+                productCount++
             }
         }
     }
