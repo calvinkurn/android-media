@@ -17,8 +17,8 @@ class InboxReviewInsertReputationUseCase @Inject constructor(graphqlRepository: 
         const val INSERT_REPUTATION_QUERY_CLASS_NAME = "InsertReputation"
         const val INSERT_REPUTATION_MUTATION =
             """
-                mutation inboxReviewInsertReputationV2(${'$'}reputationId: String, ${'$'}reputationScore: Int, ${'$'}buyerSeller: Int) {
-                  inboxReviewInsertReputationV2(reputationId:${'$'}reputationId, reputationScore:${'$'}reputationScore, buyerSeller:${'$'}buyerSeller) {
+                mutation inboxReviewInsertReputationV2(${'$'}reputationId: String!, ${'$'}reputationScore: Int!, ${'$'}buyerSeller: Int!) {
+                  inboxReviewInsertReputationV2(reputationId: ${'$'}reputationId, reputationScore: ${'$'}reputationScore, buyerSeller: ${'$'}buyerSeller) {
                     success
                   }
                 }
