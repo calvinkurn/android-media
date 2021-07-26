@@ -3,9 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeCustomViewListener
 
 private const val mimeType = "text/html"
 private const val encoding = "UTF-8"
@@ -16,6 +19,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private var dispatchDownEvent:Boolean = false
     private var userDownEvent:Boolean = false
     private var jsInterface: String = "jsInterface"
+    var isPlayerReady:Boolean = false
+    var customViewInterface: YoutubeCustomViewListener? = null
 
     init {
         setupTouchListener()
@@ -28,8 +33,23 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 return false
             }
+
+            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                customViewInterface?.renderProcessKilled()
+                return true
+            }
         }
-        webChromeClient = object : WebChromeClient() {}
+        webChromeClient = object : WebChromeClient() {
+            override fun onShowCustomView(view: View, callback: CustomViewCallback?) {
+                super.onShowCustomView(view, callback)
+                customViewInterface?.onShowCustomView(view)
+            }
+
+            override fun onHideCustomView() {
+                super.onHideCustomView()
+                customViewInterface?.onHideCustomView()
+            }
+        }
     }
 
     private fun setupTouchListener(){
@@ -67,13 +87,17 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                             youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying? = null,
                             youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused? = null,
                             youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering? = null,
-                            youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null) {
+                            youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued? = null,
+                            playerReady: YoutubeWebViewEventListener.EventPlayerReady? = null) {
         addJavascriptInterface(YoutubeWebViewInterface(youtubeEventVideoEnded, youtubeEventVideoPlaying,
-                youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued), jsInterface)
+                youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued,playerReady), jsInterface)
     }
 
     fun loadVideo(videoId: String,width: Int) {
-        loadData(getYoutubePlayerHtml(videoId,width), mimeType, encoding)
+        if (isPlayerReady) {
+            loadUrl("javascript:cueVideo('$videoId', 0)")
+        } else
+            loadData(getYoutubePlayerHtml(videoId, width), mimeType, encoding)
     }
 
     private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
@@ -98,9 +122,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          playerVars: {\n" +
-                "            'rel': 0\n" +
+                "            'rel': 0,\n" +
+                "            'modestbranding': 1\n" +
                 "          }," +
                 "          events: {\n" +
+                "            'onReady': onPlayerReady,\n"+
                 "            'onStateChange': onPlayerStateChange\n" +
                 "          }\n" +
                 "        });\n" +
@@ -108,6 +134,12 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "\n" +
                 "      function onPlayerStateChange(event) {\n" +
                 "          jsInterface.onStateChanged(event.data, player.getCurrentTime());\n" +
+                "      }\n" +
+                "      function onPlayerReady(event) {\n" +
+                "          jsInterface.onReady();\n" +
+                "      }\n" +
+                "      function cueVideo(videoId, startSeconds) {\n" +
+                "          player.cueVideoById(videoId, startSeconds);\n" +
                 "      }\n" +
                 "    </script>\n" +
                 "  </body>\n" +
