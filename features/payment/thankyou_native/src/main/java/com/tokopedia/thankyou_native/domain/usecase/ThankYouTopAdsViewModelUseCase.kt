@@ -2,16 +2,16 @@ package com.tokopedia.thankyou_native.domain.usecase
 
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class ThankYouTopAdsViewModelUseCase @Inject constructor(
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase
-) : UseCase<ArrayList<TopAdsImageViewModel>>() {
+) : UseCase<List<TopAdsUIModel>>() {
 
     private val KEY_TOP_ADS_PARAM = "TOP_ADS_PARAM"
     private val KEY_THANKS_DATA_PARAM = "KEY_THANKS_DATA_PARAM"
@@ -20,7 +20,7 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
     fun getAppLinkPaymentInfo(
         topAdsParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData,
-        onSuccess: (ArrayList<TopAdsImageViewModel>) -> Unit,
+        onSuccess: (List<TopAdsUIModel>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         val requestParams = RequestParams.create()
@@ -30,7 +30,7 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
     }
 
 
-    override suspend fun executeOnBackground(): ArrayList<TopAdsImageViewModel> {
+    override suspend fun executeOnBackground(): List<TopAdsUIModel> {
         val params = useCaseRequestParams.getObject(KEY_TOP_ADS_PARAM) as TopAdsRequestParams
         val thanksPageData = useCaseRequestParams.getObject(KEY_THANKS_DATA_PARAM) as ThanksPageData
         var productId = ""
@@ -44,7 +44,7 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
                 }
             }
         }
-        return topAdsImageViewUseCase.getImageData(
+        val topAdsViewModelList = topAdsImageViewUseCase.getImageData(
             topAdsImageViewUseCase.getQueryMap(
                 "",
                 params.inventoryId,
@@ -54,6 +54,9 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
                 productId
             )
         )
+        return topAdsViewModelList.map {
+            TopAdsUIModel(it)
+        }
     }
 
 

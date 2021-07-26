@@ -11,9 +11,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.presentation.adapter.TopAdsViewAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 class TopAdsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -33,7 +33,7 @@ class TopAdsView @JvmOverloads constructor(
     fun addData(
         topAdsParams: TopAdsRequestParams
     ) {
-        if (!topAdsParams.topAdsImageViewModel.isNullOrEmpty()) {
+        if (!topAdsParams.topAdsUIModelList.isNullOrEmpty()) {
             visible()
             if (topAdsParams.title.isNotBlank())
                 findViewById<TextView>(R.id.tvFeatureTitle).text = topAdsParams.title
@@ -45,28 +45,28 @@ class TopAdsView @JvmOverloads constructor(
             else
                 findViewById<TextView>(R.id.tvFeatureDescription).gone()
 
-            addTORecyclerView(topAdsParams.topAdsImageViewModel)
+            addTORecyclerView(topAdsParams.topAdsUIModelList)
         } else {
             gone()
         }
     }
 
-    private fun addTORecyclerView(topAdsImageViewModelList: ArrayList<TopAdsImageViewModel>?) {
-        topAdsImageViewModelList?.let {
+    private fun addTORecyclerView(topAdsUIModels: List<TopAdsUIModel>?) {
+        topAdsUIModels?.let {
             recyclerView = findViewById(R.id.recyclerView)
             recyclerView.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             recyclerView.adapter = adapter
             recyclerView.post {
-                adapter.addItems(topAdsImageViewModelList)
+                adapter.addItems(topAdsUIModels)
                 adapter.notifyDataSetChanged()
             }
         }
     }
 
-    private fun onClick(topAdsImageViewModel: TopAdsImageViewModel) {
+    private fun onClick(appLink : String) {
         context?.let {
-            RouteManager.route(context, topAdsImageViewModel.applink)
+            RouteManager.route(context, appLink)
         }
     }
 

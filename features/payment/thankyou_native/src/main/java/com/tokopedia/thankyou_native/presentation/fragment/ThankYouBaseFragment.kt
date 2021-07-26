@@ -231,9 +231,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
         })
 
-        thanksPageDataViewModel.topAdsDataLiveData.observe(viewLifecycleOwner, {
+        thanksPageDataViewModel.topAdsDataLiveData.observe(viewLifecycleOwner) {
             addDataToTopAdsView(it)
-        })
+        }
 
     }
 
@@ -279,7 +279,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
     private fun addDataToTopAdsView(data: TopAdsRequestParams) {
-        if (!data.topAdsImageViewModel.isNullOrEmpty()) {
+        if (!data.topAdsUIModelList.isNullOrEmpty()) {
             getTopAdsView()?.visible()
             getTopAdsView()?.addData(data)
         } else {
