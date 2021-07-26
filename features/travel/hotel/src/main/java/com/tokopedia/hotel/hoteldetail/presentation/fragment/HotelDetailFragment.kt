@@ -41,6 +41,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelNearbyPlacesSectionAdapter
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder.HotelNearbyLandmarkViewHolder
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
@@ -701,7 +702,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             showNearbyLandmarks()
             binding?.tvHotelNearbyLandmarkInfo?.text = dataList.information
             if (!::nearbyLandmarks.isInitialized) {
-                nearbyLandmarks = HotelNearbyPlacesSectionAdapter(dataList.result)
+                nearbyLandmarks = HotelNearbyPlacesSectionAdapter(dataList.result, object : HotelNearbyLandmarkViewHolder.NearbyListener{
+                    override fun showLandmarks() {
+                        showNearbyLandmarks()
+                    }
+
+                    override fun hideLandmarks() {
+                        hideNearbyLandmarks()
+                    }
+                })
             }
             val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             binding?.rvNearbyLandmarks?.layoutManager = layoutManager

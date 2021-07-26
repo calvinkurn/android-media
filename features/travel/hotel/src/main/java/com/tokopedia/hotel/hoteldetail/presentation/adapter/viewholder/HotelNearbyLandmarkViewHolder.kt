@@ -11,12 +11,17 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelNearbyPlacesAda
 /**
  * @author by astidhiyaa on 23/06/2021
  */
-class HotelNearbyLandmarkViewHolder(val binding: ItemHotelSectionNearbyLandmarkBinding) : RecyclerView.ViewHolder(binding.root) {
+class HotelNearbyLandmarkViewHolder(val binding: ItemHotelSectionNearbyLandmarkBinding, val listener: NearbyListener) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: HotelNearbyPlaces) {
         with(binding) {
-            tvHeaderNearbyLandmark.text = element.header
-            setupNearbyPlaces(element.places)
+            if(element.places.isNullOrEmpty()){
+                listener.hideLandmarks()
+            }else{
+                listener.showLandmarks()
+                tvHeaderNearbyLandmark.text = element.header
+                setupNearbyPlaces(element.places)
+            }
         }
     }
 
@@ -30,5 +35,10 @@ class HotelNearbyLandmarkViewHolder(val binding: ItemHotelSectionNearbyLandmarkB
 
     companion object {
         val LAYOUT = R.layout.item_hotel_section_nearby_landmark
+    }
+
+    interface NearbyListener{
+        fun showLandmarks()
+        fun hideLandmarks()
     }
 }
