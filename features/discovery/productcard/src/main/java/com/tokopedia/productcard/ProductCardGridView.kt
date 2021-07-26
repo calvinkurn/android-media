@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.MAX_VARIANT_QUANTITY
 import com.tokopedia.productcard.utils.QUANTITY_EDITOR_DEBOUNCE_IN_MS
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -31,6 +32,7 @@ import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import rx.Observable
 import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -40,6 +42,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private var addToCartClickListener: ((View) -> Unit)? = null
     private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
     private var quantityEditorDebounce: QuantityEditorDebounce? = null
+    private var quantityEditorDebounceSubscription: Subscription? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -143,6 +146,15 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
+        clearQuantityEditorSubscription()
+    }
+
+    private fun clearQuantityEditorSubscription() {
+        if (quantityEditorDebounceSubscription?.isUnsubscribed == false)
+            quantityEditorDebounceSubscription?.unsubscribe()
+
+        quantityEditorDebounceSubscription = null
+        quantityEditorDebounce = null
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
@@ -187,11 +199,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
+        if (!productCardModel.canShowQuantityEditor()) return
 
         configureQuantityEditorDebounce()
 
-        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.showWithCondition(productCardModel.shouldShowQuantityEditor())
         quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
     }
 
@@ -216,12 +228,13 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             }
         }
 
-        Observable.unsafeCreate(onSubscribe)
-                .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(quantityEditorSubscriber)
+        quantityEditorDebounceSubscription =
+                Observable.unsafeCreate(onSubscribe)
+                        .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(quantityEditorSubscriber)
     }
 
     private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
@@ -285,7 +298,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderTextVariantQuantity(quantity: Int) {
-        if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
+        if (quantity > MAX_VARIANT_QUANTITY) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
         else textVariantQuantity?.text = "$quantity pcs"
     }
 
