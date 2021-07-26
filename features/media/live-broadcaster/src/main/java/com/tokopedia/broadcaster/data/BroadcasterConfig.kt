@@ -14,6 +14,7 @@ data class BroadcasterConfig(
     var fps: Float = 30.0f,
     var videoBitrate: Int = 2000 * 1000, // Kbps -> bps
     var audioRate: Int = 44100, // 44.1kHz
+    var audioChannelCount: Int = 1,
     var audioType: AudioType = AudioType.MIC, // we have MIC and PCM
     var maxRetry: Int = 3,
     var reconnectDelay: Int = 3000,

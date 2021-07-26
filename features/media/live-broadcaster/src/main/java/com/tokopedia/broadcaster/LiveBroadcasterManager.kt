@@ -61,6 +61,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
 
         // default config: 44.1kHz, Mono, CAMCORDER input
         builder.setAudioConfig(AudioConfig().apply {
+            channelCount = mConfig.audioChannelCount
             sampleRate = mConfig.audioRate
             type = mConfig.getAudioType()
         })
