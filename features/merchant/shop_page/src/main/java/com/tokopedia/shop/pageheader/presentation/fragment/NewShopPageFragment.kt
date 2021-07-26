@@ -548,6 +548,10 @@ class NewShopPageFragment :
             if (shopImageFilePath.isNotEmpty()) {
                 if(isUsingNewShareBottomSheet(requireContext())){
                     showUniversalShareBottomSheet()
+                    shopPageTracking?.onImpressionShareBottomSheet(
+                            customDimensionShopPage,
+                            userId
+                    )
                 } else {
                     shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
                         init(this@NewShopPageFragment)
@@ -2333,7 +2337,11 @@ class NewShopPageFragment :
                     }
 
                     // send gtm tracker
-                    shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shareModel.socialMediaName)
+                    shopPageTracking?.clickShareBottomSheetOption(
+                            shareModel.socialMediaName.orEmpty(),
+                            customDimensionShopPage,
+                            userId
+                    )
 
                     //we have to check if we can move it inside the common function
                     universalShareBottomSheet?.dismiss()

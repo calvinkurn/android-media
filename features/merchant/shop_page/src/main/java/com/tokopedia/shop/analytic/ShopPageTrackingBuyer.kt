@@ -993,4 +993,32 @@ class ShopPageTrackingBuyer(
         )
         sendDataLayerEvent(eventMap)
     }
+
+    fun clickShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BOTTOM_SHEET_OPTION,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_LABEL to socialMediaName,
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun onImpressionShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SHARE_BOTTOM_SHEET,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        sendDataLayerEvent(eventMap)
+    }
 }
