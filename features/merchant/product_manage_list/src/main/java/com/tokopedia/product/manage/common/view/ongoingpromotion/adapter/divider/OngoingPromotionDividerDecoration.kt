@@ -15,7 +15,7 @@ class OngoingPromotionDividerDecoration(context: Context): RecyclerView.ItemDeco
         for (index in 0 until parent.childCount) {
             var left = 0
             val right = parent.width
-            val top = parent.getChildAt(index).top
+            val top = parent.getChildAt(index).bottom
             val bottom = top + divider?.intrinsicHeight.toZeroIfNull()
             if (index == 0) {
                 left = 0
