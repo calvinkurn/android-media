@@ -49,7 +49,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.StringBuilder
 
-class BaseTelcoPrepaidScreenShotTest {
+abstract class BaseTelcoPrepaidScreenShotTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -109,12 +109,6 @@ class BaseTelcoPrepaidScreenShotTest {
             val test = mActivityRule.activity.findViewById<RelativeLayout>(R.id.telco_page_container)
             CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout")
         }
-
-//        // ss input number component
-//        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-//            val test = mActivityRule.activity.findViewById<ConstraintLayout>(R.id.telco_input_number)
-//            CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "input_number_widget")
-//        }
     }
 
     fun take_screenshot_input_number() {
@@ -251,19 +245,14 @@ class BaseTelcoPrepaidScreenShotTest {
         }
     }
 
-//    abstract fun forceDarkMode(): Boolean
-//
-//    abstract fun filePrefix(): String
+    abstract fun forceDarkMode(): Boolean
+
+    abstract fun filePrefix(): String
 
     protected fun generatePrefix(): String {
         val prefix = StringBuilder()
-//        prefix.append(filePrefix())
-//        prefix.append( when (forceDarkMode()) {
-//            true -> "-dark"
-//            false -> "-light"
-//        })
-        prefix.append("telco-prepaid")
-        prefix.append( when (false) {
+        prefix.append(filePrefix())
+        prefix.append( when (forceDarkMode()) {
             true -> "-dark"
             false -> "-light"
         })

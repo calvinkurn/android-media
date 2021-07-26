@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.screenshot.prepaid.login
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Context
 import android.content.Intent
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
@@ -20,6 +21,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -57,7 +59,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.StringBuilder
 
-class BaseTelcoPrepaidScreenShotLoginTest {
+abstract class BaseTelcoPrepaidScreenShotLoginTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
@@ -84,8 +86,7 @@ class BaseTelcoPrepaidScreenShotLoginTest {
                 MockModelConfig.FIND_BY_CONTAINS)
         }
 
-        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = Intent(targetContext, TelcoPrepaidActivity::class.java).apply {
+        val intent = Intent(context, TelcoPrepaidActivity::class.java).apply {
             putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_PREPAID.toString())
             putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PULSA.toString())
             putExtra(BaseTelcoActivity.PARAM_PRODUCT_ID, "")
@@ -101,6 +102,7 @@ class BaseTelcoPrepaidScreenShotLoginTest {
     @Test
     fun screenshot() {
         stubSearchNumber()
+        isCoachmarkDisabled(context, false)
         Thread.sleep(3000)
 
         take_screenshot_visible_screen()
@@ -131,16 +133,18 @@ class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_coachmark_and_its_placement() {
-        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
-        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
-                CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
-            }
-            onView(ViewMatchers.withId(R.id.text_next)).perform(ViewActions.click())
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
-                CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
-            }
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
         }
+        onView(withText("Lanjut"))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .perform(click());
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
+        }
+        onView(withText("Mengerti"))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .perform(click());
     }
 
     fun take_screenshot_prabayar_category() {
@@ -264,19 +268,21 @@ class BaseTelcoPrepaidScreenShotLoginTest {
         mActivityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
-//    abstract fun forceDarkMode(): Boolean
-//
-//    abstract fun filePrefix(): String
+    private fun isCoachmarkDisabled(context: Context, isDisabled: Boolean) {
+        LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME).also {
+            it.putBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, isDisabled)
+            it.applyEditor()
+        }
+    }
+
+    abstract fun forceDarkMode(): Boolean
+
+    abstract fun filePrefix(): String
 
     protected fun generatePrefix(): String {
         val prefix = StringBuilder()
-//        prefix.append(filePrefix())
-//        prefix.append( when (forceDarkMode()) {
-//            true -> "-dark"
-//            false -> "-light"
-//        })
-        prefix.append("telco-prepaid")
-        prefix.append( when (false) {
+        prefix.append(filePrefix())
+        prefix.append( when (forceDarkMode()) {
             true -> "-dark"
             false -> "-light"
         })
