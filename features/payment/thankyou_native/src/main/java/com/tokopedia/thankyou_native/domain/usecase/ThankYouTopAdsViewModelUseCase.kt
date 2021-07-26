@@ -47,7 +47,7 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
         return topAdsImageViewUseCase.getImageData(
             topAdsImageViewUseCase.getQueryMap(
                 "",
-                "1",
+                params.inventoryId,
                 "",
                 params.itemCount.toInt(),
                 params.dimen.toInt(), "",
