@@ -22,6 +22,7 @@ import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalyti
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
+import com.tokopedia.troubleshooter.notification.databinding.FragmentNotifTroubleshooterBinding
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -49,7 +50,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_notif_troubleshooter.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterListener {
@@ -59,10 +60,21 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: TroubleshootViewModel
+    private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
     }
+
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? = inflater.inflate(
+            R.layout.fragment_notif_troubleshooter,
+            container,
+            false
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,20 +85,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         lifecycle.addObserver(viewModel)
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
-        return LayoutInflater.from(context).inflate(
-                R.layout.fragment_notif_troubleshooter,
-                container,
-                false
-        ).apply { setupToolbar() }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
+
         initView()
         initObservable()
         troubleshooterStatus()
@@ -109,8 +111,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initView() {
-        lstConfig?.layoutManager = LinearLayoutManager(context)
-        lstConfig?.adapter = adapter
+        binding?.lstConfig?.layoutManager = LinearLayoutManager(context)
+        binding?.lstConfig?.adapter = adapter
         adapter.status(StatusState.Loading)
         adapter.addElement(ConfigUIView.items())
         adapter.footerMessage(false)
@@ -284,9 +286,9 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun setUpdateTokenStatus(newToken: String) {
         val currentToken = fcmManager.currentToken().prefixToken().trim()
         val newTrimToken = newToken.prefixToken().trim()
-        txtToken?.show()
+        binding?.txtToken?.show()
 
-        txtToken?.text = when {
+        binding?.txtToken?.text = when {
             newToken.isEmpty() -> {
                 getString(R.string.notif_error_update_token)
             }

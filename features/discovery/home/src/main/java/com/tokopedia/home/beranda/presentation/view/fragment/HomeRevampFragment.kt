@@ -172,6 +172,7 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
+import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -288,6 +289,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var tokopointsCoachmarkPosition: Int? = null
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
@@ -773,7 +775,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(skipBalanceWidget: Boolean = false) {
-        if (checkNavigationOnboardingFinished() && !bottomSheetIsShowing) {
+        if (!bottomSheetIsShowing) {
             context?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachmark = CoachMark2(it)
@@ -1473,9 +1475,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                 if (!isTokopointsOrOvoFailed) {
                     showCoachMark()
+                } else {
+                    showCoachMark(skipBalanceWidget = true)
                 }
-            } else {
-                showCoachMark(skipBalanceWidget = true)
             }
         }
     }

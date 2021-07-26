@@ -7,7 +7,7 @@
     android:padding="@dimen/dp_16">
 
     <ImageView
-        android:id="@+id/imgStatus"
+        android:id="@+id/img_status"
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         app:srcCompat="@drawable/ic_ts_notif_status_loader"
@@ -16,13 +16,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/pgLoader"
+        android:id="@+id/pg_loader"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        app:layout_constraintBottom_toBottomOf="@+id/imgStatus"
-        app:layout_constraintEnd_toEndOf="@+id/imgStatus"
-        app:layout_constraintStart_toStartOf="@+id/imgStatus"
-        app:layout_constraintTop_toTopOf="@+id/imgStatus" />
+        app:layout_constraintBottom_toBottomOf="@+id/img_status"
+        app:layout_constraintEnd_toEndOf="@+id/img_status"
+        app:layout_constraintStart_toStartOf="@+id/img_status"
+        app:layout_constraintTop_toTopOf="@+id/img_status" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtStatus"
@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgStatus"
+        app:layout_constraintTop_toBottomOf="@+id/img_status"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
