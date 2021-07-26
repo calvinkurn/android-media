@@ -97,4 +97,8 @@ class ProductItemViewHolder(
                 minQuantity = this.minQuantity,
         )
     }
+
+    override fun onViewRecycled() {
+        productCard?.recycle()
+    }
 }
