@@ -10,7 +10,6 @@
         android:layout_width="@dimen/som_list_product_image_size"
         android:layout_height="@dimen/som_list_product_image_size"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,15 +57,4 @@
         app:layout_constraintTop_toBottomOf="@+id/imgSomBundleProduct"
         app:typographyType="body_3"
         tools:text="Coba dibuat lebih keren nanti kotak nya yah.. jangan penyok" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/dividerSomBundle"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSomBundleNotes" />
 </androidx.constraintlayout.widget.ConstraintLayout>

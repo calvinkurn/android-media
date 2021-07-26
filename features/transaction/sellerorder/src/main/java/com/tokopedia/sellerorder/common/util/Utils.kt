@@ -25,6 +25,7 @@ import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -149,5 +150,9 @@ object Utils {
             onActionClick.invoke()
         }
         show()
+    }
+
+    fun parseRupiah(price: String): String {
+        return "Rp ${CurrencyFormatHelper.convertToRupiah(price)}"
     }
 }

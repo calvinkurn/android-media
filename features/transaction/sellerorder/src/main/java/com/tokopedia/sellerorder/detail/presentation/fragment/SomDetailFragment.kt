@@ -115,6 +115,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
@@ -590,16 +591,16 @@ open class SomDetailFragment : BaseDaggerFragment(),
             return@map ProductBundleUiModel(
                     bundleId = bundle.bundleId,
                     bundleName = bundle.bundleName,
-                    bundlePrice = bundle.bundlePrice,
+                    bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
                     quantity = bundle.bundleQuantity,
-                    bundleSubTotal = bundle.bundleSubTotal,
+                    bundleSubTotal = Utils.parseRupiah(bundle.bundleSubTotal),
                     orderDetail = bundle.orderDetail.map {
                         SomDetailOrder.Data.GetSomDetail.Products(
                                 id = it.id,
                                 orderDetailId = it.orderDetailId,
                                 name = it.name,
                                 thumbnail = it.thumbnail,
-                                priceText = it.priceText,
+                                priceText = Utils.parseRupiah(it.priceText),
                                 quantity = bundle.bundleQuantity * it.quantity,
                                 note = it.note
                         )

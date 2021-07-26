@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -30,15 +29,14 @@ class SomDetailProductBundlingAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val shouldShowDivider = products.size.minus(1) != position
-        holder.bind(products[position], shouldShowDivider)
+        holder.bind(products[position])
     }
 
     override fun getItemCount(): Int = products.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(product: SomDetailOrder.Data.GetSomDetail.Products, shouldShowDivider: Boolean) {
+        fun bind(product: SomDetailOrder.Data.GetSomDetail.Products) {
             with(itemView) {
                 setOnClickListener {
                     actionListener?.onClickProduct(product.orderDetailId.toIntOrZero())
@@ -53,8 +51,6 @@ class SomDetailProductBundlingAdapter(
                 } else {
                     tvSomBundleNotes.gone()
                 }
-
-                dividerSomBundle.isVisible = shouldShowDivider
             }
         }
     }

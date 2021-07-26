@@ -3,7 +3,9 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductBundlingAdapter
@@ -42,6 +44,15 @@ class SomDetailProductBundleCardViewHolder(
                 override fun canScrollVertically(): Boolean = false
             }
             adapter = productAdapter
+            if (itemDecorationCount == 0) {
+                val margins = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl4).toInt()
+                addItemDecoration(RecyclerViewItemDivider(
+                    divider = MethodChecker.getDrawable(context, R.drawable.som_detail_product_bundling_product_divider),
+                    topMargin = margins,
+                    bottomMargin = margins,
+                    applyMarginAfterLastItem = true
+                ))
+            }
 
             productAdapter.products = products
             post {
