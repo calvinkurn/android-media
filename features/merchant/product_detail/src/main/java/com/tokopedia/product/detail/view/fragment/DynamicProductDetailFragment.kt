@@ -32,8 +32,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.youtube.player.YouTubeApiServiceUtil
-import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -93,7 +91,6 @@ import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategor
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -115,7 +112,6 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtil
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
@@ -168,7 +164,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
@@ -275,7 +270,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
     private var uuid = ""
-    private var queryParams: String = ""
+    private var urlQuery: String = ""
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -379,7 +374,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
                         forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
-                        ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, queryParams)
+                        ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, urlQuery)
             }
         }
     }
@@ -401,7 +396,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
-            queryParams = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
+            urlQuery = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)

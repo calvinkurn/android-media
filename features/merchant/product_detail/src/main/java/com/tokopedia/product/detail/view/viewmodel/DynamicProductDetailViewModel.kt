@@ -469,7 +469,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "",queryParams: String = "") {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -496,7 +496,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(it.listOfLayout.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2(affiliateUniqueString, uuid, queryParams)
+            getProductP2(affiliateUniqueString, uuid, urlQuery)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -578,7 +578,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String, queryParams: String = "") {
+    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String, urlQuery: String = "") {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
@@ -598,7 +598,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _p2Other.postValue(p2OtherDeffered.await())
 
             getTopAdsImageViewData(it.basic.productID)
-            getProductTopadsStatus(it.basic.productID, queryParams)
+            getProductTopadsStatus(it.basic.productID, urlQuery)
         }
     }
 
