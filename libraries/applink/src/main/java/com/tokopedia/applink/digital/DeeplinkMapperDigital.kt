@@ -26,6 +26,7 @@ object DeeplinkMapperDigital {
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout"
     const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
+    const val IS_ADD_SBM = "is_add_sbm"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -44,7 +45,8 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
-                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
+                if(!uri.getQueryParameter(IS_ADD_SBM).isNullOrEmpty() && uri.getQueryParameter(IS_ADD_SBM) == "true") getAddBillsTelco(deeplink)
+                else if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) getDigitalCheckoutNavigation(context, deeplink)
                 else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
                 else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
@@ -101,6 +103,21 @@ object DeeplinkMapperDigital {
                 }
                 TEMPLATE_ID_ELECTRONIC_MONEY -> {
                     handleEmoneyPdpApplink(context, deeplink)
+                }
+                else -> deeplink
+            }
+        } ?: deeplink
+    }
+
+    private fun getAddBillsTelco(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
+            when(it){
+                TEMPLATE_PREPAID_TELCO -> {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_PREPAID_TELCO)
+                }
+                TEMPLATE_POSTPAID_TELCO -> {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_POSTPAID_TELCO)
                 }
                 else -> deeplink
             }

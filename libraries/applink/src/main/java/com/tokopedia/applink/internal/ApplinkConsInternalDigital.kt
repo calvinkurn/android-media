@@ -26,6 +26,7 @@ object ApplinkConsInternalDigital {
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
+    const val ADD_TELCO = "$INTERNAL_RECHARGE/add_telco?template={template}"
     const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
     const val ELECTRONIC_MONEY_PDP = "$INTERNAL_DIGITAL/electronicmoney"
