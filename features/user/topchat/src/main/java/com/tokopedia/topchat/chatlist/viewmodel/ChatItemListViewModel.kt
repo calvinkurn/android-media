@@ -50,7 +50,7 @@ import javax.inject.Inject
 
 interface ChatItemListContract {
     fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
-    fun chatMoveToTrash(messageId: Int)
+    fun chatMoveToTrash(messageId: String)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun loadChatBannedSellerStatus()
@@ -201,10 +201,10 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
-    override fun chatMoveToTrash(messageId: Int) {
+    override fun chatMoveToTrash(messageId: String) {
         launch {
             try {
-                val result = moveChatToTrashUseCase.execute(messageId.toString())
+                val result = moveChatToTrashUseCase.execute(messageId)
                 if(result.chatMoveToTrash.list.isNotEmpty()) {
                     val deletedChat = result.chatMoveToTrash.list.first()
                     if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
@@ -321,7 +321,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun getReplyTimeStampFrom(lastItem: ReplyParcelableModel): String {
-        return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
+        return (lastItem.replyTime.toLongOrZero() / ONE_MILLION).toString()
     }
 
     fun loadTopBotWhiteList() {
@@ -347,7 +347,7 @@ class ChatItemListViewModel @Inject constructor(
                 context.getString(R.string.filter_chat_unread),
                 context.getString(R.string.filter_chat_unreplied)
         )
-        if (arrayFilterParam.size > 3 && isTabSeller) {
+        if (arrayFilterParam.size > SELLER_FILTER_THRESHOLD && isTabSeller) {
             filters.add(context.getString(R.string.filter_chat_smart_reply))
         }
         return filters
@@ -367,6 +367,8 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     companion object {
+        private const val SELLER_FILTER_THRESHOLD = 3
+        private const val ONE_MILLION = 1_000_000L
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,
