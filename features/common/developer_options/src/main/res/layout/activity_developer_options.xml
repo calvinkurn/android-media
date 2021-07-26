@@ -1,8 +1,10 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,125 +17,123 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/access_token"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Access Token"
-            android:textColor="@color/white" />
+            android:text="@string/access_token"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/app_auth_secret"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="App Auth Secret (IT Risk)"
-            android:textColor="@color/white" />
+            android:text="@string/app_auth_secret"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/reset_onboarding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Reset OnBoarding"
-            android:textColor="@color/white" />
+            android:text="@string/reset_onboarding"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium"/>
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/test_onboarding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Test OnBoarding"
-            android:textColor="@color/white" />
+            android:text="@string/test_onboarding"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium"/>
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/force_crash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Force Crash"
-            android:textColor="@color/white" />
+            android:text="@string/force_crash"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium"/>
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/et_firebase_crash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="crash message"
-            app:backgroundTint="@color/Green_G500" />
+            app:text_field_placeholder="@string/crash_message"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_send_firebase_crash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
-            android:text="Send Firebase Exception"
-            android:textColor="@color/Neutral_N0" />
+            android:text="@string/send_firebase_exception"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_screen_recorder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Open Screen Recorder"
-            android:textColor="@color/white" />
+            android:text="@string/open_screen_recorder"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_chuck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable Network Log on Notification" />
+            android:text="@string/enable_network_log_on_notification" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_chuck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="View Network Log"
-            android:textColor="@color/white" />
+            android:text="@string/view_network_log"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/device_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -141,360 +141,302 @@
             android:layout_marginTop="@dimen/margin_small"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Device ID: 1213124" />
+            android:text="@string/device_id" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_dark_mode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Force Dark Mode" />
+            android:text="@string/force_dark_mode"/>
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_topads_debugger_notif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable TopAds Log on Notification" />
+            android:text="@string/enable_topads_notif"/>
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_topads_debugger"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="View TopAds Log"
-            android:textColor="@color/white" />
+            android:text="@string/view_topads_log"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium"/>
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_applink_debugger_notif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable Applink Log on Notification" />
+            android:text="@string/enable_applink_notif" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_applink_debugger"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="View Applink Log"
-            android:textColor="@color/white" />
+            android:text="@string/view_applink_log"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_fpm_auto_file_log"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable FPM Log on File (Download/fpm-auto-log.txt)" />
+            android:text="@string/enable_fpm_log_file" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_fpm_notif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable FPM Log on Notification" />
+            android:text="@string/enable_fpm_log_notif" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_fpm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="View FPM Log"
-            android:textColor="@color/white" />
+            android:text="@string/enable_fpm_log"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable Analytics Log on Notification" />
+            android:text="@string/enable_analytics_log_notif" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_cassava"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Cassava"
-            android:textColor="@color/white" />
+            android:text="@string/cassava"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/goto_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="View Analytics Log"
-            android:textColor="@color/white" />
+            android:text="@string/view_analytics_log"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:orientation="horizontal" >
-            <TextView
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/goto_iris_save_log"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin_small"
-                android:background="@drawable/btn_share"
                 android:gravity="center"
                 android:padding="@dimen/margin_small"
-                android:text="View Iris Save Log"
-                android:textColor="@color/white" />
+                android:text="@string/view_iris_save_log"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium" />
 
-            <TextView
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/goto_iris_send_log"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin_small"
-                android:background="@drawable/btn_share"
                 android:gravity="center"
                 android:padding="@dimen/margin_small"
-                android:text="View Iris Send Log"
-                android:textColor="@color/white" />
+                android:text="@string/view_iris_send_log"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium" />
+
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_block_canary_delay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="Minimum Block Delay to Captured in ms (default = 500)"
-            app:backgroundTint="@color/Green_G500" />
-
-        <CheckBox
-            android:id="@+id/toggle_ui_block_debugger"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:padding="@dimen/margin_small"
-            android:text="Enable ANR Debugger" />
-
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_leak_canary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable Leak Canary" />
+            android:text="@string/enable_leak_canary" />
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/remote_config_prefix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="@string/remote_config_prefix_placeholder"
-            app:backgroundTint="@color/Green_G500" />
+            app:text_field_placeholder="@string/remote_config_prefix_placeholder"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/remote_config_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
             android:text="@string/remote_config_start_button"
-            android:textColor="@color/Neutral_N0" />
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/et_route_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="String to be put in RouteManager.route(...)"
-            app:backgroundTint="@color/Green_G500" />
+            app:text_field_placeholder="@string/str_to_be_put"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_route_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
-            android:text="Try RouteManager.route"
-            android:textColor="@color/Neutral_N0" />
+            android:text="@string/try_routemanager"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/ip_groupchat"
+        <com.tokopedia.unifyprinciples.Typography
+            android:text="@string/logging_to_server"
+            android:layout_marginTop="10dp"
+            android:paddingEnd="25dip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:hint="IP Groupchat" />
+            tools:ignore="RtlSymmetry"
+            app:typographyWeight="bold"/>
 
-        <TableLayout
-            android:stretchColumns="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TableRow>
-
-                <ToggleButton
-                    android:id="@+id/groupchat_log"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/ip_groupchat_save"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="Save IP"/>
-
-            </TableRow>
-        </TableLayout>
-
-        <TableLayout
-            android:stretchColumns="1"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow>
-                <TextView
-                    android:text="Logging To Server"
-                    android:paddingRight="25dip"
-                    style="@style/TextView.Title.Bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </TableRow>
-        </TableLayout>
-
-        <androidx.appcompat.widget.AppCompatEditText
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/et_timber_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)"
-            app:backgroundTint="@color/Green_G500" />
+            app:text_field_placeholder="@string/required_server_logging"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_send_timber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
-            android:text="Send Log to Server"
-            android:textColor="@color/Neutral_N0" />
+            android:text="@string/send_log_to_server"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_seller_app_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
-            android:text="Enable Seller App Review Debugging" />
+            android:text="@string/enable_seller_app_review_debugging" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/spacing_lvl4">
-            <androidx.appcompat.widget.AppCompatEditText
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/et_change_version_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:textSize="@dimen/fontSize_lvl4"
-                android:inputType="text"
-                android:hint="3.99"
-                app:backgroundTint="@color/Green_G500" />
+                app:text_field_placeholder="@string/v_3_99"
+                app:text_field_label_static="true"
+                app:text_field_label=""
+                app:text_field_input_type="text"
+                android:layout_marginEnd="@dimen/dp_5"/>
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/et_change_version_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:textSize="@dimen/fontSize_lvl4"
-                android:inputType="number"
-                android:maxLength="9"
-                android:hint="399123456"
-                app:backgroundTint="@color/Green_G500" />
+                app:text_field_placeholder="@string/example_version_code"
+                app:text_field_label_static="true"
+                app:text_field_label=""
+                app:text_field_input_type="number"
+                app:text_field_counter="9"
+                android:layout_marginStart="@dimen/dp_5"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_change_version"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:background="@drawable/btn_share"
                 android:gravity="center"
                 android:padding="@dimen/spacing_lvl3"
-                android:text="Change"
-                android:textColor="@color/Neutral_N0" />
+                android:text="@string/change"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium" />
+
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="Version change is for api purpose - app kill will change back" />
+            android:text="@string/version_change_api"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -502,12 +444,12 @@
             android:orientation="horizontal"
             android:weightSum="5">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                style="@style/TextView.Title.Bold"
-                android:text="Choose URL Env"/>
+                app:typographyWeight="bold"
+                android:text="@string/choose_url_env"/>
 
             <Spinner
                 android:id="@+id/spinner_env_chooser"
@@ -517,47 +459,57 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_fake_response"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="Fake response Activity"
-            android:textColor="@color/white" />
+            android:text="@string/fake_response_activity"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
         <com.tokopedia.translator.ui.TranslatorSettingView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/requestFcmToken"
-            android:text="Request New FCM Token" />
+            android:text="@string/request_new_fcm"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
             android:id="@+id/resetOnboardingNavigation"
-            android:text="RESET ONBOARDING NAVIGATION!" />
+            android:text="@string/reset_onboarding_nav"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
 
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="@dimen/dp_20"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rollance AB Testing Manual Switcher : "/>
+            android:text="@string/rollence_ab_testing"/>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/input_rollence_key"
-            android:hint="input rollence key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"/>
+            android:layout_marginTop="@dimen/dp_4"
+            app:text_field_placeholder="@string/input_rollence_key"
+            app:text_field_label_static="true"
+            app:text_field_label=""
+            app:text_field_input_type="text"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -565,141 +517,195 @@
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/dp_4">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/input_rollence_variant"
-                android:hint="input rollence variant"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:text_field_placeholder="@string/input_rollence_variant"
+                app:text_field_label_static="true"
+                app:text_field_label=""
+                app:text_field_input_type="text"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_apply_rollence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="APPLY"/>
+                android:text="@string/apply"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/ab_test_rollence_editor_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/spacing_lvl3"
             android:text="@string/ab_test_rollence_start_button"
-            android:textColor="@color/Neutral_N0" />
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_marginTop="@dimen/dp_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Home and Navigation Revamp Switcher : "/>
+            android:text="@string/home_nav_revamp_switcher"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
             android:orientation="horizontal">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:id="@+id/buttonAlwaysOldNavigation"
-                android:text="ALWAYS_OLD_NAVIGATION" />
+                android:text="@string/always_old_nav"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="@dimen/dp_4"
                 android:id="@+id/buttonAlwaysNewNavigation"
-                android:text="ALWAYS_NEW_NAVIGATION" />
+                android:text="@string/always_new_nav"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
             android:orientation="horizontal">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:id="@+id/buttonAlwaysOldHome"
-                android:text="ALWAYS_OLD_HOME" />
+                android:text="@string/always_old_home"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="@dimen/dp_4"
                 android:id="@+id/buttonAlwaysNewHome"
-                android:text="ALWAYS_NEW_HOME" />
+                android:text="@string/always_new_home"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/dp_10">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:id="@+id/buttonAlwaysOldBalanceWidget"
-                android:text="ALWAYS_OLD_BALANCE_WIDGET" />
+                android:text="@string/always_old_balance_widget"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/buttonAlwaysNewBalanceWidget"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginStart="@dimen/dp_4"
                 android:id="@+id/buttonAlwaysNewBalanceWidget"
-                android:text="ALWAYS_NEW_BALANCE_WIDGET" />
-        </LinearLayout>
+                android:text="@string/always_new_balance_widget"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/buttonAlwaysOldBalanceWidget"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
             android:orientation="horizontal">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:id="@+id/btn_always_old_inbox"
-                android:text="Always Old Inbox" />
+                android:text="@string/always_old_inbox"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
+                android:layout_marginStart="@dimen/dp_4"
                 android:id="@+id/btn_always_new_inbox"
-                android:text="Always New Inbox" />
+                android:text="@string/always_new_inbox"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
             android:orientation="horizontal">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:id="@+id/btn_always_old_notifcenter"
-                android:text="Always Old Notifcenter" />
+                android:text="@string/always_old_notif"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
+                android:layout_marginStart="@dimen/dp_4"
                 android:id="@+id/btn_always_new_notifcenter"
-                android:text="Always New Notifcenter" />
+                android:text="@string/always_new_notif"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
     </LinearLayout>
