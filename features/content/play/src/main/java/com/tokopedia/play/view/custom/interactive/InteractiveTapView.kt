@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
-import com.tokopedia.play_common.view.RoundedFrameLayout
+import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
@@ -26,7 +26,7 @@ class InteractiveTapView : ConstraintLayout {
     private val timerTap: TimerUnifySingle
     private val iconTap: IconUnify
     private val tvTapAction: TextView
-    private val flTapBackground: RoundedFrameLayout
+    private val clTapBackground: RoundedConstraintLayout
 
     private var mListener: Listener? = null
 
@@ -37,7 +37,7 @@ class InteractiveTapView : ConstraintLayout {
         timerTap = view.findViewById(R.id.timer_tap)
         iconTap = view.findViewById(R.id.icon_tap)
         tvTapAction = view.findViewById(R.id.tv_tap_action)
-        flTapBackground = view.findViewById(R.id.fl_tap_background)
+        clTapBackground = view.findViewById(R.id.cl_tap_background)
     }
 
     fun setTimer(durationInMs: Long, onFinished: () -> Unit) {

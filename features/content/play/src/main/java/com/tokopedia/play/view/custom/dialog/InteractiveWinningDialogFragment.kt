@@ -22,8 +22,6 @@ import javax.inject.Inject
  */
 class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
 
-    private lateinit var viewModel: PlayViewModel
-
     private var mTitle = ""
     private var mSubtitle = ""
     private var mImageUrl = ""

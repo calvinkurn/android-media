@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_play_interactive_decor"
+        app:srcCompat="@drawable/ic_play_interactive_decor"
         />
 
     <LinearLayout
