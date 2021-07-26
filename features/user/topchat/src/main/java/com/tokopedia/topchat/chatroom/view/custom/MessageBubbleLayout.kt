@@ -113,6 +113,9 @@ class MessageBubbleLayout : ViewGroup {
      * to the other child.
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
+        val additionalWidthSpace = 10
+
         /**
          * Find child max width and calculate layout height
          */
@@ -135,7 +138,12 @@ class MessageBubbleLayout : ViewGroup {
             val child = getChildAt(i)
             val childLp = child.layoutParams as MarginLayoutParams
             val childHorizontalMargin = childLp.leftMargin + childLp.rightMargin
-            val childWidth = maxChildWidth - childHorizontalMargin
+            var childWidth = if (maxChildWidth + additionalWidthSpace > widthSpecSize) {
+                maxChildWidth
+            } else {
+                maxChildWidth + additionalWidthSpace
+            }
+            childWidth -= childHorizontalMargin
             val widthSpec = MeasureSpec.makeMeasureSpec(
                 childWidth,
                 MeasureSpec.EXACTLY
@@ -154,7 +162,8 @@ class MessageBubbleLayout : ViewGroup {
          * Set the final width and height of this ViewGroup
          */
         setMeasuredDimension(
-            maxChildWidth, myHeight
+            resolveSize(maxChildWidth + additionalWidthSpace, widthMeasureSpec),
+            resolveSize(myHeight, heightMeasureSpec)
         )
     }
 
