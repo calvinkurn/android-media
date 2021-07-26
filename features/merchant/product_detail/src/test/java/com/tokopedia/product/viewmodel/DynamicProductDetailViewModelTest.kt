@@ -1559,7 +1559,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345"), status = "OK")
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
@@ -1568,11 +1568,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
-        coVerify {
-            miniCartListSimplifiedUseCase.executeOnBackground()
-        }
-
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(!atcResponseSuccess.isStatusError())
     }
 
     @Test
