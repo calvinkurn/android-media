@@ -20,9 +20,8 @@ allprojects {
             url "https://jitpack.io"
             credentials { username authToken }
         }
-        maven { url "https://www.jitpack.io" }
         flatDir {
-            dirs '../aars'
+            dirs rootProject.file('aars')
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
