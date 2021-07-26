@@ -572,13 +572,6 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
         private const val REQUEST_ACTIVATE_ACCOUNT = 102
 
         private const val ALREADY_REGISTERED = "sudah terdaftar"
-        private const val GO_TO_REGISTER = 0
-        private const val GO_TO_ACTIVATION_PAGE = 1
-        private const val GO_TO_LOGIN = 2
-        private const val GO_TO_RESET_PASSWORD = 3
-        private const val STATUS_ACTIVE = 1
-        private const val STATUS_PENDING = -1
-        private const val STATUS_INACTIVE = 0
         fun createInstance(bundle: Bundle?): RegisterEmailFragment {
             val fragment = RegisterEmailFragment()
             fragment.arguments = bundle

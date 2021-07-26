@@ -245,7 +245,7 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             liveness                        : ":features:user:liveness",
             logout                          : ":features:user:logout",
-            loginphone                      : ":features:user:loginphone",
+            chooseaccount                   : ":features:user:chooseaccount",
             loginregister                   : ":features:user:loginregister",
             loginfingerprint                : ":features:user:loginfingerprint",
             managename                      : ":features:user:managename",
@@ -273,6 +273,7 @@ ext {
             recharge_slice                  : ":features:recharge:recharge_slice",
             logintestapp                    : ":testapp-features:user:logintestapp",
             travel_slice                    : ":features:travel:travel_slice",
-            customer_mid_app                : ":customer_mid_app"
+            customer_mid_app                : ":customer_mid_app",
+            telephony_masking               : ":features:user:telephony_masking"
     ]
 }
