@@ -13,7 +13,13 @@ import java.net.HttpURLConnection
  * Created by jegul on 08/09/20
  */
 class PlayLoadErrorHandlingPolicy : DefaultLoadErrorHandlingPolicy() {
-    override fun getRetryDelayMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
+
+    override fun getRetryDelayMsFor(
+        dataType: Int,
+        loadDurationMs: Long,
+        exception: IOException,
+        errorCount: Int
+    ): Long {
         return if (exception is ParserException || exception is FileNotFoundException || exception is Loader.UnexpectedLoaderException) C.TIME_UNSET
         else errorCount * RETRY_DELAY
     }
@@ -25,12 +31,17 @@ class PlayLoadErrorHandlingPolicy : DefaultLoadErrorHandlingPolicy() {
         }
     }
 
-    override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
+    override fun getBlacklistDurationMsFor(
+        dataType: Int,
+        loadDurationMs: Long,
+        exception: IOException,
+        errorCount: Int
+    ): Long {
         if (exception is InvalidResponseCodeException) {
             val responseCode = exception.responseCode
             return if (responseCode == HttpURLConnection.HTTP_NOT_FOUND
-                    || responseCode == HttpURLConnection.HTTP_GONE
-                    || responseCode == 416 // HTTP 416 Range Not Satisfiable.
+                || responseCode == HttpURLConnection.HTTP_GONE
+                || responseCode == 416 // HTTP 416 Range Not Satisfiable.
             ) BLACKLIST_MS else C.TIME_UNSET
         }
         return C.TIME_UNSET
