@@ -22,6 +22,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
                 updateCartUseCase,
                 deleteCartUseCase,
                 getMiniCartListSimplifiedUseCase,
+                getRecommendationUseCase,
                 userSession,
                 this,
         )
@@ -29,6 +30,13 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
 
     override fun `Given first page API will be successful`() {
         `Given get search first page use case will be successful`(searchModel)
+    }
+
+    override fun `Given first page API can show recommendation`() {
+        val emptyProductSearchModel =
+                "search/emptyproduct/empty-product.json".jsonToObject<SearchModel>()
+
+        `Given get search first page use case will be successful`(emptyProductSearchModel)
     }
 
     @Test
@@ -74,5 +82,25 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     @Test
     fun `delete cart failed`() {
         addToCartTestHelper.`delete cart failed`()
+    }
+
+    @Test
+    fun `test ATC recom non login should redirect to login page`() {
+        addToCartTestHelper.`test ATC recom non login should redirect to login page`()
+    }
+
+    @Test
+    fun `test add to cart recom item success`() {
+        addToCartTestHelper.`test add to cart recom item success`()
+    }
+
+    @Test
+    fun `test add to cart recom item failed`() {
+        addToCartTestHelper.`test add to cart recom item failed`()
+    }
+
+    @Test
+    fun `add to cart recom item with current quantity should do nothing`() {
+        addToCartTestHelper.`add to cart recom item with current quantity should do nothing`()
     }
 }

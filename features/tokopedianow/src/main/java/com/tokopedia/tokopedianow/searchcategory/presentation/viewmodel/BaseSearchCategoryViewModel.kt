@@ -43,6 +43,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
@@ -907,7 +908,7 @@ abstract class BaseSearchCategoryViewModel(
         if (userSession.isLoggedIn)
             handleAddToCartEventLogin(productItem, quantity)
         else
-            handleAddToCartEventNonLogin(productItem)
+            handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
     }
 
     private fun handleAddToCartEventLogin(productItem: ProductItemDataView, quantity: Int) {
@@ -931,7 +932,7 @@ abstract class BaseSearchCategoryViewModel(
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             sendAddToCartTracking(quantity, it.data.cartId, productItem)
-            onAddToCartSuccess(productItem, it.data.quantity, )
+            onAddToCartSuccess(productItem, it.data.quantity)
             updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
         }, {
             onAddToCartFailed(it)
@@ -1015,9 +1016,9 @@ abstract class BaseSearchCategoryViewModel(
         deleteCartTrackingMutableLiveData.value = productItem.id
     }
 
-    protected open fun handleAddToCartEventNonLogin(productItem: ProductItemDataView) {
+    protected open fun handleAddToCartEventNonLogin(updatedVisitableIndex: Int) {
         routeApplinkMutableLiveData.value = ApplinkConst.LOGIN
-        updatedVisitableIndicesMutableLiveData.value = listOf(visitableList.indexOf(productItem))
+        updatedVisitableIndicesMutableLiveData.value = listOf(updatedVisitableIndex)
     }
 
     fun onLocalizingAddressSelected() {
@@ -1123,6 +1124,38 @@ abstract class BaseSearchCategoryViewModel(
         )
 
         updateVisitableWithIndex(listOf(adapterPosition))
+    }
+
+    open fun onViewATCRecommendationItemNonVariant(
+            recommendationItem: RecommendationItem,
+            adapterPosition: Int,
+            quantity: Int,
+    ) {
+        if (userSession.isLoggedIn)
+            handleCartEventRecommendationItem(recommendationItem, quantity)
+        else
+            handleAddToCartEventNonLogin(adapterPosition)
+    }
+
+    private fun handleCartEventRecommendationItem(
+            recommendationItem: RecommendationItem,
+            quantity: Int,
+    ) {
+        if (recommendationItem.quantity == quantity) return
+
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+                productId = recommendationItem.productId.toString(),
+                shopId = recommendationItem.shopId.toString(),
+                quantity = quantity,
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            recommendationItem.quantity = quantity
+            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            refreshMiniCart()
+        }, {
+            onAddToCartFailed(it)
+        })
     }
 
     protected class HeaderDataView(

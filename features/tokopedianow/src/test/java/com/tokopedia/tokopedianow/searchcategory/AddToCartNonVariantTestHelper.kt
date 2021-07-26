@@ -16,16 +16,29 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartSuccessModel
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.cartId
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.errorMessage
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.RecommendationATCTestObject.recommendationWidgetList
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsNull.nullValue
+import com.tokopedia.cartcommon.data.response.deletecart.Data as DeleteCartData
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class AddToCartNonVariantTestHelper(
@@ -34,6 +47,7 @@ class AddToCartNonVariantTestHelper(
         private val updateCartUseCase: UpdateCartUseCase,
         private val deleteCartUseCase: DeleteCartUseCase,
         private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+        private val getRecommendationUseCase: GetRecommendationUseCase,
         private val userSession: UserSessionInterface,
         private val callback: Callback,
 ) {
@@ -45,20 +59,6 @@ class AddToCartNonVariantTestHelper(
     )
 
     fun `test add to cart success`() {
-        val addToCartQty = 10
-        val errorMessage = arrayListOf("Success nih", "1 barang berhasil ditambahkan ke keranjang!")
-        val cartId = "12345"
-        val addToCartSuccessModel = AddToCartDataModel(
-                errorMessage = errorMessage,
-                status = AddToCartDataModel.STATUS_OK,
-                data = DataModel(
-                        success = 1,
-                        cartId = cartId,
-                        message = arrayListOf(),
-                        quantity = addToCartQty,
-                ),
-        )
-
         callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given add to cart API will success`(addToCartSuccessModel)
@@ -68,7 +68,9 @@ class AddToCartNonVariantTestHelper(
 
         `When handle cart event product non variant`(productItemDataViewToATC, addToCartQty)
 
-        `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
+        val productId = productItemDataViewToATC.id
+        val shopId = productItemDataViewToATC.shop.id
+        `Then assert add to cart request params`(productId, shopId, addToCartQty)
         `Then assert cart message event`(
                 expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
         )
@@ -92,20 +94,24 @@ class AddToCartNonVariantTestHelper(
 
     private fun List<Visitable<*>>.getProductItemList() = filterIsInstance<ProductItemDataView>()
 
-    private fun `When handle cart event product non variant`(productItemToATC: ProductItemDataView, addToCartQty: Int) {
+    private fun `When handle cart event product non variant`(
+            productItemToATC: ProductItemDataView,
+            addToCartQty: Int,
+    ) {
         baseViewModel.onViewATCProductNonVariant(productItemToATC, addToCartQty)
     }
 
     private fun `Then assert add to cart request params`(
-            productItem: ProductItemDataView,
+            productId: String,
+            shopId: String,
             addToCartQty: Int,
     ) {
         verify {
             addToCartUseCase.setParams(capture(addToCartRequestParamsSlot))
         }
 
-        assertThat(addToCartRequestParams.productId.toString(), shouldBe(productItem.id))
-        assertThat(addToCartRequestParams.shopId.toString(), shouldBe(productItem.shop.id))
+        assertThat(addToCartRequestParams.productId.toString(), shouldBe(productId))
+        assertThat(addToCartRequestParams.shopId.toString(), shouldBe(shopId))
         assertThat(addToCartRequestParams.quantity, shouldBe(addToCartQty))
     }
 
@@ -163,7 +169,9 @@ class AddToCartNonVariantTestHelper(
 
         `When handle cart event product non variant`(productItemDataViewToATC, addToCartQty)
 
-        `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
+        val productId = productItemDataViewToATC.id
+        val shopId = productItemDataViewToATC.shop.id
+        `Then assert add to cart request params`(productId, shopId, addToCartQty)
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
         `Then assert product item quantity`(productItemDataViewToATC, 0)
         `Then verify mini cart is refreshed`(0)
@@ -377,10 +385,10 @@ class AddToCartNonVariantTestHelper(
         `When handle cart event product non variant`(productItemDataViewToATC, 3)
 
         `Then assert route to login page event`()
-        `Then assert add to cart and update cart not called`()
+        `Then assert cart use cases are not called`()
 
         val visitableIndex = visitableList.indexOf(productItemDataViewToATC)
-        `Then assert product item visitable is updated to revert add to cart button`(visitableIndex)
+        `Then assert visitable list is updated to revert add to cart button`(visitableIndex)
     }
 
     private fun `Given user not logged in`() {
@@ -391,14 +399,15 @@ class AddToCartNonVariantTestHelper(
         assertThat(baseViewModel.routeApplinkLiveData.value, shouldBe(ApplinkConst.LOGIN))
     }
 
-    private fun `Then assert add to cart and update cart not called`() {
+    private fun `Then assert cart use cases are not called`() {
         verify(exactly = 0) {
             addToCartUseCase.execute(any(), any())
             updateCartUseCase.execute(any(), any())
+            deleteCartUseCase.execute(any(), any())
         }
     }
 
-    private fun `Then assert product item visitable is updated to revert add to cart button`(
+    private fun `Then assert visitable list is updated to revert add to cart button`(
             visitableIndex: Int
     ) {
         assertThat(
@@ -434,7 +443,7 @@ class AddToCartNonVariantTestHelper(
         val deleteCartResponse = RemoveFromCartData(
             status = "OK",
             errorMessage = listOf(deleteCartMessage),
-            data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 1, message = listOf(deleteCartMessage))
+            data = DeleteCartData(success = 1, message = listOf(deleteCartMessage))
         )
 
         callback.`Given first page API will be successful`()
@@ -528,11 +537,203 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
+    fun `test ATC recom non login should redirect to login page`() {
+        val recommendationWidgets = recommendationWidgetList
+        `Given user not logged in`()
+        `Given view setup to show recommendation widget`(recommendationWidgets)
+
+        val recommendationItemForATC =
+                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+        val recommendationDataViewDummyIndex = 0
+        `When add to cart recommendation item`(
+                recommendationItemForATC,
+                recommendationDataViewDummyIndex,
+                10,
+        )
+
+        `Then assert route to login page event`()
+        `Then assert cart use cases are not called`()
+        `Then assert visitable list is updated to revert add to cart button`(
+                recommendationDataViewDummyIndex
+        )
+    }
+
+    private fun `Given view setup to show recommendation widget`(
+            recommendationWidgetList: List<RecommendationWidget>
+    ) {
+        callback.`Given first page API can show recommendation`()
+        `Given get recommendation use case will be successful`(recommendationWidgetList)
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+        val (recommendationDataViewIndex, recommendationDataView) =
+                visitableList.findRecommendationDataViewIndexed()
+
+        `Given view already bind recommendation widget`(
+                recommendationDataView, recommendationDataViewIndex
+        )
+    }
+
+    private fun `Given get recommendation use case will be successful`(
+            recommendationWidgetList: List<RecommendationWidget>
+    ) {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns recommendationWidgetList
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun List<Visitable<*>>.findRecommendationDataViewIndexed() =
+            withIndex().find { it.value is RecommendationCarouselDataView }
+                as? IndexedValue<RecommendationCarouselDataView>
+                ?: throw Throwable("Cannot find recom widget")
+
+    private fun `Given view already bind recommendation widget`(
+            recommendationDataView: RecommendationCarouselDataView,
+            recommendationDataViewIndex: Int,
+    ) {
+        baseViewModel.onBindRecommendationCarousel(
+                recommendationDataView, recommendationDataViewIndex,
+        )
+    }
+
+    private fun List<RecommendationWidget>.getRecommendationItem(productId: String) =
+            flatMap { it.recommendationItemList }.find {
+                it.productId.toString() == productId
+            }!!
+
+    private fun `When add to cart recommendation item`(
+            recomItem: RecommendationItem,
+            recomPosition: Int,
+            quantity: Int,
+    ) {
+        baseViewModel.onViewATCRecommendationItemNonVariant(
+                recomItem,
+                recomPosition,
+                quantity,
+        )
+    }
+
+    fun `test add to cart recom item success`() {
+        val recommendationWidgets = recommendationWidgetList
+        `Given add to cart API will success`(addToCartSuccessModel)
+        `Given view setup to show recommendation widget`(recommendationWidgets)
+
+        val recommendationItemForATC =
+                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+        val recommendationDataViewDummyIndex = 0
+        `When add to cart recommendation item`(
+                recommendationItemForATC,
+                recommendationDataViewDummyIndex,
+                addToCartQty,
+        )
+
+        val productId = recommendationItemForATC.productId.toString()
+        val shopId = recommendationItemForATC.shopId.toString()
+        `Then assert add to cart request params`(productId, shopId, addToCartQty)
+        `Then assert cart message event`(
+                expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
+        )
+        `Then assert recommendation item quantity`(recommendationItemForATC, addToCartQty)
+        `Then verify mini cart is refreshed`(exactly = 2)
+        `Then assert route to login page event is null`()
+        // TODO::Verify Tracking Add to cart
+//        `Then verify add to cart tracking is called`(addToCartQty, cartId, productItemDataViewToATC)
+    }
+
+    private fun `Then assert recommendation item quantity`(recommendationItemForATC: RecommendationItem, addToCartQty: Int) {
+        assertThat(recommendationItemForATC.quantity, shouldBe(addToCartQty))
+    }
+
+    fun `test add to cart recom item failed`() {
+        val recommendationWidgets = recommendationWidgetList
+        `Given add to cart API will fail`(responseErrorException)
+        `Given view setup to show recommendation widget`(recommendationWidgets)
+
+        val recommendationItemForATC =
+                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+        val recommendationDataViewDummyIndex = 0
+        `When add to cart recommendation item`(
+                recommendationItemForATC,
+                recommendationDataViewDummyIndex,
+                addToCartQty,
+        )
+
+        val productId = recommendationItemForATC.productId.toString()
+        val shopId = recommendationItemForATC.shopId.toString()
+        `Then assert add to cart request params`(productId, shopId, addToCartQty)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert recommendation item quantity`(recommendationItemForATC, 0)
+        `Then verify mini cart is refreshed`(1)
+        `Then assert route to login page event is null`()
+    }
+
+    fun `add to cart recom item with current quantity should do nothing`() {
+        val recommendationWidgets = recommendationWidgetList
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given view setup to show recommendation widget`(recommendationWidgets)
+
+        val recommendationItemForATC =
+                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+        val recommendationDataViewDummyIndex = 0
+        val currentQty = getRecommendationItemCurrentQty(
+                miniCartSimplifiedData, recommendationItemForATC
+        )
+
+        `When add to cart recommendation item`(
+                recommendationItemForATC,
+                recommendationDataViewDummyIndex,
+                currentQty,
+        )
+
+        `Then assert add to cart use case is not called`()
+        `Then assert route to login page event is null`()
+    }
+
+    private fun getRecommendationItemCurrentQty(
+            miniCartSimplifiedData: MiniCartSimplifiedData,
+            recommendationItemForATC: RecommendationItem,
+    ) = miniCartSimplifiedData
+            .miniCartItems
+            .find { it.productId == recommendationItemForATC.productId.toString() }
+            ?.quantity
+            ?: 0
+
     companion object {
         private const val PRODUCT_ID_NON_VARIANT_ATC = "574261655"
+
+        object AddToCartTestObject {
+            val addToCartQty get() = 10
+            val errorMessage get() =
+                arrayListOf("Success nih", "1 barang berhasil ditambahkan ke keranjang!")
+            val cartId get() = "12345"
+            val addToCartSuccessModel get() = AddToCartDataModel(
+                    errorMessage = errorMessage,
+                    status = AddToCartDataModel.STATUS_OK,
+                    data = DataModel(
+                            success = 1,
+                            cartId = cartId,
+                            message = arrayListOf(),
+                            quantity = addToCartQty,
+                    ),
+            )
+        }
+
+        object RecommendationATCTestObject {
+            private val recommendationEntity get() =
+                    "recom/recom-carousel.json".jsonToObject<RecommendationEntity>()
+
+            val recommendationWidgetList get() = recommendationEntity
+                    .productRecommendationWidget
+                    .data
+                    .mappingToRecommendationModel()
+        }
     }
 
     interface Callback {
         fun `Given first page API will be successful`()
+
+        fun `Given first page API can show recommendation`()
     }
 }
