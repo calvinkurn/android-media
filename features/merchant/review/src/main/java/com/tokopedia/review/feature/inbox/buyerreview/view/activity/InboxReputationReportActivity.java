@@ -29,7 +29,7 @@ public class InboxReputationReportActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         String reviewId = getIntent().getExtras().getString(ARGS_REVIEW_ID, "");
-        long shopId = getIntent().getExtras().getLong(ARGS_SHOP_ID);
+        String shopId = getIntent().getExtras().getString(ARGS_SHOP_ID);
 
         return InboxReputationReportFragment.createInstance(reviewId, shopId);
     }
@@ -47,7 +47,7 @@ public class InboxReputationReportActivity extends BaseSimpleActivity
     public static Intent getCallingIntent(Context context, long shopId, String reviewId) {
         Intent intent = new Intent(context, InboxReputationReportActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putLong(ARGS_SHOP_ID, shopId);
+        bundle.putString(ARGS_SHOP_ID, String.valueOf(shopId));
         bundle.putString(ARGS_REVIEW_ID, reviewId);
         intent.putExtras(bundle);
         return intent;

@@ -125,6 +125,8 @@ data class ProductCardModel (
         return nonVariant?.quantity == 0
     }
 
+    fun canShowQuantityEditor() = nonVariant != null
+
     fun shouldShowQuantityEditor(): Boolean {
         return nonVariant?.quantity ?: 0 > 0
     }
@@ -235,16 +237,35 @@ data class ProductCardModel (
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 
-        if (colorVariant.size < 2 && sizeVariant.size < 2) return listOf()
+        if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
+            return listOf()
 
-        val colorVariantTaken = if (colorVariant.size >= 2) 5 else 0
-        val sizeVariantTaken = if (colorVariantTaken > 0) 0 else 5
+        val colorVariantTaken = getLabelVariantColorCount(colorVariant)
+        val sizeVariantTaken = getLabelVariantSizeCount(colorVariantTaken)
 
-        return colorVariant.take(colorVariantTaken) + sizeVariant.take(sizeVariantTaken) + customVariant
+        return colorVariant.take(colorVariantTaken) +
+                sizeVariant.take(sizeVariantTaken) +
+                customVariant
+    }
+
+    private fun isLabelVariantCountBelowMinimum(
+            colorVariant: List<LabelGroupVariant>,
+            sizeVariant: List<LabelGroupVariant>
+    ) = colorVariant.size < MIN_LABEL_VARIANT_COUNT
+            && sizeVariant.size < MIN_LABEL_VARIANT_COUNT
+
+    private fun getLabelVariantColorCount(colorVariant: List<LabelGroupVariant>) =
+            if (colorVariant.size >= MIN_LABEL_VARIANT_COUNT)
+                MAX_LABEL_VARIANT_COUNT
+            else 0
+
+    private fun getLabelVariantSizeCount(colorVariantTaken: Int): Int {
+        val hasLabelVariantColor = colorVariantTaken > 0
+
+        return if (hasLabelVariantColor) 0 else MAX_LABEL_VARIANT_COUNT
     }
 
     private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
-        val sizeVariantLimit = 18
         var sizeVariantCount = 0
         var hiddenSizeVariant = 0
 
@@ -258,9 +279,11 @@ data class ProductCardModel (
                     colorVariant.add(element)
                 }
                 element.isSize() -> {
-                    val additionalSize = element.title.length + 2
+                    val additionalSize = element.title.length + EXTRA_CHAR_SPACE
+                    val isWithinCharLimit =
+                            (sizeVariantCount + additionalSize) <= LABEL_VARIANT_CHAR_LIMIT
 
-                    if ((sizeVariantCount + additionalSize) <= sizeVariantLimit) {
+                    if (isWithinCharLimit) {
                         sizeVariant.add(element)
                         sizeVariantCount += additionalSize
                     }
