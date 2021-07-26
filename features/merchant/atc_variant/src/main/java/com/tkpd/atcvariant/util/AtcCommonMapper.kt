@@ -193,6 +193,7 @@ object AtcCommonMapper {
         result.add(
                 VariantHeaderDataModel(
                         position = idCounter,
+                        productId = selectedChild?.productId ?: "",
                         productImage = headerData.first,
                         headerData = headerData.second)
         ).also {
@@ -273,7 +274,8 @@ object AtcCommonMapper {
                         it.copy(productImage = variantImage)
                     } else {
                         val headerData = generateHeaderDataModel(selectedVariantChild)
-                        it.copy(productImage = headerData.first, headerData = headerData.second)
+                        it.copy(productImage = headerData.first, productId = selectedVariantChild?.productId
+                                ?: "", headerData = headerData.second)
                     }
                 }
                 else -> {
@@ -359,7 +361,6 @@ object AtcCommonMapper {
     private fun generateHeaderDataModel(selectedChild: VariantChild?): Pair<String, ProductHeaderData> {
         val productImage = selectedChild?.picture?.original ?: ""
         val headerData = ProductHeaderData(
-                productId = selectedChild?.productId ?: "",
                 productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
                         ?: "",
                 productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage?.toInt()
@@ -367,9 +368,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
-                productName = selectedChild?.name ?: "",
-                finalPriceDouble = selectedChild?.finalPrice ?: 0.0
+                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: ""
         )
         return productImage to headerData
     }

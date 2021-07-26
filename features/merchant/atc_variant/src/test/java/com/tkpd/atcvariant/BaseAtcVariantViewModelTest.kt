@@ -126,7 +126,7 @@ abstract class BaseAtcVariantViewModelTest {
         visitables.forEach {
             when (it) {
                 is VariantHeaderDataModel -> {
-                    Assert.assertEquals(it.headerData.productId, expectedSelectedProductId)
+                    Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
                     Assert.assertEquals(it.headerData.productDiscountedPercentage, 0)
                     Assert.assertEquals(it.headerData.productStock, expectedSelectedStock)
