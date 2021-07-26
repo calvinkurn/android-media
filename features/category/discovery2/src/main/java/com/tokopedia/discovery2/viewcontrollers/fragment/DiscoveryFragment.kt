@@ -98,6 +98,7 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
+private const val ROTATION = 90f
 
 class DiscoveryFragment :
         BaseDaggerFragment(),
@@ -980,7 +981,7 @@ class DiscoveryFragment :
     fun showCustomContent(view: View){
         hideSystemUi()
         coordinatorLayout.hide()
-        view.rotation = 90f
+        view.rotation = ROTATION
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = activity?.let {
             val metrics = DisplayMetrics()
