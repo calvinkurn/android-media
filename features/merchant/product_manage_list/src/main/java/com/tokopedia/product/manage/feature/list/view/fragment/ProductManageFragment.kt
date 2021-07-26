@@ -72,6 +72,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
@@ -143,6 +144,7 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -162,6 +164,7 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageAdapterFactoryImpl>(),
         ProductViewHolder.ProductViewHolderView,
@@ -1511,6 +1514,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageTracking.eventContactCs(product.id)
     }
 
+    override fun onClickCampaignInfo(product: ProductUiModel) {
+        product.campaignTypeList?.let {
+            showOngoingPromotionBottomSheet(it)
+        }
+    }
+
     override fun onClickMoreOptionsButton(product: ProductUiModel) {
         hideSoftKeyboard()
 
@@ -2441,6 +2450,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun showAddEditMenuBottomSheet() {
         productManageAddEditMenuBottomSheet.show()
+    }
+
+    private fun showOngoingPromotionBottomSheet(campaignTypeList: List<ProductCampaignType>) {
+        context?.let {
+            OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
+        }
     }
 
     companion object {

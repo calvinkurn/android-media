@@ -39,7 +39,7 @@ class ProductViewHolder(
         showStockHintImage(product)
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
-        showCampaignCountText(product.campaignTypeList)
+        showCampaignCountText(product)
 
         setOnClickListeners(product)
     }
@@ -171,14 +171,14 @@ class ProductViewHolder(
         itemView.imageTopAds.showWithCondition(product.hasTopAds())
     }
 
-    private fun showCampaignCountText(campaignList: List<ProductCampaignType>?) {
-        val shouldShowCampaignCount = !campaignList.isNullOrEmpty()
+    private fun showCampaignCountText(product: ProductUiModel) {
+        val shouldShowCampaignCount = !product.campaignTypeList.isNullOrEmpty() && product.isCampaign
         campaignCountText?.run {
             showWithCondition(shouldShowCampaignCount)
             if (shouldShowCampaignCount) {
-                text = getString(R.string.product_manage_campaign_count, campaignList?.count().orZero().toString())
+                text = getString(R.string.product_manage_campaign_count, product.campaignTypeList?.count().orZero().toString())
                 setOnClickListener {
-                    // TODO: Show bottomsheet
+                    listener.onClickCampaignInfo(product)
                 }
             }
         }
@@ -209,5 +209,6 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
+        fun onClickCampaignInfo(product: ProductUiModel)
     }
 }
