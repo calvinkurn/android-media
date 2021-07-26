@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProduct
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.usecase.RequestParams
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.nullValue
@@ -39,7 +40,7 @@ class EmptyProductTestHelper(
 
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
-        visitableList.last().assertRecommendationCarouselDataViewLoadingState()
+        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
     }
 
     private fun Visitable<*>.assertEmptyProductDataView() {

@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSear
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -140,7 +141,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList() = listOf(
             createAisleDataView(),
-            RecommendationCarouselDataView(),
+            RecommendationCarouselDataView(TOKONOW_CLP),
     )
 
     private fun createAisleDataView() = CategoryAisleDataView(

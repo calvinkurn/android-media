@@ -23,7 +23,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.Recommendati
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -201,18 +200,22 @@ private fun assertATCConfiguration(
     }
 }
 
-fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState() {
+fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
+        expectedPageName: String,
+) {
     assertThat(this, instanceOf(RecommendationCarouselDataView::class.java))
 
     val recomWidget = this as RecommendationCarouselDataView
+    assertThat(recomWidget.pageName, shouldBe(expectedPageName))
     assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
 }
 
 fun assertTokonowRecommendationCarouselRequestParams(
-        getRecommendationRequestParam: GetRecommendationRequestParam
+        getRecommendationRequestParam: GetRecommendationRequestParam,
+        recommendationCarouselDataView: RecommendationCarouselDataView,
 ) {
     assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
-    assertThat(getRecommendationRequestParam.pageName, shouldBe(TOKONOW_CLP))
+    assertThat(getRecommendationRequestParam.pageName, shouldBe(recommendationCarouselDataView.pageName))
     assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
     assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
     assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))

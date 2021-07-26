@@ -43,7 +43,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
@@ -61,19 +60,19 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProduct
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -383,7 +382,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(EmptyProductDataView(activeFilterList))
 
         if (activeFilterList.isEmpty())
-            visitableList.add(RecommendationCarouselDataView())
+            visitableList.add(RecommendationCarouselDataView(TOKONOW_NO_RESULT))
     }
 
     private fun createVisitableListWithProduct(
@@ -1048,7 +1047,7 @@ abstract class BaseSearchCategoryViewModel(
 
         recommendationPositionInVisitableList = adapterPosition
 
-        val getRecommendationRequestParam = createRecommendationRequestParam()
+        val getRecommendationRequestParam = createRecommendationRequestParam(element)
         val recommendationListData =
                 getRecommendationUseCase.getData(getRecommendationRequestParam)
 
@@ -1064,8 +1063,10 @@ abstract class BaseSearchCategoryViewModel(
         updateVisitableWithIndex(listOf(adapterPosition))
     }
 
-    protected open fun createRecommendationRequestParam() = GetRecommendationRequestParam(
-            pageName = TOKONOW_CLP,
+    protected open fun createRecommendationRequestParam(
+            recommendationCarouselDataView: RecommendationCarouselDataView
+    ) = GetRecommendationRequestParam(
+            pageName = recommendationCarouselDataView.pageName,
             categoryIds = getRecomCategoryId(),
             xSource = RECOM_WIDGET,
             isTokonow = true,

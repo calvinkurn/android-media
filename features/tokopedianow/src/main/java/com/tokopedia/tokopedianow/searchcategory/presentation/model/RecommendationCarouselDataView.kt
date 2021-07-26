@@ -6,6 +6,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 class RecommendationCarouselDataView(
+        val pageName: String,
         var carouselData: RecommendationCarouselData = RecommendationCarouselData(state = STATE_LOADING),
 ): Visitable<BaseSearchCategoryTypeFactory> {
 

@@ -5,7 +5,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.BindRecommendationCarouselTestHelper
 import com.tokopedia.tokopedianow.searchcategory.BindRecommendationCarouselTestHelper.Callback
-import com.tokopedia.tokopedianow.searchcategory.assertTokonowRecommendationCarouselRequestParams
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -39,8 +38,6 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
             getRecommendationRequestParam: GetRecommendationRequestParam,
             expectedCategoryId: String
     ) {
-        assertTokonowRecommendationCarouselRequestParams(getRecommendationRequestParam)
-
         assertThat(
                 getRecommendationRequestParam.categoryIds,
                 shouldBe(listOf(expectedCategoryId))

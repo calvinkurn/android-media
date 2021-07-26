@@ -47,6 +47,10 @@ class BindRecommendationCarouselTestHelper(
 
         `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
 
+        `Then assert mandatory get recommendation request`(
+                getRecommendationParamsSlot.captured,
+                recomWidget,
+        )
         callback.`Then assert get recommendation request`(getRecommendationParamsSlot.captured)
         `Then assert recommendation data view is updated to ready with recom widget`(recomWidget)
         `Then assert updated visitable list`(recomWidgetPosition)
@@ -67,6 +71,16 @@ class BindRecommendationCarouselTestHelper(
             recomWidgetPosition: Int,
     ) {
         baseViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)
+    }
+
+    private fun `Then assert mandatory get recommendation request`(
+            getRecommendationRequestParam: GetRecommendationRequestParam,
+            recommendationCarouselDataView: RecommendationCarouselDataView,
+    ) {
+        assertTokonowRecommendationCarouselRequestParams(
+                getRecommendationRequestParam,
+                recommendationCarouselDataView,
+        )
     }
 
     private fun `Then assert recommendation data view is updated to ready with recom widget`(

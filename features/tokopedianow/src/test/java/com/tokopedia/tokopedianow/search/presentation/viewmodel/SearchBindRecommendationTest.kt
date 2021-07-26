@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.search.presentation.viewmodel
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.BindRecommendationCarouselTestHelper
-import com.tokopedia.tokopedianow.searchcategory.assertTokonowRecommendationCarouselRequestParams
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -34,8 +33,6 @@ class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCaro
     override fun `Then assert get recommendation request`(
             getRecommendationRequestParam: GetRecommendationRequestParam,
     ) {
-        assertTokonowRecommendationCarouselRequestParams(getRecommendationRequestParam)
-
         assertThat(getRecommendationRequestParam.keywords, shouldBe(listOf(defaultKeyword)))
     }
 
