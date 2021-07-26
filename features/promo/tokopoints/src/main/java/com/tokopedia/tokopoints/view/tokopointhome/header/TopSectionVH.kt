@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome.header
 
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -18,6 +19,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -60,7 +63,9 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var tvStatusMatching: Typography? = null
     private var backGroundImage: AppCompatImageView? = null
     private var cardStatusMatching: CardUnify? = null
+    private var confettiAnim: LottieAnimationView?=null
     private val MEMBER_STATUS_BG_RADII = 16F
+    val ANIMATION_YAW = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
     fun bind(model: TopSectionResponse) {
 
@@ -78,8 +83,9 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
         containerStatusMatching = itemView.findViewById(R.id.container_statusmatching)
         tvStatusMatching = itemView.findViewById(R.id.tv_statusmatching)
-        backGroundImage = itemView.findViewById(R.id.iv_background)
+      //  backGroundImage = itemView.findViewById(R.id.iv_background)
         cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
+        confettiAnim = itemView.findViewById(R.id.confetti_lottie)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         if (model.userSavingResponse?.userSaving!=null){
@@ -291,9 +297,23 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         cardStatusMatching?.setOnClickListener {
             RouteManager.route(itemView.context, rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url)
         }
-        backGroundImage?.loadImage(rewardTickerResponse?.get(0)?.metadata?.get(0)?.image?.url)
+        playAnimation()
+       // backGroundImage?.loadImage(rewardTickerResponse?.get(0)?.metadata?.get(0)?.image?.url)
         tvStatusMatching?.text = rewardTickerResponse?.get(0)?.metadata?.get(0)?.text?.content
 
+    }
+
+    private fun playAnimation(){
+        confettiAnim?.cancelAnimation()
+        confettiAnim?.clearAnimation()
+        confettiAnim?.invalidate()
+
+        val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(itemView.context, ANIMATION_YAW)
+        lottieCompositionLottieTask.addListener { result ->
+            confettiAnim?.setComposition(result)
+            confettiAnim?.repeatCount = ValueAnimator.INFINITE
+            confettiAnim?.playAnimation()
+        }
     }
 
     interface CardRuntimeHeightListener {

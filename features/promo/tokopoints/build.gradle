@@ -53,7 +53,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    
+    implementation rootProject.ext.miscDependencies.lottie
+
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)

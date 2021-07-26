@@ -25,32 +25,45 @@ import kotlinx.coroutines.async
 import javax.inject.Inject
 
 @TokoPointScope
-class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsecase: TokopointsHomeUsecase, private val recommUsecase: RewardsRecommUsecase)
-    : BaseViewModel(Dispatchers.Main), TokoPointsHomeContract.Presenter {
+class TokoPointsHomeViewModel @Inject constructor(
+    private val tokopointsHomeUsecase: TokopointsHomeUsecase,
+    private val recommUsecase: RewardsRecommUsecase
+) : BaseViewModel(Dispatchers.Main), TokoPointsHomeContract.Presenter {
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
-    var deferredSavingData: UserSavingResponse? = null
-    var recomData: RewardsRecommendation? = null
-    var rewardTickerResponse : RewardTickerResponse? = null
+    var deferredSavingData: Deferred<UserSavingResponse>? = null
+    var defferedRecomData: Deferred<RewardsRecommendation>? = null
+    var defferedRewardTickerResponse: Deferred<RewardTickerResponse>? = null
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
             tokopointDetailLiveData.value = Loading()
             val graphqlResponse = tokopointsHomeUsecase.getTokoPointDetailData()
             val data = graphqlResponse.getData<RewardResponse>(RewardResponse::class.java)
+            val dataSection =
+                graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             data?.let {
-                if (data.tokopediaRewardTopSection?.isShowIntroActivity == true) getRewardIntroData()
+                if (data.tokopediaRewardTopSection?.isShowIntroActivity == true) {
+                    getRewardIntroData()
+                }
             }
-            val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
             if (data.tokopediaRewardTopSection?.isShowSavingPage == true) {
-                deferredSavingData = getUserSavingData().await()
+                deferredSavingData = getUserSavingData()
             }
-            rewardTickerResponse = getStatusMatchingData().await()
-            recomData = getRecommendationData().await()
-            if (data != null && dataSection != null && dataSection.sectionContent != null && data.tokopediaRewardTopSection != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection,
-                    deferredSavingData?.tokopointsUserSaving, rewardTickerResponse), dataSection.sectionContent.sectionContent,recomData))
+            defferedRewardTickerResponse = getStatusMatchingData()
+            defferedRecomData = getRecommendationData()
+            if (data != null && dataSection != null && dataSection.sectionContent != null &&
+                data.tokopediaRewardTopSection != null
+            ) {
+                tokopointDetailLiveData.value = Success(
+                    TokopointSuccess(
+                        TopSectionResponse(
+                            data.tokopediaRewardTopSection,
+                            deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await()
+                        ), dataSection.sectionContent.sectionContent, defferedRecomData?.await()
+                    )
+                )
             } else {
                 throw NullPointerException("error in data")
             }
@@ -109,7 +122,25 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
     }
 }
 
-data class TokopointSuccess(val topSectionResponse: TopSectionResponse, val sectionList: MutableList<SectionContent>, val recomData: RewardsRecommendation?)
-data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: TokopointsUserSaving?, val rewardTickerResponse: RewardTickerResponse?)
-data class RewardsRecommendation(val recommendationWrapper: List<RecommendationWrapper> , val title:String , val appLink:String)
-data class RecommendationWrapper( val recomendationItem : RecommendationItem,val recomData: ProductCardModel)
+data class TokopointSuccess(
+    val topSectionResponse: TopSectionResponse,
+    val sectionList: MutableList<SectionContent>,
+    val recomData: RewardsRecommendation?
+)
+
+data class TopSectionResponse(
+    val tokopediaRewardTopSection: TokopediaRewardTopSection,
+    val userSavingResponse: TokopointsUserSaving?,
+    val rewardTickerResponse: RewardTickerResponse?
+)
+
+data class RewardsRecommendation(
+    val recommendationWrapper: List<RecommendationWrapper>,
+    val title: String,
+    val appLink: String
+)
+
+data class RecommendationWrapper(
+    val recomendationItem: RecommendationItem,
+    val recomData: ProductCardModel
+)
