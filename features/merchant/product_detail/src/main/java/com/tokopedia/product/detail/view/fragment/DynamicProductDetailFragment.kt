@@ -146,7 +146,6 @@ import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -605,7 +604,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         Handler().postDelayed({
             vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected()
                     ?: -1)
-        }, 200)
+        }, ProductDetailConstant.VARIANT_SCROLL_DELAY)
     }
 
     private fun trackVideoState() {
@@ -926,13 +925,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     /**
-     * PdpComparisonWidgetViewHolder
-     */
-    override fun getStickyTitleView(): StickyTitleView? {
-        return stickyTitleComparisonWidget
-    }
-
-    /**
      * PageErrorViewHolder
      */
     override fun onRetryClicked(forceRefresh: Boolean) {
@@ -965,15 +957,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                     ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
             val listOfImageReview: List<String> = listOfImage.map {
                 it.imageUrlLarge ?: ""
             }
-
-            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position)
+            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", imageCount)
         }
     }
 
@@ -1239,7 +1230,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToReviewDetail(productId: String, productName: String) {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_REVIEW, productId)
             intent?.run {
                 intent.putExtra(ProductDetailConstant.REVIEW_PRD_NM, productName)
                 startActivity(intent)
@@ -1536,7 +1527,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 ServerLogger.log(Priority.P2, "LOAD_PAGE_FAILED",
                         mapOf("type" to "pdp",
                                 "desc" to it.message.orEmpty(),
-                                "err" to Log.getStackTraceString(it).take(1000).trim()
+                                "err" to Log.getStackTraceString(it).take(ProductDetailConstant.LOG_MAX_LENGTH).trim()
                         ))
                 logException(it)
                 context?.let { ctx ->
@@ -1729,6 +1720,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
         view?.showToasterSuccess(result.data.message.firstOrNull()
                 ?: "", ctaText = getString(R.string.label_oke_pdp))
+        sendTrackingATC(result.data.cartId)
         updateButtonState()
     }
 
@@ -2686,7 +2678,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
-        (activity as AppCompatActivity).supportActionBar?.elevation = 10F
+        (activity as AppCompatActivity).supportActionBar?.elevation = ProductDetailConstant.TOOLBAR_ELEVATION
 
         et_search.setOnClickListener {
             DynamicProductDetailTracking.Click.eventSearchToolbarClicked(viewModel.getDynamicProductInfoP1)

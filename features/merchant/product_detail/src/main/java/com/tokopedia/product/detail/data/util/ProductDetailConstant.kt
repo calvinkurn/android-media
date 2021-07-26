@@ -108,6 +108,7 @@ object ProductDetailConstant {
     const val CATEGORY_CAROUSEL = "category_carousel"
 
     const val BEST_SELLER = "best_seller"
+    const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
 
     //Arguments
@@ -176,4 +177,8 @@ object ProductDetailConstant {
 
     const val DEFAULT_ATC_MAX_ORDER = 100
     const val DEFAULT_MIN_QTY = 1
+
+    const val VARIANT_SCROLL_DELAY = 200L
+    const val LOG_MAX_LENGTH = 1000
+    const val TOOLBAR_ELEVATION = 10F
 }

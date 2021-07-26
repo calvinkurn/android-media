@@ -140,6 +140,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.net.ConnectException
@@ -203,6 +204,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isUserEventTrackerDoneTrack = false
 
     private lateinit var shareData: LinkerData
+    private  lateinit var reportBottomSheet: ReportBottomSheet
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -225,11 +227,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
-
-    private val productTagBS by lazy {
-        ProductItemInfoBottomSheet()
-    }
-
+    private lateinit var productTagBS: ProductItemInfoBottomSheet
     private val userIdInt: Int
         get() {
             return userSession.userId.toIntOrZero()
@@ -304,8 +302,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             fragment.arguments = bundle
             return fragment
         }
-
-        private const val PERFORMANCE_FEED_PAGE_NAME = "feed"
     }
 
     object MoEngage {
@@ -333,6 +329,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         if (activity != null) GraphqlClient.init(requireActivity())
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
+        Embrace.getInstance().startEvent(FEED_TRACE, null, false)
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -366,7 +363,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 finishLoading()
                 when (it) {
                     is Success -> onSuccessGetFirstFeed(it.data)
-                    is Fail -> onErrorGetFirstFeed(it.throwable)
+                    is Fail -> {
+                        when (it.throwable) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                onErrorGetFirstFeed(it.throwable)
+                            }
+                        }
+                    }
                 }
             })
 
@@ -595,11 +603,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
             reportResponse.observe(lifecycleOwner, Observer {
                 when (it) {
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
-                        showToast(message, Toaster.TYPE_ERROR)
+                        when (it.throwable) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    reportBottomSheet.dismiss()
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                val message = it.throwable.localizedMessage ?: ""
+                                showToast(message, Toaster.TYPE_ERROR)
+                            }
+                        }
 
                     }
                     is Success -> {
+                        reportBottomSheet.setFinalView()
                         onSuccessDeletePost(it.data.rowNumber)
                     }
                 }
@@ -1474,7 +1493,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
-                        ReportBottomSheet.newInstance(
+                        reportBottomSheet = ReportBottomSheet.newInstance(
                             postId,
                             context = object : ReportBottomSheet.OnReportOptionsClick {
                                 override fun onReportAction(
@@ -1489,7 +1508,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         "content"
                                     )
                                 }
-                            }).show((context as FragmentActivity).supportFragmentManager, "")
+                            })
+                        reportBottomSheet.show((context as FragmentActivity).supportFragmentManager, "")
                     }
                 } else {
                     onGoToLogin()
@@ -1806,7 +1826,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
-            productTagBS.dismiss()
+            if (::productTagBS.isInitialized)
+                productTagBS.dismiss()
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId.toString())
         } else {
             onGoToLogin()
@@ -1905,6 +1926,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isVideo: Boolean,
         positionInFeed: Int
     ) {
+        productTagBS = ProductItemInfoBottomSheet()
         feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id, isVideo)
         productTagBS.show(
             childFragmentManager,
@@ -1924,7 +1946,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun addToWishList(
+    private fun addToWishList(
         postId: Int,
         productId: String,
         type: String,
@@ -1939,8 +1961,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed,
             shopId
         )
-
-        productTagBS.dismiss()
+        if (::productTagBS.isInitialized)
+            productTagBS.dismiss()
         feedViewModel.addWishlist(
             postId.toString(),
             productId,
@@ -1992,7 +2014,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type,
             isFollowed, shopId
         )
-        productTagBS.dismiss()
+        if (::productTagBS.isInitialized)
+            productTagBS.dismiss()
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
@@ -2515,6 +2538,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun stopTracePerformanceMon() {
         performanceMonitoring.stopTrace()
+        Embrace.getInstance().endEvent(FEED_TRACE)
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {

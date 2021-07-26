@@ -2,11 +2,12 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 data class DynamicProductInfoP1(
-        val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData(),
-        val bestSellerContent: Map<String, BestSellerInfoContent>? = mapOf(),
-        val layoutName: String = "",
-        val pdpSession: String = ""
+    val basic: BasicInfo = BasicInfo(),
+    val data: ComponentData = ComponentData(),
+    val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+    val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
+    val layoutName: String = "",
+    val pdpSession: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant

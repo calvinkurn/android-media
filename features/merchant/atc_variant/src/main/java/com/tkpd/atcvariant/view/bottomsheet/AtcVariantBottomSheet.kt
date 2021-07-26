@@ -372,6 +372,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         val aggregatorParams = sharedViewModel.aggregatorParams.value
         val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
         val variantAggregatorData = viewModel.getVariantAggregatorData()
+        val selectedQuantity = if (viewModel.getSelectedQuantity(productId) == 0) {
+            variantAggregatorData?.variantData?.getChildByProductId(productId)?.getFinalMinOrder()
+                    ?: 0
+        } else {
+            viewModel.getSelectedQuantity(productId)
+        }
 
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
@@ -381,16 +387,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 productId = productId,
                 shopId = variantAggregatorData?.simpleBasicInfo?.shopID ?: "",
                 productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
-                productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
-                quantity = viewModel.getSelectedQuantity(productId),
+                productPrice = adapter.getHeaderDataModel()?.headerData?.finalPriceDouble ?: 0.0,
+                quantity = selectedQuantity,
                 variantName = viewModel.titleVariantName.value ?: "",
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
                 shopType = variantAggregatorData?.shopType ?: "",
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
-                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted()
-                        ?: "",
-                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted()
-                        ?: "",
+                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
+                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
                 isFreeOngkir = variantAggregatorData?.getIsFreeOngkirByBoType(productId) ?: false,
                 pageSource = aggregatorParams?.pageSource ?: "",
                 cdListName = aggregatorParams?.trackerCdListName ?: "")
@@ -571,8 +575,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             viewModel.hitAtc(buttonAction,
                     sharedData?.shopId?.toIntOrZero() ?: 0,
-                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
-                            ?: "",
+                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
                     userSessionInterface.userId,
                     sharedData?.minimumShippingPrice ?: 0,
                     sharedData?.trackerAttribution ?: "",

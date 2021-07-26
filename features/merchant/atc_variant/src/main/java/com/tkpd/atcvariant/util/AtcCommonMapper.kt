@@ -368,7 +368,8 @@ object AtcCommonMapper {
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
                 productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
-                productName = selectedChild?.name ?: ""
+                productName = selectedChild?.name ?: "",
+                finalPriceDouble = selectedChild?.finalPrice?.toDouble() ?: 0.0
         )
         return productImage to headerData
     }

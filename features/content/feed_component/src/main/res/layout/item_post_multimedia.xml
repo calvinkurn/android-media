@@ -19,7 +19,7 @@
         app:cardElevation="0dp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/videoPreviewImage"
+            android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
