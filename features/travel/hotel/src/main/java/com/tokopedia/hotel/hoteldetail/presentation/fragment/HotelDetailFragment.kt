@@ -699,8 +699,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun setupLayoutNearbyLandmarks(dataList: HotelNearbyLandmark){
         if (dataList.result.isNotEmpty()){
-            showNearbyLandmarks()
-            binding?.tvHotelNearbyLandmarkInfo?.text = dataList.information
             if (!::nearbyLandmarks.isInitialized) {
                 nearbyLandmarks = HotelNearbyPlacesSectionAdapter(dataList.result, object : HotelNearbyLandmarkViewHolder.NearbyListener{
                     override fun showLandmarks() {
@@ -716,6 +714,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             binding?.rvNearbyLandmarks?.layoutManager = layoutManager
             binding?.rvNearbyLandmarks?.isNestedScrollingEnabled = false
             binding?.rvNearbyLandmarks?.adapter = nearbyLandmarks
+
+            binding?.tvHotelNearbyLandmarkInfo?.text = dataList.information
 
             context?.let {
                 trackingHotelUtil.hotelDetailViewNearbyLandmarks(it, PDP_SCREEN_NAME, hotelId, roomPriceAmount)
