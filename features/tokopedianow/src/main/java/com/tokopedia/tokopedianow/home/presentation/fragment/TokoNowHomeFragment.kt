@@ -218,7 +218,7 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
         }
         updateProductRecom(miniCartSimplifiedData)
-        setupPadding(miniCartSimplifiedData)
+        setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
     private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -377,6 +377,7 @@ class TokoNowHomeFragment: Fragment(),
             viewModelTokoNow.getProductRecomOoc()
         }
         miniCartWidget?.hide()
+        setupPadding(false)
     }
 
     private fun showFailedToFetchData() {
@@ -563,7 +564,7 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
-                setupPadding(it.data)
+                setupPadding(it.data.isShowMiniCartWidget)
                 if (isVariantAdded) {
                     updateProductRecom(it.data)
                     isVariantAdded = false
@@ -723,10 +724,10 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun setupPadding(data: MiniCartSimplifiedData) {
+    private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
-            val paddingBottom = if (data.isShowMiniCartWidget) {
-                miniCartWidget?.height.orZero()
+            val paddingBottom = if (isShowMiniCartWidget) {
+                miniCartWidget?.layoutParams?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
