@@ -35,6 +35,8 @@ class FlexBoxChatLayout : ViewGroup {
         private set
     var info: TextView? = null
         private set
+    var header: LinearLayout? = null
+        private set
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
     private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
@@ -104,6 +106,7 @@ class FlexBoxChatLayout : ViewGroup {
             checkMark = it.findViewById(R.id.ivCheckMark)
             hourTime = it.findViewById(R.id.tvTime)
             info = it.findViewById(R.id.txt_info)
+            header = it.findViewById(R.id.ll_msg_header)
         }
         initCheckMarkVisibility()
     }
@@ -129,6 +132,7 @@ class FlexBoxChatLayout : ViewGroup {
 
         val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
         val maxAvailableWidth = widthSpecSize - paddingLeft - paddingRight
+        var widthFilled = 0
         var totalWidth = paddingLeft + paddingRight
         var totalHeight = paddingTop + paddingBottom
 
@@ -144,9 +148,13 @@ class FlexBoxChatLayout : ViewGroup {
         measureChildWithMargins(
             status, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
+        measureChildWithMargins(
+            header, widthMeasureSpec, 0, heightMeasureSpec, 0
+        )
         val messageLp = message?.layoutParams as MarginLayoutParams
         val infoLp = info?.layoutParams as MarginLayoutParams
         val statusLp = status?.layoutParams as MarginLayoutParams
+        val headerLp = header?.layoutParams as MarginLayoutParams
 
         /**
          * calculate each direct child width & height
@@ -164,20 +172,39 @@ class FlexBoxChatLayout : ViewGroup {
                 statusLp.rightMargin
         val statusHeight = status!!.measuredHeight + statusLp.topMargin +
                 statusLp.bottomMargin
+        // Header
+        val headerWidth = header!!.measuredWidth + headerLp.leftMargin +
+                headerLp.rightMargin
+        val headerHeight = header!!.measuredHeight + headerLp.topMargin +
+                headerLp.bottomMargin
+
+        /**
+         * Measure header dimension
+         */
+        if (header!!.isVisible) {
+            totalWidth += headerWidth
+            totalHeight += headerHeight
+            widthFilled = headerWidth
+        }
 
         /**
          * Measure message dimension
          */
-        totalWidth += messageWidth
+        val msgAndHeaderWidthDiff = messageWidth - widthFilled
+        if (msgAndHeaderWidthDiff > 0) {
+            totalWidth += msgAndHeaderWidthDiff
+            widthFilled = messageWidth
+        }
         totalHeight += messageHeight
 
         /**
          * Measure info layout
          */
         if (info!!.isVisible) {
-            val infoAndMsgWidthDiff = infoWidth - messageWidth
+            val infoAndMsgWidthDiff = infoWidth - widthFilled
             if (infoAndMsgWidthDiff > 0) {
                 totalWidth += infoAndMsgWidthDiff
+                widthFilled = infoWidth
             }
             totalHeight += infoHeight
 
@@ -196,9 +223,10 @@ class FlexBoxChatLayout : ViewGroup {
          */
         if (info!!.isVisible) {
             val footerWidth = infoWidth + statusWidth
-            val footerAndMessageWidthDiff = footerWidth - messageWidth
+            val footerAndMessageWidthDiff = footerWidth - widthFilled
             if (footerAndMessageWidthDiff > 0) {
                 totalWidth += footerAndMessageWidthDiff
+                widthFilled = footerWidth
             }
             val statusAndInfoHeightDiff = statusHeight - infoHeight
             if (statusAndInfoHeightDiff > 0) {
@@ -226,13 +254,30 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        var topOffset = 0
+        var topOffset = paddingTop
+
+        /**
+         * Layout Header
+         */
+        if (header!!.isVisible) {
+            val leftHeader = paddingStart
+            val topHeader = topOffset
+            val rightHeader = paddingStart + header!!.measuredWidth
+            val bottomHeader = topHeader + header!!.measuredHeight
+            header?.layout(
+                leftHeader,
+                topHeader,
+                rightHeader,
+                bottomHeader
+            )
+            topOffset = bottomHeader
+        }
 
         /**
          * Layout msg
          */
         val leftMsg = paddingStart
-        val topMsg = paddingTop
+        val topMsg = topOffset
         val rightMsg = paddingStart + message!!.measuredWidth
         val bottomMsg = topMsg + message!!.measuredHeight
         message?.layout(
@@ -241,7 +286,7 @@ class FlexBoxChatLayout : ViewGroup {
             rightMsg,
             bottomMsg
         )
-        topOffset += bottomMsg
+        topOffset = bottomMsg
 
         /**
          * Layout info

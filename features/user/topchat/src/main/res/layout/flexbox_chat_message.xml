@@ -2,7 +2,33 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="android.widget.FrameLayout">
+    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout">
+
+    <LinearLayout
+        android:id="@+id/ll_msg_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dikirim ke rumah Dikirim ke rumah"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ubah Alamat"
+            app:typographyType="body_1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_topchat_1"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:background="@color/Unify_N75" />
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
