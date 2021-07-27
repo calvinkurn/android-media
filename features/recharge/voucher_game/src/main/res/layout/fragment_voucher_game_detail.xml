@@ -237,4 +237,11 @@
 
     </androidx.cardview.widget.CardView>
 
+    <FrameLayout
+        android:id="@+id/vg_detail_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/Unify_Background"/>
+
 </RelativeLayout>
