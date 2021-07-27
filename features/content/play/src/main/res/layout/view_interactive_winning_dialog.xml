@@ -9,27 +9,29 @@
     app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
     >
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.play_common.view.RemoteImageView
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:scaleType="fitStart"
+        app:cacheStrategy="data"
+        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_decor.png"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0"
-        app:srcCompat="@drawable/ic_play_interactive_decor"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.play_common.view.RemoteImageView
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:scaleType="centerCrop"
+        app:cacheStrategy="resource"
+        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_confetti_big.png"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/ic_play_interactive_confetti_big"
         />
 
     <LinearLayout

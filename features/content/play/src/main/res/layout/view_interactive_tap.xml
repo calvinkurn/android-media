@@ -22,18 +22,19 @@
         app:layout_constraintVertical_bias="1"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.play_common.view.RemoteImageView
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="fitStart"
+            app:cacheStrategy="data"
+            app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_decor.png"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.6"
-            app:srcCompat="@drawable/ic_play_interactive_decor"
             />
 
     </com.tokopedia.play_common.view.RoundedConstraintLayout>
