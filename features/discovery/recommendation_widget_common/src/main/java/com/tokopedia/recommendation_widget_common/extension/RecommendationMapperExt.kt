@@ -32,8 +32,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         price = recommendation.price,
                         priceInt = recommendation.priceInt,
                         departmentId = recommendation.departmentId,
-                        rating = recommendation.rating,
-                        ratingAverage = recommendation.ratingAverage,
+                        rating = if (isRecomCardShouldShowVariantOrCart()) 0 else recommendation.rating,
+                        ratingAverage = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.ratingAverage,
                         countReview = recommendation.countReview,
                         stock = recommendation.stock,
                         recommendationType = recommendation.recommendationType,
@@ -53,8 +53,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         location = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.shop.city,
                         badgesUrl = if (isRecomCardShouldShowVariantOrCart()) listOf<String>() else recommendation.badges.map { it.imageUrl },
                         type = layoutType,
-                        isFreeOngkirActive = recommendation.freeOngkirInformation.isActive,
-                        freeOngkirImageUrl = recommendation.freeOngkirInformation.imageUrl,
+                        isFreeOngkirActive = if (isRecomCardShouldShowVariantOrCart()) false else recommendation.freeOngkirInformation.isActive,
+                        freeOngkirImageUrl = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.freeOngkirInformation.imageUrl,
                         labelGroupList = recommendation.labelGroups.map {
                             RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
                         },
