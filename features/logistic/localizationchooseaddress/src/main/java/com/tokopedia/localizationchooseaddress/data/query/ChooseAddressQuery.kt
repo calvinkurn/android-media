@@ -3,7 +3,7 @@ package com.tokopedia.localizationchooseaddress.data.query
 object ChooseAddressQuery {
 
     val getChosenAddressList = """
-        query keroAddrGetChosenAddressList(${'$'}source: String!, ${'$'}is_tokonow_request: Boolean!)) {
+        query keroAddrGetChosenAddressList(${'$'}source: String!, ${'$'}is_tokonow_request: Boolean!) {
           keroAddrGetChosenAddressList(source: ${'$'}source, is_tokonow_request: ${'$'}is_tokonow_request) {
             data {
               addr_id
