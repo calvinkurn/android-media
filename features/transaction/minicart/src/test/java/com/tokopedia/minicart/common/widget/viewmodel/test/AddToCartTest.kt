@@ -6,14 +6,21 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.minicart.common.domain.usecase.*
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,12 +47,11 @@ class AddToCartTest {
     }
 
     @Test
-    fun `WHEN update cart for checkout from mini cart widget success THEN global event state should be updated accordingly`() {
+    fun `WHEN checkout from mini cart widget success THEN global event state should be updated accordingly`() {
         //given
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAvailableAndUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
-        val mockResponse = DataProvider.provideUpdateCartSuccess()
         coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
         coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
             firstArg<(AddToCartOccMultiDataModel) -> Unit>().invoke(AddToCartOccMultiDataModel(status = "OK", data = AddToCartOccMultiData(success = 1)))
@@ -61,18 +67,16 @@ class AddToCartTest {
     }
 
     @Test
-    fun `WHEN update cart for checkout from mini cart bottom sheet success THEN global event state should be updated accordingly`() {
+    fun `WHEN checkout from mini cart bottom sheet success THEN global event state should be updated accordingly`() {
         //given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
-        val mockResponse = DataProvider.provideUpdateCartSuccess()
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
-        coEvery { updateCartUseCase.execute(any(), any()) } answers {
-            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
+        coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
+            firstArg<(AddToCartOccMultiDataModel) -> Unit>().invoke(AddToCartOccMultiDataModel(status = "OK", data = AddToCartOccMultiData(success = 1)))
         }
 
-        val isForCheckout = true
         val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
 
         //when
@@ -90,12 +94,11 @@ class AddToCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
-        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+        coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
+        coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        val isForCheckout = true
         val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
 
         //when
@@ -111,13 +114,11 @@ class AddToCartTest {
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
-        val mockResponse = DataProvider.provideUpdateCartFailed()
-        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
-        coEvery { updateCartUseCase.execute(any(), any()) } answers {
-            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        coEvery { addToCartOccMultiUseCase.setParams(any()) } answers { addToCartOccMultiUseCase }
+        coEvery { addToCartOccMultiUseCase.execute(any(), any()) } answers {
+            firstArg<(AddToCartOccMultiDataModel) -> Unit>().invoke(AddToCartOccMultiDataModel(status = "OK", data = AddToCartOccMultiData(success = 0, outOfService = OutOfService(), toasterAction = ToasterAction())))
         }
 
-        val isForCheckout = true
         val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
 
         //when
