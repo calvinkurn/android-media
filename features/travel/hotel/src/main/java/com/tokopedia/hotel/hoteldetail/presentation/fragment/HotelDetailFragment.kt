@@ -480,10 +480,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             thumbnailImageList.add(item.urlMax300)
 
             when (imageCounter) {
-                0 -> {
+                IMAGE_COUNTER_ZERO -> {
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
-                1 -> {
+                IMAGE_COUNTER_FIRST -> {
                     binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -491,7 +491,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                     imageCounter++
                 }
-                2 -> {
+                IMAGE_COUNTER_SECOND -> {
                     binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -499,7 +499,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                     imageCounter++
                 }
-                3 -> {
+                IMAGE_COUNTER_THIRD -> {
                     binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -794,6 +794,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
+
+        const val IMAGE_COUNTER_ZERO = 0
+        const val IMAGE_COUNTER_FIRST = 1
+        const val IMAGE_COUNTER_SECOND = 2
+        const val IMAGE_COUNTER_THIRD = 3
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,

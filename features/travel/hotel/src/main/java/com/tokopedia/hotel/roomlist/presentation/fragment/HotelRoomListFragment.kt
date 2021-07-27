@@ -236,7 +236,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
                     val itemPosition = parent.getChildLayoutPosition(view)
                     val itemCount = state.getItemCount()
-                    outRect.bottom = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
+                    outRect.bottom = if (itemCount > ITEM_COUNT_NUll && itemPosition == itemCount - ITEM_COUNT_NOT_EMPTY) ITEM_COUNT_FULL else ITEM_COUNT_NUll
                 }
             })
 
@@ -488,6 +488,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
         const val RESULT_ROOM_DETAIL = 102
         const val REQ_CODE_LOGIN = 1345
+
+        const val ITEM_COUNT_NUll = 0
+        const val ITEM_COUNT_NOT_EMPTY = 1
+        const val ITEM_COUNT_FULL = 20
 
         const val ARG_PROPERTY_ID = "arg_property_id"
         const val ARG_PROPERTY_NAME = "arg_property_name"

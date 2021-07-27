@@ -229,7 +229,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         val values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / CONVERT_TIME_MILLIS);
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
         return values
     }
@@ -237,7 +237,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
         if (outputStream != null) {
             try {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                bitmap.compress(Bitmap.CompressFormat.PNG, BITMAP_QUALITY, outputStream)
                 outputStream.close()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -387,6 +387,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         const val SHARE_IMG_REQUEST_CODE = 4532
         const val FILENAME = "Tokopedia"
+        const val CONVERT_TIME_MILLIS = 1000
+        const val BITMAP_QUALITY = 100
 
         fun getInstance(orderId: String): HotelEVoucherFragment = HotelEVoucherFragment().also {
             it.arguments = Bundle().apply {

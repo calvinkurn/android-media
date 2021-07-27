@@ -605,7 +605,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderProfileData(profileInfo: ProfileInfo) {
         widget_traveller_info.setContactName(profileInfo.fullName)
-        widget_traveller_info.setContactPhoneNum(62, profileInfo.phone)
+        widget_traveller_info.setContactPhoneNum(ID_COUNTRY_CODE, profileInfo.phone)
         widget_traveller_info.setContactEmail(profileInfo.email)
         widget_traveller_info.setContactPhoneCountry("ID")
     }
@@ -804,11 +804,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 if (list.isNotEmpty()) {
                     layout_loading.visibility = View.VISIBLE
                     tv_loading_subtitle.text = list[0]
-                    delay(2000L)
+                    delay(LOADING_DELAY)
                     tv_loading_subtitle.text = list[1]
-                    delay(2000L)
+                    delay(LOADING_DELAY)
                     tv_loading_subtitle.text = list[2]
-                    delay(2000L)
+                    delay(LOADING_DELAY)
                     layout_loading.visibility = View.GONE
                     layout_shimmering.visibility = View.VISIBLE
                 }
@@ -1158,6 +1158,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
         const val REQUEST_CODE_OTP = 5
         const val EMPTY_VOUCHER_STATE = 0
+        const val ID_COUNTRY_CODE = 62
+        const val LOADING_DELAY = 2000L
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()

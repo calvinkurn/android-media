@@ -316,7 +316,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             for (amenity in propertyDetail.room.first().amenities) {
                 if (context != null) {
                     val amenityTextView = Typography(requireContext())
-                    amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, AMENITY_TEXT_SIZE)
                     amenityTextView.text = amenity.content
                     room_amenities.addView(amenityTextView)
                 }
@@ -409,7 +409,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         order_detail_footer_layout.removeAllViews()
         if (orderDetail.contactUs.helpText.isNotBlank() && context != null) {
             val helpLabel = Typography(requireContext())
-            helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, AMENITY_TEXT_SIZE)
             helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
@@ -541,5 +541,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         const val SAVED_KEY_ORDER_ID = "keyOrderId"
         const val SAVED_KEY_ORDER_CATEGORY = "keyOrderCategory"
+
+        const val AMENITY_TEXT_SIZE = 12f
     }
 }

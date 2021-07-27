@@ -167,16 +167,16 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         if (isSelected) {
             when (string) {
                 getString(R.string.hotel_review_filter_first_rank) -> {
-                    param.filterByRank = 1
+                    param.filterByRank = FILTER_RANK_FIRST
                 }
                 getString(R.string.hotel_review_filter_second_rank) -> {
-                    param.filterByRank = 2
+                    param.filterByRank = FILTER_RANK_SECOND
                 }
                 getString(R.string.hotel_review_filter_third_rank) -> {
-                    param.filterByRank = 3
+                    param.filterByRank = FILTER_RANK_THIRD
                 }
             }
-        } else param.filterByRank = 0
+        } else param.filterByRank = FILTER_RANK_ZERO
 
         loadInitialData()
     }
@@ -208,6 +208,11 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
         const val COUNTRY_ID = "id"
         const val COUNTRY_ALL = "all"
+
+        const val FILTER_RANK_ZERO = 0
+        const val FILTER_RANK_FIRST = 1
+        const val FILTER_RANK_SECOND = 2
+        const val FILTER_RANK_THIRD = 3
 
         fun createInstance(propertyId: Long): HotelReviewFragment {
             return HotelReviewFragment().also {

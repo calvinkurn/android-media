@@ -199,7 +199,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
                     typography.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT)
                     typography.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
-                    typography.setLineSpacing(6f, 1f)
+                    typography.setLineSpacing(ADD_LINE_SPACING, MUL_LINE_SPACING)
                     typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     cancelInfoBottomSheet.setChild(typography)
 
@@ -273,6 +273,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
+        const val ADD_LINE_SPACING = 6f
+        const val MUL_LINE_SPACING = 1f
 
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationFragment =

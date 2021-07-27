@@ -392,7 +392,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 context?.run {
                     val policyView = InfoTextView(this)
                     policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
-                    policyView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    policyView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, POLICY_VIEW_TEXT_SIZE)
                     policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
                     hotelCancellationPolicyBottomSheets.addContentView(policyView)
                 }
@@ -720,6 +720,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val COUPON_EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
+        const val POLICY_VIEW_TEXT_SIZE = 14f
 
 
         fun getInstance(cartId: String): HotelBookingFragment =

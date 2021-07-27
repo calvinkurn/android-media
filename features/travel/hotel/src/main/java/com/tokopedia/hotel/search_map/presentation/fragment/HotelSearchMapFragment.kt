@@ -622,7 +622,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val opacity = 1f - (slideOffset * 3f)
+                val opacity = SLIDE_MINUS_OPACITY - (slideOffset * SLIDE_MULT_OPACITY)
                 rvHorizontalPropertiesHotelSearchMap?.let {
                     rvHorizontalPropertiesHotelSearchMap.alpha = opacity
                 }
@@ -971,7 +971,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         return try{
             val mapCenter: Double = googleMap.cameraPosition.target.latitude
             val southMap: Double = googleMap.projection.visibleRegion.latLngBounds.southwest.latitude
-            val diff = (mapCenter - southMap) / 4
+            val diff = (mapCenter - southMap) / MAP_CENTER_DIVIDER
             val newLat: Double = latLng.latitude - diff
             LatLng(newLat, latLng.longitude)
         }catch (t: Throwable) {
@@ -1554,6 +1554,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
         private const val MAX_RADIUS: Float = 10.5f
+        private const val MAP_CENTER_DIVIDER = 4
+        private const val SLIDE_MINUS_OPACITY: Float = 1f
+        private const val SLIDE_MULT_OPACITY: Float = 3f
 
         const val PREFERENCES_NAME = "hotel_search_map_preferences"
         const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"

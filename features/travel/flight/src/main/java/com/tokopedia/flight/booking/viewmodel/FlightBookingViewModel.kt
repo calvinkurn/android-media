@@ -308,10 +308,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         } else if (contactPhone.isNotEmpty() && !isNumericOnly(contactPhone)) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_phone_invalid_error
-        } else if (contactPhone.length > 13) {
+        } else if (contactPhone.length > PHONE_CONTACT_MAX_CHAR) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_phone_max_length_error
-        } else if (contactPhone.length < 9) {
+        } else if (contactPhone.length < PHONE_CONTACT_MIN_CHAR) {
             isValid = false
             _errorToastMessageData.value = R.string.flight_booking_contact_phone_min_length_error
         } else {
@@ -363,7 +363,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val flightVerifyParam = FlightVerifyParam()
         try {
             val cartItem = FlightVerifyParam.CartItem()
-            cartItem.productId = 27
+            cartItem.productId = CART_PRODUCT_ID
             cartItem.quantity = 1
             cartItem.configuration.price = totalPrice
             cartItem.metaData.cartId = cartId
@@ -689,7 +689,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addToCartParam.flight.infant = flightBookingParam.searchParam.flightPassengerModel.infant
         addToCartParam.flight.flightClass = flightBookingParam.searchParam.flightClass.id
         addToCartParam.idempotencyKey = idempotencyKey
-        addToCartParam.did = 4
+        addToCartParam.did = CART_PARAM_DID
         addToCartParam.requestId = flightBookingParam.searchParam.searchRequestId
         addToCartParam.ipAddress = FlightRequestUtil.getLocalIpAddress()
         addToCartParam.userAgent = FlightRequestUtil.getUserAgentForApiCall()
@@ -720,13 +720,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     private fun createCheckoutParam(cartId: String, price: Int): FlightCheckoutParam {
         val checkoutParam = FlightCheckoutParam()
         val cartItem = FlightCheckoutParam.CartItem()
-        cartItem.productId = 27
+        cartItem.productId = CART_PRODUCT_ID
         cartItem.quantity = 1
         cartItem.metaData = FlightCheckoutParam.MetaData(cartId,
                 (flightVerifyResult.value as Success<FlightVerify.FlightVerifyMetaAndData>).data.data.cartItems[0].metaData.invoiceId,
                 FlightRequestUtil.getLocalIpAddress(),
                 FlightRequestUtil.getUserAgentForApiCall(),
-                4)
+                CART_PARAM_DID)
         cartItem.configuration.price = price
 
         checkoutParam.cartItems.add(cartItem)
@@ -824,5 +824,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         const val PARAM_VERIFY_CART = "data"
         const val PARAM_ATC = "param"
         const val PARAM_VOUCHER_CODE = "voucherCode"
+        const val PHONE_CONTACT_MAX_CHAR = 13
+        const val PHONE_CONTACT_MIN_CHAR = 9
+        const val CART_PRODUCT_ID = 27
+        const val CART_PARAM_DID = 4
     }
 }
