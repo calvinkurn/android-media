@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.mapper
 
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.*
 import com.tokopedia.search.result.presentation.model.*
@@ -280,7 +281,7 @@ class ProductViewModelMapper {
                     data.type,
                     data.position,
                     data.layout,
-                    convertToInspirationCarouselOptionViewModel(data)
+                    convertToInspirationCarouselOptionViewModel(data),
             )
         }
     }
@@ -314,7 +315,9 @@ class ProductViewModelMapper {
                     data.position,
                     data.title,
                     position,
-                    isChipsActive
+                    isChipsActive,
+                    if (data.type == TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
+                    if (data.type != TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
             )
         }
     }

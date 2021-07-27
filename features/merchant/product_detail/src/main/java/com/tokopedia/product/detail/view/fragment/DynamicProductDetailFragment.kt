@@ -132,7 +132,6 @@ import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
-import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
@@ -144,11 +143,11 @@ import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -595,7 +594,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         Handler().postDelayed({
             vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected()
                     ?: -1)
-        }, 200)
+        }, ProductDetailConstant.VARIANT_SCROLL_DELAY)
     }
 
     private fun trackVideoState() {
@@ -707,39 +706,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
-        context?.let {
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, youtubeVideos.map { it.url }, index))
-            } else {
-                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + youtubeVideos[index].url)))
-                } catch (e: Throwable) {
-                }
-            }
-        }
-    }
-
     override fun getApplicationContext(): Application? {
         return activity?.application
     }
 
     override fun getLifecycleFragment(): Lifecycle {
         return lifecycle
-    }
-
-    override fun gotoDescriptionTab(textDescription: String, componentTrackDataModel: ComponentTrackDataModel) {
-        viewModel.getDynamicProductInfoP1?.let {
-            val data = ProductDetailUtil.generateDescriptionData(it, textDescription)
-            context?.let { ctx ->
-                startActivity(ProductFullDescriptionActivity.createIntent(ctx, data))
-                activity?.overridePendingTransition(R.anim.pull_up, 0)
-                DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            }
-        }
     }
 
     /**
@@ -749,10 +721,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl())
+                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl(), viewModel.userId)
             else -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, "", "")
+                            viewModel.getDynamicProductInfoP1, "", "", viewModel.userId)
 
         }
     }
@@ -935,13 +907,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     /**
-     * PdpComparisonWidgetViewHolder
-     */
-    override fun getStickyTitleView(): StickyTitleView? {
-        return stickyTitleComparisonWidget
-    }
-
-    /**
      * PageErrorViewHolder
      */
     override fun onRetryClicked(forceRefresh: Boolean) {
@@ -974,15 +939,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                     ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
             val listOfImageReview: List<String> = listOfImage.map {
                 it.imageUrlLarge ?: ""
             }
-
-            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position)
+            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", imageCount)
         }
     }
 
@@ -1248,7 +1212,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToReviewDetail(productId: String, productName: String) {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_REVIEW, productId)
             intent?.run {
                 intent.putExtra(ProductDetailConstant.REVIEW_PRD_NM, productName)
                 startActivity(intent)
@@ -1505,7 +1469,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 ServerLogger.log(Priority.P2, "LOAD_PAGE_FAILED",
                         mapOf("type" to "pdp",
                                 "desc" to it.message.orEmpty(),
-                                "err" to Log.getStackTraceString(it).take(1000).trim()
+                                "err" to Log.getStackTraceString(it).take(ProductDetailConstant.LOG_MAX_LENGTH).trim()
                         ))
                 logException(it)
                 context?.let { ctx ->
@@ -2601,9 +2565,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
-        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
-            content.row == "bottom"
-        }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, viewModel.userId, pdpUiUpdater?.productDetailInfoData?.getDescription()
+                ?: "")
         sendIntentResultWishlistChange(productId ?: "", true)
         if (isProductOos()) {
             refreshPage()
@@ -2651,7 +2614,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
-        (activity as AppCompatActivity).supportActionBar?.elevation = 10F
+        (activity as AppCompatActivity).supportActionBar?.elevation = ProductDetailConstant.TOOLBAR_ELEVATION
 
         et_search.setOnClickListener {
             DynamicProductDetailTracking.Click.eventSearchToolbarClicked(viewModel.getDynamicProductInfoP1)
@@ -3516,7 +3479,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun isNavOld(): Boolean {
         return try {
             getAbTestPlatform()?.let {
-                return it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD) == AbTestPlatform.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
+                return it.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD) == RollenceKey.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
             }
             return true
         } catch (e: Exception) {
@@ -3580,5 +3543,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String) {
         val position = getComponentPosition(model)
         DynamicProductDetailTracking.Impression.eventTopAdsImageViewImpression(trackingQueue, viewModel.userId, bannerId, position, bannerName)
+    }
+
+    override fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String) {
+        DynamicProductDetailTracking.Click.eventClickBestSeller(componentTrackDataModel, viewModel.getDynamicProductInfoP1, "", viewModel.userId)
+        goToApplink(appLink)
     }
 }
