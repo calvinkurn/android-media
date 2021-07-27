@@ -8,6 +8,11 @@ sealed class AudioType {
     object PCM: AudioType()
 }
 
+sealed class BitrateMode {
+    object LadderAscend: BitrateMode()
+    object LogarithmicDescend: BitrateMode()
+}
+
 data class BroadcasterConfig(
     var videoWidth: Int = 1280,
     var videoHeight: Int = 720,
@@ -18,6 +23,7 @@ data class BroadcasterConfig(
     var audioType: AudioType = AudioType.MIC, // we have MIC and PCM
     var maxRetry: Int = 3,
     var reconnectDelay: Int = 3000,
+    var bitrateMode: BitrateMode = BitrateMode.LadderAscend
 ) {
     fun getVideoSize() = Streamer.Size(videoHeight, videoWidth)
 

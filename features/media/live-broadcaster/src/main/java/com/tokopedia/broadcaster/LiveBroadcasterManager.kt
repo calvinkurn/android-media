@@ -8,6 +8,7 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
+import com.tokopedia.broadcaster.data.BitrateMode
 import com.tokopedia.broadcaster.data.BroadcasterLogger
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
@@ -21,6 +22,8 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.ladderAscend as ladderAscendMode
+import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.logarithmicDescend as logarithmicDescendMode
 
 class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScope {
 
@@ -99,7 +102,11 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         builder.setDisplayRotation(0)
         builder.setFullView(true)
 
-        mBitrateAdapter = BitrateAdapter.newInstance(context, videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
+        mBitrateAdapter = if (mConfig.bitrateMode == BitrateMode.LogarithmicDescend) {
+            logarithmicDescendMode(videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
+        } else {
+            ladderAscendMode(videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
+        }
 
         streamer = builder.build()
     }

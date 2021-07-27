@@ -1,10 +1,9 @@
 package com.tokopedia.broadcaster.bitrate
 
-import android.content.Context
 import com.wmspanel.libstream.Streamer
 import kotlin.math.roundToLong
 
-class BitrateAdapterLadderAscendMode(context: Context) : BitrateAdapter(context) {
+class BitrateLadderAscendMode : BitrateAdapter() {
 
     private var mStep = 0
 

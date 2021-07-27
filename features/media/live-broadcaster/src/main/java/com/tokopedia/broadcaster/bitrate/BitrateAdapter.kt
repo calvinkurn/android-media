@@ -8,15 +8,13 @@ import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToLong
 
-abstract class BitrateAdapter(context: Context) {
-
-    protected var mContext: Context = context
+abstract class BitrateAdapter {
 
     protected var mFullBitrate: Long = 0
     protected var mLossHistory: Vector<LossHistory> = Vector()
     protected var mBitrateHistory: Vector<BitrateHistory> = Vector()
-    protected var mMaxFps: Double = 30.0
 
+    private var mMaxFps: Double = 30.0
     private var mSettingsBitrate: Long = 0
     private var mCurrentBitrate: Long = 0
     private var mCurrentFps = 0.0
@@ -188,16 +186,27 @@ abstract class BitrateAdapter(context: Context) {
     }
 
     companion object {
-        fun newInstance(
-            context: Context,
+
+        fun ladderAscend(
             bitrate: Long,
             fpsRanges: Array<FpsRange?>
         ): BitrateAdapter {
-            return BitrateAdapterLadderAscendMode(context).apply {
+            return BitrateLadderAscendMode().apply {
                 this.setBitrate(bitrate)
                 this.setFpsRanges(fpsRanges)
             }
         }
+
+        fun logarithmicDescend(
+            bitrate: Long,
+            fpsRanges: Array<FpsRange?>
+        ): BitrateAdapter {
+            return LogarithmicDescendMode().apply {
+                this.setBitrate(bitrate)
+                this.setFpsRanges(fpsRanges)
+            }
+        }
+
     }
 
 }
