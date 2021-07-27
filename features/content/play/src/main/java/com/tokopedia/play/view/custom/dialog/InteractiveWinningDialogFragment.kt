@@ -22,8 +22,6 @@ import javax.inject.Inject
  */
 class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
 
-    private lateinit var viewModel: PlayViewModel
-
     private var mTitle = ""
     private var mSubtitle = ""
     private var mImageUrl = ""
@@ -52,7 +50,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     override fun onResume() {
         super.onResume()
         val params = dialog?.window?.attributes ?: return
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.width = resources.getDimensionPixelSize(R.dimen.play_interactive_winning_dialog_width)
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         dialog?.window?.attributes = params
 

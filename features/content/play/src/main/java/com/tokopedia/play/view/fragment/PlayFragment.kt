@@ -426,8 +426,18 @@ class PlayFragment @Inject constructor(
             buttonCloseViewOnStateChanged(bottomInsets = it)
             fragmentBottomSheetViewOnStateChanged(bottomInsets = it)
 
-            if (it.isAnyShown) playNavigation.requestDisableNavigation()
-            else playNavigation.requestEnableNavigation()
+            /**
+             * We have to change the translationZ for now, because in some cases, the interaction view
+             * cover part of the video and prevents the click on the video
+             */
+            if (it.isAnyShown) {
+                playNavigation.requestDisableNavigation()
+                fragmentUserInteractionView.rootView.translationZ = -1f
+            }
+            else {
+                playNavigation.requestEnableNavigation()
+                fragmentUserInteractionView.rootView.translationZ = 0f
+            }
         })
     }
 
