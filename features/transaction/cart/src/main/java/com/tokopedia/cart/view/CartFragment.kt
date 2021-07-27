@@ -3108,6 +3108,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
             allShopGroupDataList[0].let {
                 it.isCollapsible = false
+                it.isCollapsed = false
                 val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
                         ?: "")
                 if (index != RecyclerView.NO_POSITION) {
@@ -3120,6 +3121,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             allShopGroupDataList[0].let {
                 if ((it.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0) == 1) {
                     it.isCollapsible = false
+                    it.isCollapsed = false
                     val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
                             ?: "")
                     if (index != RecyclerView.NO_POSITION) {
