@@ -38,7 +38,7 @@ data class ProductTickerInfoDataModel(
     }
 
     fun isOos(): Boolean {
-        return isOutOfStock && !isProductInCampaign && !isProductParent
+        return isOutOfStock && !isProductInCampaign
     }
 
     fun isProductInactive(): Boolean {
