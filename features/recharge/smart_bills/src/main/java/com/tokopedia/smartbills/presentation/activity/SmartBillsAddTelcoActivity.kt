@@ -1,6 +1,5 @@
 package com.tokopedia.smartbills.presentation.activity
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.smartbills.di.DaggerSmartBillsComponent
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsAddTelcoFragment
+import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.parseQuery
 
 /**
  * applink
@@ -34,25 +34,10 @@ class SmartBillsAddTelcoActivity: BaseSimpleActivity(), HasComponent<SmartBillsC
     }
 
     override fun getNewFragment(): Fragment {
-        return SmartBillsAddTelcoFragment.newInstance(templateTelco)
+        return SmartBillsAddTelcoFragment.newInstance()
     }
 
-    private fun parseQuery(textToFind: String, uriString: String?,
-                           bundle: Bundle?): String{
-        var text: String? = ""
-        var uri: Uri = Uri.EMPTY
-        if(bundle != null){
-            if(bundle.getString(textToFind) != null){
-                text= bundle.getString(textToFind, "")
-                return text
-            }
-        }
-
-        uri = Uri.parse(uriString)
-        text = uri.getQueryParameter(textToFind)
-
-        return text ?: ""
-    }
+    fun getTemplateTelco(): String = templateTelco
 
     companion object{
         private const val TEMPLATE = "template"

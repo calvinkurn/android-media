@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.di.SmartBillsComponent
+import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
 import kotlinx.android.synthetic.main.fragment_smart_bills_add_telco.*
 import javax.inject.Inject
@@ -27,14 +28,12 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        templateTelco = (activity as SmartBillsAddTelcoActivity).getTemplateTelco()
         return inflater.inflate(R.layout.fragment_smart_bills_add_telco, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        templateTelco = arguments?.getString(EXTRA_TEMPLATE, "")
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,12 +43,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        private const val EXTRA_TEMPLATE = "EXTRA_TEMPLATE"
-
-        fun newInstance(template: String) = SmartBillsAddTelcoFragment().also {
-            it.arguments = Bundle().apply {
-                putString(EXTRA_TEMPLATE, template)
-            }
-        }
+        fun newInstance() = SmartBillsAddTelcoFragment()
     }
 }

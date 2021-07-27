@@ -7,8 +7,7 @@ import javax.inject.Inject
 
 class SmartBillsAddTelcoViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val dispatcher: CoroutineDispatchers
-        ): BaseViewModel(dispatcher.io){
+        private val dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io){
 
 
 }
