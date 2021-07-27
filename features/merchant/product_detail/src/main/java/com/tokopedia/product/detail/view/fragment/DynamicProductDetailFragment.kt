@@ -886,12 +886,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
+    override fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
         pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
     }
 
-    override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int) {
+    override fun onRecomAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int) {
         requireContext().let {
             AtcVariantHelper.goToAtcVariant(
                     context = it,
@@ -899,10 +899,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     pageSource = "tokonow",
                     isTokoNow = true,
                     shopId = recomItem.shopId.toString(),
-                    startActivitResult = this::startActivityForResult,
+                    startActivitResult = { data,_ ->
+                        startActivity(data)
+                    }
             )
         }
-
     }
 
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
