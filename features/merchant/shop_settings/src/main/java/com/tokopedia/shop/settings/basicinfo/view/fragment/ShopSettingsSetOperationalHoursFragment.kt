@@ -10,6 +10,7 @@ import android.widget.RadioGroup
 import android.widget.ScrollView
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.core.widget.addTextChangedListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -308,6 +309,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
                     CHOOSE_TIME_OPTION_ID -> {
                         // show textField to choose open & close time
+                        resetTimeTextField(startTimeTextField, endTimeTextField)
                         renderAccordionContent(
                                 isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                                 isShowHolidayTicker = false,
@@ -347,6 +349,9 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     setupStartTimePicker(opsHour.startTime)
                 }
             }
+            addTextChangedListener { field ->
+                headerSetOpsHour?.actionTextView?.isEnabled = field?.length.isMoreThanZero()
+            }
         }
 
         // setup endTime textField
@@ -359,7 +364,15 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     setupEndTimePicker(opsHour.startTime, opsHour.endTime)
                 }
             }
+            addTextChangedListener { field ->
+                headerSetOpsHour?.actionTextView?.isEnabled = field?.length.isMoreThanZero()
+            }
         }
+    }
+
+    private fun resetTimeTextField(startTimeTextField: TextFieldUnify?, endTimeTextField: TextFieldUnify?) {
+        startTimeTextField?.textFieldInput?.text?.clear()
+        endTimeTextField?.textFieldInput?.text?.clear()
     }
 
     private fun shouldShowHolidayTicker(isShow: Boolean) {
