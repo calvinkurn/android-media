@@ -204,6 +204,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setOnClickListener {
                         fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
                     }
+                }else{
+                    //do nothing
                 }
             }
         }
