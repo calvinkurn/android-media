@@ -29,9 +29,12 @@ class FlexBoxChatLayout : ViewGroup {
     /**
      * Direct child view
      */
-    private var message: TextView? = null
-    private var status: LinearLayout? = null
-    private var info: TextView? = null
+    var message: TextView? = null
+        private set
+    var status: LinearLayout? = null
+        private set
+    var info: TextView? = null
+        private set
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
     private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
