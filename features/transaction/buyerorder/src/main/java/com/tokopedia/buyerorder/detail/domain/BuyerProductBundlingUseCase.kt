@@ -29,6 +29,8 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
                     }
                   }
                 }
+              }
+            }
         """.trimIndent()
     }
 

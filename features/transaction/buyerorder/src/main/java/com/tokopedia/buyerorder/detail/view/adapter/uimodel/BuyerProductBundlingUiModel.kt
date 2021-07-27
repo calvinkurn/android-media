@@ -14,7 +14,7 @@ data class ProductBundleItem(
         @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         val productId: Long,
-        @SerializedName("product_thumbnail")
+        @SerializedName("thumbnail")
         val productThumbnailUrl: String,
         @SerializedName("product_name")
         val productName: String,
