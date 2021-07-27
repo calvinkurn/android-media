@@ -3,6 +3,7 @@ package com.tokopedia.play.analytic
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -19,12 +20,12 @@ class PlayAnalytic(
     val channelId: String
         get() = mChannelId
 
-    private val userId: String 
+    private val userId: String
         get() = userSession.userId
 
     private val isLoggedIn: String
         get() = userSession.isLoggedIn.toString()
-    
+
     private var mChannelId: String = ""
     private var mChannelType: PlayChannelType = PlayChannelType.Unknown
     private val mSessionId: String = generateSwipeSession()
@@ -262,7 +263,8 @@ class PlayAnalytic(
     fun clickProductAction(product: PlayProductUiModel.Product,
                            cartId: String,
                            productAction: ProductAction,
-                           bottomInsetsType: BottomInsetsType) {
+                           bottomInsetsType: BottomInsetsType,
+                           shopInfo: PlayPartnerInfoUiModel) {
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
@@ -271,7 +273,7 @@ class PlayAnalytic(
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId)
+                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
                     else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, cartId)
                 }
             }
@@ -550,6 +552,26 @@ class PlayAnalytic(
         )
     }
 
+    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfoUiModel, dimension39: String): HashMap<String, Any> {
+        return hashMapOf(
+            "category_id" to "", // TODO: from where?
+            "dimension39" to dimension39,
+            "item_brand" to "", // TODO: from where?
+            "item_category" to "", // TODO: from where?
+            "item_id" to product.id,
+            "item_name" to product.title,
+            "item_variant" to "", // TODO: from where?
+            "price" to when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            },
+            "quantity" to product.minQty,
+            "shop_id" to shopInfo.basicInfo.id,
+            "shop_name" to shopInfo.basicInfo.name,
+            "shop_type" to shopInfo.basicInfo.type
+        )
+    }
+
     private fun clickBeliButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
@@ -633,21 +655,28 @@ class PlayAnalytic(
 
     private fun clickBeliButtonInVariant(trackingQueue: TrackingQueue,
                                          product: PlayProductUiModel.Product,
-                                         cartId: String) {
+                                         cartId: String,
+                                         shopInfo: PlayPartnerInfoUiModel) {
         trackingQueue.putEETracking(
                 EventModel(
-                        KEY_TRACK_ADD_TO_CART,
+                        "add_to_cart",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK beli in varian page",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
-                hashMapOf<String, Any>(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "add" to hashMapOf(
-                                        "products" to convertProductToHashMap(product, cartId, "varian page")
-                                )
-                        )
+                hashMapOf (
+                    "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                ),
+                hashMapOf(
+                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                    KEY_USER_ID to userId,
+                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                    KEY_PRODUCT_ID to product.id,
+                    KEY_PRODUCT_NAME to product.title,
+                    KEY_PRODUCT_URL to product.applink.toString(),
+                    KEY_CHANNEL to mChannelName
                 )
         )
     }
@@ -679,7 +708,7 @@ class PlayAnalytic(
         val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
         return identifier + System.currentTimeMillis()
     }
-    
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_EVENT_CATEGORY = "eventCategory"

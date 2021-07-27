@@ -461,7 +461,7 @@ class PlayBottomSheetFragment @Inject constructor(
                         if (data.bottomInsetsType == BottomInsetsType.VariantSheet) {
                             closeVariantSheet()
                         }
-                        analytic.clickProductAction(data.product, data.cartId, data.action, data.bottomInsetsType)
+                        analytic.clickProductAction(data.product, data.cartId, data.action, data.bottomInsetsType, playViewModel.latestCompleteChannelData.partnerInfo)
                     }
                     else {
                         doShowToaster(
