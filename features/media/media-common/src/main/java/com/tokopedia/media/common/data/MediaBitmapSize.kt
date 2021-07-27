@@ -10,8 +10,11 @@ class MediaBitmapSize constructor(
     fun saveSize(value: Double) {
         if (value <= 0.0) return
 
-        val currentSize = getString(KEY_BITMAP_SIZE)?: "0"
+        // get existing an accumulative bitmap size
+        val getCurrentSize = getString(KEY_BITMAP_SIZE)
+        val currentSize = if (!getCurrentSize.isNullOrEmpty()) getCurrentSize else "0"
 
+        // entry a new value
         putString(KEY_BITMAP_SIZE, (currentSize.toLong() + value).toString().take(5))
         applyEditor()
     }
