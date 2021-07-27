@@ -241,8 +241,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     val isShopClosed = shopBasicData.isClosed
                     val isShopActive = operationalHourStatus.statusActive
                     val status = when {
-                        isShopActive -> getString(R.string.label_open)
                         isShopClosed -> getString(R.string.shop_operational_hour_holiday)
+                        isShopActive -> getString(R.string.label_open)
                         else -> getString(R.string.label_close)
                     }
                     tvShopStatus.text = status
