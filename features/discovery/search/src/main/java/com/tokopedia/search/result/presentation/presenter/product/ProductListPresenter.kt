@@ -1283,7 +1283,7 @@ class ProductListPresenter @Inject constructor(
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
         broadMatchVisitableList.add(SeparatorDataView())
-        broadMatchVisitableList.add(SuggestionDataView(data.title))
+        if (data.title.isNotEmpty()) broadMatchVisitableList.add(SuggestionDataView(data.title))
         broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type))
         broadMatchVisitableList.add(SeparatorDataView())
 
