@@ -82,7 +82,7 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartAdd
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
         get() = _miniCartUpdate
-    val miniCartRemove: LiveData<Result<String>>
+    val miniCartRemove: LiveData<Result<Pair<String,String>>>
         get() = _miniCartRemove
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
@@ -92,7 +92,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartWidgetDataUpdated = MutableLiveData<MiniCartSimplifiedData>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
-    private val _miniCartRemove = MutableLiveData<Result<String>>()
+    private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
 
     private var hasTickerBeenRemoved = false
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
@@ -316,7 +316,7 @@ class TokoNowHomeViewModel @Inject constructor(
             cartIdList = listOf(miniCartItem.cartId)
         )
         deleteCartUseCase.execute({
-            _miniCartRemove.value = Success(miniCartItem.productId)
+            _miniCartRemove.value = Success(Pair(miniCartItem.productId, it.data.message.joinToString(separator = ", ")))
         }, {
             _miniCartRemove.value = Fail(it)
         })

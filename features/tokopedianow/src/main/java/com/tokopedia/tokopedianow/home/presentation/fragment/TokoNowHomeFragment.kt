@@ -629,6 +629,10 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
                     miniCartWidget?.updateData(shopIds)
+                    showToaster(
+                        message = it.data.data.message,
+                        type = TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
                     showToaster(
@@ -642,8 +646,12 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartRemove) {
             when(it) {
                 is Success -> {
-                    adapter.updateProductRecom(it.data.toLong(), 0)
+                    adapter.updateProductRecom(it.data.first.toLongOrZero(), 0)
                     getMiniCart()
+                    showToaster(
+                        message = it.data.second,
+                        type = TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
                     showToaster(
