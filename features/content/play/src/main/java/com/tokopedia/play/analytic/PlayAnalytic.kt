@@ -268,8 +268,8 @@ class PlayAnalytic(
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, cartId)
+                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, cartId, shopInfo)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
@@ -537,38 +537,42 @@ class PlayAnalytic(
         )
     }
 
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): HashMap<String, Any> {
-        return hashMapOf(
-            "index" to position,
-            "item_brand" to "",
-            "item_category" to "",
-            "item_id" to product.id,
-            "item_name" to product.title,
-            "item_variant" to "",
-            "price" to when(product.price) {
-                is DiscountedPrice -> product.price.discountedPriceNumber
-                is OriginalPrice -> product.price.priceNumber
-            }
+    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): MutableList<HashMap<String, Any>> {
+        return arrayListOf(
+            hashMapOf(
+                "index" to position,
+                "item_brand" to "",
+                "item_category" to "",
+                "item_id" to product.id,
+                "item_name" to product.title,
+                "item_variant" to "",
+                "price" to when(product.price) {
+                    is DiscountedPrice -> product.price.discountedPriceNumber
+                    is OriginalPrice -> product.price.priceNumber
+                }
+            )
         )
     }
 
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfoUiModel, dimension39: String): HashMap<String, Any> {
-        return hashMapOf(
-            "category_id" to "", // TODO: from where?
-            "dimension39" to dimension39,
-            "item_brand" to "", // TODO: from where?
-            "item_category" to "", // TODO: from where?
-            "item_id" to product.id,
-            "item_name" to product.title,
-            "item_variant" to "", // TODO: from where?
-            "price" to when(product.price) {
-                is DiscountedPrice -> product.price.discountedPriceNumber
-                is OriginalPrice -> product.price.priceNumber
-            },
-            "quantity" to product.minQty,
-            "shop_id" to shopInfo.basicInfo.id,
-            "shop_name" to shopInfo.basicInfo.name,
-            "shop_type" to shopInfo.basicInfo.type
+    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfoUiModel, dimension39: String = ""): MutableList<HashMap<String, Any>> {
+        return mutableListOf(
+            hashMapOf(
+                "category_id" to "", // TODO: from where?
+                "dimension39" to dimension39,
+                "item_brand" to "", // TODO: from where?
+                "item_category" to "", // TODO: from where?
+                "item_id" to product.id,
+                "item_name" to product.title,
+                "item_variant" to "", // TODO: from where?
+                "price" to when(product.price) {
+                    is DiscountedPrice -> product.price.discountedPriceNumber
+                    is OriginalPrice -> product.price.priceNumber
+                },
+                "quantity" to product.minQty,
+                "shop_id" to shopInfo.basicInfo.id,
+                "shop_name" to shopInfo.basicInfo.name,
+                "shop_type" to shopInfo.basicInfo.type
+            )
         )
     }
 
@@ -596,7 +600,7 @@ class PlayAnalytic(
                                                     shopInfo: PlayPartnerInfoUiModel) {
         trackingQueue.putEETracking(
                 EventModel(
-                        "add_to_cart",
+                    KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK buy in bottom sheet",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
@@ -620,7 +624,8 @@ class PlayAnalytic(
 
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                    product: PlayProductUiModel.Product,
-                                                   cartId: String) {
+                                                   cartId: String,
+                                                   shopInfo: PlayPartnerInfoUiModel) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -629,19 +634,26 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "add" to hashMapOf(
-                                        "products" to convertProductToHashMap(product, cartId, "bottom sheet")
-                                )
-                        )
+                    "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                ),
+                hashMapOf(
+                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                    KEY_USER_ID to userId,
+                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                    KEY_PRODUCT_ID to product.id,
+                    KEY_PRODUCT_NAME to product.title,
+                    KEY_PRODUCT_URL to product.applink.toString(),
+                    KEY_CHANNEL to mChannelName
                 )
         )
     }
 
     private fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
                                         product: PlayProductUiModel.Product,
-                                        cartId: String) {
+                                        cartId: String,
+                                        shopInfo: PlayPartnerInfoUiModel) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -650,12 +662,18 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "add" to hashMapOf(
-                                        "products" to convertProductToHashMap(product, cartId, "varian page")
-                                )
-                        )
+                    "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                ),
+                hashMapOf(
+                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                    KEY_USER_ID to userId,
+                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                    KEY_PRODUCT_ID to product.id,
+                    KEY_PRODUCT_NAME to product.title,
+                    KEY_PRODUCT_URL to product.applink.toString(),
+                    KEY_CHANNEL to mChannelName
                 )
         )
     }
@@ -666,7 +684,7 @@ class PlayAnalytic(
                                          shopInfo: PlayPartnerInfoUiModel) {
         trackingQueue.putEETracking(
                 EventModel(
-                        "add_to_cart",
+                    KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK beli in varian page",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
@@ -736,7 +754,7 @@ class PlayAnalytic(
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_CLICK_BACK = "clickBack"
-        private const val KEY_TRACK_ADD_TO_CART = "addToCart"
+        private const val KEY_TRACK_ADD_TO_CART = "add_to_cart"
         private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT_IRIS = "viewGroupChatIris"
