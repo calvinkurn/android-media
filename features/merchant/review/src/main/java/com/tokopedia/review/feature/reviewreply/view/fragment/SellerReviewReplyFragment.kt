@@ -258,7 +258,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         replySendButton?.setOnClickListener {
             if (replyEditText.text?.isNotEmpty() == true) {
                 tracking.eventClickSendReviewReply(
-                    shopId,
+                        shopId,
                         productReplyUiModel?.productID ?: "",
                         feedbackUiModel?.feedbackID ?: "",
                         replyEditText?.text.toString(),
