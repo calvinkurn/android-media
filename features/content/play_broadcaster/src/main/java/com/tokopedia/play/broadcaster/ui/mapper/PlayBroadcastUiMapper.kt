@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
@@ -280,12 +281,19 @@ class PlayBroadcastUiMapper(
         )
     }
 
-    override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
-        return response.interactiveSellerCreateSession.header.status == DEFAULT_SUCCESS_CODE
+    override fun mapInteractiveSession(
+        response: PostInteractiveCreateSessionResponse,
+        title: String,
+        durationInMs: Long
+    ): InteractiveSessionUiModel {
+        return InteractiveSessionUiModel(
+            response.interactiveSellerCreateSession.data.interactiveId,
+            title,
+            durationInMs
+        )
     }
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
-        private const val DEFAULT_SUCCESS_CODE = 200
     }
 }

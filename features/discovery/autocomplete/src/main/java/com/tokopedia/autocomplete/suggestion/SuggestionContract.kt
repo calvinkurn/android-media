@@ -34,6 +34,8 @@ interface SuggestionContract {
 
         fun trackTokoNowEventClickCurated(eventLabel: String)
 
+        fun trackClickChip(eventLabel: String, dimension90: String)
+
         fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String)
 
         fun dropKeyBoard()
@@ -53,5 +55,7 @@ interface SuggestionContract {
         fun onSuggestionItemImpressed(item: BaseSuggestionDataView)
 
         fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView)
+
+        fun onSuggestionChipClicked(item: BaseSuggestionDataView.ChildItem)
     }
 }

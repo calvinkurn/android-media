@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCr
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -238,8 +239,14 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
     )
 
-    override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
-        return true
+    override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
+                                       title: String,
+                                       durationInMs: Long): InteractiveSessionUiModel {
+        return InteractiveSessionUiModel(
+            "1",
+            "Giveaway Tesla",
+            60 * 1000L
+        )
     }
 
     companion object {

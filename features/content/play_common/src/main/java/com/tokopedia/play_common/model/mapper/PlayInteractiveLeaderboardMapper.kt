@@ -26,7 +26,8 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         PlayLeaderboardUiModel(
                 title = it.title,
                 winners = mapInteractiveWinner(it.title, it.winner, topChatResponseRaw, isChatAllowed),
-                otherParticipantText = it.otherParticipantCountText
+                otherParticipantText = it.otherParticipantCountText,
+                otherParticipant = it.otherParticipantCount.toLong()
         )
     }
 

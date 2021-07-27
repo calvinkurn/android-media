@@ -1,10 +1,10 @@
 package com.tokopedia.play.broadcaster.domain.usecase.interactive
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 class PostInteractiveCreateSessionUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
-) : GraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository) {
+) : RetryableGraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository) {
 
     private val query = """
         mutation PostInteractiveCreateSession(${"$$PARAM_SHOP_ID"}: String!, ${"$$PARAM_CHANNEL_ID"}: String!, ${"$$PARAM_TITLE"}: String!, ${"$$PARAM_TIMER"}: String!) {

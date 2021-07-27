@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -129,10 +130,12 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableInteractiveState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
-    val observableCreateInteractiveSession: LiveData<NetworkResult<Boolean>>
+    val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
         get() = _observableCreateInteractiveSession
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
+    val interactiveId: String
+        get() = getCurrentSetupDataStore().getInteractiveId()
     val interactiveTitle: String
         get() = getCurrentSetupDataStore().getInteractiveTitle()
     val selectedInteractiveDuration: Long
@@ -159,7 +162,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo = MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
-    private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<Boolean>>()
+    private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<InteractiveSessionUiModel>>()
 
     private val livePusher = livePusherBuilder.build()
 
@@ -460,14 +463,11 @@ class PlayBroadcastViewModel @Inject constructor(
                 title,
                 durationInMs
             )
-            val result = playBroadcastMapper.mapCreateInteractiveSession(response)
-            if (result) {
-                handleActiveInteractive()
-                resetSetupInteractive()
-                _observableCreateInteractiveSession.value = NetworkResult.Success(result)
-            } else {
-                _observableCreateInteractiveSession.value = NetworkResult.Fail(Throwable("fail create interactive session"))
-            }
+            val interactiveUiModel = playBroadcastMapper.mapInteractiveSession(response, title, durationInMs)
+            setInteractiveId(interactiveUiModel.id)
+            handleActiveInteractive()
+            resetSetupInteractive()
+            _observableCreateInteractiveSession.value = NetworkResult.Success(interactiveUiModel)
         }) {
             _observableCreateInteractiveSession.value = NetworkResult.Fail(it)
         }
@@ -533,7 +533,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private suspend fun onInteractiveFinished() {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
         val err = getLeaderboardInfo()
-        if (err != null && _observableLeaderboardInfo.value is NetworkResult.Success) {
+        if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
             val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
             _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
                 leaderboard.config.loserMessage,
@@ -697,6 +697,10 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun resetSetupInteractive() {
         setInteractiveTitle(InteractiveDataStoreImpl.DEFAULT_INTERACTIVE_TITLE)
         setSelectedInteractiveDuration(InteractiveDataStoreImpl.DEFAULT_INTERACTIVE_DURATION)
+    }
+
+    private fun setInteractiveId(id: String) {
+        getCurrentSetupDataStore().setInteractiveId(id)
     }
 
     /**
