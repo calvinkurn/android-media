@@ -41,8 +41,8 @@ val QUERY_ADD_TO_CART_OCC_MULTI = """
 """.trimIndent()
 
 val QUERY_ADD_TO_CART_OCC_EXTERNAL_MULTI = """
-    mutation add_to_cart_occ_external_multi(${"$"}param : OneClickCheckoutATCParam) {
-        add_to_cart_occ_external_multi(param: ${"$"}param) {
+    mutation add_to_cart_occ_multi_external(${"$"}param : OneClickCheckoutMultiATCExternalParam) {
+        add_to_cart_occ_multi_external(param: ${"$"}param) {
             error_message
             status
             data {

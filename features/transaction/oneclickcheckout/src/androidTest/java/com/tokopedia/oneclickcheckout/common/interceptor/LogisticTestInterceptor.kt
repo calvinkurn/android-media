@@ -72,6 +72,7 @@ const val RATES_ETA_RESPONSE_PATH = "logistic/rates_eta_response.json"
 const val RATES_ETA_WITH_BOE_RESPONSE_PATH = "logistic/rates_eta_with_boe_response.json"
 
 const val RATES_TOKONOW_RP0_RESPONSE_PATH = "logistic/rates_tokonow_rp0_response.json"
+const val RATES_TOKONOW_DISCOUNT_RESPONSE_PATH = "logistic/rates_tokonow_discount_response.json"
 
 const val GET_ADDRESS_LIST_DEFAULT_RESPONSE_PATH = "logistic/get_address_list_default_response.json"
 

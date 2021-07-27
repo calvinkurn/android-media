@@ -9,10 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
-import com.tokopedia.oneclickcheckout.common.interceptor.RATES_TOKONOW_RP0_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_TOKONOW_RP0_APPLIED_RESPONSE
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -53,7 +50,6 @@ class OrderSummaryPageActivityTokonowTest {
     fun happyFlow_AllInfo_DirectCheckout() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_RESPONSE_PATH
         logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_RP0_RESPONSE_PATH
-        promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_TOKONOW_RP0_APPLIED_RESPONSE
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -101,6 +97,11 @@ class OrderSummaryPageActivityTokonowTest {
                     isMainAddress = true
             )
 
+            assertShipmentError("Gagal menampilkan pengiriman")
+
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_TOKONOW_RP0_APPLIED_RESPONSE
+            clickShipmentReloadAction()
+
             assertShipmentRevamp(
                     shippingDuration = null,
                     shippingCourier = "Now! 2 jam tiba (Rp0)",
@@ -119,6 +120,33 @@ class OrderSummaryPageActivityTokonowTest {
                         insurancePrice = "Rp300",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp201.300"
+                )
+                closeBottomSheet()
+            }
+
+            logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_DISCOUNT_RESPONSE_PATH
+            clickAddProductQuantity(0, 1)
+
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Now! 2 jam tiba (Rp20.000 Rp10.000)",
+                    shippingPrice = null,
+                    shippingEta = "Tiba dalam 2 jam"
+            )
+            Thread.sleep(5000)
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp311.300", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp300.000",
+                        shippingPrice = "Rp20.000",
+                        shippingDiscount = "-Rp10.000",
+                        insurancePrice = "Rp300",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp311.300"
                 )
                 closeBottomSheet()
             }

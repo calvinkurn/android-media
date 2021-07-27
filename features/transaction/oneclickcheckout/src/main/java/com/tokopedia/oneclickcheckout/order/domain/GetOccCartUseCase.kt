@@ -90,7 +90,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         errors
         errors_unblocking
         cart_string
-        #payment_profile
+        payment_profile
         is_disable_change_courier
         auto_courier_selection
         shipment_information {
@@ -229,20 +229,20 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             product_warning_message
             product_alert_message
             product_information
-            #purchase_protection_plan_data {
-            #  protection_available
-            #  protection_type_id
-            #  protection_price_per_product
-            #  protection_price
-            #  protection_title
-            #  protection_subtitle
-            #  protection_link_text
-            #  protection_link_url
-            #  protection_opt_in
-            #  protection_checkbox_disabled
-            #  unit
-            #  source
-            #}
+            purchase_protection_plan_data {
+              protection_available
+              protection_type_id
+              protection_price_per_product
+              protection_price
+              protection_title
+              protection_subtitle
+              protection_link_text
+              protection_link_url
+              protection_opt_in
+              protection_checkbox_disabled
+              unit
+              source
+            }
           }
         }
         toko_cabang {
