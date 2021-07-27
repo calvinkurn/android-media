@@ -88,7 +88,7 @@ class MediaLoaderActivityLifecycle(
         Thread {
             logger.addLogItem(
                 KEY_ACCUMULATIVE_SIZE,
-                bitmapSize.getSize().toString()
+                bitmapSize.getSize()
             )
 
             logger.checkSession(

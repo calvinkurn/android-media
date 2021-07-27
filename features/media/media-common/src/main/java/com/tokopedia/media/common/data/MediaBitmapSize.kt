@@ -16,7 +16,7 @@ class MediaBitmapSize constructor(
         applyEditor()
     }
 
-    fun getSize(): Int = getInt(KEY_BITMAP_SIZE)
+    fun getSize(): String = getString(KEY_BITMAP_SIZE)
 
     companion object {
         private const val KEY_BITMAP_SIZE = "media_accumulative_bitmap_size"
