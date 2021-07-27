@@ -103,8 +103,8 @@ fun RecommendationItem.toProductCardModel(
     var hasThreeDotsFinalValue = hasThreeDots
     if (isRecomProductShowVariantAndCart) {
         hasThreeDotsFinalValue = false
-        if (isProductHasParentID()) variant = ProductCardModel.Variant(quantity = quantity)
-        else nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
+        variant = ProductCardModel.Variant(quantity = quantity)
+        nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
     }
     return ProductCardModel(
             slashedPrice = slashedPrice,
@@ -132,8 +132,8 @@ fun RecommendationItem.toProductCardModel(
             },
             hasAddToCartButton = hasAddToCartButton,
             addToCartButtonType = addToCartButtonType,
-            variant = variant,
-            nonVariant = nonVariant
+            variant = if (isProductHasParentID()) variant else null,
+            nonVariant = if (isProductHasParentID()) null else nonVariant
     )
 }
 

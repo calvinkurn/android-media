@@ -106,8 +106,8 @@ interface DynamicProductDetailListener {
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
-    fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int)
-    fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int)
+    fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int)
+    fun onRecomAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int)
 
     /**
      * ProductGeneralInfoViewHolder
