@@ -33,6 +33,7 @@ import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
 import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
@@ -66,6 +67,7 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnAdditionalListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -74,6 +76,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
 import kotlinx.android.synthetic.main.fragment_event_checkout.*
+import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_package_filled.*
 import kotlinx.android.synthetic.main.partial_event_checkout_additional_item.*
 import kotlinx.android.synthetic.main.partial_event_checkout_additional_package.*
@@ -173,27 +176,20 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         eventCheckoutViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
             it.run {
                 renderLayout(it)
+                global_error_checkout_event.hide()
+                container_error_event_checkout.hide()
                 performanceMonitoring.stopTrace()
             }
         })
 
         eventCheckoutViewModel.isError.observe(viewLifecycleOwner, Observer {
-            it?.let {
+            it?.let { error ->
                 if (it.error) {
-                    progressDialog.dismiss()
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView) {
-                        requestData()
+                    pg_event_checkout.gone()
+                    context?.let {
+                    EventGlobalError.errorEventHandlerGlobalError(it, error.throwable, container_error_event_checkout,
+                            global_error_checkout_event, { requestData() })
                     }
-                }
-            }
-        })
-
-        eventCheckoutViewModel.errorValue.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val error = it
-                view?.let {
-                    progressDialog.dismiss()
-                    Toaster.build(it, error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error)).show()
                 }
             }
         })
@@ -273,6 +269,9 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private fun requestData() {
         urlPDP.let {
+            pg_event_checkout.show()
+            global_error_checkout_event.hide()
+            container_error_event_checkout.hide()
             eventCheckoutViewModel.getDataProductDetail(eventPDPV3(),
                     eventContentById(), it)
         }
@@ -302,7 +301,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         tg_event_checkout_date.text = getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toInt())
         tg_event_checkout_name.text = pdp.displayName
         tg_event_checkout_packet.text = getPackage(pdp, packageID).name
-        iv_event_checkout_image.loadImageRounded(pdp.imageApp, 25f)
+        iv_event_checkout_image.loadImageRounded(pdp.imageApp, ROUND_VALUE)
     }
 
     private fun renderPassenger(pdp: ProductDetailData) {
@@ -606,6 +605,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
+
+        const val ROUND_VALUE = 25f
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         const val EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA"

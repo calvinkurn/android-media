@@ -4,4 +4,5 @@
     <color name="_dms_zxing_custom_result_view">#b0000000</color>
     <color name="_dms_zxing_custom_viewfinder_mask">#60000000</color>
     <color name="_dms_zxing_status_text">#ffffffff</color>
+    <color name="_dms_bottomsheet_overlay_color">#99000000</color>
 </resources>

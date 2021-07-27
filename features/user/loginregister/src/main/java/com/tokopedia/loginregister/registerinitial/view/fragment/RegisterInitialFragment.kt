@@ -68,8 +68,10 @@ import com.tokopedia.loginregister.external_register.base.listener.BaseDialogCon
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
@@ -259,11 +261,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         if (isSmartLogin) {
             activity?.let {
                 if (isPending) {
-                    val intent =  registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = requireContext())
-                    startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+                    val intent =  registerInitialRouter.goToVerification(email = email, otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE, context = requireContext())
+                    startActivityForResult(intent, RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE)
                 } else {
-                    val intent =  registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_REGISTER, context = requireContext())
-                    startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+                    val intent =  registerInitialRouter.goToVerification(email = email, otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER, context = requireContext())
+                    startActivityForResult(intent, RegisterConstants.Request.REQUEST_OTP_VALIDATE)
                 }
             }
         }
@@ -299,9 +301,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-            isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
-            isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
-            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            isShowTicker = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
+            isShowBanner = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
+            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
             enableOvoRegister = firebaseRemoteConfig.getBoolean(ExternalRegisterConstants.CONFIG_EXTERNAL_REGISTER, false)
         }
     }
@@ -455,8 +457,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 activity?.let { act ->
-                    val intent =  registerInitialRouter.goToVerification(email = it, otpType = OTP_SECURITY_QUESTION, context = requireContext())
-                    startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+                    val intent =  registerInitialRouter.goToVerification(email = it, otpType = RegisterConstants.OtpType.OTP_SECURITY_QUESTION, context = requireContext())
+                    startActivityForResult(intent, RegisterConstants.Request.REQUEST_SECURITY_QUESTION)
                 }
             }
         })
@@ -740,7 +742,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData) {
         when (registerCheckData.registerType) {
-            PHONE_TYPE -> {
+            LoginConstants.LoginType.PHONE_TYPE -> {
                 registerAnalytics.trackClickPhoneSignUpButton()
                 setTempPhoneNumber(registerCheckData.view)
                 if (registerCheckData.isExist) {
@@ -751,7 +753,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     showProceedWithPhoneDialog(registerCheckData.view)
                 }
             }
-            EMAIL_TYPE -> {
+            LoginConstants.LoginType.EMAIL_TYPE -> {
                 registerAnalytics.trackClickEmailSignUpButton()
                 if (registerCheckData.isExist) {
                     if (!registerCheckData.isPending) {
@@ -769,15 +771,15 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun goToOTPActivateEmail(email: String) {
         activity?.let {
             isSmartRegister = true
-            val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = requireContext())
-            startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+            val intent = registerInitialRouter.goToVerification(email = email, otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE, context = requireContext())
+            startActivityForResult(intent, RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE)
         }
     }
 
     override fun goToOTPRegisterEmail(email: String) {
         activity?.let {
-            val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_REGISTER, context = requireContext())
-            startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+            val intent = registerInitialRouter.goToVerification(email = email, otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER, context = requireContext())
+            startActivityForResult(intent, RegisterConstants.Request.REQUEST_OTP_VALIDATE)
         }
     }
 
@@ -853,46 +855,46 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         callbackManager.onActivityResult(requestCode, resultCode, data)
 
         activity?.let {
-            if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
+            if (requestCode == RegisterConstants.Request.REQUEST_LOGIN_GOOGLE && data != null) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 task?.let { taskGoogleSignInAccount ->
                     handleGoogleSignInResult(taskGoogleSignInAccount)
                 }
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 userSession.clearToken()
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
-            } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let { validateToken ->
                     registerInitialViewModel.reloginAfterSQ(validateToken)
                 }
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
                 val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID).orEmpty()
                 validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                 goToAddName(uuid)
-            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE) {
                 processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == REQUEST_ADD_PIN) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfoAfterAddPin()
-            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity.RESULT_OK && data != null && data.extras != null) {
                 val accessToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 val bundleResult = Bundle()
                 bundleResult.putBoolean(PARAM_IS_SMART_REGISTER, isSmartRegister)
                 it.setResult(Activity.RESULT_OK, Intent().putExtras(bundleResult))
@@ -900,8 +902,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     data.extras?.let { bundle ->
                         if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
                             activity?.let {
-                                val intent = registerInitialRouter.goToVerification(otpType = OTP_SECURITY_QUESTION, context = requireContext())
-                                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+                                val intent = registerInitialRouter.goToVerification(otpType = RegisterConstants.OtpType.OTP_SECURITY_QUESTION, context = requireContext())
+                                startActivityForResult(intent, RegisterConstants.Request.REQUEST_SECURITY_QUESTION)
                             }
                         } else {
                             it.finish()
@@ -910,14 +912,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 } else {
                     it.finish()
                 }
-            } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
                 registerInitialViewModel.getUserInfo()
-            } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_CANCELED) {
                 userSession.logoutSession()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 it.finish()
-            } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -927,9 +929,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                         else goToRegisterEmailPageWithEmail(email, token, "")
                     }
                 }
-            } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -939,7 +941,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                         registerInitialViewModel.activateUser(email, token)
                     }
                 }
-            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED) {
                 phoneNumber?.run {
@@ -1027,8 +1029,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                                            loginTextView: LoginTextView) {
 
         when (discoverItemDataModel.id.toLowerCase()) {
-            FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
-            GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
+            LoginConstants.DiscoverLoginId.FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
+            LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
         }
     }
 
@@ -1057,7 +1059,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun goToRegisterGoogle() {
         val intent = mGoogleSignInClient.signInIntent
-        startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
+        startActivityForResult(intent, RegisterConstants.Request.REQUEST_LOGIN_GOOGLE)
     }
 
     private fun dismissLoadingDiscover() {
@@ -1140,8 +1142,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         phoneNumber = phone
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
         activity?.let {
-            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER, context = requireContext())
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = RegisterConstants.OtpType.OTP_LOGIN_PHONE_NUMBER, context = requireContext())
+            startActivityForResult(intent, RegisterConstants.Request.REQUEST_VERIFY_PHONE_TOKOCASH)
         }
     }
 
@@ -1173,8 +1175,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             dialog.dismiss()
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
             activity?.let {
-                val intent = registerInitialRouter.goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER, context = requireContext())
-                startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+                val intent = registerInitialRouter.goToVerification(phone = phone, otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER, context = requireContext())
+                startActivityForResult(intent, RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE)
             }
         }
         dialog?.setSecondaryCTAClickListener {
@@ -1187,8 +1189,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun goToRegisterWithPhoneNumber(phone: String) {
         activity?.let {
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER, context = requireContext())
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+            val intent =  registerInitialRouter.goToVerification(phone = phone, otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER, context = requireContext())
+            startActivityForResult(intent, RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE)
         }
     }
 
@@ -1233,7 +1235,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun isFromAtc(): Boolean = source == SOURCE_ATC
+    private fun isFromAtc(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     private fun onGoToChangeName() {
         registerInitialRouter.goToChangeName(this)
@@ -1317,9 +1319,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs.edit().putLong(
-                    KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
         }
     }
 
@@ -1457,42 +1459,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     companion object {
-        val REQUEST_REGISTER_EMAIL = 101
-        private val REQUEST_CREATE_PASSWORD = 102
-        private val REQUEST_SECURITY_QUESTION = 103
-        private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
-        val REQUEST_ADD_NAME_REGISTER_PHONE = 107
-        private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
-        val REQUEST_CHOOSE_ACCOUNT = 109
-        val REQUEST_CHANGE_NAME = 111
-        private val REQUEST_LOGIN_GOOGLE = 112
-        private val REQUEST_OTP_VALIDATE = 113
-        private val REQUEST_PENDING_OTP_VALIDATE = 114
-        const val REQUEST_ADD_PIN = 115
-
-        private const val OTP_TYPE_ACTIVATE = 143
-        private const val OTP_TYPE_REGISTER = 126
-        private const val OTP_SECURITY_QUESTION = 134
-        private const val OTP_LOGIN_PHONE_NUMBER = 112
-        private const val OTP_REGISTER_PHONE_NUMBER = 116
-
-        private const val FACEBOOK = "facebook"
-        private const val GPLUS = "gplus"
         private const val PHONE_NUMBER = "phonenumber"
-
-        private const val PHONE_TYPE = "phone"
-        private const val EMAIL_TYPE = "email"
-
-        private const val SOURCE_ATC = "atc"
-
-        const val FACEBOOK_LOGIN_TYPE = "fb"
-
-        private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
-        private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
-        const val REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_register_page"
-
-        const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
-        const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         const val TOKOPEDIA_CARE_PATH = "help"
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
