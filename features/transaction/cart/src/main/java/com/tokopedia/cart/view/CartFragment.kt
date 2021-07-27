@@ -469,7 +469,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isNavRevamp(): Boolean {
         val EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
-        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false) ?: false
+        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false)
+                ?: false
         if (fromActivity) {
             return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION
         } else {
@@ -3578,6 +3579,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onExpandAvailableItem(index: Int) {
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
         if (cartShopHolderData != null) {
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0 > 10) {
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId ?: "")
+            } else {
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId ?: "")
+            }
             cartShopHolderData.isCollapsed = false
             onNeedToUpdateViewItem(index)
         }
@@ -3586,6 +3592,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCollapsedProductClicked(parentIndex: Int, clickedProductIndex: Int) {
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentIndex)
         if (cartShopHolderData != null) {
+            cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopGroupAvailableData?.shopId
+                    ?: "")
             cartShopHolderData.isCollapsed = false
             cartShopHolderData.clickedCollapsedProductIndex = clickedProductIndex
             onNeedToUpdateViewItem(parentIndex)
