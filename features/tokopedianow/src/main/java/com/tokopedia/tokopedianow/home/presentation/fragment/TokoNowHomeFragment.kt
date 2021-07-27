@@ -648,7 +648,7 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartRemove) {
             when(it) {
                 is Success -> {
-                    adapter.updateProductRecom(it.data.first.toLong(), 0)
+                    adapter.updateProductRecom(it.data.first.toLongOrZero(), 0)
                     getMiniCart()
                     showToaster(
                         message = it.data.second,
