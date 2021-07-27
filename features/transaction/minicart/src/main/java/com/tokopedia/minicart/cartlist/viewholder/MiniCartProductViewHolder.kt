@@ -356,7 +356,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             } else {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
-                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, 0)
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt())
                 if (textFieldNotes.isVisible) {
                     constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_field_notes, ConstraintSet.BOTTOM, marginTop)
                 } else {
