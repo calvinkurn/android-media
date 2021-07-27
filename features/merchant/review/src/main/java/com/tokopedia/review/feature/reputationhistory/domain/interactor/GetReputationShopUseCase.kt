@@ -11,21 +11,6 @@ class GetReputationShopUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository
 ): UseCase<ReputationShopResponse>() {
 
-    companion object {
-        const val SHOP_IDS_PARAM = "shop_ids"
-
-        val REPUTATION_SHOP_QUERY = """
-            query reputation_shops(${'$'}shop_ids: Int!) {
-              reputation_shops(shop_ids: [${'$'}shop_ids]) {
-                  badge
-                  badge_hd
-                  score
-                  score_map
-                }
-            }
-        """.trimIndent()
-    }
-
     private var params = mapOf<String, Any>()
 
     fun setParams(shopId: String) {
@@ -46,4 +31,18 @@ class GetReputationShopUseCase @Inject constructor(
         }
     }
 
+    companion object {
+        const val SHOP_IDS_PARAM = "shop_ids"
+
+        val REPUTATION_SHOP_QUERY = """
+            query reputation_shops(${'$'}shop_ids: Int!) {
+              reputation_shops(shop_ids: [${'$'}shop_ids]) {
+                  badge
+                  badge_hd
+                  score
+                  score_map
+                }
+            }
+        """.trimIndent()
+    }
 }

@@ -351,6 +351,9 @@
     <string name="review_reminder_snackbar_error_action">Refresh</string>
     <string name="review_reminder_content_description_top_shadow">Top Shadow</string>
 
+    <!-- Seller Reputation -->
+    <string name="error_message_seller_reputation">Terjadi kesalahan koneksi. Silahkan coba lagi</string>
+
     <!-- Kejar Ulasan -->
     <string name="kejar_ulasan_label">Kejar Ulasan</string>
     <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
