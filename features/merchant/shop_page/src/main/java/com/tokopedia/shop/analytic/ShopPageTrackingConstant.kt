@@ -309,4 +309,8 @@ object ShopPageTrackingConstant {
     const val IMPRESSION_PRODUCT_SEARCH_SUGGESTION = "impression product search suggestion"
     const val CLICK_PRODUCT_SEARCH_SUGGESTION = "click product search suggestion"
     const val SEARCH_NO_RESULT = "search - no result"
+
+    const val SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME = "Shop"
+    const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
+
 }

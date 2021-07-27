@@ -975,7 +975,7 @@ class ShopPageTrackingBuyer(
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
-                ShopPageTrackingConstant.USER_ID to userId
+                ShopPageTrackingConstant.USER_ID to userId.ifEmpty { "0" }
         )
         sendDataLayerEvent(eventMap)
     }
@@ -989,7 +989,7 @@ class ShopPageTrackingBuyer(
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
-                ShopPageTrackingConstant.USER_ID to userId
+                ShopPageTrackingConstant.USER_ID to userId.ifEmpty { "0" }
         )
         sendDataLayerEvent(eventMap)
     }
@@ -1003,7 +1003,7 @@ class ShopPageTrackingBuyer(
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
-                ShopPageTrackingConstant.USER_ID to userId
+                ShopPageTrackingConstant.USER_ID to userId.ifEmpty { "0" }
         )
         sendDataLayerEvent(eventMap)
     }
@@ -1017,7 +1017,7 @@ class ShopPageTrackingBuyer(
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
                 ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
-                ShopPageTrackingConstant.USER_ID to userId
+                ShopPageTrackingConstant.USER_ID to userId.ifEmpty { "0" }
         )
         sendDataLayerEvent(eventMap)
     }

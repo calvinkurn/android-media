@@ -105,6 +105,8 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.common.constant.ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
@@ -2375,7 +2377,12 @@ class NewShopPageFragment :
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@NewShopPageFragment)
-            setUtmCampaignData("Shop", userId, shopId, "Share")
+            setUtmCampaignData(
+                    SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
+                    userId.ifEmpty { "0" },
+                    shopId,
+                    SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
+            )
             setMetaData(
                     shopPageHeaderDataModel?.shopName.orEmpty(),
                     shopPageHeaderDataModel?.avatar.orEmpty(),
