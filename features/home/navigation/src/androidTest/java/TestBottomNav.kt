@@ -46,7 +46,7 @@ class TestBottomNav {
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_UOH))).check(matches(isDisplayed()))
 
-        onView(withTagStringValue(ge1tTitleTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_OS))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_UOH))).check(matches(isDisplayed()))
