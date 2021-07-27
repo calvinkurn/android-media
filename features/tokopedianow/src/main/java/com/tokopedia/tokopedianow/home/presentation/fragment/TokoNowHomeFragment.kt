@@ -1076,7 +1076,6 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onCloseOptionClicked() {
-        TODO("Not yet implemented")
         //you will use this to implement the GA events
     }
 }
