@@ -255,6 +255,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 if (it.isFirstLoad) {
                     sendFirstLoadAnalytics(it)
                     it.isFirstLoad = false
+                    // Collapse unavailable items on first load
+                    viewModel?.toggleUnavailableItemsAccordion()
                 }
             }
         }
