@@ -30,7 +30,7 @@ class SellerReputationViewModel @Inject constructor(
 
     companion object {
         const val PAST_PENALTY_DAYS = 7
-        const val FIRST_PAGE = 1L
+        const val FIRST_PAGE = 1
         const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
     }
 
@@ -85,7 +85,7 @@ class SellerReputationViewModel @Inject constructor(
         })
     }
 
-    fun getReputationPenaltyList(page: Long = FIRST_PAGE) {
+    fun getReputationPenaltyList(page: Int = FIRST_PAGE) {
         launchCatchError(block = {
             val reputationPenaltyAndRewardResponse = withContext(dispatchers.io) {
                 getReputationPenaltyRewardUseCase.setParams(userSession.shopId, page, startDate, endDate)

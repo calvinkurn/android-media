@@ -17,7 +17,7 @@ class GetReputationAndPenaltyRewardUseCase @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val sellerReputationPenaltyMapper: SellerReputationPenaltyMapper
 ) {
-    suspend fun execute(shopId: String, page: Long, startDate: String, endDate: String): Result<SellerReputationPenaltyMergeUiModel> {
+    suspend fun execute(shopId: String, page: Int, startDate: String, endDate: String): Result<SellerReputationPenaltyMergeUiModel> {
        return try {
            withContext(dispatcherProvider.io) {
                val getReputationShopResponse = async {

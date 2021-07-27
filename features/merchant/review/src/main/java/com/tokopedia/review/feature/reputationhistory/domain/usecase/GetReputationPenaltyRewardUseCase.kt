@@ -13,10 +13,10 @@ class GetReputationPenaltyRewardUseCase @Inject constructor(
 
     private var params = mapOf<String, Any>()
 
-    fun setParams(shopId: String, page: Long, startDate: String, endDate: String) {
+    fun setParams(shopId: String, page: Int, startDate: String, endDate: String) {
         params = RequestParams.create().apply {
             putString(SHOP_ID_PARAM, shopId)
-            putLong(PAGE_PARAM, page)
+            putInt(PAGE_PARAM, page)
             putString(START_DATE_PARAM, startDate)
             putString(END_DATE_PARAM, endDate)
         }.parameters

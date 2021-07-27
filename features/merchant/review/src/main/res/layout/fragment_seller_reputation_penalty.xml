@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_reputation_penalty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_N50">
