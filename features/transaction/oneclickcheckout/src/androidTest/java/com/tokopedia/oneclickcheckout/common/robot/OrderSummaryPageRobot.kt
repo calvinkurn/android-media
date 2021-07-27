@@ -598,7 +598,11 @@ class OrderSummaryPageRobot {
         }))
     }
 
-    fun assertShipmentRevamp(shippingDuration: String?, shippingCourier: String, shippingPrice: String?, shippingEta: String?) {
+    fun assertShipmentRevamp(shippingDuration: String? = null,
+                             shippingCourier: String = "",
+                             shippingPrice: String? = null,
+                             shippingEta: String? = null,
+                             shippingNotes: String? = null) {
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 
@@ -632,6 +636,12 @@ class OrderSummaryPageRobot {
                     assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_courier_eta).visibility)
                 } else {
                     assertEquals(View.GONE, view.findViewById<View>(R.id.tv_shipping_courier_eta).visibility)
+                }
+                if (shippingNotes != null) {
+                    assertEquals(shippingNotes, view.findViewById<Typography>(R.id.tv_shipping_courier_notes).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.tv_shipping_courier_notes).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tv_shipping_courier_notes).visibility)
                 }
             }
         }))
