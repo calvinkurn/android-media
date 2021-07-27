@@ -25,7 +25,6 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
     private val parentView: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
     private var titleTextView: TextView = itemView.findViewById(R.id.subTitle_tv)
     private var bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
-    private val cardView: CardView = itemView.findViewById(R.id.banner_image_container)
     private lateinit var bannerCarouselItemViewModel: BannerCarouselItemViewModel
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
@@ -54,9 +53,6 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                                     / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
                             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                             bannerImage.layoutParams = layoutParams
-//                            cardView.layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
-//                                    / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
-
                             bannerImage.loadImageWithoutPlaceholder(itemData.image)
                             itemData.description?.let { title ->
                                 if (title.isEmpty()) {
@@ -76,5 +72,4 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
             })
         }
     }
-
 }
