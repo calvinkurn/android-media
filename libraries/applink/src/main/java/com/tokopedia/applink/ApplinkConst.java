@@ -241,6 +241,7 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
     String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
+    String SELLER_CUSTOM_PRODUCT_LOGISTIC = "tokopedia://seller/setting/custom-product-logistic";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";

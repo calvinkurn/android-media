@@ -350,6 +350,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.MARKETPLACE_ONBOARDING, ApplinkConstInternalMarketplace.ONBOARDING),
             DLP.startWith(ApplinkConst.POWER_MERCHANT_SUBSCRIBE) { ctx, _, _, _ -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(ctx) },
             DLP.exact(ApplinkConst.SELLER_SHIPPING_EDITOR, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING),
+            DLP.exact(ApplinkConst.SELLER_CUSTOM_PRODUCT_LOGISTIC, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC),
             DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
             DLP.exact(ApplinkConst.SELLER_WAREHOUSE_DATA, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
             DLP.exact(ApplinkConst.SETTING_PROFILE, ApplinkConstInternalGlobal.SETTING_PROFILE),

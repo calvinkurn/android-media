@@ -7,6 +7,7 @@
     <string name="path_add_address_v2" translatable="false">/addaddress/v2/</string>
     <string name="path_add_address_v3" translatable="false">/addaddress/v3/</string>
     <string name="path_edit_shop_address" translatable="false">/editaddress/</string>
+    <string name="path_custom_product_logistic" translatable="false">/customproductlogistic</string>
 
     <string name="dropoff_title">Pilih Lokasi Titik Ambil</string>
     <string name="path_dropoff_picker" translatable="false">/dropoff/</string>

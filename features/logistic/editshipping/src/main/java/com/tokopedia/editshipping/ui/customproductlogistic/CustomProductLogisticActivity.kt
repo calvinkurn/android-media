@@ -9,5 +9,4 @@ class CustomProductLogisticActivity: BaseSimpleActivity() {
         return CustomProductLogisticFragment()
     }
 
-
 }

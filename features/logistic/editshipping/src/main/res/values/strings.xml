@@ -88,4 +88,5 @@
     <string name="detail_fitur">Detail Fitur</string>
     <string name="shipper_detail_bottomsheet_title">Detail Kurir Pengiriman</string>
 
+    <string name="title_activity_cpl">Detail Kurir Pengiriman</string>
 </resources>
