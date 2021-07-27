@@ -311,6 +311,7 @@ class TokoNowHomeFragment: Fragment(),
         this.headerName = headerName
         this.recomItem = recomItem
         this.productPosition = position
+        this.channelId = channelId
     }
 
 
@@ -591,10 +592,6 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCartWidgetDataUpdated) {
-            miniCartWidget?.updateData(it)
-        }
-
         observe(viewModelTokoNow.miniCartAdd) {
             when(it) {
                 is Success -> {
@@ -605,17 +602,8 @@ class TokoNowHomeFragment: Fragment(),
                     adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
                     getMiniCart()
 
-                    recomItem?.apply {
-                        analytics.onClickProductRecomAddToCart(
-                            channelId = channelId,
-                            headerName = headerName,
-                            userId = userSession.userId,
-                            quantity = it.data.data.quantity.toString(),
-                            recommendationItem = this,
-                            position = productPosition,
-                            cartId = it.data.data.cartId
-                        )
-                    }
+                    // track add to cart
+                    trackAddToCart(it.data.data.quantity, it.data.data.cartId)
                 }
                 is Fail -> {
                     showToaster(
@@ -631,6 +619,10 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
                     miniCartWidget?.updateData(shopIds)
+
+                    // track add to cart
+                    val miniCartItem = viewModelTokoNow.miniCartSimplifiedData?.miniCartItems?.firstOrNull { it.productId == recomItem?.productId.toString()}
+                    trackAddToCart(miniCartItem?.quantity.toZeroIfNull(), miniCartItem?.cartId.orEmpty())
                 }
                 is Fail -> {
                     showToaster(
@@ -646,6 +638,10 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     adapter.updateProductRecom(it.data.toLong(), 0)
                     getMiniCart()
+
+                    // track add to cart
+                    val miniCartItem = viewModelTokoNow.miniCartSimplifiedData?.miniCartItems?.firstOrNull { it.productId == recomItem?.productId.toString()}
+                    trackAddToCart(0, miniCartItem?.cartId.orEmpty())
                 }
                 is Fail -> {
                     showToaster(
@@ -654,6 +650,20 @@ class TokoNowHomeFragment: Fragment(),
                     )
                 }
             }
+        }
+    }
+
+    private fun trackAddToCart(quantity: Int, cartId: String) {
+        recomItem?.apply {
+            analytics.onClickProductRecomAddToCart(
+                channelId = channelId,
+                headerName = headerName,
+                userId = userSession.userId,
+                quantity = quantity.toString(),
+                recommendationItem = this,
+                position = productPosition,
+                cartId = cartId
+            )
         }
     }
 

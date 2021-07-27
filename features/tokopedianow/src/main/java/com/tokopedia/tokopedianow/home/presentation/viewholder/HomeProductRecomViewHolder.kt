@@ -31,10 +31,11 @@ class HomeProductRecomViewHolder(
     private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
 
     private var channelId = ""
-    private var isFirstShowed = true
+    private var isFirstShowed = false
 
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
+        isFirstShowed = true
         productRecom.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,

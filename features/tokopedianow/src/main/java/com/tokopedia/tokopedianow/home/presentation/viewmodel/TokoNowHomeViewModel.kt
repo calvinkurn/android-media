@@ -76,27 +76,26 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCart
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
-    val miniCartWidgetDataUpdated: LiveData<MiniCartSimplifiedData>
-        get() = _miniCartWidgetDataUpdated
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
         get() = _miniCartUpdate
     val miniCartRemove: LiveData<Result<String>>
         get() = _miniCartRemove
+    val miniCartSimplifiedData: MiniCartSimplifiedData?
+        get() = _miniCartSimplifiedData
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    private val _miniCartWidgetDataUpdated = MutableLiveData<MiniCartSimplifiedData>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<String>>()
+    private var _miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     private var hasTickerBeenRemoved = false
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
-    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     fun getLoadingState() {
         homeLayoutItemList.clear()
@@ -302,7 +301,6 @@ class TokoNowHomeViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-            _miniCartWidgetDataUpdated.value = miniCartSimplifiedData
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.value = Fail(it)
@@ -351,7 +349,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun setMiniCartSimplifiedData(data: MiniCartSimplifiedData) {
-        miniCartSimplifiedData = data
+        _miniCartSimplifiedData = data
     }
 
     fun removeTickerWidget(id: String) {
