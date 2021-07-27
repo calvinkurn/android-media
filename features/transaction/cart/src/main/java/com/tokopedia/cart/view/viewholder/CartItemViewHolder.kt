@@ -21,7 +21,6 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -79,7 +78,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         cartItemHolderData = data
         this.dataSize = dataSize
 
-        renderProductInfo(data, parentPosition)
+        renderProductInfo(data)
         renderSelection(data, parentPosition)
         renderQuantity(data, parentPosition, viewHolderListener)
         renderDefaultActionState()
@@ -99,7 +98,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             data.actionsData.forEach {
                 when (it.id) {
                     ACTION_NOTES -> {
-                        renderActionNotes(data, parentPosition, viewHolderListener)
+                        renderProductNotes(data)
                     }
                     ACTION_WISHLIST, ACTION_WISHLISTED -> {
                         renderActionWishlist(it, data)
@@ -149,7 +148,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
     }
 
-    private fun renderProductInfo(data: CartItemHolderData, parentPosition: Int) {
+    private fun renderProductInfo(data: CartItemHolderData) {
         renderProductName(data)
         renderImage(data)
         renderPrice(data)
@@ -320,115 +319,107 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
     }
 
-    private fun renderActionNotes(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        binding.etRemark.textFieldInput.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                data.isStateNotesOnFocuss = false
-                actionListener?.onEditNoteDone(parentPosition)
-                KeyboardHandler.DropKeyboard(binding.etRemark.context, itemView)
-                true
-            } else false
-        }
-
-        binding.tvLabelRemarkOption.setOnClickListener {
-            if (!data.cartItemData.isError) {
-                data.isStateNotesOnFocuss = true
-                binding.etRemark.requestFocus()
-                actionListener?.onCartItemLabelInputRemarkClicked()
-                if (binding.tvLabelRemarkOption.text == binding.tvLabelRemarkOption.context.getString(
-                                R.string.label_button_change_note)) {
-                    var remark = data.cartItemData.updatedData.remark
-                    remark += " "
-                    data.cartItemData.updatedData.remark = remark
-                }
-                data.isStateHasNotes = true
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    viewHolderListener.onNeedToRefreshSingleProduct(adapterPosition)
-                }
-            }
-        }
-
-        data.isStateHasNotes = data.isStateNotesOnFocuss || data.cartItemData.updatedData.remark.isNotBlank() == true
-
-        renderNotesViews(data)
-
-        binding.etRemark.textFieldInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData.maxCharRemark))
-        binding.etRemark.textFieldInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                editable?.let {
-                    itemNoteTextWatcherAction(it)
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                charSequence?.let {
-                    binding.tvNoteCharCounter.text = "${charSequence.length}/${data.cartItemData.updatedData.maxCharRemark}"
-                }
-            }
-        })
-        binding.etRemark.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-        binding.etRemark.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-        binding.llShopNoteSection.show()
-    }
-
-    private fun renderNotesViews(data: CartItemHolderData) {
+    private fun renderProductNotes(element: CartItemHolderData) {
         with(binding) {
-            if (data.isStateHasNotes) {
-                // Has a notes from pdp or not at all but click add notes button
-                if (data.isStateNotesOnFocuss && (data.cartItemData.originData.originalRemark.isBlank() || data.cartItemData.updatedData.remark != data.cartItemData.originData.originalRemark)) {
-                    // Notes is empty after click add notes button or has value after use click change notes button
-                    tvRemark.visibility = View.GONE
-                    etRemark.textFieldInput.setText(Utils.getHtmlFormat(data.cartItemData.updatedData.remark))
-                    etRemark.visibility = View.VISIBLE
-                    etRemark.textFieldInput.setSelection(etRemark.textFieldInput.length())
-                    tvLabelRemarkOption.visibility = View.GONE
-                    tvNoteCharCounter.visibility = View.VISIBLE
-                    tvLabelRemarkOption.setPadding(0, 0, 0, 0)
-                } else {
-                    // Has notes from pdp
-                    etRemark.visibility = View.GONE
-                    tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData.remark)
-                    tvRemark.visibility = View.VISIBLE
-                    tvLabelRemarkOption.visibility = View.VISIBLE
-                    tvNoteCharCounter.visibility = View.GONE
-                    tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_change_note)
-                    tvLabelRemarkOption.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
-
-                    setNotesWidth()
-                }
-                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            } else {
-                // No notes at all
-                etRemark.visibility = View.GONE
-                tvRemark.visibility = View.GONE
-                tvNoteCharCounter.visibility = View.GONE
-                tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_add_note)
-                tvLabelRemarkOption.visibility = View.VISIBLE
-                etRemark.textFieldInput.setText("")
-                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                tvLabelRemarkOption.setPadding(0, 0, 0, 0)
+            textNotes.setOnClickListener {
+                renderProductNotesEditable(element)
             }
+            tvLabelRemarkOption.setOnClickListener {
+                renderProductNotesEditable(element)
+            }
+
+            if (element.cartItemData.updatedData.remark.isNotBlank()) {
+                renderProductNotesFilled(element)
+            } else {
+                renderProductNotesEmpty(element)
+            }
+            llShopNoteSection.show()
         }
     }
 
-    private fun setNotesWidth() {
-        val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
-        val paddingLeftRight = padding * 2
-        val remarkOptionWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_40)
-        val screenWidth = getScreenWidth()
-        val maxNotesWidth = screenWidth - paddingLeftRight
-        val noteWidth = maxNotesWidth - remarkOptionWidth
+    private fun renderProductNotesEditable(element: CartItemHolderData) {
+        with(binding) {
+            etRemark.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            etRemark.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+            etRemark.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            etRemark.context?.let {
+                etRemark.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        KeyboardHandler.DropKeyboard(it, v)
+                        etRemark.textFieldInput.clearFocus()
+                        if (element.cartItemData.updatedData.remark.isNotBlank()) {
+                            renderProductNotesFilled(element)
+                        } else {
+                            renderProductNotesEmpty(element)
+                        }
+                        true
+                    } else false
+                }
+            }
 
-        binding.tvRemark.measure(0, 0)
-        val currentWidth = binding.tvRemark.measuredWidth
-        if (currentWidth >= maxNotesWidth) {
-            binding.tvRemark.layoutParams.width = noteWidth
-            binding.tvRemark.requestLayout()
+            etRemark.requestFocus()
+            textNotes.gone()
+            etRemark.show()
+            tvLabelRemarkOption.gone()
+            tvRemark.gone()
+            tvRemark.text = element.cartItemData.updatedData.remark
+            etRemark.setCounter(element.cartItemData.updatedData.maxCharRemark)
+            etRemark.textFieldInput.setText(element.cartItemData.updatedData.remark)
+            etRemark.textFieldInput.setSelection(etRemark.textFieldInput.length())
+            etRemark.textFieldInput.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val notes = s.toString()
+                    element.cartItemData.updatedData.remark = notes
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+            })
+        }
+    }
+
+    private fun renderProductNotesEmpty(element: CartItemHolderData) {
+        with(binding) {
+            textNotes.show()
+            tvRemark.gone()
+            tvLabelRemarkOption.gone()
+            etRemark.gone()
+        }
+    }
+
+    private fun renderProductNotesFilled(element: CartItemHolderData) {
+        with(binding) {
+            etRemark.gone()
+            tvRemark.text = element.cartItemData.updatedData.remark
+            setProductNotesWidth()
+            tvRemark.show()
+            tvLabelRemarkOption.show()
+            textNotes.gone()
+        }
+    }
+
+    private fun setProductNotesWidth() {
+        with(binding) {
+            val paddingParent = itemView.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
+            val textNotesChangeWidth = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+            val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(R.dimen.dp_4)
+            val screenWidth = getScreenWidth()
+            val maxNotesWidth = screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth
+
+            tvRemark.measure(0, 0)
+            val currentWidth = tvRemark.measuredWidth
+            if (currentWidth >= maxNotesWidth) {
+                tvRemark.layoutParams?.width = maxNotesWidth
+                tvRemark.requestLayout()
+            } else {
+                tvRemark.layoutParams?.width = currentWidth
+                tvRemark.requestLayout()
+            }
         }
     }
 

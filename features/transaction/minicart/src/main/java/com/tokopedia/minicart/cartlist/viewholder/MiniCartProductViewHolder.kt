@@ -236,6 +236,24 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderProductNotesEditable(element: MiniCartProductUiModel) {
         with(viewBinding) {
+            textFieldNotes.context?.let {
+                textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        KeyboardHandler.DropKeyboard(it, v)
+                        textFieldNotes.textFieldInput.clearFocus()
+                        if (element.productNotes.isNotBlank()) {
+                            renderProductNotesFilled(element)
+                        } else {
+                            renderProductNotesEmpty(element)
+                        }
+                        true
+                    } else false
+                }
+            }
+            textFieldNotes.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            textFieldNotes.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldNotes.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+
             textFieldNotes.requestFocus()
             textNotes.gone()
             textFieldNotes.show()
@@ -264,22 +282,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
                 }
             })
-            textFieldNotes.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            textFieldNotes.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldNotes.context?.let {
-                textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        KeyboardHandler.DropKeyboard(it, v)
-                        textFieldNotes.textFieldInput.clearFocus()
-                        if (element.productNotes.isNotBlank()) {
-                            renderProductNotesFilled(element)
-                        } else {
-                            renderProductNotesEmpty(element)
-                        }
-                        true
-                    } else false
-                }
-            }
             adjustButtonDeleteConstraint(element)
         }
     }
@@ -308,17 +310,16 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun setProductNotesWidth() {
         with(viewBinding) {
-            val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
-            val paddingLeftRight = padding * 2
-            val textNotesChangeWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_40)
+            val paddingParent = itemView.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
+            val textNotesChangeWidth = itemView.resources.getDimensionPixelSize(R.dimen.dp_32)
+            val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(R.dimen.dp_4)
             val screenWidth = getScreenWidth()
-            val maxNotesWidth = screenWidth - paddingLeftRight
-            val noteWidth = maxNotesWidth - textNotesChangeWidth
+            val maxNotesWidth = screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth
 
             textNotesFilled.measure(0, 0)
             val currentWidth = textNotesFilled.measuredWidth
             if (currentWidth >= maxNotesWidth) {
-                textNotesFilled.layoutParams?.width = noteWidth
+                textNotesFilled.layoutParams?.width = maxNotesWidth
                 textNotesFilled.requestLayout()
             } else {
                 textNotesFilled.layoutParams?.width = currentWidth
