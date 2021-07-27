@@ -43,7 +43,6 @@ class LottieBottomNavbar : LinearLayout {
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
-    private var isThreeItemBottomNav: Boolean = false
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -99,7 +98,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun adjustBadgePosition() {
         if (menu.isEmpty()) return
         val itemWidthSize = containerWidth/menu.size
-        val badgeRightMargin = if (isThreeItemBottomNav) (itemWidthSize/2.7).toInt() else itemWidthSize/4
+        val badgeRightMargin = itemWidthSize/menu.size
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
@@ -117,7 +116,7 @@ class LottieBottomNavbar : LinearLayout {
         emptyBadgeLayoutParam?.setMargins(
                 resources.getDimensionPixelOffset(R.dimen.dp_0),
                 resources.getDimensionPixelOffset(R.dimen.dp_1),
-                badgeRightMargin,
+                badgeRightMargin+resources.getDimensionPixelOffset(R.dimen.dp_12),
                 resources.getDimensionPixelOffset(R.dimen.dp_1)
         )
 
@@ -425,10 +424,9 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
-    fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav:Boolean = false) {
+    fun setMenu(menu: List<BottomMenu>) {
         this.menu.clear()
         this.menu.addAll(menu)
-        this.isThreeItemBottomNav = isThreeItemBottomNav
         itemCount = this.menu.size
         resizeContainer()
 
