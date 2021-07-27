@@ -274,7 +274,7 @@ class PlayAnalytic(
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
                     BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, cartId)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, cartId, shopInfo)
                 }
             }
         }
@@ -592,21 +592,28 @@ class PlayAnalytic(
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
-                                                    cartId: String) {
+                                                    cartId: String,
+                                                    shopInfo: PlayPartnerInfoUiModel) {
         trackingQueue.putEETracking(
                 EventModel(
-                        KEY_TRACK_ADD_TO_CART,
+                        "add_to_cart",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK buy in bottom sheet",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "add" to hashMapOf(
-                                        "products" to convertProductToHashMap(product, cartId, "bottom sheet")
-                                )
-                        )
+                        "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                ),
+                hashMapOf(
+                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                    KEY_USER_ID to userId,
+                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                    KEY_PRODUCT_ID to product.id,
+                    KEY_PRODUCT_NAME to product.title,
+                    KEY_PRODUCT_URL to product.applink.toString(),
+                    KEY_CHANNEL to mChannelName
                 )
         )
     }
