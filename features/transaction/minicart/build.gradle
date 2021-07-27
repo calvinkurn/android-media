@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network

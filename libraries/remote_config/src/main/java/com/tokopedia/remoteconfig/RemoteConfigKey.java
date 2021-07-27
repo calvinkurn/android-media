@@ -203,6 +203,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
+    public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
