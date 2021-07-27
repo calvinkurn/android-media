@@ -21,15 +21,20 @@ class PlayAnalytic(
 
     private val userId: String 
         get() = userSession.userId
+
+    private val isLoggedIn: String
+        get() = userSession.isLoggedIn.toString()
     
     private var mChannelId: String = ""
     private var mChannelType: PlayChannelType = PlayChannelType.Unknown
     private val mSessionId: String = generateSwipeSession()
     private var mSourceType = ""
+    private var mChannelName = ""
 
-    fun sendScreen(channelId: String, channelType: PlayChannelType, sourceType: String = "") {
+    fun sendScreen(channelId: String, channelType: PlayChannelType, sourceType: String = "", channelName: String = "") {
         this.mChannelId = channelId
         this.mChannelType = channelType
+        this.mChannelName = channelName
         if (sourceType.isNotEmpty() && sourceType.isNotBlank()) this.mSourceType = sourceType
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}")
     }
@@ -339,7 +344,9 @@ class PlayAnalytic(
                         KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                        KEY_IS_LOGGED_IN to isLoggedIn,
+                        KEY_CHANNEL to mChannelName
                 )
         )
     }
@@ -648,6 +655,8 @@ class PlayAnalytic(
         private const val KEY_SESSION_IRIS = "sessionIris"
         private const val KEY_USER_ID = "userId"
         private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_IS_LOGGED_IN = "isLoggedIn"
+        private const val KEY_CHANNEL = "channel"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_CLICK_BACK = "clickBack"
