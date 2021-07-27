@@ -51,6 +51,8 @@
     <string name="smart_bills_add_bills_empty_state_image">https://images.tokopedia.net/img/android/recharge/smart_bills/ic_smartbills_addbills.png</string>
     <string name="smart_bills_add_bills_product_label">Produk Tagihan</string>
     <string name="smart_bills_add_bills_product_number_label">Nomor HP</string>
+    <string name="smart_bills_add_bills_product_nominal_label">Nominal</string>
+    <string name="smart_bills_add_bills_product_button_label">Tambah Tagihan</string>
     <string name="smart_bills_add_bills_product_placeholder_pulsa">Pulsa</string>
     <string name="smart_bills_add_bills_product_placeholder_data">Paket Data</string>
 </resources>

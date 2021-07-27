@@ -53,6 +53,35 @@
         tools:visibility="visible"
         />
 
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_sbm_product_nominal"
+        app:layout_constraintTop_toBottomOf="@id/text_field_sbm_product_number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_label="@string/smart_bills_add_bills_product_nominal_label"
+        app:text_field_label_static="false"
+        app:text_field_append_drawable_icon_1="@drawable/unify_chips_ic_chevron_disabled"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_sbm_add_telco"
+        app:layout_constraintTop_toBottomOf="@+id/text_field_sbm_product_nominal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:text="@string/smart_bills_add_bills_product_button_label"
+        />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_sbm_add_telco"
         android:layout_width="@dimen/spacing_lvl6"

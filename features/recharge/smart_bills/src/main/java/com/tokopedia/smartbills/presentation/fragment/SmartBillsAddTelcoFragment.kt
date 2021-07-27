@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,6 +30,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_smart_bills_add_telco.*
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
@@ -39,6 +42,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private var templateTelco: String? = null
     private var categoryId: String? = null
     private var menuId: String? = null
+    private var validationsPhoneNumber: List<RechargeValidation> = emptyList()
 
     override fun getScreenName(): String = ""
 
@@ -46,11 +50,13 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         getComponent(SmartBillsComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         templateTelco = (activity as SmartBillsAddTelcoActivity).getTemplateTelco()
         categoryId = (activity as SmartBillsAddTelcoActivity).getCategoryId()
         menuId = (activity as SmartBillsAddTelcoActivity).getMenuId()
-        return inflater.inflate(R.layout.fragment_smart_bills_add_telco, container, false)
+        return inflater.inflate(R.layout.fragment_smart_bills_add_telco, container,
+                false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +122,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             when(it){
                 is Fail -> {}
                 is Success -> {
-
+                    validationsPhoneNumber = it.data.rechargeCatalogPrefixSelect.
+                    validations.toMutableList()
                 }
             }
         }
@@ -153,9 +160,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     RouteManager.route(context, linkUrl.toString())
                 }
 
-                override fun onDismiss() {
-
-                }
+                override fun onDismiss() {}
             })
 
             ticker_sbm_add_telco.addPagerView(tickerAdapter, messages)
@@ -184,10 +189,26 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 override fun afterTextChanged(s: Editable?) {
                     text_field_sbm_product_number.getFirstIcon().hide()
                     onInputNumberChanged(getNumber())
+                    validationNumber()
                 }
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            })
+        }
+
+        text_field_sbm_product_nominal.apply {
+            show()
+            textFieldInput.keyListener = null
+            textFieldInput.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    when (event?.action) {
+                        MotionEvent.ACTION_DOWN -> {
+
+                        }
+                    }
+                    return v?.onTouchEvent(event) ?: true
+                }
             })
         }
     }
@@ -201,7 +222,28 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         text_field_sbm_product_number.getFirstIcon().show()
     }
 
-    fun getNumber(): String = text_field_sbm_product_number.textFieldInput.text.toString()
+    private fun setErrorNumber(isError: Boolean, message: String){
+        text_field_sbm_product_number.apply {
+            setError(isError)
+            setMessage(message)
+        }
+    }
+
+    private fun getNumber(): String = text_field_sbm_product_number.textFieldInput.text.toString()
+
+    private fun validationNumber(){
+        if (!validationsPhoneNumber.isNullOrEmpty()) {
+            for (validation in validationsPhoneNumber) {
+                val phoneIsValid = Pattern.compile(validation.rule)
+                        .matcher(getNumber()).matches()
+                if (!phoneIsValid) {
+                    setErrorNumber(true, validation.message)
+                    break
+                }
+                setErrorNumber(false, "")
+            }
+        }
+    }
 
     companion object {
         fun newInstance() = SmartBillsAddTelcoFragment()

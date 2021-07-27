@@ -59,7 +59,6 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         rechargeCatalogPrefixSelectUseCase.execute(
                 RechargeCatalogPrefixSelectUseCase.createParams(menuId),
                 {
-                    //on success get prefix
                     mutableCatalogPrefixSelect.value = Success(it)
                 },
                 {
