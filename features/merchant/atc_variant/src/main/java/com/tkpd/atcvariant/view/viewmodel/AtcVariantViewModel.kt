@@ -88,6 +88,11 @@ class AtcVariantViewModel @Inject constructor(
 
     private var isShopOwner: Boolean = false
 
+    //updated with the previous page data as well
+    fun getVariantAggregatorData() : ProductVariantAggregatorUiData? {
+        return aggregatorData
+    }
+
     fun onVariantClicked(isTokoNow: Boolean,
                          selectedOptionKey: String,
                          selectedOptionId: String,

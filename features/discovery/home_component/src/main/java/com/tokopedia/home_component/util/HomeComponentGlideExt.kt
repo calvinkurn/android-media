@@ -8,6 +8,7 @@ import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.wrapper.MediaDataSource
+import io.embrace.android.embracesdk.Embrace
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -25,7 +26,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageH
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring)
+            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
             listener?.successLoad()
         }, {
             GlideErrorLogHelper().logError(context, it, url)
@@ -40,7 +41,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
         fitCenter()
         setPlaceHolder(R.drawable.placeholder_grey)
         listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring)
+            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
         }, {
             GlideErrorLogHelper().logError(context, it, url)
         })
@@ -53,7 +54,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
         centerCrop()
         setRoundedRadius(roundedRadius.toFloat())
         listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring)
+            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
         })
     }
 }
@@ -66,7 +67,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
         fitCenter()
         listener({ _, mediaDataSource ->
             listener?.successLoad()
-            handleOnResourceReady(mediaDataSource, performanceMonitoring)
+            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
         }, {
             listener?.failedLoad()
         })
@@ -89,7 +90,7 @@ fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = ""
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImageWithoutPlaceholder(url) {
         listener({ _, mediaDataSource ->
-            handleOnResourceReady(mediaDataSource, performanceMonitoring)
+            handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
             listener?.successLoad()
         }, {
             GlideErrorLogHelper().logError(context, it, url)
@@ -120,12 +121,17 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     if (fpmItemLabel.isNotEmpty()) {
         performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
+
+        Embrace.getInstance().startEvent(fpmItemLabel, null, false)
     }
     return performanceMonitoring
 }
 
-fun handleOnResourceReady(dataSource: MediaDataSource?, performanceMonitoring: PerformanceMonitoring?) {
+fun handleOnResourceReady(dataSource: MediaDataSource?,
+                          performanceMonitoring: PerformanceMonitoring?,
+                          fpmItemLabel: String) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
+        Embrace.getInstance().endEvent(fpmItemLabel)
     }
 }

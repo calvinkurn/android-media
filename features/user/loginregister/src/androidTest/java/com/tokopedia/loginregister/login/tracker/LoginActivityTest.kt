@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -19,6 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.facebook.FacebookSdk
 import com.google.firebase.FirebaseApp
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -34,7 +36,6 @@ import com.tokopedia.loginregister.login.helper.waitForData
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
-import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -156,7 +157,7 @@ class LoginActivityTest {
     }
 
     fun simulateClickForgotPass() {
-        intending(hasComponent(ForgotPasswordActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         clickForgotPass()
     }
 
