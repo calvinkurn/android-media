@@ -266,11 +266,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         if (overweightData != null) {
             analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
         }
-        val tickerErrorUiModel = miniCartListUiModel.getMiniCartTickerErrorUiModel()
-        if (tickerErrorUiModel != null) {
-            val message = bottomSheet?.context?.getString(R.string.mini_cart_message_ticker_error, tickerErrorUiModel.unavailableItemCount)
-                    ?: ""
-            analytics.eventViewTickerErrorUnavailableProduct(message)
+        val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: ""
+        loop@ for (visitable in miniCartListUiModel.visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {
+                analytics.eventViewTickerErrorUnavailableProduct(shopId, visitable.errorType)
+                break@loop
+            }
         }
     }
 

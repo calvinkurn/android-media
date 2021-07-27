@@ -367,7 +367,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
             CartShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartShopHolderData
-                (holder as CartShopViewHolder).bindData(data)
+                if (data.isNeedToRefreshWeight) {
+                    (holder as CartShopViewHolder).bindUpdatedWeight(data)
+                } else {
+                    (holder as CartShopViewHolder).bindData(data)
+                }
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData

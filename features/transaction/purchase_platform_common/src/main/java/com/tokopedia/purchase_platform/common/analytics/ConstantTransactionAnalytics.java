@@ -50,6 +50,7 @@ public interface ConstantTransactionAnalytics {
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
         String VIEW_CART_IRIS = "viewCartIris";
+        String CLICK_CART = "clickCart";
         String CLICK_REGISTER = "clickRegister";
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
@@ -533,6 +534,9 @@ public interface ConstantTransactionAnalytics {
         // Cart TokoNow
         String VIEW_TOASTER_ERROR_IN_CART_PAGE = "view toaster error in cart page";
         String LOAD_CART_WITH_UNAVAILABLE_PRODUCT = "load cart with unavailable product";
+        String CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW = "click on product image on collapse view";
+        String CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT = "click lihat selengkapnya for now product";
+        String CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT = "click lihat on + lainnya on now product";
     }
 
     interface EventLabel {
