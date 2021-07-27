@@ -546,7 +546,7 @@ object DynamicProductDetailTracking {
                         ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, recomItem.shopType,
                         ProductTrackingConstant.Tracking.VARIANT, ""
                 ))))
-
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
         fun eventClickSeeFilterAnnotation(chipValue: String) {
