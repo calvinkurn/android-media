@@ -607,7 +607,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), true, any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(),  any(), true) }
     }
 
     @Test
@@ -634,6 +634,6 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(true, isOnSuccessCalled)
-        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), false, any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(),  any(), false) }
     }
 }

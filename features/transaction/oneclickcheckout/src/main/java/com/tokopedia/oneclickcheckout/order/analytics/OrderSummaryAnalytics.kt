@@ -546,8 +546,8 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         ppPrice: Int?, cartId: String?, isChecked: String
     ) {
         val gtmData = getGtmData(
-            EventName.CHECKOUT,
-            EventCategory.ORDER_SUMMARY,
+            EventName.PURCHASE_PROTECTION_CLICK,
+            EventCategory.PURCHASE_PROTECTION_OCC,
             EventAction.PP_CLICK_BAYAR,
             "$protectionName - $isChecked - $categoryLvl3Id - " +
                     "${ppPrice ?: 0} - ${cartId ?: ""}"
