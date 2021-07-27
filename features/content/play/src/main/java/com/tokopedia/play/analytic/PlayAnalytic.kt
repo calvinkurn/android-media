@@ -430,7 +430,12 @@ class PlayAnalytic(
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                        KEY_CHANNEL to mChannelName,
+                        KEY_IS_LOGGED_IN to isLoggedIn,
+                        KEY_PRODUCT_ID to featuredProduct.id,
+                        KEY_PRODUCT_NAME to featuredProduct.title,
+                        KEY_PRODUCT_URL to featuredProduct.applink.toString()
                 )
         )
     }
@@ -657,6 +662,9 @@ class PlayAnalytic(
         private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_IS_LOGGED_IN = "isLoggedIn"
         private const val KEY_CHANNEL = "channel"
+        private const val KEY_PRODUCT_ID = "productId"
+        private const val KEY_PRODUCT_NAME = "productName"
+        private const val KEY_PRODUCT_URL = "productUrl"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_CLICK_BACK = "clickBack"
