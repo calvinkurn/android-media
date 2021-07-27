@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.analytics
 
-import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
@@ -44,35 +43,19 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventClickSimilarProductEmptyStock() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.FIND_SIMILAR_PRODUCT,
-                EventLabel.EMPTY_STOCK
-        )
-    }
-
-    fun eventClickSimilarProductShopClosed() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.FIND_SIMILAR_PRODUCT,
-                EventLabel.SHOP_CLOSED
-        )
-    }
-
-    fun eventClickOnInsurance(productId: String, insuranceCheck: String, insuranceValue: String) {
-        sendEventCategoryActionLabel(
+    fun eventClickOnInsurance(insuranceCheck: String, insuranceValue: String) {
+        val gtmData = getGtmData(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_ON_INSURANCE,
-                "$productId - $insuranceCheck - $insuranceValue"
+                "$insuranceCheck - $insuranceValue"
         )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 
     fun eventClickBayarNotSuccess(isButtonPilihPembayaran: Boolean, eventId: String) {
-        Log.i("qwertyuiop", "not success")
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
@@ -89,6 +72,18 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    fun eventViewMessageInCourier2JamSampai(message: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_MESSAGE_IN_COURIER_2_JAM_SAMPAI,
+                message
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
     fun eventChooseCourierSelectionOSP(shippingAgentId: String) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
@@ -98,13 +93,16 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventClickRingkasanBelanjaOSP(productId: String, totalPrice: String) {
-        sendEventCategoryActionLabel(
+    fun eventClickRingkasanBelanjaOSP(totalPrice: String) {
+        val gtmData = getGtmData(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_RINGKASAN_BELANJA_OSP,
-                "$productId - $totalPrice"
+                totalPrice
         )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
     }
 
     fun eventClickBackFromOSP() {
@@ -216,6 +214,18 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
                 spId
         )
         gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickRefreshOnCourierSection(shopId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_REFRESH_ON_COURIER_SECTION,
+                shopId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         sendGeneralEvent(gtmData)
     }
 
@@ -400,11 +410,57 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
+    fun eventViewOverweightTicker(shopId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_OVERWEIGHT_TICKER,
+                shopId
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewErrorProductLevelTicker(shopId: String, message: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ERROR_PRODUCT_LEVEL_TICKER,
+                "$shopId - $message"
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewErrorOrderLevelTicker(shopId: String, message: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ERROR_ORDER_LEVEL_TICKER,
+                "$shopId - $message"
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewErrorToasterMessage(shopId: String, message: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ERROR_TOASTER_MESSAGE,
+                "$shopId - $message"
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 
-        const val ERROR_ID_STOCK = "1"
-        const val ERROR_ID_SHOP_CLOSED = "2"
         const val ERROR_ID_PRICE_CHANGE = "8"
         const val ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE = "9"
         const val ERROR_ID_LOGISTIC_DISTANCE_EXCEED = "10"

@@ -97,12 +97,20 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 tickerOrderShop.setHtmlDescription(shop.errors.first())
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
+                if (!shop.hasTriggerViewErrorOrderLevelTicker) {
+                    orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.errors.first())
+                    shop.hasTriggerViewErrorOrderLevelTicker = true
+                }
             } else if (shop.overweight > 0) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
                 val overweightString = NumberFormat.getNumberInstance(Locale("in", "id")).format(shop.overweight / 1000)
                 tickerOrderShop.setHtmlDescription(shop.maximumWeightWording.replace(MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, overweightString))
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
+                if (!shop.hasTriggerViewOverweightTicker) {
+                    orderSummaryAnalytics.eventViewOverweightTicker(shop.shopId.toString())
+                    shop.hasTriggerViewOverweightTicker = true
+                }
             } else if (shop.firstProductErrorIndex > -1 && shop.unblockingErrorMessage.isNotBlank()) {
                 occCustomTickerDescription.text = shop.unblockingErrorMessage
                 occCustomTickerAction.setOnClickListener {
@@ -110,14 +118,22 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 }
                 tickerOrderShop.gone()
                 occCustomTickerError.visible()
+                if (!shop.hasTriggerViewErrorOrderLevelTicker) {
+                    orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.unblockingErrorMessage)
+                    shop.hasTriggerViewErrorOrderLevelTicker = true
+                }
             } else if (shop.shopTicker.isNotBlank()) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
                 tickerOrderShop.setHtmlDescription(shop.shopTicker)
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
+                shop.hasTriggerViewErrorOrderLevelTicker = false
+                shop.hasTriggerViewOverweightTicker = false
             } else {
                 tickerOrderShop.gone()
                 occCustomTickerError.gone()
+                shop.hasTriggerViewErrorOrderLevelTicker = false
+                shop.hasTriggerViewOverweightTicker = false
             }
         }
     }

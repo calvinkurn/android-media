@@ -26,11 +26,13 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
 
+    private var shop: OrderShop = OrderShop()
     private var profile: OrderProfile = OrderProfile()
     private var shipment: OrderShipment = OrderShipment()
     private var payment: OrderPayment = OrderPayment()
 
-    fun setPreferenceData(profile: OrderProfile, shipment: OrderShipment, payment: OrderPayment) {
+    fun setPreferenceData(shop: OrderShop, profile: OrderProfile, shipment: OrderShipment, payment: OrderPayment) {
+        this.shop = shop
         this.profile = profile
         this.shipment = shipment
         this.payment = payment
@@ -373,7 +375,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 /* no-op */
             }
             setMultiViewsOnClickListener(iconReloadShipping, btnReloadShipping) {
-                listener.reloadShipping()
+                listener.reloadShipping(shop.shopId.toString())
             }
             btnReloadShipping.visible()
             iconReloadShipping.visible()
@@ -455,8 +457,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvShippingCourierEta.text = shipping.shippingEta
             }
             if (shipping.logisticPromoViewModel?.description?.isNotBlank() == true) {
-                tvShippingCourierNotes.text = shipping.logisticPromoViewModel.description
+                tvShippingCourierNotes.text = MethodChecker.fromHtml(shipping.logisticPromoViewModel.description)
                 tvShippingCourierNotes.visible()
+                if (!shipping.hasTriggerViewMessageTracking) {
+                    orderSummaryAnalytics.eventViewMessageInCourier2JamSampai(shipping.logisticPromoViewModel.description)
+                    shipping.hasTriggerViewMessageTracking = true
+                }
             } else {
                 tvShippingCourierNotes.gone()
             }
@@ -779,17 +785,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     interface OrderPreferenceCardListener {
 
-//        fun onAddAddress(token: Token?)
-
-//        fun onAddressChange(addressModel: RecipientAddressModel)
-
-//        fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel)
-
-//        fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean)
-
         fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel)
 
-        fun reloadShipping()
+        fun reloadShipping(shopId: String)
 
         fun chooseAddress(currentAddressId: String)
 
@@ -802,8 +800,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         fun choosePayment(profile: OrderProfile, payment: OrderPayment)
 
         fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
-
-//        fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
 
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 

@@ -19,12 +19,12 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         const val VIEW_TYPE = 5
     }
 
-    fun setupInsurance(shipment: OrderShipment, productId: String) {
+    fun setupInsurance(shipment: OrderShipment) {
         val insurance = shipment.insurance
         val insuranceData = insurance.insuranceData
         binding.apply {
             if (insuranceData != null && !shipment.isLoading) {
-                setupListeners(insuranceData, productId)
+                setupListeners(insuranceData)
                 when (insuranceData.insuranceType) {
                     InsuranceConstant.INSURANCE_TYPE_MUST -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance)
@@ -62,7 +62,6 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                     tvInsurancePrice.gone()
                 }
             } else if (insuranceData == null) {
-                // TODO: 12/07/21 check UI if shipment/order error
                 setVisibility(View.GONE)
             } else {
                 setVisibility(View.INVISIBLE)
@@ -70,7 +69,7 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         }
     }
 
-    private fun setupListeners(insuranceData: InsuranceData, productId: String) {
+    private fun setupListeners(insuranceData: InsuranceData) {
         binding.apply {
             imgBtInsuranceInfo.let { iv ->
                 iv.setOnClickListener {
@@ -81,10 +80,9 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
             }
             cbInsurance.setOnCheckedChangeListener { _, isChecked ->
                 if (!isChecked) {
-                    // TODO: 05/07/21 ProductId
-                    orderSummaryAnalytics.eventClickOnInsurance(productId, "uncheck", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance("uncheck", insuranceData.insurancePrice.toString())
                 } else {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId, "check", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance("check", insuranceData.insurancePrice.toString())
                 }
                 listener.onInsuranceChecked(isChecked)
             }

@@ -29,7 +29,10 @@ data class OrderShipment(
         val logisticPromoShipping: ShippingCourierUiModel? = null,
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
-        val insurance: OrderInsurance = OrderInsurance()
+        val insurance: OrderInsurance = OrderInsurance(),
+
+        // Analytics
+        var hasTriggerViewMessageTracking: Boolean = false
 ) {
     fun isValid(): Boolean {
         return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()

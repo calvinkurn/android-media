@@ -60,7 +60,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
-                t.printStackTrace()
                 return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),
@@ -163,8 +162,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 return@withContext true to OccGlobalEvent.TriggerRefresh()
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.Error(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
                 }
                 return@withContext false to OccGlobalEvent.Error(t)
             }
@@ -186,8 +185,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 return@withContext true to OccGlobalEvent.Normal
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
-                    return@withContext false to OccGlobalEvent.Error(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE)
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
+                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
                 }
                 return@withContext false to OccGlobalEvent.Error(t)
             }
@@ -210,7 +209,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             } catch (t: Throwable) {
                 if (t is MessageErrorException) {
                     return@withContext false to OccGlobalEvent.TriggerRefresh(errorMessage = t.message
-                            ?: DEFAULT_ERROR_MESSAGE)
+                            ?: DEFAULT_ERROR_MESSAGE, shouldTriggerAnalytics = true)
                 }
                 return@withContext false to OccGlobalEvent.TriggerRefresh(throwable = t)
             }
