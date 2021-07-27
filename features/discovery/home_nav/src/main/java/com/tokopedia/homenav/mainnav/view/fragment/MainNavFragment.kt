@@ -253,7 +253,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        if (homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_UOH) {
+        if (homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH) {
             activity?.onBackPressed()
             return true
         }

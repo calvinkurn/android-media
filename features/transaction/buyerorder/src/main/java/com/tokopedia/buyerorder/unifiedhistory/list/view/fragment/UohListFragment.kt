@@ -475,7 +475,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
             )
             val icons = IconBuilder(
-                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_UOH)
+                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH)
             )
             if(activityOrderHistory != PARAM_HOME)
             {

@@ -7,7 +7,7 @@ object ApplinkConsInternalNavigation {
 
     const val SOURCE_HOME = "home"
     const val SOURCE_ACCOUNT = "account"
-    const val SOURCE_UOH = "uoh"
+    const val SOURCE_HOME_UOH = "home_uoh"
 
     const val HOST_NAVIGATION = "navigation"
 

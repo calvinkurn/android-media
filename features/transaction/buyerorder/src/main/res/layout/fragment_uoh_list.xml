@@ -28,6 +28,7 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
         app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true"
         app:toolbarAlwaysShowShadow="false" />
 
     <com.tokopedia.sortfilter.SortFilter
