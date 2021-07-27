@@ -63,7 +63,7 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
             isOfficialStore = it.getBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE)
 
             tncDataListId = it.getString(KEY_INSTALLMENT_TNC_LIST) ?: ""
-            val cacheManager = SaveInstanceCacheManager(context!!, tncDataListId)
+            val cacheManager = SaveInstanceCacheManager(requireContext(), tncDataListId)
 
             tncDataList = cacheManager.get(FtInstallmentTnc::class.java.simpleName,
                     object : TypeToken<ArrayList<FtInstallmentTnc>>() {}.type, ArrayList())

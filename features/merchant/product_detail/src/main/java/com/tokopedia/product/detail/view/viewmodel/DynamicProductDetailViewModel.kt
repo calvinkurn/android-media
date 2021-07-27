@@ -126,6 +126,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
+        private const val TIMEOUT_QUANTITY_FLOW = 500L
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -269,7 +270,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun iniQuantityFlow() {
         launch {
             _quantityUpdated.asFlow()
-                    .debounce(500)
+                    .debounce(TIMEOUT_QUANTITY_FLOW)
                     .flatMapLatest { request ->
                         hitUpdateCart(request.first, request.second)
                                 .catch {

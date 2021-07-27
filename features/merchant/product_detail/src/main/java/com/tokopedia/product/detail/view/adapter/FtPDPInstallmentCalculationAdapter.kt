@@ -20,6 +20,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                                          var partnerDataList: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        const val DURATION_ANIMATE_INSTALLMENT = 300L
+    }
+
 
     private var expandedPosition = -1
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
@@ -103,10 +107,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
             }
 
             if (item.expandLayout) {
-                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.show()
             } else {
-                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.hide()
             }
 
@@ -114,10 +118,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                 item.expandLayout = !item.expandLayout
 
                 if (item.expandLayout) {
-                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.show()
                 } else {
-                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.hide()
                 }
 

@@ -158,7 +158,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
         arguments?.let {
             installmentDataId = it.getString(KEY_PDP_FINANCING_DATA) ?: ""
 
-            val cacheManager = SaveInstanceCacheManager(context!!, installmentDataId)
+            val cacheManager = SaveInstanceCacheManager(requireContext(), installmentDataId)
             installmentData = cacheManager.get(
                     FtInstallmentCalculationDataResponse::class.java.simpleName,
                     FtInstallmentCalculationDataResponse::class.java
