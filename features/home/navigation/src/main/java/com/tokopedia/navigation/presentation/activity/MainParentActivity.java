@@ -1263,7 +1263,7 @@ public class MainParentActivity extends BaseActivity implements
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             }
         } else {
-            menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), R.raw.bottom_nav_feed, null, R.drawable.ic_bottom_nav_order_history_active, R.drawable.ic_bottom_nav_order_history_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, false, 1f, 0f));
+            menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.drawable.ic_bottom_nav_order_history_active, R.drawable.ic_bottom_nav_order_history_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, false, 1f, 3f));
         }
         bottomNavigation.setMenu(menu, isNewNavigation);
         handleAppLinkBottomNavigation();
