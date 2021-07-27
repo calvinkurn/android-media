@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_title"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="start"
@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
-        tools:text="Giveaway Kotak Pensil" />
+        tools:text="Giveaway CD Blackpink" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_winner"
@@ -33,7 +33,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_other_participant"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="start"
