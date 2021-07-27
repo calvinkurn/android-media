@@ -664,7 +664,7 @@ class PlayAnalytic(
         private const val KEY_SESSION_IRIS = "sessionIris"
         private const val KEY_USER_ID = "userId"
         private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_IS_LOGGED_IN = "isLoggedIn"
+        private const val KEY_IS_LOGGED_IN = "isLoggedInStatus"
         private const val KEY_CHANNEL = "channel"
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_PRODUCT_NAME = "productName"
