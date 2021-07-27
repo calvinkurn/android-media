@@ -5,7 +5,6 @@ import com.tokopedia.tokopedianow.categorylist.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
-import com.tokopedia.tokopedianow.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -37,16 +36,16 @@ abstract class TokoNowCategoryListViewModelTestFixture {
     }
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: List<CategoryListItemUiModel>) {
-        val actualResponse = viewModelTokoNow.categoryList.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.categoryList.value
         Assert.assertEquals(expectedResponse, CategoryListMapper.mapToUiModel((actualResponse as Success).data.data))
     }
 
     protected fun verifyGetCategoryListResponseFail() {
-        val actualResponse = viewModelTokoNow.categoryList.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.categoryList.value
         Assert.assertTrue(actualResponse is Fail)
     }
 
-    protected fun verifyGetHomeLayoutUseCaseCalled() {
+    protected fun verifyGetCategoryListUseCaseCalled() {
         coVerify { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) }
     }
 
