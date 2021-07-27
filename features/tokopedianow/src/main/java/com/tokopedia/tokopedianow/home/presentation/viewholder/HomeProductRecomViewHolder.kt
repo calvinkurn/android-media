@@ -31,11 +31,9 @@ class HomeProductRecomViewHolder(
     private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
 
     private var channelId = ""
-    private var isFirstShowed = false
 
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
-        isFirstShowed = true
         productRecom.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
@@ -61,10 +59,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        if (isFirstShowed) {
-            listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName)
-            isFirstShowed = false
-        }
+        listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName)
     }
 
     override fun onSeeAllBannerClicked(

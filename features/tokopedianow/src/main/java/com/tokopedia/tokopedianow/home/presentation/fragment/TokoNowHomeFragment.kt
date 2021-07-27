@@ -144,6 +144,7 @@ class TokoNowHomeFragment: Fragment(),
     private var movingPosition = 0
     private var isFirstResumed = false
     private var isFirstImpressionOnBanner = false
+    private var isRefreshed = true
     private var headerName = ""
     private var channelId: String = ""
     private var productPosition: String = ""
@@ -281,13 +282,16 @@ class TokoNowHomeFragment: Fragment(),
         headerName: String,
         pageName: String
     ) {
-        analytics.onImpressProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            userId = userSession.userId,
-            recomItems = recomItems,
-            pageName = pageName
-        )
+        if (isRefreshed) {
+            isRefreshed = false
+            analytics.onImpressProductRecom(
+                channelId = channelId,
+                headerName = headerName,
+                userId = userSession.userId,
+                recomItems = recomItems,
+                pageName = pageName
+            )
+        }
     }
 
     override fun onSeeAllBannerClicked(channelId: String, headerName: String) {
@@ -419,6 +423,7 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
+        isRefreshed = true
     }
 
     private fun setupNavToolbar() {
