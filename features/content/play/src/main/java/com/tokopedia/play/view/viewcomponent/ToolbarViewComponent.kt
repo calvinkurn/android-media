@@ -12,9 +12,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
-import com.tokopedia.play.view.uimodel.recom.count
+import com.tokopedia.play.view.uimodel.state.PlayCartCount
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -88,14 +87,17 @@ class ToolbarViewComponent(
         }
     }
 
-    fun setCartInfo(cartUiModel: PlayCartInfoUiModel) {
-        if (cartUiModel.shouldShow) rlCart.show() else rlCart.gone()
-        if (cartUiModel.count > 0) {
+    fun setCartCount(count: PlayCartCount) {
+        if (count is PlayCartCount.Show) {
+            tvBadgeCart.text = count.countText
             tvBadgeCart.show()
-            tvBadgeCart.text =  if (cartUiModel.count > 99) getString(R.string.play_mock_cart) else cartUiModel.count.toString()
         } else {
             tvBadgeCart.invisible()
         }
+    }
+
+    fun showCart(shouldShow: Boolean) {
+        if (shouldShow) rlCart.show() else rlCart.gone()
     }
 
     fun setIsShareable(isShow: Boolean) {

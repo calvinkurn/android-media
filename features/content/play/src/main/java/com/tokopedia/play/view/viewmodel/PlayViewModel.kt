@@ -116,8 +116,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<PlayResult<PlayProductTagsUiModel.Complete>>
         get() = _observableProductSheetContent
-    val observableCartInfo: LiveData<PlayCartInfoUiModel> /**Changed**/
-        get() = _observableCartInfo
     val observableEventPiPState: LiveData<Event<PiPState>>
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
@@ -133,6 +131,7 @@ class PlayViewModel @Inject constructor(
     private val _leaderboardInfo = MutableStateFlow(PlayLeaderboardInfoUiModel())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
+    private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -148,8 +147,9 @@ class PlayViewModel @Inject constructor(
             _leaderboardInfo,
             _status,
             _likeInfo,
-            _channelReport
-    ) { channelDetail, partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport ->
+            _channelReport,
+            _cartInfo,
+    ) { channelDetail, partnerInfo, bottomInsets, interactive, leaderboardInfo, status, likeInfo, channelReport, cartInfo ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
@@ -176,6 +176,13 @@ class PlayViewModel @Inject constructor(
                 ),
                 totalView = channelReport.totalViewFmt,
                 isShareable = channelDetail.shareInfo.shouldShow && !bottomInsets.isAnyShown && status.isActive,
+                cart = PlayCartUiState(
+                        shouldShow = cartInfo.shouldShow && !bottomInsets.isAnyShown,
+                        count = if (cartInfo.itemCount > 0) {
+                            val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+" else cartInfo.itemCount.toString()
+                            PlayCartCount.Show(countText)
+                        } else PlayCartCount.Hide
+                )
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
@@ -250,7 +257,7 @@ class PlayViewModel @Inject constructor(
                     partnerInfo = channelData.partnerInfo,
                     likeInfo = _likeInfo.value,
                     channelReportInfo = _channelReport.value,
-                    cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
+                    cartInfo = _cartInfo.value,
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = pinnedMessage,
                             pinnedProduct = pinnedProduct,
@@ -295,7 +302,6 @@ class PlayViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-    private val _observableCartInfo = MutableLiveData<PlayCartInfoUiModel>() /**Changed**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
@@ -602,6 +608,7 @@ class PlayViewModel @Inject constructor(
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike()
             ClickShareAction -> handleClickShare()
+            ClickCartAction -> handleClickCart()
         }
     }
 
@@ -738,8 +745,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun updateBadgeCart() {
-        val cartInfo = _observableCartInfo.value
-        if (cartInfo != null) updateCartInfo(cartInfo)
+        val cartInfo = _cartInfo.value
+        updateCartInfo(cartInfo)
     }
 
     fun getVideoPlayer() = playVideoPlayer
@@ -831,7 +838,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
-        _observableCartInfo.value = cartInfo
+        _cartInfo.value = cartInfo
     }
 
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
@@ -911,11 +918,8 @@ class PlayViewModel @Inject constructor(
     private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
         if (cartInfo.shouldShow) {
             viewModelScope.launchCatchError(block = {
-                val cartCount = getCartCount()
-                _observableCartInfo.value = PlayCartInfoUiModel.Complete(
-                        shouldShow = cartInfo.shouldShow,
-                        count = cartCount
-                )
+                val cartItemCount = getCartCount()
+                _cartInfo.setValue { copy(itemCount = cartItemCount) }
             }, onError = {
 
             })
@@ -1428,7 +1432,14 @@ class PlayViewModel @Inject constructor(
                     )
             )
         }
+    }
 
+    private fun handleClickCart() {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                    OpenPageEvent(applink = ApplinkConst.CART)
+            )
+        }
     }
 
     /**
@@ -1452,6 +1463,8 @@ class PlayViewModel @Inject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
+
+        private const val MAX_CART_COUNT = 99
 
         /**
          * Request Code When need login

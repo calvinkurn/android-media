@@ -28,6 +28,8 @@ data class PlayViewerNewUiState(
         val totalView: String,
 
         val isShareable: Boolean,
+
+        val cart: PlayCartUiState,
 )
 
 sealed class PlayInteractiveUiState {
@@ -59,6 +61,17 @@ data class PlayLikeUiState(
         val animate: Boolean,
         val totalLike: String,
 )
+
+data class PlayCartUiState(
+        val shouldShow: Boolean,
+        val count: PlayCartCount,
+)
+
+sealed class PlayCartCount {
+
+    data class Show(val countText: String) : PlayCartCount()
+    object Hide : PlayCartCount()
+}
 
 enum class ViewVisibility {
 

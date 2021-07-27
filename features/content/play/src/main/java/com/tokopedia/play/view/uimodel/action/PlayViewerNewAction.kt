@@ -36,4 +36,9 @@ object ClickLikeAction : PlayViewerNewAction()
  */
 object ClickShareAction : PlayViewerNewAction()
 
+/**
+ * Cart
+ */
+object ClickCartAction : PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

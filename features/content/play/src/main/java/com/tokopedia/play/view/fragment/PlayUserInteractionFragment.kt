@@ -299,7 +299,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
-        shouldOpenCartPage()
+//        shouldOpenCartPage()
+        playViewModel.submitAction(ClickCartAction)
+        analytic.clickCartIcon()
     }
 
     override fun onCopyButtonClicked(view: ToolbarViewComponent) {
@@ -579,7 +581,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeChatList()
         observePinnedMessage()
         observePinnedProduct()
-        observeCartInfo()
         observeBottomInsetsState()
         observeStatusInfo()
         observeProductContent()
@@ -776,12 +777,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeCartInfo() {
-        playViewModel.observableCartInfo.observe(viewLifecycleOwner, DistinctObserver {
-            toolbarView.setCartInfo(it)
-        })
-    }
-
     private fun observeProductContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
@@ -807,7 +802,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
                 renderWinnerBadgeView(state.showWinnerBadge)
-                renderToolbarView(state.followStatus, state.partnerName, state.isShareable)
+                renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
                 renderLikeView(prevState?.like, state.like)
                 renderStatsInfoView(state.totalView)
             }
@@ -951,10 +946,10 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
     }
 
-    private fun shouldOpenCartPage() {
-        analytic.clickCartIcon()
-        viewModel.doInteractionEvent(InteractionEvent.CartPage)
-    }
+//    private fun shouldOpenCartPage() {
+//        analytic.clickCartIcon()
+//        viewModel.doInteractionEvent(InteractionEvent.CartPage)
+//    }
 
     private fun doSendChat(message: String) {
         playViewModel.sendChat(message)
@@ -1380,11 +1375,15 @@ class PlayUserInteractionFragment @Inject constructor(
             followStatus: PlayPartnerFollowStatus,
             partnerName: String,
             isShareable: Boolean,
+            cartState: PlayCartUiState,
     ) {
         toolbarView.setFollowStatus(followStatus)
         toolbarView.setPartnerName(partnerName)
 
         toolbarView.setIsShareable(isShareable)
+
+        toolbarView.showCart(cartState.shouldShow)
+        toolbarView.setCartCount(cartState.count)
     }
 
     private fun renderLikeView(

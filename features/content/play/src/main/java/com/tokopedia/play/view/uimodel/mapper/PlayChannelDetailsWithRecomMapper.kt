@@ -84,7 +84,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         )
     }
 
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel.Incomplete(
+    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
             shouldShow = configResponse.showCart
     )
 
