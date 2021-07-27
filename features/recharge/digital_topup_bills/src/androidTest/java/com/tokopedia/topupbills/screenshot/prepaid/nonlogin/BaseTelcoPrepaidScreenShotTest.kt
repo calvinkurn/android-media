@@ -31,6 +31,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.prepaid.TelcoPrepaidInstrumentTest
@@ -66,6 +67,7 @@ abstract class BaseTelcoPrepaidScreenShotTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().toBlocking().first()
+        setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_MENU_DETAIL_LOGIN),
                 MockModelConfig.FIND_BY_CONTAINS)
