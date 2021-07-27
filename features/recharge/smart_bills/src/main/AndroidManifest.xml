@@ -35,6 +35,7 @@
             android:name=".presentation.activity.SmartBillsAddTelcoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
+            android:label="@string/smart_bills_action_bar_title"
             android:windowSoftInputMode="stateAlwaysHidden">
 
             <intent-filter>

@@ -20,6 +20,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     lateinit var viewModel: SmartBillsAddTelcoViewModel
 
     private var templateTelco: String? = null
+    private var categoryId: String? = null
+    private var menuId: String? = null
 
     override fun getScreenName(): String = ""
 
@@ -29,6 +31,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         templateTelco = (activity as SmartBillsAddTelcoActivity).getTemplateTelco()
+        categoryId = (activity as SmartBillsAddTelcoActivity).getCategoryId()
+        menuId = (activity as SmartBillsAddTelcoActivity).getMenuId()
         return inflater.inflate(R.layout.fragment_smart_bills_add_telco, container, false)
     }
 
@@ -38,8 +42,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        tv_template.text = templateTelco
     }
 
     companion object {
