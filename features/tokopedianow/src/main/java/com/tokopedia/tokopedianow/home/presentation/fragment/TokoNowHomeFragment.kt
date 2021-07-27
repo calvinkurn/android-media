@@ -142,7 +142,7 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isVariantAdded = false
+    private var isFirstResumed = false
     private var isFirstImpressionOnBanner = false
     private var headerName = ""
     private var channelId: String = ""
@@ -207,6 +207,7 @@ class TokoNowHomeFragment: Fragment(),
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
+        isFirstResumed = true
     }
 
     override fun onTickerDismissed(id: String) {
@@ -334,9 +335,6 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-            isVariantAdded = true
-        }
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
@@ -559,9 +557,9 @@ class TokoNowHomeFragment: Fragment(),
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data)
-                if (isVariantAdded) {
+                if (isFirstResumed) {
                     updateProductRecom(it.data)
-                    isVariantAdded = false
+                    isFirstResumed = false
                 }
             }
         }
