@@ -1331,7 +1331,7 @@ class ProductListPresenter @Inject constructor(
             product: InspirationCarouselDataView.Option.Product,
     ): CarouselProductType {
         return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
-            BroadMatchProduct(isOrganicAds = product.isOrganicAds, hasThreeDots = false)
+            BroadMatchProduct(false)
         else
             DynamicCarouselProduct(option.inspirationCarouselType)
     }

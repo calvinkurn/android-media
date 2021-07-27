@@ -846,7 +846,6 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
 
             val broadMatchProductType = carouselProductType as BroadMatchProduct
-            broadMatchProductType.isOrganicAds shouldBe false
             broadMatchProductType.hasThreeDots shouldBe false
         }
     }

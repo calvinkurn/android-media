@@ -5,7 +5,6 @@ sealed class CarouselProductType(val hasThreeDots: Boolean) {
 }
 
 class BroadMatchProduct(
-        val isOrganicAds: Boolean,
         hasThreeDots: Boolean = true,
 ): CarouselProductType(hasThreeDots) {
     override fun getDataLayerList(isOrganicAds: Boolean): String {

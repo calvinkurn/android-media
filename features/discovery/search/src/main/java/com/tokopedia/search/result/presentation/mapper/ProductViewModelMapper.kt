@@ -139,7 +139,7 @@ class ProductViewModelMapper {
                 topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
                 ratingAverage = otherRelatedProduct.ratingAverage,
                 labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
-                carouselProductType = BroadMatchProduct(isOrganicAds),
+                carouselProductType = BroadMatchProduct(),
                 dimension90 = dimension90,
         )
     }
