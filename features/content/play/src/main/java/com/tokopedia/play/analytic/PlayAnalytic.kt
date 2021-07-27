@@ -345,8 +345,9 @@ class PlayAnalytic(
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_IS_LOGGED_IN to isLoggedIn,
-                        KEY_CHANNEL to mChannelName
+                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                        KEY_CHANNEL to mChannelName,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId
                 )
         )
     }
@@ -377,7 +378,7 @@ class PlayAnalytic(
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_IS_LOGGED_IN to isLoggedIn,
+                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                         KEY_CHANNEL to mChannelName,
                 )
         )
@@ -434,7 +435,7 @@ class PlayAnalytic(
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                         KEY_CHANNEL to mChannelName,
-                        KEY_IS_LOGGED_IN to isLoggedIn,
+                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                         KEY_PRODUCT_ID to featuredProduct.id,
                         KEY_PRODUCT_NAME to featuredProduct.title,
                         KEY_PRODUCT_URL to featuredProduct.applink.toString()
@@ -469,7 +470,7 @@ class PlayAnalytic(
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                         KEY_CHANNEL to mChannelName,
-                        KEY_IS_LOGGED_IN to isLoggedIn,
+                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                 )
         )
     }
@@ -664,7 +665,7 @@ class PlayAnalytic(
         private const val KEY_SESSION_IRIS = "sessionIris"
         private const val KEY_USER_ID = "userId"
         private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_IS_LOGGED_IN = "isLoggedInStatus"
+        private const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         private const val KEY_CHANNEL = "channel"
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_PRODUCT_NAME = "productName"
