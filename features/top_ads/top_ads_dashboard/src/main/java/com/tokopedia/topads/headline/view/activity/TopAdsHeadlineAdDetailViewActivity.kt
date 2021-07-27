@@ -66,7 +66,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
     private var groupName: String? = ""
-    private var priceDaily = 0
+    private var priceDaily = 0.0F
     private var groupTotal = 0
     private var isDataChanged = false
 
@@ -201,13 +201,13 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         btn_switch.setOnCheckedChangeListener(null)
         btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL
         btn_switch.setOnCheckedChangeListener(this)
-        if (priceDaily == 0) {
+        if (priceDaily == 0.0F) {
             progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
             progress_status2.visibility = View.GONE
             progress_bar.visibility = View.GONE
         } else {
             progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
+            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
 

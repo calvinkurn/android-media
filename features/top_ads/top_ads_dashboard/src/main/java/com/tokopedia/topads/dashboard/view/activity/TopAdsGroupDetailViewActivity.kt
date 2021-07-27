@@ -134,7 +134,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_DATE_FILTER, customDateText)
     }
 
-    private var priceDaily = 0
+    private var priceDaily = 0.0F
     private var groupTotal = 0
     private val ACTIVE = "1"
     private val TIDAK_TAMPIL = "2"
@@ -162,7 +162,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(PRODUK)
-        if(autoBidStatus.isEmpty() && placementType != 3) {
+        if(autoBidStatus.isEmpty()) {
             tab_layout?.addNewTab(KATA_KUNCI)
             tab_layout?.addNewTab(NEG_KATA_KUNCI)
             tab_layout?.customTabMode = TabLayout.MODE_FIXED
@@ -338,8 +338,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             per_click_rekomendasi.visibility = View.GONE
             editpancarianBudget.visibility = View.GONE
             editRekomendasiBudget.visibility = View.GONE
-            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.autobid_otomatis)
-            budgetPerClick_rekomendasi.text = getString(com.tokopedia.topads.common.R.string.autobid_otomatis)
+            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
+            budgetPerClick_rekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
         } else {
             editpancarianBudget.visibility = View.VISIBLE
             editRekomendasiBudget.visibility = View.VISIBLE
@@ -360,15 +360,15 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         }
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)
-        btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL
+        btn_switch.isChecked = data.status == "published"
         btn_switch.setOnCheckedChangeListener(this)
-        if (priceDaily == 0) {
+        if (priceDaily == 0.0F) {
             progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
             progress_status2.visibility = View.GONE
             progress_bar.visibility = View.GONE
         } else {
             progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
+            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
             Utils.convertMoneyToValue(priceSpent ?: "0").let {

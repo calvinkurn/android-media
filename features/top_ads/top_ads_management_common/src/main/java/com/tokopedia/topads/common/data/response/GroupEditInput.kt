@@ -25,7 +25,7 @@ data class GroupEditInput(
             @field:SerializedName("name")
             var name: String? = null,
 
-            @field:SerializedName("priceDaily")
+            @field:SerializedName("dailyBudget")
             var dailyBudget: Double? = 0.0,
 
             @field:SerializedName("bidSettings")

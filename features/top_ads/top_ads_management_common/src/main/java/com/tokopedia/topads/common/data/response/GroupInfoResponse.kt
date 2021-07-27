@@ -18,7 +18,7 @@ data class GroupInfoResponse(
                 val groupName: String = "",
 
                 @field:SerializedName("daily_budget")
-                val daiyBudget: Int = 0,
+                val daiyBudget: Float = 0.0F,
 
                 @field:SerializedName("shop_id")
                 val shopId: String = "",

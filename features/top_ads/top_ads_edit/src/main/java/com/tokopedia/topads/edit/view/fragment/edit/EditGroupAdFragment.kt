@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.util.Utils
@@ -26,7 +27,6 @@ import com.tokopedia.topads.edit.utils.Constants.BUDGET_LIMITED
 import com.tokopedia.topads.edit.utils.Constants.DAILY_BUDGET
 import com.tokopedia.topads.edit.utils.Constants.DEBOUNCE_CONST
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
-import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
 import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
@@ -52,7 +52,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private var validation3 = true
     private var currentBudget = 0
     private var groupId: Int? = 0
-    private var priceDaily = 0
+    private var priceDaily = 0.0F
     private var groupName: String = ""
     private var currentAutoBidState = ""
     private var initialToggleState = false
@@ -103,7 +103,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         group_name?.textFieldInput?.setText(data.groupName)
         data?.bidSettings?.get(0)?.priceBid?.toInt()?.let { sharedViewModel.setBudget(it) }
         priceDaily = data.daiyBudget
-        if (priceDaily != 0) {
+        if (priceDaily != 0.0F) {
             toggle?.isChecked = true
             daily_budget?.visible()
             setCurrentDailyBudget((priceDaily).toString())

@@ -165,6 +165,7 @@
     <string name="topads_empty_insight_desc">Yuk, tambahkan dulu kata kunci yang \n sesuai dengan produkmu</string>
 
 
+    <string name="group_detail_bid_otomatis">Diatur Otomatis</string>
     <string name="autobid_otomatis">Otomatis</string>
     <string name="autobid_manual">Manual</string>
     <string name="autobid_list_step">Pengaturan Iklan</string>

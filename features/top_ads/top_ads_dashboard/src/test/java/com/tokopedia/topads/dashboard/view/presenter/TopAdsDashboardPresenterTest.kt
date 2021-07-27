@@ -364,11 +364,11 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get group info success`() {
-        val expected = 10
-        var actual = 0
-        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(priceBid = expected)
+        val expected = 10.0F
+        var actual = 0.0F
+        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(daiyBudget = expected)
         val onSuccess: (data: GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit = {
-            actual = it.priceBid
+            actual = it.daiyBudget
         }
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
