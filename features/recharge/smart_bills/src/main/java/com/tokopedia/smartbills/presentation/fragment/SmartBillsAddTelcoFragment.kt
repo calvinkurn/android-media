@@ -1,6 +1,8 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.smartbills.R
+import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
@@ -62,20 +65,31 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         showLoader()
         getMenuDetailTicker()
+        getPrefixTelco()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        observeTicker()
+        showLayout()
     }
 
     private fun getMenuDetailTicker(){
         viewModel.getMenuDetailAddTelco(viewModel.createMenuDetailAddTelcoParams(getMenuID()))
     }
 
+    private fun getPrefixTelco(){
+        viewModel.getPrefixAddTelco(getMenuID())
+    }
+
     private fun getMenuID(): Int{
         return menuId.toIntOrZero()
+    }
+
+    private fun showLayout(){
+        observeTicker()
+        observePrefix()
+        observeSelectedPrefix()
+        showProductTextField()
     }
 
     private fun observeTicker(){
@@ -96,6 +110,24 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             hideLoader()
         }
     }
+
+    private fun observePrefix(){
+        observe(viewModel.catalogPrefixSelect){
+            when(it){
+                is Fail -> {}
+                is Success -> {
+
+                }
+            }
+        }
+    }
+
+    private fun observeSelectedPrefix(){
+        observe(viewModel.selectedOperator){
+            renderIconOperator(it.operator.attributes.imageUrl)
+        }
+    }
+
 
     private fun hideTicker(){
         ticker_sbm_add_telco.hide()
@@ -138,6 +170,38 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private fun hideLoader(){
         loader_sbm_add_telco.hide()
     }
+
+    private fun showProductTextField(){
+        text_field_sbm_product_type.apply {
+            show()
+            textFieldInput.setText(CategoryTelcoType.getCategoryString(categoryId))
+            isEnabled = false
+        }
+
+        text_field_sbm_product_number.apply {
+            show()
+            textFieldInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    text_field_sbm_product_number.getFirstIcon().hide()
+                    onInputNumberChanged(getNumber())
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            })
+        }
+    }
+
+    private fun onInputNumberChanged(inputNumber: String){
+        viewModel.getSelectedOperator(inputNumber)
+    }
+
+    private fun renderIconOperator(imageUrl: String){
+        text_field_sbm_product_number.setFirstIcon(imageUrl)
+        text_field_sbm_product_number.getFirstIcon().show()
+    }
+
+    fun getNumber(): String = text_field_sbm_product_number.textFieldInput.text.toString()
 
     companion object {
         fun newInstance() = SmartBillsAddTelcoFragment()
