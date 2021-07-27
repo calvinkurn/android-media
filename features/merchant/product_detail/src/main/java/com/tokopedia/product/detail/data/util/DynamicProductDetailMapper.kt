@@ -34,9 +34,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.DISCUSSION_FAQ -> {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.PRODUCT_INFO -> {
-                    listOfComponent.add(ProductInfoDataModel(type = component.type, name = component.componentName, data = mapToProductInfoContent(component.componentData)))
-                }
                 ProductDetailConstant.PRODUCT_DETAIL -> {
                     listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
                 }
@@ -220,16 +217,6 @@ object DynamicProductDetailMapper {
         }
     }
 
-    private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
-        return if (listOfData.isEmpty()) {
-            null
-        } else {
-            listOfData.map {
-                ProductInfoContent(it.row, it.content)
-            }
-        }
-    }
-
     private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
         if (data == null) return listOf()
         return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
@@ -280,7 +267,7 @@ object DynamicProductDetailMapper {
             } ?: return@forEach
             result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, it.uriThumbnail,
-                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt))
+                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
         }
 
         return ImageReview(result, data.detail?.imageCount ?: "")

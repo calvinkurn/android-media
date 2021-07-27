@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -20,6 +21,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -29,6 +31,7 @@ import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -234,5 +237,19 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        for(Fragment fragment : list) {
+            if(fragment instanceof TkpdBaseV4Fragment) {
+                boolean handled = ((TkpdBaseV4Fragment)fragment).onFragmentBackPressed();
+                if (handled) {
+                    return;
+                }
+            }
+        }
+        super.onBackPressed();
     }
 }
