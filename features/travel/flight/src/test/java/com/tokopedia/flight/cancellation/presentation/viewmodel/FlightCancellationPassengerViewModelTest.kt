@@ -10,6 +10,7 @@ import com.tokopedia.flight.dummy.DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION
 import com.tokopedia.flight.dummy.DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import io.mockk.MockKAnnotations
@@ -122,7 +123,7 @@ class FlightCancellationPassengerViewModelTest {
         }
 
 
-        for ((index, item) in viewModel.cancellationPassengerList.value!!.withIndex()) {
+        for ((index, item) in (viewModel.cancellationPassengerList.value as Success).data.withIndex()) {
             val swappedIndex = if (index == 1) 0 else 1
             item.invoiceId shouldBe "1234567890"
             item.passengerModelList.size shouldBe DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[swappedIndex].passengerModelList.size
