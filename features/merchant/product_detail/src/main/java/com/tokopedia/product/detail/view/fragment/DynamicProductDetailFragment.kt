@@ -105,7 +105,7 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
@@ -143,7 +143,6 @@ import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -908,13 +907,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     /**
-     * PdpComparisonWidgetViewHolder
-     */
-    override fun getStickyTitleView(): StickyTitleView? {
-        return stickyTitleComparisonWidget
-    }
-
-    /**
      * PageErrorViewHolder
      */
     override fun onRetryClicked(forceRefresh: Boolean) {
@@ -1627,18 +1619,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                val enableComparisonWidget = remoteConfig()?.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
-                if (enableComparisonWidget) {
-                    if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                        pdpUiUpdater?.updateComparisonDataModel(it.data)
-                        updateUi()
+                if (it.data.recommendationItemList.isNotEmpty()) {
+                    val enableComparisonWidget = remoteConfig()?.getBoolean(
+                            RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
+                    if (enableComparisonWidget) {
+                        if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                            pdpUiUpdater?.updateComparisonDataModel(it.data)
+                            updateUi()
+                        } else {
+                            pdpUiUpdater?.updateRecommendationData(it.data)
+                            updateUi()
+                        }
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
                         updateUi()
                     }
                 } else {
-                    pdpUiUpdater?.updateRecommendationData(it.data)
+                    //recomUiPageName used because there is possibilites gql recom return empty pagename
+                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
                     updateUi()
                 }
             }, {
@@ -1664,6 +1662,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
         view?.showToasterSuccess(result.data.message.firstOrNull()
                 ?: "", ctaText = getString(R.string.label_oke_pdp))
+        sendTrackingATC(result.data.cartId)
         updateButtonState()
     }
 
@@ -2021,21 +2020,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         viewModel.variantData,
                         getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
 
-                val boData = viewModel.getBebasOngkirDataByProductId()
-
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
                         productInfoP1 = viewModel.getDynamicProductInfoP1!!,
                         warehouseId = warehouseId ?: "",
                         pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
                         isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
-                        isFreeOngkir = boData.imageURL.isNotEmpty(),
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
                         cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf(),
                         miniCart = viewModel.p2Data.value?.miniCart,
-                        alternateCopy = viewModel.p2Data.value?.alternateCopy
+                        alternateCopy = viewModel.p2Data.value?.alternateCopy,
+                        boData = viewModel.p2Data.value?.bebasOngkir?.boProduct ?: listOf()
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
