@@ -46,8 +46,8 @@ class HotelContactPhoneBottomSheet : BottomSheetUnify() {
 
         if(::contactList.isInitialized && ::listener.isInitialized){
             contactAdapter = ContactAdapter(contactList, listener)
+            recyclerView.adapter = contactAdapter
         }
-        recyclerView.adapter = contactAdapter
 
         setTitle(getString(R.string.hotel_order_detail_contact_phone_sheet_title))
     }
