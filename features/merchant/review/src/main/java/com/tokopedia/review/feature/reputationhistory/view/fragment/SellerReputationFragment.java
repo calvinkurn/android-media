@@ -36,7 +36,7 @@ import com.tokopedia.review.R;
 import com.tokopedia.review.ReviewInstance;
 import com.tokopedia.review.feature.reputationhistory.di.DaggerSellerReputationComponent;
 import com.tokopedia.review.feature.reputationhistory.di.SellerReputationModule;
-import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
+import com.tokopedia.review.feature.reputationhistory.domain.usecase.ReviewReputationMergeUseCase;
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
 import com.tokopedia.review.feature.reputationhistory.util.DefaultErrorSubscriber;
 import com.tokopedia.review.feature.reputationhistory.util.NetworkStatus;

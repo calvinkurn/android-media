@@ -1,8 +1,9 @@
-package com.tokopedia.review.feature.reputationhistory.domain.interactor
+package com.tokopedia.review.feature.reputationhistory.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardWrapper
+import com.tokopedia.review.feature.reputationhistory.domain.mapper.SellerReputationPenaltyMapper
+import com.tokopedia.review.feature.reputationhistory.view.model.SellerReputationPenaltyMergeUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -13,9 +14,10 @@ import javax.inject.Inject
 class GetReputationAndPenaltyRewardUseCase @Inject constructor(
     private val getReputationShopUseCase: GetReputationShopUseCase,
     private val getReputationPenaltyRewardUseCase: GetReputationPenaltyRewardUseCase,
-    private val dispatcherProvider: CoroutineDispatchers
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val sellerReputationPenaltyMapper: SellerReputationPenaltyMapper
 ) {
-    suspend fun execute(shopId: String, page: Long, startDate: String, endDate: String): Result<ReputationPenaltyRewardWrapper> {
+    suspend fun execute(shopId: String, page: Long, startDate: String, endDate: String): Result<SellerReputationPenaltyMergeUiModel> {
        return try {
            withContext(dispatcherProvider.io) {
                val getReputationShopResponse = async {
@@ -26,10 +28,10 @@ class GetReputationAndPenaltyRewardUseCase @Inject constructor(
                    getReputationPenaltyRewardUseCase.setParams(shopId, page, startDate, endDate)
                    getReputationPenaltyRewardUseCase.executeOnBackground()
                }
-               Success(ReputationPenaltyRewardWrapper(
+               Success(sellerReputationPenaltyMapper.mapToSellerReputationMerge(ReputationPenaltyRewardWrapper(
                    getReputationShopResponse.await(),
                    getReputationPenaltyRewardResponse.await()
-               ))
+               ), startDate, endDate))
            }
        } catch (e: Throwable) {
            Fail(e)

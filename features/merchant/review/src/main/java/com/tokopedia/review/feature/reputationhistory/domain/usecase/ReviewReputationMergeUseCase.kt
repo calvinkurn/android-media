@@ -1,7 +1,8 @@
-package com.tokopedia.review.feature.reputationhistory.domain.interactor
+package com.tokopedia.review.feature.reputationhistory.domain.usecase
 
 import javax.inject.Inject
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase
+import com.tokopedia.review.feature.reputationhistory.domain.interactor.ShopInfoUseCase
 import com.tokopedia.review.feature.reputationhistory.util.ShopNetworkController
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

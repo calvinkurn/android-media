@@ -6,11 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardResponse
-import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardWrapper
-import com.tokopedia.review.feature.reputationhistory.domain.interactor.GetReputationAndPenaltyRewardUseCase
-import com.tokopedia.review.feature.reputationhistory.domain.interactor.GetReputationPenaltyRewardUseCase
+import com.tokopedia.review.feature.reputationhistory.domain.mapper.SellerReputationPenaltyMapper
+import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationAndPenaltyRewardUseCase
+import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationPenaltyRewardUseCase
 import com.tokopedia.review.feature.reputationhistory.util.ReputationPenaltyDateUtils
+import com.tokopedia.review.feature.reputationhistory.view.model.SellerReputationPenaltyMergeUiModel
+import com.tokopedia.review.feature.reputationhistory.view.model.SellerReputationPenaltyUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,7 +24,8 @@ class SellerReputationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val getReputationAndPenaltyRewardUseCase: GetReputationAndPenaltyRewardUseCase,
-    private val getReputationPenaltyRewardUseCase: GetReputationPenaltyRewardUseCase
+    private val getReputationPenaltyRewardUseCase: GetReputationPenaltyRewardUseCase,
+    private val sellerReputationPenaltyMapper: SellerReputationPenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -33,13 +35,13 @@ class SellerReputationViewModel @Inject constructor(
     }
 
     private val _reputationAndPenaltyMerge =
-        MutableLiveData<Result<ReputationPenaltyRewardWrapper>>()
-    val reputationAndPenaltyMerge: LiveData<Result<ReputationPenaltyRewardWrapper>>
+        MutableLiveData<Result<SellerReputationPenaltyMergeUiModel>>()
+    val reputationAndPenaltyMerge: LiveData<Result<SellerReputationPenaltyMergeUiModel>>
         get() = _reputationAndPenaltyMerge
 
     val reputationPenaltyRewardMediator =
-        MediatorLiveData<Result<ReputationPenaltyRewardResponse>>()
-    val reputationAndPenaltyReward: LiveData<Result<ReputationPenaltyRewardResponse>>
+        MediatorLiveData<Result<SellerReputationPenaltyUiModel>>()
+    val reputationAndPenaltyReward: LiveData<Result<SellerReputationPenaltyUiModel>>
         get() = reputationPenaltyRewardMediator
 
     private var startDate = ReputationPenaltyDateUtils.format(
@@ -63,8 +65,10 @@ class SellerReputationViewModel @Inject constructor(
         }
     }
 
-    fun setDateFilterReputationPenalty(dateFilter: Pair<String, String>) {
-        _dateFilterReputationPenalty.value = Pair(dateFilter.first, dateFilter.second)
+    fun setDateFilterReputationPenalty(dateFilter: Pair<Long, Long>) {
+        val startDate = ReputationPenaltyDateUtils.format(dateFilter.first, PATTERN_PENALTY_DATE_PARAM)
+        val endDate = ReputationPenaltyDateUtils.format(dateFilter.second, PATTERN_PENALTY_DATE_PARAM)
+        _dateFilterReputationPenalty.value = Pair(startDate, endDate)
     }
 
     fun getReputationPenaltyRewardMerge() {
@@ -81,13 +85,13 @@ class SellerReputationViewModel @Inject constructor(
         })
     }
 
-    fun getReputationPenaltyList(page: Long = 1) {
+    fun getReputationPenaltyList(page: Long = FIRST_PAGE) {
         launchCatchError(block = {
-            val getReputationPenaltyAndRewardResponse = withContext(dispatchers.io) {
+            val reputationPenaltyAndRewardResponse = withContext(dispatchers.io) {
                 getReputationPenaltyRewardUseCase.setParams(userSession.shopId, page, startDate, endDate)
-                getReputationPenaltyRewardUseCase.executeOnBackground()
+                sellerReputationPenaltyMapper.mapToPenaltyReputationList(getReputationPenaltyRewardUseCase.executeOnBackground())
             }
-            reputationPenaltyRewardMediator.postValue(Success(getReputationPenaltyAndRewardResponse))
+            reputationPenaltyRewardMediator.postValue(Success(reputationPenaltyAndRewardResponse))
         }, onError = {
             reputationPenaltyRewardMediator.postValue(Fail(it))
         })

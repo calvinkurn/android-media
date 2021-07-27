@@ -26,6 +26,6 @@ public class ReputationViewHelper {
         reputationUiModel.reputationScore = shopModel.stats.shopReputationScore;
 //        reputationUiModel.reputationBadgeUrl = shopModel.stats;
 
-        sellerReputationHeaderView.init(reputationUiModel);
+//        sellerReputationHeaderView.init(reputationUiModel);
     }
 }

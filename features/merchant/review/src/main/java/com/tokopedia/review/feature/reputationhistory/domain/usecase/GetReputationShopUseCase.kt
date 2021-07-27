@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.reputationhistory.domain.interactor
+package com.tokopedia.review.feature.reputationhistory.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest

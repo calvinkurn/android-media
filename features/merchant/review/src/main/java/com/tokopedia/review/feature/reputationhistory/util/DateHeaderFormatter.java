@@ -21,7 +21,7 @@ public class DateHeaderFormatter {
         this.monthNames = monthNames;
     }
 
-    public String getStartDateFormat(long sDate) {
+    public String getDateWithoutYearFormat(long sDate) {
         validateMonths();
 
         String dateFormatForInput = DateFormatUtils.getFormattedDate(sDate, DD_MM);

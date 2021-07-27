@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.review.R;
 import com.tokopedia.review.feature.reputationhistory.data.model.request.SellerReputationRequest;
-import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase;
+import com.tokopedia.review.feature.reputationhistory.domain.usecase.ReviewReputationMergeUseCase;
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase;
 import com.tokopedia.review.feature.reputationhistory.domain.model.SellerReputationDomain;
 import com.tokopedia.review.feature.reputationhistory.util.DefaultErrorSubscriber;

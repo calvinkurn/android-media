@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reputationhistory.view.presenter
 
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase
+import com.tokopedia.review.feature.reputationhistory.domain.usecase.ReviewReputationMergeUseCase
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase
 import com.tokopedia.review.feature.reputationhistory.util.DefaultErrorSubscriber
 import com.tokopedia.review.feature.reputationhistory.view.SellerReputationView

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.reputationhistory.view.model.ReputationShopUiModel
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -17,20 +18,20 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ReputationView(context: Context, attrs: AttributeSet) : FrameLayout(
     context, attrs
-), BaseView<ReputationUiModel> {
+) {
     private var reputationPoints: Typography
     private var reputationBadge: AppCompatImageView
 
     @LayoutRes
     private val defaultLayoutId: Int = R.layout.reputation_item_view_reputation
 
-    override fun init(data: ReputationUiModel) {
+    fun init(data: ReputationShopUiModel) {
         reputationPoints.text = String.format(
             "%s %s",
             data.reputationScore,
             context.getString(R.string.point)
         )
-        reputationBadge.loadImage(data.reputationBadgeUrl)
+        reputationBadge.loadImage(data.badgeReputationUrl)
     }
 
     data class ReputationUiModel(
