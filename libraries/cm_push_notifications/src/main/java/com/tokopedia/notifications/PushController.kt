@@ -1,5 +1,6 @@
 package com.tokopedia.notifications
 
+import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -22,6 +23,7 @@ import com.tokopedia.notifications.model.NotificationStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
+
 
 class PushController(val context: Context) : CoroutineScope {
 
@@ -190,7 +192,9 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun checkOtpPushNotif(applink: String?): Boolean {
-        return if (Build.VERSION.SDK_INT < ANDROID_12_SDK_VERSION) {
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        return if (Build.VERSION.SDK_INT < ANDROID_12_SDK_VERSION &&
+                !keyguardManager.isKeyguardLocked) {
             applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
         } else {
             false
