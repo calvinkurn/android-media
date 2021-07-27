@@ -263,8 +263,9 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun addProductToCart(recomItem: RecommendationItem, quantity: Int) {
-        if (recomItem.quantity == quantity) return
-        if (recomItem.quantity.isZero()) {
+        val miniCartItem = miniCartSimplifiedData?.miniCartItems?.firstOrNull { it.productId == recomItem.productId.toString() }
+
+        if (miniCartItem == null) {
             addItemToCart(recomItem, quantity)
         } else {
             if (quantity.isZero()) {
