@@ -13,6 +13,7 @@ class MediaBitmapSize constructor(
         val currentSize = getString(KEY_BITMAP_SIZE)?: "0"
 
         putString(KEY_BITMAP_SIZE, (currentSize.toLong() + value).toString().take(5))
+        applyEditor()
     }
 
     fun getSize(): Int = getInt(KEY_BITMAP_SIZE)
