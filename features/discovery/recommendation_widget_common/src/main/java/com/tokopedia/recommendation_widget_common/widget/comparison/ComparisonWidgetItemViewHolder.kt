@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -40,7 +39,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                             product.imageUrl
                     )
                 }
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
                         ProductRecommendationTracking.getClickProductTracking(
                                 recommendationItems = listOf(
                                         comparisonModel.recommendationItem
@@ -51,7 +50,6 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                                 recomPageName = comparisonModel.recommendationItem.pageName,
                                 isTopads = comparisonModel.recommendationItem.isTopAds,
                                 widgetType = comparisonModel.recommendationItem.type,
-                                productId = comparisonModel.recommendationItem.productId.toString(),
                                 position = (adapterPosition+1),
                                 isLoggedIn = userSession.isLoggedIn,
                                 recommendationType = comparisonModel.recommendationItem.recommendationType,

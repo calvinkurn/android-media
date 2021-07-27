@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sahRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        app:unify_header_is_show_shadow="false"
-        app:unify_header_is_show_back_button="false" />
+        app:unify_header_is_show_back_button="false"
+        app:unify_header_is_show_shadow="false" />
 
     <View
         android:layout_width="match_parent"
@@ -28,6 +29,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <View
+        android:id="@+id/navBarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:layout_above="@id/sahBottomNav"

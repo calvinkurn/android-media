@@ -12,10 +12,15 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
 class FeedPlusDetailActivity : BaseSimpleActivity() {
 
     private lateinit var detailId: String
+    private lateinit var shopId: String
+    private lateinit var activityId: String
 
     companion object {
         const val EXTRA_DETAIL_ID = "extra_detail_id"
         const val EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER"
+        const val PARAM_SHOP_ID = "shop_id"
+        const val PARAM_ACTIVITY_ID = "activity_id"
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,11 +39,16 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
             val uri = it.pathSegments
             detailId = uri[uri.lastIndex]
         }
+        shopId = intent.getStringExtra(PARAM_SHOP_ID)
+        activityId = intent.getStringExtra(PARAM_ACTIVITY_ID)
+
     }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         bundle.putString(EXTRA_DETAIL_ID, detailId)
+        bundle.putString(PARAM_SHOP_ID, shopId)
+        bundle.putString(PARAM_ACTIVITY_ID, activityId)
         return FeedPlusDetailFragment.createInstance(bundle)
     }
 

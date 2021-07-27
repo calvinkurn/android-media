@@ -3,6 +3,10 @@ package com.tokopedia.autocomplete.initialstate
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetDataView
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetTitleDataView
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetTitleViewHolder
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetViewHolder
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewHolder
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
@@ -74,6 +78,14 @@ class InitialStateAdapterTypeFactory(
         return InitialStateProductListTitleViewHolder.LAYOUT
     }
 
+    override fun type(initialStateChipWidgetDataView: InitialStateChipWidgetDataView): Int {
+        return InitialStateChipWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(initialStateChipWidgetTitleDataView: InitialStateChipWidgetTitleDataView): Int {
+        return InitialStateChipWidgetTitleViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT -> PopularSearchViewHolder(parent, clickListener)
@@ -88,6 +100,8 @@ class InitialStateAdapterTypeFactory(
             CuratedCampaignViewHolder.LAYOUT -> CuratedCampaignViewHolder(parent, clickListener)
             InitialStateProductListViewHolder.LAYOUT -> InitialStateProductListViewHolder(parent, clickListener)
             InitialStateProductListTitleViewHolder.LAYOUT -> InitialStateProductListTitleViewHolder(parent)
+            InitialStateChipWidgetViewHolder.LAYOUT -> InitialStateChipWidgetViewHolder(parent, clickListener)
+            InitialStateChipWidgetTitleViewHolder.LAYOUT -> InitialStateChipWidgetTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

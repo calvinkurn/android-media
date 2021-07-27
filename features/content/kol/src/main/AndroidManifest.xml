@@ -22,6 +22,25 @@
         </activity>
 
         <activity
+            android:name=".feature.comment.view.activity.KolCommentNewActivity"
+            android:label="@string/kol_activity_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter android:autoVerify="true">
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_content"
+                    android:pathPattern="@string/path_comment_new"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
             android:label="@string/kol_title_post_detail"
             android:screenOrientation="portrait"
