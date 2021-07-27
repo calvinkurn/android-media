@@ -431,6 +431,9 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
         getViewModel().routeApplinkLiveData.observe(this::routeApplink)
         getViewModel().deleteCartTrackingLiveData.observe(this::sendDeleteCartTrackingEvent)
+        getViewModel().addToCartRecommendationItemTrackingLiveData.observe(
+                this::sendAddToCartRecommendationTrackingEvent
+        )
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -813,5 +816,11 @@ abstract class BaseSearchCategoryFragment:
         val shopId = recomItem.shopId.toString()
 
         openATCVariantBottomSheet(productId, shopId)
+    }
+
+    protected open fun sendAddToCartRecommendationTrackingEvent(
+            atcTrackingData: Triple<Int, String, RecommendationItem>
+    ) {
+        val (quantity, cartId, recommendationItem) = atcTrackingData
     }
 }
