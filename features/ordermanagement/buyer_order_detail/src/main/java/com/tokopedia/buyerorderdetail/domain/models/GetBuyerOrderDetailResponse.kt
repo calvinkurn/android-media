@@ -42,7 +42,7 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("have_product_bundle")
                 val haveProductBundle: Boolean = false,
                 @SerializedName("bundle_detail")
-                val bundleDetail: BundleDetail = BundleDetail(),
+                val bundleDetail: BundleDetail? = BundleDetail(),
                 @SerializedName("shipment")
                 val shipment: Shipment = Shipment(),
                 @SerializedName("shop")
@@ -220,7 +220,7 @@ data class GetBuyerOrderDetailResponse(
                             @SerializedName("order_id")
                             val orderId: Long = 0,
                             @SuppressLint("Invalid Data Type")
-                            @SerializedName("order_detail_id")
+                            @SerializedName("order_dtl_id")
                             val orderDetailId: Long = 0,
                             @SuppressLint("Invalid Data Type")
                             @SerializedName("product_id")

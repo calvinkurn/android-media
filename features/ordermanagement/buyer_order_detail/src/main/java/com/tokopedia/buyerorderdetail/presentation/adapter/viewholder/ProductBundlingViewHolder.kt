@@ -68,7 +68,9 @@ class ProductBundlingViewHolder(
     }
 
     override fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductBundlingItemUiModel) {
-        navigator.openAppLink(uiModel.button.url, false)
+        uiModel.button?.url?.let {
+            navigator.openAppLink(it, false)
+        }
         // TODO: Set correct tracker
     }
 

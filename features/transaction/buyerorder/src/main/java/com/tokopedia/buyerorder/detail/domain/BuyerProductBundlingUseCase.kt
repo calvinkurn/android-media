@@ -37,12 +37,9 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
         useCase.setGraphqlQuery(QUERY)
     }
 
-    suspend fun execute(orderId: String): List<BuyerProductBundlingUiModel> {
+    suspend fun execute(orderId: String): List<BuyerProductBundlingUiModel>? {
         useCase.setRequestParams(createRequestParam(orderId))
-        // TODO: Use actual data
-//        return useCase.executeOnBackground().bundleDetail.bundleList
-        delay(2000)
-        return getDummyProductBundling()
+        return useCase.executeOnBackground().bundleDetail?.bundleList
     }
 
     private fun createRequestParam(orderId: String): Map<String, Any> {
@@ -50,62 +47,6 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
         return RequestParams.create().apply {
             putObject(PARAM_INPUT, params)
         }.parameters
-    }
-
-    private fun getDummyProductBundling(): List<BuyerProductBundlingUiModel> {
-        return listOf(
-                BuyerProductBundlingUiModel(
-                        bundleName = "Tes Bundle",
-                        productList = listOf(
-                                ProductBundleItem(
-                                        productId = 100,
-                                        productThumbnailUrl = "",
-                                        productName = "Product coba2",
-                                        productPrice = 100000.00
-                                ),
-                                ProductBundleItem(
-                                        productId = 100,
-                                        productThumbnailUrl = "",
-                                        productName = "Product coba2",
-                                        productPrice = 100000.00
-                                )
-                        )
-                ),
-                BuyerProductBundlingUiModel(
-                        bundleName = "Tes Bundle",
-                        productList = listOf(
-                                ProductBundleItem(
-                                        productId = 120,
-                                        productThumbnailUrl = "",
-                                        productName = "Product coba2",
-                                        productPrice = 100000.00
-                                ),
-                                ProductBundleItem(
-                                        productId = 121,
-                                        productThumbnailUrl = "",
-                                        productName = "Product coba2",
-                                        productPrice = 100000.00
-                                )
-                        )
-                ),
-                BuyerProductBundlingUiModel(
-                        bundleName = "Tes Bundle",
-                        productList = listOf(
-                                ProductBundleItem(
-                                        productId = 150,
-                                        productThumbnailUrl = "",
-                                        productName = "Product coba2",
-                                        productPrice = 100000.00
-                                ),
-                                ProductBundleItem(
-                                        productId = 151,
-                                        productThumbnailUrl = "",
-                                        productName = "Product coba2",
-                                        productPrice = 100000.00
-                                )
-                        )
-                )
-        )
     }
 
 }

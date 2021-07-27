@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionBut
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -72,15 +73,19 @@ class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
             }
         }
 
-        private fun setupBundleItemButton(actionButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
+        private fun setupBundleItemButton(actionButton: ActionButtonsUiModel.ActionButton?, processing: Boolean) {
             bundleItemProductActionButton?.run {
-                isLoading = processing
-                text = actionButton.label
-                buttonVariant = Utils.mapButtonVariant(actionButton.variant)
-                buttonType = Utils.mapButtonType(actionButton.type)
-                showWithCondition(actionButton.label.isNotBlank())
-                setOnClickListener {
-                    onItemActionClicked(actionButton.key)
+                if (actionButton == null) {
+                    gone()
+                } else {
+                    isLoading = processing
+                    text = actionButton.label
+                    buttonVariant = Utils.mapButtonVariant(actionButton.variant)
+                    buttonType = Utils.mapButtonType(actionButton.type)
+                    showWithCondition(actionButton.label.isNotBlank())
+                    setOnClickListener {
+                        onItemActionClicked(actionButton.key)
+                    }
                 }
             }
         }

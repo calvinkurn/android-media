@@ -5,7 +5,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundling
 
 data class BuyerProductBundlingResponse(
         @SerializedName("bundle_detail")
-        val bundleDetail: BuyerProductBundlingDetail = BuyerProductBundlingDetail()
+        val bundleDetail: BuyerProductBundlingDetail? = BuyerProductBundlingDetail()
 )
 
 data class BuyerProductBundlingDetail(

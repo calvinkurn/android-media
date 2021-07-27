@@ -52,7 +52,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
         return ProductListUiModel(
                 productList = mapProductList(products, orderId, orderStatusId),
                 productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
@@ -255,16 +255,15 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel> {
-        return bundleDetail.bundleList.map { bundle ->
+    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel>? {
+        return bundleDetail?.bundleList?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
-                    // TODO: get actual dummy action button (if exist)
+                    // TODO: get actual action button
                     bundleName = bundle.bundleName,
                     totalPrice = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                     totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                     bundleItemList = bundle.orderDetailList.map { bundleDetail ->
                         ProductListUiModel.ProductBundlingItemUiModel(
-                                button = getDummyActionButton(),
                                 orderId = bundleDetail.orderId.toString(),
                                 orderDetailId = bundleDetail.orderDetailId.toString(),
                                 orderStatusId = orderStatusId,
@@ -278,20 +277,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                     }
             )
         }
-    }
-
-    private fun getDummyActionButton(): ActionButtonsUiModel.ActionButton {
-        return ActionButtonsUiModel.ActionButton(
-                key = "",
-                label = "Beli Lagi",
-                popUp = ActionButtonsUiModel.ActionButton.PopUp(
-                        body = "Tes",
-                        title = "tes"
-                ),
-                variant = "ghost",
-                type = "main",
-                url = ""
-        )
     }
 
     private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {

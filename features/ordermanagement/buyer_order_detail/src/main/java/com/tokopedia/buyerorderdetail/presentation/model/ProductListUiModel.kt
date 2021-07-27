@@ -67,7 +67,7 @@ data class ProductListUiModel(
     }
 
     data class ProductBundlingItemUiModel(
-            val button: ActionButtonsUiModel.ActionButton,
+            val button: ActionButtonsUiModel.ActionButton? = null,
             val orderId: String,
             val orderDetailId: String,
             val orderStatusId: String,
