@@ -78,7 +78,8 @@ class ScreenRecordService : Service(), CoroutineScope {
     private lateinit var mediaProjection: MediaProjection
     private lateinit var virtualDisplay: VirtualDisplay
 
-    lateinit var notificationManager: NotificationManager
+    var notificationManager: NotificationManager? = null
+
     lateinit var ongoingNotifBuilder: NotificationCompat.Builder
     lateinit var preparationNotifBuilder: NotificationCompat.Builder
 
@@ -113,104 +114,137 @@ class ScreenRecordService : Service(), CoroutineScope {
     }
 
     private fun init(projectionResultCode: Int, projectionResultData: Intent) {
-        Log.d(DEBUG_TAG, "start init")
+        try {
+            Log.d(DEBUG_TAG, "start init")
 
-        val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        mediaProjection = projectionManager
-                .getMediaProjection(projectionResultCode, projectionResultData) as MediaProjection
+            createNotificationChannel()
 
-        Log.d(DEBUG_TAG, "media projection success")
+            Log.d(DEBUG_TAG, "create notif channel success")
 
-        mediaRecorder = MediaRecorder()
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            ongoingNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setContentTitle(getString(R.string.screen_record_notif_title_recording_screen))
+                    .addAction(R.drawable.screen_recorder_ic_stop_black_24dp,
+                            getString(R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
+                    .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
+            preparationNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setContentTitle(getString(R.string.screen_record_notif_title_preparation))
+                    .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
 
-        Log.d(DEBUG_TAG, "setAudioSource success")
+            val startServiceNotif = NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
+                    .setContentTitle(getString(R.string.screen_record_notif_title_preparing))
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
 
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            val recorderReadyNotif = NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
+                    .setContentTitle(getString(R.string.screen_record_notif_title_ready_to_record))
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setContentText(getString(R.string.screen_record_notif_text_ready_to_record))
+                    .addAction(R.drawable.screen_recorder_ic_videocam_black_24dp,
+                            getString(R.string.screen_recorder_notif_record), buildPendingIntent(ACTION_START_RECORD))
+                    .addAction(R.drawable.screen_recorder_ic_close_black_24dp,
+                            getString(R.string.screen_recorder_notif_finish), buildPendingIntent(ACTION_FINISH))
+                    .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
 
-        Log.d(DEBUG_TAG, "setVideoSource success")
+            Log.d(DEBUG_TAG, "notif setting success")
 
-        lateinit var profile: CamcorderProfile
-        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
-            Log.d(DEBUG_TAG, "getting 480P profile...")
-            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P)
-        } else {
-            Log.d(DEBUG_TAG, "getting LOW profile...")
-            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW)
+            startForeground(NOTIF_ID, startServiceNotif)
+
+            Log.d(DEBUG_TAG, "start foreground success")
+
+            mediaRecorder = MediaRecorder()
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+
+            Log.d(DEBUG_TAG, "setAudioSource success")
+
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+
+            Log.d(DEBUG_TAG, "setVideoSource success")
+
+            lateinit var profile: CamcorderProfile
+            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
+                Log.d(DEBUG_TAG, "getting 480P profile...")
+                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P)
+            } else {
+                Log.d(DEBUG_TAG, "getting LOW profile...")
+                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW)
+            }
+
+            Log.d(DEBUG_TAG, "getting profile success")
+
+            profile.videoFrameWidth = VIDEO_WIDTH
+            profile.videoFrameHeight = VIDEO_HEIGHT
+
+            Log.d(DEBUG_TAG, "set vidoeFrame dimension success")
+
+            mediaRecorder.setOutputFormat(profile.fileFormat)
+
+            Log.d(DEBUG_TAG, "set output format success")
+
+            mediaRecorder.setAudioEncoder(profile.audioCodec)
+            mediaRecorder.setAudioChannels(profile.audioChannels)
+            mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
+            mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+
+            Log.d(DEBUG_TAG, "audio setting success")
+
+            mediaRecorder.setVideoFrameRate(profile.videoFrameRate)
+            mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
+            mediaRecorder.setVideoEncodingBitRate(VIDEO_BITRATE)
+            mediaRecorder.setVideoEncoder(profile.videoCodec)
+
+            Log.d(DEBUG_TAG, "video setting success")
+
+            mediaRecorder.setOutputFile(internalStoragePath + FILENAME_RESULT)
+
+            Log.d(DEBUG_TAG, "setOutputFile success")
+
+            mediaRecorder.prepare()
+
+            Log.d(DEBUG_TAG, "prepare media recorder success")
+
+            //short delay to give time after start service and before request media projection
+            //to avoid "Media projections require a foreground service of type ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION" issue
+            Thread.sleep(500)
+
+            val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+            mediaProjection = projectionManager
+                    .getMediaProjection(projectionResultCode, projectionResultData) as MediaProjection
+
+            Log.d(DEBUG_TAG, "media projection success")
+
+            virtualDisplay = mediaProjection.createVirtualDisplay(
+                    VIRTUAL_DISPLAY_NAME,
+                    profile.videoFrameWidth, profile.videoFrameHeight, resources.displayMetrics.densityDpi,
+                    DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                    mediaRecorder.surface, null, null)
+
+            Log.d(DEBUG_TAG, "create virtual display success")
+
+            notificationManager?.notify(NOTIF_ID, recorderReadyNotif)
+        } catch (e: Exception) {
+            Log.d(DEBUG_TAG, e.stackTraceToString())
+            handleError()
         }
+    }
 
-        Log.d(DEBUG_TAG, "getting profile success")
+    private fun handleError() {
+        infoErrorToUser()
+        finish()
+    }
 
-        profile.videoFrameWidth = VIDEO_WIDTH
-        profile.videoFrameHeight = VIDEO_HEIGHT
+    private fun infoErrorToUser() {
+        notificationManager?.notify(NOTIF_ID, buildErrorNotification())
+    }
 
-        Log.d(DEBUG_TAG, "set vidoeFrame dimension success")
-
-        mediaRecorder.setOutputFormat(profile.fileFormat)
-
-        Log.d(DEBUG_TAG, "set output format success")
-
-        mediaRecorder.setAudioEncoder(profile.audioCodec)
-        mediaRecorder.setAudioChannels(profile.audioChannels)
-        mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
-        mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
-
-        Log.d(DEBUG_TAG, "audio setting success")
-
-        mediaRecorder.setVideoFrameRate(profile.videoFrameRate)
-        mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
-        mediaRecorder.setVideoEncodingBitRate(VIDEO_BITRATE)
-        mediaRecorder.setVideoEncoder(profile.videoCodec)
-
-        Log.d(DEBUG_TAG, "video setting success")
-
-        mediaRecorder.setOutputFile(internalStoragePath + FILENAME_RESULT)
-
-        Log.d(DEBUG_TAG, "setOutputFile success")
-
-        mediaRecorder.prepare()
-
-        Log.d(DEBUG_TAG, "prepare media recorder success")
-
-        virtualDisplay = mediaProjection.createVirtualDisplay(
-                VIRTUAL_DISPLAY_NAME,
-                profile.videoFrameWidth, profile.videoFrameHeight, resources.displayMetrics.densityDpi,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                mediaRecorder.surface, null, null)
-
-        Log.d(DEBUG_TAG, "create virtual display success")
-
-        createNotificationChannel()
-
-        Log.d(DEBUG_TAG, "create notif channel success")
-
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        ongoingNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setContentTitle(getString(R.string.screen_record_notif_title_recording_screen))
-                .addAction(R.drawable.screen_recorder_ic_stop_black_24dp,
-                        getString(R.string.screen_recorder_notif_stop), buildPendingIntent(ACTION_STOP_RECORD))
-                .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
-        preparationNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setContentTitle(getString(R.string.screen_record_notif_title_preparation))
-                .setSmallIcon(R.drawable.screen_recorder_ic_notify_white)
-
-        val startServiceNotif = NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
-                .setContentTitle(getString(R.string.screen_record_notif_title_ready_to_record))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setContentText(getString(R.string.screen_record_notif_text_ready_to_record))
-                .addAction(R.drawable.screen_recorder_ic_videocam_black_24dp,
-                        getString(R.string.screen_recorder_notif_record), buildPendingIntent(ACTION_START_RECORD))
-                .addAction(R.drawable.screen_recorder_ic_close_black_24dp,
-                        getString(R.string.screen_recorder_notif_finish), buildPendingIntent(ACTION_FINISH))
+    private fun buildErrorNotification(): Notification {
+        return NotificationCompat.Builder(applicationContext, HIGH_PRIO_CHANNEL_ID)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentTitle(getString(R.string.screen_record_notif_title_error))
+                .setAutoCancel(true)
                 .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
-
-        Log.d(DEBUG_TAG, "notif setting success")
-
-        startForeground(NOTIF_ID, startServiceNotif)
-
-        Log.d(DEBUG_TAG, "start foreground success")
     }
 
     private fun buildPendingIntent(action: String): PendingIntent? {
@@ -248,7 +282,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun showPreparationNotif() {
         val notif = preparationNotifBuilder.build()
-        notificationManager.notify(NOTIF_ID, notif)
+        notificationManager?.notify(NOTIF_ID, notif)
     }
 
     private fun startDurationCountDown() {
@@ -257,7 +291,7 @@ class ScreenRecordService : Service(), CoroutineScope {
             while (remainingDurationSecond > 0) {
                 val notif =
                         ongoingNotifBuilder.setContentText(formatRemainingTime(remainingDurationSecond)).build()
-                notificationManager.notify(NOTIF_ID, notif)
+                notificationManager?.notify(NOTIF_ID, notif)
                 withContext(backgroundCoroutineContext) {
                     Thread.sleep(1000)
                 }
@@ -336,7 +370,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun infoFinishToUser(resultPath: String) {
         val pendingIntent = getOpenVideoResultPendingIntent(resultPath)
-        notificationManager.notify(NOTIF_ID, buildFinishNotification(pendingIntent))
+        notificationManager?.notify(NOTIF_ID, buildFinishNotification(pendingIntent))
     }
 
     private fun buildFinishNotification(pendingIntent: PendingIntent): Notification {
