@@ -212,18 +212,25 @@ class PlayAnalytic(
                      position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
-                        "productClick",
+                        "select_content",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_TRACK_CLICK,
                         "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet"
                 ),
-                hashMapOf<String, Any>(
-                        "ecommerce" to hashMapOf(
-                                "click" to hashMapOf(
-                                        "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                                        "products" to  listOf(convertProductToHashMapWithList(product, position, "bottom sheet"))
-                                )
-                        )
+                hashMapOf (
+                    "items" to convertProductToHashMapWithList(product, position)
+                ),
+                hashMapOf(
+                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                    KEY_ITEM_LIST to "/groupchat - bottom sheet",
+                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                    KEY_USER_ID to userId,
+                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                    KEY_PRODUCT_ID to product.id,
+                    KEY_PRODUCT_NAME to product.title,
+                    KEY_PRODUCT_URL to product.applink.toString(),
+                    KEY_CHANNEL to mChannelName
                 )
         )
     }
@@ -524,6 +531,21 @@ class PlayAnalytic(
         )
     }
 
+    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): HashMap<String, Any> {
+        return hashMapOf(
+            "index" to position,
+            "item_brand" to "",
+            "item_category" to "",
+            "item_id" to product.id,
+            "item_name" to product.title,
+            "item_variant" to "",
+            "price" to when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            }
+        )
+    }
+
     private fun clickBeliButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
@@ -670,6 +692,7 @@ class PlayAnalytic(
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_PRODUCT_NAME = "productName"
         private const val KEY_PRODUCT_URL = "productUrl"
+        private const val KEY_ITEM_LIST = "item_list"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_CLICK_BACK = "clickBack"
