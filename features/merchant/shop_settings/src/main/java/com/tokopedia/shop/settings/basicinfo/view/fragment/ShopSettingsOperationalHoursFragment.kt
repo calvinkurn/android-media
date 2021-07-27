@@ -134,6 +134,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var isNeedToShowOpenShopToaster: Boolean = false
     private var isShopClosed: Boolean = false
     private var isShopOnScheduledHoliday: Boolean = false
+    private var isShopOnOperationalHoliday: Boolean = false
     private var isShouldShowHolidaySchedule: Boolean = false
     private var isActionEdit: Boolean = false
     private var isCloseNow: Boolean = false
@@ -406,20 +407,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 }
 
                 if (isShopClosed) {
-                    if (holidayInfo.closeDetail.status == 0 || holidayInfo.closeDetail.status == 1) {
-                        // closed because operational hours
-                        isShopOnScheduledHoliday = false
-                        val idxOfDay = todayOrdinalDayOfWeek - 1
-                        val shopStartTime = opsHourListUiModel.operationalHourList[idxOfDay].startTime
-                        val shopEndTime = opsHourListUiModel.operationalHourList[idxOfDay].endTime
-                        val shopTodayDateTime = OperationalHoursUtil.generateDatetime(shopStartTime, shopEndTime)
-                        val isHolidayByOperational = shopTodayDateTime == OperationalHoursUtil.HOLIDAY
-                        renderHolidaySection(isHolidayBySchedule = false, isHolidayByOperational = isHolidayByOperational)
-                    } else {
-                        // closed because holiday schedule
-                        isShopOnScheduledHoliday = true
-                        renderHolidaySection(isHolidayBySchedule = true)
-                    }
+                    val idxOfDay = todayOrdinalDayOfWeek - 1
+                    val shopStartTime = opsHourListUiModel.operationalHourList[idxOfDay].startTime
+                    val shopEndTime = opsHourListUiModel.operationalHourList[idxOfDay].endTime
+                    val shopTodayDateTime = OperationalHoursUtil.generateDatetime(shopStartTime, shopEndTime)
+                    isShopOnOperationalHoliday = shopTodayDateTime == OperationalHoursUtil.HOLIDAY
+                    isShopOnScheduledHoliday = holidayInfo.closeDetail.status == ShopStatusDef.CLOSED
+                    renderHolidaySection(isHolidayBySchedule = isShopOnScheduledHoliday, isHolidayByOperational = isShopOnOperationalHoliday)
                 } else {
                     isShopOnScheduledHoliday = false
                     renderHolidaySection(isHolidayBySchedule = false)
@@ -478,7 +472,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
             }
-            isNeedToShowOpenShopToaster = true
+//            isNeedToShowOpenShopToaster = true
             getInitialData()
         }
 
@@ -492,6 +486,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_failed)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
             }
+            isNeedToShowOpenShopToaster = true
             getInitialData()
         }
 
@@ -500,6 +495,26 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun getInitialData() {
         // get shop operational hours list
         shopSettingsOperationalHoursViewModel.getShopOperationalHoursInitialData(userSession.shopId)
+    }
+
+    private fun abortHolidaySchedule() {
+        if (isShopOnScheduledHoliday && isShopOnOperationalHoliday) {
+            // delete ongoing holiday and reset operational holiday if any
+            deleteShopHolidaySchedule()
+            resetShopOperationalHoursByDay(day = todayOrdinalDayOfWeek)
+        }
+        if (isShopOnScheduledHoliday && !isShopOnOperationalHoliday) {
+            // delete ongoing holiday schedule
+            deleteShopHolidaySchedule()
+        }
+        if (!isShopOnScheduledHoliday && isShopOnOperationalHoliday) {
+            // change holiday by operational to 24 Hours
+            resetShopOperationalHoursByDay(day = todayOrdinalDayOfWeek)
+        }
+        if (!isShopOnScheduledHoliday && !isShopOnOperationalHoliday) {
+            // delete upcoming holiday schedule
+            resetShopOperationalHoursByDay(day = todayOrdinalDayOfWeek)
+        }
     }
 
     private fun deleteShopHolidaySchedule() {
@@ -548,7 +563,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 isChecked = isShopClosed
                 setOnCheckedChangeListener { _, isChecked ->
                     if (!isChecked) {
-                        showConfirmDialogForOpenShopNow(isHolidayBySchedule)
+                        showConfirmDialogForOpenShopNow()
                     }
                 }
             }
@@ -814,13 +829,19 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 primaryCTAListener = {
                     actionBottomSheet?.dismiss()
                     showLoader()
-                    deleteShopHolidaySchedule()
+                    abortHolidaySchedule()
+                    if (isShopOnScheduledHoliday && isShopOnOperationalHoliday) {
+                        deleteShopHolidaySchedule()
+                        resetShopOperationalHoursByDay(day = todayOrdinalDayOfWeek)
+                    } else {
+                        deleteShopHolidaySchedule()
+                    }
                 },
                 secondaryCTAListener = {}
         )?.show()
     }
 
-    private fun showConfirmDialogForOpenShopNow(isClosedBySchedule: Boolean) {
+    private fun showConfirmDialogForOpenShopNow() {
         // confirm dialog to open shop now and abort ongoing holiday
         buildConfirmDialog(
                 dialogTitle = getString(R.string.shop_operational_hour_abort_shop_holiday_dialog_title),
@@ -829,11 +850,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 ctaSecondaryText = getString(R.string.label_cancel),
                 primaryCTAListener = {
                     showLoader()
-                    if (isClosedBySchedule) {
-                        deleteShopHolidaySchedule()
-                    } else {
-                        resetShopOperationalHoursByDay(day = todayOrdinalDayOfWeek)
-                    }
+                    abortHolidaySchedule()
                 },
                 secondaryCTAListener = {
                     shopIsOnHolidaySwitcher?.isChecked = true
