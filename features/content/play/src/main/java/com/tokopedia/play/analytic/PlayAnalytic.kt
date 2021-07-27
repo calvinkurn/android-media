@@ -423,29 +423,25 @@ class PlayAnalytic(
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
-                        "productClick",
+                        "select_content",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_TRACK_CLICK,
                         "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
                 ),
                 hashMapOf(
-                        "ecommerce" to hashMapOf(
-                                "click" to hashMapOf(
-                                        "actionField" to hashMapOf( "list" to "/groupchat - featured product" ),
-                                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
-                                )
-                        )
+                        "items" to convertProductToHashMapWithList(featuredProduct, position)
                 ),
                 hashMapOf(
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_ITEM_LIST to "/groupchat - featured product",
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_CHANNEL to mChannelName,
                         KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                         KEY_PRODUCT_ID to featuredProduct.id,
                         KEY_PRODUCT_NAME to featuredProduct.title,
-                        KEY_PRODUCT_URL to featuredProduct.applink.toString()
+                        KEY_PRODUCT_URL to featuredProduct.applink.toString(),
+                        KEY_CHANNEL to mChannelName
                 )
         )
     }
