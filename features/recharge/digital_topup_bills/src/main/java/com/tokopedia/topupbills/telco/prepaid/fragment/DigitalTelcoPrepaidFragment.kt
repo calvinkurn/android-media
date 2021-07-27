@@ -455,7 +455,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             telcoClientNumberWidget.clearFocusAutoComplete()
             startActivityForResult(activity?.let {
                 DigitalSearchNumberActivity.newInstance(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+                        ClientNumberType.TYPE_INPUT_TEL.value, clientNumber, favNumberList)
             },
                     REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
         }

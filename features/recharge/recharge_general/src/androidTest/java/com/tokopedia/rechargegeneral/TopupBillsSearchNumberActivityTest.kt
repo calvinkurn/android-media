@@ -28,7 +28,7 @@ class TopupBillsSearchNumberActivityTest {
                     val favNumbers = arrayListOf<TopupBillsFavNumberItem>()
                     val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
                     return Intent(targetContext, TopupBillsSearchNumberActivity::class.java).apply {
-                        putExtra(TopupBillsSearchNumberActivity.EXTRA_CLIENT_NUMBER, ClientNumberType.TYPE_INPUT_TEL)
+                        putExtra(TopupBillsSearchNumberActivity.EXTRA_CLIENT_NUMBER, ClientNumberType.TYPE_INPUT_TEL.value)
                         putExtra(TopupBillsSearchNumberActivity.EXTRA_NUMBER, "")
                         putParcelableArrayListExtra(TopupBillsSearchNumberActivity.EXTRA_NUMBER_LIST, favNumbers)
                     }
