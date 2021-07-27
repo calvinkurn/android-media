@@ -728,7 +728,7 @@ public class MainParentActivity extends BaseActivity implements
     public void renderNotification(Notification notification) {
         this.notification = notification;
         if (bottomNavigation != null) {
-            if (notification.getTotalCart() != 0) {
+            if (!isNewNavigation && notification.getTotalCart() != 0) {
                 bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.VISIBLE);
             } else {
                 bottomNavigation.setBadge(notification.getTotalCart(), CART_MENU, View.INVISIBLE);
