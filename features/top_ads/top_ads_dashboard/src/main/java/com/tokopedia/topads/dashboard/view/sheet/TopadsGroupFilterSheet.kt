@@ -61,6 +61,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             view.adPlacement?.hide()
         }
 
+        selectedAdPlacement = SELECTED_placement_type_0
         // for ad placement filter
         view.semua?.setOnClickListener { v ->
             if (v.semua.chipType == ChipsUnify.TYPE_NORMAL) {

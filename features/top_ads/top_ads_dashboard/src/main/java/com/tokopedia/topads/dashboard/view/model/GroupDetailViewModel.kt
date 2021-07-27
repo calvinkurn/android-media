@@ -182,9 +182,9 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     @GqlQuery("StatsList", STATS_URL)
-    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String) {
+    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String, goalId: Int) {
         val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId, groupId)
+                selectedStatisticType, userSession.shopId, groupId, goalId)
         topAdsGetStatisticsUseCase.setQueryString(StatsList.GQL_QUERY)
         topAdsGetStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}

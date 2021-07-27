@@ -21,6 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -323,7 +324,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private fun loadData() {
         viewModel.getGroupInfo(resources, groupId.toString(), GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString())
+        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString(), placementType)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
@@ -348,10 +349,10 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             per_click_rekomendasi.visibility = View.VISIBLE
             data.bidSettings?.forEach {
                 if(it.bidType.equals("product_search")) {
-                    budgetPerClick.text = "Rp " + it.priceBid
+                    budgetPerClick.text = "Rp " + it.priceBid?.toInt()
                     searchBid = it.priceBid
                 } else if(it.bidType.equals("product_browse")) {
-                    budgetPerClick_rekomendasi.text = "Rp " + it.priceBid
+                    budgetPerClick_rekomendasi.text = "Rp " + it.priceBid?.toInt()
                     rekommendedBid = it.priceBid
                 }
 
@@ -431,7 +432,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString())
+        viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString(), placementType)
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
@@ -481,7 +482,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     override fun getSelectedFilter(placementType: Int) {
         this.placementType = placementType
-        loadData()
+        loadStatisticsData()
     }
 }
 

@@ -243,7 +243,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
 
         private fun loadStatisticsData() {
             if (startDate == null || endDate == null) return
-            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString())
+            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString(), 0)
         }
 
         private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {

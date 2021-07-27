@@ -152,7 +152,7 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `get topads stats`() {
-        viewModel.getTopAdsStatistic(Date(), Date(), 1, {}, "")
+        viewModel.getTopAdsStatistic(Date(), Date(), 1, {}, "", 0)
         verify {
             topAdsGetStatisticsUseCase.execute(any(), any())
         }

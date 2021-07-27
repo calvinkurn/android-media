@@ -164,8 +164,8 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fetchData()
         this.placementType = arguments?.getInt("placementType", 0)!!
+        fetchData()
         setPlacementTicker()
         btnFilter.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
@@ -175,8 +175,8 @@ class ProductTabFragment : BaseDaggerFragment() {
                 changePlacementFilter?.getSelectedFilter(groupFilterSheet.getSelectedAdPlacementType())
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
                     CLICK_FILTER_TERAPKAN, "${groupFilterSheet.getSelectedAdPlacementType()} - ${groupFilterSheet.getSelectedStatusId()} - ${groupFilterSheet.getSelectedSortId()}")
-                fetchData()
                 setPlacementTicker()
+                fetchData()
             }
         }
 
@@ -334,8 +334,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun setPlacementTicker() {
-        Log.d("Naveen", "Placement type is$placementType")
-        when(placementType) {
+        when(groupFilterSheet.getSelectedAdPlacementType()) {
             0 -> {
                 placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
                 placement_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
