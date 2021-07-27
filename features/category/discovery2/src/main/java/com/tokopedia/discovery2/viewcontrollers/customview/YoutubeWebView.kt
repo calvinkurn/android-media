@@ -12,12 +12,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeCustomViewListener
 
-private const val mimeType = "text/html"
-private const val encoding = "UTF-8"
+private const val MIME_TYPE = "text/html"
+private const val ENCODING= "UTF-8"
+private const val ASPECT_RATIO = 0.5625 //9:16
+private const val DELAY_TO_MIMIC_CLICK = 1000
 
 class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : WebView(context, attrs, defStyleAttr) {
-    private val delayToMimicClick = 1000
     private var dispatchDownEvent:Boolean = false
     private var userDownEvent:Boolean = false
     private var jsInterface: String = "jsInterface"
@@ -73,7 +74,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 if(userDownEvent){
                     if(event.actionMasked == MotionEvent.ACTION_UP) {
                         dispatchDownEvent = true
-                        val tempEvent = MotionEvent.obtain(event.downTime + delayToMimicClick, event.eventTime + delayToMimicClick,
+                        val tempEvent = MotionEvent.obtain(event.downTime + DELAY_TO_MIMIC_CLICK,
+                            event.eventTime + DELAY_TO_MIMIC_CLICK,
                                 event.actionMasked, event.x, event.y, event.metaState)
                         val downEvent = MotionEvent.obtain(event.downTime, event.eventTime,
                                 MotionEvent.ACTION_DOWN, event.x, event.y, event.metaState)
@@ -104,12 +106,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         if (isPlayerReady) {
             loadUrl("javascript:cueVideo('$videoId', 0)")
         } else
-            loadData(getYoutubePlayerHtml(videoId, width), mimeType, encoding)
+            loadData(getYoutubePlayerHtml(videoId, width), MIME_TYPE, ENCODING)
     }
 
     private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
-        val ratio = 0.5625 //9:16
-        val height = (ratio*width).toInt()
+        val height = (ASPECT_RATIO*width).toInt()
         return "<html>\n" +
                 "  <body>\n" +
                 "    <div id=\"player\"" +
