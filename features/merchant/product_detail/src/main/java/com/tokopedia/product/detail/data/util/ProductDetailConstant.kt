@@ -183,4 +183,6 @@ object ProductDetailConstant {
     const val VARIANT_SCROLL_DELAY = 200L
     const val LOG_MAX_LENGTH = 1000
     const val TOOLBAR_ELEVATION = 10F
+
+    const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
 }

@@ -38,7 +38,7 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
-    val finalPrice: Int
+    val finalPrice: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.discountedPrice
@@ -47,12 +47,12 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val priceBeforeInt: Int
+    val priceBeforeDouble: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.originalPrice
             } else {
-                0
+                0.0
             }
         }
 
