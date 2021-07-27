@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -16,7 +15,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
-import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -75,7 +73,7 @@ class BalanceWidgetView: FrameLayout {
         return GridLayoutManager(itemView.context, spanCount)
     }
 
-    private fun getBalanceWidgetRecyclerView(): RecyclerView? {
+    fun getBalanceWidgetRecyclerView(): RecyclerView? {
         return rvBalance
     }
 
