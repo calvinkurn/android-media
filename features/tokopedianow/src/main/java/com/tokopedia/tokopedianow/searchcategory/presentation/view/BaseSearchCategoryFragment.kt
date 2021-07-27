@@ -804,8 +804,14 @@ abstract class BaseSearchCategoryFragment:
     override fun onATCNonVariantRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int,
     ) {
-
+        getViewModel().onViewATCRecommendationItemNonVariant(
+                recommendationItem = recomItem,
+                adapterPosition = recommendationCarouselPosition,
+                quantity = quantity,
+        )
     }
 
     override fun onAddVariantRecommendationCarouselItem(

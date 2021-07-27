@@ -24,6 +24,8 @@ interface SearchCategoryRecommendationCarouselListener {
     fun onATCNonVariantRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int,
     )
 
     fun onAddVariantRecommendationCarouselItem(
