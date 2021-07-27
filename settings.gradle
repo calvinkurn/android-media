@@ -5,9 +5,10 @@ plugins {
 gradleEnterprise {
     server = "http://172.21.57.32"
     buildScan {
-        publishAlways()
-
         def isCiBuild = System.getenv('BUILD_URL')
+
+        publishAlways()
+        uploadInBackground = !isCiBuild
         tag(isCiBuild ? 'CI' : 'LOCAL')
         if (isCiBuild) {
             link 'Jenkins build', System.getenv('BUILD_URL')
