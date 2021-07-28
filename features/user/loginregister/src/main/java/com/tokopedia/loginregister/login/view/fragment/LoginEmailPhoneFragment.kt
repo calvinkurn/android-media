@@ -700,7 +700,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
 
                 override fun onKeyboardHide() {
-                    callTokopediaCare?.showLoadingTransparent()
+                    callTokopediaCare?.show()
                 }
             })
         }
