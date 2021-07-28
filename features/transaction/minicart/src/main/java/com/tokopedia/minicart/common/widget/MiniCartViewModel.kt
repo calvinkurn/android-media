@@ -131,8 +131,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun isOccFlow(): Boolean {
-        return true
-//        return isOCCFlow.value ?: true
+        return isOCCFlow.value ?: true
+    }
+
+    fun setOccFlow(isOccFlow: Boolean) {
+        _isOCCFlow.value = isOccFlow
     }
 
     private fun getMiniCartItems(): List<MiniCartItem> {
@@ -154,15 +157,19 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             val tmpShopIds = getShopIds()
             getMiniCartListSimplifiedUseCase.setParams(tmpShopIds)
         }
-        getMiniCartListSimplifiedUseCase.execute(onSuccess = {
-            _miniCartSimplifiedData.value = it
-        }, onError = {
-            if (miniCartSimplifiedData.value != null) {
-                _miniCartSimplifiedData.value = miniCartSimplifiedData.value
-            } else {
-                _miniCartSimplifiedData.value = MiniCartSimplifiedData()
-            }
-        })
+        getMiniCartListSimplifiedUseCase.execute(
+                onSuccess = {
+                    // Todo : setOccFlow value from mini cart response
+                    setOccFlow(true)
+                    _miniCartSimplifiedData.value = it
+                },
+                onError = {
+                    if (miniCartSimplifiedData.value != null) {
+                        _miniCartSimplifiedData.value = miniCartSimplifiedData.value
+                    } else {
+                        _miniCartSimplifiedData.value = MiniCartSimplifiedData()
+                    }
+                })
     }
 
     fun getCartList(isFirstLoad: Boolean = false) {
@@ -170,6 +177,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
+                    // Todo : setOccFlow value from mini cart response
+                    setOccFlow(true)
                     onSuccessGetCartList(it, isFirstLoad)
                 },
                 onError = {
