@@ -29,13 +29,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-@TargetApi(21)
+const val ANDROID_LOLLIPOP = 21
+
+@TargetApi(ANDROID_LOLLIPOP)
 class ScreenRecordService : Service(), CoroutineScope {
 
     companion object {
         const val ACTION_INIT = "ACTION_INIT"
         const val EXTRA_MEDIA_PROEJECTION_RESULT_CODE = "EXTRA_MEDIA_PROEJECTION_RESULT_CODE"
         const val EXTRA_MEDIA_PROEJECTION_RESULT_DATA = "EXTRA_MEDIA_PROEJECTION_RESULT_DATA"
+
+        private const val ONE_SECOND_MS = 1000L
 
         private const val MAX_RECORD_DURATION_SECOND = 60
         private const val PRE_RECORD_COUNTDOWN_SECOND = 3
@@ -232,7 +236,7 @@ class ScreenRecordService : Service(), CoroutineScope {
                 while (remainingDurationSecond > 0) {
                     preRecordCountDownText.text = remainingDurationSecond.toString()
                     withContext(backgroundCoroutineContext) {
-                        Thread.sleep(1000)
+                        Thread.sleep(ONE_SECOND_MS)
                     }
                     remainingDurationSecond--
                 }
@@ -258,7 +262,7 @@ class ScreenRecordService : Service(), CoroutineScope {
                         ongoingNotifBuilder.setContentText(formatRemainingTime(remainingDurationSecond)).build()
                 notificationManager?.notify(NOTIF_ID, notif)
                 withContext(backgroundCoroutineContext) {
-                    Thread.sleep(1000)
+                    Thread.sleep(ONE_SECOND_MS)
                 }
                 remainingDurationSecond--
             }
@@ -270,7 +274,7 @@ class ScreenRecordService : Service(), CoroutineScope {
         val formatDate: DateFormat = SimpleDateFormat(
                 "- mm:ss", Locale("in", "ID")
         )
-        return formatDate.format(Date(second * 1000L))
+        return formatDate.format(Date(second * ONE_SECOND_MS))
     }
 
     private fun stopRecord() {
