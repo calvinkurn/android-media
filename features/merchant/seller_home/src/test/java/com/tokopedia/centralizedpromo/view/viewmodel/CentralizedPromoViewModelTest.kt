@@ -41,9 +41,6 @@ class CentralizedPromoViewModelTest {
     lateinit var getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase
 
     @RelaxedMockK
-    lateinit var getPostUseCase: GetPostUseCase
-
-    @RelaxedMockK
     lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
 
     @RelaxedMockK
@@ -94,7 +91,6 @@ class CentralizedPromoViewModelTest {
             context,
             userSession,
             getOnGoingPromotionUseCase,
-            getPostUseCase,
             getChatBlastSellerMetadataUseCase,
             remoteConfig,
             coroutineTestRule.dispatchers
@@ -153,69 +149,6 @@ class CentralizedPromoViewModelTest {
         }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.ON_GOING_PROMO)
-        assert(result != null && result is Fail)
-    }
-
-    @Test
-    fun `Success get layout data for post`() = runBlocking {
-        val successResult = PostListUiModel(
-                items = listOf(
-                        PostUiModel(
-                                title = "Test Post",
-                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                                subtitle = "<p>Info &#183; 20 SEP 19</p>"
-                        ),
-                        PostUiModel(
-                                title = "Test ke 2",
-                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                                subtitle = "<p>Info &#183; 6 SEP 19</p>"
-                        ),
-                        PostUiModel(
-                                title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
-                                applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                                url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                                featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
-                                subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
-                        )
-                ),
-                errorMessage = ""
-        )
-
-        coEvery {
-            getPostUseCase.executeOnBackground()
-        } returns successResult
-
-        viewModel.getLayoutData(LayoutType.POST)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            getPostUseCase.executeOnBackground()
-        }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
-        assert(result != null && result == Success(successResult))
-    }
-
-    @Test
-    fun `Failed get layout data for posts`() = runBlocking {
-        coEvery {
-            getPostUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel.getLayoutData(LayoutType.POST)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            getPostUseCase.executeOnBackground()
-        }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
         assert(result != null && result is Fail)
     }
 
