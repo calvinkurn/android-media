@@ -9,6 +9,7 @@ import com.tokopedia.network.R
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getErrorCodeSimple
 import com.tokopedia.network.utils.ExceptionDictionary.Companion.getRandomString
 import java.io.IOException
@@ -86,6 +87,8 @@ open class ErrorHandler {
                     context.getString(R.string.default_request_error_unknown)
                 }
             } else if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
+                e.message!!
+            } else if (e is AkamaiErrorException) {
                 e.message!!
             } else if (e is IOException) {
                 context.getString(R.string.default_request_error_internal_server)
