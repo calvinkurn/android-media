@@ -269,7 +269,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return if (interactiveSetupView.interceptBackPressed()) true
+        return if (interactiveSetupView.isShown()) interactiveSetupView.interceptBackPressed()
         else showDialogWhenActionClose()
     }
 
@@ -583,7 +583,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is NetworkResult.Fail -> {
                     interactiveSetupView.setLoading(false)
                     showToaster(
-                        message = getString(R.string.play_interactive_broadcast_create_fail), // TODO("ask for proper message")
+                        message = getString(R.string.play_interactive_broadcast_create_fail),
                         type = Toaster.TYPE_ERROR,
                         duration = Toaster.LENGTH_SHORT
                     )
