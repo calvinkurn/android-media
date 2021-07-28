@@ -132,9 +132,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val TIMEOUT_QUANTITY_FLOW = 500L
         private const val PARAM_JOB_TIMEOUT = 1000L
         private const val PARAM_TXSC = "txsc"
+        private const val CODE_200 = 200
+        private const val CODE_300 = 300
     }
-    val CODE_200 = 200
-    val CODE_300 = 300
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>

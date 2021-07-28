@@ -61,6 +61,8 @@ open class RecommendationPageViewModel @Inject constructor(
     companion object {
         const val PARAM_TXSC = "txsc"
         const val PARAM_JOB_TIMEOUT = 1000L
+        const val PARAM_SUCCESS_200 = 200
+        const val PARAM_SUCCESS_300 = 300
     }
     /**
      * public variable
@@ -145,7 +147,7 @@ open class RecommendationPageViewModel @Inject constructor(
                 val dataList = recommendationListLiveData.value as MutableList
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
-                if (errorCode >= 200 && errorCode <= 300) {
+                if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
                     (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
                         val topadsProduct = adsStatus.data.productList[0]
                         it.isTopads = topadsProduct.isCharge
@@ -162,6 +164,10 @@ open class RecommendationPageViewModel @Inject constructor(
         }) {
             it.printStackTrace()
         }
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
     }
 
     /**
