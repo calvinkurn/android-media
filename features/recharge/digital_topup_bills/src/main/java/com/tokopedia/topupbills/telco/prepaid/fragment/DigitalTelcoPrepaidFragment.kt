@@ -620,8 +620,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
         inputs[EXPRESS_PARAM_CLIENT_NUMBER] = telcoClientNumberWidget.getInputNumber()
-        val operatorId = checkoutPassData.operatorId ?: ""
-        if (operatorId.isNotEmpty()) inputs[EXPRESS_PARAM_OPERATOR_ID] = operatorId
+        if (isCheckoutPassDataInitialized()) {
+            val operatorId = checkoutPassData.operatorId ?: ""
+            if (operatorId.isNotEmpty()) inputs[EXPRESS_PARAM_OPERATOR_ID] = operatorId
+        }
         inputFields = inputs
     }
 

@@ -222,11 +222,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
-        checkoutPassData.clientNumber?.let { clientNumber ->
-            inputs[TopupBillsViewModel.EXPRESS_PARAM_CLIENT_NUMBER] = clientNumber
-        }
-        checkoutPassData.operatorId?.let { operatorId ->
-            inputs[TopupBillsViewModel.EXPRESS_PARAM_OPERATOR_ID] = operatorId
+        if (isCheckoutPassDataInitialized()) {
+            checkoutPassData.clientNumber?.let { clientNumber ->
+                inputs[TopupBillsViewModel.EXPRESS_PARAM_CLIENT_NUMBER] = clientNumber
+            }
+            checkoutPassData.operatorId?.let { operatorId ->
+                inputs[TopupBillsViewModel.EXPRESS_PARAM_OPERATOR_ID] = operatorId
+            }
         }
         inputFields = inputs
     }
