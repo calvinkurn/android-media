@@ -18,7 +18,8 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.P])
-class CatalogUtilsTestCase {
+class CatalogUtilsTestCase
+{
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -41,15 +42,21 @@ class CatalogUtilsTestCase {
     @Test
     fun `Check Deeplink Extract Catalog ID parsing using segments`(){
         val arrayOfUrl = arrayListOf<Intent>()
-        arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/apple-63/apple-iphone-4-16gb")))
-        arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/i-mate-63/apple-iphone-4-16gb")))
-        arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/sony ericsson-63/apple-iphone-4-16gb/abc")))
-        arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/i-63-mate-63/apple-iphone-4-16gb")))
-        arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/63/apple-iphone-4-16gb")))
+        arrayOfUrl.add(Intent().setData(
+                Uri.parse("https://tokopedia.com/catalog/apple-63/apple-iphone-4-16gb")))
+        arrayOfUrl.add(Intent().setData(
+                Uri.parse("https://tokopedia.com/catalog/i-mate-63/apple-iphone-4-16gb")))
+        arrayOfUrl.add(Intent().setData(
+                Uri.parse("https://tokopedia.com/catalog/sony ericsson-63/apple-iphone-4-16gb/abc")))
+        arrayOfUrl.add(Intent().setData(
+                Uri.parse("https://tokopedia.com/catalog/i-63-mate-63/apple-iphone-4-16gb")))
+        arrayOfUrl.add(Intent().setData(
+                Uri.parse("https://tokopedia.com/catalog/63/apple-iphone-4-16gb")))
         arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/63/")))// old case handled
         arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/63")))
         arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/i-mate-63")))
-        arrayOfUrl.add(Intent().setData(Uri.parse("https://tokopedia.com/catalog/i-63-mate-63/")))
+        arrayOfUrl.add(Intent().setData(
+                Uri.parse("https://tokopedia.com/catalog/i-63-mate-63/")))
         arrayOfUrl.add(Intent().setData(Uri.parse(" ")))
         arrayOfUrl.add(Intent().setData(Uri.parse("")))
         // Malformed Url

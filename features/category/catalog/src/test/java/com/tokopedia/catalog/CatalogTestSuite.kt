@@ -15,6 +15,7 @@ import org.robolectric.annotation.Config
         CatalogProductListingViewModelTest::class,
         CatalogUtilsTestCase::class
 )
-class CatalogTestSuite {
+class CatalogTestSuite
+{
 
 }

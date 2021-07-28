@@ -2,7 +2,8 @@ package com.tokopedia.catalog.utils
 
 import androidx.annotation.VisibleForTesting
 
-object TkpdIdlingResourceProvider {
+object TkpdIdlingResourceProvider
+{
 
     var resource: TkpdIdlingResource? = null
 

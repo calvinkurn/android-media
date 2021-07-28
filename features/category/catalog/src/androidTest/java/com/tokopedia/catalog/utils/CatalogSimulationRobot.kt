@@ -1,7 +1,8 @@
 package com.tokopedia.catalog.utils
 
 
-class CatalogSimulationRobot {
+class CatalogSimulationRobot
+{
 
     infix fun assertTest(action: CatalogSimulationRobot.() -> Unit) = CatalogSimulationRobot().apply(action)
 }

@@ -41,7 +41,8 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class CatalogFragmentTest {
+class CatalogFragmentTest
+{
 
     @get:Rule
     val activityRule = ActivityTestRule(CatalogDetailPageActivity::class.java, false, false)
@@ -87,7 +88,9 @@ class CatalogFragmentTest {
             }
             if (itemCount > 0) {
                 Thread.sleep(3000)
-                onView(withId(R.id.catalog_images_rv)).perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0, CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
+                onView(withId(R.id.catalog_images_rv))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0,
+                        CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
                 Thread.sleep(3000)
                 onView(CommonMatcher.firstView(AllOf.allOf(
                         withId(R.id.cross),
@@ -96,7 +99,9 @@ class CatalogFragmentTest {
                         withId(R.id.cross),
                         ViewMatchers.isDisplayed()))).perform(ViewActions.click())
                 Thread.sleep(3000)
-                onView(withId(R.id.catalog_images_rv)).perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0, CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
+                onView(withId(R.id.catalog_images_rv))
+                        .perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0,
+                                CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
                 Thread.sleep(3000)
                 onView(CommonMatcher.firstView(AllOf.allOf(
                         withId(R.id.cross),
@@ -127,7 +132,10 @@ class CatalogFragmentTest {
         }
         if (itemCount > 0) {
             Thread.sleep(3000)
-            onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_images_rv))), ViewActions.scrollTo()))
+            onView(withId(R.id.catalog_detail_rv))
+                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_images_rv))),
+                            ViewActions.scrollTo()))
             Thread.sleep(3000)
             onView(withId(R.id.catalog_images_rv)).perform(CatalogViewActions.ScrollToBottomAction())
             Thread.sleep(3000)
@@ -139,7 +147,10 @@ class CatalogFragmentTest {
     @Test
     fun check_lihat_description_page_opening() {
         actionTest {
-            onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))), ViewActions.scrollTo()))
+            onView(withId(R.id.catalog_detail_rv))
+                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
+                            ViewActions.scrollTo()))
             onView(CommonMatcher.firstView(AllOf.allOf(
                     withId(R.id.view_more_description),
                     ViewMatchers.isDisplayed())))
@@ -166,28 +177,35 @@ class CatalogFragmentTest {
     @Test
     fun check_lihat_specifications_page_opening() {
         actionTest {
-            onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))), ViewActions.scrollTo()))
+            onView(withId(R.id.catalog_detail_rv))
+                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))),
+                            ViewActions.scrollTo()))
             onView(withId(R.id.catalog_specification_rv)).perform(CatalogViewActions.ScrollToBottomAction())
             Thread.sleep(2000)
-            val viewInteraction = onView(withId(R.id.catalog_specification_rv)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_specification_rv).let {
-                it.adapter!!.itemCount
-            }
-            viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<SpecificationsViewHolder>(itemCount - 1, CommonActions.clickChildViewWithId(R.id.catalog_specifications_card_parent)))
+            val viewInteraction = onView(withId(R.id.catalog_specification_rv))
+                    .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_specification_rv)
+                    .let { it.adapter!!.itemCount }
+            viewInteraction.perform(RecyclerViewActions
+                    .actionOnItemAtPosition<SpecificationsViewHolder>(itemCount - 1,
+                            CommonActions.clickChildViewWithId(R.id.catalog_specifications_card_parent)))
             Thread.sleep(2000)
             onView(CommonMatcher.firstView(AllOf.allOf(
                     withId(R.id.view_pager_specs),
                     ViewMatchers.isDisplayed())))
             Thread.sleep(2000)
-            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.bottom_sheet_close)))).perform(ViewActions.click())
-            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.catalog_specification_rv), ViewMatchers.isDisplayed())))
+            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.bottom_sheet_close))))
+                    .perform(ViewActions.click())
+            onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.catalog_specification_rv),
+                    ViewMatchers.isDisplayed())))
         }.assertTest {
             val query = listOf(
                     mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                            Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                            Event.LABEL_KEY to Event.ALL_STAR
+                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                        Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
+                        Event.LABEL_KEY to Event.ALL_STAR
                     )
             )
             assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
@@ -197,7 +215,10 @@ class CatalogFragmentTest {
     @Test
     fun check_videos_section() {
         Thread.sleep(3000)
-        onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_videos_rv))), ViewActions.scrollTo()))
+        onView(withId(R.id.catalog_detail_rv))
+                .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                        ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_videos_rv))),
+                        ViewActions.scrollTo()))
         Thread.sleep(2000)
         onView(CommonMatcher.firstView(AllOf.allOf(
                 withId(R.id.catalog_videos_rv),
@@ -215,7 +236,10 @@ class CatalogFragmentTest {
     @Test
     fun check_video_section_opening() {
         Thread.sleep(3000)
-        onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_videos_rv))), ViewActions.scrollTo()))
+        onView(withId(R.id.catalog_detail_rv))
+                .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                        ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_videos_rv))),
+                        ViewActions.scrollTo()))
         Thread.sleep(3000)
         onView(CommonMatcher.firstView(AllOf.allOf(
                 withId(R.id.catalog_videos_rv),
@@ -235,7 +259,10 @@ class CatalogFragmentTest {
     fun check_comparison_section_opening() {
         actionTest {
             Thread.sleep(3000)
-            onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_comparision_rv))), ViewActions.scrollTo()))
+            onView(withId(R.id.catalog_detail_rv))
+                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_comparision_rv))),
+                            ViewActions.scrollTo()))
             Thread.sleep(3000)
             onView(CommonMatcher.firstView(AllOf.allOf(
                     withId(R.id.second_catalog_image),
@@ -249,12 +276,12 @@ class CatalogFragmentTest {
                     ViewMatchers.isDisplayed())))
         }.assertTest {
             val query = listOf(
-                    mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                            Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                            Event.LABEL_KEY to Event.ALL_STAR
-                    )
+                mapOf(
+                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                        Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
+                        Event.LABEL_KEY to Event.ALL_STAR
+                )
             )
             assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
         }
@@ -262,7 +289,10 @@ class CatalogFragmentTest {
 
     @Test
     fun check_product_listing_section() {
-        onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.products_container_frame))), ViewActions.scrollTo()))
+        onView(withId(R.id.catalog_detail_rv))
+                .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                        ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.products_container_frame))),
+                        ViewActions.scrollTo()))
         onView(CommonMatcher.firstView(AllOf.allOf(
                 withId(R.id.search_product_quick_sort_filter),
                 ViewMatchers.isDisplayed())))

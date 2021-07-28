@@ -13,8 +13,8 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 
 
-object CatalogViewActions {
-    /** Overwrites the constraints of the specified [ViewAction].  */
+object CatalogViewActions
+{
     fun withCustomConstraints(
             action: ViewAction, constraints: Matcher<View>): ViewAction {
         return object : ViewAction {
@@ -32,30 +32,14 @@ object CatalogViewActions {
         }
     }
 
-    fun clickChildViewWithId(id: Int): ViewAction? {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View>? {
-                return null
-            }
-
-            override fun getDescription(): String {
-                return "Click on a child view with specified id."
-            }
-
-            override fun perform(uiController: UiController?, view: View) {
-                val v = view.findViewById<View>(id)
-                v.performClick()
-            }
-        }
-    }
-
     class ScrollToBottomAction : ViewAction {
         override fun getDescription(): String {
             return "scroll RecyclerView to bottom"
         }
 
         override fun getConstraints(): Matcher<View> {
-            return Matchers.allOf<View>(ViewMatchers.isAssignableFrom(RecyclerView::class.java), ViewMatchers.isDisplayed())
+            return Matchers.allOf<View>(ViewMatchers.isAssignableFrom(RecyclerView::class.java),
+                    ViewMatchers.isDisplayed())
         }
 
         override fun perform(uiController: UiController?, view: View?) {
