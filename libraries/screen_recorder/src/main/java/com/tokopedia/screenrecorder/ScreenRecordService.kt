@@ -18,7 +18,6 @@ import android.os.IBinder
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.tokopedia.utils.file.PublicFolderUtil
@@ -28,6 +27,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifyprinciples.Typography
 
 const val ANDROID_LOLLIPOP = 21
 
@@ -87,7 +87,7 @@ class ScreenRecordService : Service(), CoroutineScope {
     private lateinit var internalStoragePath: String
     private lateinit var resultVideoPath: String
 
-    lateinit var preRecordCountDownText: TextView
+    lateinit var preRecordCountDownText: Typography
     lateinit var mWindowManager: WindowManager
 
     override fun onCreate() {
@@ -395,7 +395,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun showPreRecordCountDown() {
         try {
-            preRecordCountDownText = TextView(this)
+            preRecordCountDownText = Typography(this)
             preRecordCountDownText.textSize = PRE_RECORD_COUNTDOWN_TEXT_SIZE_SP
             preRecordCountDownText.setTextColor(resources.getColor(R.color.pre_record_countdown_text_color))
             preRecordCountDownText.setLayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
