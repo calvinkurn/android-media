@@ -77,21 +77,27 @@ class CatalogFragmentTest {
     @Test
     fun check_image_gallery_opening() {
         actionTest {
+            Thread.sleep(3000)
             onView(CommonMatcher.firstView(AllOf.allOf(
                     withId(R.id.catalog_images_rv),
                     ViewMatchers.isDisplayed())))
+            Thread.sleep(3000)
             val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_images_rv).let {
                 it.adapter!!.itemCount
             }
             if (itemCount > 0) {
+                Thread.sleep(3000)
                 onView(withId(R.id.catalog_images_rv)).perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0, CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
+                Thread.sleep(3000)
                 onView(CommonMatcher.firstView(AllOf.allOf(
                         withId(R.id.cross),
                         ViewMatchers.isDisplayed())))
                 onView(CommonMatcher.firstView(AllOf.allOf(
                         withId(R.id.cross),
                         ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+                Thread.sleep(3000)
                 onView(withId(R.id.catalog_images_rv)).perform(RecyclerViewActions.actionOnItemAtPosition<CatalogImagesViewHolder>(0, CommonActions.clickChildViewWithId(R.id.catalog_image_root)))
+                Thread.sleep(3000)
                 onView(CommonMatcher.firstView(AllOf.allOf(
                         withId(R.id.cross),
                         ViewMatchers.isDisplayed())))
@@ -190,6 +196,7 @@ class CatalogFragmentTest {
 
     @Test
     fun check_videos_section() {
+        Thread.sleep(3000)
         onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_videos_rv))), ViewActions.scrollTo()))
         Thread.sleep(2000)
         onView(CommonMatcher.firstView(AllOf.allOf(
