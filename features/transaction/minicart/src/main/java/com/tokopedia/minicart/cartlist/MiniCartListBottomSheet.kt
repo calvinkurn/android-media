@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
@@ -94,7 +95,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
         bottomSheet = BottomSheetUnify().apply {
-            showCloseIcon = true
+            showCloseIcon = false
             showHeader = true
             isDragable = true
             isHideable = true
@@ -242,6 +243,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             } else {
                 hideLoading()
                 hideProgressLoading()
+                // Need to try-catch since can't check is lateinit `bottomSheetClose` has already initialized or not using `isInitialized`
+                try {
+                    bottomSheet?.bottomSheetClose?.show()
+                } catch (e: UninitializedPropertyAccessException) {
+                    // No-op
+                }
                 bottomSheet?.setTitle(it.title)
                 if (viewBinding.rvMiniCartList.isComputingLayout) {
                     viewBinding.rvMiniCartList.post {
