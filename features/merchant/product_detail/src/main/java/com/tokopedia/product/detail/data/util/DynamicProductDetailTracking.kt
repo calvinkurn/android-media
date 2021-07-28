@@ -455,7 +455,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_UNFOLLOW)
         }
 
-        fun trackTradein(usedPrice: Int, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+        fun trackTradein(usedPrice: Double, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             if (usedPrice > 0)
                 trackTradeinAfterDiagnotics(productInfo, componentTrackDataModel)
             else
@@ -1267,7 +1267,7 @@ object DynamicProductDetailTracking {
                     "shopId" to (productInfo?.basic?.shopID ?: ""),
                     "shopName" to shopName,
                     "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                            ?: 0)) as MutableMap<String, Any>
+                            ?: 0.0)) as MutableMap<String, Any>
 
             TrackingUtil.addComponentTracker(mapOfData, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DISKUSI_PRODUCT_TAB)
 
@@ -1310,7 +1310,7 @@ object DynamicProductDetailTracking {
                     "shopId" to productInfo?.basic?.shopID,
                     "shopName" to shopName,
                     "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                            ?: 0)
+                            ?: 0.0)
             )
 
             TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
@@ -1495,7 +1495,7 @@ object DynamicProductDetailTracking {
             arrayListOf(Product(
                     name = productInfo?.getProductName ?: "",
                     id = productInfo?.basic?.productID ?: "",
-                    price = productInfo?.data?.price?.value?.toDouble() ?: 0.0,
+                    price = productInfo?.data?.price?.value ?: 0.0,
                     brand = productInfo?.getProductName,
                     variant = ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                     category = categoryFormatted,
@@ -1559,7 +1559,7 @@ object DynamicProductDetailTracking {
                             deeplinkUrl,
                             productImageUrl,
                             isOsInt.toString(),
-                            TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value ?: 0),
+                            TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value ?: 0.0),
                             productInfo?.basic?.productID ?: "",
                             "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
                             "",

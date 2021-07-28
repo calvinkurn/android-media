@@ -19,7 +19,6 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/spacing_lvl4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
@@ -67,4 +66,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_height="100dp"
         tools:visibility="visible" />
+
+    <com.tokopedia.stickylogin.view.StickyLoginView
+        android:id="@+id/sticky_login_tokonow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        app:sticky_highlight_color="@color/Unify_G500"
+        app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
