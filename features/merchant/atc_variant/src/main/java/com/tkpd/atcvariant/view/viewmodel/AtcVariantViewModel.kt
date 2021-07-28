@@ -56,6 +56,10 @@ class AtcVariantViewModel @Inject constructor(
         private val deleteCartUseCase: DeleteCartUseCase
 ) : ViewModel() {
 
+    companion object {
+        private const val INITIAL_POSITION_SHIMMERING = 99L
+    }
+
     //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
     private var minicartData: MutableMap<String, MiniCartItem>? = null
@@ -194,7 +198,7 @@ class AtcVariantViewModel @Inject constructor(
 
     fun decideInitialValue(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            _initialData.postValue(listOf(VariantShimmeringDataModel(99L)).asSuccess())
+            _initialData.postValue(listOf(VariantShimmeringDataModel(INITIAL_POSITION_SHIMMERING)).asSuccess())
             isShopOwner = aggregatorParams.isShopOwner
 
             getAggregatorAndMiniCartData(aggregatorParams, isLoggedIn)
