@@ -43,6 +43,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.A
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
+import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -77,19 +78,21 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
+    private var currentLat: Double = DEFAULT_LAT
+    private var currentLong: Double = DEFAULT_LONG
     private var isPolygon: Boolean = false
     private var distrcitId: Int? = null
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
+            Manifest.permission.ACCESS_COARSE_LOCATION)
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var binding by autoCleared<FragmentSearchAddressBinding>()
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-       getComponent(AddNewAddressRevampComponent::class.java).inject(this)
+        getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -175,6 +178,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         } else {
             AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getLastLocationClient()
     }
 
     override fun onDestroy() {
@@ -327,30 +335,30 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             isGpsOn = true
         } else {
             mSettingsClient
-                    .checkLocationSettings(mLocationSettingsRequest)
-                    .addOnSuccessListener(context as Activity) {
-                        //  GPS is already enable, callback GPS status through listener
-                        isGpsOn = true
-                    }
-                    .addOnFailureListener(context, OnFailureListener { e ->
-                        when ((e as ApiException).statusCode) {
-                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+                .checkLocationSettings(mLocationSettingsRequest)
+                .addOnSuccessListener(context as Activity) {
+                    //  GPS is already enable, callback GPS status through listener
+                    isGpsOn = true
+                }
+                .addOnFailureListener(context, OnFailureListener { e ->
+                    when ((e as ApiException).statusCode) {
+                        LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
 
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    val rae = e as ResolvableApiException
-                                    rae.startResolutionForResult(context, AddressConstants.GPS_REQUEST)
-                                } catch (sie: IntentSender.SendIntentException) {
-                                    sie.printStackTrace()
-                                }
-
-                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                            try {
+                                // Show the dialog by calling startResolutionForResult(), and check the
+                                // result in onActivityResult().
+                                val rae = e as ResolvableApiException
+                                rae.startResolutionForResult(context, AddressConstants.GPS_REQUEST)
+                            } catch (sie: IntentSender.SendIntentException) {
+                                sie.printStackTrace()
                             }
+
+                        LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                            val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                         }
-                    })
+                    }
+                })
         }
         return isGpsOn
     }
@@ -370,7 +378,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun loadAutoComplete(input: String) {
-        viewModel.getAutoCompleteList(input)
+        if (currentLat != DEFAULT_LAT && currentLong != DEFAULT_LONG) {
+            viewModel.getAutoCompleteList(input, "$currentLat,$currentLong")
+        } else {
+            viewModel.getAutoCompleteList(input, "")
+        }
     }
 
     private fun loadListLocation(suggestedPlace: Place) {
@@ -403,7 +415,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
-                   goToPinpointPage(null, data.latitude, data.longitude, false, true)
+                    goToPinpointPage(null, data.latitude, data.longitude, false, true)
                 } else {
                     fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
                         createLocationCallback(), null)
@@ -415,11 +427,21 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
+    private fun getLastLocationClient() {
+        if (AddNewAddressUtils.isGpsEnabled(context) && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                isPermissionAccessed = false
+                currentLat = data.latitude
+                currentLong = data.longitude
+            }
+        }
+    }
+
     fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
-                   //send to maps
+                    //send to maps
                     hasRequestedLocation = true
                 }
             }
@@ -450,6 +472,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
         private const val REQUEST_ADDRESS_FORM_PAGE = 1599
         private const val REQUEST_PINPOINT_PAGE = 1998
+
+        private const val DEFAULT_LONG = 0.0
+        private const val DEFAULT_LAT = 0.0
 
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
