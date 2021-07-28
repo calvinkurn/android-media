@@ -96,7 +96,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener, fragment: Fragment){
-            if(screenshotDetector != null) {
+            if(screenshotDetector == null) {
                 screenshotDetector = ScreenshotDetector(context, screenShotListener)
             }
             screenshotDetector?.detectScreenshots(fragment)
@@ -174,6 +174,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         fragmentManager?.let {
             show(it, TAG)
         }
+        screenshotDetector?.stop()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -202,6 +203,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             setChild(this)
             setCloseClickListener {
                 bottomSheetListener?.onCloseOptionClicked()
+                screenshotDetector?.start()
                 dismiss()
             }
         }
