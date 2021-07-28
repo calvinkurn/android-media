@@ -61,9 +61,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
         private const val HIGH_PRIO_CHANNEL_ID = "HiPrioTkpdScreenRecord"
         private const val HIGH_PRIO_CHANNEL_NAME = "High Priority Tokopedia Screen Record Notif Channel"
-        private const val NOTIF_ID = 1;
-
-        private const val DEBUG_TAG = "ScreenRecorder123";
+        private const val NOTIF_ID = 1
     }
 
     protected val masterJob = SupervisorJob()
