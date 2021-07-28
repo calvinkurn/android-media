@@ -7,6 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveCoachMark
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveFinishView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveInitView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLiveView
@@ -94,13 +95,16 @@ class BroadcastInteractiveViewComponent(
         setListener(loadingListener)
     }
 
-    fun setFinish(coachMarkTitle: String, coachMarkSubtitle: String) = setChildView { InteractiveFinishView(parent.context) }.apply {
+    fun setFinish(coachMark: BroadcastInteractiveCoachMark) = setChildView { InteractiveFinishView(parent.context) }.apply {
         setListener(finishListener)
-        showCoachMark(
-                view = getBadgeView(),
-                title = coachMarkTitle,
-                subtitle = coachMarkSubtitle
-        )
+
+        if (coachMark is BroadcastInteractiveCoachMark.HasCoachMark) {
+            showCoachMark(
+                    view = getBadgeView(),
+                    title = coachMark.title,
+                    subtitle = coachMark.subtitle
+            )
+        }
     }
 
     private fun showOnBoardingCoachMark() {
