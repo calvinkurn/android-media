@@ -24,37 +24,38 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     private var projectId = 0
     private var mainView: ConstraintLayout? = null
-    private var mainImage: ImageUnify? = null
-    private var button: UnifyButton? = null
     private var loader: LoaderUnify? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_user_identification_info_simple, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            R.layout.fragment_user_identification_info_simple, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         projectId = activity?.intent?.data?.getQueryParameter(
                 ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
-        initViews()
+        initViews(view)
         startKyc()
     }
 
-    private fun initViews() {
-        activity?.let {
-            mainView = it.findViewById(R.id.uii_simple_main_view)
-            mainImage = it.findViewById(R.id.uii_simple_main_image)
-            button = it.findViewById(R.id.uii_simple_button)
-            loader = it.findViewById(R.id.uii_simple_loader)
+    private fun initViews(view: View) {
+        mainView = view.findViewById(R.id.uii_simple_main_view)
+        val mainImage: ImageUnify? = view.findViewById(R.id.uii_simple_main_image)
+        val button: UnifyButton? = view.findViewById(R.id.uii_simple_button)
+        loader = view.findViewById(R.id.uii_simple_loader)
 
-            mainView?.hide()
-            mainImage?.loadImage(KycUrl.ICON_WAITING)
-            button?.setOnClickListener { _ ->
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
-            }
-            loader?.show()
+        mainView?.hide()
+        mainImage?.loadImage(KycUrl.ICON_WAITING)
+        button?.setOnClickListener { _ ->
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
         }
+        loader?.show()
     }
 
     private fun startKyc() {
