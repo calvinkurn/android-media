@@ -1307,7 +1307,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
                         TopAdsUrlHitter(it).hitClickUrl(
                                 this::class.java.name,
-                                topAdsData.data.product.image.m_url,
+                                topAdsData.data.clickUrl,
                                 topAdsData.data.product.id,
                                 topAdsData.data.product.name,
                                 topAdsData.data.product.image.m_ecs)
