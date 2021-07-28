@@ -139,6 +139,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -166,7 +167,8 @@ class NewShopPageFragment :
         ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
         ShopHeaderPlayWidgetViewHolder.Listener,
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
-        ShareBottomsheetListener
+        ShareBottomsheetListener,
+        ScreenShotListener
 {
 
     companion object {
@@ -853,6 +855,12 @@ class NewShopPageFragment :
             }
             initViews(view)
         }
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this) }
+    }
+
+    override fun onStop() {
+        UniversalShareBottomSheet.clearData()
+        super.onStop()
     }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
@@ -2313,6 +2321,10 @@ class NewShopPageFragment :
 
     override fun onCloseOptionClicked() {
         shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
+    }
+
+    override fun screenShotTaken() {
+        showUniversalShareBottomSheet()
     }
 
     private fun showUniversalShareBottomSheet() {

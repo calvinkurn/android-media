@@ -1,8 +1,11 @@
 package com.tokopedia.universal_sharing.view.bottomsheet
 
+import android.Manifest
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -18,6 +21,8 @@ import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,9 +33,11 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import java.io.File
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -58,6 +65,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
         //add remote config handling
         private var featureFlagRemoteConfigKey: String = "android_enable_custom_sharing"
+        //Optons Flag
+        private var isImageOnlySharing: Boolean = false
+        private var screenShotImagePath: String = ""
+        //for screen shots
+        private lateinit var screenshotDetector: WeakReference<ScreenshotDetector>
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -68,9 +80,30 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 featureFlagRemoteConfigKey = remoteConfigKey
                 remoteConfig.getBoolean(remoteConfigKey)
             } else{
+                featureFlagRemoteConfigKey = "android_enable_custom_sharing"
                 remoteConfig.getBoolean(featureFlagRemoteConfigKey)
             }
             return isEnabled
+        }
+
+        fun setImageOnlySharingOption(imageOnly:Boolean){
+            isImageOnlySharing = imageOnly
+        }
+
+        fun setScreenShotImagePath(imgPath: String){
+            screenShotImagePath = imgPath
+        }
+
+        fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener){
+            val tempScreenshotDetector = ScreenshotDetector(context, screenShotListener)
+            screenshotDetector = WeakReference(tempScreenshotDetector)
+            createInstance().detectScreenshots()
+        }
+
+        fun clearData(){
+            isImageOnlySharing = false
+            screenShotImagePath = ""
+            screenshotDetector.get()?.stop()
         }
     }
 
@@ -104,12 +137,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var takeViewSS : ((View, ((String)->Unit)) -> Unit)? = null
     private var requestDataMap : Map<String, Any>? = null
 
-    //Optons Flag
-    private var isImageOnlySharing: Boolean = false
     private var campaignStr: String = ""
     private var channelStr: String = ""
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
+
+    //permission request code
+    val READ_EXTERNAL_STORAGE_REQUEST = 0x1045
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -379,6 +413,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     takeSS : ((view: View, imageSaved: ((String)->Unit)) -> Unit)? = null){
         thumbNailTitle = tnTitle
         thumbNailImageUrl = tnImage
+        if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
+            previewImageUrl = screenShotImagePath
+            savedImagePath = screenShotImagePath
+        }
         previewImageUrl = previewImgUrl
         imageOptionsList = imageList
         if(takeSS == null){
@@ -424,10 +462,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 //        previewImage?.setImageUrl(previewImageUrl)
     }
 
-    fun setImageOnlySharingOption(imageOnly:Boolean){
-        isImageOnlySharing = imageOnly
-    }
-
     fun updateThumbnailImage(imgUrl:String){
         thumbNailImage?.setImageUrl(imgUrl)
         ogImageUrl = imgUrl
@@ -450,7 +484,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun imageSaved(imgPath: String){
-        savedImagePath = imgPath
+        if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
+            savedImagePath = screenShotImagePath
+        }
+        else {
+            savedImagePath = imgPath
+        }
     }
 
     fun executeShareOptionClick(shareModel: ShareModel){
@@ -489,4 +528,48 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         return otherOptionsShareModel
     }
 
+    override fun dismiss() {
+        clearData()
+        super.dismiss()
+    }
+
+    fun haveStoragePermission() =
+        context?.let {
+            ContextCompat.checkSelfPermission(
+                it,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        } == PackageManager.PERMISSION_GRANTED
+
+    fun requestPermission() {
+        if (!haveStoragePermission()) {
+            val permissions = arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            requestPermissions(permissions, READ_EXTERNAL_STORAGE_REQUEST)
+        }
+    }
+
+    fun detectScreenshots() {
+        if (haveStoragePermission()) {
+            screenshotDetector.get()?.start()
+        } else {
+            requestPermission()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            READ_EXTERNAL_STORAGE_REQUEST -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    screenshotDetector.get()?.start()
+                }
+                return
+            }
+        }
+    }
 }
