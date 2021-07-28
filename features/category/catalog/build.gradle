@@ -17,12 +17,7 @@ buildscript {
 }
 
 android {
-    packagingOptions {
-        exclude 'META-INF/**'
-    }
-
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
