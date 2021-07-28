@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,9 +10,9 @@
         android:id="@+id/tv_sbm_nominal_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         />
@@ -20,21 +21,23 @@
         android:id="@+id/tv_sbm_nominal_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:typographyType="heading_2"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
+        android:textColor="@color/Unify_N700_68"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sbm_nominal_price_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:typographyType="body_2"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        app:typographyType="body_3"
         app:typographyWeight="bold"
         />
 

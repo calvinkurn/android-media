@@ -23,6 +23,7 @@ import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
+import com.tokopedia.smartbills.presentation.widget.SmartBillsNominalBottomSheet
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -204,7 +205,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN -> {
-
+                            SmartBillsNominalBottomSheet.newInstance(2, 5, "12", "085327499272").show(childFragmentManager)
                         }
                     }
                     return v?.onTouchEvent(event) ?: true

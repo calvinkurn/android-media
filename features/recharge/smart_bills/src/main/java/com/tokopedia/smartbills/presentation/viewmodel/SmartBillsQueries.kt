@@ -31,6 +31,56 @@ object SmartBillsQueries {
         """.trimIndent()
     }
 
+    val GET_NOMINAL_TELCO by lazy {
+        """query rechargeCatalog(${'$'}menuID: Int!, ${'$'}platformID: Int!, ${'$'}operator: String!, ${'$'}clientNumber: String!){
+            rechargeCatalogProductInputMultiTab(menuID: ${'$'}menuID, platformID: ${'$'}platformID, operator: ${'$'}operator, clientNumber: [${'$'}clientNumber]) {
+            productInputs {
+                label
+                needEnquiry
+                isShowingProduct
+                enquiryFields {
+                    id
+                    param_name
+                    name
+                }
+                product {
+                    name
+                    text
+                    placeholder
+                    validations {
+                        rule
+                    }
+                    dataCollections {
+                        name
+                        products {
+                            id
+                            attributes {
+                                price
+                                detail
+                                info
+                                product_labels
+                                promo {
+                                    id
+                                }
+                                desc
+                            }
+                        }
+                    }
+                }
+                filterTagComponents{
+                    name
+                    text
+                    param_name
+                    data_collections {
+                        key
+                        value
+                    }
+                }
+            }
+        }
+        }"""
+    }
+
     val STATEMENT_BILLS_QUERY by lazy {
         """
             query rechargeStatementBills(${'$'}month: Int!, ${'$'}year: Int!, ${'$'}source: Int){
