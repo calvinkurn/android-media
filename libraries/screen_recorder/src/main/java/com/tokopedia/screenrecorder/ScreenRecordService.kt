@@ -115,11 +115,8 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun init(projectionResultCode: Int, projectionResultData: Intent) {
         try {
-            Log.d(DEBUG_TAG, "start init")
 
             createNotificationChannel()
-
-            Log.d(DEBUG_TAG, "create notif channel success")
 
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             ongoingNotifBuilder = NotificationCompat.Builder(applicationContext, LOW_PRIO_CHANNEL_ID)
@@ -148,62 +145,38 @@ class ScreenRecordService : Service(), CoroutineScope {
                             getString(R.string.screen_recorder_notif_finish), buildPendingIntent(ACTION_FINISH))
                     .setSmallIcon(R.drawable.screen_recorder_ic_notify_white).build()
 
-            Log.d(DEBUG_TAG, "notif setting success")
-
             startForeground(NOTIF_ID, startServiceNotif)
-
-            Log.d(DEBUG_TAG, "start foreground success")
 
             mediaRecorder = MediaRecorder()
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
 
-            Log.d(DEBUG_TAG, "setAudioSource success")
-
             mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
-
-            Log.d(DEBUG_TAG, "setVideoSource success")
 
             lateinit var profile: CamcorderProfile
             if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
-                Log.d(DEBUG_TAG, "getting 480P profile...")
                 profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P)
             } else {
-                Log.d(DEBUG_TAG, "getting LOW profile...")
                 profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW)
             }
-
-            Log.d(DEBUG_TAG, "getting profile success")
 
             profile.videoFrameWidth = VIDEO_WIDTH
             profile.videoFrameHeight = VIDEO_HEIGHT
 
-            Log.d(DEBUG_TAG, "set vidoeFrame dimension success")
-
             mediaRecorder.setOutputFormat(profile.fileFormat)
-
-            Log.d(DEBUG_TAG, "set output format success")
 
             mediaRecorder.setAudioEncoder(profile.audioCodec)
             mediaRecorder.setAudioChannels(profile.audioChannels)
             mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
             mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
 
-            Log.d(DEBUG_TAG, "audio setting success")
-
             mediaRecorder.setVideoFrameRate(profile.videoFrameRate)
             mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
             mediaRecorder.setVideoEncodingBitRate(VIDEO_BITRATE)
             mediaRecorder.setVideoEncoder(profile.videoCodec)
 
-            Log.d(DEBUG_TAG, "video setting success")
-
             mediaRecorder.setOutputFile(internalStoragePath + FILENAME_RESULT)
 
-            Log.d(DEBUG_TAG, "setOutputFile success")
-
             mediaRecorder.prepare()
-
-            Log.d(DEBUG_TAG, "prepare media recorder success")
 
             //short delay to give time after start service and before request media projection
             //to avoid "Media projections require a foreground service of type ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION" issue
@@ -213,19 +186,14 @@ class ScreenRecordService : Service(), CoroutineScope {
             mediaProjection = projectionManager
                     .getMediaProjection(projectionResultCode, projectionResultData) as MediaProjection
 
-            Log.d(DEBUG_TAG, "media projection success")
-
             virtualDisplay = mediaProjection.createVirtualDisplay(
                     VIRTUAL_DISPLAY_NAME,
                     profile.videoFrameWidth, profile.videoFrameHeight, resources.displayMetrics.densityDpi,
                     DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                     mediaRecorder.surface, null, null)
 
-            Log.d(DEBUG_TAG, "create virtual display success")
-
             notificationManager?.notify(NOTIF_ID, recorderReadyNotif)
         } catch (e: Exception) {
-            Log.d(DEBUG_TAG, e.stackTraceToString())
             handleError()
         }
     }
