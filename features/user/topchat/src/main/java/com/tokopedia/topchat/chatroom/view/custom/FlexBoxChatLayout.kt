@@ -360,6 +360,14 @@ class FlexBoxChatLayout : ViewGroup {
         return message?.text.toString()
     }
 
+    fun renderHeaderAttachment() {
+        header?.show()
+    }
+
+    fun hideAttachmentHeader() {
+        header?.hide()
+    }
+
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
         return p is LayoutParams
     }

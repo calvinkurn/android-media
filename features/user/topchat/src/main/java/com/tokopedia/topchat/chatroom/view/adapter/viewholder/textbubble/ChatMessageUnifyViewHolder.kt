@@ -82,6 +82,7 @@ class ChatMessageUnifyViewHolder(
         ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(msg, fxChat)
+        bindAttachment(msg)
         bindMargin(msg)
         bindClick()
         if (msg.isSender) {
@@ -106,6 +107,14 @@ class ChatMessageUnifyViewHolder(
             bindHeaderInfo(msg)
             hide(fxChat?.checkMark)
             hide(header)
+        }
+    }
+
+    private fun bindAttachment(msg: MessageViewModel) {
+        if (msg.hasAttachment()) {
+            fxChat?.renderHeaderAttachment()
+        } else {
+            fxChat?.hideAttachmentHeader()
         }
     }
 
