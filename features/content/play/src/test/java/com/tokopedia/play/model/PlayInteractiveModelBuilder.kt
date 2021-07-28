@@ -23,11 +23,13 @@ class PlayInteractiveModelBuilder {
     fun buildLeaderboard(
             title: String = "",
             winners: List<PlayWinnerUiModel> = emptyList(),
-            otherParticipantText: String = ""
+            otherParticipantText: String = "",
+            otherParticipant: Long = 0
     ) = PlayLeaderboardUiModel(
             title = title,
             winners = winners,
-            otherParticipantText = otherParticipantText
+            otherParticipantText = otherParticipantText,
+            otherParticipant = otherParticipant
     )
 
     fun buildWinner(

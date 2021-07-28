@@ -37,6 +37,7 @@ class PlayEditProductViewModelTest {
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var titleDataStore: TitleDataStore
     private lateinit var tagsDataStore: TagsDataStore
+    private lateinit var interactiveDataStore: InteractiveDataStore
 
     private lateinit var viewModel: PlayEditProductViewModel
 
@@ -57,7 +58,8 @@ class PlayEditProductViewModelTest {
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
+        interactiveDataStore = InteractiveDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         productDataStore.setSelectedProducts(productDataList)
 
