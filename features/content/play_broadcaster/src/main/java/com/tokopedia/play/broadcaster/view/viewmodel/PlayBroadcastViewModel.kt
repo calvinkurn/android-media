@@ -50,6 +50,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -456,6 +458,11 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun createInteractiveSession(title: String, durationInMs: Long) {
         _observableCreateInteractiveSession.value = NetworkResult.Loading
+        if (!isCreateSessionAllowed(durationInMs)) {
+            _observableCreateInteractiveSession.value = NetworkResult.Fail(Throwable("not allowed to create session"))
+            return
+        }
+
         viewModelScope.launchCatchError(block = {
             val response = createInteractiveSessionUseCase.execute(
                 userSession.shopId,
@@ -471,6 +478,12 @@ class PlayBroadcastViewModel @Inject constructor(
         }) {
             _observableCreateInteractiveSession.value = NetworkResult.Fail(it)
         }
+    }
+
+    private fun isCreateSessionAllowed(durationInMs: Long): Boolean {
+        val remainingLiveDuration = countDownTimer.remainingDurationInMs
+        val delayGqlDuration = TimeUnit.SECONDS.toMillis(3)
+        return remainingLiveDuration > durationInMs + delayGqlDuration
     }
 
     fun getLeaderboardData() {
