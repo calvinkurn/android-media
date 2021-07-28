@@ -1485,7 +1485,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sheet.onReport = {
                 feedAnalytics.eventClickThreeDotsOption(
                     postId.toString(),
-                    "report",
+                    "laporkan",
                     postType,
                     isFollowed,
                     authorId,

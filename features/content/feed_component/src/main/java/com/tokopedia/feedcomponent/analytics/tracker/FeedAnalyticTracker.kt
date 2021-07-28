@@ -705,10 +705,9 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed)
             ),
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
-                shopId,
-                postPosition
+                shopId
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -913,7 +912,7 @@ class FeedAnalyticTracker
             ),
             DataLayer.mapOf(CLICK, mapOf(
                 "actionField" to mapOf(
-                    "list" to "feed - ${getPostType(type, isFollowed)}"
+                    "list" to "/feed - ${getPostType(type, isFollowed)}"
                 ),
                 "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed)
             )
