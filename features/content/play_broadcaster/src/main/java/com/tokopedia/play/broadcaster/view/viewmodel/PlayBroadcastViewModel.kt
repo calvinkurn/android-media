@@ -21,10 +21,7 @@ import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -535,10 +532,11 @@ class PlayBroadcastViewModel @Inject constructor(
         val err = getLeaderboardInfo()
         if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
             val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
-                leaderboard.config.loserMessage,
-                leaderboard.config.sellerMessage
-            ))
+            val coachMark = if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
+                    leaderboard.config.loserMessage,
+                    leaderboard.config.sellerMessage
+            )
+            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(coachMark))
         } else {
             _observableInteractiveState.value = getNoPreviousInitInteractiveState()
         }
