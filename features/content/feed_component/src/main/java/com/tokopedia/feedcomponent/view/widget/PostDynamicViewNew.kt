@@ -29,6 +29,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.util.TagConverter
@@ -64,7 +65,6 @@ private const val MAX_FEED_SIZE_SMALL = 3
 private const val LAST_FEED_POSITION = 5
 private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
-private val scopeDef = CoroutineScope(Dispatchers.Default)
 private var productVideoJob: Job? = null
 private const val TIMER_TO_BE_SHOWN = 3000L
 private const val TIME_SECOND = 1000L
@@ -73,6 +73,9 @@ private const val MINUTE_IN_HOUR = 60
 private const val SPACE = 3
 private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
+private const val MAX_CHAR = 120
+private const val TYPE_DISCOUNT = "discount"
+private const val TYPE_CASHBACK = "cashback"
 
 class PostDynamicViewNew @JvmOverloads constructor(
     context: Context,
@@ -477,7 +480,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
-            if (caption.text.length > DynamicPostViewHolder.MAX_CHAR ||
+            if (caption.text.length > MAX_CHAR ||
                 hasSecondLine(caption.text)
             ) {
                 val captionEnd =
@@ -512,7 +515,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             isVideo(caption.media.firstOrNull())
                         )
                         val txt: String = buildString {
-                            append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
+                            append("<b>" + caption.author.name + "</b>" + " - ").append(
+                                MethodChecker.fromHtml(
+                                    caption.text
+                                )
+                            )
                         }
                         spannableString = tagConverter.convertToLinkifyHashtag(
                             SpannableString(MethodChecker.fromHtml(txt)),
@@ -958,10 +965,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                            videoListener?.onVideoStopTrack(
-                                feedXCard,
-                                (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
-                            )
+                        videoListener?.onVideoStopTrack(
+                            feedXCard,
+                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
+                        )
                     }
                 })
             }
@@ -1078,19 +1085,43 @@ class PostDynamicViewNew @JvmOverloads constructor(
         products.forEach {
             itemList.add(
                 GridItemViewModel(
-                    it.id,
-                    it.name,
-                    it.priceFmt,
-                    it.priceOriginalFmt,
-                    it.appLink,
-                    it.coverURL,
-                    mutableListOf(),
-                    mutableListOf(),
+                    id = it.id,
+                    text = it.name,
+                    price = it.priceFmt,
+                    priceOriginal = if (it.isDiscount)
+                        it.priceDiscountFmt
+                    else
+                        it.priceOriginalFmt,
+                    redirectLink = it.appLink,
+                    thumbnail = it.coverURL,
+                    tagsList = getTagList(it),
+                    trackingList = mutableListOf(),
                     index = products.indexOf(it)
                 )
             )
         }
         return itemList
+    }
+
+    private fun getTagList(feedXProduct: FeedXProduct): MutableList<TagsItem> {
+        return if (feedXProduct.isDiscount || feedXProduct.isCashback) {
+            val item = TagsItem(
+                linkType = "",
+                text = when {
+                    feedXProduct.isDiscount -> feedXProduct.discountFmt
+                    feedXProduct.isCashback -> feedXProduct.cashbackFmt
+                    else -> ""
+                },
+                type = when {
+                    feedXProduct.isDiscount -> TYPE_DISCOUNT
+                    feedXProduct.isCashback -> TYPE_CASHBACK
+                    else -> ""
+                },
+            )
+            mutableListOf(item)
+        } else {
+            mutableListOf()
+        }
     }
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
