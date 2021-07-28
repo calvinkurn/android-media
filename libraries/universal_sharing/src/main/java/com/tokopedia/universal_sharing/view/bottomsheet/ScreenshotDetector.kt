@@ -22,7 +22,8 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
 
     private var contentObserver: ContentObserver? = null
     //permission request code
-    val READ_EXTERNAL_STORAGE_REQUEST = 0x1045
+    val READ_EXTERNAL_STORAGE_REQUEST = 500
+    private var ssUriPath = ""
 
     fun start() {
         if (contentObserver == null) {
@@ -70,7 +71,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
     private fun queryRelativeDataColumn(uri: Uri) {
         val projection = arrayOf(
             MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.RELATIVE_PATH
+            MediaStore.Images.Media.DATA
         )
         context.contentResolver.query(
             uri,
@@ -80,7 +81,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
             null
         )?.use { cursor ->
             val relativePathColumn =
-                cursor.getColumnIndex(MediaStore.Images.Media.RELATIVE_PATH)
+                cursor.getColumnIndex(MediaStore.Images.Media.DATA)
             val displayNameColumn =
                 cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
             while (cursor.moveToNext()) {
@@ -91,7 +92,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                 ) {
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                    UniversalShareBottomSheet.setScreenShotImagePath(relativePath+name)
+                    UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
                     screenShotListener.screenShotTaken()
                 }
             }
@@ -102,7 +103,12 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
         val contentObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
             override fun onChange(selfChange: Boolean, uri: Uri?) {
                 super.onChange(selfChange, uri)
-                uri?.let { queryScreenshots(it) }
+                uri?.let {
+                    if(!ssUriPath.equals(it.toString())) {
+                        ssUriPath = it.toString()
+                        queryScreenshots(it)
+                    }
+                }
             }
         }
         registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver)

@@ -70,7 +70,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var isImageOnlySharing: Boolean = false
         private var screenShotImagePath: String = ""
         //for screen shots
-        private lateinit var screenshotDetector: WeakReference<ScreenshotDetector>
+        private lateinit var screenshotDetector: ScreenshotDetector
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -96,19 +96,22 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener, fragment: Fragment){
-            val tempScreenshotDetector = ScreenshotDetector(context, screenShotListener)
-            screenshotDetector = WeakReference(tempScreenshotDetector)
-            screenshotDetector.get()?.detectScreenshots(fragment)
+            screenshotDetector = ScreenshotDetector(context, screenShotListener)
+            screenshotDetector.detectScreenshots(fragment)
         }
 
-        fun getScreenShotDetector(): ScreenshotDetector? {
-            return screenshotDetector.get()
+        fun getScreenShotDetector(): ScreenshotDetector {
+            return screenshotDetector
         }
 
         fun clearData(){
             isImageOnlySharing = false
             screenShotImagePath = ""
-            screenshotDetector.get()?.stop()
+        }
+
+        fun clearState(){
+            screenshotDetector.stop()
+            clearData()
         }
     }
 
@@ -257,9 +260,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             ShareModel.Whatsapp().apply {
                 packageName = PACKAGE_NAME_WHATSAPP
                 socialMediaName = context?.resources?.getString(R.string.label_whatsapp)
-                feature = socialMediaName
+                feature = channelStr
                 campaign = campaignStr
-                channel = channelStr
+                channel =  SharingUtil.labelWhatsapp
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_whatsapp) }
@@ -267,9 +270,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             ShareModel.Facebook().apply {
                 packageName = PACKAGE_NAME_FACEBOOK
                 socialMediaName = context?.resources?.getString(R.string.label_facebook)
-                feature = socialMediaName
+                feature = channelStr
                 campaign = campaignStr
-                channel = channelStr
+                channel = SharingUtil.labelFbfeed
                 shareOnlyLink = isImageOnlySharing
                 if(isImageOnlySharing){
                     appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -287,9 +290,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 packageName = PACKAGE_NAME_FACEBOOK
                 //facebook story can share only the images
                 socialMediaName = context?.resources?.getString(R.string.label_facebook_story)
-                feature = socialMediaName
+                feature = channelStr
                 campaign = campaignStr
-                channel = channelStr
+                channel = SharingUtil.labelFbstory
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_icon_fbstories3) }
@@ -297,9 +300,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 ShareModel.Instagram().apply {
                     packageName = PACKAGE_NAME_INSTAGRAM
                     socialMediaName = context?.resources?.getString(R.string.label_instagram)
-                    feature = socialMediaName
+                    feature = channelStr
                     campaign = campaignStr
-                    channel = channelStr
+                    channel = SharingUtil.labelIgfeed
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
@@ -307,9 +310,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 ShareModel.Instagram().apply {
                     packageName = PACKAGE_NAME_INSTAGRAM
                     socialMediaName = context?.resources?.getString(R.string.label_instagram_story)
-                    feature = socialMediaName
+                    feature = channelStr
                     campaign = campaignStr
-                    channel = channelStr
+                    channel = SharingUtil.labelIgstory
                     shareOnlyLink = true
                     appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_igstory) }
@@ -317,9 +320,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 ShareModel.Line().apply {
                     packageName = PACKAGE_NAME_LINE
                     socialMediaName = context?.resources?.getString(R.string.label_line)
-                    feature = socialMediaName
+                    feature = channelStr
                     campaign = campaignStr
-                    channel = channelStr
+                    channel = SharingUtil.labelLine
                     shareOnlyLink = isImageOnlySharing
                     if(isImageOnlySharing){
                         appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -332,9 +335,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 ShareModel.Twitter().apply {
                     packageName = PACKAGE_NAME_TWITTER
                     socialMediaName = context?.resources?.getString(R.string.label_twitter)
-                    feature = socialMediaName
+                    feature = channelStr
                     campaign = campaignStr
-                    channel = channelStr
+                    channel = SharingUtil.labelTwitter
                     shareOnlyLink = isImageOnlySharing
                     appIntent = getAppIntent(MimeType.IMAGE, packageName)
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_twitter) }
@@ -342,9 +345,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 ShareModel.Telegram().apply {
                     packageName = PACKAGE_NAME_TELEGRAM
                     socialMediaName = context?.resources?.getString(R.string.label_telegram)
-                    feature = socialMediaName
+                    feature = channelStr
                     campaign = campaignStr
-                    channel = channelStr
+                    channel = SharingUtil.labelTelegram
                     shareOnlyLink = isImageOnlySharing
                     appIntent = getAppIntent(MimeType.IMAGE, packageName)
                     socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
@@ -357,9 +360,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun setFixedOptionsClickListeners(){
         val copyLinkShareModel = ShareModel.CopyLink().apply {
             socialMediaName = context?.resources?.getString(R.string.label_copy_link)
-            feature = context?.resources?.getString(R.string.label_bhasha_copy_link)
+            feature = channelStr
             campaign = campaignStr
-            channel = channelStr
+            channel = SharingUtil.labelSalinLink
             shareOnlyLink = isImageOnlySharing
         }
         copyLinkImage?.setOnClickListener {
@@ -368,9 +371,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         val otherOptionsShareModel = ShareModel.Others().apply {
             socialMediaName = context?.resources?.getString(R.string.label_action_more)
-            feature = socialMediaName
+            feature = channelStr
             campaign = campaignStr
-            channel = channelStr
+            channel = SharingUtil.labelOthers
             shareOnlyLink = isImageOnlySharing
         }
         otherOptionsImage?.setOnClickListener {
@@ -383,9 +386,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             val smsShareModel = ShareModel.SMS().apply {
                 packageName = Telephony.Sms.getDefaultSmsPackage(context);
                 socialMediaName = context?.resources?.getString(R.string.label_chat)
-                feature = socialMediaName
+                feature = channelStr
                 campaign = campaignStr
-                channel = channelStr
+                channel = SharingUtil.labelSms
                 shareOnlyLink = isImageOnlySharing
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
             }
@@ -398,9 +401,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         val emailShareModel = ShareModel.Email().apply {
             packageName = PACKAGE_NAME_GMAIL
             socialMediaName = context?.resources?.getString(R.string.share_email)
-            feature = socialMediaName
+            feature = channelStr
             campaign = campaignStr
-            channel = channelStr
+            channel = SharingUtil.labelEmail
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
         }
@@ -415,13 +418,17 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     imageList: ArrayList<String>? = null,
                     takeSS : ((view: View, imageSaved: ((String)->Unit)) -> Unit)? = null){
         thumbNailTitle = tnTitle
-        thumbNailImageUrl = tnImage
+        imageOptionsList = imageList
+
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             previewImageUrl = screenShotImagePath
             savedImagePath = screenShotImagePath
+            thumbNailImageUrl = screenShotImagePath
         }
-        previewImageUrl = previewImgUrl
-        imageOptionsList = imageList
+        else {
+            thumbNailImageUrl = tnImage
+            previewImageUrl = previewImgUrl
+        }
         if(takeSS == null){
             takeViewSS = (SharingUtil)::triggerSS
         }else{
@@ -479,7 +486,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             tempUsr = "0"
         }
         campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"
-        channelStr = feature
+        if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
+            channelStr = "screenshot-share"
+        }
+        else {
+            channelStr = feature
+        }
     }
 
     fun setOgImageUrl(imgUrl: String){

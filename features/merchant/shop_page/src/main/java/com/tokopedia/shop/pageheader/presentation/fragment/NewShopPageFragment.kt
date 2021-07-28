@@ -859,7 +859,7 @@ class NewShopPageFragment :
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearData()
+        UniversalShareBottomSheet.clearState()
         super.onStop()
     }
 
@@ -2347,6 +2347,6 @@ class NewShopPageFragment :
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
+        UniversalShareBottomSheet.getScreenShotDetector().onRequestPermissionsResult(requestCode, grantResults)
     }
 }
