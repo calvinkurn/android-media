@@ -545,6 +545,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun onInteractiveFinished() {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
+        delay(3000)
         val err = getLeaderboardInfo()
         if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
             val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
