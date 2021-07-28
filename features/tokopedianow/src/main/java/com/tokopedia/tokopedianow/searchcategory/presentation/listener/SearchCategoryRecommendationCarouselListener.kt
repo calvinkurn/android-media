@@ -14,11 +14,15 @@ interface SearchCategoryRecommendationCarouselListener {
     fun onImpressedRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
     )
 
     fun onClickRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
     )
 
     fun onATCNonVariantRecommendationCarouselItem(

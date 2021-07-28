@@ -37,7 +37,6 @@ class RecommendationCarouselViewHolder(
                 adapterPosition = adapterPosition,
                 widgetListener = this,
         )
-
         recommendationCarouselListener.onBindRecommendationCarousel(element, adapterPosition)
     }
 
@@ -50,6 +49,8 @@ class RecommendationCarouselViewHolder(
         recommendationCarouselListener.onImpressedRecommendationCarouselItem(
                 data,
                 recomItem,
+                itemPosition,
+                adapterPosition
         )
     }
 
@@ -63,6 +64,8 @@ class RecommendationCarouselViewHolder(
         recommendationCarouselListener.onClickRecommendationCarouselItem(
                 data,
                 recomItem,
+                itemPosition,
+                adapterPosition
         )
     }
 
