@@ -54,5 +54,15 @@
             android:screenOrientation="portrait"
             android:label="@string/saldo_info_toolbar_title"
             android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name=".view.activity.SaldoWithdrawalDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/saldo_withdrawal_detail_title"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name=".view.activity.SaldoSalesDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/saldo_withdrawal_detail_title"
+            android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>
