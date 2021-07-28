@@ -1394,6 +1394,20 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
                 else -> {}
             }
+
+            /**
+             * Connect to different anchor because Lottie increase the height of interactive view in a significant way
+             * and because of that, the distance between interactive view and winner badge increase significantly
+             */
+            val winnerBadgeView = interactiveWinnerBadgeView?.rootView
+            if (winnerBadgeView != null) {
+                view?.changeConstraint {
+                    val bottomAnchor = (if (state is PlayInteractiveUiState.Ongoing) R.id.v_winner_badge_bottom else interactiveView?.id)
+                            ?: return@changeConstraint
+                    connect(winnerBadgeView.id, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.TOP)
+                }
+            }
+
         }
 
         interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)

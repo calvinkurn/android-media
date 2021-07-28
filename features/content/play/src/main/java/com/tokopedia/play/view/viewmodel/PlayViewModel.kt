@@ -1100,9 +1100,7 @@ class PlayViewModel @Inject constructor(
             interactiveRepo.setFinished(interactive.id.toString())
         }
 
-        if (interactiveRepo.getActiveInteractiveId() != null) {
-            _interactive.value = interactiveUiState
-        }
+        _interactive.value = if (interactiveRepo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
 
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
             val channelId = mChannelData?.id ?: return

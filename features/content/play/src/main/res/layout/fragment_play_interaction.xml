@@ -138,6 +138,17 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_chat_list"
         app:layout_constraintStart_toStartOf="@id/view_size"
+        tools:visibility="visible"
+        />
+
+    <View
+        android:id="@+id/v_winner_badge_bottom"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_anchor_size"
+        app:layout_constraintTop_toTopOf="@id/view_interactive"
+        app:layout_constraintBottom_toBottomOf="@id/view_interactive"
+        app:layout_constraintStart_toStartOf="@id/view_interactive"
+        app:layout_constraintVertical_bias="0.3"
         />
 
     <include
@@ -150,6 +161,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_interactive"
         app:layout_constraintStart_toStartOf="@id/view_size"
+        tools:visibility="visible"
         />
 
     <com.google.android.exoplayer2.ui.PlayerControlView
