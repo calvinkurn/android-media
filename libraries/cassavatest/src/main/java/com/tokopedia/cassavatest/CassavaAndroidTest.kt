@@ -101,7 +101,7 @@ internal fun sendTestResult(journeyId: String, testResult: List<Validator>) {
                             ValidationResultData(
                                     dataLayerId = it.id,
                                     result = it.status == Status.SUCCESS,
-                                    errorMessage = ""
+                                    errorMessage = it.errors
                             )
                         }.toList()
                 )
