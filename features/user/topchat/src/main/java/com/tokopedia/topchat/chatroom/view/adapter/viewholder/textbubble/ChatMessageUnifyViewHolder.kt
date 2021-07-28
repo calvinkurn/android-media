@@ -29,7 +29,8 @@ class ChatMessageUnifyViewHolder(
     itemView: View?,
     protected val msgCliclLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
-    private val adapterListener: AdapterListener
+    private val adapterListener: AdapterListener,
+    private val chatMsgListener: FlexBoxChatLayout.Listener
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
     private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.ll_msg_container)
@@ -78,6 +79,7 @@ class ChatMessageUnifyViewHolder(
     )
 
     override fun bind(msg: MessageViewModel) {
+        fxChat?.listener = chatMsgListener
         verifyReplyTime(msg)
         ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
@@ -112,7 +114,7 @@ class ChatMessageUnifyViewHolder(
 
     private fun bindAttachment(msg: MessageViewModel) {
         if (msg.hasAttachment()) {
-            fxChat?.renderHeaderAttachment()
+            fxChat?.renderHeaderAttachment(msg.attachment)
         } else {
             fxChat?.hideAttachmentHeader()
         }

@@ -2,6 +2,9 @@ package com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
 data class HeaderCtaMessageAttachment(
     @SerializedName("body")
@@ -18,4 +21,14 @@ data class HeaderCtaMessageAttachment(
     var type: Int = 0,
     @SerializedName("url")
     var url: String = ""
-)
+) {
+    fun generateSendableProductPreview(): List<SendablePreview> {
+        return extras.extrasProduct.map { extraProduct ->
+            val productPreview = ProductPreview(
+                url = extraProduct.url,
+                id = extraProduct.productId
+            )
+            SendableProductPreview(productPreview)
+        }
+    }
+}

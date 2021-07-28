@@ -29,6 +29,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedRightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -52,7 +53,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener,
     private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
     private val reviewListener: ReviewViewHolder.Listener,
-    private val srwBubbleListener: SrwBubbleViewHolder.Listener
+    private val srwBubbleListener: SrwBubbleViewHolder.Listener,
+    private val chatMsgListener: FlexBoxChatLayout.Listener
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -194,7 +196,8 @@ open class TopChatTypeFactoryImpl constructor(
                 commonListener, adapterListener, chatLinkHandlerListener
             )
             ChatMessageUnifyViewHolder.LAYOUT -> ChatMessageUnifyViewHolder(
-                parent, chatLinkHandlerListener, commonListener, adapterListener
+                parent, chatLinkHandlerListener, commonListener, adapterListener,
+                chatMsgListener
             )
             BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener

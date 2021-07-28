@@ -12,15 +12,19 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
+import com.tokopedia.unifyprinciples.Typography
 
 
 class FlexBoxChatLayout : ViewGroup {
 
+    var listener: Listener? = null
     var checkMark: ImageView? = null
         private set
     private var timeStamp: TextView? = null
@@ -36,6 +40,12 @@ class FlexBoxChatLayout : ViewGroup {
     var info: TextView? = null
         private set
     var header: LinearLayout? = null
+        private set
+
+    /**
+     * Header direct child
+     */
+    var headerCta: Typography? = null
         private set
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
@@ -65,6 +75,10 @@ class FlexBoxChatLayout : ViewGroup {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initConfig(context, attrs)
+    }
+
+    interface Listener {
+        fun changeAddress(attachment: HeaderCtaMessageAttachment)
     }
 
     override fun setBackground(background: Drawable?) {
@@ -107,6 +121,7 @@ class FlexBoxChatLayout : ViewGroup {
             hourTime = it.findViewById(R.id.tvTime)
             info = it.findViewById(R.id.txt_info)
             header = it.findViewById(R.id.ll_msg_header)
+            headerCta = it.findViewById(R.id.tp_header_cta)
         }
         initCheckMarkVisibility()
     }
@@ -360,8 +375,18 @@ class FlexBoxChatLayout : ViewGroup {
         return message?.text.toString()
     }
 
-    fun renderHeaderAttachment() {
+    fun renderHeaderAttachment(attachment: Any?) {
         header?.show()
+        when (attachment) {
+            is HeaderCtaMessageAttachment -> renderCtaHeader(attachment)
+            else -> header?.hide()
+        }
+    }
+
+    private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
+        headerCta?.setOnClickListener {
+            listener?.changeAddress(attachment)
+        }
     }
 
     fun hideAttachmentHeader() {

@@ -42,6 +42,7 @@ import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
@@ -568,6 +569,20 @@ open class TopChatRoomPresenter @Inject constructor(
         sendAttachments(messageId, opponentId, question.content)
         sendMessage(messageId, question.content, startTime, opponentId, question.intent)
         view?.clearAttachmentPreviews()
+    }
+
+    override fun sendSrwFrom(
+        attachment: HeaderCtaMessageAttachment,
+        opponentId: String
+    ) {
+        if (thisMessageId.isEmpty()) return
+        val startTime = SendableViewModel.generateStartTime()
+        val question = QuestionUiModel("Pindah alamat gan", attachment.extras.intent)
+        val products = attachment.generateSendableProductPreview()
+        topchatSendMessageWithWebsocket(
+            thisMessageId, question.content, startTime,
+            opponentId, question.intent, products
+        )
     }
 
     /**
