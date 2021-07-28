@@ -1064,7 +1064,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkLeaderboard(channelId: String) {
-        if (!channelType.isLive) return
+        if (!channelType.isLive || videoOrientation.isHorizontal || videoPlayer.isYouTube) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = interactiveLeaderboard
@@ -1072,7 +1072,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkInteractive(channelId: String) {
-        if (!channelType.isLive) return
+        if (!channelType.isLive || videoOrientation.isHorizontal || videoPlayer.isYouTube) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _interactive.value = PlayInteractiveUiState.Loading
 

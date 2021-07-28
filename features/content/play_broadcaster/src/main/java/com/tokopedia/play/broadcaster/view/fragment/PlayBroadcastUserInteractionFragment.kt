@@ -627,7 +627,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
                 analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.interactiveTitle)
-                interactiveView.setFinish(state.title, state.subtitle)
+                interactiveView.setFinish(state.coachMark)
             }
         }
     }
