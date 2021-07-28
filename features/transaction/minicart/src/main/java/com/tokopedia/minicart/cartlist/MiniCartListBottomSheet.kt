@@ -94,10 +94,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
         bottomSheet = BottomSheetUnify().apply {
-            showCloseIcon = false
+            showCloseIcon = true
             showHeader = true
             isDragable = true
-            showKnob = true
             isHideable = true
             clearContentPadding = true
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
