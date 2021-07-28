@@ -165,7 +165,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
-        data.addProperty("message_id", thisMessageId.toLong())
+        data.addProperty("message_id", thisMessageId.toLongOrZero())
         data.addProperty("message", UPLOADING)
         data.addProperty("start_time", startTime)
         data.addProperty("file_path", path)
@@ -178,7 +178,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_TYPING)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toLong())
+        data.addProperty("msg_id", thisMessageId.toLongOrZero())
         json.add("data", data)
         return json.toString()
     }
@@ -187,7 +187,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toLong())
+        data.addProperty("msg_id", thisMessageId.toLongOrZero())
         json.add("data", data)
         return json.toString()
     }
@@ -196,7 +196,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toLong())
+        data.addProperty("msg_id", thisMessageId.toLongOrZero())
         json.add("data", data)
         return json.toString()
     }

@@ -203,7 +203,7 @@ class ChatItemListViewModel @Inject constructor(
 
     override fun chatMoveToTrash(messageId: String) {
         queries[QUERY_DELETE_CHAT_MESSAGE]?.let { query ->
-            val params = mapOf(PARAM_MESSAGE_ID to messageId.toLong())
+            val params = mapOf(PARAM_MESSAGE_ID to messageId.toLongOrZero())
 
             launchCatchError(block = {
                 val data = withContext(dispatcher) {

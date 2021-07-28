@@ -42,10 +42,12 @@ class HotelContactPhoneBottomSheet : BottomSheetUnify() {
 
     fun initView(view: View) {
         recyclerView = view.findViewById(R.id.recycler_view)
-
-        contactAdapter = ContactAdapter(contactList, listener)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = contactAdapter
+
+        if(::contactList.isInitialized && ::listener.isInitialized){
+            contactAdapter = ContactAdapter(contactList, listener)
+            recyclerView.adapter = contactAdapter
+        }
 
         setTitle(getString(R.string.hotel_order_detail_contact_phone_sheet_title))
     }

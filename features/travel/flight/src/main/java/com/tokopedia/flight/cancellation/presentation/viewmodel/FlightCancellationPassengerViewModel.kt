@@ -117,7 +117,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
 
     fun checkPassenger(passengerModel: FlightCancellationPassengerModel, position: Int): Boolean {
         var shouldNotifyRelationChecked = false
-        if (position >= 0 && !selectedCancellationPassengerList[position].passengerModelList.contains(passengerModel)) {
+        if (position >= 0 && selectedCancellationPassengerList.size > position &&
+                !selectedCancellationPassengerList[position].passengerModelList.contains(passengerModel)) {
             selectedCancellationPassengerList[position].passengerModelList.add(passengerModel)
             if (passengerModel.relations.isNotEmpty()) {
                 checkAllRelations(passengerModel)

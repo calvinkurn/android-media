@@ -25,7 +25,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -86,6 +85,8 @@ class TokoNowHomeFragment: Fragment(),
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
+        private const val FIRST_INSTALL_CACHE_VALUE: Long = 30 * 60000
+        private const val ITEM_VIEW_CACHE_SIZE = 20
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -286,12 +287,12 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadHeaderBackground() {
         ivHeaderBackground?.show()
-        ivHeaderBackground?.loadImage(R.drawable.tokopedianow_ic_header_background_shimmering)
+        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background_shimmering)
     }
 
     private fun showHeaderBackground() {
         ivHeaderBackground?.show()
-        ivHeaderBackground?.loadImage(R.drawable.tokopedianow_ic_header_background)
+        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
     }
 
     private fun hideHeaderBackground() {
@@ -425,7 +426,7 @@ class TokoNowHomeFragment: Fragment(),
                 layoutManager = rvLayoutManager
             }
 
-            rvHome?.setItemViewCacheSize(20)
+            rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
         }
     }
@@ -689,7 +690,7 @@ class TokoNowHomeFragment: Fragment(),
                 val sharedPrefs = it.getSharedPreferences(SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)
                 if (firstInstallCacheValue == 0L) return false
-                firstInstallCacheValue += (30 * 60000).toLong()
+                firstInstallCacheValue += FIRST_INSTALL_CACHE_VALUE
                 val now = Date()
                 val firstInstallTime = Date(firstInstallCacheValue)
                 return if (now <= firstInstallTime) {
