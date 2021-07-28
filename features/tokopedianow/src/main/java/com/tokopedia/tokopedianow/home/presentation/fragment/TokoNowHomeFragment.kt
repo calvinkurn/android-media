@@ -32,7 +32,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -220,7 +219,7 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
         }
         updateProductRecom(miniCartSimplifiedData)
-        setupPadding(miniCartSimplifiedData)
+        setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
     private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -371,9 +370,15 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showEmptyState(id: String) {
-        rvLayoutManager?.setScrollEnabled(false)
-        viewModelTokoNow.getEmptyState(id)
+        if (id != EMPTY_STATE_NO_ADDRESS) {
+            rvLayoutManager?.setScrollEnabled(false)
+            viewModelTokoNow.getEmptyState(id)
+        } else {
+            viewModelTokoNow.getEmptyState(id)
+            viewModelTokoNow.getProductRecomOoc()
+        }
         miniCartWidget?.hide()
+        setupPadding(false)
     }
 
     private fun showFailedToFetchData() {
@@ -561,7 +566,7 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
-                setupPadding(it.data)
+                setupPadding(it.data.isShowMiniCartWidget)
                 if (isFirstResumed) {
                     updateProductRecom(it.data)
                     isFirstResumed = false
@@ -738,10 +743,10 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun setupPadding(data: MiniCartSimplifiedData) {
+    private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
-            val paddingBottom = if (data.isShowMiniCartWidget) {
-                miniCartWidget?.height.orZero()
+            val paddingBottom = if (isShowMiniCartWidget) {
+                miniCartWidget?.layoutParams?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()

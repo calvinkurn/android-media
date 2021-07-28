@@ -10,6 +10,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -62,6 +63,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
     @RelaxedMockK
+    lateinit var getRecommendationUseCase: GetRecommendationUseCase
+    @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -86,6 +89,7 @@ abstract class TokoNowHomeViewModelTestFixture {
                 addToCartUseCase,
                 updateCartUseCase,
                 deleteCartUseCase,
+                getRecommendationUseCase,
                 getChooseAddressWarehouseLocUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
