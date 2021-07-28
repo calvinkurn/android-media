@@ -98,11 +98,11 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             pageId: String = "",
             eventLabel: String? = null,
             userId: String = ""
-    ): Bundle {
+    ): HashMap<String, Any> {
         val trackingBuilder =
                 BaseTrackerBuilder()
-                        .constructBasicProductClickBundle(
-                                event = SELECT_CONTENT,
+                        .constructBasicProductClick(
+                                event = PRODUCT_CLICK,
                                 eventCategory = if (isTokonow) String.format(
                                     EVENT_CATEGORY_TOKONOW, androidPageName
                                 ) else androidPageName,
@@ -135,10 +135,10 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                                     mapRecommendationItemToProductTracking(recommendationItem, position)
                                 )
                         )
-                        .appendBusinessUnitBundle(BusinessUnit.DEFAULT)
-                        .appendCurrentSiteBundle(CurrentSite.DEFAULT)
+                        .appendBusinessUnit(BusinessUnit.DEFAULT)
+                        .appendCurrentSite(CurrentSite.DEFAULT)
                         .appendUserId(userId)
-        return trackingBuilder.buildBundle()
+        return trackingBuilder.build() as HashMap<String, Any>
     }
 
     fun getClickSpecDetailTracking(
@@ -184,12 +184,12 @@ object ProductRecommendationTracking: BaseTrackerConst() {
         userId: String = "",
         quantity: Int = 0,
         cartId: String = ""
-    ): Bundle {
+    ): HashMap<String, Any> {
         recommendationItem.quantity = quantity
         recommendationItem.cartId = cartId
         val trackingBuilder =
             BaseTrackerBuilder()
-                .constructBasicProductClickBundle(
+                .constructBasicProductAtcClick(
                     event = EVENT_ATC,
                     eventCategory = if (isTokonow) String.format(
                         EVENT_CATEGORY_TOKONOW, androidPageName
@@ -220,10 +220,10 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                         mapRecommendationItemToProductTracking(recommendationItem, position)
                     )
                 )
-                .appendBusinessUnitBundle(BusinessUnit.DEFAULT)
-                .appendCurrentSiteBundle(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
-        return trackingBuilder.buildBundle()
+        return trackingBuilder.build() as HashMap<String, Any>
     }
 
     private fun buildRecommendationList(recomPageName: String, recommendationType: String, isTopads: Boolean, widgetType: String, anchorProductId: String): String {
@@ -256,7 +256,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                 brand = Value.NONE_OTHER,
                 category = it.categoryBreadcrumbs.toLowerCase(),
                 variant = Value.NONE_OTHER,
-                productPosition = position.toString(),
+                productPosition = (position+1).toString(),
                 isFreeOngkir = it.isFreeOngkirActive && !it.labelGroupList.hasLabelGroupFulfillment(),
                 isFreeOngkirExtra = it.isFreeOngkirActive && it.labelGroupList.hasLabelGroupFulfillment(),
                 headerName = it.header,
@@ -265,7 +265,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                 pageName = it.pageName,
                 shopName = it.shopName,
                 shopType = it.shopType,
-                quantity = it.quantity.toString(),
+                quantity = if (it.quantity > 0) it.quantity.toString() else "",
                 cartId = it.cartId
         )
     }

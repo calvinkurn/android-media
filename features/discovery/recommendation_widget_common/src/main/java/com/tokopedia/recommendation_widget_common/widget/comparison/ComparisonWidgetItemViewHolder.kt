@@ -39,13 +39,13 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                             product.imageUrl
                     )
                 }
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                         ProductRecommendationTracking.getClickProductTracking(
                                 recommendationItem = comparisonModel.recommendationItem,
                                 androidPageName = recommendationTrackingModel.androidPageName,
                                 headerTitle = recommendationTrackingModel.headerTitle,
                                 chipsTitle = comparisonModel.productCardModel.productName,
-                                position = (adapterPosition+1),
+                                position = adapterPosition,
                                 isLoggedIn = userSession.isLoggedIn,
                                 anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                         )
@@ -69,7 +69,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                             recommendationItem = comparisonModel.recommendationItem,
                             androidPageName = recommendationTrackingModel.androidPageName,
                             headerTitle = recommendationTrackingModel.headerTitle,
-                            position = (adapterPosition+1),
+                            position = adapterPosition,
                             isLoggedIn = userSession.isLoggedIn,
                             anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                     )

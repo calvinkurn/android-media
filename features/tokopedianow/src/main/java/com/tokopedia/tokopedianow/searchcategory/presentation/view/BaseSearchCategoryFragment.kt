@@ -813,7 +813,7 @@ abstract class BaseSearchCategoryFragment:
             itemPosition: Int,
             adapterPosition: Int
     ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ProductRecommendationTracking.getClickProductTracking(
                 recommendationItem = recomItem,
                 androidPageName = getSearchAndroidPageName(),
@@ -861,7 +861,7 @@ abstract class BaseSearchCategoryFragment:
             atcTrackingData: Triple<Int, String, RecommendationItem>
     ) {
         val (quantity, cartId, recommendationItem) = atcTrackingData
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ProductRecommendationTracking.getAddToCartClickProductTracking(
                 recommendationItem = recommendationItem,
                 androidPageName = getSearchAndroidPageName(),

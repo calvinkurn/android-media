@@ -123,7 +123,8 @@ abstract class BaseTrackerConst {
             val shopId:String = "",
             val shopName: String = "",
             val shopType: String = "",
-            val pageName: String = "")
+            val pageName: String = ""
+    )
 
     object Ecommerce {
         const val KEY = "ecommerce"
