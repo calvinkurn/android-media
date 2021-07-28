@@ -15,7 +15,6 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Environment
 import android.os.IBinder
-import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.WindowManager
