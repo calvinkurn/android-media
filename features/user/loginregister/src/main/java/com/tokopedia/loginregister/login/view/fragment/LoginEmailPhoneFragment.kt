@@ -1115,7 +1115,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onErrorValidateRegister(throwable: Throwable) {
         dismissLoadingLogin()
-        val message = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().withErrorCode(false).build())
         analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message)
         partialRegisterInputView?.onErrorValidate(message)
     }
