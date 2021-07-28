@@ -58,9 +58,6 @@ data class ProductHeaderData(
         val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
         val productStock: String = "",
-        val productName:String = ""
-) {
-    fun getFinalPrice(): String {
-        return if (isCampaignActive) productSlashPrice else productMainPrice
-    }
-}
+        val productName:String = "",
+        val finalPriceDouble: Double = 0.0
+)

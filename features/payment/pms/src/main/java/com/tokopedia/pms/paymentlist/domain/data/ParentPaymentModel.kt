@@ -100,6 +100,10 @@ fun BasePaymentModel.extractValues(): TransactionCodes {
         is KlicBCAPaymentModel -> TransactionCodes(transactionId, merchantCode)
         is StorePaymentModel -> TransactionCodes(transactionId, merchantCode)
         is BankTransferPaymentModel -> TransactionCodes(transactionId, merchantCode)
+        is VirtualAccountPaymentModel -> TransactionCodes(
+            transactionList.getOrNull(0)?.transactionId ?: "",
+            transactionList.getOrNull(0)?.merchantCode ?: ""
+        )
         else -> TransactionCodes("", "")
     }
 }
