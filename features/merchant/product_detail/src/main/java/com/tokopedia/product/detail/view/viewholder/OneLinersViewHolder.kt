@@ -50,7 +50,13 @@ class OneLinersViewHolder(
             }
             val applink = content.applink
             if (applink.isNotBlank()) {
-                setOnClickListener { listener.goToApplink(applink) }
+                setOnClickListener {
+                    if (element.name == ProductDetailConstant.BEST_SELLER) {
+                        listener.onClickBestSeller(getComponentTrackData(element), applink)
+                    } else {
+                        listener.goToApplink(applink)
+                    }
+                }
                 iconRightArrow?.visible()
             }
         }
