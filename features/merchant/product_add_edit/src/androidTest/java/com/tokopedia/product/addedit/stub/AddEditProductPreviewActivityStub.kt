@@ -18,7 +18,7 @@ class AddEditProductPreviewActivityStub: AddEditProductPreviewActivity() {
                 val urlList = listOf(imagePath)
 
                 it.viewModel.productInputModel.value?.detailInputModel?.pictureList = listOf()
-                it .viewModel.updateProductPhotos(urlList, listOf())
+                it.viewModel.updateProductPhotos(urlList, listOf())
             }
         }
     }
