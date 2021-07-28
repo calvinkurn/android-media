@@ -23,6 +23,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -94,10 +95,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             screenShotImagePath = imgPath
         }
 
-        fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener){
+        fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener, fragment: Fragment){
             val tempScreenshotDetector = ScreenshotDetector(context, screenShotListener)
             screenshotDetector = WeakReference(tempScreenshotDetector)
-            createInstance().detectScreenshots()
+            screenshotDetector.get()?.detectScreenshots(fragment)
+        }
+
+        fun getScreenShotDetector(): ScreenshotDetector? {
+            return screenshotDetector.get()
         }
 
         fun clearData(){
@@ -142,8 +147,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
 
-    //permission request code
-    val READ_EXTERNAL_STORAGE_REQUEST = 0x1045
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -531,45 +534,5 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun dismiss() {
         clearData()
         super.dismiss()
-    }
-
-    fun haveStoragePermission() =
-        context?.let {
-            ContextCompat.checkSelfPermission(
-                it,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-        } == PackageManager.PERMISSION_GRANTED
-
-    fun requestPermission() {
-        if (!haveStoragePermission()) {
-            val permissions = arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-            requestPermissions(permissions, READ_EXTERNAL_STORAGE_REQUEST)
-        }
-    }
-
-    fun detectScreenshots() {
-        if (haveStoragePermission()) {
-            screenshotDetector.get()?.start()
-        } else {
-            requestPermission()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            READ_EXTERNAL_STORAGE_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    screenshotDetector.get()?.start()
-                }
-                return
-            }
-        }
     }
 }

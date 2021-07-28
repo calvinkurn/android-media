@@ -855,7 +855,7 @@ class NewShopPageFragment :
             }
             initViews(view)
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this) }
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     override fun onStop() {
@@ -2339,5 +2339,14 @@ class NewShopPageFragment :
             imageSaved(shopImageFilePath)
         }
         universalShareBottomSheet?.show(fragmentManager)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
     }
 }

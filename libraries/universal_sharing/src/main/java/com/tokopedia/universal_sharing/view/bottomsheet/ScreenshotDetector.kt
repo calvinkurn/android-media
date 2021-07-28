@@ -2,19 +2,27 @@ package com.tokopedia.universal_sharing.view.bottomsheet
 
 
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 
 class ScreenshotDetector(internal val context: Context, private val screenShotListener: ScreenShotListener) {
 
     private var contentObserver: ContentObserver? = null
+    //permission request code
+    val READ_EXTERNAL_STORAGE_REQUEST = 0x1045
 
     fun start() {
         if (contentObserver == null) {
@@ -53,6 +61,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(path)
+                    screenShotListener.screenShotTaken()
                 }
             }
         }
@@ -83,6 +92,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(relativePath+name)
+                    screenShotListener.screenShotTaken()
                 }
             }
         }
@@ -97,5 +107,44 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
         }
         registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, contentObserver)
         return contentObserver
+    }
+
+    fun haveStoragePermission() =
+        context.let {
+            ContextCompat.checkSelfPermission(
+                it,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        } == PackageManager.PERMISSION_GRANTED
+
+    fun requestPermission(fragment: Fragment) {
+        if (!haveStoragePermission()) {
+            val permissions = arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            fragment.requestPermissions(permissions, READ_EXTERNAL_STORAGE_REQUEST)
+        }
+    }
+
+    fun detectScreenshots(fragment: Fragment) {
+        if (haveStoragePermission()) {
+            start()
+        } else {
+            requestPermission(fragment)
+        }
+    }
+
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            READ_EXTERNAL_STORAGE_REQUEST -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    start()
+                }
+                return
+            }
+        }
     }
 }
