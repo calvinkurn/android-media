@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
@@ -125,9 +126,34 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     listComponents.add(component)
                 }
             }
+            ComponentNames.Video.componentName -> {
+                addAutoPlayController(component)
+                listComponents.add(component)
+            }
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun addAutoPlayController(component: ComponentsItem) {
+        if (component.autoPlayController == null) {
+            val autoplayComponent: ComponentsItem =
+                getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) ?: run {
+                    ComponentsItem().apply {
+                        autoPlayController = AutoPlayController(component.id)
+                        setComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint, this)
+                    }
+                }
+            if (autoplayComponent.autoPlayController?.videoIdSet?.contains(component.id) == false) {
+                autoplayComponent.autoPlayController?.videoIdSet?.add(component.id)
+            }
+            component.autoPlayController = autoplayComponent.autoPlayController
+        } else if (getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) == null) {
+            setComponent(
+                AutoPlayController.AUTOPLAY_ID,
+                component.pageEndPoint,
+                ComponentsItem().also { component.autoPlayController })
+        }
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
