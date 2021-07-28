@@ -18,6 +18,9 @@ data class HomeLayoutResponse(
     @SerializedName("id")
     val id: String = "",
     @Expose
+    @SerializedName("pageName")
+    val pageName: String = "",
+    @Expose
     @SerializedName("group_id")
     val groupId: String = "",
     @Expose
@@ -111,8 +114,14 @@ data class Grid(
     @SerializedName("warehouseID")
     val warehouseId: String = "",
     @Expose
+    @SerializedName("parentProductID")
+    val parentProductId: String = "",
+    @Expose
     @SerializedName("minOrder")
     val minOrder: Int = 0,
+    @Expose
+    @SerializedName("stock")
+    val stock: Int = 0,
     @Expose
     @SerializedName("shop")
     val shop: Shop = Shop(),

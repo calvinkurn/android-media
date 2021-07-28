@@ -51,7 +51,7 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_view_flag"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
