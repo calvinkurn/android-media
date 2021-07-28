@@ -1,6 +1,6 @@
 package com.tokopedia.troubleshooter.notification.data.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.CoroutineUseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
 import kotlinx.coroutines.CoroutineDispatcher

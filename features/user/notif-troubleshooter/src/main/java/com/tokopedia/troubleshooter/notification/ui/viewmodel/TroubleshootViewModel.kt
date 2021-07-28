@@ -121,7 +121,7 @@ class TroubleshootViewModel @Inject constructor(
 
     override fun troubleshoot() {
         launchCatchError(block = {
-            val result = troubleshootStatus.statelessResult(Unit)
+            val result = troubleshootStatus(Unit)
 
             withContext(dispatcher.main) {
                 _troubleshoot.value = result.mapToSendTroubleshoot()
