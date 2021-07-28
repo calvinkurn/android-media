@@ -2920,7 +2920,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (applink?.contains("shop") == true && position == 0) {
             eventAction = CLICK_CEK_SEKARANG
-            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+            val eventLabelcek = "${cpmData.cpm.cpmShop.id}"
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabelcek, userSession.userId)
         } else if (applink?.contains("shop") == true && position == 1) {
             eventAction = CLICK_SHOP_TOPADS
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
