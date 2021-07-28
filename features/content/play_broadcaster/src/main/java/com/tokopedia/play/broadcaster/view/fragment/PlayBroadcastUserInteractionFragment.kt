@@ -269,7 +269,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return if (interactiveSetupView.interceptBackPressed()) true
+        return if (interactiveSetupView.isShown()) interactiveSetupView.interceptBackPressed()
         else showDialogWhenActionClose()
     }
 
