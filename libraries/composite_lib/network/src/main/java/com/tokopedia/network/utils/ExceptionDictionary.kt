@@ -1,5 +1,6 @@
 package com.tokopedia.network.utils
 
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -15,6 +16,7 @@ class ExceptionDictionary {
 
         fun getErrorCodeSimple(exception: Throwable): String {
             return when (exception) {
+                is AkamaiErrorException -> { "AK" }
                 is ArithmeticException -> { "AE" }
                 is ArrayIndexOutOfBoundsException -> { "AI" }
                 is ClassNotFoundException -> { "CN" }
