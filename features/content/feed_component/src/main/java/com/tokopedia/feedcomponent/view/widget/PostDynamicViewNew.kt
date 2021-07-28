@@ -515,10 +515,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             isVideo(caption.media.firstOrNull())
                         )
                         val txt: String = buildString {
-                            append("<b>" + caption.author.name + "</b>" + " - ").append(
-                                MethodChecker.fromHtml(
-                                    caption.text
-                                )
+                            append("<b>" + caption.author.name + "</b>" + " - ").appendLine(
+                                caption.text.replace("(\r\n|\n)".toRegex(), "<br />")
                             )
                         }
                         spannableString = tagConverter.convertToLinkifyHashtag(
@@ -1087,11 +1085,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 GridItemViewModel(
                     id = it.id,
                     text = it.name,
-                    price = it.priceFmt,
-                    priceOriginal = if (it.isDiscount)
+                    price = if (it.isDiscount)
                         it.priceDiscountFmt
                     else
-                        it.priceOriginalFmt,
+                        it.priceFmt,
+                    priceOriginal = it.priceFmt,
                     redirectLink = it.appLink,
                     thumbnail = it.coverURL,
                     tagsList = getTagList(it),
@@ -1104,19 +1102,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun getTagList(feedXProduct: FeedXProduct): MutableList<TagsItem> {
-        return if (feedXProduct.isDiscount || feedXProduct.isCashback) {
+        return if (feedXProduct.isDiscount) {
             val item = TagsItem(
                 linkType = "",
-                text = when {
-                    feedXProduct.isDiscount -> feedXProduct.discountFmt
-                    feedXProduct.isCashback -> feedXProduct.cashbackFmt
-                    else -> ""
-                },
-                type = when {
-                    feedXProduct.isDiscount -> TYPE_DISCOUNT
-                    feedXProduct.isCashback -> TYPE_CASHBACK
-                    else -> ""
-                },
+                text = feedXProduct.discountFmt,
+                type = TYPE_DISCOUNT,
             )
             mutableListOf(item)
         } else {
