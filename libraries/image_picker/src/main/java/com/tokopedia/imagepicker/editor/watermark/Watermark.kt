@@ -8,8 +8,10 @@ import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.addPadding
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.adjustRotation
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.changeColor
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapWithPadding
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.isDark
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
 import android.graphics.Bitmap.createBitmap as createBitmap
@@ -143,14 +145,12 @@ data class Watermark (
             alpha = bitmapAlpha
         }
 
-        bitmap.adjustRotation(config.position.rotation).also {
-            watermarkBitmap = it
+        watermarkBitmap = bitmap
 
-            Canvas(
-                createBitmap(it.width, it.height, it.config)
-            ).apply {
-                drawBitmap(it, 0f, 0f, paint)
-            }
+        Canvas(
+                createBitmap(bitmap.width, bitmap.height, bitmap.config)
+        ).apply {
+            drawBitmap(bitmap, 0f, 0f, paint)
         }
 
         scaledWatermarkBitmap(textLength).apply {
@@ -181,8 +181,6 @@ data class Watermark (
 
             canvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
 
-            watermarkBitmap = bitmap.adjustRotation(config.position.rotation)
-
             if (isTitleMode) {
                 paint.shader = BitmapShader(
                     watermarkBitmap!!,
@@ -211,11 +209,16 @@ data class Watermark (
         val heightMainBitmap = backgroundImg!!.height
 
         // scaled resize the watermark container with divided by three
-        val scaledWatermarkBitmap =
+
+        var scaledWatermarkBitmap =
             watermarkBitmap!!.downscaleToAllowedDimension(
                 mainBitmap = backgroundImg!!,
                 textLength = textLength
             )?.addPadding(left = 10)
+
+        if (!backgroundImg!!.isDark())
+            scaledWatermarkBitmap = scaledWatermarkBitmap!!.changeColor(Color.RED)
+
 
         // merge the main bitmap with scaled watermark bitmap
         val resultBitmap = createBitmap(
@@ -227,6 +230,7 @@ data class Watermark (
         Canvas(resultBitmap).apply {
             // first, draw the main bitmap into canvas
             drawBitmap(backgroundImg!!, 0f, 0f, null)
+            rotate(-45f)
 
             // afterwards, draw tiles mode of watermark
             drawRect(this.clipBounds, Paint().apply {
