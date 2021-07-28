@@ -16,6 +16,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -23,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -50,9 +51,11 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffi
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
+import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
@@ -124,6 +127,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
+        private const val TIMEOUT_QUANTITY_FLOW = 500L
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -224,7 +228,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
-    var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
+    var shippingMinimumPrice: Double = getDynamicProductInfoP1?.basic?.getDefaultOngkirDouble() ?: DEFAULT_PRICE_MINIMUM_SHIPPING
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
@@ -267,7 +271,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun iniQuantityFlow() {
         launch {
             _quantityUpdated.asFlow()
-                    .debounce(500)
+                    .debounce(TIMEOUT_QUANTITY_FLOW)
                     .flatMapLatest { request ->
                         hitUpdateCart(request.first, request.second)
                                 .catch {
@@ -300,9 +304,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun hitUpdateCart(quantity: Int, request: MiniCartItem): Flow<Result<String>> {
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
-
+            val updateCartRequest = UpdateCartRequest(
+                    cartId = copyOfMiniCartItem.cartId,
+                    quantity = copyOfMiniCartItem.quantity,
+                    notes = copyOfMiniCartItem.notes
+            )
             updateCartUseCase.get().setParams(
-                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    updateCartRequestList = listOf(updateCartRequest),
                     source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
             )
             val result = updateCartUseCase.get().executeOnBackground()
@@ -604,11 +612,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _topAdsImageView.postValue(it.asFail())
         }
-    }
-
-    private fun updateShippingValue(shippingPriceValue: Int?) {
-        shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt()
-                ?: 30000 else shippingPriceValue
     }
 
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
@@ -947,7 +950,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
             tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
-            tradeInParams.setPrice(it.data.price.value)
+            tradeInParams.setPrice(it.data.price.value.roundToIntOrZero())
             tradeInParams.productId = it.basic.getProductId()
             tradeInParams.shopId = it.basic.getShopId()
             tradeInParams.productName = it.getProductName

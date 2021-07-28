@@ -95,4 +95,6 @@ object ProductDetailCommonConstant{
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
 
+    const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
+
 }
