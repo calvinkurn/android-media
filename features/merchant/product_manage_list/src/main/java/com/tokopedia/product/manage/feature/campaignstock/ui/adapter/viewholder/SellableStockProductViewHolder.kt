@@ -67,7 +67,8 @@ class SellableStockProductViewHolder (itemView: View?,
                     } else {
                         ProductStatus.INACTIVE
                     }
-                    this@with.label_campaign_stock_inactive.showWithCondition(!isChecked)
+                    val shouldShowInactiveLabel = !isChecked || getInactivityByStock(element)
+                    this@with.label_campaign_stock_inactive.showWithCondition(shouldShowInactiveLabel)
                     onVariantStatusChanged(element.productId, status)
                     ProductManageTracking.eventClickAllocationProductStatus(
                         isVariant = true,
@@ -80,7 +81,7 @@ class SellableStockProductViewHolder (itemView: View?,
             }
             switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
         }
-        showHideStockInfo(element)
+        showHideInactiveLabelByStock(element)
     }
 
     private fun QuantityEditorUnify.setElement(element: SellableStockProductUIModel) {
@@ -97,7 +98,7 @@ class SellableStockProductViewHolder (itemView: View?,
             } else {
                 EditProductConstant.MINIMUM_STOCK
             }
-            showHideStockInfo(element)
+            itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element) || getInactivityByStatus())
             toggleQuantityEditorBtn(stock)
             element.stock = stock.toString()
             onVariantStockChanged(element.productId, stock)
@@ -130,10 +131,17 @@ class SellableStockProductViewHolder (itemView: View?,
         setupStockEditor(element)
     }
 
-    private fun showHideStockInfo(element: SellableStockProductUIModel) {
+    private fun getInactivityByStock(element: SellableStockProductUIModel): Boolean {
         val stock = getCurrentStockInput()
-        val shouldShow = stock == 0 && !element.isAllStockEmpty
-        itemView.emptyStockInfo.showWithCondition(shouldShow)
+        return stock == 0 && !element.isAllStockEmpty
+    }
+
+    private fun getInactivityByStatus(): Boolean {
+        return itemView.switch_campaign_stock_variant_editor?.isChecked == false
+    }
+
+    private fun showHideInactiveLabelByStock(element: SellableStockProductUIModel) {
+        itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element))
     }
 
     private fun setupStockEditor(element: SellableStockProductUIModel) {
