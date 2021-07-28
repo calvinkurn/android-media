@@ -179,7 +179,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
             ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
-            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            ProductDetailCommonConstant.PARAM_USER_LOCATION to chosenAddressRequestHelper.getChosenAddress()
     )
 
     private var requestParams: Map<String, Any?> = mapOf()
