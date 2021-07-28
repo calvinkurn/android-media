@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedFrameLayout
+<com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_play_interactive"
-    app:cornerRadius="@dimen/play_interactive_common_radius"
+    app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
     >
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.play_common.view.RemoteImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:adjustViewBounds="true"
+        app:cacheStrategy="data"
+        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_decor.png"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_play_interactive_decor"
+        app:layout_constraintVertical_bias="0"
         />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:padding="@dimen/spacing_lvl3"
         >
 
@@ -28,7 +37,7 @@
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl2"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -37,7 +46,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -46,7 +55,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -56,11 +65,9 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:background="@color/play_dms_interactive_loader_bg"
-            app:cornerRadius="@dimen/play_interactive_loader_radius"
+            app:rfl_cornerRadius="@dimen/play_interactive_loader_radius"
             />
 
     </LinearLayout>
 
-
-
-</com.tokopedia.play_common.view.RoundedFrameLayout>
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

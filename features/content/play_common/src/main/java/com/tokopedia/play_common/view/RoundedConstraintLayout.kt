@@ -28,7 +28,7 @@ open class RoundedConstraintLayout : ConstraintLayout {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedConstraintLayout)
 
             roundedHelper.setCornerRadius(
-                    attributeArray.getDimension(R.styleable.RoundedConstraintLayout_cornerRadius, 0f)
+                    attributeArray.getDimension(R.styleable.RoundedConstraintLayout_rcl_cornerRadius, 0f)
             )
             attributeArray.recycle()
         }

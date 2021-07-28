@@ -1072,9 +1072,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkInteractive(channelId: String) {
+        if (!channelType.isLive) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            if (!channelType.isLive) error("Interactive is not available on non-Live channel")
-
             _interactive.value = PlayInteractiveUiState.Loading
 
             val interactive = interactiveRepo.getCurrentInteractive(channelId)
@@ -1307,7 +1306,7 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        suspend fun fetchLeaderboard(channelId: String) = coroutineScope {
+        suspend fun fetchLeaderboard(channelId: String, isUserJoined: Boolean) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
@@ -1324,7 +1323,7 @@ class PlayViewModel @Inject constructor(
             _interactive.value = PlayInteractiveUiState.NoInteractive
             _leaderboardInfo.value = interactiveLeaderboard
 
-            if (userInLeaderboard != null) {
+            if (userInLeaderboard != null && isUserJoined) {
                 showCoachMark(interactiveLeaderboard)
 
                 if (userInLeaderboard.id == userId) {
@@ -1342,12 +1341,13 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val channelId = mChannelData?.id ?: return@launchCatchError
             val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
+            val isUserJoined = interactiveRepo.hasJoined(activeInteractiveId)
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             try {
-                fetchLeaderboard(channelId)
+                fetchLeaderboard(channelId, isUserJoined)
             } catch (e: Throwable) {
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             }
