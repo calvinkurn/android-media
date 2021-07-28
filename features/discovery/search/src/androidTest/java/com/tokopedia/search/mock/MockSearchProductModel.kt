@@ -68,7 +68,7 @@ object MockSearchProductModel {
                 position = 0,
                 options = listOf(
                         getInspirationCarouselOptionViewModel(), getInspirationCarouselOptionViewModel(), getInspirationCarouselOptionViewModel()
-                )
+                ),
         )
     }
 

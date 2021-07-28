@@ -8,7 +8,6 @@ import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -17,6 +16,7 @@ import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations

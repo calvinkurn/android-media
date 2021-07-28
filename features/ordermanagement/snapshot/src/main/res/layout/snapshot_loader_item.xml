@@ -9,7 +9,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/snapshot_loader_img_header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/snapshot_dimen_360dp"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="rect"/>

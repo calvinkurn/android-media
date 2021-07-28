@@ -10,7 +10,7 @@ import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 
 
 /**
@@ -122,7 +122,11 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
         val segments = uri.pathSegments
         val productId = segments.first()
-        val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+        val newUri = if(goToNewReadProductReview()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+        } else {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
+        }
         return Uri.parse(newUri)
                 .buildUpon()
                 .build()
@@ -365,12 +369,22 @@ object DeeplinkMapperMerchant {
         if (GlobalConfig.isSellerApp()) return false
         return try {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-            ) == AbTestPlatform.VARIANT_NEW_INBOX
+                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+            ) == RollenceKey.VARIANT_NEW_INBOX
             val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-            ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
             useNewInbox && useNewNav
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun goToNewReadProductReview(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
+            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
         } catch (e: Exception) {
             false
         }
