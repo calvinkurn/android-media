@@ -2348,6 +2348,6 @@ class NewShopPageFragment :
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        UniversalShareBottomSheet.getScreenShotDetector().onRequestPermissionsResult(requestCode, grantResults)
+        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
     }
 }

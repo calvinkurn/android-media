@@ -23,6 +23,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
     private var contentObserver: ContentObserver? = null
     //permission request code
     val READ_EXTERNAL_STORAGE_REQUEST = 500
+    val pendingRegex = ".pending"
     private var ssUriPath = ""
 
     fun start() {
@@ -62,9 +63,14 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(path)
-                    Handler().postDelayed({
-                        screenShotListener.screenShotTaken()
-                    }, 2500)
+//                    Handler().postDelayed({
+                    if(!ssUriPath.equals(path)) {
+                        ssUriPath = path
+                        if(!path.contains(pendingRegex)) {
+                            screenShotListener.screenShotTaken()
+                        }
+                    }
+//                    }, 2500)
                 }
             }
         }
@@ -95,9 +101,14 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-                    Handler().postDelayed({
-                        screenShotListener.screenShotTaken()
-                    }, 2500)
+//                    Handler().postDelayed({
+                    if(!ssUriPath.equals(relativePath)) {
+                        ssUriPath = relativePath
+                        if(!relativePath.contains(pendingRegex)) {
+                            screenShotListener.screenShotTaken()
+                        }
+                    }
+//                    }, 2500)
                 }
             }
         }
@@ -108,10 +119,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
             override fun onChange(selfChange: Boolean, uri: Uri?) {
                 super.onChange(selfChange, uri)
                 uri?.let {
-                    if(!ssUriPath.equals(it.toString())) {
-                        ssUriPath = it.toString()
-                        queryScreenshots(it)
-                    }
+                    queryScreenshots(it)
                 }
             }
         }

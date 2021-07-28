@@ -70,7 +70,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var isImageOnlySharing: Boolean = false
         private var screenShotImagePath: String = ""
         //for screen shots
-        private lateinit var screenshotDetector: ScreenshotDetector
+        private var screenshotDetector: ScreenshotDetector? = null
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -96,13 +96,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener, fragment: Fragment){
-            if(!::screenshotDetector.isInitialized) {
+            if(screenshotDetector != null) {
                 screenshotDetector = ScreenshotDetector(context, screenShotListener)
             }
-            screenshotDetector.detectScreenshots(fragment)
+            screenshotDetector?.detectScreenshots(fragment)
         }
 
-        fun getScreenShotDetector(): ScreenshotDetector {
+        fun getScreenShotDetector(): ScreenshotDetector? {
             return screenshotDetector
         }
 
@@ -112,7 +112,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun clearState(){
-            screenshotDetector.stop()
+            screenshotDetector?.stop()
+            screenshotDetector = null
             clearData()
         }
     }
