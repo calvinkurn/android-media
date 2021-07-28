@@ -306,7 +306,7 @@ class TopChatRoomPresenterTest {
 
         fun generateSendAbleInvoicePreview(): SendablePreview {
             return InvoicePreviewUiModel(
-                1, "1", "1", "1", "http",
+                "1", "1", "1", "1", "http",
                 "http", 200, "200", "1"
             )
         }

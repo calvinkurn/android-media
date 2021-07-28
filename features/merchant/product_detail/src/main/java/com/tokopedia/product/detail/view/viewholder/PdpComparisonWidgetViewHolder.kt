@@ -11,15 +11,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetMapper
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleInterface
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModel
 import kotlinx.android.synthetic.main.item_comparison_widget_viewholder.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class PdpComparisonWidgetViewHolder(
       private val view: View,
@@ -36,25 +29,11 @@ class PdpComparisonWidgetViewHolder(
     override fun bind(element: PdpComparisonWidgetDataModel) {
         itemView.comparison_widget.setComparisonWidgetData(
                 element.recommendationWidget,
-                listener.getStickyTitleView(),
                 this@PdpComparisonWidgetViewHolder,
                 RecommendationTrackingModel(
                         androidPageName = PDP_PAGE_NAME,
                         headerTitle = element.recommendationWidget.title
                 ),
-                object : StickyTitleInterface {
-                    override fun onStickyTitleClick(stickyTitleModel: StickyTitleModel) {
-                        view.context?.run {
-                            RouteManager.route(this,
-                                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                                    stickyTitleModel.recommendationItem.productId.toString())
-                        }
-                    }
-
-                    override fun onStickyTitleShow(isShowing: Boolean) {
-
-                    }
-                },
                 listener.getFragmentTrackingQueue()
         )
         this.componentTrackDataModel = getComponentTrackData(element)
@@ -76,10 +55,6 @@ class PdpComparisonWidgetViewHolder(
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     recommendationItem.productId.toString())
         }
-    }
-
-    override fun onSeeAllSpecClicked(comparisonListModel: ComparisonListModel) {
-
     }
 
     private fun getComponentTrackData(element: PdpComparisonWidgetDataModel?) = ComponentTrackDataModel(element?.type
