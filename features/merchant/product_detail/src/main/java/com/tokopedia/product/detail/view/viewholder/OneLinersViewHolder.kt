@@ -44,19 +44,13 @@ class OneLinersViewHolder(
             return
         }
 
+        val applink = content.applink
         view.apply {
             addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            val applink = content.applink
             if (applink.isNotBlank()) {
-                setOnClickListener {
-                    if (element.name == ProductDetailConstant.BEST_SELLER) {
-                        listener.onClickBestSeller(getComponentTrackData(element), applink)
-                    } else {
-                        listener.goToApplink(applink)
-                    }
-                }
+                setOnClickListener { listener.goToApplink(applink) }
                 iconRightArrow?.visible()
             }
         }
@@ -88,6 +82,12 @@ class OneLinersViewHolder(
             container?.apply {
                 val dp12 = convertDpToPixel(12f, context)
                 setPadding(paddingLeft, 0, paddingRight, dp12)
+            }
+            view.apply {
+                if (applink.isNotBlank()) {
+                    setOnClickListener { listener.onClickBestSeller(getComponentTrackData(element), applink) }
+                    iconRightArrow?.visible()
+                }
             }
             title?.setWeight(Typography.BOLD)
         }
