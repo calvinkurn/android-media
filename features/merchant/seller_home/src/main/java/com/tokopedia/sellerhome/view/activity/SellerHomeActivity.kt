@@ -48,6 +48,7 @@ import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
+import com.tokopedia.sellerhome.view.viewhelper.SellerHomePreDrawListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
@@ -594,31 +595,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun createSahBottomNavVisibilityHandler() {
-        sahRootLayout?.viewTreeObserver?.addOnPreDrawListener {
-            val heightDiffThreshold = 100
-            val screenHeight = getScreenHeight()
-            val sahRootLayoutHeight = sahRootLayout.measuredHeight
-            val showNavBar = abs(screenHeight - sahRootLayoutHeight) <= heightDiffThreshold
-            if (showNavBar) {
-                // Postpone the show logic so that the bottom nav will show after root layout become
-                // full screen to prevent glitch then continue the drawing process
-                sahRootLayout?.post {
-                    navBarShadow?.show()
-                    sahBottomNav?.show()
-                }
-                true
-            } else {
-                if (navBarShadow?.isVisible != true && sahBottomNav?.isVisible != true) {
-                    // Continue the drawing process because bottom nav is already hidden
-                    true
-                } else {
-                    // To prevent glitch showing keyboard, cancel current drawing process and hide
-                    // the bottom nav first
-                    navBarShadow?.gone()
-                    sahBottomNav?.gone()
-                    false
-                }
-            }
-        }
+        sahRootLayout?.viewTreeObserver?.addOnPreDrawListener(createSahPreDrawListener())
+    }
+
+    private fun createSahPreDrawListener(): SellerHomePreDrawListener {
+        return SellerHomePreDrawListener(resources, sahRootLayout)
     }
 }
