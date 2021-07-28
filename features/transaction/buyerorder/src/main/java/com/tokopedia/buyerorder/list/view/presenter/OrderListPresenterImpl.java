@@ -455,7 +455,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (getView() != null) {
             getView().displayLoadMore(true);
 
-            int productId = 0;
+            long productId = 0;
             int shopId = 0;
             int quantity = 0;
             String productName = "";

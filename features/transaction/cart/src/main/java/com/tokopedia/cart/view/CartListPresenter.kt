@@ -1115,7 +1115,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             if (clickUrl.isNotEmpty() && productModel.isTopAds) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
             val recommendationItem = productModel.recommendationItem
-            productId = recommendationItem.productId.toLong()
+            productId = recommendationItem.productId
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
             productCategory = recommendationItem.categoryBreadcrumbs

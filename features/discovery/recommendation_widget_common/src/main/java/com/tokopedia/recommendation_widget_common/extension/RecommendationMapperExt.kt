@@ -20,7 +20,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
     return RecommendationWidget(
             recommendationItemList = recommendation.mapIndexed { index, recommendation ->
                 RecommendationItem(
-                        productId = recommendation.id.toInt(),
+                        productId = recommendation.id,
                         name = recommendation.name,
                         categoryBreadcrumbs = recommendation.categoryBreadcrumbs,
                         url = recommendation.url,

@@ -85,10 +85,10 @@ open class RecommendationPageViewModel @Inject constructor(
             try{
                 val result = awaitAll(
                         asyncCatchError(dispatcher.getIODispatcher(), block = {
-                            getPrimaryProductUseCase.setParameter(productId.toInt(), queryParam)
+                            getPrimaryProductUseCase.setParameter(productId, queryParam)
                             getPrimaryProductUseCase.executeOnBackground()
                         }) {
-                            null
+                            throw it
                         },
                         asyncCatchError(dispatcher.getIODispatcher(), block = {
                             val params = getRecommendationUseCase.getRecomParams(

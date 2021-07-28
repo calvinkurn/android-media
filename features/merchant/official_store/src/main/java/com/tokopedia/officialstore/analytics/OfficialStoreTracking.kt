@@ -696,7 +696,7 @@ class OfficialStoreTracking(context: Context) {
         return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
     }
 
-    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, productId: Int, isTopAds: Boolean) {
+    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, productId: Long, isTopAds: Boolean) {
         val action = if (isAddWishlist) "add" else "remove"
         val statusTopads = if (isTopAds) "topads" else  "general"
         var eventAction = "$action wishlist - product recommendation - ${if (isLogin) "login" else "non login"}"

@@ -26,7 +26,7 @@ class HomeAdapter(
         val indexOfWidget = data.indexOf(widget)
 
         widget?.recomWidget?.recommendationItemList?.forEach { item ->
-            if (item.productId == productId.toInt()) {
+            if (item.productId == productId) {
                 item.quantity = quantity
             }
             return@forEach

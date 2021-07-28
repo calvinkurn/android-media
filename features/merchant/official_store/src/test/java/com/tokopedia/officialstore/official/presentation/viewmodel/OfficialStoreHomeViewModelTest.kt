@@ -500,7 +500,7 @@ class OfficialStoreHomeViewModelTest {
 
 
     private fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
-        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+        return RecommendationItem(productId = productId.toLong(), isTopAds = isTopAds)
     }
 
     private fun <T> mockObservable(data: T): Observable<T> {

@@ -45,7 +45,7 @@ fun List<RecommendationWidget>.mapDataModel(): List<HomeRecommendationDataModel>
 
 fun ProductInfoDataModel.mapToRecommendationTracking(): RecommendationItem{
     return RecommendationItem(
-            productId = productDetailData?.id ?: -1,
+            productId = (productDetailData?.id ?: -1).toLong(),
             position = 0,
             name = productDetailData?.name ?: "",
             appUrl = productDetailData?.appUrl ?: "",

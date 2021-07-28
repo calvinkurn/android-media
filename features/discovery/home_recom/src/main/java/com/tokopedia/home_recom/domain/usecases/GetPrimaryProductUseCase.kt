@@ -28,9 +28,9 @@ class GetPrimaryProductUseCase (
         return graphqlUseCase.executeOnBackground()
     }
 
-    fun setParameter(productId: Int, queryParam: String){
+    fun setParameter(productId: String, queryParam: String){
         parameter.parameters.clear()
-        parameter.putInt(PARAM_PRODUCT_ID, productId)
+        parameter.putString(PARAM_PRODUCT_ID, productId)
         parameter.putString(PARAM_QUERY_PARAM, queryParam)
         parameter.putString(PARAM_X_SOURCE, DEFAULT_X_SOURCE)
     }

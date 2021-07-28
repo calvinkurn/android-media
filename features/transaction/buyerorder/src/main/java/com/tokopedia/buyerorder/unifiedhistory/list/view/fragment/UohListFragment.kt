@@ -1746,7 +1746,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
         val atcParam = AddToCartRequestParams(
-                productId = recommendationItem.productId.toLong(),
+                productId = recommendationItem.productId,
                 productName = recommendationItem.name,
                 price = recommendationItem.priceInt.toString(),
                 quantity = recommendationItem.quantity,
