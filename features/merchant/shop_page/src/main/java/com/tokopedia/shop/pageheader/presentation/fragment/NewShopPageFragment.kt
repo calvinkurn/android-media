@@ -339,6 +339,11 @@ class NewShopPageFragment :
     ): View? = inflater.inflate(R.layout.new_shop_page_main, container, false)
 
 
+    override fun onStop() {
+        UniversalShareBottomSheet.clearState()
+        super.onStop()
+    }
+
     override fun onDestroy() {
         shopViewModel?.shopPageP1Data?.removeObservers(this)
         shopViewModel?.shopImagePath?.removeObservers(this)
@@ -354,7 +359,6 @@ class NewShopPageFragment :
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
-        UniversalShareBottomSheet.clearState()
         super.onDestroy()
     }
 
@@ -856,7 +860,6 @@ class NewShopPageFragment :
             }
             initViews(view)
         }
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
 
@@ -1071,6 +1074,7 @@ class NewShopPageFragment :
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {

@@ -96,7 +96,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener, fragment: Fragment){
-            screenshotDetector = ScreenshotDetector(context, screenShotListener)
+            if(!::screenshotDetector.isInitialized) {
+                screenshotDetector = ScreenshotDetector(context, screenShotListener)
+            }
             screenshotDetector.detectScreenshots(fragment)
         }
 
