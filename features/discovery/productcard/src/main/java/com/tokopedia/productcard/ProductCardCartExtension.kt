@@ -90,8 +90,20 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
-        if (!productCardModel.canShowQuantityEditor()) return
+        if (!productCardModel.canShowQuantityEditor())
+            removeQuantityEditorComponents()
+        else
+            showQuantityEditorComponent(productCardModel)
+    }
 
+    private fun removeQuantityEditorComponents() {
+        clear()
+
+        quantityEditorNonVariant?.gone()
+        buttonDeleteCart?.gone()
+    }
+
+    private fun showQuantityEditorComponent(productCardModel: ProductCardModel) {
         val shouldShowCartEditorComponent = productCardModel.shouldShowCartEditorComponent()
 
         configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
