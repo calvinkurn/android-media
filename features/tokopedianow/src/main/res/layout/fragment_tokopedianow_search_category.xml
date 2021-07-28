@@ -53,17 +53,25 @@
         android:id="@+id/tokonowSearchCategoryStickyView"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/tokonowSearchCategoryRecyclerView"
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/tokonowSearchCategorySwipeRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/dp_64"/>
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tokonowSearchCategoryRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/dp_64"/>
+
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     </com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView>
 
@@ -80,19 +88,11 @@
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
-        android:visibility="gone"
         app:loader_type="circular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/tokonowSearchCategoryContentGroup"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_0"
-        app:constraint_referenced_ids="tokonowSearchCategoryBackgroundImage,tokonowSearchCategoryStatusBarBackground,tokonowSearchCategoryStickyView"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

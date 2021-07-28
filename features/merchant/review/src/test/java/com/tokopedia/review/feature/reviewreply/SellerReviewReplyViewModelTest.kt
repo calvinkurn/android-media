@@ -37,7 +37,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     fun `when insert review reply should return success`() {
         runBlocking {
             onInsertReviewReply_thenReturn()
-            viewModel.insertReviewReply(anyLong(), anyLong(), anyLong(), anyString())
+            viewModel.insertReviewReply(anyString(), anyString(), anyString(), anyString())
 
             verifySuccessInsertReviewReplyUseCalled()
             val expectedValue = Success(InsertReplyResponseUiModel(anyInt()))
@@ -103,7 +103,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             val error = NullPointerException()
             onInsertReviewReply_thenError(error)
 
-            viewModel.insertReviewReply(anyLong(), anyLong(), anyLong(), anyString())
+            viewModel.insertReviewReply(anyString(), anyString(), anyString(), anyString())
             val expectedResult = Fail(error)
             viewModel.insertReviewReply.verifyErrorEquals(expectedResult)
         }

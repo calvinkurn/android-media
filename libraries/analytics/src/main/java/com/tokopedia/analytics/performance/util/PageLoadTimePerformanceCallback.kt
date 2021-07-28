@@ -7,6 +7,7 @@ import android.util.Log
 import com.tokopedia.analytics.performance.PerformanceAnalyticsUtil
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.config.GlobalConfig
+import io.embrace.android.embracesdk.Embrace
 import timber.log.Timber
 
 open class PageLoadTimePerformanceCallback(
@@ -49,6 +50,7 @@ open class PageLoadTimePerformanceCallback(
         this.traceName = traceName
         performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
+        Embrace.getInstance().startEvent(traceName, null, false)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
         startMethodTracing(traceName);
     }
@@ -60,6 +62,7 @@ open class PageLoadTimePerformanceCallback(
 
         performanceMonitoring?.let {
             performanceMonitoring?.stopTrace()
+            Embrace.getInstance().endEvent(traceName)
             overallDuration = System.currentTimeMillis() - overallDuration
             stopMethodTracing(traceName)
         }
