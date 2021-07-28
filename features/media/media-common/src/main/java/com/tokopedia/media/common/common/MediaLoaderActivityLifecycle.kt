@@ -22,6 +22,8 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
+import com.bumptech.glide.Glide.getPhotoCacheDir as getGlidePhotoCacheDir
+import com.tokopedia.applink.RouteManager.getIntent as getIntent
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
 class MediaLoaderActivityLifecycle(
@@ -38,8 +40,8 @@ class MediaLoaderActivityLifecycle(
     private val logger by lazy {
         SessionDataUsageLogger(
             priority = Priority.P2,
-            sessionName = "MEDIALOADER_ACTIVE_SESSION",
-            dataUsageName = "MEDIALOADER_DATA_USAGE",
+            sessionName = ACTIVE_SESSION_NAME,
+            dataUsageName = DATA_USAGE_NAME,
             intervalSession = INTERVAL_SESSION
         )
     }
@@ -88,9 +90,8 @@ class MediaLoaderActivityLifecycle(
 
         val mediaAdditionalData = mapOf(
             KEY_ACCUMULATIVE_SIZE to bitmapSize.getSize(),
-            KEY_INTERNAL_CACHE_SIZE to getDirSize(activity.cacheDir).toString(),
-            KEY_EXTERNAL_CACHE_SIZE to getDirSize(activity.externalCacheDir).toString(),
-            KEY_GLIDE_CACHE_SIZE to getDirSize(Glide.getPhotoCacheDir(context)).toString()
+            KEY_INTERNAL_CACHE_SIZE to activity.cacheDir.getDirSize(),
+            KEY_GLIDE_CACHE_SIZE to getGlidePhotoCacheDir(context).getDirSize()
         )
 
         Thread {
@@ -117,8 +118,8 @@ class MediaLoaderActivityLifecycle(
                             actionText = getString(R.string.media_toaster_cta),
                             duration = Toaster.LENGTH_LONG,
                             type = Toaster.TYPE_NORMAL,
-                            clickListener = View.OnClickListener {
-                                startActivity(RouteManager.getIntent(this, MEDIA_QUALITY_SETTING))
+                            clickListener = {
+                                startActivity(getIntent(this, MEDIA_QUALITY_SETTING))
                             }
                     ).show()
                 }
@@ -128,9 +129,14 @@ class MediaLoaderActivityLifecycle(
 
     companion object {
         private const val DELAY_PRE_SHOW_TOAST = 2500L
+
+        // for data usage logger
+        private const val ACTIVE_SESSION_NAME = "MEDIALOADER_ACTIVE_SESSION"
+        private const val DATA_USAGE_NAME = "MEDIALOADER_DATA_USAGE"
+
+        // key for an additional data usage logger
         private const val KEY_ACCUMULATIVE_SIZE = "accumulative_size"
         private const val KEY_INTERNAL_CACHE_SIZE = "internal_cachedir_size"
-        private const val KEY_EXTERNAL_CACHE_SIZE = "external_cachedir_size"
         private const val KEY_GLIDE_CACHE_SIZE = "glide_dir_size"
 
         private val INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1)
