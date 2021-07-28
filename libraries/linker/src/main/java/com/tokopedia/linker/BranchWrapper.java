@@ -176,7 +176,7 @@ public class BranchWrapper implements WrapperInterface {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
                 if (error == null) {
-                    if(!uriHaveCampaignData) {
+                    if(!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
                         sendUtmParameters(context, referringParams);
                     }else {
                         logNonBranchLinkData(context, referringParams);
