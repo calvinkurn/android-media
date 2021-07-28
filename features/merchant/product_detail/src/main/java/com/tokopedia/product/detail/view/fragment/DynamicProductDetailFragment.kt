@@ -2357,6 +2357,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         activity?.let {
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
                 val productData = ProductData(
+                        viewModel.userId,
                         productInfo.finalPrice.getCurrencyFormatted(),
                         "${productInfo.data.isCashback.percentage}%",
                         MethodChecker.fromHtml(productInfo.getProductName).toString(),
@@ -2418,13 +2419,31 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun executeProductShare(productData: ProductData) {
         activity?.let {
-            shareProductInstance?.share(productData, {
-                showProgressDialog {
-                    shareProductInstance?.cancelShare(true)
-                }
-            }, {
-                hideProgressDialog()
-            }, true)
+            if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+                val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
+                    ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
+                    ?.map { it.urlOriginal } ?: emptyList()
+                shareProductInstance?.showUniversalShareBottomSheet(
+                    fragmentManager,
+                    productData,
+                    {
+                        showProgressDialog {
+                            shareProductInstance?.cancelShare(true)
+                        }
+                    }, {
+                        hideProgressDialog()
+                    }, true,
+                    view, ArrayList(imageUrls))
+
+            }else {
+                shareProductInstance?.share(productData, {
+                    showProgressDialog {
+                        shareProductInstance?.cancelShare(true)
+                    }
+                }, {
+                    hideProgressDialog()
+                }, true)
+            }
         }
     }
 
