@@ -162,7 +162,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
-                viewModel?.addToCart(GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                viewModel?.goToCheckout(GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
             it.context?.let { context ->
                 validateTotalAmountView(context, viewBinding)
@@ -193,11 +193,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM -> {
                     onFailedUndoDeleteCartItem(viewBinding, it)
                 }
-                GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT -> {
-                    onSuccessUpdateCartForCheckout(it)
+                GlobalEvent.STATE_SUCCESS_TO_CHECKOUT -> {
+                    onSuccessGoToCheckout(it)
                 }
-                GlobalEvent.STATE_FAILED_ADD_TO_CART_FOR_CHECKOUT -> {
-                    onFailedUpdateCartForCheckout(viewBinding, it, viewModel, fragmentManager)
+                GlobalEvent.STATE_FAILED_TO_CHECKOUT -> {
+                    onFailedGoToCheckout(viewBinding, it, fragmentManager)
                 }
             }
         }
@@ -285,20 +285,20 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    private fun onFailedUpdateCartForCheckout(viewBinding: LayoutBottomsheetMiniCartListBinding, globalEvent: GlobalEvent, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
+    private fun onFailedGoToCheckout(viewBinding: LayoutBottomsheetMiniCartListBinding, globalEvent: GlobalEvent, fragmentManager: FragmentManager) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
             viewBinding.bottomsheetContainer.let { view ->
-                bottomSheetListener?.onBottomSheetFailedAddToCartForCheckout(view, fragmentManager, globalEvent)
+                bottomSheetListener?.onBottomSheetFailedGoToCheckout(view, fragmentManager, globalEvent)
             }
         }
     }
 
-    private fun onSuccessUpdateCartForCheckout(globalEvent: GlobalEvent) {
+    private fun onSuccessGoToCheckout(globalEvent: GlobalEvent) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             bottomSheet?.context.let {
                 hideProgressLoading()
-                bottomSheetListener?.onBottomSheetSuccessAddToCartForCheckout()
+                bottomSheetListener?.onBottomSheetSuccessGoToCheckout()
                 dismiss()
             }
         }

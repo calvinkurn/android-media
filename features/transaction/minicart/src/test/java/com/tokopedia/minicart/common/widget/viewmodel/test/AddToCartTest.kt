@@ -60,10 +60,10 @@ class AddToCartTest {
         val observer = GlobalEvent.OBSERVER_MINI_CART_WIDGET
 
         //when
-        viewModel.addToCart(observer)
+        viewModel.addToCartForCheckout(observer)
 
         //then
-        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT)
+        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_TO_CHECKOUT)
     }
 
     @Test
@@ -80,10 +80,10 @@ class AddToCartTest {
         val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
 
         //when
-        viewModel.addToCart(observer)
+        viewModel.addToCartForCheckout(observer)
 
         //then
-        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT)
+        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_TO_CHECKOUT)
     }
 
     @Test
@@ -102,10 +102,10 @@ class AddToCartTest {
         val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
 
         //when
-        viewModel.addToCart(observer)
+        viewModel.addToCartForCheckout(observer)
 
         //then
-        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_ADD_TO_CART_FOR_CHECKOUT)
+        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_TO_CHECKOUT)
     }
 
     @Test
@@ -122,7 +122,7 @@ class AddToCartTest {
         val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
 
         //when
-        viewModel.addToCart(observer)
+        viewModel.addToCartForCheckout(observer)
 
         //then
         val data = viewModel.globalEvent.value?.data as? AddToCartOccMultiDataModel
