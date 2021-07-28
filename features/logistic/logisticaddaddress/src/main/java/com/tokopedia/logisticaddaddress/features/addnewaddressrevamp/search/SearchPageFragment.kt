@@ -20,7 +20,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ApiException
@@ -32,7 +31,6 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
@@ -95,7 +93,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchAddressBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -233,7 +231,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    binding.tvMessageSearch.text = "Tidak ketemu? Isi alamat secara manual"
+                    binding.tvMessageSearch.text = getString(R.string.txt_message_ana_negative)
                     if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
                         hideListLocation()
                     } else {
@@ -348,7 +346,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                                 // Show the dialog by calling startResolutionForResult(), and check the
                                 // result in onActivityResult().
                                 val rae = e as ResolvableApiException
-                                rae.startResolutionForResult(context, AddressConstants.GPS_REQUEST)
+                                rae.startResolutionForResult(context, GPS_REQUEST)
                             } catch (sie: IntentSender.SendIntentException) {
                                 sie.printStackTrace()
                             }
@@ -364,7 +362,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun initObserver() {
-        viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
+        viewModel.autoCompleteList.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     loadListLocation(it.data)
@@ -415,7 +413,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
-                    goToPinpointPage(null, data.latitude, data.longitude, false, true)
+                    currentLat = data.latitude
+                    currentLong = data.longitude
+                    goToPinpointPage(null, data.latitude, data.longitude,
+                        isFromAddressForm = false,
+                        isPositiveFlow = true
+                    )
                 } else {
                     fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
                         createLocationCallback(), null)
@@ -437,7 +440,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
-    fun createLocationCallback(): LocationCallback {
+    private fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
@@ -451,8 +454,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onItemClicked(placeId: String) {
         AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-        if (!isPositiveFlow && isFromPinpoint) goToPinpointPage(placeId, null, null, true, false)
-        else goToPinpointPage(placeId, null, null, false, true)
+        if (!isPositiveFlow && isFromPinpoint) goToPinpointPage(placeId, null, null,
+            isFromAddressForm = true,
+            isPositiveFlow = false
+        )
+        else goToPinpointPage(placeId, null, null, isFromAddressForm = false, isPositiveFlow = true)
     }
 
     private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean, isPositiveFlow: Boolean) {
