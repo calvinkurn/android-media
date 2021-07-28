@@ -46,6 +46,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -74,6 +75,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.Recommendati
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CustomStaggeredGridLayoutManager
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -783,14 +785,45 @@ abstract class BaseSearchCategoryFragment:
     override fun onImpressedRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
     ) {
-
+        trackingQueue?.putEETracking(
+            ProductRecommendationTracking.getImpressionProductTracking(
+                recommendationItem = recomItem,
+                androidPageName = getSearchAndroidPageName(),
+                headerTitle = data.recommendationData.title,
+                position = itemPosition,
+                isLoggedIn = userSession.isLoggedIn,
+                isTokonow = true,
+                listPage = getSearchListPage(),
+                pageId = getPageId(),
+                userId = userSession.userId,
+                eventLabel = getEventLabel()
+            )
+        )
     }
 
     override fun onClickRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
     ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
+            ProductRecommendationTracking.getClickProductTracking(
+                recommendationItem = recomItem,
+                androidPageName = getSearchAndroidPageName(),
+                headerTitle = data.recommendationData.title,
+                position = itemPosition,
+                isLoggedIn = userSession.isLoggedIn,
+                isTokonow = true,
+                listPage = getSearchListPage(),
+                pageId = getPageId(),
+                userId = userSession.userId,
+                eventLabel = getEventLabel()
+            )
+        )
         RouteManager.route(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -814,4 +847,9 @@ abstract class BaseSearchCategoryFragment:
 
         openATCVariantBottomSheet(productId, shopId)
     }
+
+    abstract fun getSearchListPage(): String
+    abstract fun getSearchAndroidPageName(): String
+    abstract fun getPageId(): String
+    abstract fun getEventLabel(): String
 }

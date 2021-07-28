@@ -7,88 +7,137 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object ProductRecommendationTracking: BaseTrackerConst() {
+    const val SELECT_CONTENT = "select_content"
+    const val PRODUCT_CLICK = Event.PRODUCT_CLICK
+    const val EVENT_ATC = "addToCart"
+
     const val VALUE_IS_TOPADS = "- product topads"
     const val VALUE_NON_LOGIN = " - non login"
+    const val VALUE_ID = " %s"
+
     const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION = "impression - product recommendation%s"
     const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation%s"
     const val EVENT_ACTION_CLICK_SEE_MORE_COMPARISON = "click - see more comparison%s"
+    const val EVENT_ACTION_IMPRESSION_PRODUCT_TOKONOW = "impression product on tokonow%s product recommendation"
+    const val EVENT_ACTION_CLICK_PRODUCT_TOKONOW = "click product on tokonow%s product recommendation"
+    const val EVENT_ACTION_ATC_CLICK_PRODUCT_TOKONOW = "click add to cart on tokonow%s product recommendation"
+
     const val EVENT_LABEL_PRODUCT = "%s - %s"
+
     const val EVENT_LIST_PRODUCT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
-    const val SELECT_CONTENT = "select_content"
-    const val PRODUCT_CLICK = Event.PRODUCT_CLICK
+    const val EVENT_TOKONOW_LIST_PRODUCT = "/%s - tokonow - rekomendasi untuk anda - %s"
+
+    const val EVENT_CATEGORY_TOKONOW = "tokonow %s"
 
     fun getImpressionProductTracking(
-            recommendationItems: List<RecommendationItem>,
+            recommendationItem: RecommendationItem,
             androidPageName: String,
             headerTitle: String,
             chipsTitle: String = "",
-            recomPageName: String,
-            recommendationType: String,
-            isTopads: Boolean,
-            widgetType: String,
-            productId: String = "",
             position: Int,
             isLoggedIn: Boolean,
-            anchorProductId: String = ""
+            anchorProductId: String = "",
+            isTokonow: Boolean = false,
+            listPage: String = "",
+            pageId: String = "",
+            eventLabel: String? = null,
+            userId: String = ""
     ): HashMap<String, Any> {
         val trackingBuilder =
                 BaseTrackerBuilder()
                         .constructBasicProductView(
                                 event = Event.PRODUCT_VIEW,
-                                eventCategory = androidPageName,
-                                eventAction = String.format(
-                                        EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
-                                        if (isLoggedIn) "" else VALUE_NON_LOGIN
+                                eventCategory = if (isTokonow) String.format(
+                                    EVENT_CATEGORY_TOKONOW, androidPageName
+                                ) else androidPageName,
+                                eventAction = if (isTokonow) String.format(
+                                    EVENT_ACTION_IMPRESSION_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
+                                ) else String.format(
+                                    EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
+                                    if (isLoggedIn) "" else VALUE_NON_LOGIN
                                 ),
-                                eventLabel = String.format(
+                                eventLabel = eventLabel
+                                    ?: String.format(
                                         EVENT_LABEL_PRODUCT,
                                         headerTitle,
                                         chipsTitle
-                                ),
-                                list = buildRecommendationList(recomPageName, recommendationType, isTopads, widgetType, anchorProductId),
-                                products = recommendationItems.map {
-                                    mapRecommendationItemToProductTracking(it, position)
-                                }
+                                    ),
+                                list = if (isTokonow)
+                                    buildTokonowRecommendationList(
+                                        pageList = listPage,
+                                        pageRecommendationType = recommendationItem.recommendationType
+                                    )
+                                else
+                                    buildRecommendationList(
+                                        recomPageName = recommendationItem.pageName,
+                                        recommendationType = recommendationItem.recommendationType,
+                                        isTopads = recommendationItem.isTopAds,
+                                        widgetType = recommendationItem.type,
+                                        anchorProductId = anchorProductId
+                                    ),
+                                products = listOf(
+                                    mapRecommendationItemToProductTracking(recommendationItem, position)
+                                )
                         )
                         .appendBusinessUnit(BusinessUnit.DEFAULT)
                         .appendCurrentSite(CurrentSite.DEFAULT)
+                        .appendUserId(userId)
         return trackingBuilder.build() as HashMap<String, Any>
     }
 
     fun getClickProductTracking(
-            recommendationItems: List<RecommendationItem>,
+            recommendationItem: RecommendationItem,
             androidPageName: String,
             headerTitle: String,
-            chipsTitle: String,
-            recomPageName: String,
-            recommendationType: String,
-            isTopads: Boolean,
-            widgetType: String,
+            chipsTitle: String = "",
             position: Int,
             isLoggedIn: Boolean,
-            anchorProductId: String
+            anchorProductId: String = "",
+            isTokonow: Boolean = false,
+            listPage: String = "",
+            pageId: String = "",
+            eventLabel: String? = null,
+            userId: String = ""
     ): Bundle {
         val trackingBuilder =
                 BaseTrackerBuilder()
                         .constructBasicProductClickBundle(
                                 event = SELECT_CONTENT,
-                                eventCategory = androidPageName,
-                                eventAction = String.format(
-                                        EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                                        if (isLoggedIn) "" else VALUE_NON_LOGIN
+                                eventCategory = if (isTokonow) String.format(
+                                    EVENT_CATEGORY_TOKONOW, androidPageName
+                                ) else androidPageName,
+                                eventAction = if (isTokonow) String.format(
+                                    EVENT_ACTION_CLICK_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
+                                ) else String.format(
+                                    EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                                    if (isLoggedIn) "" else VALUE_NON_LOGIN
                                 ),
-                                eventLabel = String.format(
+                                eventLabel = eventLabel
+                                    ?: String.format(
                                         EVENT_LABEL_PRODUCT,
                                         headerTitle,
                                         chipsTitle
-                                ),
-                                list = buildRecommendationList(recomPageName, recommendationType, isTopads, widgetType, anchorProductId),
-                                products = recommendationItems.map {
-                                    mapRecommendationItemToProductTracking(it, position)
-                                }
+                                    ),
+                                list = if (isTokonow)
+                                    buildTokonowRecommendationList(
+                                        pageList = listPage,
+                                        pageRecommendationType = recommendationItem.recommendationType
+                                    )
+                                else
+                                    buildRecommendationList(
+                                        recomPageName = recommendationItem.pageName,
+                                        recommendationType = recommendationItem.recommendationType,
+                                        isTopads = recommendationItem.isTopAds,
+                                        widgetType = recommendationItem.type,
+                                        anchorProductId = anchorProductId
+                                    ),
+                                products = listOf(
+                                    mapRecommendationItemToProductTracking(recommendationItem, position)
+                                )
                         )
                         .appendBusinessUnitBundle(BusinessUnit.DEFAULT)
                         .appendCurrentSiteBundle(CurrentSite.DEFAULT)
+                        .appendUserId(userId)
         return trackingBuilder.buildBundle()
     }
 
@@ -120,6 +169,59 @@ object ProductRecommendationTracking: BaseTrackerConst() {
         return trackerBuilder.build() as HashMap<String, Any>
     }
 
+    fun getAddToCartClickProductTracking(
+        recommendationItem: RecommendationItem,
+        androidPageName: String,
+        headerTitle: String,
+        chipsTitle: String = "",
+        position: Int,
+        isLoggedIn: Boolean,
+        anchorProductId: String = "",
+        isTokonow: Boolean = false,
+        listPage: String = "",
+        pageId: String = "",
+        eventLabel: String? = null,
+        userId: String = ""
+    ): Bundle {
+        val trackingBuilder =
+            BaseTrackerBuilder()
+                .constructBasicProductClickBundle(
+                    event = EVENT_ATC,
+                    eventCategory = if (isTokonow) String.format(
+                        EVENT_CATEGORY_TOKONOW, androidPageName
+                    ) else androidPageName,
+                    eventAction = if (isTokonow) String.format(
+                        EVENT_ACTION_ATC_CLICK_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
+                    ) else "",
+                    eventLabel = eventLabel
+                        ?: String.format(
+                            EVENT_LABEL_PRODUCT,
+                            headerTitle,
+                            chipsTitle
+                        ),
+                    list = if (isTokonow)
+                        buildTokonowRecommendationList(
+                            pageList = listPage,
+                            pageRecommendationType = recommendationItem.recommendationType
+                        )
+                    else
+                        buildRecommendationList(
+                            recomPageName = recommendationItem.pageName,
+                            recommendationType = recommendationItem.recommendationType,
+                            isTopads = recommendationItem.isTopAds,
+                            widgetType = recommendationItem.type,
+                            anchorProductId = anchorProductId
+                        ),
+                    products = listOf(
+                        mapRecommendationItemToProductTracking(recommendationItem, position)
+                    )
+                )
+                .appendBusinessUnitBundle(BusinessUnit.DEFAULT)
+                .appendCurrentSiteBundle(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+        return trackingBuilder.buildBundle()
+    }
+
     private fun buildRecommendationList(recomPageName: String, recommendationType: String, isTopads: Boolean, widgetType: String, anchorProductId: String): String {
         return String.format(
                 EVENT_LIST_PRODUCT,
@@ -128,6 +230,17 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                 if (isTopads) VALUE_IS_TOPADS else "",
                 widgetType,
                 anchorProductId
+        )
+    }
+
+    private fun buildTokonowRecommendationList(
+        pageList: String,
+        pageRecommendationType: String
+    ): String {
+        return String.format(
+            EVENT_TOKONOW_LIST_PRODUCT,
+            pageList,
+            pageRecommendationType
         )
     }
 
@@ -145,7 +258,9 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                 headerName = it.header,
                 recommendationType = it.recommendationType,
                 shopId = it.shopId.toString(),
-                pageName = it.pageName
+                pageName = it.pageName,
+                shopName = it.shopName,
+                shopType = it.shopType
         )
     }
 }

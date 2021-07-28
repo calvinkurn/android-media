@@ -37,7 +37,8 @@ class TokoNowSearchFragment:
         CTATokoNowHomeListener {
 
     companion object {
-
+        private const val PAGE_NAME_SEARCH = "empty search result"
+        private const val LIST_PAGE = "searchproduct"
         @JvmStatic
         fun create(): TokoNowSearchFragment {
             return TokoNowSearchFragment()
@@ -270,5 +271,21 @@ class TokoNowSearchFragment:
     override fun onCTAToTokopediaNowHomeClick() {
         SearchTracking.sendClickCTAToHome()
         goToTokopediaNowHome()
+    }
+
+    override fun getSearchListPage(): String {
+        return LIST_PAGE
+    }
+
+    override fun getSearchAndroidPageName(): String {
+        return PAGE_NAME_SEARCH
+    }
+
+    override fun getPageId(): String {
+        return ""
+    }
+
+    override fun getEventLabel(): String {
+        return getViewModel().query
     }
 }

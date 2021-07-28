@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
+import com.tokopedia.tokopedianow.search.presentation.view.TokoNowSearchFragment
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
@@ -25,7 +26,9 @@ import javax.inject.Inject
 class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
     companion object {
-
+        private const val PAGE_NAME_CATEGORY = "category page"
+        private const val LIST_PAGE = "clp_product"
+        private const val PAGE_ID = "clp"
         @JvmStatic
         fun create(): TokoNowCategoryFragment {
             return TokoNowCategoryFragment()
@@ -206,5 +209,21 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
 
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         CategoryTracking.sendDecreaseQtyEvent(getViewModel().categoryL1)
+    }
+
+    override fun getSearchListPage(): String {
+        return LIST_PAGE
+    }
+
+    override fun getSearchAndroidPageName(): String {
+        return PAGE_NAME_CATEGORY
+    }
+
+    override fun getPageId(): String {
+        return PAGE_ID
+    }
+
+    override fun getEventLabel(): String {
+        return getViewModel().categoryIdTracking
     }
 }

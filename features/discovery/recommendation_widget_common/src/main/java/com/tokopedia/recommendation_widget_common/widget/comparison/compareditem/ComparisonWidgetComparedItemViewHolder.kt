@@ -49,18 +49,12 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
                 }
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
                     ProductRecommendationTracking.getClickProductTracking(
-                        recommendationItems = listOf(
-                            comparisonModel.recommendationItem
-                        ),
+                        recommendationItem = comparisonModel.recommendationItem,
                         androidPageName = recommendationTrackingModel.androidPageName,
                         headerTitle = recommendationTrackingModel.headerTitle,
                         chipsTitle = comparisonModel.productCardModel.productName,
-                        recomPageName = comparisonModel.recommendationItem.pageName,
-                        isTopads = comparisonModel.recommendationItem.isTopAds,
-                        widgetType = comparisonModel.recommendationItem.type,
                         position = (adapterPosition+1),
                         isLoggedIn = userSession.isLoggedIn,
-                        recommendationType = comparisonModel.recommendationItem.recommendationType,
                         anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                     )
                 )
@@ -80,18 +74,11 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
             }
             trackingQueue?.putEETracking(
                 ProductRecommendationTracking.getImpressionProductTracking(
-                    recommendationItems = listOf(
-                        comparisonModel.recommendationItem
-                    ),
+                    recommendationItem = comparisonModel.recommendationItem,
                     androidPageName = recommendationTrackingModel.androidPageName,
                     headerTitle = recommendationTrackingModel.headerTitle,
-                    recomPageName = comparisonModel.recommendationItem.pageName,
-                    isTopads = comparisonModel.recommendationItem.isTopAds,
-                    widgetType = comparisonModel.recommendationItem.type,
-                    productId = comparisonModel.recommendationItem.productId.toString(),
                     position = (adapterPosition+1),
                     isLoggedIn = userSession.isLoggedIn,
-                    recommendationType = comparisonModel.recommendationItem.recommendationType,
                     anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
                 )
             )
