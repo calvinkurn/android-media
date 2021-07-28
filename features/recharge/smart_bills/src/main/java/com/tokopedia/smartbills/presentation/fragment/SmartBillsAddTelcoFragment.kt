@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +23,6 @@ import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
-import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsNominalBottomSheet
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -44,6 +44,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private var categoryId: String? = null
     private var menuId: String? = null
     private var validationsPhoneNumber: List<RechargeValidation> = emptyList()
+    private var operatorActive: TelcoOperator = TelcoOperator()
 
     override fun getScreenName(): String = ""
 
@@ -132,6 +133,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun observeSelectedPrefix(){
         observe(viewModel.selectedOperator){
+            operatorActive = it.operator
             renderIconOperator(it.operator.attributes.imageUrl)
         }
     }
@@ -205,7 +207,13 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN -> {
-                            SmartBillsNominalBottomSheet.newInstance(2, 5, "12", "085327499272").show(childFragmentManager)
+                            if (getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
+                                    && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
+                                    && !operatorActive.id.isNullOrEmpty()
+                                    && !menuId.isNullOrEmpty()
+                            ) {
+                                SmartBillsNominalBottomSheet.newInstance(menuId.toIntOrZero(), categoryId.orEmpty(), operatorActive.id, getNumber()).show(childFragmentManager)
+                            } else validationNumber()
                         }
                     }
                     return v?.onTouchEvent(event) ?: true

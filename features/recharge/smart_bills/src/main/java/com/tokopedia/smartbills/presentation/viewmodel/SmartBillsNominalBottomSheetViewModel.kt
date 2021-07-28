@@ -4,16 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TopupBillsTicker
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.smartbills.data.RechargeCatalogProductInput
 import com.tokopedia.smartbills.data.RechargeCatalogProductInputMultiTabData
+import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,6 +50,14 @@ class SmartBillsNominalBottomSheetViewModel @Inject constructor(
                 PARAM_OPERATOR to operator,
                 PARAM_CLIENT_NUMBER to clientNumber
         )
+    }
+
+    fun getProductByCategoryId(listProductAll: List<RechargeCatalogProductInput>, categoryId: String): List<RechargeProduct>? {
+        val product = listProductAll.single {
+            it.id == categoryId
+        }
+
+        return product.product.dataCollections.firstOrNull()?.products
     }
 
     companion object{

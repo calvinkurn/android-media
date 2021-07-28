@@ -16,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
-import com.tokopedia.smartbills.data.RechargeAttributesProduct
 import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.di.DaggerSmartBillsComponent
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsNominalAdapter
@@ -33,16 +32,16 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
         private val TAG = SmartBillsNominalBottomSheet::class.simpleName
 
         private const val PARAM_MENU_ID = "menu_id"
-        private const val PARAM_PLATFORM_ID = "platform_id"
+        private const val PARAM_CATEGORY_ID = "category_id"
         private const val PARAM_OPERATOR_ID = "operator_id"
         private const val PARAM_CLIENT_NUMBER = "client_number"
 
-        fun newInstance(menuId: Int, platformId:Int, opeartorId: String, clientNumber: String):
+        fun newInstance(menuId: Int, categoryId:String, opeartorId: String, clientNumber: String):
                 SmartBillsNominalBottomSheet {
             return SmartBillsNominalBottomSheet().apply {
                 arguments = Bundle().apply {
                     putInt(PARAM_MENU_ID, menuId)
-                    putInt(PARAM_PLATFORM_ID, platformId)
+                    putString(PARAM_CATEGORY_ID, categoryId)
                     putString(PARAM_OPERATOR_ID, opeartorId)
                     putString(PARAM_CLIENT_NUMBER, clientNumber)
                 }
@@ -55,6 +54,7 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
 
     private var menuId: Int = 0
     private var platformId: Int = 5
+    private var categoryId: String = ""
     private var operator: String = ""
     private var clientNumber: String = ""
 
@@ -64,7 +64,7 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView(inflater, container)
         menuId = arguments?.getInt(PARAM_MENU_ID).orZero()
-        platformId = arguments?.getInt(PARAM_PLATFORM_ID).orZero()
+        categoryId = arguments?.getString(PARAM_CATEGORY_ID).orEmpty()
         operator = arguments?.getString(PARAM_OPERATOR_ID).orEmpty()
         clientNumber = arguments?.getString(PARAM_CLIENT_NUMBER).orEmpty()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -117,7 +117,7 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
         observe(viewModel.catalogProduct){
             when(it){
                 is Success -> {
-                    showNominalCatalogList(it.data.multitabData.productInputs[0].product.dataCollections[0].products)
+                    showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, categoryId))
                 }
 
                 is Fail -> {
@@ -127,14 +127,16 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun showNominalCatalogList(listProduct: List<RechargeProduct>){
-        hideLoader()
-        val adapterNominal = SmartBillsNominalAdapter()
-        adapterNominal.listRechargeProduct = listProduct
-        recyclerView?.let {
-            it.adapter = adapterNominal
-            it.layoutManager = LinearLayoutManager(context)
-            it.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+    private fun showNominalCatalogList(listProduct: List<RechargeProduct>?){
+        listProduct?.let {
+            hideLoader()
+            val adapterNominal = SmartBillsNominalAdapter()
+            adapterNominal.listRechargeProduct = listProduct
+            recyclerView?.let {
+                it.adapter = adapterNominal
+                it.layoutManager = LinearLayoutManager(context)
+                it.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            }
         }
     }
 

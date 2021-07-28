@@ -16,6 +16,9 @@ data class RechargeCatalogProductInputMultiTab(
 )
 
 data class RechargeCatalogProductInput(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
         @SerializedName("label")
         @Expose
         val label: String = "",

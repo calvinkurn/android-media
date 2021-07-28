@@ -2,8 +2,8 @@ package com.tokopedia.smartbills.data
 
 
 enum class CategoryTelcoType(val categoryId: String, val categoryValue: String) {
-    PULSA("1", "Pulsa"),
-    PAKET_DATA("2", "Paket Data");
+    PULSA("2", "Pulsa"),
+    PAKET_DATA("3", "Paket Data");
 
     companion object {
         @JvmStatic

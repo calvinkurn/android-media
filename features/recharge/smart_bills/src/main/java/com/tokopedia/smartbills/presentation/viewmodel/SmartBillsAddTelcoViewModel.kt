@@ -69,8 +69,8 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     }
 
     fun getSelectedOperator(inputNumber: String){
-        if (inputNumber.isEmpty() || inputNumber.length <= NUMBER_MIN_VALUE
-                || inputNumber.length > NUMBER_MAX_VALUE) return
+        if (inputNumber.isEmpty() || inputNumber.length <= NUMBER_MIN_CHECK_VALUE
+                || inputNumber.length > NUMBER_MAX_CHECK_VALUE) return
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
@@ -93,8 +93,9 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_CATEGORY_ID = "categoryID"
 
-        const val NUMBER_MAX_VALUE = 16
-        const val NUMBER_MIN_VALUE = 4
+        const val NUMBER_MAX_CHECK_VALUE = 14
+        const val NUMBER_MIN_CHECK_VALUE = 4
+        const val NUMBER_MIN_VALUE = 10
     }
 
 }

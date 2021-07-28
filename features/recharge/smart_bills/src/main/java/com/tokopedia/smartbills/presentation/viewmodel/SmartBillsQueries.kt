@@ -35,6 +35,7 @@ object SmartBillsQueries {
         """query rechargeCatalog(${'$'}menuID: Int!, ${'$'}platformID: Int!, ${'$'}operator: String!, ${'$'}clientNumber: String!){
             rechargeCatalogProductInputMultiTab(menuID: ${'$'}menuID, platformID: ${'$'}platformID, operator: ${'$'}operator, clientNumber: [${'$'}clientNumber]) {
             productInputs {
+                id
                 label
                 needEnquiry
                 isShowingProduct
