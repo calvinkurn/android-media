@@ -62,7 +62,9 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(path)
-                    screenShotListener.screenShotTaken()
+                    Handler().postDelayed({
+                        screenShotListener.screenShotTaken()
+                    }, 500)
                 }
             }
         }
@@ -93,7 +95,9 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-                    screenShotListener.screenShotTaken()
+                    Handler().postDelayed({
+                        screenShotListener.screenShotTaken()
+                    }, 500)
                 }
             }
         }

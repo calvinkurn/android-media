@@ -354,6 +354,7 @@ class NewShopPageFragment :
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
+        UniversalShareBottomSheet.clearState()
         super.onDestroy()
     }
 
@@ -858,10 +859,6 @@ class NewShopPageFragment :
         context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
-    override fun onStop() {
-        UniversalShareBottomSheet.clearState()
-        super.onStop()
-    }
 
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
