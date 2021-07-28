@@ -64,7 +64,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     UniversalShareBottomSheet.setScreenShotImagePath(path)
                     Handler().postDelayed({
                         screenShotListener.screenShotTaken()
-                    }, 500)
+                    }, 1000)
                 }
             }
         }
@@ -97,7 +97,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
                     Handler().postDelayed({
                         screenShotListener.screenShotTaken()
-                    }, 500)
+                    }, 1000)
                 }
             }
         }
