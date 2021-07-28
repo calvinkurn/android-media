@@ -138,7 +138,7 @@ class SearchCategoryJumperViewHolder(
 
         fun bind(item: CategoryJumperDataView.Item) {
             chips?.chipText = item.title
-            chips?.chipType = ChipsUnify.TYPE_NORMAL
+            chips?.chipType = ChipsUnify.TYPE_ALTERNATE
             chips?.chipSize = ChipsUnify.SIZE_SMALL
             chips?.setOnClickListener {
                 categoryJumperListener.onCategoryJumperItemClick(item)
