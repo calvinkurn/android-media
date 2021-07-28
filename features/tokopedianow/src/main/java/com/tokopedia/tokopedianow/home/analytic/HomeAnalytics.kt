@@ -261,8 +261,8 @@ class HomeAnalytics {
             putString(KEY_DIMENSION_45, cartId)
             putString(KEY_QUANTITY, quantity)
             putString(KEY_SHOP_ID, recommendationItem.shopId.toString())
-            putString(KEY_SHOP_NAME, "")
-            putString(KEY_SHOP_TYPE, "")
+            putString(KEY_SHOP_NAME, recommendationItem.shopName)
+            putString(KEY_SHOP_TYPE, recommendationItem.type)
             putString(KEY_CATEGORY_ID, "")
         }
 
