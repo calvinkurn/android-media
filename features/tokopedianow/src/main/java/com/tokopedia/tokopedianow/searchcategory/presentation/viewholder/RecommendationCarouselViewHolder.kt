@@ -75,9 +75,13 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
             quantity: Int,
     ) {
+        val recommendationCarouselPosition = this.adapterPosition
+
         recommendationCarouselListener.onATCNonVariantRecommendationCarouselItem(
-                data,
-                recomItem,
+                data = data,
+                recomItem = recomItem,
+                recommendationCarouselPosition = recommendationCarouselPosition,
+                quantity = quantity,
         )
     }
 

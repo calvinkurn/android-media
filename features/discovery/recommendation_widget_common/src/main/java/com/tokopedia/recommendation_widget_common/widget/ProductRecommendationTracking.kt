@@ -181,8 +181,12 @@ object ProductRecommendationTracking: BaseTrackerConst() {
         listPage: String = "",
         pageId: String = "",
         eventLabel: String? = null,
-        userId: String = ""
+        userId: String = "",
+        quantity: Int = 0,
+        cartId: String = ""
     ): Bundle {
+        recommendationItem.quantity = quantity
+        recommendationItem.cartId = cartId
         val trackingBuilder =
             BaseTrackerBuilder()
                 .constructBasicProductClickBundle(
@@ -260,7 +264,9 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                 shopId = it.shopId.toString(),
                 pageName = it.pageName,
                 shopName = it.shopName,
-                shopType = it.shopType
+                shopType = it.shopType,
+                quantity = it.quantity.toString(),
+                cartId = it.cartId
         )
     }
 }

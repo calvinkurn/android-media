@@ -73,7 +73,7 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
 
     @Test
     fun `delete cart success`() {
-        addToCartTestHelper.`test delete cart success`()
+        addToCartTestHelper.`delete cart success`()
     }
 
     @Test
@@ -114,5 +114,15 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
     @Test
     fun `add to cart recom item to update quantity failed`() {
         addToCartTestHelper.`add to cart recom item to update quantity failed`()
+    }
+
+    @Test
+    fun `delete cart recom item success`() {
+        addToCartTestHelper.`delete cart recom item success`()
+    }
+
+    @Test
+    fun `delete cart recom item failed`() {
+        addToCartTestHelper.`delete cart recom item failed`()
     }
 }

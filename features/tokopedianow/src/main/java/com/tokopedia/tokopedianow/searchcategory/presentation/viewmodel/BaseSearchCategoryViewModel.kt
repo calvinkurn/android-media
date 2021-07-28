@@ -8,8 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -190,6 +193,11 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val deleteCartTrackingMutableLiveData = SingleLiveEvent<String>()
     val deleteCartTrackingLiveData: LiveData<String> = deleteCartTrackingMutableLiveData
+
+    protected val addToCartRecommendationTrackingMutableLiveData =
+            SingleLiveEvent<Triple<Int, String, RecommendationItem>>()
+    val addToCartRecommendationItemTrackingLiveData: LiveData<Triple<Int, String, RecommendationItem>> =
+            addToCartRecommendationTrackingMutableLiveData
 
     init {
         updateQueryParams()
@@ -916,27 +924,42 @@ abstract class BaseSearchCategoryViewModel(
         if (nonVariantATC.quantity == quantity) return
 
         when {
-            nonVariantATC.quantity == 0 -> addToCart(productItem, quantity)
-            quantity == 0 -> deleteCart(productItem, quantity)
-            else -> updateCart(productItem, quantity)
+            nonVariantATC.quantity == 0 -> addToCartProductItem(productItem, quantity)
+            quantity == 0 -> deleteCartProductItem(productItem)
+            else -> updateCartProductItem(productItem, quantity)
         }
     }
 
-    private fun addToCart(productItem: ProductItemDataView, quantity: Int) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+    private fun addToCartProductItem(productItem: ProductItemDataView, quantity: Int) {
+        addToCart(
                 productId = productItem.id,
                 shopId = productItem.shop.id,
                 quantity = quantity,
+                onSuccess = {
+                    sendAddToCartTracking(quantity, it.data.cartId, productItem)
+                    onAddToCartSuccess(productItem, it.data.quantity)
+                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                },
+                onError = {
+                    onAddToCartFailed(it)
+                }
         )
+    }
 
+    private fun addToCart(
+            productId: String,
+            shopId: String,
+            quantity: Int,
+            onSuccess: (AddToCartDataModel) -> Unit,
+            onError: (Throwable) -> Unit,
+    ) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+                productId = productId,
+                shopId = shopId,
+                quantity = quantity,
+        )
         addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            sendAddToCartTracking(quantity, it.data.cartId, productItem)
-            onAddToCartSuccess(productItem, it.data.quantity)
-            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-        }, {
-            onAddToCartFailed(it)
-        })
+        addToCartUseCase.execute(onSuccess, onError)
     }
 
     private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
@@ -963,30 +986,38 @@ abstract class BaseSearchCategoryViewModel(
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
-    private fun setMiniCartItemQuantity(miniCartItem: MiniCartItem, quantity: Int): MiniCartItem {
-        miniCartItem.quantity = quantity
-        return miniCartItem
+    private fun updateCartProductItem(productItem: ProductItemDataView, quantity: Int) {
+        updateCart(
+                productId = productItem.id,
+                quantity = quantity,
+                onSuccess = {
+                    sendTrackingUpdateQuantity(quantity, productItem)
+                    onAddToCartSuccess(productItem, quantity)
+                },
+                onError = {
+                    onAddToCartFailed(it)
+                }
+        )
     }
 
-    private fun updateCart(productItem: ProductItemDataView, quantity: Int) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id } ?: return
-        setMiniCartItemQuantity(miniCartItem, quantity)
+    private fun updateCart(
+            productId: String,
+            quantity: Int,
+            onSuccess: (UpdateCartV2Data) -> Unit,
+            onError: (Throwable) -> Unit,
+    ) {
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
 
         val updateCartRequest = UpdateCartRequest(
                 cartId = miniCartItem.cartId,
-                quantity = miniCartItem.quantity,
+                quantity = quantity,
                 notes = miniCartItem.notes
         )
         updateCartUseCase.setParams(
                 updateCartRequestList = listOf(updateCartRequest),
                 source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
-        updateCartUseCase.execute({
-            sendTrackingUpdateQuantity(quantity, productItem)
-            onAddToCartSuccess(productItem, quantity)
-        }, {
-            onAddToCartFailed(it)
-        })
+        updateCartUseCase.execute(onSuccess, onError)
     }
 
     private fun sendTrackingUpdateQuantity(newQuantity: Int, productItem: ProductItemDataView) {
@@ -998,18 +1029,27 @@ abstract class BaseSearchCategoryViewModel(
             increaseQtyTrackingMutableLiveData.value = productItem.id
     }
 
-    private fun deleteCart(productItem: ProductItemDataView, quantity: Int) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id } ?: return
-        setMiniCartItemQuantity(miniCartItem, quantity)
+    private fun deleteCartProductItem(productItem: ProductItemDataView) {
+        deleteCart(
+                productId = productItem.id,
+                onSuccess = {
+                    sendDeleteCartTracking(productItem)
+                    onAddToCartSuccess(productItem, 0)
+                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                },
+                onError = ::onAddToCartFailed,
+        )
+    }
+
+    private fun deleteCart(
+            productId: String,
+            onSuccess: (RemoveFromCartData) -> Unit,
+            onError: (Throwable) -> Unit,
+    ) {
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId } ?: return
 
         deleteCartUseCase.setParams(listOf(miniCartItem.cartId))
-        deleteCartUseCase.execute({
-            sendDeleteCartTracking(productItem)
-            onAddToCartSuccess(productItem, quantity)
-            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-        }, {
-            onAddToCartFailed(it)
-        })
+        deleteCartUseCase.execute(onSuccess, onError)
     }
 
     private fun sendDeleteCartTracking(productItem: ProductItemDataView) {
@@ -1143,11 +1183,13 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         if (recommendationItem.quantity == quantity) return
 
-        if (recommendationItem.quantity == 0) {
-            addToCartRecommendationItem(recommendationItem, quantity)
-        }
-        else {
-            updateCartRecommendationItem(recommendationItem, quantity)
+        when {
+            recommendationItem.quantity == 0 ->
+                addToCartRecommendationItem(recommendationItem, quantity)
+            quantity == 0 ->
+                deleteCartRecommendationItem(recommendationItem)
+            else ->
+                updateCartRecommendationItem(recommendationItem, quantity)
         }
     }
 
@@ -1155,46 +1197,51 @@ abstract class BaseSearchCategoryViewModel(
             recommendationItem: RecommendationItem,
             quantity: Int,
     ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+        addToCart(
                 productId = recommendationItem.productId.toString(),
                 shopId = recommendationItem.shopId.toString(),
                 quantity = quantity,
+                onSuccess = {
+                    recommendationItem.quantity = quantity
+                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    addToCartRecommendationTrackingMutableLiveData.value = Triple(
+                            quantity,
+                            it.data.cartId,
+                            recommendationItem,
+                    )
+                    refreshMiniCart()
+                },
+                onError = {
+                    onAddToCartFailed(it)
+                },
         )
-
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            recommendationItem.quantity = quantity
-            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-            refreshMiniCart()
-        }, {
-            onAddToCartFailed(it)
-        })
     }
 
-    private fun updateCartRecommendationItem(
-            recommendationItem: RecommendationItem,
-            quantity: Int,
-    ) {
-        val productId = recommendationItem.productId.toString()
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productId }
-                ?: return
-        setMiniCartItemQuantity(miniCartItem, quantity)
+    private fun deleteCartRecommendationItem(recommendationItem: RecommendationItem) {
+        deleteCart(
+                productId = recommendationItem.productId.toString(),
+                onSuccess = {
+                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                    refreshMiniCart()
+                },
+                onError = {
+                    onAddToCartFailed(it)
+                }
+        )
+    }
 
-        val updateCartRequest = UpdateCartRequest(
-                cartId = miniCartItem.cartId,
-                quantity = miniCartItem.quantity,
-                notes = miniCartItem.notes
+    private fun updateCartRecommendationItem(recommendationItem: RecommendationItem, quantity: Int) {
+        updateCart(
+                productId = recommendationItem.productId.toString(),
+                quantity = quantity,
+                onSuccess = {
+                    recommendationItem.quantity = quantity
+                    refreshMiniCart()
+                },
+                onError = {
+                    onAddToCartFailed(it)
+                },
         )
-        updateCartUseCase.setParams(
-                updateCartRequestList = listOf(updateCartRequest),
-                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
-        )
-        updateCartUseCase.execute({
-            recommendationItem.quantity = quantity
-            refreshMiniCart()
-        }, {
-            onAddToCartFailed(it)
-        })
     }
 
     protected class HeaderDataView(

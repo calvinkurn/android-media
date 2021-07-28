@@ -24,7 +24,10 @@ import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.C
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartSuccessModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.cartId
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.errorMessage
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.DeleteCartTestObject.deleteCartMessage
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.DeleteCartTestObject.deleteCartResponse
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.RecommendationATCTestObject.recommendationWidgetList
+import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.UpdateCartTestObject.successUpdateCartResponse
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -230,14 +233,13 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `add to cart to decrease quantity success`() {
-        val updateCartSuccessMessage = "Success nih"
-        `Given view setup to update quantity`(updateCartSuccessMessage)
-
-        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
         val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
-
         val productUpdatedQuantity = productInMiniCart.quantity - 3
+
+        `Given view setup to update quantity`(productIdToATC, productUpdatedQuantity)
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
         `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
@@ -250,16 +252,30 @@ class AddToCartNonVariantTestHelper(
         `Then verify decrease cart quantity tracking is called`(productIdToATC)
     }
 
-    private fun `Given view setup to update quantity`(updateCartSuccessMessage: String) {
-        val successUpdateCartResponse = UpdateCartV2Data(
-                data = Data(status = true, message = updateCartSuccessMessage)
-        )
-
+    private fun `Given view setup to update quantity`(
+            productId: String,
+            updatedQuantity: Int,
+    ) {
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given update cart use case will be successful`(successUpdateCartResponse)
         `Given view already created`()
         `Given view resumed to update mini cart`()
+
+        val updatedMiniCartData = miniCartSimplifiedData
+        updateMiniCartData(updatedMiniCartData, productId, updatedQuantity)
+        `Given get mini cart simplified use case will be successful`(updatedMiniCartData)
+    }
+
+    private fun updateMiniCartData(
+            updatedMiniCartData: MiniCartSimplifiedData,
+            productId: String,
+            updatedQuantity: Int
+    ) {
+        updatedMiniCartData.miniCartItems.forEach {
+            if (it.productId == productId)
+                it.quantity = updatedQuantity
+        }
     }
 
     private fun `Given update cart use case will be successful`(
@@ -315,14 +331,13 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `add to cart to increase quantity success`() {
-        val updateCartSuccessMessage = "Success nih"
-        `Given view setup to update quantity`(updateCartSuccessMessage)
-
-        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
         val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
-
         val productUpdatedQuantity = productInMiniCart.quantity + 3
+
+        `Given view setup to update quantity`(productIdToATC, productUpdatedQuantity)
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
         `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
@@ -422,24 +437,16 @@ class AddToCartNonVariantTestHelper(
         )
     }
 
-    fun `test delete cart success`() {
-        val deleteCartMessage = "1 barang telah dihapus."
-        val deleteCartResponse = RemoveFromCartData(
-                status = "OK",
-                errorMessage = listOf(deleteCartMessage),
-                data = DeleteCartData(success = 1, message = listOf(deleteCartMessage))
-        )
+    fun `delete cart success`() {
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
         `Given delete cart use case will be successful`(deleteCartResponse)
-        `Given view setup to delete`()
+        `Given view setup to delete`(productId)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
-        val productId = PRODUCT_ID_NON_VARIANT_ATC
         val productInMiniCart = miniCartItems.find { it.productId == productId }!!
-
-        val productUpdatedQuantity = 0
         val productInVisitable = productItemList.find { it.id == productId }!!
 
-        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, 0)
 
         `Then assert delete cart behavior`(
             productInMiniCart.cartId,
@@ -449,11 +456,15 @@ class AddToCartNonVariantTestHelper(
         `Then verify delete cart tracking is called`(productId)
     }
 
-    private fun `Given view setup to delete`() {
+    private fun `Given view setup to delete`(productIdToDelete: String) {
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given view already created`()
         `Given view resumed to update mini cart`()
+
+        val updatedMiniCartData = miniCartSimplifiedData
+        updateMiniCartData(updatedMiniCartData, productIdToDelete, 0)
+        `Given get mini cart simplified use case will be successful`(updatedMiniCartData)
     }
 
     private fun `Given delete cart use case will be successful`(
@@ -510,22 +521,22 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `delete cart failed`() {
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+
         `Given delete cart use case will fail`()
-        `Given view setup to delete`()
+        `Given view setup to delete`(productIdToATC)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
-        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
         val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
-
-        val productUpdatedQuantity = 0
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+        val currentQuantity = productInVisitable.nonVariantATC!!.quantity
 
-        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, 0)
 
         `Then assert delete cart behavior`(
                 productInMiniCart.cartId,
                 productInVisitable,
-                productInMiniCart.quantity,
+                currentQuantity,
                 expectedFailedDeleteCartMessage = responseErrorException.message!!,
                 expectedRefreshMiniCartCount = 1
         )
@@ -640,12 +651,19 @@ class AddToCartNonVariantTestHelper(
         `Then assert recommendation item quantity`(recommendationItemForATC, addToCartQty)
         `Then verify mini cart is refreshed`(exactly = 2)
         `Then assert route to login page event is null`()
-        // TODO::Verify Tracking Add to cart
-//        `Then verify add to cart tracking is called`(addToCartQty, cartId, productItemDataViewToATC)
+        `Then verify add to cart recom item tracking`(recommendationItemForATC)
     }
 
     private fun `Then assert recommendation item quantity`(recommendationItemForATC: RecommendationItem, addToCartQty: Int) {
         assertThat(recommendationItemForATC.quantity, shouldBe(addToCartQty))
+    }
+
+    private fun `Then verify add to cart recom item tracking`(recommendationItemForATC: RecommendationItem) {
+        val atcRecomTracking = baseViewModel.addToCartRecommendationItemTrackingLiveData.value!!
+
+        assertThat(atcRecomTracking.first, shouldBe(addToCartQty))
+        assertThat(atcRecomTracking.second, shouldBe(cartId))
+        assertThat(atcRecomTracking.third, shouldBe(recommendationItemForATC))
     }
 
     fun `test add to cart recom item failed`() {
@@ -705,28 +723,30 @@ class AddToCartNonVariantTestHelper(
     fun `add to cart recom item to decrease quantity success`() {
         val recommendationWidgets = recommendationWidgetList
         val miniCartData = miniCartSimplifiedData
-        `Given view setup to update quantity recom item`(recommendationWidgets, miniCartData)
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartData.miniCartItems.find { it.productId == productId }!!
+        val updatedQuantity = productInMiniCart.quantity - 3
+
+        `Given view setup to update quantity recom item`(
+                recommendationWidgets,
+                miniCartData,
+                productId,
+                updatedQuantity,
+        )
 
         val recommendationItemForATC =
-                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+                recommendationWidgets.getRecommendationItem(productId)
         val recommendationDataViewDummyIndex = 0
-        val currentQty = getRecommendationItemCurrentQty(
-                miniCartData, recommendationItemForATC
-        )
-        val updateQty = currentQty - 3
 
         `When add to cart recommendation item`(
                 recommendationItemForATC,
                 recommendationDataViewDummyIndex,
-                updateQty,
+                updatedQuantity,
         )
 
-        val productInMiniCart = miniCartData.miniCartItems.find {
-            it.productId == recommendationItemForATC.productId.toString()
-        }!!
         `Then verify behavior update quantity recom item`(
                 recommendationItemForATC,
-                updateQty,
+                updatedQuantity,
                 productInMiniCart.cartId
         )
         //TODO:: Tracking decrease quantity
@@ -736,15 +756,16 @@ class AddToCartNonVariantTestHelper(
     private fun `Given view setup to update quantity recom item`(
             recommendationWidgets: List<RecommendationWidget>,
             miniCartData: MiniCartSimplifiedData,
+            productIdToUpdate: String,
+            updatedQuantity: Int,
     ) {
-        val updateCartSuccessMessage = "Success nih"
-        val successUpdateCartResponse = UpdateCartV2Data(
-                data = Data(status = true, message = updateCartSuccessMessage)
-        )
-
         `Given get mini cart simplified use case will be successful`(miniCartData)
         `Given update cart use case will be successful`(successUpdateCartResponse)
         `Given view setup to show recommendation widget`(recommendationWidgets)
+
+        val updatedMiniCart = miniCartSimplifiedData
+        updateMiniCartData(updatedMiniCart, productIdToUpdate, updatedQuantity)
+        `Given get mini cart simplified use case will be successful`(updatedMiniCart)
     }
 
     private fun `Then verify behavior update quantity recom item`(
@@ -766,28 +787,29 @@ class AddToCartNonVariantTestHelper(
     fun `add to cart recom item to increase quantity success`() {
         val recommendationWidgets = recommendationWidgetList
         val miniCartData = miniCartSimplifiedData
-        `Given view setup to update quantity recom item`(recommendationWidgets, miniCartData)
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartData.miniCartItems.find { it.productId == productId }!!
+        val updatedQty = productInMiniCart.quantity + 3
+        `Given view setup to update quantity recom item`(
+                recommendationWidgets,
+                miniCartData,
+                productId,
+                updatedQty,
+        )
 
         val recommendationItemForATC =
                 recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
         val recommendationDataViewDummyIndex = 0
-        val currentQty = getRecommendationItemCurrentQty(
-                miniCartData, recommendationItemForATC
-        )
-        val updateQty = currentQty + 3
 
         `When add to cart recommendation item`(
                 recommendationItemForATC,
                 recommendationDataViewDummyIndex,
-                updateQty,
+                updatedQty,
         )
 
-        val productInMiniCart = miniCartData.miniCartItems.find {
-            it.productId == recommendationItemForATC.productId.toString()
-        }!!
         `Then verify behavior update quantity recom item`(
                 recommendationItemForATC,
-                updateQty,
+                updatedQty,
                 productInMiniCart.cartId,
         )
         //TODO:: Tracking increase quantity
@@ -830,6 +852,80 @@ class AddToCartNonVariantTestHelper(
         )
     }
 
+    fun `delete cart recom item success`() {
+        val recommendationWidgets = recommendationWidgetList
+        val miniCartData = miniCartSimplifiedData
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartData.getMiniCartItemByProductId(productId)!!
+
+        `Given delete cart use case will be successful`(deleteCartResponse)
+        `Given get mini cart simplified use case will be successful`(miniCartData)
+        `Given view setup to show recommendation widget`(recommendationWidgets)
+        val updatedMiniCartData = miniCartSimplifiedData
+        updateMiniCartData(updatedMiniCartData, productId, 0)
+        `Given get mini cart simplified use case will be successful`(updatedMiniCartData)
+
+        val recommendationItemForATC =
+                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+        val recommendationDataViewDummyIndex = 0
+
+        `When add to cart recommendation item`(
+                recommendationItemForATC,
+                recommendationDataViewDummyIndex,
+                0,
+        )
+
+        `Then assert delete cart recom item behavior`(
+                cartIdParam = productInMiniCart.cartId,
+                expectedSuccessMessage = deleteCartMessage,
+                expectedErrorMessage = "",
+                recommendationItemForATC = recommendationItemForATC,
+                expectedQuantity = 0,
+                expectedRefreshMiniCartCount = 2,
+        )
+    }
+
+    private fun `Then assert delete cart recom item behavior`(cartIdParam: String, expectedSuccessMessage: String, expectedErrorMessage: String, recommendationItemForATC: RecommendationItem, expectedQuantity: Int, expectedRefreshMiniCartCount: Int) {
+        `Then assert delete cart params`(cartIdParam)
+        `Then assert cart message event`(expectedSuccessMessage, expectedErrorMessage)
+        `Then assert recommendation item quantity`(recommendationItemForATC, expectedQuantity)
+        `Then assert add to cart use case is not called`()
+        `Then assert update cart use case is not called`()
+        `Then verify mini cart is refreshed`(expectedRefreshMiniCartCount)
+        `Then assert route to login page event is null`()
+    }
+
+    fun `delete cart recom item failed`() {
+        val recommendationWidgets = recommendationWidgetList
+        val miniCartData = miniCartSimplifiedData
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartData.getMiniCartItemByProductId(productId)!!
+
+        `Given delete cart use case will fail`()
+        `Given get mini cart simplified use case will be successful`(miniCartData)
+        `Given view setup to show recommendation widget`(recommendationWidgets)
+
+        val recommendationItemForATC =
+                recommendationWidgets.getRecommendationItem(PRODUCT_ID_NON_VARIANT_ATC)
+        val recommendationDataViewDummyIndex = 0
+        val currentQuantity = recommendationItemForATC.quantity
+
+        `When add to cart recommendation item`(
+                recommendationItemForATC,
+                recommendationDataViewDummyIndex,
+                0,
+        )
+
+        `Then assert delete cart recom item behavior`(
+                cartIdParam = productInMiniCart.cartId,
+                expectedSuccessMessage = "",
+                expectedErrorMessage = responseErrorException.message!!,
+                recommendationItemForATC = recommendationItemForATC,
+                expectedQuantity = currentQuantity,
+                expectedRefreshMiniCartCount = 1
+        )
+    }
+
     companion object {
         private const val PRODUCT_ID_NON_VARIANT_ATC = "574261655"
 
@@ -847,6 +943,22 @@ class AddToCartNonVariantTestHelper(
                             message = arrayListOf(),
                             quantity = addToCartQty,
                     ),
+            )
+        }
+
+        object UpdateCartTestObject {
+            val updateCartSuccessMessage get() = "Success nih"
+            val successUpdateCartResponse get() = UpdateCartV2Data(
+                    data = Data(status = true, message = updateCartSuccessMessage)
+            )
+        }
+
+        object DeleteCartTestObject {
+            val deleteCartMessage get() = "1 barang telah dihapus."
+            val deleteCartResponse get() = RemoveFromCartData(
+                    status = "OK",
+                    errorMessage = listOf(deleteCartMessage),
+                    data = DeleteCartData(success = 1, message = listOf(deleteCartMessage))
             )
         }
 

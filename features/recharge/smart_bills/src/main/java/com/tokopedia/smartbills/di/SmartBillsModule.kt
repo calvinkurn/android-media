@@ -74,11 +74,11 @@ class SmartBillsModule {
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
-        listInterceptor.add(httpLoggingInterceptor)
         listInterceptor.add(digitalInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             listInterceptor.add(chuckerInterceptor)
+            listInterceptor.add(httpLoggingInterceptor)
         }
         return listInterceptor
     }

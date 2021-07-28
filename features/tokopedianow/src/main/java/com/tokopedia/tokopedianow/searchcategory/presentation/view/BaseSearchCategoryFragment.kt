@@ -433,6 +433,9 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
         getViewModel().routeApplinkLiveData.observe(this::routeApplink)
         getViewModel().deleteCartTrackingLiveData.observe(this::sendDeleteCartTrackingEvent)
+        getViewModel().addToCartRecommendationItemTrackingLiveData.observe(
+                this::sendAddToCartRecommendationTrackingEvent
+        )
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -834,8 +837,14 @@ abstract class BaseSearchCategoryFragment:
     override fun onATCNonVariantRecommendationCarouselItem(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int,
     ) {
-
+        getViewModel().onViewATCRecommendationItemNonVariant(
+                recommendationItem = recomItem,
+                adapterPosition = recommendationCarouselPosition,
+                quantity = quantity,
+        )
     }
 
     override fun onAddVariantRecommendationCarouselItem(
@@ -846,6 +855,28 @@ abstract class BaseSearchCategoryFragment:
         val shopId = recomItem.shopId.toString()
 
         openATCVariantBottomSheet(productId, shopId)
+    }
+
+    protected open fun sendAddToCartRecommendationTrackingEvent(
+            atcTrackingData: Triple<Int, String, RecommendationItem>
+    ) {
+        val (quantity, cartId, recommendationItem) = atcTrackingData
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.PRODUCT_CLICK,
+            ProductRecommendationTracking.getAddToCartClickProductTracking(
+                recommendationItem = recommendationItem,
+                androidPageName = getSearchAndroidPageName(),
+                position = recommendationItem.position,
+                isLoggedIn = userSession.isLoggedIn,
+                isTokonow = true,
+                listPage = getSearchListPage(),
+                pageId = getPageId(),
+                userId = userSession.userId,
+                eventLabel = getEventLabel(),
+                headerTitle = "",
+                quantity = quantity,
+                cartId = cartId
+            )
+        )
     }
 
     abstract fun getSearchListPage(): String
