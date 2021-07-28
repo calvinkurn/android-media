@@ -37,7 +37,7 @@ class GetLayoutUseCase(
             val data = gqlResponse.getData<GetLayoutResponse>()
             return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 

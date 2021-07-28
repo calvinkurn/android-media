@@ -1,11 +1,24 @@
 package com.tokopedia.webview;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
+import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
+import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
+import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
+import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
+import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
+import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
+import static com.tokopedia.webview.ConstantKt.SEAMLESS;
+import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -60,26 +73,11 @@ import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
-
-import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
-import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
-import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
-import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
-import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
-import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
-import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
-import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
-import static com.tokopedia.webview.ConstantKt.SEAMLESS;
-import static com.tokopedia.webview.ConstantKt.STAGING;
-import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
@@ -221,13 +219,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
+        webView.setInitialScale(1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
-        webSettings.setBuiltInZoomControls(false);
-        webSettings.setDisplayZoomControls(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         webSettings.setMediaPlaybackRequiresUserGesture(false);
@@ -669,7 +670,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
-        if (getActivity() == null) {
+        Activity activity = getActivity();
+        if (activity == null) {
             return false;
         }
         if ("".equals(url)) {
@@ -680,6 +682,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (goToLoginGoogle(uri)) return true;
+        if (uri.getHost() == null) {
+            return false;
+        }
 
         String queryParam = null;
         String headerText = null;
@@ -759,10 +764,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
-        if (isLinkAjaAppLink(url)) {
-            return redirectToLinkAjaApp(url);
-        }
 
+        if (isLinkAjaAppLink(url)) {
+            return redirectToExternalAppAndFinish(activity, uri);
+        }
 
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
@@ -785,6 +790,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean redirectToExternalAppAndFinish(Activity activity, Uri uri) {
+        Intent intent = WebViewHelper.actionViewIntent(activity, uri);
+        if (intent != null) {
+            startActivity(intent);
+            activity.finish();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void routeToNativeBrowser(String browserUrl){
@@ -854,21 +870,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private boolean isLinkAjaAppLink(String url) {
         return url.contains(LINK_AJA_APP_LINK);
-    }
-
-    private boolean redirectToLinkAjaApp(String url) {
-        Uri uri = Uri.parse(url);
-        Intent linkAjaIntent = new Intent(Intent.ACTION_VIEW, uri);
-        List<ResolveInfo> activities = getActivity().getPackageManager()
-                .queryIntentActivities(linkAjaIntent, 0);
-        boolean isIntentSafe = activities.isEmpty();
-        if (!isIntentSafe) {
-            startActivity(linkAjaIntent);
-            getActivity().finish();
-            return true;
-        } else
-            return false;
-
     }
 
     // If back pressed is disabled and the webview has moved to a native page,

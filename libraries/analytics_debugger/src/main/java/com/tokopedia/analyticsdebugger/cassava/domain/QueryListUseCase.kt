@@ -7,6 +7,8 @@ import com.tokopedia.analyticsdebugger.cassava.validator.Utils
 import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
 import com.tokopedia.analyticsdebugger.cassava.validator.core.QueryMode
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toCassavaQuery
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -19,24 +21,26 @@ class QueryListUseCase @Inject constructor(
     suspend fun execute(source: CassavaSource,
                         filePath: String)
             : CassavaQuery? {
-        return if (source == CassavaSource.LOCAL) {
-            Utils.getJsonDataFromAsset(context, filePath)?.toCassavaQuery()
-        } else {
-            repository.getNetworkQueryList(
-                    filePath,
-                    context.getString(com.tokopedia.keys.R.string.thanos_token_key)
-            ).let {
-                val cassavaRegexList: MutableList<Pair<Int, Map<String, Any>>> = arrayListOf()
+        return withContext(Dispatchers.IO) {
+            if (source == CassavaSource.LOCAL) {
+                Utils.getJsonDataFromAsset(context, filePath)?.toCassavaQuery()
+            } else {
+                repository.getNetworkQueryList(
+                        filePath,
+                        context.getString(com.tokopedia.keys.R.string.thanos_token_key)
+                ).let {
+                    val cassavaRegexList: MutableList<Pair<Int, Map<String, Any>>> = arrayListOf()
 
-                it.regexData.map { regex ->
-                    cassavaRegexList.add(Pair(regex.dataLayerId, regex.dataLayer))
+                    it.regexData.map { regex ->
+                        cassavaRegexList.add(Pair(regex.dataLayerId, regex.dataLayer))
+                    }
+
+                    CassavaQuery(
+                            mode = QueryMode.SUBSET,
+                            readme = it.journeyName,
+                            query = cassavaRegexList
+                    )
                 }
-
-                return CassavaQuery(
-                        mode = QueryMode.SUBSET,
-                        readme = it.journeyName,
-                        query = cassavaRegexList
-                )
             }
         }
     }

@@ -15,4 +15,5 @@ interface RecommendationCarouselWidgetListener {
     fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int)
     fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int)
     fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int)
+    fun onChannelWidgetEmpty()
 }

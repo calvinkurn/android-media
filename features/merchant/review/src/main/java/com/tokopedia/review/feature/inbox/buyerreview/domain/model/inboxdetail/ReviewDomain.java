@@ -9,7 +9,7 @@ import java.util.List;
 public class ReviewDomain {
 
     private List<ReviewItemDomain> data = null;
-    private int reputationId;
+    private long reputationId;
     private UserDataDomain userData;
     private ShopDataDomain shopData;
     private String invoiceRefNum;
@@ -17,7 +17,7 @@ public class ReviewDomain {
     private String orderId;
 
     public ReviewDomain(List<ReviewItemDomain> data,
-                        int reputationId, UserDataDomain userData,
+                        long reputationId, UserDataDomain userData,
                         ShopDataDomain shopData, String invoiceRefNum,
                         String invoiceTime, String orderId) {
         this.data = data;
@@ -33,7 +33,7 @@ public class ReviewDomain {
         return data;
     }
 
-    public int getReputationId() {
+    public long getReputationId() {
         return reputationId;
     }
 

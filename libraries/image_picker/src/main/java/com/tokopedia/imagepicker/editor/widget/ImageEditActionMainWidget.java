@@ -14,6 +14,8 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorEditActionAdapter;
 
+import java.util.ArrayList;
+
 /**
  * Created by hendry on 30/04/18.
  */
@@ -57,7 +59,7 @@ public class ImageEditActionMainWidget extends FrameLayout implements ImageEdito
         viewGroupMainContent = findViewById(R.id.vg_editor_main_content);
     }
 
-    public void setData( ImageEditActionType[] imageEditActionType) {
+    public void setData(ArrayList<ImageEditActionType> imageEditActionType) {
         ImageEditorEditActionAdapter imageEditorEditActionAdapter =
                 new ImageEditorEditActionAdapter(viewGroupMainContent, getContext(), imageEditActionType, this);
         imageEditorEditActionAdapter.renderView();

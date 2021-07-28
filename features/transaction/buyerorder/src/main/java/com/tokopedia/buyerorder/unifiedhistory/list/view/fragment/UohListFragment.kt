@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -446,15 +447,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             search_bar?.searchBarTextField?.text?.clear()
+            resetFocusEditText()
             triggerSearch()
         }
 
         search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 UohUtils.hideKeyBoard(search_bar.context, view)
-                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
+                val inputLength = search_bar?.searchBarTextField?.text?.length ?: 0
+                if (inputLength in 1 until MIN_KEYWORD_CHARACTER_COUNT) {
                     showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                 } else {
+                    resetFocusEditText()
                     triggerSearch()
                 }
                 true
@@ -462,6 +466,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
 
         addEndlessScrollListener()
+    }
+
+    private fun resetFocusEditText() {
+        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
     }
 
     private fun getLimitDate(): GregorianCalendar {

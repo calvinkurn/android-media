@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PortraitVideoBoundsProvider
+import kotlinx.coroutines.withTimeout
 
 /**
  * Created by jegul on 14/04/20
@@ -36,4 +38,13 @@ internal fun ViewPager2.findFragmentByPosition(
 
 internal fun ViewPager2.findCurrentFragment(fragmentManager: FragmentManager): Fragment? {
     return findFragmentByPosition(fragmentManager, currentItem)
+}
+
+private const val MEASURE_TIMEOUT_IN_MS: Long = 500
+
+internal suspend inline fun measureWithTimeout(
+        timeout: Long = MEASURE_TIMEOUT_IN_MS,
+        crossinline measureFn: suspend () -> Unit
+) = withTimeout(timeout) {
+    measureFn()
 }

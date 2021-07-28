@@ -55,6 +55,11 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         addDefaultToSearchParameter()
     }
 
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
+    }
+
     fun fetchQuickFilters() {
         launchCatchError(block = {
             val filters = quickFilterRepository.getQuickFilterData(components.id, components.pageEndPoint)

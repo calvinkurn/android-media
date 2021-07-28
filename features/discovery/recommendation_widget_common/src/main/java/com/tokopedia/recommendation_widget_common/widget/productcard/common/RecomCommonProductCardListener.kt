@@ -19,5 +19,5 @@ interface RecomCommonProductCardListener {
 
     //for banner card clicked
     fun onBannerCardClicked(data: RecommendationWidget, applink: String)
-    fun onBannerCardImpressed(data: RecommendationWidget, applink: String)
+    fun onBannerCardImpressed(data: RecommendationWidget)
 }

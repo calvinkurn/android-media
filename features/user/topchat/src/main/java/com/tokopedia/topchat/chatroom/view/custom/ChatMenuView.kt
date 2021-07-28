@@ -26,6 +26,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     var stickerMenu: ChatMenuStickerView? = null
     private var previousSelectedMenu: ViewGroup? = null
     private var selectedMenu: ViewGroup? = null
+    private var visibilityListener: VisibilityListener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -37,6 +38,11 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     init {
         initViewLayout()
         bindViewId()
+    }
+
+    interface VisibilityListener {
+        fun onShow()
+        fun onHide()
     }
 
     private fun initViewLayout() {
@@ -91,6 +97,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
             attachmentMenu?.hide()
             stickerMenu?.hide()
             hide()
+            visibilityListener?.onHide()
         }
     }
 
@@ -109,6 +116,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         showDelayed = false
         isVisible = true
         show()
+        visibilityListener?.onShow()
     }
 
     fun hideKeyboard() {
@@ -137,6 +145,10 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
 
     fun setStickerListener(listener: StickerViewHolder.Listener) {
         stickerMenu?.stickerListener = listener
+    }
+
+    fun setVisibilityListener(visibilityListener: VisibilityListener) {
+        this.visibilityListener = visibilityListener
     }
 
     companion object {

@@ -5,7 +5,7 @@ import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
-import com.tokopedia.play.broadcaster.model.ModelBuilder
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
@@ -36,7 +36,7 @@ class PlayBroadcastSummaryViewModelTest {
     private val broadcastUpdateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
-    private val modelBuilder = ModelBuilder()
+    private val modelBuilder = UiModelBuilder()
     private val mockLiveStats by lazy { modelBuilder.buildLiveStats() }
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel

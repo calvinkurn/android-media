@@ -80,6 +80,11 @@
     <string name="financial_services">Layanan Finansial</string>
     <string name="saldo_webview_title">Tokopedia</string>
     <string name="tickerClickableText">Bayar Sekarang</string>
+    <string name="saldo_lock_tickerTitle">Saldo Penghasilan tidak bisa ditarik</string>
+    <string name="saldo_lock_tickerDescription">Karena belum membayar tagihan pinjaman Modal Toko selama %d hari.</string>
+    <string name="saldo_lock_pay_now">Bayar Sekarang</string>
+    <string name="saldo_ticker_description_html">%1$s &lt;a href="#"&gt;%2$s&lt;/a&gt;</string>
+
     <string name="saldo_info_btn_text">Bantuan</string>
     <string name="saldo_info_total_tertahan">Total Saldo Tertahan</string>
     <string name="saldo_saya_tidak_dapat_digunakan">Saldo saya tidak dapat digunakan</string>
@@ -91,4 +96,8 @@
     <string name="saldo_dana_tertahan">Dana Tertahan</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_info_ticker">Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia.</string>
+    <string name="merchant_credit_mcl_logo_text">MCl Logo</string>
+    <string name="saldo_prioritas_title">Saldo Prioritas</string>
+    <string name="saldo_kyc_description_text">Status: Menunggu Verifikasi Aplikasi</string>
+    <string name="saldo_transaction_empty_list">No Result</string>
 </resources>

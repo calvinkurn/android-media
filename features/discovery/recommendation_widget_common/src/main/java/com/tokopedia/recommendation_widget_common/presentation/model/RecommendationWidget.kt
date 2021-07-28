@@ -25,5 +25,7 @@ data class RecommendationWidget(
         val headerBackImage: String = "",
         val headerBackColor: String = "",
         val recommendationConfig: RecommendationConfig = RecommendationConfig(),
-        var recommendationBanner: RecommendationBanner? = null
+        var recommendationBanner: RecommendationBanner? = null,
+        //for recom PDP since there is possibility gql return empty page name and recom list
+        var recomUiPageName: String = ""
 )

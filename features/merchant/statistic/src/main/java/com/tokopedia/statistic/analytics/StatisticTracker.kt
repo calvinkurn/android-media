@@ -65,17 +65,38 @@ object StatisticTracker {
     }
 
     fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel, position: Int) {
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val cardValue = model.data?.header.orEmpty()
         val eventMap = TrackingHelper.createMap(
-                TrackingConstant.PROMO_VIEW,
+                TrackingConstant.VIEW_HOMEPAGE_IRIS,
                 TrackingConstant.SHOP_INSIGHT,
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, model.dataKey).joinToString(" - "),
-                model.data?.header.orEmpty()
+                "$emptyStatus - $cardValue"
         )
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_TREND_LINE, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendEmptyStateCtaClickLineGraphEvent(model: LineGraphWidgetUiModel) {
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dataKey = model.dataKey
+        val cardValue = model.data?.header.orEmpty()
+
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_HOMEPAGE,
+                TrackingConstant.SELLER_APP_STATISTIC,
+                "${TrackingConstant.CLICK_WIDGET_LINE_GRAPH} - $dataKey",
+                "$emptyStatus - $cardValue"
+        )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+
+        TrackingHelper.sendGeneralEvent(map)
     }
 
     fun sendClickLineGraphEvent(dataKey: String, chartValue: String) {
@@ -262,27 +283,45 @@ object StatisticTracker {
 
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
                 category = TrackingConstant.SHOP_INSIGHT,
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
-                label = value
+                label = "$state - $value"
         )
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_PIE_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
-    fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
-        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
-        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+    fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        val value = model.data?.data?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.CLICK_HOMEPAGE,
+                category = TrackingConstant.SELLER_APP_STATISTIC,
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
                 category = TrackingConstant.SHOP_INSIGHT,
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
@@ -290,8 +329,27 @@ object StatisticTracker {
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_BAR_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendBarChartEmptyStateCtaClickEvent(model: BarChartWidgetUiModel) {
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_HOMEPAGE,
+                category = TrackingConstant.SELLER_APP_STATISTIC,
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
     }
 
     fun sendSectionTooltipClickEvent(sectionTitle: String) {

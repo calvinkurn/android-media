@@ -20,6 +20,7 @@ import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -48,6 +49,9 @@ class LineGraphViewHolder(
     private var showEmptyState: Boolean = false
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
         showAnimation?.end()
         hideAnimation?.end()
         observeState(element)
@@ -75,6 +79,7 @@ class LineGraphViewHolder(
      * */
     private fun observeState(element: LineGraphWidgetUiModel) {
         val data: LineGraphDataUiModel? = element.data
+        itemView.show()
         when {
             null == data -> {
                 showViewComponent(false, element)
@@ -146,9 +151,21 @@ class LineGraphViewHolder(
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendLineGraphImpressionEvent(element)
             }
-            if (showEmptyState) {
-                showEmptyState = true
-                setupEmptyState(element.emptyState)
+            if (element.isEmpty()) {
+                if (element.isShowEmpty) {
+                    if (element.shouldShowEmptyStateIfEmpty()) {
+                        setupEmptyState(element)
+                    } else {
+                        animateHideEmptyState()
+                    }
+                } else {
+                    if (listener.getIsShouldRemoveWidget()) {
+                        listener.removeWidget(adapterPosition, element)
+                    } else {
+                        listener.onRemoveWidget(adapterPosition)
+                        itemView.toggleWidgetHeight(false)
+                    }
+                }
             } else {
                 animateHideEmptyState()
             }
@@ -156,17 +173,16 @@ class LineGraphViewHolder(
     }
 
     private fun showEmpty(element: LineGraphWidgetUiModel): Boolean {
-        return element.isShowEmpty && element.data?.list?.all { it.yVal == 0f } == true &&
-                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
+        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty() && element.isShowEmpty
     }
 
-    private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
-        with(emptyState) {
+    private fun setupEmptyState(element: LineGraphWidgetUiModel) {
+        with(element.emptyState) {
             itemView.tvLineGraphEmptyStateTitle.text = title
             itemView.tvLineGraphEmptyStateDescription.text = description
             itemView.tvShcMultiLineEmptyStateCta.text = ctaText
             itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
+                listener.sendLineChartEmptyStateCtaClickEvent(element)
                 RouteManager.route(itemView.context, appLink)
             }
             animateShowEmptyState()
@@ -284,5 +300,7 @@ class LineGraphViewHolder(
         fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {}
 
         fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
+
+        fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {}
     }
 }

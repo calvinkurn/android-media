@@ -303,14 +303,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

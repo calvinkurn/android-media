@@ -63,9 +63,9 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
+import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
-import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
@@ -77,7 +77,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -990,21 +989,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onBackPressed(): Boolean {
         if (!isBackAllowed) {
-            val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)
-            dialog.setTitle(context?.getString(R.string.cb_bot_leave_the_queue))
-            dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
-            dialog.setBtnOk(context?.getString(R.string.cb_bot_ok_text))
-            dialog.setBtnCancel(context?.getString(R.string.cb_bot_cancel_text))
-            dialog.setOnOkClickListener {
-                presenter.OnClickLeaveQueue()
-                (activity as ChatbotActivity).finish()
-
-            }
-            dialog.setOnCancelClickListener {
-                dialog.dismiss()
-            }
-            dialog.setCancelable(true)
-            dialog.show()
+            presenter.OnClickLeaveQueue()
+            (activity as? ChatbotActivity)?.finish()
             return true
         }
         return super.onBackPressed()

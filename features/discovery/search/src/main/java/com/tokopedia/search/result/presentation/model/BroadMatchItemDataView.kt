@@ -24,6 +24,7 @@ data class BroadMatchItemDataView(
         val ratingAverage: String = "",
         val labelGroupDataList: List<LabelGroupDataView> = listOf(),
         val carouselProductType: CarouselProductType,
+        val dimension90: String = "",
 ): ImpressHolder() {
 
     fun asImpressionObjectDataLayer(): Any {
@@ -35,7 +36,8 @@ data class BroadMatchItemDataView(
                 "category", "none / other",
                 "variant", "none / other",
                 "list", carouselProductType.dataLayerList,
-                "position", position
+                "position", position,
+                "dimension90", dimension90,
         )
     }
 
@@ -49,7 +51,8 @@ data class BroadMatchItemDataView(
                 "variant", "none / other",
                 "list", carouselProductType.dataLayerList,
                 "position", position,
-                "attribution", "none / other"
+                "attribution", "none / other",
+                "dimension90", dimension90,
         )
     }
 }

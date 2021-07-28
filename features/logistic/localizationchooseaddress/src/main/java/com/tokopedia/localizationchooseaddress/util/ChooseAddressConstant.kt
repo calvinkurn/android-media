@@ -16,7 +16,9 @@ class ChooseAddressConstant {
                 lat = "",
                 long = "",
                 postal_code = "",
-                label = "Jakarta Pusat"
+                label = "Jakarta Pusat",
+                shop_id = "",
+                warehouse_id = ""
         )
 
         val emptyAddress = LocalCacheModel(
@@ -26,7 +28,9 @@ class ChooseAddressConstant {
                 lat = "",
                 long = "",
                 postal_code = "",
-                label = "Pilih Alamat Pengirimanmu"
+                label = "Pilih Alamat Pengirimanmu",
+                shop_id = "",
+                warehouse_id = ""
         )
     }
 }

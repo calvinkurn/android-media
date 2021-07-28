@@ -10,8 +10,8 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-const val QUERY = """query topAdsAutoTopup(${'$'}shopId: String!) {
-    topAdsAutoTopup(shop_id: ${'$'}shopId){
+const val QUERY = """query topAdsAutoTopupV2(${'$'}shopId: String!) {
+    topAdsAutoTopupV2(shop_id: ${'$'}shopId){
         data {
             status
             status_desc

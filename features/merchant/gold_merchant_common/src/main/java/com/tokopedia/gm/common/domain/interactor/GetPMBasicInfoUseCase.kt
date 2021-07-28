@@ -17,13 +17,13 @@ class GetPMBasicInfoUseCase @Inject constructor(
         private val getPMShopInfoUseCase: GetPMShopInfoUseCase,
         private val getShopScoreUseCase: GetShopScoreLevelUseCase,
         private val userSession: UserSessionInterface
-) : BaseGqlUseCase<PowerMerchantBasicInfoUiModel>() {
+) {
 
-    override suspend fun executeOnBackground(): PowerMerchantBasicInfoUiModel {
+    suspend fun executeOnBackground(isFirstLoad: Boolean): PowerMerchantBasicInfoUiModel {
         return coroutineScope {
             val pmStatusInfoAsync = async { getPmStatusInfo() }
             val pmShopInfoAsync = async { getPmShopInfo() }
-            val pmSettingInfoAsync = async { getPmSettingInfo() }
+            val pmSettingInfoAsync = async { getPmSettingInfo(isFirstLoad) }
             val shopScoreAsync = async { getShopScore() }
 
             val pmSettingInfo = pmSettingInfoAsync.await()
@@ -32,14 +32,14 @@ class GetPMBasicInfoUseCase @Inject constructor(
             return@coroutineScope PowerMerchantBasicInfoUiModel(
                     pmStatus = pmStatusInfoAsync.await(),
                     shopInfo = pmShopInfo.copy(shopScore = shopScoreResult.shopScore.toInt()),
-                    tickers = pmSettingInfo.tickers,
-                    periodTypePmPro = pmSettingInfo.periodeTypePmPro
+                    tickers = pmSettingInfo.tickers
             )
         }
     }
 
-    private suspend fun getPmSettingInfo(): PowerMerchantSettingInfoUiModel {
+    private suspend fun getPmSettingInfo(isFirstLoad: Boolean): PowerMerchantSettingInfoUiModel {
         return try {
+            getPmSettingInfoUseCase.setCacheStrategy(GetPMSettingInfoUseCase.getCacheStrategy(isFirstLoad))
             getPmSettingInfoUseCase.params = GetPMSettingInfoUseCase.createParams(userSession.shopId, PMConstant.PM_SETTING_INFO_SOURCE)
             getPmSettingInfoUseCase.executeOnBackground()
         } catch (e: Exception) {

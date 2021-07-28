@@ -53,8 +53,8 @@ class PlayBroadcastUiMapper(
         ProductContentUiModel(
                 id = it.id.toLong(),
                 name = it.name,
-                imageUrl = it.pictures.first().urlThumbnail,
-                originalImageUrl = it.pictures.first().urlThumbnail,
+                imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+                originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
@@ -207,7 +207,7 @@ class PlayBroadcastUiMapper(
         }
     }
 
-    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
+    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel {
         val prevSource = when (val prevCover = setupCover?.croppedCover) {
             is CoverSetupState.Cropped -> prevCover.coverSource
             else -> null
@@ -220,7 +220,6 @@ class PlayBroadcastUiMapper(
                         coverSource = prevSource ?: CoverSource.None
                 ),
                 state = SetupDataState.Uploaded,
-                title = coverTitle
         )
     }
 

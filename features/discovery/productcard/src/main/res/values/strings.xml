@@ -12,6 +12,7 @@
     <string name="product_card_out_of_stock">Stok Habis</string>
     <string name="home_flashsale_card_ad">Ad</string>
     <string name="product_card_text_notify_me">Ingatkan Saya</string>
+    <string name="product_card_text_variant_quantity_grid">99+ pcs</string>
 
     <string name="content_desc_textViewProductName">text nama produk</string>
     <string name="content_desc_labelDiscount">text diskon</string>

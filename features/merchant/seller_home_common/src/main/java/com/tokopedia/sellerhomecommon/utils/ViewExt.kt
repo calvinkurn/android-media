@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.utils
 
 import android.graphics.drawable.ScaleDrawable
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -25,4 +27,20 @@ fun TextView.setUnifyDrawableEnd(
 
 fun TextView.clearUnifyDrawableEnd() {
     this.setCompoundDrawables(null, null, null, null)
+}
+
+/**
+ * Toggle height of widget to wrap content or 0.
+ * This is used for statistic page because we need to implement widget removal effect
+ * without actually removing the widget in the adapter data list.
+ * If you need to use this, please make sure that the widget view is wrapped in CardUnify
+ */
+internal fun View.toggleWidgetHeight(isShown: Boolean) {
+    layoutParams.height =
+            if (isShown) {
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            } else {
+                0
+            }
+    requestLayout()
 }

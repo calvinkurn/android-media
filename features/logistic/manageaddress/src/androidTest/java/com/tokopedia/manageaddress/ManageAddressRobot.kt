@@ -3,7 +3,7 @@ package com.tokopedia.manageaddress
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultCode
 import androidx.test.espresso.contrib.ActivityResultMatchers.hasResultData
@@ -29,6 +29,12 @@ class ManageAddressRobot {
 
     fun selectAddress() {
         onView(withId(R.id.btn_choose_address)).perform(click())
+    }
+
+    fun onClickSearch(keyword: String) {
+        onView(withId(R.id.search_input_view)).perform(click())
+        Thread.sleep(2000)
+        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
     }
 
     infix fun submit(func: ResultRobot.() -> Unit) = ResultRobot().apply(func)

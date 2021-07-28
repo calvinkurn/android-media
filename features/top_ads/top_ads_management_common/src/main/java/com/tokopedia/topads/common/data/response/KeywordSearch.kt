@@ -6,7 +6,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class KeywordSearch(
-    @SerializedName("topAdsKeywordSearchTerm")
+    @SerializedName("topAdsKeywordSearchTermV2")
     val topAdsKeywordSearchTerm: TopAdsKeywordSearchTerm = TopAdsKeywordSearchTerm()
 )
 data class TopAdsKeywordSearchTerm(

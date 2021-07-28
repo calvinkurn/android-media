@@ -51,7 +51,11 @@ data class BasicInfo(
         @SerializedName("txStats")
         val txStats: TxStatsDynamicPdp = TxStatsDynamicPdp(),
         @SerializedName("defaultOngkirEstimation")
-        val defaultOngkirEstimation: String = "30000"
+        val defaultOngkirEstimation: String = "30000",
+        @SerializedName("isTokoNow")
+        val isTokoNow: Boolean = false,
+        @SerializedName("totalStockFmt")
+        val totalStockFmt: String = ""
 ) {
 
     companion object {

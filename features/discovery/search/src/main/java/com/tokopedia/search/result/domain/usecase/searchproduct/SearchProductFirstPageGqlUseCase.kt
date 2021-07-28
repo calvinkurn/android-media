@@ -296,6 +296,11 @@ class SearchProductFirstPageGqlUseCase(
                                         title
                                         type
                                         position
+                                        url
+                                    }
+                                    free_ongkir {
+                                        is_active
+                                        img_url
                                     }
                                     image_product{
                                         product_id
@@ -380,6 +385,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_link_url
                             banner_applink_url
                             identifier
+                            meta
                             product {
                                 id
                                 name
@@ -400,6 +406,14 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                              	badges {
+                                    title
+                                    image_url
+                                    show
+                                }
+                              	shop {
+                                    city
+                                }
                             }
                         }
                     }

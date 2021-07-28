@@ -6,13 +6,13 @@ import android.widget.LinearLayout;
 import androidx.annotation.LayoutRes;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderWaitingForPaymentViewModel;
+import com.tokopedia.utils.date.DateUtil;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -91,7 +91,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
     public void bind(FlightOrderWaitingForPaymentViewModel element) {
         this.item = element;
         tvTitle.setText(element.getTitle());
-        tvOrderDate.setText(TravelDateUtil.formatToUi(element.getCreateTime()));
+        tvOrderDate.setText(DateUtil.formatToUi(element.getCreateTime()));
         tvOrderId.setText(String.format("%s %s", itemView.getContext().getString(R.string.flight_order_order_id_prefix), element.getId()));
         if (element.getOrderJourney().size() > 0) {
             renderArrow(element.getOrderJourney());
@@ -140,7 +140,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
             if (element.getPayment().getExpireOn() != null && element.getPayment().getExpireOn().length() > 0) {
                 tvPaymentDueDate.setVisibility(View.VISIBLE);
                 tvPaymentDueDateLabel.setVisibility(View.VISIBLE);
-                tvPaymentDueDate.setText(TravelDateUtil.formatDateByUsersTimezone(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
+                tvPaymentDueDate.setText(DateUtil.formatDateByUsersTimezone(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
             }else {
                 tvPaymentDueDate.setVisibility(View.GONE);
                 tvPaymentDueDateLabel.setVisibility(View.GONE);

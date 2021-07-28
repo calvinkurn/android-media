@@ -2,22 +2,14 @@ package com.tokopedia.home_component.util
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.drawable.*
-import android.graphics.drawable.shapes.RoundRectShape
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
-import android.view.View.LAYER_TYPE_SOFTWARE
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 
@@ -30,30 +22,17 @@ object ChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-//        dividerBottom?.let {
-//            it.background =
-//                ColorDrawable(
-//                    ContextCompat.getColor(it.context, R.color.Blue_B500)
-//                )
-//        }
-//
-//        dividerTop?.let {
-//            it.background =
-//                ColorDrawable(
-//                    ContextCompat.getColor(it.context, R.color.Unify_G500_96)
-//                )
-//        }
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
-                dividerTop?.gone()
-                dividerBottom?.gone()
+                dividerTop?.invisible()
+                dividerBottom?.invisible()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
-                dividerBottom?.gone()
+                dividerBottom?.invisible()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
-                dividerTop?.gone()
+                dividerTop?.invisible()
                 dividerBottom?.visible()
             }
             ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {

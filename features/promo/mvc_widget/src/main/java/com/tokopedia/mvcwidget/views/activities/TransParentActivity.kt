@@ -80,12 +80,12 @@ class TransParentActivity : BaseActivity() {
 
     fun showMvcDetailDialog() {
         val bottomSheet = BottomSheetUnify()
-        bottomSheet.isDragable = false
+        bottomSheet.isDragable = true
         bottomSheet.isHideable = true
         bottomSheet.showKnob = true
         bottomSheet.showCloseIcon = false
-        bottomSheet.isFullpage = true
         bottomSheet.bottomSheet.isGestureInsetBottomIgnored = true
+        bottomSheet.customPeekHeight = (Resources.getSystem().displayMetrics.heightPixels / 2).toDp()
 
         bottomSheet.setTitle(getString(R.string.mvc_daftar_kupon_toko))
         childView = MvcDetailView(this)
@@ -94,7 +94,7 @@ class TransParentActivity : BaseActivity() {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
             childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener {
                 bottomSheet.dismiss()
-                shopName?.let { it1 -> Tracker.userClickBottomSheetCTA(it1) }
+                shopName?.let { it1 -> Tracker.userClickBottomSheetCTA(it1, userSession.userId) }
                 RouteManager.route(this,appLink)
             }
         }
@@ -110,7 +110,7 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.setOnDismissListener {
             if (isOnResume) {
                 finish()
-                Tracker.closeMainBottomSheet(shopId, UserSession(this).userId, mvcSource)
+                Tracker.closeMainBottomSheet(shopId, userSession.userId, mvcSource)
             }
         }
 

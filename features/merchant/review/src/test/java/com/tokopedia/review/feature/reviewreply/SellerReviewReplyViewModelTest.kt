@@ -25,7 +25,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     fun `when get reply template list should return success`() {
         runBlocking {
             onReplyTemplateList_thenReturn()
-            viewModel.getTemplateListReply(anyInt())
+            viewModel.getTemplateListReply(anyLong())
 
             verifySuccessReplyTemplateListUseCaseCalled()
             assertTrue(viewModel.reviewTemplate.value is Success)
@@ -37,7 +37,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     fun `when insert review reply should return success`() {
         runBlocking {
             onInsertReviewReply_thenReturn()
-            viewModel.insertReviewReply(anyInt(), anyInt(), anyInt(), anyString())
+            viewModel.insertReviewReply(anyLong(), anyLong(), anyLong(), anyString())
 
             verifySuccessInsertReviewReplyUseCalled()
             val expectedValue = Success(InsertReplyResponseUiModel(anyInt()))
@@ -50,7 +50,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     fun `when update review reply should return success`() {
         runBlocking {
             onUpdateReviewReply_thenReturn()
-            viewModel.updateReviewReply(anyInt(), anyString())
+            viewModel.updateReviewReply(anyString(), anyString())
 
             verifyUpdateReviewReplyUseCaseCalled()
             val expectedValue = Success(UpdateReplyResponseUiModel(anyBoolean()))
@@ -63,7 +63,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
     fun `when insert template reply should return success`() {
         runBlocking {
             onInsertTemplateReply_thenReturn()
-            viewModel.insertTemplateReviewReply(anyInt(), anyString(), anyString())
+            viewModel.insertTemplateReviewReply(anyLong(), anyString(), anyString())
 
             verifySuccessInsertTemplateReplyUseCaseCalled()
             val expectedValue = Success(InsertTemplateReplyUiModel())
@@ -78,7 +78,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             val error = NullPointerException()
             onInsertTemplateReply_thenError(error)
 
-            viewModel.insertTemplateReviewReply(anyInt(), anyString(), anyString())
+            viewModel.insertTemplateReviewReply(anyLong(), anyString(), anyString())
             val expectedResult = Fail(error)
             viewModel.insertTemplateReply.verifyErrorEquals(expectedResult)
         }
@@ -90,7 +90,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             val error = NullPointerException()
             onReplyTemplateList_thenError(error)
 
-            viewModel.getTemplateListReply(anyInt())
+            viewModel.getTemplateListReply(anyLong())
             val expectedResult = Fail(error)
             viewModel.reviewTemplate.verifyErrorEquals(expectedResult)
 
@@ -103,7 +103,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             val error = NullPointerException()
             onInsertReviewReply_thenError(error)
 
-            viewModel.insertReviewReply(anyInt(), anyInt(), anyInt(), anyString())
+            viewModel.insertReviewReply(anyLong(), anyLong(), anyLong(), anyString())
             val expectedResult = Fail(error)
             viewModel.insertReviewReply.verifyErrorEquals(expectedResult)
         }
@@ -115,7 +115,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             val error = NullPointerException()
             onUpdateReviewReply_thenError(error)
 
-            viewModel.updateReviewReply(anyInt(), anyString())
+            viewModel.updateReviewReply(anyString(), anyString())
             val expectedResult = Fail(error)
             viewModel.updateReviewReply.verifyErrorEquals(expectedResult)
         }

@@ -17,5 +17,4 @@ object MenuItemType {
     const val LOCATION = "location"
     const val SHIPPING = "shipping"
     const val NOTIFICATION = "notification"
-    const val PERFORMANCE = "performance"
 }

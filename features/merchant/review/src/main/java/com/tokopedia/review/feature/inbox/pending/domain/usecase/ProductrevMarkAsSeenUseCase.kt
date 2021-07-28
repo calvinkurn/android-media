@@ -23,12 +23,12 @@ class ProductrevMarkAsSeenUseCase @Inject constructor(graphqlRepository: Graphql
     }
 
     @GqlQuery(MARK_AS_SEEN_MUTATION_CLASS_NAME, MARK_AS_SEEN_MUTATION)
-    fun setParams(inboxReviewId: Long) {
+    fun setParams(inboxReviewId: String) {
         setGraphqlQuery(MarkAsSeen.GQL_QUERY)
         setTypeClass(ProductrevInboxReviewMarkAsSeenResponseWrapper::class.java)
         setRequestParams(
                 RequestParams.create().apply {
-                    putString(PARAM_INBOX_REVIEW_ID, inboxReviewId.toString())
+                    putString(PARAM_INBOX_REVIEW_ID, inboxReviewId)
                 }.parameters
         )
     }

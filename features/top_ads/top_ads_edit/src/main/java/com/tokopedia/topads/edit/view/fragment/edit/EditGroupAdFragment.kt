@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
@@ -27,16 +26,12 @@ import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.GROUP_NAME
 import com.tokopedia.topads.edit.utils.Constants.IS_DATA_CHANGE
 import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
-import com.tokopedia.topads.edit.utils.Constants.MULTIPLIER
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_edit_activity_edit_form_ad.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -68,6 +63,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
     }
     private var initialDailyBudget = 0
+    private val job = SupervisorJob()
+    val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
     companion object {
 
@@ -87,17 +84,16 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-                resources.getLayout(R.layout.topads_edit_activity_edit_form_ad),
-                container,
-                false
+            resources.getLayout(R.layout.topads_edit_activity_edit_form_ad),
+            container,
+            false
         )
     }
-
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
@@ -107,10 +103,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         if (priceDaily != 0) {
             toggle?.isChecked = true
             daily_budget?.visible()
-            if (currentAutoBidState.isEmpty())
-                setCurrentDailyBudget((MULTIPLIER * data.priceBid).toString())
-            else
-                setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
+            setCurrentDailyBudget((priceDaily).toString())
         } else {
             daily_budget?.gone()
         }
@@ -154,17 +147,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, {
-            setCurrentDailyBudget(it.toString())
-            currentBudget = it
-        })
-        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
-            currentAutoBidState = it
-            if(currentAutoBidState.isNotEmpty()) {
-                setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
-                actionEnable()
-            }
-        })
+        setObservers()
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
@@ -186,50 +169,34 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             }
             return@setOnEditorActionListener false
         }
+        setGroupNameWatcher()
+        setDailyBudgetWatcher()
+    }
 
-        group_name?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
-                s?.let {
-                    coroutineScope.launch {
-                        delay(DEBOUNCE_CONST)
-                        val text = s.toString().trim()
-                        viewModel.validateGroup(text, this@EditGroupAdFragment::onSuccessGroupName)
-
-                    }
-                }
-            }
-        })
-
+    private fun setDailyBudgetWatcher() {
         daily_budget?.textFieldInput?.addTextChangedListener(object :
-                NumberTextWatcher(daily_budget.textFieldInput, "0") {
+            NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 when {
                     number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
-                                String.format(
-                                        getString(R.string.angarran_harrian_min_bid_error),
-                                        Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
-                                )
+                            String.format(
+                                getString(R.string.angarran_harrian_min_bid_error),
+                                Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
+                            )
                         )
                         validation3 = false
                         actionEnable()
                     }
-                    number < currentBudget  && currentAutoBidState.isEmpty()-> {
+                    number < currentBudget && currentAutoBidState.isEmpty() -> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
-                                String.format(
-                                        getString(R.string.topads_common_minimum_daily_budget),
-                                        currentBudget
-                                )
+                            String.format(
+                                getString(R.string.topads_common_minimum_daily_budget),
+                                currentBudget
+                            )
                         )
                         validation3 = false
                         actionEnable()
@@ -237,10 +204,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                     number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
-                                String.format(
-                                        getString(R.string.topads_common_maximum_daily_budget),
-                                        MAXIMUM_LIMIT
-                                )
+                            String.format(
+                                getString(R.string.topads_common_maximum_daily_budget),
+                                MAXIMUM_LIMIT
+                            )
                         )
                         validation3 = false
                         actionEnable()
@@ -256,9 +223,46 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun isMinValidation(input: Int): Boolean {
-        return (input < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty()) ||
-                (input < currentBudget && currentAutoBidState.isEmpty()) && daily_budget.isVisible
+    private fun setGroupNameWatcher() {
+
+        group_name?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                s?.let {
+                    coroutineScope.launch {
+                        delay(DEBOUNCE_CONST)
+                        if (activity != null && isAdded) {
+                            val text = s.toString().trim()
+                            viewModel.validateGroup(
+                                text,
+                                this@EditGroupAdFragment::onSuccessGroupName
+                            )
+                        }
+
+                    }
+                }
+            }
+        })
+
+    }
+
+    private fun setObservers() {
+        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, {
+            setCurrentDailyBudget(it.toString())
+            currentBudget = it
+        })
+        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
+            currentAutoBidState = it
+            if (currentAutoBidState.isNotEmpty()) {
+                setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
+                actionEnable()
+            }
+        })
     }
 
     private fun saveInitialChoices() {
@@ -303,6 +307,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun checkDataChanged(): Boolean {
         return initialDailyBudget != getCurrentDailyBudget() || groupName != getCurrentTitle() || initialToggleState != toggle?.isChecked
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onDetach() {

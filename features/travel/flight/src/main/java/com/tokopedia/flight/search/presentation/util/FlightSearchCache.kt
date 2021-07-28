@@ -2,7 +2,10 @@ package com.tokopedia.flight.search.presentation.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import java.util.*
 
 /**
@@ -29,17 +32,18 @@ class FlightSearchCache(context: Context) {
             ?: ""
 
     fun setBackgroundRefreshTime(refreshTimeInSeconds: Int) {
-        val expiredTime = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, refreshTimeInSeconds)
-        editor.putString(BACKGROUND_REFRESH_TIME, FlightDateUtil
-                .dateToString(expiredTime, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z))
-                .apply()
+        val expiredTime = DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.SECOND, refreshTimeInSeconds)
+        editor.putString(
+                BACKGROUND_REFRESH_TIME,
+                expiredTime.toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+        ).apply()
     }
 
     fun isBackgroundCacheExpired(): Boolean {
         val expiredTimeString = sharedPrefs.getString(BACKGROUND_REFRESH_TIME, "") ?: ""
         return if (expiredTimeString.isNotEmpty()) {
-            val expiredTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, expiredTimeString)
-            FlightDateUtil.getCurrentDate().after(expiredTime)
+            val expiredTime = expiredTimeString.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+            DateUtil.getCurrentDate().after(expiredTime)
         } else {
             false
         }

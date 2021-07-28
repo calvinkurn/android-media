@@ -6,5 +6,7 @@ package com.tokopedia.play.broadcaster.data.type
 enum class OverwriteMode {
 
     Product,
-    Cover
+    Cover,
+    Title,
+    Tags,
 }

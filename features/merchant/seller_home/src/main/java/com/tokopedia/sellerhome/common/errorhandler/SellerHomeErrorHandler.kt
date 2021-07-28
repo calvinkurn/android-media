@@ -1,11 +1,46 @@
 package com.tokopedia.sellerhome.common.errorhandler
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 
 object SellerHomeErrorHandler {
-    fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
+
+    internal const val WIDGET_TYPE_KEY = "widget_type"
+    internal const val LAYOUT_ID_KEY = "layout_id"
+
+    private const val ERROR_TAG = "SELLER_HOME_ERROR"
+
+    // Scalyr Error Keys
+    private const val ERROR_TYPE_KEY = "error_type"
+    private const val DEVICE_ID_KEY = "device_id"
+    private const val MESSAGE_KEY = "message"
+    private const val STACKTRACE_KEY = "stacktrace"
+    private const val EXTRAS_KEY = "extras"
+
+    internal object ErrorType {
+        const val ERROR_LAYOUT = "error_layout"
+        const val ERROR_WIDGET = "error_widget"
+        const val ERROR_TICKER = "error_ticker"
+    }
+
+    fun logException(throwable: Throwable,
+                     message: String,
+                     errorType: String = "",
+                     deviceId: String = "",
+                     extras: Map<String, Any> = mapOf()) {
+
+        logExceptionToCrashlytics(throwable, message)
+
+        if (errorType.isNotBlank()) {
+            logExceptionToScalyr(throwable, errorType, deviceId, extras)
+        }
+    }
+
+    private fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
         try {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
@@ -20,4 +55,26 @@ object SellerHomeErrorHandler {
             e.printStackTrace()
         }
     }
+
+    private fun logExceptionToScalyr(throwable: Throwable,
+                                     errorType: String,
+                                     deviceId: String,
+                                     extras: Map<String, Any>) {
+        ServerLogger.log(Priority.P2, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, deviceId, extras))
+    }
+
+    private fun getSellerHomeErrorMessageMap(throwable: Throwable,
+                                             errorType: String,
+                                             deviceId: String,
+                                             extras: Map<String, Any>): Map<String, String> {
+        val stringExtras = Gson().toJson(extras)
+        return mutableMapOf(
+                ERROR_TYPE_KEY to errorType,
+                DEVICE_ID_KEY to deviceId,
+                MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
+                EXTRAS_KEY to stringExtras,
+                STACKTRACE_KEY to throwable.stackTraceToString()
+        )
+    }
+
 }

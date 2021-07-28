@@ -44,6 +44,7 @@ import javax.inject.Inject
 
 private const val CLICK_TIPS_PRODUCT_IKLAN = "click-tips memilih produk"
 private const val CLICK_PRODUCT_IKLAN = "click-pilih produk"
+private const val PRODUCT_PAGE_NAME = "android.topads_create"
 
 class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -160,7 +161,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 getSelectedSortId(),
                 getPromoted(),
                 ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+                START,
+                PRODUCT_PAGE_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

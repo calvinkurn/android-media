@@ -15,18 +15,20 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
-import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
+import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
+import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
 
@@ -43,6 +45,9 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var userSession: dagger.Lazy<UserSessionInterface>
 
     var isObserverAttached = false
 
@@ -84,13 +89,21 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
     override fun loadRecommendation(thanksPageData: ThanksPageData,
-                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue?) {
+                                    fragment: BaseDaggerFragment,
+                                    trackingQueue: TrackingQueue?,
+                                    pgCategoryIds: List<Int>,
+                                    pageType: ThankPageType
+    ) {
         this.thanksPageData =  thanksPageData
-        this.paymentId = thanksPageData.paymentID.toString()
+        this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         this.trackingQueue = trackingQueue
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData(5, "")
+        viewModel.getDigitalRecommendationData(
+                userSession.get().phoneNumber,
+                pgCategoryIds,
+                pageType
+        )
     }
 
     private fun startViewModelObserver() {
@@ -106,19 +119,19 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         isObserverAttached = true
     }
 
-    private fun addResultToUI(result: DigitalRecommendationList) {
-        if(result.recommendations.isNullOrEmpty()){
+    private fun addResultToUI(result: RechargeRecommendationDigiPersoItem) {
+        if(result.recommendationItems.isNullOrEmpty()){
             hide()
         }else {
             visible()
             tvTitle.text = result.title
             tvTitle.visible()
-            setupRecyclerView(result.recommendations as List<RecommendationsItem>, result.title)
+            setupRecyclerView(result.recommendationItems, result.title)
             adapter.notifyDataSetChanged()
         }
     }
 
-    private fun setupRecyclerView(recommendationItemList: List<RecommendationsItem>,
+    private fun setupRecyclerView(recommendationItemList: List<RecommendationItem>,
                                   title: String?) {
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
@@ -132,11 +145,11 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     private fun getRecommendationListener(): DigitalRecommendationViewListener {
         return object : DigitalRecommendationViewListener {
-            override fun onDigitalProductClick(item: RecommendationsItem, position: Int) {
+            override fun onDigitalProductClick(item: RecommendationItem, position: Int) {
                 onRecomProductClick(item, position)
             }
 
-            override fun onDigitalProductImpression(item: RecommendationsItem, position: Int) {
+            override fun onDigitalProductImpression(item: RecommendationItem, position: Int) {
                 analytics.get().sendDigitalRecommendationItemDisplayed(trackingQueue, item,
                         position, paymentId, thanksPageData.profileCode)
             }
@@ -145,7 +158,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
 
-    private fun onRecomProductClick(item: RecommendationsItem, position: Int) {
+    private fun onRecomProductClick(item: RecommendationItem, position: Int) {
         RouteManager.route(context, item.appLink)
         analytics.get().sendDigitalRecommendationItemClick(item, position, paymentId, thanksPageData.profileCode)
     }

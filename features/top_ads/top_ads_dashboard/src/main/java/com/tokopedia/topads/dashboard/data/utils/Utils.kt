@@ -112,9 +112,9 @@ object Utils {
         return price.replace("Rp", "").replace(".", "").replace(",", "").trim().toInt()
     }
 
-    fun calculatePercentage(number: String, percent: Int): Int {
+    fun calculatePercentage(number: String, percent: Double): Double {
         val price = number.removeCommaRawString()
-        var result = 0
+        var result = 0.0
         if (price.isNotEmpty())
             result = (price.toInt() * percent) / 100
         return result

@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
+import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -43,6 +44,11 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.HomeServerLogger.TYPE_CANCELLED_INIT_FLOW
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_EMPTY_UPDATE
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_INIT_FLOW
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_REFRESH
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
@@ -51,8 +57,6 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -67,6 +71,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
@@ -112,7 +117,8 @@ open class HomeRevampViewModel @Inject constructor(
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val playWidgetTools: Lazy<PlayWidgetTools>
+        private val playWidgetTools: Lazy<PlayWidgetTools>,
+        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -122,6 +128,12 @@ open class HomeRevampViewModel @Inject constructor(
         const val GRID = "grid"
         const val QUANTITY = "quantity"
         const val POSITION = "position"
+
+        const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
+
+        private const val TOP_ADS_BANNER_DIMEN_ID = 3
+        private const val TOP_ADS_COUNT = 1
+        private const val TOP_ADS_HOME_SOURCE = "1"
     }
 
     val homeLiveData: LiveData<HomeDataModel>
@@ -208,6 +220,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
+    private var useWalletApp: Boolean = true
     private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
@@ -494,16 +507,16 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun onRefreshTokoCash() {
+        if (!userSession.get().isLoggedIn) return
+        updateHeaderViewModel(
+            homeHeaderWalletAction = null,
+            isWalletDataError = false
+        )
         balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
                     getWalletBalanceData()
                 },
                 isOldBalanceWidget = {
-                    if (!userSession.get().isLoggedIn) return@balanceRemoteConfigCondition
-                    updateHeaderViewModel(
-                            homeHeaderWalletAction = null,
-                            isWalletDataError = false
-                    )
                     getTokocashBalance()
                 }
         )
@@ -549,11 +562,12 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(it, null))
 
-            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                    mapOf("type" to "revamp_error_refresh",
-                            "reason" to (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
-                            "data" to Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
-                    ))
+            HomeServerLogger.logWarning(
+                type = TYPE_REVAMP_ERROR_REFRESH,
+                throwable = it,
+                reason = (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
         }
     }
 
@@ -934,6 +948,10 @@ open class HomeRevampViewModel @Inject constructor(
         this.useNewBalanceWidget = useNewBalanceWidget
     }
 
+    fun setWalletAppRollence(useWalletApp: Boolean) {
+        this.useWalletApp = useWalletApp
+    }
+
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
     }
@@ -962,10 +980,18 @@ open class HomeRevampViewModel @Inject constructor(
 
     }
 
-    private inline fun <reified T> findWidgetList(actionOnFound: (List<T>) -> Unit) {
-        homeDataModel.list.withIndex().filterIsInstance<T>().let {
-            actionOnFound.invoke(it)
+    private inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
         }
+        actionOnFound.invoke(listFound)
     }
 
     private inline fun <reified T> widgetIsAvailable(predicate: (T) -> Boolean = {true}): Boolean {
@@ -1026,6 +1052,17 @@ open class HomeRevampViewModel @Inject constructor(
             isNewBalanceWidget.invoke()
         } else {
             isOldBalanceWidget.invoke()
+        }
+    }
+
+    private suspend fun walletAppAbTestCondition(
+        isUsingWalletApp: suspend () -> Unit,
+        isUsingOldWallet: suspend () -> Unit
+    ) {
+        if (useWalletApp) {
+            isUsingWalletApp.invoke()
+        } else {
+            isUsingOldWallet.invoke()
         }
     }
 
@@ -1149,7 +1186,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-        getTokopointJob = if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
+        getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
                 updateHeaderViewModel(
@@ -1211,14 +1248,47 @@ open class HomeRevampViewModel @Inject constructor(
             var walletContent: HomeHeaderWalletAction? = null
             var tokopointContent: TokopointsDrawerListHomeData? = null
             var pendingCashback: PendingCashback? = null
+            var walletAppData: WalletAppData? = null
 
-            try {
-                walletContent = getWalletBalanceContent()
-            } catch (e: Exception) {
-                homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                homeDataModel.homeBalanceModel.mapErrorWallet()
-                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-            }
+            walletAppAbTestCondition(
+                isUsingWalletApp = {
+                    getHomeBalanceWalletAppData(updateView = false)
+                },
+                isUsingOldWallet = {
+                    try {
+                        walletContent = getWalletBalanceContent()
+
+                        walletContent?.let { walletContent ->
+                            if (!walletContent.isLinked) {
+                                try {
+                                    pendingCashback = getPendingTokoCashContent()
+                                    pendingCashback?.let { pendingData ->
+                                        homeDataModel.homeBalanceModel.mapBalanceData(
+                                            tokopointDrawerListHomeData = tokopointContent,
+                                            homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
+                                            pendingCashBackData = PendingCashbackModel(
+                                                pendingCashback = pendingData,
+                                                labelActionButton = walletContent.labelActionButton,
+                                                labelTitle = walletContent.labelTitle,
+                                                walletType = walletContent.walletType
+                                            )
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                                }
+                            } else {
+                                homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                    }
+                }
+            )
 
             try {
                 tokopointContent = getTokopointBalanceContent()
@@ -1226,31 +1296,6 @@ open class HomeRevampViewModel @Inject constructor(
                 homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeDataModel.homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
-            }
-
-            walletContent?.let {
-                if (!walletContent.isLinked) {
-                    try {
-                        pendingCashback = getPendingTokoCashContent()
-                        pendingCashback?.let { pendingData ->
-                            homeDataModel.homeBalanceModel.mapBalanceData(
-                                    tokopointDrawerListHomeData = tokopointContent,
-                                    homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
-                                    pendingCashBackData = PendingCashbackModel(
-                                            pendingCashback = pendingData,
-                                            labelActionButton = walletContent.labelActionButton,
-                                            labelTitle = walletContent.labelTitle,
-                                            walletType = walletContent.walletType
-                                    )
-                            )
-                        }
-                    } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-                    }
-                } else {
-                    homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
-                }
             }
 
             tokopointContent?.let {
@@ -1283,21 +1328,35 @@ open class HomeRevampViewModel @Inject constructor(
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
-            val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
-            homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
-            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-            if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
-                _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
-            }
+            walletAppAbTestCondition(
+                isUsingWalletApp = {
+                    getHomeBalanceWalletAppData(updateView = true)
+                },
+                isUsingOldWallet = {
+                    try {
+                        val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
+                        homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
+                        newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                        if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
+                            _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
+                        }
+                    } catch (e: Exception) {
+                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
+                        homeDataModel.homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
+                        newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                    }
+                }
+            )
         }){
-            homeDataModel.homeBalanceModel.mapErrorWallet()
-            homeDataModel.homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
-            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+
         }
     }
 
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
         val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+        if (tokopointsDrawerListHome.tokopointsDrawerList.drawerList.isEmpty()) {
+            throw IllegalStateException("Tokopoints data is null")
+        }
         return tokopointsDrawerListHome
     }
 
@@ -1305,25 +1364,57 @@ open class HomeRevampViewModel @Inject constructor(
         return mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
     }
 
+    private suspend fun getWalletAppData(): WalletAppData {
+        return getWalletAppBalanceUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getHomeBalanceWalletAppData(updateView: Boolean = false) {
+        try {
+            val walletAppData = getWalletAppData()
+            walletAppData.let { walletContent ->
+                if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
+                    homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
+                    if (updateView) newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                } else {
+                    HomeServerLogger.logWarning(
+                        type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
+                        throwable = MessageErrorException(error_unable_to_parse_wallet),
+                        reason = error_unable_to_parse_wallet
+                    )
+                    throw IllegalStateException(error_unable_to_parse_wallet)
+                }
+            }
+        } catch (e: Exception) {
+            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+            homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
+            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+        }
+    }
+
     private suspend fun getPendingTokoCashContent(): PendingCashback {
         return getPendingCashbackUseCase.get().executeOnBackground()
     }
 
     private fun getDisplayTopAdsHeader(){
-        findWidget<FeaturedShopDataModel> { featuredShopDataModel, index ->
-            launchCatchError(coroutineContext, block={
-                getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
-                val data = getDisplayHeadlineAds.get().executeOnBackground()
-                if(data.isEmpty()){
-                    deleteWidget(featuredShopDataModel, index)
-                } else {
-                    updateWidget(featuredShopDataModel.copy(
+        findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
+            indexedFeaturedShopModelList.forEach { model ->
+                val featuredShopDataModel = model.value
+                val index = model.index
+
+                launchCatchError(coroutineContext, block={
+                    getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
+                    val data = getDisplayHeadlineAds.get().executeOnBackground()
+                    if(data.isEmpty()){
+                        deleteWidget(featuredShopDataModel, index)
+                    } else {
+                        updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
-                                    channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
                             )), index)
+                    }
+                }){
+                    deleteWidget(featuredShopDataModel, index)
                 }
-            }){
-                deleteWidget(featuredShopDataModel, index)
             }
         }
     }
@@ -1489,14 +1580,19 @@ open class HomeRevampViewModel @Inject constructor(
                     _isRequestNetworkLiveData.postValue(Event(false))
                     onRefreshState = false
                     if (homeNewDataModel.list.isEmpty()) {
-                        ServerLogger.log(Priority.P2, "HOME_STATUS",
-                                mapOf("type" to "revamp_empty_update",
-                                        "reason" to "Visitables is empty",
-                                        "isProcessingDynamicChannel" to homeNewDataModel.isProcessingDynamicChannle.toString(),
-                                        "isProcessingAtf" to homeNewDataModel.isProcessingAtf.toString(),
-                                        "isFirstPage" to homeNewDataModel.isFirstPage.toString(),
-                                        "isCache" to homeNewDataModel.isCache.toString()
-                                ))
+                        val error = "type:" + "revamp_empty_update; " +
+                                "reason:" + "Visitable is empty; " +
+                                "isProcessingDynamicChannel:" + homeNewDataModel.isProcessingDynamicChannle.toString() + ";" +
+                                "isProcessingAtf:" + homeNewDataModel.isProcessingAtf.toString() + ";" +
+                                "isFirstPage:" + homeNewDataModel.isFirstPage.toString() + ";" +
+                                "isCache:" + homeNewDataModel.isCache.toString()
+
+                        HomeServerLogger.logWarning(
+                            type = TYPE_REVAMP_EMPTY_UPDATE,
+                            throwable = MessageErrorException(error),
+                            reason = error,
+                            data = error
+                        )
                     }
                     updateHomeData(homeNewDataModel)
 
@@ -1508,12 +1604,12 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
                 } else if (onRefreshState) {
-                    if (homeDataModel?.list?.size?:0 > 1) {
+                    if (homeNewDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
                         takeTicker = false
                     }
-                    if (homeDataModel?.list?.size?:0 > 0) {
-                        homeDataModel?.let { updateHomeData(it) }
+                    if (homeNewDataModel?.list?.size?:0 > 0) {
+                        homeNewDataModel?.let { updateHomeData(it) }
                     }
                     refreshHomeData()
                 }
@@ -1521,19 +1617,21 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                    mapOf("type" to "revamp_error_init_flow",
-                            "reason" to (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
-                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
-                    ))
+            HomeServerLogger.logWarning(
+                type = TYPE_REVAMP_ERROR_INIT_FLOW,
+                throwable = it,
+                reason = (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
+                data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                    mapOf("type" to "revamp_cancelled_init_flow",
-                            "reason" to (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
-                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
-                    ))
+            HomeServerLogger.logWarning(
+                type = TYPE_CANCELLED_INIT_FLOW,
+                throwable = it,
+                reason = (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
             homeFlowDataCancelled = true
         }
     }
@@ -1558,10 +1656,10 @@ open class HomeRevampViewModel @Inject constructor(
                 val results = topAdsImageViewUseCase.get().getImageData(
                         topAdsImageViewUseCase.get().getQueryMap(
                                 "",
-                                "1",
+                                TOP_ADS_HOME_SOURCE,
                                 "",
-                                1,
-                                3,
+                                TOP_ADS_COUNT,
+                                TOP_ADS_BANNER_DIMEN_ID,
                                 "")
                 )
                 if (results.isNotEmpty()) {

@@ -4,8 +4,8 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 
 data class HeaderShopPerformanceUiModel(var shopLevel: String = "-",
                                         var shopScore: String = "-",
-                                        var scorePenalty: Int? = 0,
-                                        var shopAge: Int = 0,
+                                        var scorePenalty: Long? = 0,
+                                        var shopAge: Long = 0,
                                         var titleHeaderShopService: String? = "",
                                         var descHeaderShopService: String? = "",
                                         var showCardNewSeller: Boolean = false

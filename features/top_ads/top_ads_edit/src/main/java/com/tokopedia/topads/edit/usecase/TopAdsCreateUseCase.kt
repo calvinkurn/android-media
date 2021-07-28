@@ -109,7 +109,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         dataAddProduct?.forEach { x ->
             val adOperation = GroupEditInput.Group.AdOperationsItem()
             val ad = GroupEditInput.Group.AdOperationsItem.Ad()
-            ad.productId = x.itemID.toString()
+            ad.productId = x.itemID
             adOperation.ad = ad
             adOperation.action = ACTION_ADD
             productList.add(adOperation)
@@ -117,7 +117,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         dataDeleteProduct?.forEach { productDeleted ->
             val adOperation = GroupEditInput.Group.AdOperationsItem()
             val ad = GroupEditInput.Group.AdOperationsItem.Ad()
-            ad.productId = productDeleted.itemID.toString()
+            ad.productId = productDeleted.itemID
             adOperation.ad = ad
             adOperation.action = ACTION_REMOVE
             productList.add(adOperation)

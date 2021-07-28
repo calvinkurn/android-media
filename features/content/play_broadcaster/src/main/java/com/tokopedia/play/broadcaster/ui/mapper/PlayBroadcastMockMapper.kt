@@ -178,7 +178,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return BroadcastScheduleUiModel.NoSchedule
     }
 
-    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
+    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel {
         return PlayCoverUiModel.empty()
     }
 

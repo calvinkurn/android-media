@@ -96,4 +96,8 @@ public class NotificationsModel {
     public int getTotalNewInbox() {
         return inboxCounter.all.totalInt;
     }
+
+    public int getTotalNotificationOnNewInbox() {
+        return inboxCounter.all.notifcenterInt;
+    }
 }

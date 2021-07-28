@@ -73,4 +73,7 @@ object ApplinkConstInternalSellerapp {
 
     //AdminRoleAuthorizeActivity
     const val ADMIN_AUTHORIZE = "$INTERNAL_SELLERAPP/admin-authorize/{feature}/"
+
+    //SellerFeedbackActivity
+    const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
 }

@@ -62,9 +62,9 @@ class VoucherGameListActivityTest{
 
     @Test
     fun validateTracking(){
-        clickOnPromoBanner()
-        clickOnCard()
         clearSearch()
+        clickOnCard()
+        clickOnPromoBanner()
         search_ItemIsAvailable()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTICS_VALIDATOR),
                 hasAllSuccess())

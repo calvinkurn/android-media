@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.MenuItemType
@@ -25,7 +26,7 @@ object SellerSettingsList {
         val trackingAliasMap = trackingAliasMap(context)
 
         return listOf(
-            SellerSettingsTitleUiModel(context.getString(R.string.setting_menu_shop_profile), R.drawable.ic_pengaturan_toko),
+            SellerSettingsTitleUiModel(context.getString(R.string.setting_menu_shop_profile), IconUnify.SHOP_SETTING),
             SellerMenuItemUiModel(
                 context.getString(R.string.setting_menu_basic_info),
                 clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
@@ -57,9 +58,9 @@ object SellerSettingsList {
             DividerUiModel(DividerType.THICK),
             SellerMenuItemUiModel(
                 context.getString(com.tokopedia.seller.menu.R.string.seller_menu_notification_setting),
-                R.drawable.ic_app_setting,
                 eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                type = MenuItemType.NOTIFICATION) {
+                type = MenuItemType.NOTIFICATION,
+                iconUnify = IconUnify.PHONE_SETTING) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
                 intent.putExtra(EXTRA_OPEN_SELLER_NOTIF, true)
                 context.startActivity(intent)

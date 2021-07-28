@@ -48,9 +48,6 @@ class AddEditProductDraftAnalyticTest {
 
     @Before
     fun beforeTest() {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
-
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(AddEditProductEditingMockResponseConfig())
         deleteAllDraft()

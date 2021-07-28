@@ -3,11 +3,13 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardTransitionPeriodRelief"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl1"
+    android:layout_marginEnd="@dimen/spacing_lvl1">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardTransitionPeriodRelief"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_transition_period_relief">

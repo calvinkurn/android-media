@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.ExpandableSectionUiModel
 import kotlinx.android.synthetic.main.item_pm_expandable_widget_section.view.*
@@ -18,5 +19,6 @@ class ExpandableSectionViewHolder(itemView: View?) : AbstractViewHolder<Expandab
 
     override fun bind(element: ExpandableSectionUiModel) {
         itemView.tvPmExpandableSection.text = element.text
+        itemView.horLinePmSeparator.isVisible = element.shouldShowTopSeparator
     }
 }

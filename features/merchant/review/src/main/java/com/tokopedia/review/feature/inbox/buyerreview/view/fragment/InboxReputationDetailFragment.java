@@ -356,7 +356,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToReportReview(int shopId, String reviewId) {
+    public void onGoToReportReview(long shopId, String reviewId) {
         startActivityForResult(InboxReputationReportActivity.getCallingIntent(
                 getActivity(),
                 shopId,
@@ -463,12 +463,12 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProfile(int reviewerId) {
+    public void onGoToProfile(long reviewerId) {
         startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(reviewerId)));
     }
 
     @Override
-    public void onGoToShopInfo(int shopId) {
+    public void onGoToShopInfo(long shopId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }

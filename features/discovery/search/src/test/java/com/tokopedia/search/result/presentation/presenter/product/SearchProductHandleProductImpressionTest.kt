@@ -122,7 +122,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
         }
 
         verify(exactly = 0) {
@@ -160,7 +160,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot))
         }
 
         verify(exactly = 0) {
@@ -213,7 +213,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for product impression with coach mark shown`(productItemDataView: ProductItemDataView, position: Int) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
             productListView.showOnBoarding(position)
         }
     }

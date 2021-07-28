@@ -18,8 +18,9 @@
         android:paddingTop="@dimen/layout_lvl1"
         android:paddingEnd="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_Static_Black_68"
         app:typographyType="body_2"
-        tools:background="@drawable/bg_pm_next_grade_diamond"
+        tools:background="@drawable/bg_pm_next_grade_ultimate"
         tools:text="Capai Level 4 dan skor min. 70 untuk naik jadi PM Diamond di periode update selanjutnya dan nikmati:" />
 
     <androidx.recyclerview.widget.RecyclerView

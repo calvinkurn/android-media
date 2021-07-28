@@ -94,7 +94,7 @@
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_8"
-        android:scaleType="fitCenter"
+        android:scaleType="fitStart"
         tools:ignore="ContentDescription" />
 
     <androidx.constraintlayout.helper.widget.Flow

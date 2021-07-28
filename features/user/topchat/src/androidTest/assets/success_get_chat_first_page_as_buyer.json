@@ -131,6 +131,106 @@
                     "html": ""
                   }
                 }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550539",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "Selamat datang di VIP List! Terima kasih telah menghubungi kami, sebentar lagi pesan kamu akan kami balas. 😀",
+                "replyTime": "1599606494355660000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "auto_reply",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550539",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "Selamat datang di VIP List! Terima kasih telah menghubungi kami, sebentar lagi pesan kamu akan kami balas. 😀",
+                "replyTime": "1599606494355660000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "auto_reply",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550539",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "Selamat datang di VIP List! Terima kasih telah menghubungi kami, sebentar lagi pesan kamu akan kami balas. 😀",
+                "replyTime": "1599606494355660000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "auto_reply",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550539",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "Selamat datang di VIP List! Terima kasih telah menghubungi kami, sebentar lagi pesan kamu akan kami balas. 😀",
+                "replyTime": "1599606494355660000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "auto_reply",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
               }
             ]
           },

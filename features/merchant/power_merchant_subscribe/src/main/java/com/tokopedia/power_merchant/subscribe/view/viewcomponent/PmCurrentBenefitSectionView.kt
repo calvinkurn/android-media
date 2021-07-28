@@ -28,10 +28,10 @@ class PmCurrentBenefitSectionView : ConstraintLayout {
 
     fun setOnExpandedChanged(shouldExpanded: Boolean) {
         if (shouldExpanded) {
-            icPmExpandableTitleIcon.setImage(IconUnify.CHEVRON_DOWN)
+            icPmExpandableTitleIcon.setImage(IconUnify.CHEVRON_UP)
             viewPmExpandableHorLine.visible()
         } else {
-            icPmExpandableTitleIcon.setImage(IconUnify.CHEVRON_UP)
+            icPmExpandableTitleIcon.setImage(IconUnify.CHEVRON_DOWN)
             viewPmExpandableHorLine.gone()
         }
     }

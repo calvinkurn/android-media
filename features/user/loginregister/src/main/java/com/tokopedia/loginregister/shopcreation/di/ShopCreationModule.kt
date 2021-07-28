@@ -1,11 +1,7 @@
 package com.tokopedia.loginregister.shopcreation.di
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
-import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.user.session.UserSession
@@ -30,13 +26,4 @@ class ShopCreationModule {
 
     @Provides
     fun provideRegisterAnalytics(): RegisterAnalytics = RegisterAnalytics()
-
-    @ShopCreationScope
-    @Provides
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun provideCryptographyUtils(): Cryptography? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            CryptographyUtils()
-        } else null
-    }
 }

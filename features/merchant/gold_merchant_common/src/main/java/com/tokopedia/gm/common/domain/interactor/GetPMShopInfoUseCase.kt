@@ -44,6 +44,7 @@ class GetPMShopInfoUseCase @Inject constructor(
             goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source, filter: ${'$'}filter) {
               is_new_seller
               is_kyc
+              shop_age
               kyc_status_id
               shop_score_threshold
               shop_score_pm_pro_threshold

@@ -3,9 +3,8 @@ package com.tokopedia.play.broadcaster.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStoreImpl
-import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStore
-import com.tokopedia.play.broadcaster.data.datastore.BroadcastScheduleDataStoreImpl
-import com.tokopedia.play.broadcaster.model.ModelBuilder
+import com.tokopedia.play.broadcaster.data.datastore.*
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.testdouble.MockCoverDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockProductDataStore
 import com.tokopedia.play.broadcaster.testdouble.MockSetupDataStore
@@ -36,10 +35,12 @@ class PlayEditProductViewModelTest {
     private lateinit var coverDataStore: MockCoverDataStore
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var mockSetupDataStore: MockSetupDataStore
+    private lateinit var titleDataStore: TitleDataStore
+    private lateinit var tagsDataStore: TagsDataStore
 
     private lateinit var viewModel: PlayEditProductViewModel
 
-    private val modelBuilder = ModelBuilder()
+    private val modelBuilder = UiModelBuilder()
 
     private val channelId = "12345"
 
@@ -54,7 +55,9 @@ class PlayEditProductViewModelTest {
         productDataStore = MockProductDataStore(dispatcherProvider)
         coverDataStore = MockCoverDataStore(dispatcherProvider)
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore)
+        titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
+        tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
 
         productDataStore.setSelectedProducts(productDataList)
 

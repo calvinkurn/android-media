@@ -7,6 +7,8 @@ import com.tokopedia.logintest.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.logintest.login.domain.pojo.RegisterCheckData
 import com.tokopedia.logintest.login.domain.pojo.StatusPinData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 
 /**
@@ -34,6 +36,12 @@ interface LoginTestAppContract {
         fun stopTrace()
 
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
+
+        fun onShowPopupError(pojo: LoginTokenPojo?, pojo2: LoginToken?)
+
+        fun onGoToActivationPage(errorMessage: MessageErrorException)
+
+        fun onGoToSecurityQuestion()
 
         fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
 

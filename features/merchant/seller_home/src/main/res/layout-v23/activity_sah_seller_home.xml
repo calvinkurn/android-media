@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sahRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/statusBarBackground"
         android:minHeight="?attr/actionBarSize"
-        app:unify_header_is_show_shadow="true"
-        app:unify_header_is_show_back_button="false" />
+        app:unify_header_is_show_back_button="false"
+        app:unify_header_is_show_shadow="true" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sahContainer"
@@ -32,16 +33,16 @@
         android:id="@+id/statusBarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
-        android:background="@drawable/sah_shadow"
-        android:layout_below="@id/statusBarBackground"/>
+        android:layout_below="@id/statusBarBackground"
+        android:background="@drawable/sah_shadow" />
 
     <View
         android:id="@+id/navBarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
+        android:layout_above="@id/sahBottomNav"
         android:background="@drawable/sah_shadow"
-        android:rotation="@integer/shadow_inverted_rotation"
-        android:layout_above="@id/sahBottomNav"/>
+        android:rotation="@integer/shadow_inverted_rotation" />
 
     <com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.LottieBottomNav
         android:id="@+id/sahBottomNav"

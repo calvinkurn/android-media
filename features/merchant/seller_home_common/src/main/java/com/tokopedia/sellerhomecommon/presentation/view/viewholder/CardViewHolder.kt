@@ -21,7 +21,6 @@ class CardViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
-        private const val GO_TO_INBOX_REVIEW = "GO_TO_INBOX_REVIEW"
     }
 
     private var cardValueCountdownView: CardValueCountdownView? = null
@@ -80,7 +79,7 @@ class CardViewHolder(
                     shouldLoadAnimation = false
                     tvCardValue.visible()
                     cardValueCountdownView?.invisible()
-                    tvCardValue.text = shownValue
+                    tvCardValue.text = shownValue.parseAsHtml()
                 }
             }
         }
@@ -101,7 +100,7 @@ class CardViewHolder(
                 tvCardValue.invisible()
             } else {
                 tvCardValue.visible()
-                tvCardValue.text = element.data?.value ?: "0"
+                tvCardValue.text = (element.data?.value ?: "0").parseAsHtml()
             }
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
             addOnImpressionListener(element.impressHolder) {

@@ -2,7 +2,7 @@
 <resources>
 
     <style name="error_appearance" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textColor">@color/contact_us_black_38</item>
         <item name="android:textSize">12sp</item>
     </style>
 
@@ -48,6 +48,10 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.White.Background" parent="Base.Theme">
+        <item name="android:background">@color/white</item>
     </style>
 
 </resources>

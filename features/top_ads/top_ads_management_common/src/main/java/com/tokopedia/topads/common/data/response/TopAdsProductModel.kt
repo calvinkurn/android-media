@@ -27,11 +27,11 @@ data class TopAdsProductModel(
         @SerializedName("groupName")
         val groupName: String = "",
         @SerializedName("groupID")
-        val groupID: Int = 0,
+        val groupID: String = "",
         @SerializedName("departmentName")
         val departmentName: String = "",
         @SerializedName("departmentID")
-        val departmentID: Int = 0,
+        val departmentID: String = "",
         @SerializedName("productRating")
         val productRating: Int = 0,
         @SerializedName("productReviewCount")

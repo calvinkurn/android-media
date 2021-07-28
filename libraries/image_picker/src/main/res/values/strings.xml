@@ -57,4 +57,11 @@
 
     <string name="ip_title_update_post">Update Post</string>
     <string name="ip_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
+
+    <string name="editor_common_new_feature">Beta</string>
+
+    <string name="editor_watermark_item">Logo Tokopedia &amp; Nama Toko</string>
+    <string name="thumbnail_image_editor_item">thumbnail image editor item</string>
+    <string name="placeholder_image_watermark_preview">placeholder image watermark preview</string>
+    <string name="thumbnail_image_watermark_preview">thumbnail image watermark preview</string>
 </resources>

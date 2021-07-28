@@ -32,4 +32,5 @@
     <string name="path_seller_action" translatable="false">/seller-action</string>
     <string name="path_seller_settings" translatable="false">/seller-settings</string>
     <string name="path_admin_authorize" translatable="false">/admin-authorize/.*\\/</string>
+    <string name="path_seller_feedback" translatable="false">/seller-feedback</string>
 </resources>

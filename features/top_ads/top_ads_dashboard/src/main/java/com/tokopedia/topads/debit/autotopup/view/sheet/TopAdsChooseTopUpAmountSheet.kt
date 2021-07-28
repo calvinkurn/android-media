@@ -23,7 +23,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     private var data: AutoTopUpStatus? = null
     var onCancel: (() -> Unit)? = null
     var onSaved: ((positionSelected: Int) -> Unit)? = null
-    var bonus: Int = 0
+    var bonus: Double = 0.0
     private val defIndex = 3
     private var dismissedSaved = false
 
@@ -46,7 +46,7 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager,
-             data: AutoTopUpStatus?, bonus: Int) {
+             data: AutoTopUpStatus?, bonus: Double) {
         this.data = data
         this.bonus = bonus
         show(fragmentManager, TOPADS_BOTTOM_SHEET_TAG)

@@ -75,8 +75,6 @@ class AddEditProductAddingAnalyticTest {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP
 
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
         gtmLogDBSource.deleteAll().toBlocking().first()
 
         setupGraphqlMockResponse(AddEditProductAddingMockResponseConfig())

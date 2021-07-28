@@ -9,22 +9,24 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
+import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -56,6 +58,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     private val _promoEmptyStateUiModel = MutableLiveData<PromoEmptyStateUiModel>()
     val promoEmptyStateUiModel: LiveData<PromoEmptyStateUiModel>
         get() = _promoEmptyStateUiModel
+
+    // Promo Error State UI Model
+    private val _promoErrorStateUiModel = MutableLiveData<PromoErrorStateUiModel>()
+    val promoErrorStateUiModel: LiveData<PromoErrorStateUiModel>
+        get() = _promoErrorStateUiModel
 
     // Promo Recommendation UI Model
     private val _promoRecommendationUiModel = MutableLiveData<PromoRecommendationUiModel>()
@@ -248,12 +255,17 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     private fun handleGetPromoListResponse(response: CouponListRecommendationResponse, tmpPromoCode: String) {
         if (response.couponListRecommendation.status == "OK") {
-            if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
-                handlePromoListNotEmpty(response, tmpPromoCode)
+            if (response.couponListRecommendation.data.errorPage.isShowErrorPage) {
+                handleShowErrorPage(response.couponListRecommendation.data.errorPage)
             } else {
-                handlePromoListEmpty(response, tmpPromoCode)
+                if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    handlePromoListNotEmpty(response, tmpPromoCode)
+                } else {
+                    handlePromoListEmpty(response, tmpPromoCode)
+                }
             }
         } else {
+            PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException("response status error"))
             throw PromoErrorException()
         }
     }
@@ -302,7 +314,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 it.exception = PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " })
                 _getPromoListResponseAction.value = it
             }
+            PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " }))
         } else {
+            PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException("response status ok but data is empty"))
             throw PromoErrorException()
         }
     }
@@ -320,6 +334,12 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         } else {
             handleEmptyStateData(response)
         }
+    }
+
+    private fun handleShowErrorPage(errorPage: ErrorPage) {
+        setFragmentStateStopLoading()
+        val errorState = uiModelMapper.mapErrorState(errorPage)
+        _promoErrorStateUiModel.value = errorState
     }
 
     private fun handleEmptyStateData(response: CouponListRecommendationResponse) {
@@ -733,7 +753,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             }
         } else {
             // Response is not OK, need to show error message
-            throw PromoErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
+            val exception = PromoErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
+            PromoCheckoutLogger.logOnErrorApplyPromo(exception)
+            throw exception
         }
     }
 
@@ -757,7 +779,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 successCount++
             } else {
                 // If one of promo merchant is error, then show error message
-                throw PromoErrorException(voucherOrder.message.text)
+                val exception = PromoErrorException(voucherOrder.message.text)
+                PromoCheckoutLogger.logOnErrorApplyPromo(exception)
+                throw exception
             }
         }
 
@@ -809,10 +833,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 }
             }
             calculateAndRenderTotalBenefit()
-            throw PromoErrorException(responseValidatePromo.additionalInfo.errorDetail.message)
+            val exception = PromoErrorException(responseValidatePromo.additionalInfo.errorDetail.message)
+            PromoCheckoutLogger.logOnErrorApplyPromo(exception)
+            throw exception
         } else {
             // Voucher global is empty and voucher orders are empty but the response is OK
             // This section is added as fallback mechanism
+            PromoCheckoutLogger.logOnErrorApplyPromo(PromoErrorException("response is ok but got empty applied promo"))
             throw PromoErrorException()
         }
     }

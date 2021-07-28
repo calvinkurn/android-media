@@ -218,16 +218,16 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     override fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isEmptyReply: Boolean, adapterPosition: Int) {
         if (isEmptyReply) {
-            InboxReviewTracking.eventClickReviewNotYetReplied(data.feedbackId.toString(),
+            InboxReviewTracking.eventClickReviewNotYetReplied(data.feedbackId,
                     getQuickFilter(),
                     inboxReviewViewModel.userSession.shopId.orEmpty(),
-                    data.productID.toString()
+                    data.productID
             )
         } else {
-            InboxReviewTracking.eventClickReviewReplied(data.feedbackId.toString(),
+            InboxReviewTracking.eventClickReviewReplied(data.feedbackId,
                     getQuickFilter(),
                     inboxReviewViewModel.userSession.shopId.orEmpty(),
-                    data.productID.toString()
+                    data.productID
             )
         }
 

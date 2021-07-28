@@ -11,15 +11,8 @@ import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
  * @author by jessica on 26/01/21
  */
 object DigitalCartDummyData {
-    fun getDummyGetCartResponse(): RechargeGetCart {
-        val openPaymentConfig = RechargeGetCart.OpenPaymentConfig(
-                minPayment = 100.0,
-                maxPayment = 12500.0,
-                minPaymentText = "Rp 100",
-                maxPaymentText = "Rp 12.500",
-                minPaymentErrorText = "Nominal pembayaran di bawah batas pembayaran",
-                maxPaymentErrorText = "Nominal pembayaran di atas batas pembayaran"
-        )
+    fun getDummyGetCartResponse(isOpenAmount: Boolean = true): RechargeGetCart {
+        val openPaymentConfig = getOpenAmountData(isOpenAmount)
 
         val mainInfo = mutableListOf<RechargeGetCart.Attribute>()
         mainInfo.add(RechargeGetCart.Attribute("Nama", "Tokopedia User"))
@@ -89,7 +82,18 @@ object DigitalCartDummyData {
                 crossSellingType = 3,
                 crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct),
-                adminFee = 3000
+                adminFee = 3000.0
+        )
+    }
+
+    private fun getOpenAmountData(isOpenAmount: Boolean): RechargeGetCart.OpenPaymentConfig {
+        return RechargeGetCart.OpenPaymentConfig(
+                minPayment = if (isOpenAmount) 100.0 else 0.0,
+                maxPayment = if (isOpenAmount) 12500.0 else 0.0,
+                minPaymentText = "Rp 100",
+                maxPaymentText = "Rp 12.500",
+                minPaymentErrorText = "Nominal pembayaran di bawah batas pembayaran",
+                maxPaymentErrorText = "Nominal pembayaran di atas batas pembayaran"
         )
     }
 
@@ -254,7 +258,7 @@ object DigitalCartDummyData {
                 crossSellingType = 0,
                 crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct),
-                adminFee = 5000
+                adminFee = 5000.0
         )
     }
 

@@ -3,11 +3,13 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/containerRegularMerchantSection"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl1"
+    android:layout_marginEnd="@dimen/spacing_lvl1">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerRegularMerchantSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_12">
@@ -53,8 +55,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/containerEligiblePowerMerchant"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_12">
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_bg_eligible_rm"
@@ -96,6 +97,8 @@
                     android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:textColor="@color/Unify_G500"
                     android:background="?selectableItemBackground"
+                    android:layout_marginBottom="@dimen/spacing_lvl3"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@id/tv_pm_potential_value"
                     app:layout_constraintTop_toBottomOf="@id/tv_pm_potential_value"
                     app:typographyType="body_2"

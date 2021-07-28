@@ -17,4 +17,5 @@ interface ShopPerformanceTypeFactory {
     fun type(itemShopPerformanceErrorUiModel: ItemShopPerformanceErrorUiModel): Int
     fun type(itemLevelScoreProjectUiModel: ItemLevelScoreProjectUiModel): Int
     fun type(sectionPMProBenefitUIModel: SectionPotentialPMProUiModel): Int
+    fun type(itemStatusPMProUiModel: ItemStatusPMProUiModel): Int
 }

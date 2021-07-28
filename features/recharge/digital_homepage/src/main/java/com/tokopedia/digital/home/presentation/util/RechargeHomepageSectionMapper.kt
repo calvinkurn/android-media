@@ -107,7 +107,9 @@ object RechargeHomepageSectionMapper {
                             getDynamicLegoBannerModel(it)
                         }
                     }
-                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
+                    SECTION_PRODUCT_CARD_ROW, SECTION_PRODUCT_CARD_ROW_1X1 -> {
+                        RechargeHomepageProductCardsModel(it)
+                    }
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
                         /**
                          * Count down widget is always from cloud because

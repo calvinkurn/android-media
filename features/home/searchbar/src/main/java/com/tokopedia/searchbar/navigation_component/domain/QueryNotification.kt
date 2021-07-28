@@ -25,6 +25,7 @@ object QueryNotification {
             "                    inbox_counter{\n" +
             "                      all{\n" +
             "                        total_int\n" +
+            "                        notifcenter_int\n" +
             "                      }\n" +
             "                    }\n" +
             "                    resolutionAs {\n" +
