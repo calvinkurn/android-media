@@ -383,6 +383,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderProfile() {
         viewModel.orderProfile.observe(viewLifecycleOwner) {
+            orderProfile = it
             adapter.profile = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
