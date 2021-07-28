@@ -20,10 +20,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.CategoryTelcoType
+import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
+import com.tokopedia.smartbills.presentation.widget.SmartBillsGetNominalCallback
 import com.tokopedia.smartbills.presentation.widget.SmartBillsNominalBottomSheet
+import com.tokopedia.smartbills.util.SmartBillsGlobalError.errorSBMHandlerGlobalError
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -45,6 +48,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private var menuId: String? = null
     private var validationsPhoneNumber: List<RechargeValidation> = emptyList()
     private var operatorActive: TelcoOperator = TelcoOperator()
+    private var selectedProduct: RechargeProduct? = null
 
     override fun getScreenName(): String = ""
 
@@ -71,33 +75,32 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showLoader()
         getMenuDetailTicker()
         getPrefixTelco()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        showLayout()
+        loadData()
     }
 
-    private fun getMenuDetailTicker(){
-        viewModel.getMenuDetailAddTelco(viewModel.createMenuDetailAddTelcoParams(getMenuID()))
-    }
-
-    private fun getPrefixTelco(){
-        viewModel.getPrefixAddTelco(getMenuID())
-    }
-
-    private fun getMenuID(): Int{
-        return menuId.toIntOrZero()
-    }
-
-    private fun showLayout(){
+    private fun loadData(){
         observeTicker()
         observePrefix()
         observeSelectedPrefix()
-        showProductTextField()
+    }
+
+    private fun getMenuDetailTicker(){
+        viewModel.getMenuDetailAddTelco(viewModel.createMenuDetailAddTelcoParams(menuId.toIntOrZero()))
+        showLoader()
+    }
+
+    private fun getPrefixTelco(){
+        viewModel.getPrefixAddTelco(menuId.toIntOrZero())
+    }
+
+    private fun onInputNumberChanged(inputNumber: String){
+        viewModel.getSelectedOperator(inputNumber)
     }
 
     private fun observeTicker(){
@@ -115,17 +118,19 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     hideTicker()
                 }
             }
-            hideLoader()
         }
     }
 
     private fun observePrefix(){
         observe(viewModel.catalogPrefixSelect){
             when(it){
-                is Fail -> {}
+                is Fail -> {
+                        showErrorState(it.throwable)
+                }
                 is Success -> {
-                    validationsPhoneNumber = it.data.rechargeCatalogPrefixSelect.
-                    validations.toMutableList()
+                    validationsPhoneNumber = it.data.rechargeCatalogPrefixSelect.validations.toMutableList()
+                    showMainLayouts()
+                    hideLoader()
                 }
             }
         }
@@ -137,7 +142,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             renderIconOperator(it.operator.attributes.imageUrl)
         }
     }
-
 
     private fun hideTicker(){
         ticker_sbm_add_telco.hide()
@@ -179,7 +183,15 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         loader_sbm_add_telco.hide()
     }
 
-    private fun showProductTextField(){
+    private fun hideMainLayouts(){
+        text_field_sbm_product_type.hide()
+        text_field_sbm_product_number.hide()
+        text_field_sbm_product_nominal.hide()
+        btn_sbm_add_telco.hide()
+    }
+
+    private fun showMainLayouts(){
+
         text_field_sbm_product_type.apply {
             show()
             textFieldInput.setText(CategoryTelcoType.getCategoryString(categoryId))
@@ -212,7 +224,12 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                     && !operatorActive.id.isNullOrEmpty()
                                     && !menuId.isNullOrEmpty()
                             ) {
-                                SmartBillsNominalBottomSheet.newInstance(menuId.toIntOrZero(), categoryId.orEmpty(), operatorActive.id, getNumber()).show(childFragmentManager)
+                                SmartBillsNominalBottomSheet.newInstance(menuId.toIntOrZero(),
+                                        categoryId.orEmpty(), operatorActive.id, getNumber(), object: SmartBillsGetNominalCallback {
+                                            override fun onProductClicked(rechargeProduct: RechargeProduct) {
+                                                renderSelectedProduct(rechargeProduct)
+                                            }
+                                        }).show(childFragmentManager)
                             } else validationNumber()
                         }
                     }
@@ -220,10 +237,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 }
             })
         }
-    }
 
-    private fun onInputNumberChanged(inputNumber: String){
-        viewModel.getSelectedOperator(inputNumber)
+        btn_sbm_add_telco.show()
     }
 
     private fun renderIconOperator(imageUrl: String){
@@ -231,11 +246,9 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         text_field_sbm_product_number.getFirstIcon().show()
     }
 
-    private fun setErrorNumber(isError: Boolean, message: String){
-        text_field_sbm_product_number.apply {
-            setError(isError)
-            setMessage(message)
-        }
+    private fun renderSelectedProduct(rechargeProduct: RechargeProduct){
+        selectedProduct = rechargeProduct
+        text_field_sbm_product_nominal.textFieldInput.setText(selectedProduct?.attributes?.price)
     }
 
     private fun getNumber(): String = text_field_sbm_product_number.textFieldInput.text.toString()
@@ -250,6 +263,26 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     break
                 }
                 setErrorNumber(false, "")
+            }
+        }
+    }
+
+    private fun setErrorNumber(isError: Boolean, message: String){
+        text_field_sbm_product_number.apply {
+            setError(isError)
+            setMessage(message)
+        }
+    }
+
+    private fun showErrorState(throwable: Throwable){
+        hideLoader()
+        hideTicker()
+        hideMainLayouts()
+        context?.let {
+            errorSBMHandlerGlobalError(it, throwable, container_error_sbm_add_telco,
+                    global_error_sbm_add_telco) {
+                getMenuDetailTicker()
+                getPrefixTelco()
             }
         }
     }

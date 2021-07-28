@@ -26,7 +26,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class SmartBillsNominalBottomSheet: BottomSheetUnify() {
+class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGetNominalCallback): BottomSheetUnify(),
+        SmartBillsNominalAdapter.SmartBillNominalListener {
 
     companion object{
         private val TAG = SmartBillsNominalBottomSheet::class.simpleName
@@ -36,9 +37,10 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
         private const val PARAM_OPERATOR_ID = "operator_id"
         private const val PARAM_CLIENT_NUMBER = "client_number"
 
-        fun newInstance(menuId: Int, categoryId:String, opeartorId: String, clientNumber: String):
+        fun newInstance(menuId: Int, categoryId:String, opeartorId: String, clientNumber: String,
+                       getNominalCallback: SmartBillsGetNominalCallback):
                 SmartBillsNominalBottomSheet {
-            return SmartBillsNominalBottomSheet().apply {
+            return SmartBillsNominalBottomSheet(getNominalCallback).apply {
                 arguments = Bundle().apply {
                     putInt(PARAM_MENU_ID, menuId)
                     putString(PARAM_CATEGORY_ID, categoryId)
@@ -89,6 +91,11 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
         show(fragmentManager, TAG)
     }
 
+    override fun onClickProduct(rechargeProduct: RechargeProduct) {
+        dismiss()
+        getNominalCallback.onProductClicked(rechargeProduct)
+    }
+
     private fun initInjector() {
         DaggerSmartBillsComponent.builder()
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -130,7 +137,7 @@ class SmartBillsNominalBottomSheet: BottomSheetUnify() {
     private fun showNominalCatalogList(listProduct: List<RechargeProduct>?){
         listProduct?.let {
             hideLoader()
-            val adapterNominal = SmartBillsNominalAdapter()
+            val adapterNominal = SmartBillsNominalAdapter(this@SmartBillsNominalBottomSheet)
             adapterNominal.listRechargeProduct = listProduct
             recyclerView?.let {
                 it.adapter = adapterNominal

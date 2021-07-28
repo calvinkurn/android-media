@@ -8,7 +8,7 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeProduct
 import kotlinx.android.synthetic.main.view_smart_bills_item_nominal.view.*
 
-class SmartBillsNominalAdapter : RecyclerView.Adapter<SmartBillsNominalAdapter.SmartBillsNominalViewHolder>() {
+class SmartBillsNominalAdapter(val listener: SmartBillNominalListener) : RecyclerView.Adapter<SmartBillsNominalAdapter.SmartBillsNominalViewHolder>() {
 
     var listRechargeProduct = emptyList<RechargeProduct>()
 
@@ -16,6 +16,9 @@ class SmartBillsNominalAdapter : RecyclerView.Adapter<SmartBillsNominalAdapter.S
 
         fun bind(rechargeProduct: RechargeProduct) {
             with(itemView) {
+                setOnClickListener {
+                    listener.onClickProduct(rechargeProduct)
+                }
                 tv_sbm_nominal_price.text = rechargeProduct.attributes.desc
                 tv_sbm_nominal_desc.text = rechargeProduct.attributes.detail
                 tv_sbm_nominal_price_total.text = rechargeProduct.attributes.price
@@ -34,5 +37,9 @@ class SmartBillsNominalAdapter : RecyclerView.Adapter<SmartBillsNominalAdapter.S
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsNominalViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item_nominal, parent, false)
         return SmartBillsNominalViewHolder(itemView)
+    }
+
+    interface SmartBillNominalListener{
+        fun onClickProduct(rechargeProduct: RechargeProduct)
     }
 }
