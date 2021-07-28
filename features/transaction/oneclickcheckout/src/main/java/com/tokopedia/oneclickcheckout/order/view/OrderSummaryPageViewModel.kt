@@ -47,10 +47,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         initCalculator()
     }
 
-    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
-    var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
-    val orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
-
     var orderCart: OrderCart = OrderCart()
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
@@ -62,6 +58,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     val orderProfile: OccMutableLiveData<OrderProfile> = OccMutableLiveData(OrderProfile(enable = false))
     val orderShipment: OccMutableLiveData<OrderShipment> = OccMutableLiveData(OrderShipment())
     val orderPayment: OccMutableLiveData<OrderPayment> = OccMutableLiveData(OrderPayment())
+
+    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
+    var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
+    val orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
 
     val orderTotal: OccMutableLiveData<OrderTotal> = OccMutableLiveData(OrderTotal())
     val globalEvent: OccMutableLiveData<OccGlobalEvent> = OccMutableLiveData(OccGlobalEvent.Normal)
@@ -86,10 +86,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return orderPayment.value.walletData.activation
     }
 
-    fun atcOcc(productId: String) {
+    fun atcOcc(productIds: String) {
         launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Loading
-            globalEvent.value = cartProcessor.atcOcc(productId, userSession.userId)
+            globalEvent.value = cartProcessor.atcOcc(productIds, userSession.userId)
         }
     }
 
@@ -132,6 +132,82 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
+        }
+    }
+
+    private fun sendViewOspEe() {
+        if (!hasSentViewOspEe) {
+            orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, orderProfile.value.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            for (product in orderCart.products) {
+                if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, "", product.purchaseProtectionPlanData.protectionTitle)
+                }
+            }
+            hasSentViewOspEe = true
+        }
+    }
+
+    private fun generateOspEeBody(promoCodes: List<String> = emptyList()): OrderSummaryPageEnhanceECommerce {
+        val products = orderProducts.value
+        return OrderSummaryPageEnhanceECommerce().apply {
+            for (orderProduct in products) {
+                setName(orderProduct.productName)
+                setId(orderProduct.productId.toString())
+                setPrice(orderProduct.productPrice.toString())
+                setBrand(null)
+                setCategory(orderProduct.category)
+                setVariant(null)
+                setQuantity(orderProduct.orderQuantity.toString())
+                setListName(orderProduct.productTrackerData.trackerListName)
+                setAttribution(orderProduct.productTrackerData.attribution)
+                setDiscountedPrice(orderProduct.isSlashPrice)
+                setWarehouseId(orderProduct.warehouseId.toString())
+                setProductWeight(orderProduct.weight.toString())
+                setPromoCode(promoCodes)
+                setPromoDetails("")
+                setProductType("")
+                setCartId(orderProduct.cartId)
+                setBuyerAddressId(orderProfile.value.address.addressId.toString())
+                setSpid(orderShipment.value.getRealShipperProductId().toString())
+                setCodFlag(false)
+                setCornerFlag(false)
+                setIsFullfilment(orderShop.value.isFulfillment)
+                setShopIdDimension(orderShop.value.shopId.toString())
+                setShopNameDimension(orderShop.value.shopName)
+                setShopTypeDimension(orderShop.value.isOfficial, orderShop.value.isGold)
+                setCategoryId(orderProduct.categoryId)
+                if (orderShipment.value.getRealShipperProductId() > 0) {
+                    setShippingPrice(orderShipment.value.getRealShippingPrice().toString())
+                } else {
+                    setShippingPrice("")
+                }
+                setShippingDuration(orderShipment.value.serviceDuration)
+                setCampaignId(orderProduct.campaignId)
+                saveData()
+            }
+        }
+    }
+
+    fun consumeForceShowOnboarding() {
+        val onboarding = orderPreferenceData.onboarding
+        if (onboarding.isForceShowCoachMark) {
+            orderPreferenceData = orderPreferenceData.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            globalEvent.value = OccGlobalEvent.Normal
+        }
+    }
+
+    private fun configureForceShowOnboarding() {
+        val onboarding = orderPreferenceData.onboarding
+        if (onboarding.isForceShowCoachMark && orderProfile.value.isValidProfile && orderShipment.value.isValid()) {
+            forceShowOnboarding(onboarding)
+        }
+    }
+
+    private fun forceShowOnboarding(onboarding: OccOnboarding) {
+        val currentGlobalEvent = globalEvent.value
+        val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
+        if (!hasBlockingGlobalEvent) {
+            globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
         }
     }
 
@@ -282,24 +358,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         orderShipment.value = logisticProcessor.resetBbo(orderShipment.value)
     }
 
-    fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
-        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
-        newOrderShipment?.let {
-            clearBboIfExist()
-            orderShipment.value = it
-            validateUsePromo()
-            updateCart()
-        }
-    }
-
-    fun setInsuranceCheck(checked: Boolean) {
-        if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.insurance.isCheckInsurance != checked) {
-            orderShipment.value.insurance.isCheckInsurance = checked
-            orderShipment.value.insurance.isFirstLoad = false
-            calculateTotal()
-        }
-    }
-
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
@@ -335,6 +393,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             val result = logisticProcessor.savePinpoint(orderProfile.value.address, longitude, latitude, userSession.userId, userSession.deviceId)
             globalEvent.value = result
+        }
+    }
+
+    fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
+        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
+        newOrderShipment?.let {
+            clearBboIfExist()
+            orderShipment.value = it
+            validateUsePromo()
+            updateCart()
+        }
+    }
+
+    fun setInsuranceCheck(checked: Boolean) {
+        if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.insurance.isCheckInsurance != checked) {
+            orderShipment.value.insurance.isCheckInsurance = checked
+            orderShipment.value.insurance.isFirstLoad = false
+            calculateTotal()
         }
     }
 
@@ -413,69 +489,64 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
-            globalEvent.value = OccGlobalEvent.Loading
-            val shop = orderShop.value
-            if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
-                val param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
-                if (param != null) {
-                    if (validateSelectedTerm()) {
-                        finalUpdateJob?.cancel()
-                        finalUpdateJob = launch(executorDispatchers.immediate) {
-                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
-                            if (isSuccess) {
-                                finalValidateUse(orderCart.products, shop, orderProfile.value, onSuccessCheckout, skipCheckIneligiblePromo)
-                                return@launch
-                            }
-                            globalEvent.value = errorGlobalEvent
-                        }
-                    }
-                    return
-                }
-            }
-            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-        }
-    }
-
-    private fun finalValidateUse(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        val validateUsePromoRequest = generateValidateUsePromoRequest()
-        if (!skipCheckIneligiblePromo && promoProcessor.hasPromo(validateUsePromoRequest)) {
-            launch(executorDispatchers.immediate) {
-                val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(validateUsePromoRequest, orderCart)
-                if (resultValidateUse != null) {
-                    validateUsePromoRevampUiModel = resultValidateUse
-                    updatePromoState(resultValidateUse.promoUiModel)
-                    if (isSuccess) {
-                        doCheckout(products, shop, profile, onSuccessCheckout)
-                        return@launch
-                    }
-                }
-                globalEvent.value = newGlobalEvent
-            }
-        } else {
-            doCheckout(products, shop, profile, onSuccessCheckout)
-        }
-    }
-
-    private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile, orderShipment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
-            if (checkoutOccResult != null) {
-                onSuccessCheckout(checkoutOccResult)
-            } else if (globalEventResult != null) {
-                globalEvent.value = globalEventResult
-            }
-        }
-    }
-
-    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
-        globalEvent.value = OccGlobalEvent.Loading
-        launch(executorDispatchers.immediate) {
-            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
-            if (isSuccess && orderProfile.value.isValidProfile) {
-                finalUpdate(onSuccessCheckout, true)
+            var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
+            val creditCard = orderPayment.value.creditCard
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
+            }
+            globalEvent.value = OccGlobalEvent.Loading
+            try {
+                val metadata = JsonParser().parse(param.profile.metadata)
+                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
+                    // unexpected null installment term param
+                    throw IllegalStateException()
+                }
+                expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
+                param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+            } catch (e: RuntimeException) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
+            }
+            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
+            if (isSuccess) {
+                val availableTerms = creditCard.availableTerms
+                availableTerms.forEach {
+                    it.isSelected = it.term == selectedInstallmentTerm.term
+                    it.isError = false
+                }
+                orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
+                calculateTotal()
+                globalEvent.value = OccGlobalEvent.Normal
+                return@launch
+            }
+            globalEvent.value = newGlobalEvent
+        }
+    }
+
+    fun choosePayment(gatewayCode: String, metadata: String) {
+        launch(executorDispatchers.immediate) {
+            if (getCartJob?.isCompleted == false) {
+                getCartJob?.join()
+                if (orderPreference.value !is OccState.FirstLoad) {
+                    return@launch
+                }
+            }
+            var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
+            }
+            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+            globalEvent.value = OccGlobalEvent.Loading
+            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
+            if (isSuccess) {
+                clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent
         }
@@ -575,69 +646,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
-        launch(executorDispatchers.immediate) {
-            var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
-            val creditCard = orderPayment.value.creditCard
-            if (param == null) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-                return@launch
-            }
-            globalEvent.value = OccGlobalEvent.Loading
-            try {
-                val metadata = JsonParser().parse(param.profile.metadata)
-                val expressCheckoutParams = metadata.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
-                if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
-                    // unexpected null installment term param
-                    throw IllegalStateException()
-                }
-                expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
-                param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
-                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
-            } catch (e: RuntimeException) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-                return@launch
-            }
-            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
-            if (isSuccess) {
-                val availableTerms = creditCard.availableTerms
-                availableTerms.forEach {
-                    it.isSelected = it.term == selectedInstallmentTerm.term
-                    it.isError = false
-                }
-                orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-                calculateTotal()
-                globalEvent.value = OccGlobalEvent.Normal
-                return@launch
-            }
-            globalEvent.value = newGlobalEvent
-        }
-    }
-
-    fun choosePayment(gatewayCode: String, metadata: String) {
-        launch(executorDispatchers.immediate) {
-            if (getCartJob?.isCompleted == false) {
-                getCartJob?.join()
-                if (orderPreference.value !is OccState.FirstLoad) {
-                    return@launch
-                }
-            }
-            var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
-            if (param == null) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-                return@launch
-            }
-            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
-                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
-            globalEvent.value = OccGlobalEvent.Loading
-            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
-            if (isSuccess) {
-                clearBboIfExist()
-            }
-            globalEvent.value = newGlobalEvent
-        }
-    }
-
     private fun validateSelectedTerm(): Boolean {
         val creditCard = orderPayment.value.creditCard
         val selectedTerm = creditCard.selectedTerm
@@ -654,87 +662,79 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return true
     }
 
+    fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
+        if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
+            globalEvent.value = OccGlobalEvent.Loading
+            val shop = orderShop.value
+            if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
+                val param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
+                if (param != null) {
+                    if (validateSelectedTerm()) {
+                        finalUpdateJob?.cancel()
+                        finalUpdateJob = launch(executorDispatchers.immediate) {
+                            val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
+                            if (isSuccess) {
+                                finalValidateUse(orderCart.products, shop, orderProfile.value, onSuccessCheckout, skipCheckIneligiblePromo)
+                                return@launch
+                            }
+                            globalEvent.value = errorGlobalEvent
+                        }
+                    }
+                    return
+                }
+            }
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+        }
+    }
+
+    private fun finalValidateUse(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
+        val validateUsePromoRequest = generateValidateUsePromoRequest()
+        if (!skipCheckIneligiblePromo && promoProcessor.hasPromo(validateUsePromoRequest)) {
+            launch(executorDispatchers.immediate) {
+                val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(validateUsePromoRequest, orderCart)
+                if (resultValidateUse != null) {
+                    validateUsePromoRevampUiModel = resultValidateUse
+                    updatePromoState(resultValidateUse.promoUiModel)
+                    if (isSuccess) {
+                        doCheckout(products, shop, profile, onSuccessCheckout)
+                        return@launch
+                    }
+                }
+                globalEvent.value = newGlobalEvent
+            }
+        } else {
+            doCheckout(products, shop, profile, onSuccessCheckout)
+        }
+    }
+
+    private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
+        launch(executorDispatchers.immediate) {
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile, orderShipment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            if (checkoutOccResult != null) {
+                onSuccessCheckout(checkoutOccResult)
+            } else if (globalEventResult != null) {
+                globalEvent.value = globalEventResult
+            }
+        }
+    }
+
+    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
+        globalEvent.value = OccGlobalEvent.Loading
+        launch(executorDispatchers.immediate) {
+            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+            if (isSuccess && orderProfile.value.isValidProfile) {
+                finalUpdate(onSuccessCheckout, true)
+                return@launch
+            }
+            globalEvent.value = newGlobalEvent
+        }
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
         super.onCleared()
-    }
-
-    private fun sendViewOspEe() {
-        if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, orderProfile.value.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
-            for (product in orderCart.products) {
-                if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, "", product.purchaseProtectionPlanData.protectionTitle)
-                }
-            }
-            hasSentViewOspEe = true
-        }
-    }
-
-    private fun generateOspEeBody(promoCodes: List<String> = emptyList()): OrderSummaryPageEnhanceECommerce {
-        val products = orderProducts.value
-        return OrderSummaryPageEnhanceECommerce().apply {
-            for (orderProduct in products) {
-                setName(orderProduct.productName)
-                setId(orderProduct.productId.toString())
-                setPrice(orderProduct.productPrice.toString())
-                setBrand(null)
-                setCategory(orderProduct.category)
-                setVariant(null)
-                setQuantity(orderProduct.orderQuantity.toString())
-                setListName(orderProduct.productTrackerData.trackerListName)
-                setAttribution(orderProduct.productTrackerData.attribution)
-                setDiscountedPrice(orderProduct.isSlashPrice)
-                setWarehouseId(orderProduct.warehouseId.toString())
-                setProductWeight(orderProduct.weight.toString())
-                setPromoCode(promoCodes)
-                setPromoDetails("")
-                setProductType("")
-                setCartId(orderProduct.cartId)
-                setBuyerAddressId(orderProfile.value.address.addressId.toString())
-                setSpid(orderShipment.value.getRealShipperProductId().toString())
-                setCodFlag(false)
-                setCornerFlag(false)
-                setIsFullfilment(orderShop.value.isFulfillment)
-                setShopIdDimension(orderShop.value.shopId.toString())
-                setShopNameDimension(orderShop.value.shopName)
-                setShopTypeDimension(orderShop.value.isOfficial, orderShop.value.isGold)
-                setCategoryId(orderProduct.categoryId)
-                if (orderShipment.value.getRealShipperProductId() > 0) {
-                    setShippingPrice(orderShipment.value.getRealShippingPrice().toString())
-                } else {
-                    setShippingPrice("")
-                }
-                setShippingDuration(orderShipment.value.serviceDuration)
-                setCampaignId(orderProduct.campaignId)
-                saveData()
-            }
-        }
-    }
-
-    fun consumeForceShowOnboarding() {
-        val onboarding = orderPreferenceData.onboarding
-        if (onboarding.isForceShowCoachMark) {
-            orderPreferenceData = orderPreferenceData.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
-            globalEvent.value = OccGlobalEvent.Normal
-        }
-    }
-
-    private fun configureForceShowOnboarding() {
-        val onboarding = orderPreferenceData.onboarding
-        if (onboarding.isForceShowCoachMark && orderProfile.value.isValidProfile && orderShipment.value.isValid()) {
-            forceShowOnboarding(onboarding)
-        }
-    }
-
-    private fun forceShowOnboarding(onboarding: OccOnboarding) {
-        val currentGlobalEvent = globalEvent.value
-        val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
-        if (!hasBlockingGlobalEvent) {
-            globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
-        }
     }
 
     companion object {

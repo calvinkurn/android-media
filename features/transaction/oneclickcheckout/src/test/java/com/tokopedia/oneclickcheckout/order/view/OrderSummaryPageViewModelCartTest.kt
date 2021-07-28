@@ -918,6 +918,21 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Get Shop Id`() {
+        // Given
+        val shopId = 123L
+        val response = helper.orderData.copy(cart = helper.orderData.cart.copy(shop = helper.orderData.cart.shop.copy(shopId = shopId)))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(shopId.toString(), orderSummaryPageViewModel.getShopId())
+    }
+
+    @Test
     fun `Get Payment Profile`() {
         // Given
         val paymentProfile = "paymentProfile"
