@@ -57,8 +57,11 @@ object ApplinkConstInternalMarketplace {
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
 
-    // ReviewProductActivity, "x_prd_nm" = productName
+    // ReadReviewActivity, "x_prd_nm" = productName
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // ReviewProductActivity, "x_prd_nm" = productName
+    const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
 
     // StockReminderActivity
     const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"

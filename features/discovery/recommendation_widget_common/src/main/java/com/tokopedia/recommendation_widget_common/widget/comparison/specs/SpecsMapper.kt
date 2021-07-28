@@ -1,81 +1,100 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.specs
 
 import android.content.Context
-import android.text.Layout
-import android.text.StaticLayout
 
-import android.text.TextPaint
+import android.widget.LinearLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
-import com.tokopedia.recommendation_widget_common.widget.comparison.ResponseMockData
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 
 object SpecsMapper {
     fun mapToSpecsListModel(
-            recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
-            parentInEdgeStart: Boolean = false,
-            parentInEdgeEnd: Boolean = false,
-            context: Context,
-            specsConfig: SpecsConfig
+        recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
+        parentInEdgeStart: Boolean = false,
+        specsConfig: SpecsConfig,
+        position: Int,
+        totalItems: Int
     ): SpecsListModel {
         val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
             SpecsModel(
-                specsTitle = it.value.specTitle,
+                specsTitle = if (position == 0) it.value.specTitle else "",
                 specsSummary = it.value.specSummary,
-                bgDrawableRef = getDrawableBasedOnParentPosition(
-                    parentInEdgeStart,
-                    parentInEdgeEnd
+                bgDrawableRef = getDrawableBasedOnParentCompareItemPosition(
+                    it.index,
+                    recommendationSpecificationLabels.size
                 ),
-                bgDrawableColorRef = getColorBasedOnPosition(
-                    it.index
-                ),
-                height = 400
+                bgDrawableColorRef = getColorCompareItem(
+                    parentInEdgeStart
+                )
             )
         }
         return SpecsListModel(
             specs = listSpecsModel,
-            specsConfig = specsConfig
+            specsConfig = specsConfig,
+            currentRecommendationPosition = position,
+            totalRecommendations = totalItems
         )
     }
 
-    fun getColorBasedOnPosition(position: Int): Int {
-        return if (position % 2 == 0) {
+    private fun getDrawableBasedOnParentCompareItemPosition(
+        index: Int,
+        size: Int
+    ): Int {
+        if (index == 0) return R.drawable.bg_specs_start_end_top
+        else if (index != size - 1) return R.drawable.bg_specs
+        return R.drawable.bg_specs_start_end_bottom
+    }
+
+    private fun getColorCompareItem(parentInEdgeStart: Boolean): Int {
+        return if (parentInEdgeStart) {
             com.tokopedia.unifyprinciples.R.color.Unify_N50
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_N0
         }
     }
 
-    fun getDrawableBasedOnParentPosition(
-        parentInEdgeStart: Boolean,
-        parentInEdgeEnd: Boolean
-    ): Int {
-        if (parentInEdgeStart) return R.drawable.bg_specs_start
-        if (parentInEdgeEnd) return R.drawable.bg_specs_end
-        return R.drawable.bg_specs
-    }
-
-    fun measureSummaryTextHeight(
+    private fun measureSummaryTextHeight(
         text: CharSequence?,
-        textSize: Float,
         textWidth: Int,
         context: Context
     ): Int {
-        val myTextPaint = TextPaint()
-        myTextPaint.isAntiAlias = true
-        // this is how you would convert sp to pixels based on screen density
-//        myTextPaint.setTextSize(textSize * context.getResources().getDisplayMetrics().density);
-        myTextPaint.textSize = textSize
-        val alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
-        val spacingMultiplier = 1.0f
-        val myStaticLayout = StaticLayout(
-            text,
-            myTextPaint,
-            textWidth,
-            alignment,
-            spacingMultiplier,
-            0f,
-            true
-        )
-        return myStaticLayout.height
+        val params =
+            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val paramsTextView =
+            LinearLayout.LayoutParams(textWidth, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val typography = Typography(context)
+        typography.setType(BODY_3)
+        typography.layoutParams = paramsTextView
+        typography.text = MethodChecker.fromHtml(text.toString())
+        typography.measure(0,0)
+        val linearLayout = LinearLayout(context)
+        linearLayout.layoutParams = params
+        linearLayout.addView(typography)
+        linearLayout.measure(0,0)
+        typography.post {}.run {
+            return typography.measuredHeight
+        }
+    }
+
+    fun findMaxSummaryText(
+        recommendationItem: List<RecommendationItem>,
+        position: Int,
+        textWidth: Int,
+        context: Context
+    ) : Int {
+        var maxHeight = 0
+        for(i in recommendationItem)
+        {
+            val heightText = (measureSummaryTextHeight(
+                i.specs[position].specSummary,
+                textWidth,
+                context
+            ))
+            if(heightText > maxHeight) maxHeight = heightText
+        }
+        return maxHeight
     }
 }
