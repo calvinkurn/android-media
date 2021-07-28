@@ -62,6 +62,7 @@ internal object GetHomeLayoutData {
                  isActive
                  imageUrl
                }
+               recommendationType
                productViewCountFormatted
                isOutOfStock
                warehouseID
