@@ -11,7 +11,7 @@ class MediaBitmapSize constructor(
         if (value <= 0.0) return
 
         val accumulativeSize = getSize().toDouble() + value
-        putString(KEY_BITMAP_SIZE, accumulativeSize.toString().take(5))
+        putString(KEY_BITMAP_SIZE, accumulativeSize.toString().take(7))
         applyEditor()
     }
 
