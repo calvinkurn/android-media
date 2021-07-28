@@ -117,6 +117,9 @@ data class Grid(
     @SerializedName("parentProductID")
     val parentProductId: String = "",
     @Expose
+    @SerializedName("recommendationType")
+    val recommendationType: String = "",
+    @Expose
     @SerializedName("minOrder")
     val minOrder: Int = 0,
     @Expose

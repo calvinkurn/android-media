@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_SLOT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
@@ -260,8 +261,9 @@ class HomeAnalytics {
             putString(KEY_DIMENSION_45, cartId)
             putString(KEY_QUANTITY, quantity)
             putString(KEY_SHOP_ID, recommendationItem.shopId.toString())
-            putString(KEY_SHOP_NAME, recommendationItem.shopName)
-            putString(KEY_SHOP_TYPE, recommendationItem.shopType)
+            putString(KEY_SHOP_NAME, "")
+            putString(KEY_SHOP_TYPE, "")
+            putString(KEY_CATEGORY_ID, "")
         }
 
         val dataLayer = getEcommerceDataLayer(

@@ -144,6 +144,7 @@ class TokoNowHomeFragment: Fragment(),
     private var movingPosition = 0
     private var isFirstResumed = false
     private var isFirstImpressionOnBanner = false
+    private var isRefreshed = true
     private var headerName = ""
     private var channelId: String = ""
     private var productPosition: String = ""
@@ -281,13 +282,16 @@ class TokoNowHomeFragment: Fragment(),
         headerName: String,
         pageName: String
     ) {
-        analytics.onImpressProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            userId = userSession.userId,
-            recomItems = recomItems,
-            pageName = pageName
-        )
+        if (isRefreshed) {
+            isRefreshed = false
+            analytics.onImpressProductRecom(
+                channelId = channelId,
+                headerName = headerName,
+                userId = userSession.userId,
+                recomItems = recomItems,
+                pageName = pageName
+            )
+        }
     }
 
     override fun onSeeAllBannerClicked(channelId: String, headerName: String) {
@@ -419,6 +423,7 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
+        isRefreshed = true
     }
 
     private fun setupNavToolbar() {
@@ -589,31 +594,18 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCartWidgetDataUpdated) {
-            miniCartWidget?.updateData(it)
-        }
-
         observe(viewModelTokoNow.miniCartAdd) {
             when(it) {
                 is Success -> {
+                    adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
+                    getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         type = TYPE_NORMAL
                     )
-                    adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
-                    getMiniCart()
 
-                    recomItem?.apply {
-                        analytics.onClickProductRecomAddToCart(
-                            channelId = channelId,
-                            headerName = headerName,
-                            userId = userSession.userId,
-                            quantity = it.data.data.quantity.toString(),
-                            recommendationItem = this,
-                            position = productPosition,
-                            cartId = it.data.data.cartId
-                        )
-                    }
+                    // track add to cart
+                    trackAddToCart(it.data.data.quantity, it.data.data.cartId)
                 }
                 is Fail -> {
                     showToaster(
@@ -633,6 +625,10 @@ class TokoNowHomeFragment: Fragment(),
                         message = it.data.data.message,
                         type = TYPE_NORMAL
                     )
+
+                    // track add to cart
+                    val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem?.productId.toString())
+                    trackAddToCart(miniCartItem?.quantity.toZeroIfNull(), miniCartItem?.cartId.orEmpty())
                 }
                 is Fail -> {
                     showToaster(
@@ -652,6 +648,10 @@ class TokoNowHomeFragment: Fragment(),
                         message = it.data.second,
                         type = TYPE_NORMAL
                     )
+
+                    // track add to cart
+                    val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem?.productId.toString())
+                    trackAddToCart(0, miniCartItem?.cartId.orEmpty())
                 }
                 is Fail -> {
                     showToaster(
@@ -660,6 +660,20 @@ class TokoNowHomeFragment: Fragment(),
                     )
                 }
             }
+        }
+    }
+
+    private fun trackAddToCart(quantity: Int, cartId: String) {
+        recomItem?.apply {
+            analytics.onClickProductRecomAddToCart(
+                channelId = channelId,
+                headerName = headerName,
+                userId = userSession.userId,
+                quantity = quantity.toString(),
+                recommendationItem = this,
+                position = productPosition,
+                cartId = cartId
+            )
         }
     }
 

@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -76,8 +77,6 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCart
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
-    val miniCartWidgetDataUpdated: LiveData<MiniCartSimplifiedData>
-        get() = _miniCartWidgetDataUpdated
     val miniCartAdd: LiveData<Result<AddToCartDataModel>>
         get() = _miniCartAdd
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
@@ -89,14 +88,13 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    private val _miniCartWidgetDataUpdated = MutableLiveData<MiniCartSimplifiedData>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
 
+    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
-    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     fun getLoadingState() {
         homeLayoutItemList.clear()
@@ -263,7 +261,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun addProductToCart(recomItem: RecommendationItem, quantity: Int) {
-        val miniCartItem = miniCartSimplifiedData?.miniCartItems?.firstOrNull { it.productId == recomItem.productId.toString() }
+        val miniCartItem = getMiniCartItem(recomItem.productId.toString())
 
         if (miniCartItem == null) {
             addItemToCart(recomItem, quantity)
@@ -274,6 +272,10 @@ class TokoNowHomeViewModel @Inject constructor(
                 updateItemCart(recomItem, quantity)
             }
         }
+    }
+
+    fun getMiniCartItem(productId: String): MiniCartItem? {
+        return miniCartSimplifiedData?.miniCartItems?.firstOrNull { it.productId == productId }
     }
 
     private fun addItemToCart(recomItem: RecommendationItem, quantity: Int) {
@@ -303,7 +305,6 @@ class TokoNowHomeViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-            _miniCartWidgetDataUpdated.value = miniCartSimplifiedData
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.value = Fail(it)
