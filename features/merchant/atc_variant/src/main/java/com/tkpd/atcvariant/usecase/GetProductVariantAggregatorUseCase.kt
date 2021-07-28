@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -210,7 +211,13 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
             ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
-            ProductDetailCommonConstant.PARAM_USER_LOCATION to chosenAddressRequestHelper.getChosenAddress()
+            ProductDetailCommonConstant.PARAM_USER_LOCATION to UserLocationRequest(
+                    chosenAddressRequestHelper.getChosenAddress()?.districtId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.postalCode ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.geolocation ?: ""
+            )
+
     )
 
     private var requestParams: Map<String, Any?> = mapOf()
