@@ -315,6 +315,7 @@ class TokoNowHomeFragment: Fragment(),
         this.headerName = headerName
         this.recomItem = recomItem
         this.productPosition = position
+        this.channelId = channelId
     }
 
 
