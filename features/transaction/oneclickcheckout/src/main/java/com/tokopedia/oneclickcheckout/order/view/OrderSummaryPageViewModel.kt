@@ -74,6 +74,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private var hasSentViewOspEe = false
 
+    fun getShopId(): String {
+        return orderCart.shop.shopId.toString()
+    }
+
     fun getPaymentProfile(): String {
         return orderCart.paymentProfile
     }

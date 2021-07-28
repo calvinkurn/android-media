@@ -45,19 +45,14 @@ data class OrderProduct(
         var slashPriceLabel: String = "",
         var productInformation: List<String> = emptyList(),
         var errorMessage: String = "",
-        var isError: Boolean = false
-): OrderItem {
+        var isError: Boolean = false,
 
-    fun getPrice(): Long {
-        var finalPrice = productPrice
-        if (wholesalePriceList.isNotEmpty()) {
-            for (price in wholesalePriceList) {
-                if (quantity.orderQuantity >= price.qtyMin) {
-                    finalPrice = price.prdPrc
-                }
-            }
-        }
-        return finalPrice
+        // Analytics
+        var hasTriggerViewErrorProductLevelTicker: Boolean = false
+) : OrderItem {
+
+    fun hasParentId(): Boolean {
+        return parentId.isNotEmpty() && parentId != "0"
     }
 }
 

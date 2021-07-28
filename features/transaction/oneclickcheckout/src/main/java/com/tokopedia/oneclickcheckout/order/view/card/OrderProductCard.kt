@@ -69,8 +69,13 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         if (product.errorMessage.isNotEmpty()) {
             binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
             binding.tickerOrderProduct.visible()
+            if (!product.hasTriggerViewErrorProductLevelTicker) {
+                orderSummaryAnalytics.eventViewErrorProductLevelTicker(shop.shopId.toString(), product.errorMessage)
+                product.hasTriggerViewErrorProductLevelTicker = true
+            }
         } else {
             binding.tickerOrderProduct.gone()
+            product.hasTriggerViewErrorProductLevelTicker = false
         }
     }
 

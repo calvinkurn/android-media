@@ -131,9 +131,9 @@ class OrderSummaryPageActivityTokonowTest {
                     shippingDuration = null,
                     shippingCourier = "Now! 2 jam tiba (Rp20.000 Rp10.000)",
                     shippingPrice = null,
-                    shippingEta = "Tiba dalam 2 jam"
+                    shippingEta = "Tiba dalam 2 jam",
+                    shippingNotes = "Melebihi limit gratis ongkir, kamu cukup bayar Rp25.000."
             )
-            Thread.sleep(5000)
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
 
@@ -147,6 +147,32 @@ class OrderSummaryPageActivityTokonowTest {
                         insurancePrice = "Rp300",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp311.300"
+                )
+                closeBottomSheet()
+            }
+
+            logisticInterceptor.customRatesResponsePath = RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH
+            clickAddProductQuantity(1, 1)
+
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Now! 2 jam tiba (Rp20.000)",
+                    shippingPrice = null,
+                    shippingEta = "Tiba dalam 2 jam",
+                    shippingNotes = "Belum mencapai min. transaksi untuk gratis ongkir (RpXX.000)"
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp421.300", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp400.000",
+                        shippingPrice = "Rp20.000",
+                        insurancePrice = "Rp300",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp421.300"
                 )
                 closeBottomSheet()
             }

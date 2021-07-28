@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.common.view.model
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
@@ -26,11 +25,10 @@ sealed class OccGlobalEvent {
     object Normal : OccGlobalEvent()
     object Loading : OccGlobalEvent()
     data class Error(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
-    data class CheckoutError(val error: CheckoutOccErrorData) : OccGlobalEvent()
     data class PriceChangeError(val message: PriceChangeMessage) : OccGlobalEvent()
     data class TriggerRefresh(val isFullRefresh: Boolean = true, val throwable: Throwable? = null,
                               val errorMessage: String = "", val successMessage: String = "",
-                              val uiMessage: OccToasterAction? = null) : OccGlobalEvent()
+                              val uiMessage: OccToasterAction? = null, val shouldTriggerAnalytics: Boolean = false) : OccGlobalEvent()
     data class PromoClashing(val notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>) : OccGlobalEvent()
     data class AtcError(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
     data class AtcSuccess(val message: String = "") : OccGlobalEvent()

@@ -211,8 +211,6 @@
         android:id="@+id/qty_editor_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_0"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
         app:layout_constraintEnd_toEndOf="parent"

@@ -34,7 +34,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
             val cart = response.response.data.groupShop.firstOrNull()
-            if (!errorMessage.isNullOrEmpty() || cart == null) {
+            val products = cart?.cartDetails?.firstOrNull()?.products
+            if (!errorMessage.isNullOrEmpty() || cart == null || products.isNullOrEmpty()) {
                 throw MessageErrorException(errorMessage ?: DEFAULT_ERROR_MESSAGE)
             }
             return mapper.mapGetOccCartDataToOrderData(response.response.data)

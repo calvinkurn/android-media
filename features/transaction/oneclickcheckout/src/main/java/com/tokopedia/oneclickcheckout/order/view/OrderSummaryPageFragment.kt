@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -356,20 +355,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         viewModel.updateOrderProducts.observe(viewLifecycleOwner) {
-            Log.i("qwertyuiop", "update order products $it")
             if (it.isNotEmpty()) {
                 var startGroupIndex = -1
                 var lastGroupIndex = startGroupIndex
                 for (index in it) {
-                    if (startGroupIndex == -1) {
-                        startGroupIndex = index
-                        lastGroupIndex = index
-                    } else if (index == lastGroupIndex + 1) {
-                        lastGroupIndex = index
-                    } else {
-                        adapter.notifyItemRangeChanged(adapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
-                        startGroupIndex = -1
-                        lastGroupIndex = startGroupIndex
+                    when {
+                        startGroupIndex == -1 -> {
+                            startGroupIndex = index
+                            lastGroupIndex = index
+                        }
+                        index == lastGroupIndex + 1 -> {
+                            lastGroupIndex = index
+                        }
+                        else -> {
+                            adapter.notifyItemRangeChanged(adapter.productStartIndex + startGroupIndex, lastGroupIndex + 1 - startGroupIndex)
+                            startGroupIndex = -1
+                            lastGroupIndex = startGroupIndex
+                        }
                     }
                 }
                 if (startGroupIndex > -1 && lastGroupIndex > -1) {
@@ -526,6 +528,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         }
                         if (errorMessage.isNotBlank()) {
                             Toaster.build(v, errorMessage, type = Toaster.TYPE_ERROR).show()
+                            if (it.shouldTriggerAnalytics) {
+                                orderSummaryAnalytics.eventViewErrorToasterMessage(viewModel.getShopId(), errorMessage)
+                            }
                         } else if (it.successMessage.isNotBlank()) {
                             Toaster.build(v, it.successMessage, actionText = getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)).show()
                         }
@@ -623,6 +628,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, it.toast.message, type = Toaster.TYPE_ERROR, actionText = it.toast.ctaText, clickListener = {
                             binding.rvOrderSummaryPage.smoothScrollToPosition(0)
                         }).show()
+                        orderSummaryAnalytics.eventViewErrorToasterMessage(viewModel.getShopId(), it.toast.message)
                     }
                 }
                 is OccGlobalEvent.ForceOnboarding -> {
@@ -734,7 +740,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         triggerCoachMarkAnalytics(onboarding, 0)
                     }
                 } catch (t: Throwable) {
-                    t.printStackTrace()
+                    Timber.d(t)
                 }
             }
         }
@@ -841,7 +847,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun getOrderTotalPaymentCardListener(): OrderTotalPaymentCard.OrderTotalPaymentCardListener {
         return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
-                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(viewModel.orderProducts.value.first().productId.toString(), orderCost.totalPrice.toInt().toString())
+                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
                 OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
             }
 
@@ -926,8 +932,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.chooseLogisticPromo(logisticPromoUiModel)
         }
 
-        override fun reloadShipping() {
+        override fun reloadShipping(shopId: String) {
             viewModel.reloadRates()
+            orderSummaryAnalytics.eventClickRefreshOnCourierSection(shopId)
         }
 
         override fun chooseAddress(currentAddressId: String) {
@@ -1016,14 +1023,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                     override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                        onInstallmentDetailChange(installment)
+                        viewModel.chooseInstallment(installment)
                     }
                 })
             }
-        }
-
-        fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
-            viewModel.chooseInstallment(selectedInstallmentTerm)
         }
 
         override fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData) {

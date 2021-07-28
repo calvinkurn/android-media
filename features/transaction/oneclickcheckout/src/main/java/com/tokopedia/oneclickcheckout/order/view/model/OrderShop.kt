@@ -34,7 +34,11 @@ data class OrderShop(
         var maximumWeight: Long = 0,
         var maximumWeightWording: String = "",
         var overweight: Double = 0.0,
-        var boMetadata: BoMetadata = BoMetadata()
+        var boMetadata: BoMetadata = BoMetadata(),
+
+        // Analytics
+        var hasTriggerViewOverweightTicker: Boolean = false,
+        var hasTriggerViewErrorOrderLevelTicker: Boolean = false
 ) : OrderItem {
 
     val isError: Boolean

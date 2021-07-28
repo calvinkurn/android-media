@@ -137,14 +137,19 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
         val error = checkoutOccData.result.error
         val errorCode = error.code
         orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.isButtonChoosePayment, errorCode)
-        return if (checkoutOccData.result.prompt.shouldShowPrompt()) {
-            OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
-        } else if (errorCode == OrderSummaryPageViewModel.ERROR_CODE_PRICE_CHANGE) {
-            OccGlobalEvent.PriceChangeError(PriceChangeMessage(OrderSummaryPageViewModel.PRICE_CHANGE_ERROR_MESSAGE, error.message, OrderSummaryPageViewModel.PRICE_CHANGE_ACTION_MESSAGE))
-        } else if (error.message.isNotBlank()) {
-            OccGlobalEvent.TriggerRefresh(errorMessage = error.message)
-        } else {
-            OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
+        return when {
+            checkoutOccData.result.prompt.shouldShowPrompt() -> {
+                OccGlobalEvent.Prompt(checkoutOccData.result.prompt)
+            }
+            errorCode == OrderSummaryPageViewModel.ERROR_CODE_PRICE_CHANGE -> {
+                OccGlobalEvent.PriceChangeError(PriceChangeMessage(OrderSummaryPageViewModel.PRICE_CHANGE_ERROR_MESSAGE, error.message, OrderSummaryPageViewModel.PRICE_CHANGE_ACTION_MESSAGE))
+            }
+            error.message.isNotBlank() -> {
+                OccGlobalEvent.TriggerRefresh(errorMessage = error.message)
+            }
+            else -> {
+                OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
+            }
         }
     }
 

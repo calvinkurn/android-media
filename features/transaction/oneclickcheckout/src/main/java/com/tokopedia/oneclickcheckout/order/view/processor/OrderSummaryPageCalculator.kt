@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -166,7 +165,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     }
 
     suspend fun calculateOrderCost(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Triple<OrderCost, OrderPayment, ArrayList<Int>> {
-        return withContext(executorDispatchers.default) {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.default) {
             var payment = orderPayment
             var totalProductPrice = 0.0
             var totalProductWholesalePrice = 0.0
@@ -177,14 +177,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 val product = orderCart.products[productIndex]
                 if (!product.isError) {
                     var itemQty = 0
-                    if (product.parentId.isNotEmpty() && product.parentId != "0") {
-                        Log.i("qwertyuiop", "items ${orderCart.products.filter { !it.isError && it.parentId == product.parentId }.size}")
+                    if (product.hasParentId()) {
                         orderCart.products.filter { !it.isError && it.parentId == product.parentId }
                                 .forEach { itemQty += it.orderQuantity }
                     } else {
                         itemQty = product.orderQuantity
                     }
-                    Log.i("qwertyuiop", "item qty $itemQty")
                     if (product.wholesalePriceList.isNotEmpty()) {
                         var finalPrice = product.productPrice
                         product.wholesalePrice = 0
@@ -201,7 +199,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         if (!mapParentWholesalePrice.containsKey(product.parentId)) {
                             val totalPrice = itemQty * product.finalPrice.toDouble()
                             totalProductWholesalePrice += totalPrice
-                            Log.i("qwertyuiop", "totalProductWholesalePrice $totalProductWholesalePrice")
                             mapParentWholesalePrice[product.parentId] = totalPrice
                         }
                     } else {
@@ -216,9 +213,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
                 }
             }
-            Log.i("qwertyuiop", "totalProductPrice $totalProductPrice")
             totalProductPrice += totalProductWholesalePrice
-            Log.i("qwertyuiop", "totalProductPrice 2 = $totalProductPrice")
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
@@ -231,6 +226,8 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
             return@withContext Triple(orderCost, payment, updatedProductIndex)
         }
+        OccIdlingResource.decrement()
+        return result
     }
 
     private fun calculatePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Int, Int, ArrayList<OrderCostCashbackData>> {
