@@ -13,13 +13,14 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dikirim ke rumah Dikirim ke rumah"
+            android:text="Dikirim ke rumah saya"
             app:typographyType="heading_4" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ubah Alamat"
+            android:textColor="@color/Unify_G600"
             app:typographyType="body_1" />
 
         <View
