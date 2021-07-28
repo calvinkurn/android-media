@@ -1,7 +1,6 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.app.Activity
-import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -276,20 +275,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             }
         })
 
-        viewModel.notificationItemsSeller.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderNotificationsSeller(it.data)
-                    if (!viewModel.hasFilter() && isVisible) {
-                        viewModel.clearNotifCounter(containerListener?.role)
-                    }
-                }
-                is Fail -> showGetListError(it.throwable)
-                else -> {
-                }
-            }
-        })
-
         viewModel.topAdsBanner.observe(viewLifecycleOwner, Observer {
             rvAdapter?.addTopAdsBanner(it)
         })
@@ -401,18 +386,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         }
     }
 
-    private fun renderNotificationsSeller(data: Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>) {
-        var hasNext = false
-        if (data.second != null)
-            hasNext = isInfiniteNotificationScroll(data.second!!)
-        else
-            hasNext = isInfiniteNotificationScroll(data.first)
-        renderList((data.first.items + (data.second?.items ?: emptyList())), hasNext)
-        if (hasNext) {
-            showLoading()
-        }
-    }
-
     private fun isInfiniteNotificationScroll(data: NotificationDetailResponseModel): Boolean {
         return data.hasNext && viewModel.hasFilter()
     }
@@ -450,8 +423,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private fun getLastVisibleItemPosition(): Int? {
         val layoutManager = rv?.layoutManager as? StaggeredGridLayoutManager
         return layoutManager
-            ?.findLastVisibleItemPositions(null)
-            ?.getOrNull(1)
+                ?.findLastVisibleItemPositions(null)
+                ?.getOrNull(1)
     }
 
     private fun setupFilter() {
@@ -565,9 +538,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     protected open fun generateDaggerComponent() = DaggerNotificationComponent.builder()
-        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-        .commonModule(context?.let { CommonModule(it) })
-        .build()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .commonModule(context?.let { CommonModule(it) })
+            .build()
 
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)

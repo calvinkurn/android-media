@@ -74,9 +74,6 @@ class NotificationViewModel @Inject constructor(
     val notificationItems: LiveData<Result<NotificationDetailResponseModel>>
         get() = _mutateNotificationItems
 
-    private val _mutateNotificationSellerItems = MutableLiveData<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>>>()
-    val notificationItemsSeller: LiveData<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>>>
-        get() = _mutateNotificationSellerItems
     private val _topAdsBanner = MutableLiveData<NotificationTopAdsBannerUiModel>()
     val topAdsBanner: LiveData<NotificationTopAdsBannerUiModel>
         get() = _topAdsBanner
@@ -139,27 +136,17 @@ class NotificationViewModel @Inject constructor(
             role: Int?
     ) {
         if (role == null) return
-        if (role == RoleType.BUYER)
-            notifcenterDetailUseCase.getFirstPageNotification(filter, role,
-                    {
-                        _mutateNotificationItems.value = Success(it)
-                        if (!hasFilter() && role == RoleType.BUYER) {
-                            loadTopAdsBannerData()
-                        }
-                    },
-                    {
-                        _mutateNotificationItems.value = Fail(it)
+        notifcenterDetailUseCase.getFirstPageNotification(filter, role,
+                {
+                    _mutateNotificationItems.value = Success(it)
+                    if (!hasFilter() && role == RoleType.BUYER) {
+                        loadTopAdsBannerData()
                     }
-            )
-        else if (role == RoleType.SELLER)
-            notifcenterDetailUseCase.getFirstPageNotificationSeller(filter, role,
-                    {
-                        _mutateNotificationSellerItems.value = Success(it)
-                    },
-                    {
-                        _mutateNotificationSellerItems.value = Fail(it)
-                    }
-            )
+                },
+                {
+                    _mutateNotificationItems.value = Fail(it)
+                }
+        )
     }
 
     fun loadNotificationFilter(

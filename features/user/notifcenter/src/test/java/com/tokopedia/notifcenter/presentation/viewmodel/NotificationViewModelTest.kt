@@ -73,7 +73,6 @@ class NotificationViewModelTest {
     private val dispatcher = CoroutineTestDispatchersProvider
 
     private val notificationItemsObserver: Observer<Result<NotificationDetailResponseModel>> = mockk(relaxed = true)
-    private val notificationItemsSellerObserver: Observer<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>>> = mockk(relaxed = true)
     private val bumpReminderObserver: Observer<Resource<BumpReminderResponse>> = mockk(relaxed = true)
     private val deleteReminderObserver: Observer<Resource<DeleteReminderResponse>> = mockk(relaxed = true)
     private val recommendationsObserver: Observer<RecommendationDataModel> = mockk(relaxed = true)
@@ -103,7 +102,6 @@ class NotificationViewModelTest {
     @Before
     fun setUp() {
         viewModel.notificationItems.observeForever(notificationItemsObserver)
-        viewModel.notificationItemsSeller.observeForever(notificationItemsSellerObserver)
         viewModel.recommendations.observeForever(recommendationsObserver)
         viewModel.deleteReminder.observeForever(deleteReminderObserver)
         viewModel.bumpReminder.observeForever(bumpReminderObserver)
@@ -144,28 +142,22 @@ class NotificationViewModelTest {
     fun `loadFirstPageNotification that haven't filter should return only notifItems properly`() {
         // given
         val role = RoleType.SELLER
-        val expectedValueFirst = NotifcenterDetailMapper().mapFirstPage(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false
-        )
-
-        val expectedValueSecond = NotifcenterDetailMapper().mapEarlierSection(
+        val expectedValue = NotifcenterDetailMapper().mapFirstPage(
                 notifCenterDetailResponse,
                 needSectionTitle = false,
                 needLoadMoreButton = false
         )
 
         every {
-            notifcenterDetailUseCase.getFirstPageNotificationSeller(
+            notifcenterDetailUseCase.getFirstPageNotification(
                     any(),
                     any(),
                     captureLambda(),
                     any()
             )
         } answers {
-            val onSuccess = lambda<(Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) -> Unit>()
-            onSuccess.invoke(expectedValueFirst to expectedValueSecond)
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(expectedValue)
         }
 
         viewModel.filter = NotifcenterDetailUseCase.FILTER_NONE
@@ -174,19 +166,14 @@ class NotificationViewModelTest {
         viewModel.loadFirstPageNotification(role)
 
         // then
-        verify(exactly = 1) { notificationItemsSellerObserver.onChanged(Success(expectedValueFirst to expectedValueSecond)) }
+        verify(exactly = 1) { notificationItemsObserver.onChanged(Success(expectedValue)) }
         coVerify(exactly = 0) { topAdsImageViewUseCase.getImageData(any()) }
     }
 
     @Test
-    fun `loadFirstPageNotification as seller should return data properly when first page has next`() {
+    fun `loadFirstPageNotification as seller should return data properly`() {
         // given
-        val expectedValueFirstPage = NotifcenterDetailMapper().mapFirstPage(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false
-        )
-        val expectedValueSecondPage = NotifcenterDetailMapper().mapFirstPage(
+        val expectedValue = NotifcenterDetailMapper().mapFirstPage(
                 notifCenterDetailResponse,
                 needSectionTitle = false,
                 needLoadMoreButton = false
@@ -196,56 +183,23 @@ class NotificationViewModelTest {
         viewModel.reset() // filter id
 
         every {
-            notifcenterDetailUseCase.getFirstPageNotificationSeller(
+            notifcenterDetailUseCase.getFirstPageNotification(
                     viewModel.filter,
                     role,
                     captureLambda(),
                     any()
             )
         } answers {
-            val onSuccess = lambda<(Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) -> Unit>()
-            onSuccess.invoke(expectedValueFirstPage to expectedValueSecondPage)
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(expectedValue)
         }
 
         // when
         viewModel.loadFirstPageNotification(role)
 
         // then
-        verify(exactly = 1) { notificationItemsSellerObserver.onChanged(Success(expectedValueFirstPage to expectedValueSecondPage)) }
+        verify(exactly = 1) { notificationItemsObserver.onChanged(Success(expectedValue)) }
     }
-
-    @Test
-    fun `loadFirstPageNotification as seller doesnt has next page when chain request`() {
-        // given
-        val expectedValueFirstPage = NotifcenterDetailMapper().mapFirstPage(
-                notifCenterDetailResponse,
-                needSectionTitle = false,
-                needLoadMoreButton = false
-        )
-        val expectedValueSecondPage = null
-
-        val role = RoleType.SELLER
-        viewModel.reset() // filter id
-
-        every {
-            notifcenterDetailUseCase.getFirstPageNotificationSeller(
-                    viewModel.filter,
-                    role,
-                    captureLambda(),
-                    any()
-            )
-        } answers {
-            val onSuccess = lambda<(Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>) -> Unit>()
-            onSuccess.invoke(expectedValueFirstPage to expectedValueSecondPage)
-        }
-
-        // when
-        viewModel.loadFirstPageNotification(role)
-
-        // then
-        verify(exactly = 1) { notificationItemsSellerObserver.onChanged(Success(expectedValueFirstPage to expectedValueSecondPage)) }
-    }
-
 
     @Test
     fun `loadFirstPageNotification as buyer should return data properly`() {
@@ -282,30 +236,6 @@ class NotificationViewModelTest {
             notificationItemsObserver.onChanged(Success(expectedValue))
             topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView.first()))
         }
-    }
-
-    @Test
-    fun `loadFirstPageNotification as seller should throw the Fail state`() {
-        // given
-        val expectedValue = Throwable("")
-
-        every {
-            notifcenterDetailUseCase.getFirstPageNotificationSeller(
-                    any(),
-                    any(),
-                    any(),
-                    captureLambda()
-            )
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(expectedValue)
-        }
-
-        // when
-        viewModel.loadFirstPageNotification(RoleType.SELLER)
-
-        // then
-        verify(exactly = 1) { notificationItemsSellerObserver.onChanged(Fail(expectedValue)) }
     }
 
     @Test
