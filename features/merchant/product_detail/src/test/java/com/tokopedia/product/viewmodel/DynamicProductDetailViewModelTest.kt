@@ -1482,7 +1482,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getProductTopadsStatus(productId, paramsTest)
         coVerify { getTopadsIsAdsUseCase.executeOnBackground()}
 
-        Assert.assertTrue(expectedResponse.data.status.error_code in viewModel.CODE_200 .. viewModel.CODE_300 && expectedResponse.data.productList[0].isCharge)
+        Assert.assertTrue(expectedResponse.data.status.error_code in 200 .. 300 && expectedResponse.data.productList[0].isCharge)
     }
 
     //======================================END OF PDP SECTION=======================================//
