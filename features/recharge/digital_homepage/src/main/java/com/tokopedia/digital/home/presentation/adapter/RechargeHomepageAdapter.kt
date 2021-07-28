@@ -42,7 +42,7 @@ class RechargeHomepageAdapter(val context: Context,
 
         val errorNetworkModel = ErrorNetworkModel()
 
-        var pair = ErrorHandler.getErrorMessageMap(context, e, ErrorHandler.Builder())
+        var pair = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder())
         errorNetworkModel.errorMessage = pair.first
         errorNetworkModel.subErrorMessage = context.getString(R.string.title_try_again) + "."+ pair.second
         errorNetworkModel.onRetryListener = ErrorNetworkModel.OnRetryListener {

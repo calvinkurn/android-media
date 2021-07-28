@@ -30,7 +30,7 @@ open class ErrorHandler {
         }
 
         @JvmStatic
-        fun getErrorMessageMap(
+        fun getErrorMessagePair(
                 context: Context?,
                 e: Throwable,
                 builder: Builder
