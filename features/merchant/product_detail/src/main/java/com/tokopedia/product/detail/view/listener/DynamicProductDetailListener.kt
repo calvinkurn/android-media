@@ -7,7 +7,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -106,6 +105,8 @@ interface DynamicProductDetailListener {
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
+    fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String, basicData: ProductRecomLayoutBasicData)
+    fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String, basicData: ProductRecomLayoutBasicData)
 
     /**
      * ProductGeneralInfoViewHolder

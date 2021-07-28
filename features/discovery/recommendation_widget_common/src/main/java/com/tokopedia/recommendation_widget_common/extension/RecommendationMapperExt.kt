@@ -151,7 +151,8 @@ fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): Recommendatio
     assets?.banner?.let {
         return RecommendationBanner(
                 applink = appLandingPageLink,
-                imageUrl = it.apps
+                imageUrl = it.apps,
+                thematicID = thematicID
         )
     }
     return null
