@@ -42,7 +42,7 @@ object MediaListenerBuilder {
         ): Boolean {
             val pageName = context.javaClass.name.split(".").last()
 
-            val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it).toString() }?: "0"
+            val fileSize = resource?.allocationByteCount?.toString() ?: "0"
             val fileSizeInMb = (fileSize.toDouble() / 1024) / 1024
 
             val loadTime = (System.currentTimeMillis() - startTime).toString()

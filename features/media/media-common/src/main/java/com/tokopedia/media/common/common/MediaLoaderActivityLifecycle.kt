@@ -17,6 +17,7 @@ import com.tokopedia.media.common.R
 import com.tokopedia.media.common.data.HIGH_QUALITY
 import com.tokopedia.media.common.data.MediaBitmapSize
 import com.tokopedia.media.common.data.MediaSettingPreferences
+import com.tokopedia.media.common.util.getDirSize
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -85,11 +86,15 @@ class MediaLoaderActivityLifecycle(
         if (logger.returnFromOtherActivity) logger.addJourney(activity)
         if (logger.running) return
 
+        val mediaAdditionalData = mapOf(
+            KEY_ACCUMULATIVE_SIZE to bitmapSize.getSize(),
+            KEY_INTERNAL_CACHE_SIZE to getDirSize(activity.cacheDir).toString(),
+            KEY_EXTERNAL_CACHE_SIZE to getDirSize(activity.externalCacheDir).toString(),
+            KEY_GLIDE_CACHE_SIZE to getDirSize(Glide.getPhotoCacheDir(context)).toString()
+        )
+
         Thread {
-            logger.addLogItem(
-                KEY_ACCUMULATIVE_SIZE,
-                bitmapSize.getSize()
-            )
+            logger.addLogItems(mediaAdditionalData)
 
             logger.checkSession(
                 activityName = activity.javaClass.simpleName,
@@ -124,6 +129,9 @@ class MediaLoaderActivityLifecycle(
     companion object {
         private const val DELAY_PRE_SHOW_TOAST = 2500L
         private const val KEY_ACCUMULATIVE_SIZE = "accumulative_size"
+        private const val KEY_INTERNAL_CACHE_SIZE = "internal_cachedir_size"
+        private const val KEY_EXTERNAL_CACHE_SIZE = "external_cachedir_size"
+        private const val KEY_GLIDE_CACHE_SIZE = "glide_dir_size"
 
         private val INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1)
 

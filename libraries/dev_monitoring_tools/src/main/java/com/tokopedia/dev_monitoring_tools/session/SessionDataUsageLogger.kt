@@ -33,6 +33,10 @@ class SessionDataUsageLogger constructor(
         additionalData[key] = value
     }
 
+    fun addLogItems(data: Map<String, String>) {
+        additionalData.putAll(data)
+    }
+
     fun addJourney(activity: Activity) {
         var bundle = Bundle()
 
