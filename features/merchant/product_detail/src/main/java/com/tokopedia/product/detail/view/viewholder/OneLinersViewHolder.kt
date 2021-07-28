@@ -83,11 +83,8 @@ class OneLinersViewHolder(
                 val dp12 = convertDpToPixel(12f, context)
                 setPadding(paddingLeft, 0, paddingRight, dp12)
             }
-            view.apply {
-                if (applink.isNotBlank()) {
-                    setOnClickListener { listener.onClickBestSeller(getComponentTrackData(element), applink) }
-                    iconRightArrow?.visible()
-                }
+            if (applink.isNotBlank()) {
+                view.setOnClickListener { listener.onClickBestSeller(getComponentTrackData(element), applink) }
             }
             title?.setWeight(Typography.BOLD)
         }
