@@ -47,7 +47,9 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderView()
+        if(::cancellationDetail.isInitialized){
+            renderView()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
