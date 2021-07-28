@@ -22,14 +22,17 @@ class MediaSettingPreferences constructor(
 
     fun setQualitySettings(value: Int) {
         putInt(KEY_QUALITY_SETTING, value)
+        applyEditor()
     }
 
     fun setToasterVisibilityFlag(value: Boolean) {
         putBoolean(KEY_MEDIA_TOASTER, value)
+        applyEditor()
     }
 
     fun setGlideMigration(value: Boolean) {
         putBoolean(KEY_GLIDE_CLEAR_CACHE, value)
+        applyEditor()
     }
 
     fun getQualitySetting(index: Int): String {
