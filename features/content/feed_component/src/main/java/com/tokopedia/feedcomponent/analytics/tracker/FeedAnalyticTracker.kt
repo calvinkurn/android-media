@@ -738,10 +738,9 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, isVideo)
             ),
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
-                shopId,
-                "1"
+                shopId
             ),
             getPromoViewData(
                 getPromotionsData(
