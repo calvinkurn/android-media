@@ -329,7 +329,7 @@ class TokoNowHomeFragment: Fragment(),
                 data.productId,
                 quantity,
                 data.shopId,
-                HomeLayoutType.RECENT_PURCHASE
+                data.type
             )
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)

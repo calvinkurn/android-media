@@ -6,6 +6,7 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
@@ -35,7 +36,8 @@ object RecentPurchaseMapper {
                 it.shop.id,
                 it.id,
                 it.stock.toInt(),
-                createProductCardModel(it)
+                createProductCardModel(it),
+                HomeLayoutType.RECENT_PURCHASE
             )
         }
     }
