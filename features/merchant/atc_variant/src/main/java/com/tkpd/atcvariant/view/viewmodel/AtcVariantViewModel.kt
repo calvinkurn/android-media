@@ -360,6 +360,7 @@ class AtcVariantViewModel @Inject constructor(
 
             updateMiniCartAndButtonAfterDelete(productId)
             updateQuantityEditorDeleteButtonAfterAtc(isTokoNow = true, value = false)
+            localQuantityData[productId] = 0
             _deleteCartLiveData.postValue((data.data.message.firstOrNull() ?: "").asSuccess())
         }) {
             _deleteCartLiveData.postValue(it.asFail())
