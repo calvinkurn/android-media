@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.autocomplete.analytics.AutocompleteEventTracking
+import com.tokopedia.kotlin.model.ImpressHolder
 
 open class BaseSuggestionDataView(
         var template: String = "",
@@ -24,7 +25,7 @@ open class BaseSuggestionDataView(
         var discountPercentage: String = "",
         var originalPrice: String = "",
         var dimension90: String = ""
-) {
+): ImpressHolder() {
     fun hasSlashedPrice(): Boolean {
         return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty()
     }

@@ -45,7 +45,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
 
                         itemView.feedMultipleImageView.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
                         itemView.feedMultipleImageView.requestLayout()
-                        itemView.videoPreviewImage.visibility = View.GONE
+                        itemView.image.visibility = View.GONE
                     }
                 }
         )
