@@ -24,6 +24,13 @@ import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
@@ -41,19 +48,6 @@ class TokoNowSearchFragment:
         CTATokoNowHomeListener {
 
     companion object {
-        private const val LIST_PAGE = "searchproduct"
-        private const val EVENT_CATEGORY_SRP =
-            "tokonow empty search result"
-        private const val EVENT_ACTION_IMPRESSION_SRP_PRODUCT_TOKONOW =
-            "impression product on tokonow product recommendation"
-        private const val EVENT_ACTION_CLICK_SRP_PRODUCT_TOKONOW =
-            "click product on tokonow product recommendation"
-        private const val EVENT_ACTION_CLICK_ATC_SRP_PRODUCT_TOKONOW =
-            "click add to cart on tokonow product recommendation"
-
-        private const val EVENT_ACTION_IMPRESSION_SRP_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
-        private const val EVENT_ACTION_CLICK_SRP_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
-
         @JvmStatic
         fun create(): TokoNowSearchFragment {
             return TokoNowSearchFragment()
@@ -308,39 +302,39 @@ class TokoNowSearchFragment:
 
     override fun getImpressionEventAction(isOOC: Boolean): String {
         return if (isOOC) {
-            EVENT_ACTION_IMPRESSION_SRP_RECOM_OOC
+            IMPRESSION_SRP_RECOM_OOC
         } else {
-            EVENT_ACTION_IMPRESSION_SRP_PRODUCT_TOKONOW
+            IMPRESSION_SRP_PRODUCT_TOKONOW
         }
     }
 
     override fun getClickEventAction(isOOC: Boolean): String {
         return if (isOOC) {
-            EVENT_ACTION_CLICK_SRP_RECOM_OOC
+            CLICK_SRP_RECOM_OOC
         } else {
-            EVENT_ACTION_CLICK_SRP_PRODUCT_TOKONOW
+            CLICK_SRP_PRODUCT_TOKONOW
         }
     }
 
     override fun getAtcEventAction(isOOC: Boolean): String {
-        return EVENT_ACTION_CLICK_ATC_SRP_PRODUCT_TOKONOW
+        return CLICK_ATC_SRP_PRODUCT_TOKONOW
     }
 
     override fun getEventCategory(isOOC: Boolean): String {
-        return EVENT_CATEGORY_SRP
+        return TOKONOW_EMPTY_RESULT
     }
 
     override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
         return if (isOOC) {
             String.format(
                 VALUE_LIST_OOC,
-                LIST_PAGE,
+                RECOM_LIST_PAGE,
                 recommendationItem.recommendationType,
                 if (recommendationItem.isTopAds) VALUE_TOPADS else ""
             )
         } else {
             ProductRecommendationTracking.buildTokonowRecommendationList(
-                pageList = LIST_PAGE,
+                pageList = RECOM_LIST_PAGE,
                 pageRecommendationType = recommendationItem.recommendationType
             )
         }

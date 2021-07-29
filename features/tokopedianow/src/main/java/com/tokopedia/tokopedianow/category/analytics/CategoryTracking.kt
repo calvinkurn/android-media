@@ -84,6 +84,14 @@ object CategoryTracking {
         const val CLICK_PILIH_VARIANT_BUTTON = "click pilih variant button"
         const val ADD_QUANTITY_ON_BOTTOM_SHEET = "add quantity on bottom sheet"
         const val REMOVE_QUANTITY_ON_BOTTOM_SHEET = "remove quantity on bottom sheet"
+        const val IMPRESSION_CLP_PRODUCT_TOKONOW =
+            "impression product on tokonow clp product recommendation"
+        const val CLICK_CLP_PRODUCT_TOKONOW =
+            "click product on tokonow clp product recommendation"
+        const val CLICK_ATC_CLP_PRODUCT_TOKONOW =
+            "click add to cart on tokonow clp product recommendation"
+        const val IMPRESSION_CLP_RECOM_OOC = "view product on recom widget on tokonow clp while the address is out of coverage (OOC)"
+        const val CLICK_CLP_RECOM_OOC = "click product on recom widget on tokonow clp while the address is out of coverage (OOC)"
     }
 
     object Category {
@@ -94,6 +102,7 @@ object CategoryTracking {
     object Misc {
         const val PRODUCT_ID = "productId"
         const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - %s"
+        const val RECOM_LIST_PAGE = "clp_product"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
