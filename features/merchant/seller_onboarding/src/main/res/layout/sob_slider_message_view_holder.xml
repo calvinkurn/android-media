@@ -36,6 +36,7 @@
         android:id="@+id/imgSobMessage1"
         android:layout_width="@dimen/sob_dimen_message_image_1_width"
         android:layout_height="@dimen/sob_dimen_message_image_1_height"
+        android:layout_marginTop="@dimen/dp_22"
         android:layout_marginStart="@dimen/sob_message_widget_start_margin"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage2"
         app:layout_constraintStart_toStartOf="parent"

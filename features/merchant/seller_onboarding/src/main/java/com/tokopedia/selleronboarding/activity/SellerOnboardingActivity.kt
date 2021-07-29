@@ -12,7 +12,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
@@ -42,11 +44,6 @@ class SellerOnboardingActivity : BaseActivity() {
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val density  = resources.displayMetrics.density
-        val height = displayMetrics.heightPixels / density
-        val width = displayMetrics.widthPixels / density
-        println("display : width -> $width")
-        println("display : height -> $height")
 
         setWhiteStatusBar()
         setupViewsTopMargin()
