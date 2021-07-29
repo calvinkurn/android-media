@@ -592,6 +592,14 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).check(matches(matcher))
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)

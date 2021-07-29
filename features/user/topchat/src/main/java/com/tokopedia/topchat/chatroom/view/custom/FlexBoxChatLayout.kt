@@ -233,7 +233,7 @@ class FlexBoxChatLayout : ViewGroup {
         headerCta?.setOnClickListener {
             listener?.changeAddress(attachment)
         }
-        headerCta?.isClickable = attachment.isClickable()
+        headerCta?.isEnabled = attachment.isClickable()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
