@@ -54,6 +54,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private lateinit var adapter: RecommendationCarouselAdapter
     private lateinit var layoutManager: LinearLayoutManager
     private var adapterPosition: Int = 0
+    private var isInitialized = false
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_widget_recommendation_carousel, this)
@@ -66,7 +67,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         const val NAME_CAMPAIGN_WIDGET = "Campaign-Widget"
     }
 
-    fun bind(carouselData: RecommendationCarouselData, adapterPosition: Int = 0, widgetListener: RecommendationCarouselWidgetListener?) {
+    fun bind(
+            carouselData: RecommendationCarouselData,
+            adapterPosition: Int = 0,
+            widgetListener: RecommendationCarouselWidgetListener?,
+            scrollToPosition: Int = 0,
+    ) {
         this.carouselData = carouselData
         this.widgetListener = widgetListener
         this.adapterPosition = adapterPosition
@@ -80,6 +86,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 impressChannel(carouselData)
                 setHeaderComponent(carouselData)
                 setData(carouselData)
+                scrollCarousel(scrollToPosition)
             },
             onFailed = {
                 itemView.loadingRecom.gone()
@@ -121,7 +128,16 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private fun initVar() {
+        if (isInitialized) return
+
         typeFactory = CommonRecomCarouselCardTypeFactoryImpl(carouselData.recommendationData)
+        adapter = RecommendationCarouselAdapter(typeFactory)
+        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        isInitialized = true
     }
 
 
@@ -149,11 +165,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
                 cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
             }
-            adapter = RecommendationCarouselAdapter(cardList, typeFactory)
 
-            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            recyclerView.layoutManager = layoutManager
-            recyclerView.adapter = adapter
+            adapter.submitList(cardList)
 
             launch {
                 try {
@@ -177,7 +190,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -194,6 +207,23 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         })
     }
 
+    private fun scrollCarousel(scrollToPosition: Int) {
+        if (!::layoutManager.isInitialized) return
+
+        itemView.post {
+            layoutManager.scrollToPositionWithOffset(
+                    scrollToPosition,
+                    context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            )
+        }
+    }
+
+    fun getCurrentPosition(): Int {
+        return if (::layoutManager.isInitialized)
+            layoutManager.findFirstCompletelyVisibleItemPosition()
+        else 0
+    }
+
     private fun doActionBasedOnRecomState(state: Int, onLoad: () -> Unit?, onReady: () -> Unit?, onFailed: () -> Unit?) {
         when (carouselData.state) {
             STATE_LOADING -> {
@@ -207,5 +237,4 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             }
         }
     }
-
 }
