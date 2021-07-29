@@ -1210,6 +1210,10 @@ public class MainParentActivity extends BaseActivity implements
                 }
                 globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
+
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed)))
+                    globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }
         }
