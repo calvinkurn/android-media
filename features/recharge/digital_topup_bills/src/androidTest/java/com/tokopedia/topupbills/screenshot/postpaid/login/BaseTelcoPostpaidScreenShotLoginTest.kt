@@ -97,7 +97,6 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         stubSearchNumber()
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
-        take_screenshot_input_number()
         take_screenshot_enquiry_phone_number()
         take_screenshot_interaction_view_pager()
         take_screenshot_interaction_interactive_header()
@@ -138,34 +137,8 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
     }
 
-    fun take_screenshot_input_number() {
-        Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.telco_ac_input_number)).perform(ViewActions.click())
-        Thread.sleep(2000)
-        findViewAndScreenShot(
-                R.id.container_search_number_telco,
-                generatePrefix(),
-                "search_number"
-        )
-
-        Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER))
-        Espresso.closeSoftKeyboard()
-        Thread.sleep(2000)
-        findViewAndScreenShot(
-                R.id.container_search_number_telco,
-                generatePrefix(),
-                "search_number_filled"
-        )
-        Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).perform(ViewActions.click(), ViewActions.pressImeActionButton())
-        Thread.sleep(2000)
-        findViewAndScreenShot(
-                R.id.telco_input_number_layout,
-                generatePrefix(),
-                "input_number_widget_filled"
-        )
-    }
-
     fun take_screenshot_enquiry_phone_number() {
+        Espresso.onView(ViewMatchers.withId(R.id.telco_ac_input_number)).perform(ViewActions.click())
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.telco_buy_widget)).check(ViewAssertions.matches(IsNot.not(ViewMatchers.isDisplayed())))
         Espresso.onView(ViewMatchers.withId(R.id.telco_enquiry_btn))
@@ -241,6 +214,10 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         }
     }
 
+    private fun stubSearchNumber() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(createOrderNumberTypeManual())
+    }
+
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
         val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
         val resultData = Intent()
@@ -248,12 +225,6 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
                 TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
-
-    private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberActivity")))
-                .respondWith(createOrderNumberTypeManual())
     }
 
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
