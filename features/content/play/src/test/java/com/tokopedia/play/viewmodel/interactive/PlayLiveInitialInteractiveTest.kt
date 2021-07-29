@@ -4,10 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.model.PlayInteractiveModelBuilder
-import com.tokopedia.play.model.PlaySocketResponseBuilder
+import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.type.PlayChannelType
@@ -45,8 +42,12 @@ class PlayLiveInitialInteractiveTest {
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
+    private val videoInfoBuilder = PlayVideoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live)
+            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            videoMetaInfo = videoInfoBuilder.buildVideoMeta(
+                    videoPlayer = videoInfoBuilder.buildCompleteGeneralVideoPlayer()
+            )
     )
 
     private val interactiveModelBuilder = PlayInteractiveModelBuilder()

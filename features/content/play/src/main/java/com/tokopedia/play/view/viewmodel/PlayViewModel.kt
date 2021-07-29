@@ -1092,6 +1092,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+        if (!channelType.isLive || videoOrientation.isHorizontal || videoPlayer.isYouTube) return
         val interactiveUiState = mapInteractiveToState(interactive)
         interactiveRepo.setDetail(interactive.id.toString(), interactive)
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
@@ -1100,9 +1101,7 @@ class PlayViewModel @Inject constructor(
             interactiveRepo.setFinished(interactive.id.toString())
         }
 
-        if (interactiveRepo.getActiveInteractiveId() != null) {
-            _interactive.value = interactiveUiState
-        }
+        _interactive.value = if (interactiveRepo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
 
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
             val channelId = mChannelData?.id ?: return
