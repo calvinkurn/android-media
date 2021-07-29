@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.network.exception.Header
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 data class GetRecentPurchaseResponse(
@@ -83,6 +84,11 @@ data class GetRecentPurchaseResponse(
     ) {
         fun isVariant(): Boolean {
             return parentProductId.toIntOrZero() != 0
+        }
+
+        fun getDiscount(): String {
+            val discount = discountPercentage.toFloatOrZero()
+            return if(discount > 0f) discountPercentage else ""
         }
     }
 

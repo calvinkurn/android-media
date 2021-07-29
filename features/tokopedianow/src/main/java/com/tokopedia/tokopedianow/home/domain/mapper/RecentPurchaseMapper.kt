@@ -47,7 +47,7 @@ object RecentPurchaseMapper {
             ProductCardModel(
                 productImageUrl = data.imageUrl,
                 productName = data.name,
-                discountPercentage = data.discountPercentage,
+                discountPercentage = data.getDiscount(),
                 slashedPrice = data.slashedPrice,
                 formattedPrice = data.price,
                 hasAddToCartButton = false,
@@ -59,7 +59,7 @@ object RecentPurchaseMapper {
             ProductCardModel(
                 productImageUrl = data.imageUrl,
                 productName = data.name,
-                discountPercentage = data.discountPercentage,
+                discountPercentage = data.getDiscount(),
                 slashedPrice = data.slashedPrice,
                 formattedPrice = data.price,
                 hasAddToCartButton = true,
