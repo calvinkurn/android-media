@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/dp_16"
-        android:text="Mau kasih lihat foto yang mana?"
+        android:text="@string/img_options_heading"
         android:textColor="@color/clr_31353B"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
@@ -32,6 +32,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:visibility="gone"
         android:scaleType="fitCenter"
+        android:contentDescription="@string/desc_img_preview"
         android:layout_height="@dimen/dp_300"/>
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/thumb_nail_image"
@@ -41,6 +42,7 @@
         app:layout_constraintCircleRadius="@dimen/dp_8"
         app:layout_constraintTop_toBottomOf="@id/preview_image"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:contentDescription="@string/desc_img_thumbnail"
         android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"/>
     <com.tokopedia.unifyprinciples.Typography
@@ -48,7 +50,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
-        android:text="Shop name"
+        android:text="@string/tn_title"
         android:textColor="@color/clr_31353B"
         android:textSize="@dimen/sp_14"
         app:typographyType="body_2"
@@ -105,6 +107,7 @@
         android:src="@drawable/universal_sharing_ic_link"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
+        android:contentDescription="@string/desc_img_copy_link"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/sms_img"/>
 
@@ -133,6 +136,7 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:elevation="@dimen/dp_1"
+        android:contentDescription="@string/desc_img_sms"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         app:layout_constraintLeft_toRightOf="@+id/copy_link_img"
         app:layout_constraintRight_toLeftOf="@id/email_img"/>
@@ -162,6 +166,7 @@
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:elevation="@dimen/dp_1"
+        android:contentDescription="@string/desc_img_email"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         app:layout_constraintLeft_toRightOf="@+id/sms_img"
         app:layout_constraintRight_toLeftOf="@+id/others_img"/>
@@ -190,6 +195,7 @@
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
         android:elevation="@dimen/dp_1"
+        android:contentDescription="@string/desc_img_others"
         app:layout_constraintTop_toBottomOf="@+id/rv_social_media_list"
         app:layout_constraintLeft_toRightOf="@+id/email_img"
         app:layout_constraintRight_toRightOf="parent"/>

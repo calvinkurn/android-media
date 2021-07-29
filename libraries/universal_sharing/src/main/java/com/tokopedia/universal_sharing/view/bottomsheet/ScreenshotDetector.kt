@@ -19,8 +19,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 class ScreenshotDetector(internal val context: Context, private val screenShotListener: ScreenShotListener) {
 
     private var contentObserver: ContentObserver? = null
-    //permission request code
-    val READ_EXTERNAL_STORAGE_REQUEST = 500
     val pendingRegex = ".pending"
     private var ssUriPath = ""
 
@@ -158,5 +156,10 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                 return
             }
         }
+    }
+
+    companion object {
+        //permission request code
+        const val READ_EXTERNAL_STORAGE_REQUEST = 500
     }
 }

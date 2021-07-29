@@ -75,6 +75,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         //for screen shots
         private var screenshotDetector: ScreenshotDetector? = null
 
+        private const val DELAY_TIME_MILLISECOND = 500L
+
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
         fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean{
@@ -232,7 +234,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     revImageOptionsContainer?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     Handler().postDelayed({
                         revImageOptionsContainer?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
-                    }, 500)
+                    }, DELAY_TIME_MILLISECOND)
                 }
             })
         }

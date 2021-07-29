@@ -10,6 +10,7 @@
         android:id="@+id/image"
         android:layout_width="@dimen/dp_145"
         android:layout_height="@dimen/dp_145"
+        android:contentDescription="@string/desc_img_option"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -19,6 +20,7 @@
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:src="@drawable/universal_share_border"
+        android:contentDescription="@string/desc_img_border"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -29,6 +31,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/universal_share_ic_check_circle"
+        android:contentDescription="@string/desc_img_selector"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/image"/>
     <androidx.constraintlayout.widget.Group
