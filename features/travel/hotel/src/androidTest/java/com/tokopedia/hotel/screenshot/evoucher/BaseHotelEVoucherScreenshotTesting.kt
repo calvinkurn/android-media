@@ -9,15 +9,15 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.evoucher.presentation.activity.mock.HotelEVoucherMockResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.hotel.R
-import com.tokopedia.test.application.util.setupDarkModeTest
 
 /**
  * @author by astidhiyaa on 29/04/21

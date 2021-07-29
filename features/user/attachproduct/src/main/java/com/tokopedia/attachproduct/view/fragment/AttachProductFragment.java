@@ -2,11 +2,6 @@ package com.tokopedia.attachproduct.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -17,6 +12,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -34,8 +34,8 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapter;
 import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
-import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
+import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.SearchBarUnify;
 
@@ -47,6 +47,7 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID;
 import static com.tokopedia.attachproduct.view.activity.AttachProductActivity.MAX_CHECKED_DEFAULT;
 
 /**
@@ -72,15 +73,19 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
 
     private boolean isSeller = false;
     private String source = "";
+    private String warehouseId = "0";
     private int maxChecked = MAX_CHECKED_DEFAULT;
     private ArrayList<String> hiddenProducts = new ArrayList<>();
 
-    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView,
-                                                    boolean isSeller, String source, int maxChecked,
-                                                    ArrayList<String> hiddenProducts) {
+    public static AttachProductFragment newInstance(
+            AttachProductContract.Activity checkedUIView,
+            boolean isSeller, String source, int maxChecked,
+            ArrayList<String> hiddenProducts, String warehouseId
+    ) {
         Bundle args = new Bundle();
         args.putBoolean(IS_SELLER, isSeller);
         args.putString(SOURCE, source);
+        args.putString(TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, warehouseId);
         args.putInt(MAX_CHECKED, maxChecked);
         args.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts);
         AttachProductFragment fragment = new AttachProductFragment();
@@ -115,6 +120,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSearchBar();
+        setupWarehouseId();
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -130,6 +136,14 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
         }
 
         updateButtonBasedOnChecked(adapter.getCheckedCount());
+    }
+
+    private void setupWarehouseId() {
+        if (getArguments() != null) {
+            warehouseId = getArguments().getString(
+                    TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, "0"
+            );
+        }
     }
 
     private void initSearchBar() {
@@ -227,7 +241,11 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
                 && activityContract.getShopId() != null
                 && presenter != null
                 && searchBar != null) {
-            presenter.loadProductData(searchBar.getSearchBarTextField().getText().toString(), activityContract.getShopId(), page);
+            presenter.loadProductData(
+                    searchBar.getSearchBarTextField().getText().toString(),
+                    activityContract.getShopId(),
+                    page, warehouseId
+            );
         } else if (getActivity() != null) {
             getActivity().finish();
         }

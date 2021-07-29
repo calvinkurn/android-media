@@ -84,7 +84,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
             }
 
             Given("update cart counter") {
@@ -115,7 +115,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
-                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
             }
 
             Given("update cart counter") {
@@ -159,7 +159,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
 
@@ -196,7 +196,7 @@ object CartListPresenterGetCartListTest : Spek({
             }
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
+                every { getCartListSimplifiedUseCase.buildParams(any(), any()) } returns emptyMap()
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
 

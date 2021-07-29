@@ -49,6 +49,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
+    private var isSupportWarehouseLoc: Boolean = true
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -79,7 +80,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                     is Success -> {
                         if (it.data.addressId == 0) {
                             val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-                            source?.let { it -> viewModel.getDefaultChosenAddress("", it) }
+                            source?.let { it -> viewModel.getDefaultChosenAddress("", it, isSupportWarehouseLoc) }
                         } else {
                             val data = it.data
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -89,7 +90,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                     lat = data.latitude,
                                     long = data.longitude,
                                     label = "${data.addressName} ${data.receiverName}",
-                                    postalCode = data.postalCode
+                                    postalCode = data.postalCode,
+                                    shopId = data.tokonowModel.shopId.toString(),
+                                    warehouseId = data.tokonowModel.warehouseId.toString()
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -106,6 +109,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                     is Success -> {
                         if (it.data.addressData.addressId != 0) {
                             val data = it.data.addressData
+                            val tokonowData = it.data.tokonow
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
                                     addressId = data.addressId.toString(),
                                     cityId = data.cityId.toString(),
@@ -113,7 +117,9 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                                     lat = data.latitude,
                                     long = data.longitude,
                                     label = "${data.addressName} ${data.receiverName}",
-                                    postalCode = data.postalCode
+                                    postalCode = data.postalCode,
+                                    shopId = tokonowData.shopId.toString(),
+                                    warehouseId = tokonowData.warehouseId.toString()
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
@@ -162,7 +168,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
         if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
-            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it) }
+            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }
     }
@@ -174,6 +180,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
         }
 
+        isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: true
         initChooseAddressFlow()
 
         buttonChooseAddress?.setOnClickListener {
@@ -214,6 +221,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     override fun onDismissChooseAddressBottomSheet() {
         hasClicked = false
+    }
+
+    override fun isSupportWarehouseLoc(): Boolean {
+        return chooseAddressWidgetListener?.isSupportWarehouseLoc()?: false
     }
 
     private fun onLocalizingAddressError() {
@@ -289,5 +300,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         fun onChangeTextColor(): Int {
             return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
         }
-    }
+
+        /**
+         * To differentiate feature that need warehouse loc or not
+         */
+        fun isSupportWarehouseLoc(): Boolean {
+            return true
+        }
+     }
 }

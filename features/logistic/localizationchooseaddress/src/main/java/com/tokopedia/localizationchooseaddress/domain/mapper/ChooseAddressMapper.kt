@@ -46,6 +46,7 @@ class ChooseAddressMapper @Inject constructor() {
             latitude = data.latitude
             longitude = data.longitude
             postalCode = data.postalCode
+            tokonowModel = mapTokonow(response.data.tokonow)
         }
     }
 
@@ -63,6 +64,7 @@ class ChooseAddressMapper @Inject constructor() {
             latitude = data.latitude
             longitude = data.longitude
             postalCode = data.postalCode
+            tokonowModel = mapTokonow(response.tokonow)
         }
     }
 
@@ -70,6 +72,7 @@ class ChooseAddressMapper @Inject constructor() {
         return DefaultChosenAddressModel().apply {
             addressData = mapDefaultAddress(response.data)
             keroAddrError = mapKeroDefaultAddress(response.error)
+            tokonow = mapTokonow(response.tokonow)
         }
     }
 
@@ -92,6 +95,13 @@ class ChooseAddressMapper @Inject constructor() {
             country = response.country
             latitude = response.latitude
             longitude = response.longitude
+        }
+    }
+
+    private fun mapTokonow(response: Tokonow): TokonowModel {
+        return TokonowModel().apply {
+            shopId = response.shopId
+            warehouseId = response.warehouseId
         }
     }
 

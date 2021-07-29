@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import android.net.Uri
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
@@ -18,7 +17,9 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.CapturingSlot
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers

@@ -11,13 +11,15 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderPerformanceW
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPerformanceWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 
 class ShopHeaderPerformanceWidgetViewHolder(
         itemView: View,
         private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-        private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener
+        private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
+        private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -31,7 +33,8 @@ class ShopHeaderPerformanceWidgetViewHolder(
         shopPerformanceWidgetAdapter = ShopPerformanceWidgetAdapter(ShopHeaderPerformanceWidgetAdapterTypeFactory(
                 model,
                 shopPerformanceWidgetBadgeTextValueListener,
-                shopPerformanceWidgetImageOnlyListener
+                shopPerformanceWidgetImageOnlyListener,
+                shopPerformanceWidgetImageTextListener
         ))
         rvShopPerformanceWidget?.apply {
             adapter = shopPerformanceWidgetAdapter

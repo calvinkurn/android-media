@@ -102,7 +102,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun fetchOrderDetailData_successFetching_shouldReturnSuccessWithData() {
         // given
-        coEvery { useCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA
+        coEvery { useCase.execute(any(), any()) } returns Success(DUMMY_ORDER_DETAIL_DATA)
         viewModel.orderId = "1234567890"
 
         // when
@@ -339,7 +339,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun fetchOrderDetailData_successFetchingMultiAirline_shouldReturnSuccessWithData() {
         // given
-        coEvery { useCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE
+        coEvery { useCase.execute(any(), any()) } returns Success(DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE)
         viewModel.orderId = "1234567890"
 
         // when
@@ -1334,7 +1334,7 @@ class FlightOrderDetailViewModelTest {
     fun buildPaymentDetailData_successToFetchOrderDetail() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         viewModel.fetchOrderDetailData()
 
         // when
@@ -1384,7 +1384,7 @@ class FlightOrderDetailViewModelTest {
     fun buildAmenitiesPaymentDetailData_successToFetchOrderDetail() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         viewModel.fetchOrderDetailData()
 
         // when
@@ -1422,7 +1422,7 @@ class FlightOrderDetailViewModelTest {
     fun getTotalAmount() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         viewModel.fetchOrderDetailData()
 
         // when
@@ -1447,7 +1447,7 @@ class FlightOrderDetailViewModelTest {
     fun getOrderDetailStatus_withOrderDetailData() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         viewModel.fetchOrderDetailData()
 
         // when
@@ -1461,7 +1461,7 @@ class FlightOrderDetailViewModelTest {
     fun trackSendETicketClicked() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()
@@ -1482,7 +1482,7 @@ class FlightOrderDetailViewModelTest {
     fun trackClickWebCheckIn() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()
@@ -1503,7 +1503,7 @@ class FlightOrderDetailViewModelTest {
     fun trackClickCancel() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { useCase.execute(any(), any()) } returns dummyData
+        coEvery { useCase.execute(any(), any()) } returns Success(dummyData)
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()

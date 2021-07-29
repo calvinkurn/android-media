@@ -1,8 +1,9 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.image
 
-import android.os.Build
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -19,25 +20,20 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
     override fun bind(element: ImagePostViewModel) {
         itemView.image.setOnClickListener {
             listener.onImageClick(element.positionInFeed, pagerPosition, element.redirectLink)
-            if (!element.trackingList.isEmpty()) {
+            if (element.trackingList.isNotEmpty()) {
                 listener.onAffiliateTrackClicked(element.trackingList, true)
             }
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = itemView.image.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val viewTreeObserver = itemView.image.viewTreeObserver
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                        itemView.image.maxHeight = itemView.image.width
-                        itemView.image.requestLayout()
-                    }
+                    itemView.image.maxHeight = itemView.image.width
+                    itemView.image.requestLayout()
                 }
+            }
         )
         itemView.image.loadImage(element.image)
         listener.userImagePostImpression(element.positionInFeed, pagerPosition)
@@ -45,6 +41,29 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
 
     interface ImagePostListener {
         fun userImagePostImpression(positionInFeed: Int, contentPosition: Int)
+
+        fun userCarouselImpression(
+            activityId: String,
+            media: FeedXMedia,
+            positionInFeed: Int,
+            postType: String,
+            isFollowed: Boolean,
+            shopId: String,
+            postPosition: Int
+        )
+        fun userGridPostImpression(
+            positionInFeed: Int,
+            activityId: String,
+            postType: String,
+            shopId: String,
+        )
+        fun userProductImpression(
+            positionInFeed: Int,
+            activityId: String,
+            postType: String,
+            shopId: String,
+            productList: List<FeedXProduct>)
+
 
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 

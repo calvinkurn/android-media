@@ -12,7 +12,6 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
-import java.util.*
 
 /**
  * @author by furqan on 22/04/19

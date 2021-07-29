@@ -1,0 +1,23 @@
+{
+  "update_cart_v2": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "error": "",
+      "status": false,
+      "message": "Perubahan gagal disimpan di keranjang.",
+      "toaster_action": {
+        "text": "",
+        "show_cta": false
+      },
+      "out_of_service": {
+        "id": 0,
+        "code": "",
+        "image": "",
+        "title": "",
+        "description": "",
+        "buttons": []
+      }
+    }
+  }
+}

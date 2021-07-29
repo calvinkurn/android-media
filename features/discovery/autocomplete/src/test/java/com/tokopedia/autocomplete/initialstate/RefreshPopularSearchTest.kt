@@ -79,7 +79,7 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
         `Given refresh popular search API will return error`()
         `When presenter refresh popular search`(ID_POPULAR_SEARCH)
         `Then verify popularSearch API is called`()
-        `Then verify initial state view behavior is correct`()
+        `Then verify initial state view behavior for failed refresh`()
     }
 
     private fun `Given refresh popular search API will return error`() {

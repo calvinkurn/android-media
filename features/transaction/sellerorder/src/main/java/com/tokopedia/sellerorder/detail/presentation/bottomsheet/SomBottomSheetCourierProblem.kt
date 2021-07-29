@@ -11,10 +11,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
-import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 
 class SomBottomSheetCourierProblem(
         context: Context,
@@ -70,6 +70,7 @@ class SomBottomSheetCourierProblem(
                     listener.onDoRejectOrder(orderRejectRequest)
                 }
             }
+            btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 
@@ -94,6 +95,7 @@ class SomBottomSheetCourierProblem(
                 tf_extra_notes?.gone()
                 childViews?.btn_primary?.isEnabled = true
             }
+            hideKeyboard()
         }
     }
 
