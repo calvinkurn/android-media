@@ -697,8 +697,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         if (recomItem.isRecomProductShowVariantAndCart) {
                             recomItem.updateItemCurrentStock(0)
                             miniCart?.let { cartData ->
-                                if (cartData.containsKey(recomItem.productId.toString())) {
-                                    recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity ?: 0)
+                                if (recomItem.isProductHasParentID()) {
+                                    var variantTotalItems = 0
+                                    cartData.values.forEach { miniCartItem ->
+                                        if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+                                            variantTotalItems+=miniCartItem.quantity
+                                        }
+                                    }
+                                    recomItem.updateItemCurrentStock(variantTotalItems)
+                                } else {
+                                    if (cartData.containsKey(recomItem.productId.toString())) {
+                                        recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity
+                                                ?: 0)
+                                    }
                                 }
                             }
                         }

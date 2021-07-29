@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
@@ -47,7 +48,7 @@ data class RecommendationItem(
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),
         //for tokonow
-        val parentID: Int = 0,
+        val parentID: Long = 0,
         val isRecomProductShowVariantAndCart:Boolean = false,
         var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
 ): ImpressHolder(){
@@ -157,7 +158,7 @@ data class RecommendationItem(
     }
 
     fun isProductHasParentID(): Boolean {
-        return parentID != 0
+        return parentID != 0L
     }
 
     //func to update quantity from minicart

@@ -1052,7 +1052,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     val error = result.errorMessage.firstOrNull() ?: result.data.message.firstOrNull()
                     onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow(result.data.message.first())
+                    updateMiniCartAfterATCRecomTokonow(result.data.message.first(), false, recomItem)
                 }
             }
         }) {
@@ -1095,7 +1095,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 if (result.error.isNotEmpty()) {
                     onFailedATCRecomTokonow(Throwable(result.error.firstOrNull() ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow(result.data.message)
+                    updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
                 }
             }
             }) {
@@ -1109,7 +1109,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         if (isAtc) {
             _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
         }
-        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
+        getMiniCart(recomItem.shopId.toString())
     }
 
     private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
