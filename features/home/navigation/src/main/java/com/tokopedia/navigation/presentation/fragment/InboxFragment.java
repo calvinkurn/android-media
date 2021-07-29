@@ -226,7 +226,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         presenter.setView(this);
 
         List<Visitable> dataInbox = getData();
-        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(userSessionInterface,this, this, this, this);
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(userSessionInterface, this, this, this, this);
         adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
