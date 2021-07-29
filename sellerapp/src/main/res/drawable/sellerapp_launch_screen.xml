@@ -4,6 +4,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/seller_splash_screen_anniv" />
+            android:src="@mipmap/seller_splash_screen_anniv" />
     </item>
 </layer-list>
