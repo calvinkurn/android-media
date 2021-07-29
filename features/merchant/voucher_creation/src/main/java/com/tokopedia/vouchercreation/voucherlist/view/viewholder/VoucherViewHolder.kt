@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
@@ -19,13 +20,23 @@ import kotlin.reflect.KFunction1
  */
 
 class VoucherViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<VoucherUiModel>(itemView) {
+
+    private var shareButton: ImageUnify? = null
+    private var broadcastButton: ImageUnify? = null
+    private var moreButton: ImageUnify? = null
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_voucher_list
+    }
+
+    init {
+        shareButton = itemView?.findViewById(R.id.iu_share_button)
+        broadcastButton = itemView?.findViewById(R.id.iu_bc_button)
+        moreButton = itemView?.findViewById(R.id.iu_more_button)
     }
 
     override fun bind(element: VoucherUiModel) {
@@ -41,15 +52,19 @@ class VoucherViewHolder(
             setImageVoucher(element.isPublic, element.type)
             setVoucherStatus(element)
             showPromoCode(element.isPublic, element.code)
-
-            setupVoucherCtaButton(element)
             setVoucherDate(element)
 
             imgMvcVoucherType?.setOnClickListener {
                 listener.onVoucherIconClickListener(element.status)
                 listener.onVoucherClickListener(element.id)
             }
-            btnMvcMore.setOnClickListener {
+            broadcastButton?.setOnClickListener{
+                listener.onBroadCastClickListener(element.id)
+            }
+            shareButton?.setOnClickListener {
+                listener.onShareClickListener(element)
+            }
+            moreButton?.setOnClickListener {
                 listener.onMoreMenuClickListener(element)
             }
             setOnClickListener {
@@ -59,7 +74,8 @@ class VoucherViewHolder(
     }
 
     private fun setVoucherDate(element: VoucherUiModel) {
-        val isActiveVoucher = element.status == VoucherStatusConst.ONGOING || element.status == VoucherStatusConst.NOT_STARTED
+        val isActiveVoucher =
+            element.status == VoucherStatusConst.ONGOING || element.status == VoucherStatusConst.NOT_STARTED
         val oldFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         val newFormat = "dd MMM yyyy"
 
@@ -194,6 +210,8 @@ class VoucherViewHolder(
         fun onVoucherClickListener(voucherId: Int)
 
         fun onMoreMenuClickListener(voucher: VoucherUiModel)
+
+        fun onBroadCastClickListener(voucherId: Int)
 
         fun onShareClickListener(voucher: VoucherUiModel)
 
