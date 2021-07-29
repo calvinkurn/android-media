@@ -61,15 +61,15 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.promos.observe(this, Observer {
+        viewModel.promos.observe(viewLifecycleOwner, Observer {
             promoListWidget.setPromoList(it)
         })
 
-        viewModel.titleMenu.observe(this, Observer {
+        viewModel.titleMenu.observe(viewLifecycleOwner, Observer {
             promoListWidget.toggleTitle(it)
         })
 
-        viewModel.promoImpression.observe(this, Observer {
+        viewModel.promoImpression.observe(viewLifecycleOwner, Observer {
             viewModel.promos.value?.let {
                 promoListWidget.getVisibleRecentItemsToUsersTracking(it)
             }

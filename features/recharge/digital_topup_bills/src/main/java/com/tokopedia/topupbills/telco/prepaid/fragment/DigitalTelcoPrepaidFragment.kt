@@ -148,10 +148,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showDynamicSpacer() {
-        val defaultSpaceHeight = 81
         dynamicSpacer.layoutParams.height =
                 context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
-                        ?: defaultSpaceHeight
+                        ?: DEFAULT_SPACE_HEIGHT
         dynamicSpacer.requestLayout()
     }
 
@@ -474,7 +473,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun renderProductViewPager() {
-        var idProductTab = 6L
+        var idProductTab = ID_PRODUCT_TAB
         val listProductTab = mutableListOf<TelcoTabItem>()
         tabLayout.getUnifyTabLayout().removeAllTabs()
         listProductTab.add(
@@ -620,10 +619,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
         inputs[EXPRESS_PARAM_CLIENT_NUMBER] = telcoClientNumberWidget.getInputNumber()
-        if (isCheckoutPassDataInitialized()) {
-            val operatorId = checkoutPassData.operatorId ?: ""
-            if (operatorId.isNotEmpty()) inputs[EXPRESS_PARAM_OPERATOR_ID] = operatorId
-        }
+        val operatorId = if (isCheckoutPassDataInitialized()) {
+            checkoutPassData.operatorId ?: ""
+        } else ""
+
+        if (operatorId.isNotEmpty()) inputs[EXPRESS_PARAM_OPERATOR_ID] = operatorId
         inputFields = inputs
     }
 
@@ -690,6 +690,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
 
         private const val TITLE_PAGE = "telco prepaid"
+
+        private const val DEFAULT_SPACE_HEIGHT = 81
+        private const val ID_PRODUCT_TAB  = 6L
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()

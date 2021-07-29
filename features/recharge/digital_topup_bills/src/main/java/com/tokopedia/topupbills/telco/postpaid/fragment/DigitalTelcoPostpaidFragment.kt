@@ -222,13 +222,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
-        if (isCheckoutPassDataInitialized()) {
-            checkoutPassData.clientNumber?.let { clientNumber ->
-                inputs[TopupBillsViewModel.EXPRESS_PARAM_CLIENT_NUMBER] = clientNumber
-            }
-            checkoutPassData.operatorId?.let { operatorId ->
-                inputs[TopupBillsViewModel.EXPRESS_PARAM_OPERATOR_ID] = operatorId
-            }
+        checkoutPassData.clientNumber?.let { clientNumber ->
+            inputs[TopupBillsViewModel.EXPRESS_PARAM_CLIENT_NUMBER] = clientNumber
+        }
+        checkoutPassData.operatorId?.let { operatorId ->
+            inputs[TopupBillsViewModel.EXPRESS_PARAM_OPERATOR_ID] = operatorId
         }
         inputFields = inputs
     }
@@ -418,7 +416,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         }
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
-                    if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                    if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
                     } else {
@@ -523,6 +521,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         private const val TITLE_PAGE = "telco post paid"
 
+        private const val VALID_MIN_INPUT_NUMBER = 10
+        private const val VALID_MAX_INPUT_NUMBER = 14
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = DigitalTelcoPostpaidFragment()
