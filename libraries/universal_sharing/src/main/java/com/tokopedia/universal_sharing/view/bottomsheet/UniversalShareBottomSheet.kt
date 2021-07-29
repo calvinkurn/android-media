@@ -100,7 +100,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
             if(isEnabled) {
                 if (screenshotDetector == null) {
-                    screenshotDetector = ScreenshotDetector(context, screenShotListener)
+                    screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener)
                 }
                 screenshotDetector?.detectScreenshots(fragment)
             }
