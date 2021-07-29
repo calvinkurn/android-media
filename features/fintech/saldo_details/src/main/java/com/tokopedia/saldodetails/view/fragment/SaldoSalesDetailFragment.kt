@@ -10,15 +10,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoWithdrawalStatusAdapter
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
-import com.tokopedia.unifycomponents.Label
+import com.tokopedia.saldodetails.view.activity.SaldoSalesDetailActivity
+import com.tokopedia.saldodetails.view.activity.SaldoWithdrawalDetailActivity
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.saldo_fragment_withdrawl_detail.*
-import kotlinx.android.synthetic.main.saldo_fragment_withdrawl_detail.llWithdrawalDetail
-import kotlinx.android.synthetic.main.saldo_fragment_withdrawl_detail.tvWithdrawalAmount
-import kotlinx.android.synthetic.main.saldo_fragment_withdrawl_detail.tvWithdrawalDate
+import kotlinx.android.synthetic.main.saldo_fragment_sales_detail.*
 import javax.inject.Inject
 
-class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
+class SaldoSalesDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -31,7 +29,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.saldo_fragment_withdrawl_detail,
+            R.layout.saldo_fragment_sales_detail,
             container, false
         )
     }
@@ -39,32 +37,26 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        onSuccessWithdrawalDetailLoaded()
-        initAdapter()
-    }
-
-    private fun initAdapter() {
-        rvWithdrawalStatus.adapter = SaldoWithdrawalStatusAdapter()
-        rvWithdrawalStatus.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rvWithdrawalStatus.isNestedScrollingEnabled = false
+        btnViewOrderDetails.setOnClickListener {
+            startActivity(SaldoWithdrawalDetailActivity.newInstance(requireContext()))
+        }
+        onSuccessSalesDetailLoaded()
     }
 
     private fun initObservers() {
 
     }
 
-    private fun onSuccessWithdrawalDetailLoaded() {
+    private fun onSuccessSalesDetailLoaded() {
         tvWithdrawalAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(600000, false)
-        tvBankName.text = "PT. BCA (Bank Central Asia)"
-        tvAccountName.text = "012345678762 - Rachel Kurniawan"
+        tvInvoiceNumber.text = "INV/20161025/XVI/X/55069657"
         tvWithdrawalDate.text = "22 Des 2020, 10:30 WIB"
-        withdrawalStatusLabel.setLabelType(Label.GENERAL_LIGHT_GREEN)
-        withdrawalStatusLabel.setLabel("Berhasil")
         llWithdrawalDetail.setData()
+
+
     }
 
     companion object {
-        fun newInstance() = SaldoWithdrawalDetailFragment()
+        fun getInstance() = SaldoSalesDetailFragment()
     }
 }

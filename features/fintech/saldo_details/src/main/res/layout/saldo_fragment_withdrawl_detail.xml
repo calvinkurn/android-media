@@ -31,9 +31,10 @@
             app:layout_constraintTop_toBottomOf="@+id/withdrawalStatusTicker"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
-            android:text="Rp600.00" />
+            tools:text="Rp600.00" />
 
         <com.tokopedia.unifycomponents.Label
+            android:id="@+id/withdrawalStatusLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/unify_space_16"
@@ -52,7 +53,7 @@
             app:layout_constraintStart_toStartOf="@+id/tvWithdrawalAmount"
             app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalAmount"
             app:typographyType="body_2"
-            android:text="PT. BCA (Bank Central Asia)" />
+            tools:text="PT. BCA (Bank Central Asia)" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvAccountName"
@@ -62,7 +63,7 @@
             app:layout_constraintStart_toStartOf="@+id/tvWithdrawalAmount"
             app:layout_constraintTop_toBottomOf="@+id/tvBankName"
             app:typographyType="body_2"
-            android:text="012345678762 - Rachel Kurniawan" />
+            tools:text="012345678762 - Rachel Kurniawan" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvWithdrawalDate"
@@ -73,7 +74,7 @@
             app:layout_constraintStart_toStartOf="@+id/tvWithdrawalAmount"
             app:layout_constraintTop_toBottomOf="@+id/tvAccountName"
             app:typographyType="body_3"
-            android:text="22 Des 2020, 10:30 WIB" />
+            tools:text="22 Des 2020, 10:30 WIB" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/detailSeparator"

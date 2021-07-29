@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         tools:text="Jumlah Penarikan"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailAmount"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="@+id/tvDetailTitle"
         app:typographyType="body_2"
         tools:text="Rp600.000"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

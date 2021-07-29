@@ -36,5 +36,6 @@ interface SaldoDetailsComponent {
     fun inject(saldoWithdrawalDetailActivity: SaldoWithdrawalDetailActivity)
     fun inject(saldoSalesDetailActivity: SaldoSalesDetailActivity)
     fun inject(saldoWithdrawalDetailFragment: SaldoWithdrawalDetailFragment)
+    fun inject(saldoSalesDetailFragment: SaldoSalesDetailFragment)
 
 }

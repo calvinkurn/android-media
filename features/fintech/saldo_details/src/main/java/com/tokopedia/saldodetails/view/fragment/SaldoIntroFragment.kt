@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.view.activity.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
 import com.tokopedia.saldodetails.view.activity.SaldoWithdrawalDetailActivity
 import com.tokopedia.unifycomponents.UnifyButton
@@ -106,7 +107,7 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
         }
 
         gotoSaldoPage!!.setOnClickListener {
-            startActivity(SaldoWithdrawalDetailActivity.newInstance(requireContext()))
+            startActivity(SaldoSalesDetailActivity.newInstance(requireContext()))
             //RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
             activity?.finish()
         }

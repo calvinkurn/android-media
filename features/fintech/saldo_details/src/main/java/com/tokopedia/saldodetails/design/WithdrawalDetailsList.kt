@@ -30,14 +30,14 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         Pair("Jumlah Penarikan", "Rp600.00"),
     )
 
+    init {
+        this.orientation = VERTICAL
+    }
+
     fun setData() {
-        // inflate title
-        this.orientation = LinearLayout.VERTICAL
         inflateTitle()
         inflateDetailList()
         inflateDivider()
-        // inflate detail list
-        // inflate total amount
         inflateAmount()
     }
 
@@ -57,22 +57,13 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         heading.setWeight(Typography.BOLD)
         heading.text = "Rincian penarikan"
         heading.layoutParams = layoutParams
-        //heading.setPadding(0, spacing4, 0, spacing4)
-        //heading.setMargin(0, spacing4, 0, spacing4)
         addView(heading)
     }
 
     private fun inflateAmount() {
         val view = getLayout()
-        view.tvDetailTitle.text = "Jumlah yang Ditransfer"
-        view.tvDetailAmount.text = "Rp595.000"
-        view.tvDetailTitle.setWeight(Typography.BOLD)
-        view.tvDetailTitle.setType(Typography.BODY_2)
-        view.tvDetailTitle.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
-        view.tvDetailAmount.setWeight(Typography.BOLD)
-        view.tvDetailAmount.setType(Typography.BODY_2)
-        view.tvDetailAmount.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
-        view.tvDetailAmount.visible()
+        setWithdrawalText(view.tvDetailTitle, "Jumlah yang Ditransfer")
+        setWithdrawalText(view.tvDetailAmount, "Rp595.000")
         addView(view)
     }
 
@@ -95,6 +86,13 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         return inflater.inflate(view, this, false)
     }
 
+    private fun setWithdrawalText(textView: Typography, text: String) {
+        textView.text = text
+        textView.setWeight(Typography.BOLD)
+        textView.setType(Typography.BODY_2)
+        textView.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
+        textView.visible()
+    }
     companion object {
         const val VIEW_TYPE_DETAIL = 1
         const val VIEW_TYPE_SEPARATOR = 2

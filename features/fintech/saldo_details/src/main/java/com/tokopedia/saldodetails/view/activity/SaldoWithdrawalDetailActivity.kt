@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
@@ -39,7 +38,7 @@ class SaldoWithdrawalDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDe
     }
 
     override fun getComponent() = saldoComponent
-    override fun getNewFragment() = SaldoWithdrawalDetailFragment.getInstance()
+    override fun getNewFragment() = SaldoWithdrawalDetailFragment.newInstance()
     override fun getTagFragment() = TAG
 
     companion object {
