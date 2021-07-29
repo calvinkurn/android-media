@@ -10,8 +10,8 @@
 
     <View
         android:id="@+id/v_anchor_top"
-        android:layout_width="@dimen/play_interactive_coachmark_anchor_size"
-        android:layout_height="@dimen/play_interactive_coachmark_anchor_size"
+        android:layout_width="@dimen/play_anchor_size"
+        android:layout_height="@dimen/play_anchor_size"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="gone"

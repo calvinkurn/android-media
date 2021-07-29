@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:layout_width="160dp"
     >
 
     <com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -16,10 +15,8 @@
         android:background="@drawable/bg_play_interactive"
         app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/fl_interactive_tap"
-        app:layout_constraintVertical_bias="1"
+        app:layout_constraintEnd_toEndOf="@id/fl_timer_tap"
+        app:layout_constraintStart_toStartOf="@id/fl_timer_tap"
         >
 
         <com.tokopedia.play_common.view.RemoteImageView
@@ -39,6 +36,27 @@
 
     </com.tokopedia.play_common.view.RoundedConstraintLayout>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_confetti_tap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/lottie_button_tap"
+        app:layout_constraintEnd_toEndOf="@id/lottie_button_tap"
+        app:layout_constraintStart_toStartOf="@id/lottie_button_tap"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_button_tap"
+        android:layout_width="@dimen/play_interactive_tap_action"
+        android:layout_height="@dimen/play_interactive_tap_action"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"
+        app:layout_constraintEnd_toEndOf="@id/cl_tap_background"
+        />
+
     <FrameLayout
         android:id="@+id/fl_interactive_tap"
         android:layout_width="@dimen/play_interactive_tap_action"
@@ -48,7 +66,6 @@
         android:background="@drawable/bg_play_interactive_tap_action"
         app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"
         app:layout_constraintEnd_toEndOf="@id/cl_tap_background"
-        app:layout_constraintTop_toTopOf="parent"
         >
 
         <com.tokopedia.iconunify.IconUnify
@@ -86,8 +103,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_play_interactive_tap_timer"
         app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"
-        app:layout_constraintEnd_toEndOf="@id/cl_tap_background"
-        app:layout_constraintStart_toStartOf="@id/cl_tap_background"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="1"
         >
 
@@ -103,6 +119,7 @@
             app:timer_unify_single_textWidth="wrap"
             app:timer_unify_single_type="second"
             app:timer_unify_single_variant="main"
+            tools:layout_width="160dp"
             />
 
     </FrameLayout>

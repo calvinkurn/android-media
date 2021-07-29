@@ -36,6 +36,10 @@ class InteractiveViewComponent(
         override fun onFollowClicked(view: InteractiveTapView) {
             listener.onFollowButtonClicked(this@InteractiveViewComponent)
         }
+
+        override fun onAnimationLoadedFromUrl(view: InteractiveTapView) {
+            listener.onTapAnimationLoaded(this@InteractiveViewComponent)
+        }
     }
 
     override fun hide() {
@@ -117,5 +121,7 @@ class InteractiveViewComponent(
         fun onFollowButtonClicked(view: InteractiveViewComponent)
         fun onTapTapClicked(view: InteractiveViewComponent)
         fun onRetryButtonClicked(view: InteractiveViewComponent)
+
+        fun onTapAnimationLoaded(view: InteractiveViewComponent)
     }
 }
