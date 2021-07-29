@@ -59,11 +59,11 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                 val path = cursor.getString(dataColumn)
                 if (path.contains("screenshot", true)) {
                     // do something
-                    UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                    UniversalShareBottomSheet.setScreenShotImagePath(path)
                     if(!ssUriPath.equals(path)) {
                         ssUriPath = path
                         if(!path.contains(pendingRegex)) {
+                            UniversalShareBottomSheet.setImageOnlySharingOption(true)
+                            UniversalShareBottomSheet.setScreenShotImagePath(path)
                             screenShotListener.screenShotTaken()
                         }
                     }
@@ -95,11 +95,11 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     relativePath.contains("screenshot", true)
                 ) {
                     // do something
-                    UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                    UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
                     if(!ssUriPath.equals(relativePath)) {
                         ssUriPath = relativePath
                         if(!relativePath.contains(pendingRegex)) {
+                            UniversalShareBottomSheet.setImageOnlySharingOption(true)
+                            UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
                             screenShotListener.screenShotTaken()
                         }
                     }

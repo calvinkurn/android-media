@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -206,7 +207,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             setChild(this)
             setCloseClickListener {
                 bottomSheetListener?.onCloseOptionClicked()
-                screenshotDetector?.start()
                 dismiss()
             }
         }
@@ -553,6 +553,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     override fun dismiss() {
         clearData()
+        screenshotDetector?.start()
         super.dismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        clearData()
+        screenshotDetector?.start()
+        super.onDismiss(dialog)
     }
 }
