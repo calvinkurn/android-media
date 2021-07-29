@@ -110,8 +110,12 @@ object ShopPageTrackingConstant {
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
     const val CLICK_SHARE_BUTTON = "click - share button"
     const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
     const val CLICK_SHARE_BOTTOM_SHEET_OPTION = "click - sharing channel"
+    const val CLICK_SCREENSHOT_SHARE_BOTTOM_SHEET_OPTION = "click - channel share bottom sheet - screenshot"
     const val VIEW_SHARE_BOTTOM_SHEET = "view on sharing channel"
+    const val VIEW_SCREENSHOT_SHARE_BOTTOM_SHEET = "view - screenshot share bottom sheet"
+
 
     //label
     const val CLICK_TAB = "click tab"

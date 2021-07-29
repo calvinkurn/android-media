@@ -319,6 +319,7 @@ class NewShopPageFragment :
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
+    private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
     val isMyShop: Boolean
         get() = shopViewModel?.isMyShop(shopId) == true
@@ -556,6 +557,7 @@ class NewShopPageFragment :
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
                 if(isUsingNewShareBottomSheet(requireContext())){
+                    isGeneralShareBottomSheet = true
                     showUniversalShareBottomSheet()
                     shopPageTracking?.onImpressionShareBottomSheet(
                             customDimensionShopPage,
@@ -2348,11 +2350,19 @@ class NewShopPageFragment :
                     }
 
                     // send gtm tracker
-                    shopPageTracking?.clickShareBottomSheetOption(
-                            shareModel.socialMediaName.orEmpty(),
-                            customDimensionShopPage,
-                            userId
-                    )
+                    if(isGeneralShareBottomSheet) {
+                        shopPageTracking?.clickShareBottomSheetOption(
+                                shareModel.socialMediaName.orEmpty(),
+                                customDimensionShopPage,
+                                userId
+                        )
+                    } else{
+                        shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                shareModel.socialMediaName.orEmpty(),
+                                customDimensionShopPage,
+                                userId
+                        )
+                    }
 
                     //we have to check if we can move it inside the common function
                     universalShareBottomSheet?.dismiss()
@@ -2377,14 +2387,22 @@ class NewShopPageFragment :
 
     override fun onCloseOptionClicked() {
         if (isUsingNewShareBottomSheet(requireContext())) {
-            shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
+            if(isGeneralShareBottomSheet)
+                shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
+            else
+                shopPageTracking?.clickCloseNewScreenshotShareBottomSheet(customDimensionShopPage, userId)
         } else {
             shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
         }
     }
 
     override fun screenShotTaken() {
+        isGeneralShareBottomSheet = false
         showUniversalShareBottomSheet()
+        shopPageTracking?.onImpressionScreenshotShareBottomSheet(
+                customDimensionShopPage,
+                userId
+        )
     }
 
     private fun showUniversalShareBottomSheet() {
