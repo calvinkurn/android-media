@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:orientation="vertical">
+
+    <ViewStub
+        android:id="@+id/vsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:inflatedId="@+id/channel_title"
+        android:layout="@layout/view_stub_dc_title"
+        tools:text="Kategori di TokoNOW!" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layoutShimmering"
+        layout="@layout/partial_tokopedianow_product_carousel"
+        android:visibility="gone" />
+</LinearLayout>
