@@ -27,6 +27,9 @@ import com.tokopedia.track.TrackApp
 
 object DigitalCheckoutMapper {
 
+    const val COUPON_NOT_ACTIVE = 0
+    const val VOUCHER_IS_COUPON = 1
+
     fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
         val isEnableVoucher = cartInfo.attributes.isEnableVoucher
@@ -36,7 +39,7 @@ object DigitalCheckoutMapper {
                 promoData = PromoData(description = it.discountAmountLabel,
                         amount = it.discountAmount.toInt(),
                         state = TickerCheckoutView.State.INACTIVE)
-            } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
+            } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == COUPON_NOT_ACTIVE && it.isCoupon == VOUCHER_IS_COUPON)) {
                 promoData = PromoData(title = it.title,
                         description = it.messageSuccess,
                         promoCode = it.code,
