@@ -85,10 +85,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             finishCalculate: (() -> Unit)? = null,
+            customLayoutManager: LinearLayoutManager? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
-        initBindCarousel(true, recyclerViewPool)
+        initBindCarousel(true, recyclerViewPool, customLayoutManager)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
@@ -110,14 +111,13 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?) {
+    private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?, customLayoutManager: LinearLayoutManager? = null) {
         if (isInitialized) return
 
-        initLayoutManager()
+        initLayoutManager(customLayoutManager)
 
         if (isGrid) initGridAdapter()
         else initListAdapter()
-
         initRecyclerView(recyclerViewPool)
 
         isInitialized = true
@@ -147,8 +147,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         return carouselProductCardListenerInfo
     }
 
-    private fun initLayoutManager() {
-        carouselLayoutManager = createProductCardCarouselLayoutManager()
+    private fun initLayoutManager(customLayoutManager: LinearLayoutManager? = null) {
+        carouselLayoutManager = customLayoutManager ?: createProductCardCarouselLayoutManager()
     }
 
     private fun initGridAdapter() {
