@@ -1162,7 +1162,7 @@ class ProductListPresenter @Inject constructor(
                 && cpm.promotedText.isNotEmpty()
     }
 
-    private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == 4
+    private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == SearchConstant.CPM_TEMPLATE_ID
 
     private fun createCpmDataView(cpmData: CpmData): CpmDataView? {
         if (cpmModel == null) return null
@@ -1581,7 +1581,7 @@ class ProductListPresenter @Inject constructor(
             val categoryIdString = productItemDataView.categoryID.toString()
             val categoryName = productItemDataView.categoryName
 
-            if (i < 3) {
+            if (i < SearchConstant.GENERAL_SEARCH_TRACKING_PRODUCT_COUNT) {
                 prodIdArray.add(productId)
                 afProdIds.put(productId)
                 moengageTrackingCategory[categoryIdString] = categoryName
