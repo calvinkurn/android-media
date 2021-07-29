@@ -18,7 +18,13 @@ data class DepositHistoryList(
     @SerializedName("withdrawal_status_color")
     var withdrawalStatusColor: Int,
     @SerializedName("have_detail")
-    var haveDetail: Boolean)
+    var haveDetail: Boolean,
+    @SerializedName("deposit_id")
+    var depositId: Long,
+    @SerializedName("detail_type")
+    var detailType: Int,
+    @SerializedName("withdrawal_id")
+    var withdrawalId: Long)
 : ParcelableViewModel<SaldoDetailTransactionFactory> {
     override fun type(typeFactory: SaldoDetailTransactionFactory): Int {
         return typeFactory.type(this)

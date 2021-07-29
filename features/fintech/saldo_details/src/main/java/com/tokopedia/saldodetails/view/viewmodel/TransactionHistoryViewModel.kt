@@ -3,23 +3,20 @@ package com.tokopedia.saldodetails.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.saldodetails.domain.GetAllTypeTransactionUseCase
-import com.tokopedia.saldodetails.domain.GetTypeTransactionsUseCase
+import com.tokopedia.saldodetails.domain.usecase.GetAllTypeTransactionUseCase
+import com.tokopedia.saldodetails.domain.usecase.GetTypeTransactionsUseCase
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.view.fragment.new.*
 import com.tokopedia.saldodetails.view.viewmodel.state.*
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
 class TransactionHistoryViewModel @Inject constructor(
-        private val getAllTypeTransactionUseCase: GetAllTypeTransactionUseCase,
-        private val getTypeTransactionsUseCase: GetTypeTransactionsUseCase,
+    private val getAllTypeTransactionUseCase: GetAllTypeTransactionUseCase,
+    private val getTypeTransactionsUseCase: GetTypeTransactionsUseCase,
 ) : BaseViewModel(Main) {
 
     //todo create Different use case for all other transaction for load more
