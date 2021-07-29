@@ -40,6 +40,7 @@ class ScreenRecordService : Service(), CoroutineScope {
         const val EXTRA_MEDIA_PROEJECTION_RESULT_DATA = "EXTRA_MEDIA_PROEJECTION_RESULT_DATA"
 
         private const val ONE_SECOND_MS = 1000L
+        private const val HALF_SECOND_MS = 500L
 
         private const val MAX_RECORD_DURATION_SECOND = 60
         private const val PRE_RECORD_COUNTDOWN_SECOND = 3
@@ -181,7 +182,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
             //short delay to give time after start service and before request media projection
             //to avoid "Media projections require a foreground service of type ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION" issue
-            Thread.sleep(500)
+            Thread.sleep(HALF_SECOND_MS)
 
             val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
             mediaProjection = projectionManager
