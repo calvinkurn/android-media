@@ -102,6 +102,10 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
+        private const val EVENT_ACTION_IMPRESSION_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
+        private const val EVENT_ACTION_CLICK_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
+        private const val VALUE_LIST_OOC = "/%s - rekomendasi untuk anda - %s%s - tokonow - ooc"
+        private const val VALUE_TOPADS = "- topads"
     }
 
     @Inject
@@ -814,7 +818,16 @@ abstract class BaseSearchCategoryFragment:
                 listPage = getSearchListPage(),
                 pageId = getPageId(),
                 userId = userSession.userId,
-                eventLabel = getEventLabel()
+                eventLabel = getEventLabel(),
+                eventAction = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
+                    EVENT_ACTION_IMPRESSION_RECOM_OOC else null,
+                listValue = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
+                    String.format(
+                        VALUE_LIST_OOC,
+                        getSearchListPage(),
+                        recomItem.recommendationType,
+                        if (recomItem.isTopAds) VALUE_TOPADS else ""
+                    ) else null
             )
         )
     }
@@ -837,7 +850,16 @@ abstract class BaseSearchCategoryFragment:
                 listPage = getSearchListPage(),
                 pageId = getPageId(),
                 userId = userSession.userId,
-                eventLabel = getEventLabel()
+                eventLabel = getEventLabel(),
+                eventAction = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
+                    EVENT_ACTION_CLICK_RECOM_OOC else null,
+                listValue = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
+                    String.format(
+                        VALUE_LIST_OOC,
+                        getSearchListPage(),
+                        recomItem.recommendationType,
+                        if (recomItem.isTopAds) VALUE_TOPADS else ""
+                    ) else null
             )
         )
         RouteManager.route(

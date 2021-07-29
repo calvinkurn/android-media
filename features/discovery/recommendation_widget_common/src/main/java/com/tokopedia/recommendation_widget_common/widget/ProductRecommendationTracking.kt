@@ -41,7 +41,9 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             listPage: String = "",
             pageId: String = "",
             eventLabel: String? = null,
-            userId: String = ""
+            userId: String = "",
+            eventAction: String? = null,
+            listValue: String? = null
     ): HashMap<String, Any> {
         val trackingBuilder =
                 BaseTrackerBuilder()
@@ -50,19 +52,21 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                                 eventCategory = if (isTokonow) String.format(
                                     EVENT_CATEGORY_TOKONOW, androidPageName
                                 ) else androidPageName,
-                                eventAction = if (isTokonow) String.format(
-                                    EVENT_ACTION_IMPRESSION_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
-                                ) else String.format(
-                                    EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
-                                    if (isLoggedIn) "" else VALUE_NON_LOGIN
-                                ),
+                                eventAction = eventAction
+                                    ?: if (isTokonow) String.format(
+                                        EVENT_ACTION_IMPRESSION_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
+                                    ) else String.format(
+                                        EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
+                                        if (isLoggedIn) "" else VALUE_NON_LOGIN
+                                    ),
                                 eventLabel = eventLabel
                                     ?: String.format(
                                         EVENT_LABEL_PRODUCT,
                                         headerTitle,
                                         chipsTitle
                                     ),
-                                list = if (isTokonow)
+                                list = listValue?:
+                                if (isTokonow)
                                     buildTokonowRecommendationList(
                                         pageList = listPage,
                                         pageRecommendationType = recommendationItem.recommendationType
@@ -97,7 +101,9 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             listPage: String = "",
             pageId: String = "",
             eventLabel: String? = null,
-            userId: String = ""
+            userId: String = "",
+            eventAction: String? = null,
+            listValue: String? = null
     ): HashMap<String, Any> {
         val trackingBuilder =
                 BaseTrackerBuilder()
@@ -106,19 +112,21 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                                 eventCategory = if (isTokonow) String.format(
                                     EVENT_CATEGORY_TOKONOW, androidPageName
                                 ) else androidPageName,
-                                eventAction = if (isTokonow) String.format(
-                                    EVENT_ACTION_CLICK_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
-                                ) else String.format(
-                                    EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                                    if (isLoggedIn) "" else VALUE_NON_LOGIN
-                                ),
+                                eventAction = eventAction?:
+                                    if (isTokonow) String.format(
+                                        EVENT_ACTION_CLICK_PRODUCT_TOKONOW, if (pageId.isNotEmpty()) String.format(VALUE_ID, pageId) else ""
+                                    ) else String.format(
+                                        EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                                        if (isLoggedIn) "" else VALUE_NON_LOGIN
+                                    ),
                                 eventLabel = eventLabel
                                     ?: String.format(
                                         EVENT_LABEL_PRODUCT,
                                         headerTitle,
                                         chipsTitle
                                     ),
-                                list = if (isTokonow)
+                                list = listValue?:
+                                if (isTokonow)
                                     buildTokonowRecommendationList(
                                         pageList = listPage,
                                         pageRecommendationType = recommendationItem.recommendationType

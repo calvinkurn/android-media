@@ -11,33 +11,37 @@ interface SearchCategoryRecommendationCarouselListener {
     fun onGetCarouselScrollPosition(adapterPosition: Int): Int
 
     fun onBindRecommendationCarousel(
-            element: RecommendationCarouselDataView,
-            adapterPosition: Int,
+        element: RecommendationCarouselDataView,
+        adapterPosition: Int,
     )
 
     fun onImpressedRecommendationCarouselItem(
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int
+        recommendationCarouselDataView: RecommendationCarouselDataView?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
     )
 
     fun onClickRecommendationCarouselItem(
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int
+        recommendationCarouselDataView: RecommendationCarouselDataView?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
     )
 
     fun onATCNonVariantRecommendationCarouselItem(
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            recommendationCarouselPosition: Int,
-            quantity: Int,
+        recommendationCarouselDataView: RecommendationCarouselDataView?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int,
     )
 
     fun onAddVariantRecommendationCarouselItem(
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
+        recommendationCarouselDataView: RecommendationCarouselDataView?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
     )
 }

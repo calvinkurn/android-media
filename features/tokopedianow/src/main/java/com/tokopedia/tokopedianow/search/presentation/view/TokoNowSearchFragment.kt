@@ -14,6 +14,8 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.search.di.SearchComponent
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
@@ -26,6 +28,7 @@ import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeLis
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
@@ -150,6 +153,24 @@ class TokoNowSearchFragment:
         val applinkToSearchResult = "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?$queryParams"
 
         RouteManager.route(context, applinkToSearchResult)
+    }
+
+    override fun onATCNonVariantRecommendationCarouselItem(
+        recommendationCarouselDataView: RecommendationCarouselDataView?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAddVariantRecommendationCarouselItem(
+        recommendationCarouselDataView: RecommendationCarouselDataView?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
