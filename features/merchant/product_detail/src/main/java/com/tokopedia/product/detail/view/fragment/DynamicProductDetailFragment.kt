@@ -3285,7 +3285,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun getErrorMessage(errorMessage: String?): String {
-        return errorMessage ?: getString(R.string.merchant_product_detail_error_default)
+        return errorMessage ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun hideProgressDialog() {
