@@ -161,6 +161,12 @@ data class RecommendationItem(
         return parentID != 0L
     }
 
+    //default value 0
+    fun setDefaultCurrentStock() {
+        this.quantity = 0
+        this.currentQuantity = 0
+    }
+
     //func to update quantity from minicart
     fun updateItemCurrentStock(quantity: Int) {
         this.quantity = quantity

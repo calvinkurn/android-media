@@ -80,18 +80,21 @@ data class ProductRecommendationDataModel(
     }
 
     private fun areRecomQtyItemTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
-        if (recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
-                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
-                && recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size) {
-            val itemSize =recomWidgetData?.recommendationItemList?.size ?: 0
+        if (recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size && isOldAndItemIsTokonow(newRecomWidgetData)) {
+            val itemSize = recomWidgetData?.recommendationItemList?.size ?: 0
             for (i in 0 until itemSize) {
-                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList[i].quantity
-                        || recomWidgetData?.recommendationItemList?.get(i)?.currentQuantity != newRecomWidgetData?.recommendationItemList[i].currentQuantity) {
+                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList?.get(i)?.quantity
+                        || recomWidgetData?.recommendationItemList?.get(i)?.currentQuantity != newRecomWidgetData?.recommendationItemList?.get(i)?.currentQuantity) {
                     return false
                 }
             }
         }
         return true
+    }
+
+    private fun isOldAndItemIsTokonow(newRecomWidgetData: RecommendationWidget?): Boolean {
+        return recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
     }
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
