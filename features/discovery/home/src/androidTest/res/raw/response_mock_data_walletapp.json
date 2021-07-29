@@ -1,0 +1,37 @@
+[
+  {
+    "data": {
+      "walletappGetBalances": {
+        "balances": [
+          {
+            "activation_cta": "kuy?",
+            "balance": [
+              {
+                "active": true,
+                "amount": 8000000,
+                "amount_fmt": "Rp8.000.000",
+                "message": "",
+                "wallet_code": "PEMUDAPAYLATER"
+              },
+              {
+                "active": true,
+                "amount": 10000000,
+                "amount_fmt": "Rp10.000.000",
+                "message": "",
+                "wallet_code": "PEMUDA"
+              }
+            ],
+            "code": "SUCCESS",
+            "icon_url": "https://images.tokopedia.net/img/walletapp/v1/pemuda-logo-short.png",
+            "is_linked": true,
+            "masked_phone": "**********455",
+            "message": "Success",
+            "redirect_url": "https://staging.tokopedia.com/gopay",
+            "type": "PEMUDA",
+            "wallet_name": "GoPay"
+          }
+        ]
+      }
+    }
+  }
+]
