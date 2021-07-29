@@ -75,7 +75,7 @@ open class GravitySnapHelper @JvmOverloads constructor(private var gravity: Int,
      *
      * @param ms scroll duration in ms per inch
      */
-    var scrollMsPerInch = 100f
+    var scrollMsPerInch = DEFAULT_SCROLL_MS_PER_INCH
     private var maxFlingDistance = FLING_DISTANCE_DISABLE
     private var maxFlingSizeFraction = FLING_SIZE_FRACTION_DISABLE
     private lateinit var verticalHelper: OrientationHelper
@@ -527,6 +527,7 @@ open class GravitySnapHelper @JvmOverloads constructor(private var gravity: Int,
     companion object {
         const val FLING_DISTANCE_DISABLE = -1
         const val FLING_SIZE_FRACTION_DISABLE = -1f
+        const val DEFAULT_SCROLL_MS_PER_INCH = 100f
     }
 
 }

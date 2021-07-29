@@ -103,8 +103,8 @@ class NestedScrollableHost : FrameLayout {
             val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
 
             // assuming ViewPager2 touch-slop is 2x touch-slop of child
-            val scaledDx = dx.absoluteValue * if (isVpHorizontal) .5f else 1f
-            val scaledDy = dy.absoluteValue * if (isVpHorizontal) 1f else .5f
+            val scaledDx = dx.absoluteValue * if (isVpHorizontal) HALF else ONE
+            val scaledDy = dy.absoluteValue * if (isVpHorizontal) ONE else HALF
 
             if (scaledDx > touchSlop || scaledDy > touchSlop) {
                 if (isVpHorizontal == (scaledDy > scaledDx)) {
@@ -122,5 +122,10 @@ class NestedScrollableHost : FrameLayout {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val HALF = .5f
+        private const val ONE = 1f
     }
 }
