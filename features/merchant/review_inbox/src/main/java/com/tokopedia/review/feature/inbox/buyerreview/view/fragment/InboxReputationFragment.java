@@ -150,7 +150,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         setRetainInstance(true);
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation, container, false);
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_inbox_reputation);
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);

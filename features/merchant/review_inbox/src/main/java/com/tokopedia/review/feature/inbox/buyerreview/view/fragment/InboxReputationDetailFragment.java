@@ -177,7 +177,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation_detail, container,
                 false);
         mainView = parentView.findViewById(R.id.main);
-        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_inbox_reputation_detail);
         listProduct = parentView.findViewById(R.id.product_list);
         prepareView();
         presenter.attachView(this);

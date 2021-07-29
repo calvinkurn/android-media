@@ -48,7 +48,7 @@ class RatingAndTopicDetailViewHolder(val view: View, val listener: SellerRatingA
             rating_star_label.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             rating_checkbox.isEnabled = false
         } else {
-            rating_star_icon.setImageResource(R.drawable.ic_rating_star_item)
+            rating_star_icon.setImageResource(com.tokopedia.review.inbox.R.drawable.ic_rating_star_item)
             rating_star_label.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             rating_checkbox.isEnabled = true
             rating_checkbox.isChecked = element.ratingIsChecked

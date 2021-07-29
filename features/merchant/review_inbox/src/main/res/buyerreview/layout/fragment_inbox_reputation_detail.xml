@@ -14,7 +14,7 @@
         app:unify_header_is_show_back_button="true" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_inbox_reputation_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/headerInboxReputationDetail">

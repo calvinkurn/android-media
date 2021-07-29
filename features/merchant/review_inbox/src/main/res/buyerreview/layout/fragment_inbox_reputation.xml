@@ -28,7 +28,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_inbox_reputation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/filter_layout"

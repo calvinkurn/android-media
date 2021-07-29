@@ -128,7 +128,7 @@ public class ShopReputationView extends BaseCustomView {
                 }
                 LinearLayout sellerReputation = dialog.findViewById(com.tokopedia.design.R.id.seller_reputation);
                 updateMedalView(sellerReputation, getIconResource(medalType), level);
-                Button closeButton = dialog.findViewById(R.id.close_button);
+                Button closeButton = dialog.findViewById(R.id.dialog_close_button);
 
                 if (closeButton != null)
                     closeButton.setOnClickListener(new OnClickListener() {

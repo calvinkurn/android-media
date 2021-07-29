@@ -29,7 +29,7 @@ class ReadReviewAttachedImages : BaseCustomView {
     private var reviewAttachedImages: RecyclerView? = null
 
     private fun init() {
-        View.inflate(context, R.layout.widget_review_attached_images, this)
+        View.inflate(context, com.tokopedia.review.inbox.R.layout.widget_review_attached_images, this)
         reviewAttachedImages = findViewById(R.id.reviewAttachedImages)
     }
 

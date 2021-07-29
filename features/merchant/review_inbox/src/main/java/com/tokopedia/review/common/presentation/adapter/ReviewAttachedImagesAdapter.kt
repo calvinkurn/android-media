@@ -7,7 +7,6 @@ import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.presentation.adapter.viewholder.ReviewAttachedProductViewHolder
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
-import com.tokopedia.review.inbox.R
 
 class ReviewAttachedImagesAdapter(private val imageClickListener: ReviewAttachedImagesClickListener,
                                   private val productName: String,
@@ -19,7 +18,7 @@ class ReviewAttachedImagesAdapter(private val imageClickListener: ReviewAttached
     private var fullSizeImages: List<String> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewAttachedProductViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_review_attached_image, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(com.tokopedia.review.inbox.R.layout.item_review_attached_image, parent, false)
         return ReviewAttachedProductViewHolder(itemView)
     }
 

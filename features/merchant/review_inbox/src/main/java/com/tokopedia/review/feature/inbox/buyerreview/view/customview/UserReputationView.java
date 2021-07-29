@@ -117,7 +117,7 @@ public class UserReputationView extends BaseCustomView {
                 if (negativeText != null) {
                     negativeText.setText(String.valueOf(negativeValue));
                 }
-                UnifyButton closeButton = dialog.findViewById(R.id.close_button);
+                UnifyButton closeButton = dialog.findViewById(R.id.dialog_close_button);
                 if (closeButton != null) {
                     closeButton.setOnClickListener(new OnClickListener() {
                         @Override
