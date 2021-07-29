@@ -441,5 +441,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     private fun createMockModelConfig() {
         customInterceptor.customP1ResponsePath = "raw/response_mock_p1_test.json"
         customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_ui_test.json"
+        customInterceptor.customTickerResponsePath = "raw/response_get_ticker_sticky_login.json"
     }
 }
