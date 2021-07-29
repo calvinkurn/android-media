@@ -719,12 +719,14 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
         view?.let { view ->
-            Toaster.build(
-                view = view,
-                text = message,
-                duration = duration,
-                type = type
-            ).show()
+            if (message.isNotBlank()) {
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type
+                ).show()
+            }
         }
     }
 

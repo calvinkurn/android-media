@@ -328,12 +328,14 @@ object HomeLayoutMapper {
         val productRecomUiModel = homeLayoutItemUiModel?.layout as? HomeProductRecomUiModel
 
         productRecomUiModel?.let { uiModel ->
-            val recom = uiModel.recomWidget.copy()
-            val recommendationItem = recom.recommendationItemList
-                .firstOrNull { it.productId.toString() == productId }
-            recommendationItem?.quantity = quantity
+            if (!uiModel.recomWidget.recommendationItemList.isNullOrEmpty()) {
+                val recom = uiModel.recomWidget.copy()
+                val recommendationItem = recom.recommendationItemList
+                    .firstOrNull { it.productId.toString() == productId }
+                recommendationItem?.quantity = quantity
 
-            mapProductRecomData(productRecomUiModel, recom)
+                mapProductRecomData(productRecomUiModel, recom)
+            }
         }
     }
 
