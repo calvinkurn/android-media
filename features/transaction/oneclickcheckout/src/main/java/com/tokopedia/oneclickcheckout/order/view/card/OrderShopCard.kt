@@ -101,6 +101,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                     orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.errors.first())
                     shop.hasTriggerViewErrorOrderLevelTicker = true
                 }
+                shop.hasTriggerViewOverweightTicker = false
             } else if (shop.overweight > 0) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
                 val overweightString = NumberFormat.getNumberInstance(Locale("in", "id")).format(shop.overweight / 1000)
@@ -111,6 +112,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                     orderSummaryAnalytics.eventViewOverweightTicker(shop.shopId.toString())
                     shop.hasTriggerViewOverweightTicker = true
                 }
+                shop.hasTriggerViewErrorOrderLevelTicker = false
             } else if (shop.firstProductErrorIndex > -1 && shop.unblockingErrorMessage.isNotBlank()) {
                 occCustomTickerDescription.text = shop.unblockingErrorMessage
                 occCustomTickerAction.setOnClickListener {
@@ -122,6 +124,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                     orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.unblockingErrorMessage)
                     shop.hasTriggerViewErrorOrderLevelTicker = true
                 }
+                shop.hasTriggerViewOverweightTicker = false
             } else if (!shop.shouldValidateWeight() && shop.shopTicker.isNotBlank()) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
                 tickerOrderShop.setHtmlDescription(shop.shopTicker)
