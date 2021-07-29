@@ -23,7 +23,6 @@ import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -62,13 +61,14 @@ object DynamicProductDetailTracking {
 
     object Click {
 
-        fun onImageCategoryCarouselClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, categoryName:String) {
+        fun onImageCategoryCarouselClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, categoryName: String, categoryId: String) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE,
-                    "category_name:$categoryName")
+                    "category_id:$categoryId ;\ncategory_name:$categoryName")
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE)
         }
@@ -80,6 +80,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_SEE_ALL_CATEGORY_CAROUSEL,
                     "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_CATEGORY_CAROUSEL)
         }
@@ -1118,9 +1119,9 @@ object DynamicProductDetailTracking {
 
         fun eventClickAtcAndBuyGoToVariant(buttonAction: Int, productId: String?) {
             if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) {
-                eventClickBuyToVariantBottomSheet(productId)
-            } else {
                 eventClickAtcToVariantBottomSheet(productId)
+            } else {
+                eventClickBuyToVariantBottomSheet(productId)
             }
         }
 

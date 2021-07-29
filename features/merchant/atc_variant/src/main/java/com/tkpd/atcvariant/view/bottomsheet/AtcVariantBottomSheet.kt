@@ -426,9 +426,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
             showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
-                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.productId
-                        ?: "", pageSource)
             }
         }
     }

@@ -160,5 +160,7 @@ data class CategoryCarousel(
         @SerializedName("isApplink")
         var isApplink: Boolean = false,
         @SerializedName("applink")
-        val applink: String = ""
+        val applink: String = "",
+        @SerializedName("categoryID")
+        val categoryId: String = ""
 )

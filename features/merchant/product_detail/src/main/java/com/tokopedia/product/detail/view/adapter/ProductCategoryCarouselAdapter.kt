@@ -51,7 +51,7 @@ class ProductCategoryCarouselAdapter(private val listener: DynamicProductDetailL
 
             itemView.setOnClickListener {
                 if (data.applink.isNotEmpty()) {
-                    listener.onCategoryCarouselImageClicked(data.applink, data.title, componentTrackDataModel)
+                    listener.onCategoryCarouselImageClicked(data.applink, data.title, data.categoryId, componentTrackDataModel)
                 }
             }
         }

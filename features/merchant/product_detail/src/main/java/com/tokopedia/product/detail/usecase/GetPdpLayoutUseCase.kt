@@ -205,6 +205,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         linkText
                         applink
                         list {
+                          categoryID
                           icon
                           title
                           isApplink
