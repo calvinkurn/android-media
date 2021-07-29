@@ -37,7 +37,7 @@ class HomeProductCardViewHolder(
             }
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
-                    listener?.onProductPurchaseQuantityChanged(data, quantity)
+                    listener?.onProductQuantityChanged(data, quantity)
                 }
             })
         }
@@ -65,6 +65,6 @@ class HomeProductCardViewHolder(
     }
 
     interface HomeProductCardListener {
-        fun onProductPurchaseQuantityChanged(data: HomeProductCardUiModel, quantity: Int)
+        fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int)
     }
 }

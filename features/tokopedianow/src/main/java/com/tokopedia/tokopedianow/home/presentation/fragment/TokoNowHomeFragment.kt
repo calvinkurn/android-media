@@ -323,7 +323,7 @@ class TokoNowHomeFragment: Fragment(),
         this.productPosition = position
     }
 
-    override fun onProductPurchaseQuantityChanged(data: HomeProductCardUiModel, quantity: Int) {
+    override fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
                 data.productId,
