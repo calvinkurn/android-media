@@ -812,8 +812,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
                                 recomWidget.recommendationItemList.forEach { item ->
                                     _p2Data.value?.miniCart?.let {
-                                        item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
-                                                ?: 0)
+                                        if (item.isProductHasParentID()) {
+                                            var variantTotalItems = 0
+                                            it.values.forEach { miniCartItem ->
+                                                if (miniCartItem.productParentId == item.parentID.toString()) {
+                                                    variantTotalItems += miniCartItem.quantity
+                                                }
+                                            }
+                                            item.updateItemCurrentStock(variantTotalItems)
+                                        } else {
+                                            item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
+                                                    ?: 0)
+                                        }
                                     }
                                 }
                             }
