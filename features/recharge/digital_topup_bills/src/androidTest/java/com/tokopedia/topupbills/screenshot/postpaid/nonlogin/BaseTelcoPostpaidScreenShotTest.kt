@@ -95,9 +95,7 @@ abstract class BaseTelcoPostpaidScreenShotTest {
     }
 
     private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberActivity")))
-                .respondWith(createOrderNumberTypeManual())
+        Intents.intending(IntentMatchers.isInternal()).respondWith(createOrderNumberTypeManual())
     }
 
     @After
@@ -110,7 +108,6 @@ abstract class BaseTelcoPostpaidScreenShotTest {
         stubSearchNumber()
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
-        take_screenshot_input_number()
         take_screenshot_interaction_promo()
     }
 
