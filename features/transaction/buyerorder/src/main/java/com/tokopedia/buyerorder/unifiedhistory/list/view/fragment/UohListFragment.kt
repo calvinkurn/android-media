@@ -324,7 +324,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     PARAM_MARKETPLACE -> {
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
                         status = DALAM_PROSES
@@ -789,8 +788,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         filter2?.let { chips.add(it) }
 
         // category
-        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
+        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
                 filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true) ||
                 filterStatus.equals(PARAM_UOH_PROCESSED, true) ||
                 filterStatus.equals(PARAM_UOH_SENT, true) ||
@@ -935,8 +933,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
-        if ((filterStatus.equals(PARAM_MARKETPLACE, true)
-                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+        if ((filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
