@@ -9,15 +9,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_8"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvDetailAmount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        tools:text="Jumlah Penarikan"
-        tools:visibility="visible"/>
+        tools:text="Jumlah Penarikan" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetailAmount"
@@ -25,12 +26,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/tvDetailTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvDetailTitle"
         app:typographyType="body_2"
         tools:text="Rp600.000"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

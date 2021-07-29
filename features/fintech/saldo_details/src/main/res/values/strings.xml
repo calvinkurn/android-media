@@ -102,4 +102,8 @@
     <string name="saldo_prioritas_title">Saldo Prioritas</string>
     <string name="saldo_kyc_description_text">Status: Menunggu Verifikasi Aplikasi</string>
     <string name="saldo_transaction_empty_list">No Result</string>
+    <string name="saldo_withdrawal_amount">Jumlah Penarikan</string>
+    <string name="saldo_withdrawal_fee">Biaya Penarikan</string>
+    <string name="saldo_transferred_amount">Jumlah yang Ditransfer</string>
+    <string name="saldo_withdrawal_info_details">Rincian penarikan</string>
 </resources>

@@ -3,9 +3,11 @@ package com.tokopedia.saldodetails.di
 import android.content.Context
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
-import com.tokopedia.saldodetails.view.activity.SaldoSalesDetailActivity
-import com.tokopedia.saldodetails.view.activity.SaldoWithdrawalDetailActivity
+import com.tokopedia.saldodetails.view.activity.detail.SaldoSalesDetailActivity
+import com.tokopedia.saldodetails.view.activity.detail.SaldoWithdrawalDetailActivity
 import com.tokopedia.saldodetails.view.fragment.*
+import com.tokopedia.saldodetails.view.fragment.detail.SaldoSalesDetailFragment
+import com.tokopedia.saldodetails.view.fragment.detail.SaldoWithdrawalDetailFragment
 import dagger.Component
 
 @SaldoDetailsScope

@@ -10,8 +10,10 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.response.model.saldo_detail_info.FeeDetailData
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.saldo_withdrawal_detail_item_view.view.*
 
 class WithdrawalDetailsList @JvmOverloads constructor(
@@ -24,21 +26,15 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4).toDp().toInt()
     }
 
-    val demo = arrayListOf(
-        Pair("Jumlah Penarikan", "Rp600.000"),
-        Pair("Biaya Penarikan", "-Rp5.000"),
-        Pair("Jumlah Penarikan", "Rp600.00"),
-    )
-
     init {
         this.orientation = VERTICAL
     }
 
-    fun setData() {
+    fun setData(feeDetailData: ArrayList<FeeDetailData>) {
         inflateTitle()
-        inflateDetailList()
+        inflateDetailList(feeDetailData)
         inflateDivider()
-        inflateAmount()
+        inflateAmount(feeDetailData.getOrNull(2))
     }
 
     private fun inflateDivider() {
@@ -50,28 +46,28 @@ class WithdrawalDetailsList @JvmOverloads constructor(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        layoutParams.topMargin = spacing4.toPx() // Small hack to make custom label center
+        layoutParams.topMargin = spacing4.toPx()
         layoutParams.bottomMargin = spacing4.toPx()
         val heading = Typography(context)
         heading.setType(Typography.HEADING_4)
         heading.setWeight(Typography.BOLD)
-        heading.text = "Rincian penarikan"
+        heading.text = context.getString(R.string.saldo_withdrawal_info_details)
         heading.layoutParams = layoutParams
         addView(heading)
     }
 
-    private fun inflateAmount() {
+    private fun inflateAmount(amountData: FeeDetailData?) {
         val view = getLayout()
-        setWithdrawalText(view.tvDetailTitle, "Jumlah yang Ditransfer")
-        setWithdrawalText(view.tvDetailAmount, "Rp595.000")
+        setWithdrawalText(view.tvDetailTitle, amountData?.feeType ?: "")
+        setWithdrawalText(view.tvDetailAmount, getAmountString(amountData?.amount))
         addView(view)
     }
 
-    private fun inflateDetailList() {
-        demo.forEach {
+    private fun inflateDetailList(feeDetailData: ArrayList<FeeDetailData>) {
+        for (i in 0 until feeDetailData.size-1) {
             val view = getLayout()
-            view.tvDetailTitle.text = it.first
-            view.tvDetailAmount.text = it.second
+            view.tvDetailTitle.text = feeDetailData[i].feeType
+            view.tvDetailAmount.text = getAmountString(feeDetailData[i].amount)
             view.tvDetailAmount.visible()
             addView(view)
         }
@@ -93,6 +89,8 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         textView.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
         textView.visible()
     }
+
+    private fun getAmountString(amount: Double?) = CurrencyFormatUtil.convertPriceValueToIdrFormat(amount ?: 0.0, false)
     companion object {
         const val VIEW_TYPE_DETAIL = 1
         const val VIEW_TYPE_SEPARATOR = 2

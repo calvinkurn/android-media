@@ -13,10 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
-import com.tokopedia.saldodetails.view.activity.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity
-import com.tokopedia.saldodetails.view.activity.SaldoWithdrawalDetailActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -29,46 +29,14 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
         return null
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(
-            com.tokopedia.saldodetails.R.layout.fragment_saldo_intro,
-            container,
-            false
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_intro, container, false)
         viewMore = view.findViewById(com.tokopedia.saldodetails.R.id.si_view_more)
         gotoSaldoPage = view.findViewById(com.tokopedia.saldodetails.R.id.si_goto_balance_page)
-        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.dana_refund)
-            .setCompoundDrawablesWithIntrinsicBounds(
-                MethodChecker.getDrawable(
-                    view.context,
-                    com.tokopedia.saldodetails.R.drawable.ic_refund
-                ), null, null, null
-            )
-        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.disbursement_fund)
-            .setCompoundDrawablesWithIntrinsicBounds(
-                MethodChecker.getDrawable(
-                    view.context,
-                    com.tokopedia.saldodetails.R.drawable.ic_refund_disbursement
-                ), null, null, null
-            )
-        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.hasil_penjualan)
-            .setCompoundDrawablesWithIntrinsicBounds(
-                MethodChecker.getDrawable(
-                    view.context,
-                    com.tokopedia.saldodetails.R.drawable.ic_sales_report
-                ), null, null, null
-            )
-        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.disbursement_priority_balance)
-            .setCompoundDrawablesWithIntrinsicBounds(
-                MethodChecker.getDrawable(
-                    view.context,
-                    com.tokopedia.saldodetails.R.drawable.ic_balance_disbursement
-                ), null, null, null
-            )
+        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.dana_refund).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.saldodetails.R.drawable.ic_refund), null, null, null)
+        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.disbursement_fund).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.saldodetails.R.drawable.ic_refund_disbursement), null, null, null)
+        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.hasil_penjualan).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.saldodetails.R.drawable.ic_sales_report), null, null, null)
+        view.findViewById<Typography>(com.tokopedia.saldodetails.R.id.disbursement_priority_balance).setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.saldodetails.R.drawable.ic_balance_disbursement), null, null, null)
         return view
     }
 
@@ -107,8 +75,7 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
         }
 
         gotoSaldoPage!!.setOnClickListener {
-            startActivity(SaldoSalesDetailActivity.newInstance(requireContext()))
-            //RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
             activity?.finish()
         }
     }

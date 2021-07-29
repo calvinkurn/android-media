@@ -1,5 +1,6 @@
 package com.tokopedia.saldodetails.utils
 
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.date.DateUtil
 import java.text.DateFormat
 import java.text.ParseException
@@ -43,5 +44,15 @@ object SaldoDateUtil {
         cal.set(Calendar.MINUTE, 0)
         cal.set(Calendar.SECOND, 0)
         cal.set(Calendar.MILLISECOND, 0)
+    }
+
+
+    fun getLocalLabelColor(serverColorInt: Int): Int {
+        return when(serverColorInt){
+            1-> Label.GENERAL_LIGHT_GREEN
+            2-> Label.GENERAL_LIGHT_ORANGE
+            3-> Label.GENERAL_LIGHT_RED
+            else -> Label.GENERAL_DARK_GREY
+        }
     }
 }

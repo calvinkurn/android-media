@@ -4,26 +4,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoHistory
 import kotlinx.android.synthetic.main.saldo_withdrawal_status_item_view.view.*
 
 class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-    fun bindData(position: Int) {
+    fun bindData(model: WithdrawalInfoHistory, position: Int) {
         setSeparator(position)
-        setDetails()
+        setDetails(model)
     }
 
-    private fun setDetails() {
+    private fun setDetails(model: WithdrawalInfoHistory) {
         view.apply {
-            tvStatusTitle.text = "Penarikan saldo berhasil"
-            tvWithdrawalDetail.text = "Rp595.000 telah berhasil dikirimkan ke rekening tujuan."
-            tvWithdrawalDate.text = "Sabtu, 20 Des 2020, 16:40 WIB"
+            tvStatusTitle.text = model.historyTitle
+            tvWithdrawalDetail.text = model.description
+            tvWithdrawalDate.text = model.createdTime
         }
     }
 

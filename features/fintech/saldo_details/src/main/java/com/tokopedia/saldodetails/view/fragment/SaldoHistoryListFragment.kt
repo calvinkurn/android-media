@@ -148,7 +148,7 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     override fun loadData(page: Int) {}
 
-    override fun getAdapterTypeFactory() = SaldoDetailTransactionFactory()
+    override fun getAdapterTypeFactory() = SaldoDetailTransactionFactory({})
 
     override fun onItemClicked(depositHistoryList: DepositHistoryList) {}
 

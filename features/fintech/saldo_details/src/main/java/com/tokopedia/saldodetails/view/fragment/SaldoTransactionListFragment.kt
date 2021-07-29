@@ -15,6 +15,7 @@ import com.tokopedia.saldodetails.adapter.SaldoTransactionAdapter
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
+import com.tokopedia.saldodetails.view.activity.detail.SaldoWithdrawalDetailActivity
 import com.tokopedia.saldodetails.view.fragment.new.*
 import com.tokopedia.saldodetails.view.viewmodel.TransactionHistoryViewModel
 import com.tokopedia.saldodetails.view.viewmodel.state.*
@@ -121,6 +122,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     private fun openDetailPage(visitable: Visitable<*>){
         if(visitable is DepositHistoryList){
             //todo Abhijeet
+            startActivity(SaldoWithdrawalDetailActivity.newInstance(requireContext()))
         }
     }
 

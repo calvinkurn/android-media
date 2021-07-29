@@ -1,16 +1,15 @@
-package com.tokopedia.saldodetails.view.activity
+package com.tokopedia.saldodetails.view.activity.detail
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.view.fragment.SaldoSalesDetailFragment
+import com.tokopedia.saldodetails.view.fragment.detail.SaldoSalesDetailFragment
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 

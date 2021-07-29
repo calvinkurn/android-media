@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.view.activity
+package com.tokopedia.saldodetails.view.activity.detail
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
-import com.tokopedia.saldodetails.view.fragment.SaldoWithdrawalDetailFragment
+import com.tokopedia.saldodetails.view.fragment.detail.SaldoWithdrawalDetailFragment
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
