@@ -102,10 +102,8 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
-        private const val EVENT_ACTION_IMPRESSION_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
-        private const val EVENT_ACTION_CLICK_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
-        private const val VALUE_LIST_OOC = "/%s - rekomendasi untuk anda - %s%s - tokonow - ooc"
-        private const val VALUE_TOPADS = "- topads"
+        const val VALUE_LIST_OOC = "/%s - rekomendasi untuk anda - %s%s - tokonow - ooc"
+        const val VALUE_TOPADS = "- topads"
     }
 
     @Inject
@@ -807,27 +805,18 @@ abstract class BaseSearchCategoryFragment:
             itemPosition: Int,
             adapterPosition: Int
     ) {
+        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
         trackingQueue?.putEETracking(
             ProductRecommendationTracking.getImpressionProductTracking(
                 recommendationItem = recomItem,
-                androidPageName = getSearchAndroidPageName(),
+                eventCategory = getEventCategory(isOOC),
                 headerTitle = data.recommendationData.title,
                 position = itemPosition,
                 isLoggedIn = userSession.isLoggedIn,
-                isTokonow = true,
-                listPage = getSearchListPage(),
-                pageId = getPageId(),
                 userId = userSession.userId,
-                eventLabel = getEventLabel(),
-                eventAction = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
-                    EVENT_ACTION_IMPRESSION_RECOM_OOC else null,
-                listValue = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
-                    String.format(
-                        VALUE_LIST_OOC,
-                        getSearchListPage(),
-                        recomItem.recommendationType,
-                        if (recomItem.isTopAds) VALUE_TOPADS else ""
-                    ) else null
+                eventLabel = getEventLabel(isOOC),
+                eventAction = getImpressionEventAction(isOOC),
+                listValue = getListValue(isOOC, recomItem)
             )
         )
     }
@@ -839,27 +828,18 @@ abstract class BaseSearchCategoryFragment:
             itemPosition: Int,
             adapterPosition: Int
     ) {
+        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ProductRecommendationTracking.getClickProductTracking(
                 recommendationItem = recomItem,
-                androidPageName = getSearchAndroidPageName(),
+                eventCategory = getEventCategory(isOOC),
                 headerTitle = data.recommendationData.title,
                 position = itemPosition,
                 isLoggedIn = userSession.isLoggedIn,
-                isTokonow = true,
-                listPage = getSearchListPage(),
-                pageId = getPageId(),
                 userId = userSession.userId,
-                eventLabel = getEventLabel(),
-                eventAction = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
-                    EVENT_ACTION_CLICK_RECOM_OOC else null,
-                listValue = if (recommendationCarouselDataView?.isOutOfCoverage() == true)
-                    String.format(
-                        VALUE_LIST_OOC,
-                        getSearchListPage(),
-                        recomItem.recommendationType,
-                        if (recomItem.isTopAds) VALUE_TOPADS else ""
-                    ) else null
+                eventLabel = getEventLabel(isOOC),
+                eventAction = getClickEventAction(isOOC),
+                listValue = getListValue(isOOC, recomItem)
             )
         )
         RouteManager.route(
@@ -901,23 +881,22 @@ abstract class BaseSearchCategoryFragment:
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ProductRecommendationTracking.getAddToCartClickProductTracking(
                 recommendationItem = recommendationItem,
-                androidPageName = getSearchAndroidPageName(),
                 position = recommendationItem.position,
                 isLoggedIn = userSession.isLoggedIn,
-                isTokonow = true,
-                listPage = getSearchListPage(),
-                pageId = getPageId(),
                 userId = userSession.userId,
-                eventLabel = getEventLabel(),
+                eventLabel = getEventLabel(false),
                 headerTitle = "",
                 quantity = quantity,
-                cartId = cartId
+                cartId = cartId,
+                eventAction = getAtcEventAction(false)
             )
         )
     }
 
-    abstract fun getSearchListPage(): String
-    abstract fun getSearchAndroidPageName(): String
-    abstract fun getPageId(): String
-    abstract fun getEventLabel(): String
+    abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
+    abstract fun getImpressionEventAction(isOOC: Boolean): String
+    abstract fun getClickEventAction(isOOC: Boolean): String
+    abstract fun getAtcEventAction(isOOC: Boolean): String
+    abstract fun getEventCategory(isOOC: Boolean): String
+    abstract fun getEventLabel(isOOC: Boolean): String
 }

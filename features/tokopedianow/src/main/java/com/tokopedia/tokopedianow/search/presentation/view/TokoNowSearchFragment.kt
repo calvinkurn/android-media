@@ -15,6 +15,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.search.di.SearchComponent
@@ -40,8 +41,19 @@ class TokoNowSearchFragment:
         CTATokoNowHomeListener {
 
     companion object {
-        private const val PAGE_NAME_SEARCH = "empty search result"
         private const val LIST_PAGE = "searchproduct"
+        private const val EVENT_CATEGORY_SRP =
+            "tokonow empty search result"
+        private const val EVENT_ACTION_IMPRESSION_SRP_PRODUCT_TOKONOW =
+            "impression product on tokonow product recommendation"
+        private const val EVENT_ACTION_CLICK_SRP_PRODUCT_TOKONOW =
+            "click product on tokonow product recommendation"
+        private const val EVENT_ACTION_CLICK_ATC_SRP_PRODUCT_TOKONOW =
+            "click add to cart on tokonow product recommendation"
+
+        private const val EVENT_ACTION_IMPRESSION_SRP_RECOM_OOC = "view product on recom widget on tokonow srp while the address is out of coverage (OOC)"
+        private const val EVENT_ACTION_CLICK_SRP_RECOM_OOC = "click product on recom widget on tokonow srp while the address is out of coverage (OOC)"
+
         @JvmStatic
         fun create(): TokoNowSearchFragment {
             return TokoNowSearchFragment()
@@ -294,19 +306,47 @@ class TokoNowSearchFragment:
         goToTokopediaNowHome()
     }
 
-    override fun getSearchListPage(): String {
-        return LIST_PAGE
+    override fun getImpressionEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            EVENT_ACTION_IMPRESSION_SRP_RECOM_OOC
+        } else {
+            EVENT_ACTION_IMPRESSION_SRP_PRODUCT_TOKONOW
+        }
     }
 
-    override fun getSearchAndroidPageName(): String {
-        return PAGE_NAME_SEARCH
+    override fun getClickEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            EVENT_ACTION_CLICK_SRP_RECOM_OOC
+        } else {
+            EVENT_ACTION_CLICK_SRP_PRODUCT_TOKONOW
+        }
     }
 
-    override fun getPageId(): String {
-        return ""
+    override fun getAtcEventAction(isOOC: Boolean): String {
+        return EVENT_ACTION_CLICK_ATC_SRP_PRODUCT_TOKONOW
     }
 
-    override fun getEventLabel(): String {
+    override fun getEventCategory(isOOC: Boolean): String {
+        return EVENT_CATEGORY_SRP
+    }
+
+    override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
+        return if (isOOC) {
+            String.format(
+                VALUE_LIST_OOC,
+                LIST_PAGE,
+                recommendationItem.recommendationType,
+                if (recommendationItem.isTopAds) VALUE_TOPADS else ""
+            )
+        } else {
+            ProductRecommendationTracking.buildTokonowRecommendationList(
+                pageList = LIST_PAGE,
+                pageRecommendationType = recommendationItem.recommendationType
+            )
+        }
+    }
+
+    override fun getEventLabel(isOOC: Boolean): String {
         return getViewModel().query
     }
 }
