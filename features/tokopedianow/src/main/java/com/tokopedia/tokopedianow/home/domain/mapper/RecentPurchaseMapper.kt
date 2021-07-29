@@ -36,6 +36,7 @@ object RecentPurchaseMapper {
                 it.shop.id,
                 it.id,
                 it.stock.toInt(),
+                it.parentProductId,
                 createProductCardModel(it),
                 HomeLayoutType.RECENT_PURCHASE
             )

@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -45,6 +46,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 object HomeLayoutMapper {
 
     private const val DEFAULT_QUANTITY = 0
+    private const val DEFAULT_PARENT_ID = "0"
 
     /**
      * List of layout IDs that doesn't need to call GQL query from Toko Now Home
@@ -208,9 +210,18 @@ object HomeLayoutMapper {
         miniCartData: MiniCartSimplifiedData,
         @HomeLayoutType type: String
     ) {
+        val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
+
         miniCartData.miniCartItems.map { miniCartItem ->
             val productId = miniCartItem.productId
-            val quantity = miniCartItem.quantity
+            val parentId = miniCartItem.productParentId
+            val quantity = if (parentId != DEFAULT_PARENT_ID) {
+                val miniCartItemsWithSameParentId = variantGroup[miniCartItem.productParentId]
+                val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
+                totalQuantity.orZero()
+            } else {
+                miniCartItem.quantity
+            }
             updateProductQuantity(productId, quantity, type)
         }
     }
@@ -236,25 +247,44 @@ object HomeLayoutMapper {
             RECENT_PURCHASE -> {
                 firstOrNull { it.layout is HomeRecentPurchaseUiModel }?.run {
                     val layout = layout as HomeRecentPurchaseUiModel
-                    val productIds = layout.productList.map { it.productId }
                     val cartProductIds = miniCartData.miniCartItems.map { it.productId }
-                    val deletedProductIds = productIds.filter { it !in cartProductIds }
+                    val deletedProducts = layout.productList.filter { it.productId !in cartProductIds }
+                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
 
-                    deletedProductIds.forEach {
-                        updateRecentPurchaseQuantity(it, DEFAULT_QUANTITY)
+                    deletedProducts.forEach { model ->
+                        if (model.parentId != DEFAULT_PARENT_ID) {
+                            val miniCartItemsWithSameParentId = variantGroup[model.parentId]
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateProductRecomQuantity(model.productId, DEFAULT_QUANTITY)
+                            } else {
+                                updateProductRecomQuantity(model.productId, totalQuantity.orZero())
+                            }
+                        } else {
+                            updateProductRecomQuantity(model.productId, DEFAULT_QUANTITY)
+                        }
                     }
                 }
             }
             PRODUCT_RECOM -> {
                 firstOrNull { it.layout is HomeProductRecomUiModel }?.run {
                     val layout = layout as HomeProductRecomUiModel
-                    val productIds =
-                        layout.recomWidget.recommendationItemList.map { it.productId.toString() }
                     val cartProductIds = miniCartData.miniCartItems.map { it.productId }
-                    val deletedProductIds = productIds.filter { it !in cartProductIds }
+                    val deletedProducts = layout.recomWidget.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
+                    val variantGroup = miniCartData.miniCartItems.groupBy { it.productParentId }
 
-                    deletedProductIds.forEach {
-                        updateProductRecomQuantity(it, DEFAULT_QUANTITY)
+                    deletedProducts.forEach { item ->
+                        if (item.parentID.toString() != DEFAULT_PARENT_ID) {
+                            val miniCartItemsWithSameParentId = variantGroup[item.parentID.toString()]
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
+                            if (totalQuantity == DEFAULT_QUANTITY) {
+                                updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
+                            } else {
+                                updateProductRecomQuantity(item.productId.toString(), totalQuantity.orZero())
+                            }
+                        } else {
+                            updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
+                        }
                     }
                 }
             }

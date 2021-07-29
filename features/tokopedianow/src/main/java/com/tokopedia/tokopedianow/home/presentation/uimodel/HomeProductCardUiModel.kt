@@ -9,6 +9,7 @@ data class HomeProductCardUiModel (
     val shopId: String,
     val productId: String,
     val quantity: Int,
+    var parentId: String,
     var product: ProductCardModel = ProductCardModel(),
     @HomeLayoutType val type: String
 ): Visitable<HomeProductCardTypeFactory> {
