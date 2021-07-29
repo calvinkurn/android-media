@@ -394,6 +394,8 @@ public interface ApplinkConst {
     String ACCOUNT = "tokopedia://account";
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
+    String TELEPHONY_MASKING = "tokopedia://telephony-masking";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
