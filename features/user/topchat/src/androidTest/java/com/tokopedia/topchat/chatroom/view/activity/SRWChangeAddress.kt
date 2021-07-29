@@ -6,7 +6,16 @@ import org.junit.Test
 
 class SRWChangeAddress : TopchatRoomTest() {
 
-    // TODO: should show attachment title when msg cta attachment is not null
+    @Test
+    fun should_show_attachment_title_when_msg_cta_attachment_is_not_null() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
+        launchChatRoomActivity()
+
+        // Then
+        assertHeaderTitleMsgAtBubblePosition(0, isDisplayed())
+        assertHeaderTitleMsgAtBubblePosition(0, withText("Pengiriman ke Pembeli"))
+    }
 
     @Test
     fun should_show_cta_enabled_state_when_attachment_has_visible_cta() {

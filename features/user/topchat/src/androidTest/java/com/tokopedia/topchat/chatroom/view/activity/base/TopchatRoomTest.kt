@@ -592,6 +592,16 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertHeaderTitleMsgAtBubblePosition(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tp_header_title
+            )
+        ).check(matches(matcher))
+    }
+
     protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
         onView(
             withRecyclerView(R.id.recycler_view).atPositionOnView(
