@@ -62,6 +62,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -72,7 +73,9 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -95,7 +98,8 @@ class TokoNowHomeFragment: Fragment(),
         TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
         BannerComponentListener,
-        HomeProductRecomViewHolder.HomeProductRecomListener
+        HomeProductRecomViewHolder.HomeProductRecomListener,
+        HomeProductCardViewHolder.HomeProductCardListener
 {
 
     companion object {
@@ -126,7 +130,8 @@ class TokoNowHomeFragment: Fragment(),
                 homeChooseAddressWidgetListener = this,
                 tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
-                homeProductRecomListener = this
+                homeProductRecomListener = this,
+                homeProductCardListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -217,11 +222,11 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
-        updateProductRecom(miniCartSimplifiedData)
+        updateProductCard(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData)
     }
 
-    private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    private fun updateProductCard(miniCartSimplifiedData: MiniCartSimplifiedData) {
         viewModelTokoNow.setMiniCartSimplifiedData(miniCartSimplifiedData)
         viewModelTokoNow.updateProductCard(miniCartSimplifiedData, true)
     }
@@ -304,7 +309,12 @@ class TokoNowHomeFragment: Fragment(),
         position: String
     ) {
         if (userSession.isLoggedIn) {
-            viewModelTokoNow.addProductToCart(recomItem, quantity)
+            viewModelTokoNow.addProductToCart(
+                recomItem.productId.toString(),
+                quantity,
+                recomItem.shopId.toString(),
+                HomeLayoutType.PRODUCT_RECOM
+            )
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
@@ -313,6 +323,19 @@ class TokoNowHomeFragment: Fragment(),
         this.productPosition = position
     }
 
+    override fun onProductPurchaseQuantityChanged(data: HomeProductCardUiModel, quantity: Int) {
+        if (userSession.isLoggedIn) {
+            viewModelTokoNow.addProductToCart(
+                data.productId,
+                quantity,
+                data.shopId,
+                HomeLayoutType.RECENT_PURCHASE
+            )
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+        this.recomItem = null
+    }
 
     override fun isMainViewVisible(): Boolean = true
 
@@ -560,7 +583,7 @@ class TokoNowHomeFragment: Fragment(),
                 setupMiniCart(it.data)
                 setupPadding(it.data)
                 if (isVariantAdded) {
-                    updateProductRecom(it.data)
+                    updateProductCard(it.data)
                     isVariantAdded = false
                 }
             }
@@ -602,7 +625,6 @@ class TokoNowHomeFragment: Fragment(),
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         type = TYPE_NORMAL
                     )
-                    adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
                     getMiniCart()
 
                     recomItem?.apply {
@@ -643,15 +665,10 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.miniCartRemove) {
             when(it) {
-                is Success -> {
-                    adapter.updateProductRecom(it.data.toLong(), 0)
-                    getMiniCart()
-                }
+                is Success -> getMiniCart()
                 is Fail -> {
-                    showToaster(
-                        message = it.throwable.message.orEmpty(),
-                        type = TYPE_ERROR
-                    )
+                    val message = it.throwable.message.orEmpty()
+                    showToaster(message = message, type = TYPE_ERROR)
                 }
             }
         }
