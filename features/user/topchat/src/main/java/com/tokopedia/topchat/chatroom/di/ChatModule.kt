@@ -30,6 +30,10 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
+import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_RETRY
+import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -61,11 +65,6 @@ import javax.inject.Named
         )
 )
 class ChatModule {
-
-    private val NET_READ_TIMEOUT = 60
-    private val NET_WRITE_TIMEOUT = 60
-    private val NET_CONNECT_TIMEOUT = 60
-    private val NET_RETRY = 1
 
     @ChatScope
     @Provides

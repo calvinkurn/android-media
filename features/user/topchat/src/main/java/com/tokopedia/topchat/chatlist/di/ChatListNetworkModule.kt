@@ -15,6 +15,10 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.domain.websocket.*
+import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_RETRY
+import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.user.session.UserSession
@@ -34,11 +38,6 @@ import javax.inject.Named
 
 @Module
 class ChatListNetworkModule {
-
-    private val NET_READ_TIMEOUT = 60
-    private val NET_WRITE_TIMEOUT = 60
-    private val NET_CONNECT_TIMEOUT = 60
-    private val NET_RETRY = 1
 
     @ChatListScope
     @Provides
