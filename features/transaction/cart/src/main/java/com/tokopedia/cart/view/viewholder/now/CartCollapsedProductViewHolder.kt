@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.viewholder.now
 
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
@@ -7,8 +8,10 @@ import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+
 
 class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding, val actionListener: ActionListener, val parentPosition: Int) : RecyclerView.ViewHolder(viewBinding.root) {
 
@@ -50,6 +53,17 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
         } else {
             viewBinding.textVariantName.gone()
         }
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(viewBinding.containerCollapsedProduct)
+        if (viewBinding.textVariantName.isVisible) {
+            val margin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
+            constraintSet.connect(R.id.text_product_price, ConstraintSet.TOP, R.id.text_variant_name, ConstraintSet.BOTTOM, margin)
+        } else {
+            val margin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4)
+            constraintSet.connect(R.id.text_product_price, ConstraintSet.TOP, R.id.text_variant_name, ConstraintSet.BOTTOM, margin)
+        }
+        constraintSet.applyTo(viewBinding.containerCollapsedProduct)
     }
 
 }
