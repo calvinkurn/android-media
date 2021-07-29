@@ -15,6 +15,7 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
     var customP2DataResponsePath: String? = null
     var customP2ErrorResponsePath: String? = null
     var customAtcV2ResponsePath: String? = null
+    var customTickerResponsePath: String? = null
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
@@ -39,6 +40,10 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
             return mockResponse(copy, getJsonFromResource(customAtcV2ResponsePath!!))
         }
 
+        if (requestString.contains(GET_TICKER) && customTickerResponsePath != null) {
+            return mockResponse(copy, getJsonFromResource(customTickerResponsePath!!))
+        }
+
         return chain.proceed(chain.request())
     }
 
@@ -48,6 +53,7 @@ class ProductDetailInterceptor : BasePdpInterceptor() {
         customP2DataResponsePath = null
         customP2ErrorResponsePath = null
         customAtcV2ResponsePath = null
+        customTickerResponsePath = null
     }
 }
 
@@ -55,3 +61,4 @@ const val GET_MINI_CART = "mini_cart"
 const val GET_PDP_P1 = "pdpGetLayout"
 const val GET_PDP_P2_DATA = "GetPdpGetData"
 const val GET_SUCCESS_ATC = "add_to_cart_v2"
+const val GET_TICKER = "get_ticker"
