@@ -1,8 +1,11 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import android.graphics.Rect
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -60,10 +63,10 @@ class HomeRecentPurchaseViewHolder(
 
     private fun initView(data: HomeRecentPurchaseUiModel) {
         tvTitle?.text = data.title
-        tvTitle?.setType(Typography.HEADING_5)
+        tvTitle?.setType(Typography.HEADING_4)
         rvProduct?.apply {
             adapter = this@HomeRecentPurchaseViewHolder.adapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = createLinearLayoutManager()
         }
         adapter.submitList(data.productList)
     }
@@ -84,5 +87,27 @@ class HomeRecentPurchaseViewHolder(
 
     private fun hideShimmering() {
         layoutShimmering?.hide()
+    }
+
+    private fun RecyclerView.createLinearLayoutManager(): LinearLayoutManager {
+        return object : LinearLayoutManager(context, HORIZONTAL, false) {
+            override fun requestChildRectangleOnScreen(
+                parent: RecyclerView,
+                child: View,
+                rect: Rect,
+                immediate: Boolean,
+                focusedChildVisible: Boolean
+            ): Boolean {
+                return if ((child as? ViewGroup)?.focusedChild is CardView) {
+                    false
+                } else super.requestChildRectangleOnScreen(
+                    parent,
+                    child,
+                    rect,
+                    immediate,
+                    focusedChildVisible
+                )
+            }
+        }
     }
 }
