@@ -194,6 +194,7 @@ class FlexBoxChatLayout : ViewGroup {
 
     private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
         bindHeaderTitle(attachment)
+        bindHeaderBody(attachment)
         if (attachment.hasVisibleCta()) {
             headerCta?.show()
             bindHeaderCtaTitle(attachment)
@@ -202,6 +203,10 @@ class FlexBoxChatLayout : ViewGroup {
         } else {
             headerCta?.hide()
         }
+    }
+
+    private fun bindHeaderBody(attachment: HeaderCtaMessageAttachment) {
+        setMessage(attachment.body)
     }
 
     private fun bindHeaderTitle(attachment: HeaderCtaMessageAttachment) {
