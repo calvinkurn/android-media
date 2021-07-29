@@ -11,7 +11,8 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.domain.usecase.*
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
@@ -50,7 +51,7 @@ class DeleteCartTest {
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -71,7 +72,7 @@ class DeleteCartTest {
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -92,7 +93,7 @@ class DeleteCartTest {
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -113,7 +114,7 @@ class DeleteCartTest {
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -135,7 +136,7 @@ class DeleteCartTest {
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -158,7 +159,7 @@ class DeleteCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -180,7 +181,7 @@ class DeleteCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -199,7 +200,7 @@ class DeleteCartTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -218,7 +219,7 @@ class DeleteCartTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -238,7 +239,7 @@ class DeleteCartTest {
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
@@ -259,7 +260,7 @@ class DeleteCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -279,7 +280,7 @@ class DeleteCartTest {
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -302,7 +303,7 @@ class DeleteCartTest {
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
 
         val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParamsFromUiModel(any()) } just Runs
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
         coEvery { deleteCartUseCase.execute(any(), any()) } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
         }
