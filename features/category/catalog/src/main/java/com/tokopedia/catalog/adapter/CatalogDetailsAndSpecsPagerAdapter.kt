@@ -21,15 +21,17 @@ class CatalogDetailsAndSpecsPagerAdapter(
         return fragmentList[position]
     }
 
-    fun setOnSelectView(tabLayout: TabLayout, position: Int) {
-        val tab = tabLayout.getTabAt(position)
-        val customView: Typography? = tab!!.customView  as Typography
-        customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+    fun setOnSelectView(tab : TabLayout.Tab?) {
+        tab?.let {
+            val customView: Typography? = tab.customView  as Typography?
+            customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        }
     }
 
-    fun setUnSelectView(tabLayout: TabLayout, position: Int) {
-        val tab = tabLayout.getTabAt(position)
-        val customView: Typography? = tab!!.customView  as Typography
-        customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+    fun setUnSelectView(tab : TabLayout.Tab?) {
+        tab?.let {
+            val customView: Typography? = tab.customView  as Typography?
+            customView?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        }
     }
 }
