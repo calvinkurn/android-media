@@ -119,12 +119,19 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             } else if (!product.isError) {
                 lblProductSlashPricePercentage.gone()
+                var slashPrice = 0L
                 if (product.wholesalePrice > 0 && product.wholesalePrice < product.productPrice) {
-                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.wholesalePrice, false).removeDecimalSuffix()
-                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    tvProductSlashPrice.visible()
-                } else if (product.initialPrice > 0 && product.initialPrice < product.productPrice) {
-                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.initialPrice, false).removeDecimalSuffix()
+                    slashPrice = product.productPrice
+                }
+                if (product.initialPrice > 0 && product.productPrice < product.initialPrice) {
+                    slashPrice = if (slashPrice == 0L) {
+                        product.initialPrice
+                    } else {
+                        minOf(slashPrice, product.initialPrice)
+                    }
+                }
+                if (slashPrice > 0L) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(slashPrice, false).removeDecimalSuffix()
                     tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvProductSlashPrice.visible()
                 } else {

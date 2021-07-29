@@ -454,7 +454,7 @@
                       "campaign_id": 0,
                       "product_original_price": 100000,
                       "product_price_original_fmt": "Rp100.000",
-                      "slash_price_label": "5%",
+                      "slash_price_label": "",
                       "is_slash_price": false,
                       "free_returns": {
                         "free_returns_logo": ""
@@ -654,7 +654,7 @@
                       ],
                       "product_warning_message": "sisa < 1",
                       "product_alert_message": "alert",
-                      "slash_price_label": "5%"
+                      "slash_price_label": ""
                     }
                   ]
                 }

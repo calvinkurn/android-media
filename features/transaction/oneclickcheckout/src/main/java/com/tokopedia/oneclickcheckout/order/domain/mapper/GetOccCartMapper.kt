@@ -2,60 +2,10 @@ package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.oneclickcheckout.order.data.get.Address
-import com.tokopedia.oneclickcheckout.order.data.get.CustomerData
-import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartData
-import com.tokopedia.oneclickcheckout.order.data.get.GroupShopOccResponse
-import com.tokopedia.oneclickcheckout.order.data.get.InstallmentTerm
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboardingResponse
-import com.tokopedia.oneclickcheckout.order.data.get.OccPromptResponse
-import com.tokopedia.oneclickcheckout.order.data.get.OccShopShipment
-import com.tokopedia.oneclickcheckout.order.data.get.OccTickerMessage
-import com.tokopedia.oneclickcheckout.order.data.get.OvoActionData
-import com.tokopedia.oneclickcheckout.order.data.get.OvoAdditionalData
-import com.tokopedia.oneclickcheckout.order.data.get.Payment
-import com.tokopedia.oneclickcheckout.order.data.get.PaymentCreditCardsNumber
-import com.tokopedia.oneclickcheckout.order.data.get.PaymentErrorMessage
-import com.tokopedia.oneclickcheckout.order.data.get.PaymentRevampErrorMessage
-import com.tokopedia.oneclickcheckout.order.data.get.ProductDataResponse
-import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
-import com.tokopedia.oneclickcheckout.order.data.get.Shipment
-import com.tokopedia.oneclickcheckout.order.data.get.WalletAdditionalData
-import com.tokopedia.oneclickcheckout.order.data.get.WalletData
+import com.tokopedia.oneclickcheckout.order.data.get.*
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMark
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMarkDetail
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingTicker
-import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderKero
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardsNumber
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessage
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessageButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoActionData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentRevampErrorMessage
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentRevampErrorMessageButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.ProductTickerMessage
-import com.tokopedia.oneclickcheckout.order.view.model.ProductTickerMessageReplacement
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
-import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
@@ -141,6 +91,7 @@ class GetOccCartMapper @Inject constructor() {
             districtId = shop.districtId
             shopShipment = generateShopShipment(shop.shopShipments)
             errors = groupShop.errors
+            warehouseId = groupShop.warehouse.warehouseId
             isFulfillment = groupShop.warehouse.isFulfillment
             fulfillmentBadgeUrl = groupShop.tokoCabangInfo.badgeUrl
             cityName = if (groupShop.warehouse.isFulfillment) groupShop.tokoCabangInfo.message else groupShop.shipmentInformation.shopLocation

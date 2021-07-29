@@ -146,8 +146,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 0,
                     productName = "Product1",
                     productPrice = "Rp10.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = null,
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -159,8 +159,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 1,
                     productName = "Product2",
                     productPrice = "Rp10.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = null,
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -187,8 +187,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 0,
                     productName = "Product1",
                     productPrice = "Rp9.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = "Rp10.000",
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -200,8 +200,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 1,
                     productName = "Product2",
                     productPrice = "Rp9.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = "Rp10.000",
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -228,8 +228,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 0,
                     productName = "Product1",
                     productPrice = "Rp5.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = "Rp10.000",
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -241,8 +241,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 1,
                     productName = "Product2",
                     productPrice = "Rp5.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = "Rp10.000",
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -269,8 +269,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 0,
                     productName = "Product1",
                     productPrice = "Rp9.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = "Rp10.000",
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -282,8 +282,8 @@ class OrderSummaryPageActivityMultiProductTest {
                     index = 1,
                     productName = "Product2",
                     productPrice = "Rp9.000",
-                    productSlashPrice = "Rp100.000",
-                    productSlashPriceLabel = "5%",
+                    productSlashPrice = "Rp10.000",
+                    productSlashPriceLabel = null,
                     productVariant = "hitam, putih",
                     productWarningMessage = "sisa < 1",
                     productAlertMessage = "alert",
@@ -300,6 +300,47 @@ class OrderSummaryPageActivityMultiProductTest {
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp52.000"
+                )
+                closeBottomSheet()
+            }
+
+            clickMinusProductQuantity(index = 1, times = 2)
+
+            assertProductCard(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp10.000",
+                    productSlashPrice = null,
+                    productSlashPriceLabel = null,
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp10.000",
+                    productSlashPrice = null,
+                    productSlashPriceLabel = null,
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+
+            assertPayment("Rp36.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp20.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp36.000"
                 )
                 closeBottomSheet()
             }
