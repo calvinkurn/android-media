@@ -82,13 +82,17 @@ data class GetRecentPurchaseResponse(
         @SerializedName("shop")
         val shop: Shop = Shop()
     ) {
+        companion object {
+            private const val PERCENTAGE = "%"
+        }
+
         fun isVariant(): Boolean {
             return parentProductId.toIntOrZero() != 0
         }
 
         fun getDiscount(): String {
             val discount = discountPercentage.toFloatOrZero()
-            return if(discount > 0f) discountPercentage else ""
+            return if(discount > 0f) "$discountPercentage$PERCENTAGE" else ""
         }
     }
 
