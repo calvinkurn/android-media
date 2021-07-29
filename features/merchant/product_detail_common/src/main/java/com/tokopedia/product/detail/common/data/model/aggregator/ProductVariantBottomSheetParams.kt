@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.aggregator
 
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 
 /**
  * Created by Yehezkiel on 11/05/21
@@ -23,7 +24,7 @@ data class ProductVariantBottomSheetParams(
         var miniCartData: Map<String, MiniCartItem>? = null,
 
         //Basic info pdp
-        var minimumShippingPrice: Int = 30000,
+        var minimumShippingPrice: Double = DEFAULT_PRICE_MINIMUM_SHIPPING,
         var trackerAttribution: String = "",
         var trackerListNamePdp: String = "",
         var isShopOwner: Boolean = false

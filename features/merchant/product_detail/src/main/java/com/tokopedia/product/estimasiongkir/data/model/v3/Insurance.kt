@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class Insurance(
         @SerializedName("insurance_price")
         @Expose
-        val insurancePrice: Int = 0,
+        val insurancePrice: Double = 0.0,
 
         @SerializedName("insurance_type")
         @Expose

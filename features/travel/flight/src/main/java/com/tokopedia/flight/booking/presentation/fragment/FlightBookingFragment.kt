@@ -60,6 +60,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -272,6 +273,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 is Fail -> {
                     hideTickerView()
                 }
+            }
+        })
+
+        bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
+            if(it == EMPTY_VOUCHER_STATE){
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
+            }else{
+                renderErrorToast(it)
             }
         })
 
@@ -596,7 +605,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderProfileData(profileInfo: ProfileInfo) {
         widget_traveller_info.setContactName(profileInfo.fullName)
-        widget_traveller_info.setContactPhoneNum(62, profileInfo.phone)
+        widget_traveller_info.setContactPhoneNum(ID_COUNTRY_CODE, profileInfo.phone)
         widget_traveller_info.setContactEmail(profileInfo.email)
         widget_traveller_info.setContactPhoneCountry("ID")
     }
@@ -730,7 +739,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {
                 isCouponChanged = true
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
                 bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
             }
 
@@ -796,11 +804,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 if (list.isNotEmpty()) {
                     layout_loading.visibility = View.VISIBLE
                     tv_loading_subtitle.text = list[0]
-                    delay(2000L)
+                    delay(LOADING_DELAY)
                     tv_loading_subtitle.text = list[1]
-                    delay(2000L)
+                    delay(LOADING_DELAY)
                     tv_loading_subtitle.text = list[2]
-                    delay(2000L)
+                    delay(LOADING_DELAY)
                     layout_loading.visibility = View.GONE
                     layout_shimmering.visibility = View.VISIBLE
                 }
@@ -842,14 +850,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     @SuppressLint("DialogUnifyUsage")
-    private fun showErrorDialog(e: FlightError, action: () -> Unit) {
+    private fun showErrorDialog(flightError: FlightError, action: () -> Unit) {
         if (activity != null) {
-            if (e.id.isNotEmpty()) {
-                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
+            if (flightError.id.isNotEmpty()) {
+                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
                 if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
                     renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-                    showErrorFullPage(e)
+                    showErrorFullPage(flightError)
                 } else {
                     lateinit var dialog: DialogUnify
                     when (errorCode) {
@@ -937,13 +945,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                     dialog.setCancelable(false)
                     dialog.setOverlayClose(false)
-                    if (e.head.isNotEmpty()) dialog.setTitle(e.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
-                    if (e.message.isNotEmpty()) dialog.setDescription(e.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
+                    if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
+                    if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
                     dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                     dialog.show()
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(activity, view) {
+                NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(activity, null), getString(com.tokopedia.globalerror.R.string.error500Desc) ,getString(com.tokopedia.globalerror.R.string.error500Action), com.tokopedia.globalerror.R.drawable.unify_globalerrors_500) {
                     NetworkErrorHelper.hideEmptyState(view)
                     showLoadingDialog()
                     action()
@@ -1149,6 +1157,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
         const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
         const val REQUEST_CODE_OTP = 5
+        const val EMPTY_VOUCHER_STATE = 0
+        const val ID_COUNTRY_CODE = 62
+        const val LOADING_DELAY = 2000L
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()
