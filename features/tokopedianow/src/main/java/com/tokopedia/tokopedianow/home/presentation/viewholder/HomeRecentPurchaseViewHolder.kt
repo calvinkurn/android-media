@@ -63,7 +63,7 @@ class HomeRecentPurchaseViewHolder(
 
     private fun initView(data: HomeRecentPurchaseUiModel) {
         tvTitle?.text = data.title
-        tvTitle?.setType(Typography.HEADING_5)
+        tvTitle?.setType(Typography.HEADING_4)
         rvProduct?.apply {
             adapter = this@HomeRecentPurchaseViewHolder.adapter
             layoutManager = createLinearLayoutManager()
