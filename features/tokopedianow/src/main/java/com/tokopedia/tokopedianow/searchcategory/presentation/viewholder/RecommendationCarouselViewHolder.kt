@@ -28,8 +28,10 @@ class RecommendationCarouselViewHolder(
                     R.id.tokoNowSearchCategoryRecomCarousel
             )
 
+    private var recommendationCarouselDataView: RecommendationCarouselDataView? = null
+
     override fun bind(element: RecommendationCarouselDataView?) {
-        element ?: return
+        recommendationCarouselDataView = element ?: return
         val recomWidget = recommendationCarouselWidgetView ?: return
         val scrollToPosition =
                 recommendationCarouselListener.onGetCarouselScrollPosition(adapterPosition)
@@ -50,10 +52,11 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
     ) {
         recommendationCarouselListener.onImpressedRecommendationCarouselItem(
+                recommendationCarouselDataView = recommendationCarouselDataView,
                 data = data,
                 recomItem = recomItem,
                 itemPosition = itemPosition,
-                adapterPosition = adapterPosition
+                adapterPosition = adapterPosition,
         )
     }
 
@@ -65,10 +68,11 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
     ) {
         recommendationCarouselListener.onClickRecommendationCarouselItem(
+                recommendationCarouselDataView = recommendationCarouselDataView,
                 data = data,
                 recomItem = recomItem,
                 itemPosition = itemPosition,
-                adapterPosition = adapterPosition
+                adapterPosition = adapterPosition,
         )
     }
 
@@ -83,6 +87,7 @@ class RecommendationCarouselViewHolder(
         val recommendationCarouselPosition = this.adapterPosition
 
         recommendationCarouselListener.onATCNonVariantRecommendationCarouselItem(
+                recommendationCarouselDataView = recommendationCarouselDataView,
                 data = data,
                 recomItem = recomItem,
                 recommendationCarouselPosition = recommendationCarouselPosition,
@@ -107,6 +112,7 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
     ) {
         recommendationCarouselListener.onAddVariantRecommendationCarouselItem(
+                recommendationCarouselDataView = recommendationCarouselDataView,
                 data = data,
                 recomItem = recomItem,
         )

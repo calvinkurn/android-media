@@ -797,6 +797,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onImpressedRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -819,6 +820,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -846,6 +848,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onATCNonVariantRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             recommendationCarouselPosition: Int,
@@ -859,6 +862,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
     ) {
