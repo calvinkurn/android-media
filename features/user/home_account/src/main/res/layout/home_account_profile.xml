@@ -10,8 +10,7 @@
         android:layout_width="@dimen/home_account_dp_64"
         android:layout_height="@dimen/home_account_dp_64"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="4" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:textColor="@color/Unify_N700_96"
@@ -71,6 +70,20 @@
         android:lines="1"
         tools:text="yoris.prayogo@tokopedia.com"
         tools:targetApi="p" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/link_account_profile_btn"
+        android:background="@drawable/link_account_label_rounded"
+        android:textColor="#ffffff"
+        app:typographyType="heading_6"
+        android:text="@string/link_account_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        app:labelTitle="Link Account to Gojek"
+        app:labelType="general_dark_green"
+        app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_email"
+        app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_email" />
 
     <com.tokopedia.iconunify.IconUnify
         app:icon_color_night_enable="@color/home_account_dms_icon_dark"

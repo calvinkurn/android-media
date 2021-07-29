@@ -101,4 +101,8 @@
 
     <string name="default_member_title">Rewards</string>
     <string name="new_home_account_label_beta">BETA</string>
+    <string name="link_account_main_title"><![CDATA[Link your Tokopedia & Gojek accounts to get better deals!]]></string>
+    <string name="link_account_description"><![CDATA[You can get GoPayPoints cashback, level up your Tokopedia Rewards & GoClub memberships, and use GoPay on Tokopedia.]]></string>
+    <string name="link_account_btn_primary">Let’s Do It!</string>
+    <string name="link_account_label">Link Account to Gojek</string>
 </resources>
