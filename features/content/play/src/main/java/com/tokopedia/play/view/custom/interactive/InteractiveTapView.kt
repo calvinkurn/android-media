@@ -138,11 +138,6 @@ class InteractiveTapView : ConstraintLayout {
         mListener = listener
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        lottieConfettiTap.cancelAnimation()
-    }
-
     private fun changeMode(mode: Mode) {
         when (mode) {
             Mode.Follow -> {
