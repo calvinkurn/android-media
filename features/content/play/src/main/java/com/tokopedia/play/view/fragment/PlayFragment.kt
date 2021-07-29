@@ -533,7 +533,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun doAutoSwipe() {
-        playNavigation.navigateToNextPage()
+        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
     }
 
     private fun sendSwipeRoomAnalytic() {

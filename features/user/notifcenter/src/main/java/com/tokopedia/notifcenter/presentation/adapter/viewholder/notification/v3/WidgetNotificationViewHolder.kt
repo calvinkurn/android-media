@@ -226,7 +226,19 @@ class WidgetNotificationViewHolder constructor(
     private fun bindWidgetDescSingle(element: NotificationUiModel) {
         widgetDescSingle?.shouldShowWithAction(element.hasSingleLineDesc()) {
             widgetDescSingle.text = element.widgetDescHtml
+            bindWidgetDescSingleMargin(element)
         }
+    }
+
+    private fun bindWidgetDescSingleMargin(element: NotificationUiModel) {
+        val lp = widgetDescSingle?.layoutParams
+                as? ViewGroup.MarginLayoutParams ?: return
+        if (element.widget.hasCta()) {
+            lp.rightMargin = 0
+        } else {
+            lp.rightMargin = padding_12?.toInt() ?: 0
+        }
+        widgetDescSingle.layoutParams = lp
     }
 
     private fun bindWidgetDesc(element: NotificationUiModel) {
@@ -236,7 +248,7 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindWidgetCta(element: NotificationUiModel) {
-        widgetCta?.shouldShowWithAction(element.widget.buttonText.isNotEmpty()) {
+        widgetCta?.shouldShowWithAction(element.widget.hasCta()) {
             widgetCta.text = element.widget.buttonText
             widgetCta.setOnClickListener {
                 listener?.trackClickCtaWidget(element)
@@ -246,14 +258,16 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindMessage(element: NotificationUiModel) {
+        val noWidgetWithTrackHistory = element.noWidgetWithTrackHistory() &&
+                element.shortDescHtml.isNotEmpty()
         message?.shouldShowWithAction(
-            element.widget.message.isNotEmpty() || element.shortDescHtml.isNotEmpty()
+            element.hasWidgetMsg() || noWidgetWithTrackHistory
         ) {
             bindMessageMargin(element)
-            val widgetMessage = if (element.noWidgetWithTrackHistory()) {
-                element.shortDescHtml
-            } else {
+            val widgetMessage = if (element.hasWidgetMsg()) {
                 element.widgetMessageHtml
+            } else {
+                element.shortDescHtml
             }
             message.text = widgetMessage
         }

@@ -30,6 +30,7 @@ class AttachProductUseCaseTest {
     private val queryTest = "Test Query"
     private val shopIdTest = "0"
     private val pageTest = 0
+    private val warehouseId = "0"
 
     @Before
     fun before() {
@@ -47,7 +48,7 @@ class AttachProductUseCaseTest {
         } returns Observable.just(expectedResult)
 
         val observable: Observable<List<AttachProductItemUiModel>> = usecase.getExecuteObservable(AttachProductUseCase.
-            createRequestParams(queryTest, shopIdTest, pageTest)
+            createRequestParams(queryTest, shopIdTest, pageTest, warehouseId)
         )
 
         observable.subscribe(testSubscriber)
@@ -67,7 +68,7 @@ class AttachProductUseCaseTest {
         } returns Observable.error(expectedResult)
 
         val observable: Observable<List<AttachProductItemUiModel>> = usecase.getExecuteObservable(AttachProductUseCase.
-        createRequestParams(queryTest, shopIdTest, pageTest)
+        createRequestParams(queryTest, shopIdTest, pageTest, warehouseId)
         )
 
         observable.subscribe(testSubscriber)

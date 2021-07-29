@@ -17,6 +17,23 @@
     <string name="title_choose_account">Silahkan pilih akun kamu</string>
 
     <string name="error_fingerprint_invalid_mode">Must pass valid mode</string>
-    <string name="error_fingerprint_use_other_method">Terjadi Kesalahan, silahkan coba sesaat lagi atau gunakan metode lain</string>
+
+    <string name="error_fingerprint_invalid_title">Yaah... Verifikasinya gagal</string>
+    <string name="error_fingerprint_use_other_method">Coba Lagi</string>
+    <string name="fingerprint_success_login_toaster">Hore! Kamu bisa masuk ke akunmu pakai sidik jari.</string>
+    <string name="error_fingerprint_lockout_description">Kamu sudah coba metode ini 5 kali, tunggu 30 detik untuk coba lagi.</string>
+
+    <string name="error_fingerprint_ok">Oke</string>
+
+    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
+    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
+
+    <string name="error_fingerprint_not_registered">Kamu belum bisa pakai fitur ini</string>
+    <string name="error_fingerprint_not_registered_description">Daftarkan sidik jari kamu di HP ini biar bisa pakai fiturnya.</string>
+
+    <string name="button_close_fingerprint">Tutup</string>
+    <string name="error_failed_register_fingerprint">Gagal menambahkan fingerprint</string>
+    <string name="title_setting_fingerprint_switch">Masuk dengan Sidik Jari</string>
+    <string name="description_fingerprint_setting">Kalau kamu mematikan fitur ini atau mengatur ulang kata sandi, sidik jari di Tokopedia harus diaktifkan lagi.</string>
 
 </resources>

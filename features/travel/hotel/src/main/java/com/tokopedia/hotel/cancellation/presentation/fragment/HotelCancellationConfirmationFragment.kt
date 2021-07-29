@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
@@ -26,11 +25,17 @@ import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationC
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_hotel_cancellation.*
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation_confirmation.*
+import kotlinx.android.synthetic.main.fragment_hotel_cancellation_confirmation.container_error
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import javax.inject.Inject
 
 /**
@@ -82,6 +87,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+        container_error.hide()
         submitCancellation()
     }
 
@@ -103,12 +109,12 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        cancellationViewModel.cancellationSubmitData.observe(this, Observer {
+        cancellationViewModel.cancellationSubmitData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     initView(it.data)
                 }
-                is Fail -> { showErrorState(it.throwable) }
+                is Fail -> { showErrorView(it.throwable) }
             }
             hideLoadingState()
         })
@@ -161,6 +167,15 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             }
         }
         return button
+    }
+
+    fun showErrorView(error: Throwable?){
+        hideLoadingState()
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, error,
+                { onErrorRetryClicked() }, global_error)
+        }
     }
 
     companion object {

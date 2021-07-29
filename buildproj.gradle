@@ -1,6 +1,9 @@
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     repositories {
+        maven {
+            url = "$rootDir/localMavenRepository"
+        }
         google()
         mavenCentral()
         mavenLocal()
@@ -89,16 +92,13 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-ads-identifier') with module("com.google.android.gms:play-services-ads-identifier:${playServiceAds}")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk7') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+                substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
+
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
+                    substitute module(rootProject.ext.tkpdInternalLibDependencies.fakeresponse) with module(rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp)
                 }
             }
         }
     }
-}
-
-gradle.buildFinished {
-    "zip -d .okbuck/cache/org.hamcrest.hamcrest-core-1.3.jar LICENSE.txt".execute()
-    "zip -d .okbuck/cache/org.hamcrest.hamcrest-library-1.3.jar LICENSE.txt".execute()
-    "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }

@@ -43,5 +43,6 @@ interface InboxListContract {
         fun getNotifiactionIndiactor(): Boolean
         fun getBottomFragment(resID: Int): BottomSheetDialogFragment?
         fun showSerVicePriorityBottomSheet()
+        fun sendGTMClickChatButton()
     }
 }

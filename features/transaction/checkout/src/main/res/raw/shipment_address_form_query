@@ -17,6 +17,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       open_prerequisite_site
       eligible_new_shipping_experience
       pop_up_message
+      error_ticker
       group_address {
         errors
         user_address {
@@ -41,9 +42,14 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           is_corner
           state
           state_detail
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         group_shop {
           errors
+          errors_unblocking
           shipping_id
           sp_id
           is_insurance
@@ -68,6 +74,19 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             preorder {
               is_preorder
               duration
+            }
+          }
+          is_disable_change_courier
+          auto_courier_selection
+          courier_selection_error {
+            title
+            description
+          }
+          bo_metadata {
+            bo_type
+            bo_eligibilities {
+              key
+              value
             }
           }
           save_state_flag
@@ -134,6 +153,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_wholesale_price_fmt
             product_weight_fmt
             product_weight
+            product_weight_actual
             product_condition
             product_url
             product_returnable

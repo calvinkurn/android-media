@@ -2,10 +2,12 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 data class DynamicProductInfoP1(
-        val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData(),
-        val layoutName: String = "",
-        val pdpSession: String = ""
+    val basic: BasicInfo = BasicInfo(),
+    val data: ComponentData = ComponentData(),
+    val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+    val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
+    val layoutName: String = "",
+    val pdpSession: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
@@ -14,9 +16,6 @@ data class DynamicProductInfoP1(
 
     val isUsingOvo: Boolean
         get() = data.campaign.isUsingOvo
-
-    val isLeasing: Boolean
-        get() = basic.isLeasing
 
     val shopTypeString: String
         get() {
@@ -39,7 +38,7 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
-    val finalPrice: Int
+    val finalPrice: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.discountedPrice
@@ -48,12 +47,12 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val priceBeforeInt: Int
+    val priceBeforeDouble: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.originalPrice
             } else {
-                0
+                0.0
             }
         }
 
@@ -65,10 +64,6 @@ data class DynamicProductInfoP1(
                 ""
             }
         }
-
-    fun checkImei(imeiRemoteConfig: Boolean): Boolean {
-        return imeiRemoteConfig && data.campaign.isCheckImei
-    }
 
     fun getFinalStock(): String {
         return if (data.campaign.isActive) {

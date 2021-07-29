@@ -33,6 +33,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
@@ -40,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
@@ -154,8 +156,8 @@ class SearchActivity: BaseActivity(),
             (RemoteConfigInstance
                     .getInstance()
                     .abTestPlatform
-                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                    == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+                    .getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                    == RollenceKey.NAVIGATION_VARIANT_REVAMP)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -297,7 +299,8 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun onSearchBarClicked() {
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery())
+        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery(), pageSource)
         moveToAutoCompleteActivity()
     }
 

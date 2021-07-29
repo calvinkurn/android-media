@@ -3,13 +3,13 @@ package com.tokopedia.oneclickcheckout.order.domain
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -123,6 +123,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             prd_prc_fmt
           }
           product_weight
+          product_weight_actual
           is_preorder
           product_cashback
           product_min_order
@@ -260,6 +261,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           state
           state_detail
           status
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         payment {
           enable
@@ -332,6 +337,42 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 button_title
                 error_message
                 error_ticker
+            }
+          }
+          bid
+          specific_gateway_campaign_only_type
+          wallet_additional_data {
+            wallet_type
+            enable_wallet_amount_validation
+            activation {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            top_up {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            phone_number_registered {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
             }
           }
         }

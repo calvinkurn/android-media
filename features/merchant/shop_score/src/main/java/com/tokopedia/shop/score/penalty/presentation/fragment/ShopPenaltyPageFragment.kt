@@ -208,7 +208,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                     val basePenaltyData = it.data.penaltyVisitableList.first.filterNot { visitable -> visitable is ItemPenaltyUiModel }
                     val penaltyFilterDetailData = it.data.penaltyVisitableList.first.filterIsInstance<ItemPenaltyUiModel>()
                     penaltyPageAdapter.setPenaltyData(basePenaltyData)
-                    onSuccessGetPenaltyListData(penaltyFilterDetailData, it.data.penaltyVisitableList.second, it.data.penaltyVisitableList.third)
+                    onSuccessGetPenaltyListData(penaltyFilterDetailData, it.data.penaltyVisitableList.third)
                     penaltyPageAdapter.refreshSticky()
                 }
                 is Fail -> {
@@ -225,7 +225,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetPenaltyListData(it.data.first, it.data.second, it.data.third)
+                    onSuccessGetPenaltyListData(it.data.first, it.data.third)
                 }
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
@@ -236,8 +236,9 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         }
     }
 
-    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasPrev: Boolean, hasNext: Boolean) {
-        if (!hasPrev && data.isEmpty()) {
+    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
+        val penaltyList = penaltyPageAdapter.list.filterIsInstance<ItemPenaltyUiModel>()
+        if (penaltyList.isEmpty() && data.isEmpty()) {
             penaltyPageAdapter.setEmptyStatePenalty()
         } else {
             penaltyPageAdapter.updatePenaltyListData(data)

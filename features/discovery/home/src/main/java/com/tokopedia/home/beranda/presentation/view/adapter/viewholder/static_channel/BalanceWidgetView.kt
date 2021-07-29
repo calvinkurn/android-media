@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -16,7 +15,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
-import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -29,7 +27,10 @@ class BalanceWidgetView: FrameLayout {
     private var rvBalance: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
-    private lateinit var containerWidget: LinearLayout
+    private lateinit var containerWidget: FrameLayout
+
+    private var tokopointsView: View? = null
+    private var gopayView: View? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -72,17 +73,17 @@ class BalanceWidgetView: FrameLayout {
         return GridLayoutManager(itemView.context, spanCount)
     }
 
-    private fun getBalanceWidgetRecyclerView(): RecyclerView? {
+    fun getBalanceWidgetRecyclerView(): RecyclerView? {
         return rvBalance
     }
 
     fun getTokopointsView(): View? {
-        val tokopointsPos = balanceAdapter?.getTokopointsDataPosition() ?: -1
-        if (tokopointsPos != -1) {
-            layoutManager?.let {
-                return it.getChildAt(tokopointsPos)
-            }
-        }
-        return null
+        tokopointsView = findViewById(R.id.home_coachmark_item_tokopoints)
+        return tokopointsView
+    }
+
+    fun getGopayView(): View? {
+        gopayView = findViewById(R.id.home_coachmark_item_gopay)
+        return gopayView
     }
 }

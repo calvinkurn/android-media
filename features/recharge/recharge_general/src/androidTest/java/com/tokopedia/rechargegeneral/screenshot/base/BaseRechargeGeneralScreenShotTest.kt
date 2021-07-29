@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -30,12 +31,15 @@ import java.lang.StringBuilder
 
 abstract class BaseRechargeGeneralScreenShotTest {
 
+    private val graphqlCacheManager = GraphqlCacheManager()
+
     @get:Rule
     var mActivityRule = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
 
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
+        graphqlCacheManager.deleteAll()
         setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse(getMockConfig())
 
@@ -64,6 +68,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
             takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
         }
 
+        Thread.sleep(2000)
         // ss full layout
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<SwipeToRefresh>(R.id.recharge_general_swipe_refresh_layout)
@@ -71,6 +76,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
         }
 
         // ss operator select
+        Thread.sleep(2000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
             takeScreenShotVisibleViewInScreen(operatorView, generatePrefix(), "operator_select")

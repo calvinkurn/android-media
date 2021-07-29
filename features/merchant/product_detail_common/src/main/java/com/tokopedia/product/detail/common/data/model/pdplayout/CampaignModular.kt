@@ -16,7 +16,7 @@ data class CampaignModular(
         @SerializedName("campaignTypeName")
         val campaignTypeName: String = "",
         @SerializedName("discountedPrice")
-        val discountedPrice: Int = 0,
+        val discountedPrice: Double = 0.0,
         @SerializedName("endDate")
         val endDate: String = "",
         @SerializedName("endDateUnix")
@@ -28,7 +28,7 @@ data class CampaignModular(
         @SerializedName("isAppsOnly")
         val isAppsOnly: Boolean = false,
         @SerializedName("originalPrice")
-        val originalPrice: Int = 0,
+        val originalPrice: Double = 0.0,
         @SerializedName("percentageAmount")
         val percentageAmount: Int = 0,
         @SerializedName("startDate")
@@ -48,10 +48,6 @@ data class CampaignModular(
         @SerializedName("paymentInfoWording")
         val paymentInfoWording:String = ""
 ) {
-    companion object {
-        const val CAMPAIGN_ID_NEW_USER = 68
-    }
-
     var discountedPriceFmt: String = ""
     var originalPriceFmt:String = ""
 

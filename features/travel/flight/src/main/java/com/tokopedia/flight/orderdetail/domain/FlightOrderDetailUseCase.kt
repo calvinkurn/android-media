@@ -3,7 +3,6 @@ package com.tokopedia.flight.orderdetail.domain
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.data.*
@@ -14,6 +13,10 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 /**
@@ -22,7 +25,7 @@ import javax.inject.Inject
 class FlightOrderDetailUseCase @Inject constructor(
         private val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(invoiceId: String, isFromCloud: Boolean = true): FlightOrderDetailDataModel {
+    suspend fun execute(invoiceId: String, isFromCloud: Boolean = true): Result<FlightOrderDetailDataModel> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(
                 if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
         useCase.clearRequest()
@@ -37,9 +40,9 @@ class FlightOrderDetailUseCase @Inject constructor(
         val orderDetailEntity = orderDetailResponse.flightGetOrderDetail
 
         if (orderDetailEntity.errors.isEmpty()) {
-            return transformEntityToModel(orderDetailEntity.data)
+            return Success(transformEntityToModel(orderDetailEntity.data))
         } else {
-            throw MessageErrorException(orderDetailEntity.errors.joinToString(separator = ";") { it.message })
+            return Fail(MessageErrorException(orderDetailEntity.errors.joinToString(separator = ";") { it.message }))
         }
     }
 
@@ -357,8 +360,8 @@ class FlightOrderDetailUseCase @Inject constructor(
                             orderId = it.flight.invoiceId,
                             cancellationDetail = FlightOrderCancellationDetailModel(
                                     refundId = item.cancelId,
-                                    createTime = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                                            FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, item.createTime),
+                                    createTime = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                                            DateUtil.DEFAULT_VIEW_TIME_FORMAT, item.createTime),
                                     realRefund = item.realRefund,
                                     status = item.status,
                                     statusStr = item.statusStr,

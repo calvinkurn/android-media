@@ -206,6 +206,13 @@
                   "is_official": 1,
                   "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
                 },
+                "shop_type_info": {
+                  "shop_tier": 2,
+                  "shop_grade": 0,
+                  "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                  "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                  "title": "Official Store"
+                },
                 "address_id": 3608,
                 "postal_code": "55212",
                 "latitude": "-7.7932901",

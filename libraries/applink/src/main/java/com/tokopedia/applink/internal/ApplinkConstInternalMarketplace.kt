@@ -33,10 +33,6 @@ object ApplinkConstInternalMarketplace {
     const val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
     // CartAddressChoiceActivity
     const val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
-    // PreferenceListActivity
-    const val PREFERENCE_LIST = "$INTERNAL_MARKETPLACE/preference-list"
-    // PreferenceEditActivity
-    const val PREFERENCE_EDIT = "$INTERNAL_MARKETPLACE/preference-edit"
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
@@ -51,11 +47,21 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
 
+    // AtcVariantActivity
+    @JvmField
+    val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
+            "?pageSource={pageSource}&" +
+            "isTokoNow={isTokoNow}&" +
+            "cdListName={cdListName}"
+
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
 
-    // ReviewProductActivity, "x_prd_nm" = productName
+    // ReadReviewActivity, "x_prd_nm" = productName
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // ReviewProductActivity, "x_prd_nm" = productName
+    const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
 
     // StockReminderActivity
     const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"

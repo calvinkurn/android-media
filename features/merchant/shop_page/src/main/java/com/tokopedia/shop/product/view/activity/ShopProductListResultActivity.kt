@@ -46,6 +46,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     private var editTextSearch: EditText? = null
     private var actionUpBtn: AppCompatImageView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         shopId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_ID)
         shopRef = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_REF)
         etalaseId = intent.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)

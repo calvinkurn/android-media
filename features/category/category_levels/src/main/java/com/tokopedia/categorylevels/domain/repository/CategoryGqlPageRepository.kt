@@ -30,7 +30,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["product-list-filter"] = ComponentNames.QuickFilter.componentName
         componentMap["product-list-infinite-scroll"] = ComponentNames.ProductCardRevamp.componentName
         componentMap["static-text"] = ComponentNames.LihatSemua.componentName
-        componentMap["topads_healine"] = ComponentNames.TopadsHeadlineView.componentName
+        componentMap["topads"] = ComponentNames.TopadsHeadlineView.componentName
     }
 
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {

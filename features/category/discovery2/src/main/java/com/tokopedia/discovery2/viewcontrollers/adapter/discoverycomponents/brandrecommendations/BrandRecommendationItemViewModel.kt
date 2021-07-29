@@ -24,4 +24,6 @@ class BrandRecommendationItemViewModel(val application: Application, val compone
         return components.data?.firstOrNull()
     }
 
+    fun getComponentID() = components.parentComponentId
+
 }

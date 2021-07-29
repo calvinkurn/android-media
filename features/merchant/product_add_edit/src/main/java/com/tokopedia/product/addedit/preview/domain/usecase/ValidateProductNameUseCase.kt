@@ -38,4 +38,8 @@ class ValidateProductNameUseCase @Inject constructor(
         requestParams.putObject(PARAM_INPUT, requestParamsObject)
         setRequestParams(requestParams.parameters)
     }
+
+    fun setParamsProductName(productName: String?) {
+        setParamsProductName(null, productName)
+    }
 }

@@ -7,8 +7,7 @@
     android:paddingStart="@dimen/dp_8"
     android:paddingEnd="@dimen/dp_8"
     android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
-    android:background="@color/Unify_N0">
+    android:paddingBottom="@dimen/dp_8">
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/btn_radio_unmoderate_option"

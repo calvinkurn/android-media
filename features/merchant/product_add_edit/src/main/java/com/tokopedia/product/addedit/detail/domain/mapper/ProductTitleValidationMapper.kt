@@ -1,12 +1,20 @@
 package com.tokopedia.product.addedit.detail.domain.mapper
 
-import com.tokopedia.product.addedit.detail.domain.model.BlacklistKeyword
-import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidationResponse
-import com.tokopedia.product.addedit.detail.domain.model.NegativeKeyword
-import com.tokopedia.product.addedit.detail.domain.model.TypoDetection
+import com.tokopedia.product.addedit.detail.domain.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 
 object ProductTitleValidationMapper {
+
+    fun mapToUiModel(productNameInput: String, response: ValidateProductResponse): TitleValidationModel {
+        response.productValidateV3.data.apply {
+            return TitleValidationModel(
+                    title = productNameInput,
+                    errorKeywords =  productName,
+                    isBlacklistKeyword = productName.isNotEmpty(),
+                    typoCorrections = emptyList()
+            )
+        }
+    }
 
     fun mapToUiModel(productName: String, response: GetProductTitleValidationResponse): TitleValidationModel {
         response.getProductTitleValidation.apply {
