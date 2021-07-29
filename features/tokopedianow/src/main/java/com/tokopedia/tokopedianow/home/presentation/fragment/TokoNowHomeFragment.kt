@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,6 +149,7 @@ class TokoNowHomeFragment: Fragment(),
     private var channelId: String = ""
     private var productPosition: String = ""
     private var recomItem: RecommendationItem? = null
+    private var carouselScrollPosition = SparseIntArray()
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -318,6 +320,14 @@ class TokoNowHomeFragment: Fragment(),
         this.channelId = channelId
     }
 
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
+        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    }
+
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
+        return carouselScrollPosition.get(adapterPosition)
+    }
+
 
     override fun isMainViewVisible(): Boolean = true
 
@@ -428,6 +438,7 @@ class TokoNowHomeFragment: Fragment(),
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
+        carouselScrollPosition.clear()
         loadLayout()
         isRefreshed = true
     }
