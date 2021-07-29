@@ -18,6 +18,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.domain.repository.PlayViewerCartRepository
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
@@ -74,7 +75,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -89,6 +89,7 @@ class PlayViewModel @Inject constructor(
         private val interactiveRepo: PlayViewerInteractiveRepository,
         private val partnerRepo: PlayViewerPartnerRepository,
         private val likeRepo: PlayViewerLikeRepository,
+        private val cartRepo: PlayViewerCartRepository,
         private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
@@ -928,7 +929,7 @@ class PlayViewModel @Inject constructor(
     private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
         if (cartInfo.shouldShow) {
             viewModelScope.launchCatchError(block = {
-                val cartItemCount = getCartCount()
+                val cartItemCount = cartRepo.getItemCountInCart()
                 _cartInfo.setValue { copy(itemCount = cartItemCount) }
             }, onError = {
 
@@ -974,14 +975,6 @@ class PlayViewModel @Inject constructor(
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
         getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
         getReportSummariesUseCase.executeOnBackground()
-    }
-
-    private suspend fun getCartCount(): Int = withContext(dispatchers.io) {
-        try {
-            getCartCountUseCase.executeOnBackground()
-        } catch (e: Exception) {
-            0
-        }
     }
 
     private suspend fun getProductTagItems(productTagsBasicInfo: PlayProductTagsBasicInfoUiModel, channelId: String) {
