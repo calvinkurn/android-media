@@ -46,6 +46,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1552,6 +1553,28 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
 
+    //getProductTopadsStatus
+    @Test
+    fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
+        val productId = "12345"
+        val paramsTest = "txsc=asdf"
+        val expectedResponse = TopadsIsAdsQuery(
+                TopAdsGetDynamicSlottingData(
+                        productList = listOf(TopAdsGetDynamicSlottingDataProduct(isCharge = true)),
+                        status = TopadsStatus(
+                                error_code = 200,
+                                message = "OK"
+                        )
+                ))
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns  expectedResponse
+
+        viewModel.getProductTopadsStatus(productId, paramsTest)
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground()}
+
+        Assert.assertTrue(expectedResponse.data.status.error_code in 200 .. 300 && expectedResponse.data.productList[0].isCharge)
+    }
+
+
     /**
      * tokonow recom section
      */
@@ -1754,6 +1777,10 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             moveProductToEtalaseUseCase.cancelJobs()
+        }
+
+        verify {
+            getTopadsIsAdsUseCase.cancelJobs()
         }
 
         verify {

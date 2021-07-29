@@ -32,8 +32,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.youtube.player.YouTubeApiServiceUtil
-import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -94,7 +92,6 @@ import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategor
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -117,7 +114,6 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtil
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
@@ -170,7 +166,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
@@ -208,7 +203,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         affiliateString: String? = null,
                         affiliateUniqueId: String? = null,
                         deeplinkUrl: String? = null,
-                        layoutId: String? = null) = DynamicProductDetailFragment().also {
+                        layoutId: String? = null,
+                        query: String? = null) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
                 warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
@@ -222,6 +218,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 layoutId?.let { layoutId -> putString(ProductDetailConstant.ARG_LAYOUT_ID, layoutId) }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 putBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, isAffiliate)
+                query?.let {qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry)}
             }
         }
     }
@@ -275,6 +272,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
     private var uuid = ""
+    private var urlQuery: String = ""
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -298,6 +296,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var toasterWishlistText = ""
 
     private var buttonActionType: Int = 0
+    private var isTopadsDynamicsSlottingAlreadyCharged = false
 
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
@@ -372,6 +371,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeShippingAddressChanged()
         observeUpdateCart()
         observeMiniCart()
+        observeTopAdsIsChargeData()
         observeDeleteCart()
     }
 
@@ -381,7 +381,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
                         forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
-                        ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid)
+                        ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, urlQuery)
             }
         }
     }
@@ -403,6 +403,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
+            urlQuery = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -455,6 +456,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.toggleTeaserNotifyMe.removeObservers(this)
         viewModel.addToCartLiveData.removeObservers(this)
         viewModel.discussionMostHelpful.removeObservers(this)
+        viewModel.topAdsRecomChargeData.removeObservers(this)
         viewModel.flush()
         compositeSubscription.clear()
         super.onDestroy()
@@ -1348,6 +1350,34 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }, {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_TOP_ADS)
+                logException(it)
+            })
+        }
+    }
+
+    private fun observeTopAdsIsChargeData() {
+        viewLifecycleOwner.observe(viewModel.topAdsRecomChargeData) {data ->
+            data.doSuccessOrFail({topAdsData ->
+                if (!isTopadsDynamicsSlottingAlreadyCharged) {
+                    context?.let {
+                        TopAdsUrlHitter(it).hitImpressionUrl(
+                                this::class.java.name,
+                                topAdsData.data.product.image.m_url,
+                                topAdsData.data.product.id,
+                                topAdsData.data.product.name,
+                                topAdsData.data.product.image.m_ecs)
+
+                        TopAdsUrlHitter(it).hitClickUrl(
+                                this::class.java.name,
+                                topAdsData.data.clickUrl,
+                                topAdsData.data.product.id,
+                                topAdsData.data.product.name,
+                                topAdsData.data.product.image.m_ecs)
+                        isTopadsDynamicsSlottingAlreadyCharged = true
+                    }
+                }
+            },
+            {
                 logException(it)
             })
         }

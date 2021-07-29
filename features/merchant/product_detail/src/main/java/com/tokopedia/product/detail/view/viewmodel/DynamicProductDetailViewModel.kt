@@ -73,10 +73,14 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -84,11 +88,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
@@ -122,6 +123,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
                                                              private val updateCartUseCase: Lazy<UpdateCartUseCase>,
                                                              private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
+                                                             private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -133,6 +135,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
         private const val TIMEOUT_QUANTITY_FLOW = 500L
+        private const val PARAM_JOB_TIMEOUT = 1000L
+        private const val PARAM_TXSC = "txsc"
+        private const val CODE_200 = 200
+        private const val CODE_300 = 300
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -225,6 +231,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
 
+    private val _topAdsRecomChargeData = MutableLiveData<Result<TopAdsGetDynamicSlottingDataProduct>>()
+    val topAdsRecomChargeData: LiveData<Result<TopAdsGetDynamicSlottingDataProduct>>
+        get() = _topAdsRecomChargeData
+
     private val _atcRecomTokonow = MutableLiveData<Result<String>>()
     val atcRecomTokonow: LiveData<Result<String>> get() = _atcRecomTokonow
 
@@ -268,6 +278,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = userSessionInterface.userId
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
+
 
     init {
         _productInfoP3.addSource(_p2Data) { p2Data ->
@@ -378,6 +389,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
+        getTopadsIsAdsUseCase.get().cancelJobs()
     }
 
     fun getUserLocationCache(): LocalCacheModel {
@@ -501,7 +513,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "") {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -528,7 +540,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(it.listOfLayout.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2(affiliateUniqueString, uuid)
+            getProductP2(affiliateUniqueString, uuid, urlQuery)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -610,7 +622,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String) {
+    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String, urlQuery: String = "") {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
@@ -630,6 +642,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _p2Other.postValue(p2OtherDeffered.await())
 
             getTopAdsImageViewData(it.basic.productID)
+            getProductTopadsStatus(it.basic.productID, urlQuery)
         }
     }
 
@@ -847,6 +860,32 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
             ))
             _statusFilterTopAdsProduct.postValue(throwable.asFail())
+        }
+    }
+
+    fun getProductTopadsStatus(
+            productId: String,
+            queryParams: String = "") {
+        if (queryParams.contains(PARAM_TXSC)) {
+            launchCatchError(coroutineContext, block = {
+                var adsStatus = TopadsIsAdsQuery()
+                val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+                    getTopadsIsAdsUseCase.get().setParams(
+                            productId = productId,
+                            urlParam = queryParams,
+                            pageName = "im_pdp"
+                    )
+                    adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
+                    val errorCode = adsStatus.data.status.error_code
+                    if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
+                        _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
+                    }
+                }
+            }) {
+                it.printStackTrace()
+                _topAdsRecomChargeData.postValue(it.asFail())
+                //nothing to do since fire and forget
+            }
         }
     }
 
