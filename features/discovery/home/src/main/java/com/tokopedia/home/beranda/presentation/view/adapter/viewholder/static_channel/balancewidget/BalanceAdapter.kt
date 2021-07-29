@@ -299,9 +299,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 }
             }
 
-            element?.defaultIconRes?.let {
-                itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
-            }
+            //remove visibility
+//            element?.defaultIconRes?.let {
+//                itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+//            }
             element?.iconImageUrl?.let {
                 if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
             }
