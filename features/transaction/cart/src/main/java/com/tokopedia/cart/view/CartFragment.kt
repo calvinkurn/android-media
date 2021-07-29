@@ -2998,7 +2998,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processUndoDeleteCartItem(cartIds)
     }
 
-    override fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData) {
+    override fun onUndoDeleteCartDataSuccess() {
         dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 

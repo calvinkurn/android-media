@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -72,7 +71,7 @@ interface ICartListView : CustomerView {
 
     fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean)
 
-    fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
+    fun onUndoDeleteCartDataSuccess()
 
     fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 

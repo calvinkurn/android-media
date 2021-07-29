@@ -303,7 +303,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     fun undoDeleteCartItem(isLastItem: Boolean) {
         lastDeletedProductItem?.let { miniCartProductUiModel ->
-            undoDeleteCartUseCase.setParams(miniCartProductUiModel.cartId)
+            undoDeleteCartUseCase.setParams(listOf(miniCartProductUiModel.cartId))
             undoDeleteCartUseCase.execute(
                     onSuccess = {
                         onSuccessUndoDeleteCartItem(it, isLastItem)
