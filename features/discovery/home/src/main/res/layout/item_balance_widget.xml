@@ -19,10 +19,18 @@
         android:layout_margin="@dimen/dp_4"
         android:layout_centerVertical="true"
         android:clickable="false"
-        android:background="@color/light_N75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/home_iv_logo_shimmering"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        app:loader_type="circle"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/home_iv_logo_balance"
+        app:layout_constraintTop_toTopOf="@+id/home_iv_logo_balance"
+        app:layout_constraintBottom_toBottomOf="@+id/home_iv_logo_balance"/>
     <include
         layout="@layout/layout_item_shimmering_balance"
         android:id="@+id/home_progress_bar_balance_layout"
