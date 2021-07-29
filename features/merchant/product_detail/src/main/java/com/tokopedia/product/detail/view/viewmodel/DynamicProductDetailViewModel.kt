@@ -1109,7 +1109,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         if (isAtc) {
             _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
         }
-        getMiniCart(recomItem.shopId.toString())
+        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
     }
 
     private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
