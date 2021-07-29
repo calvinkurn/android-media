@@ -179,8 +179,6 @@ class TokoNowHomeFragment: Fragment(),
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
-    private var shareHomeTokonow: ShareHomeTokonow? = null
-
     private val loadMoreListener by lazy { createLoadMoreListener() }
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
@@ -248,7 +246,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun screenShotTaken() {
-        showUniversalShareBottomSheet(shareHomeTokonow)
+        showUniversalShareBottomSheet(shareHomeTokonow(true))
     }
 
     override fun onRequestPermissionsResult(
@@ -457,7 +455,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onClickShareButton() {
-        shareIconClicked(shareHomeTokonow)
+        shareIconClicked(shareHomeTokonow())
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1059,13 +1057,14 @@ class TokoNowHomeFragment: Fragment(),
         return linkerShareData
     }
 
-    private fun shareHomeTokonow(){
-        shareHomeTokonow = ShareHomeTokonow(
+    private fun shareHomeTokonow(isScreenShot: Boolean = false): ShareHomeTokonow{
+        return ShareHomeTokonow(
                 resources.getString(R.string.tokopedianow_home_share_main_text),
                 SHARE_URL,
                 userSession.userId,
                 MAIN_SHOP_ID,
-                resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
+                if(isScreenShot) resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
+                else resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
                 THUMBNAIL_IMAGE_SHARE_URL,
                 OG_IMAGE_SHARE_URL,
                 resources.getString(R.string.tokopedianow_home_share_title),
@@ -1074,6 +1073,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
+        val shareHomeTokonow = shareHomeTokonow()
         val linkerShareData = linkerDataMapper(shareHomeTokonow)
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
@@ -1086,7 +1086,7 @@ class TokoNowHomeFragment: Fragment(),
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData?.shareUri)
+                    val shareString = String.format("%s %s", shareHomeTokonow.sharingText, linkerShareData?.shareUri)
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     universalShareBottomSheet?.dismiss()
                 }
