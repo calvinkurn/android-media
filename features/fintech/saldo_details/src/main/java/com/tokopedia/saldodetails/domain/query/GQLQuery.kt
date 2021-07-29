@@ -60,8 +60,8 @@ const val GQL_LOAD_TYPE_TRANSACTION_LIST = """
 """
 
 const val GQL_PENJUALAN_TRANSACTION_LIST = """
-    query MidasHistoryInvList(${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}dateFrom: String!, ${'$'}dateTo: String!) {
-        midasHistoryInvList(page: ${'$'}page, limit: ${'$'}limit, date_from: ${'$'}dateFrom, dateTo: ${'$'}date_to) {
+    query MidasHistoryInvList(${'$'}params : midasHistoryInvListParam!) {
+        midasHistoryInvList(params: ${'$'}params) {
             success
             have_next
             message_status

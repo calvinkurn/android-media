@@ -7,7 +7,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.response.model.DepositHistoryList
+import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.utils.SaldoDateUtil.DATE_PATTERN_FOR_UI
 import com.tokopedia.saldodetails.utils.SaldoDateUtil.DATE_PATTERN_FROM_SERVER
@@ -18,8 +18,8 @@ import com.tokopedia.utils.date.DateUtil
 import java.util.*
 import kotlin.math.abs
 
-class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> Unit) :
-    AbstractViewHolder<DepositHistoryList>(itemView) {
+class SalesSaldoTransactionViewHolder (itemView: View, val onClick: (Visitable<*>) -> Unit) :
+    AbstractViewHolder<SalesTransactionDetail>(itemView) {
 
     private val tvTitle = itemView.findViewById<Typography>(R.id.tvTransactionHeading)
     private val tvSaldoAmount = itemView.findViewById<Typography>(R.id.tvSaldoAmount)
@@ -30,10 +30,10 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
     private val iconNext = itemView.findViewById<IconUnify>(R.id.iconNextButton)
 
 
-    override fun bind(element: DepositHistoryList) {
+    override fun bind(element: SalesTransactionDetail) {
         val context = itemView.context
-        tvTitle.text = element.typeDescription
-        tvNote.text = element.note
+        tvTitle.text = element.description
+        tvNote.text = element.invoice
         if (element.amount > 0) {
             tvSaldoAmount.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tvSaldoAmount.text = String.format(
@@ -52,41 +52,19 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
             DATE_PATTERN_FOR_UI,
             element.createTime,
         )
-        if(!element.withdrawalStatusString.isNullOrEmpty()){
-            labelTransactionStatus.visible()
-            labelTransactionStatus.text = element.withdrawalStatusString
-            labelTransactionStatus.setLabelType(getLocalLabelColor(element.withdrawalStatusColor))
-        }else {
-            labelTransactionStatus.gone()
-        }
-        if(element.haveDetail){
-            itemView.setOnClickListener { openDetailPage(element) }
-            iconNext.visible()
-        }else{
-            itemView.setOnClickListener {}
-            iconNext.gone()
-        }
 
+        iconNext.visible()
+        itemView.setOnClickListener { openDetailPage(element) }
         tvTransactionDate.text = context.resources.getString(R.string.sp_date_time_view, transDateStr)
 
     }
 
-    private fun openDetailPage(element: DepositHistoryList) {
+    private fun openDetailPage(element: SalesTransactionDetail) {
         onClick(element)
     }
 
-    private fun getLocalLabelColor(serverColorInt: Int): Int {
-        return when(serverColorInt){
-            1-> Label.GENERAL_LIGHT_GREEN
-            2-> Label.GENERAL_LIGHT_ORANGE
-            3-> Label.GENERAL_LIGHT_RED
-            else -> Label.GENERAL_DARK_GREY
-        }
-    }
-
     companion object {
-        @JvmField
-        val LAYOUT = R.layout.item_saldo_transaction
+        val LAYOUT = R.layout.saldo_item_sales_transaction
     }
 
 }

@@ -110,7 +110,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onDataLoaded(historyList: ArrayList<DepositHistoryList>, hasMore: Boolean) {
+    private fun onDataLoaded(historyList: List<Visitable<*>>, hasMore: Boolean) {
         adapter.addAllElements(historyList)
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(hasMore)

@@ -1,9 +1,15 @@
 package com.tokopedia.saldodetails.domain.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.saldodetails.response.model.DepositHistoryList
+import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
+import com.tokopedia.saldodetails.viewmodel.ParcelableViewModel
 
-data class GQLSalesTransactionListResponse (
+data class GQLSalesTransactionListResponse(
+    @SerializedName("midasHistoryInvList")
+    val salesTransactionListResponse: SalesTransactionListResponse
+)
+
+data class SalesTransactionListResponse(
     @SerializedName("message_status")
     var messageStatus: String,
 
@@ -20,19 +26,25 @@ data class GQLSalesTransactionListResponse (
     var isHaveNextPage: Boolean = false,
 
     @SerializedName("content")
-    var transactionList: List<DepositHistoryList>)
+    var transactionList: List<SalesTransactionDetail>
+)
+
 
 data class SalesTransactionDetail(
     @SerializedName("summary_id")
     var summaryID: Long,
     @SerializedName("order_id")
-    val orderID : Long,
+    val orderID: Long,
     @SerializedName("invoice")
-    val invoice : String,
+    val invoice: String,
     @SerializedName("amount")
-    val amount : Double,
+    val amount: Double,
     @SerializedName("desc")
-    val desc : Double,
+    val description: String,
     @SerializedName("create_time")
-    val createTime : String
-)
+    val createTime: String
+) : ParcelableViewModel<SaldoDetailTransactionFactory> {
+    override fun type(typeFactory: SaldoDetailTransactionFactory): Int {
+        return typeFactory.type(this)
+    }
+}

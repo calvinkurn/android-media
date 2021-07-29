@@ -1,32 +1,13 @@
 package com.tokopedia.saldodetails.utils
 
-import com.tokopedia.utils.date.DateUtil
-import java.text.DateFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 
 object SaldoDateUtil {
 
-    fun formatDate(currentFormat: String,
-                   newFormat: String,
-                   dateString: String,
-                   currentLocale: Locale = DateUtil.DEFAULT_LOCALE,
-                   locale: Locale = DateUtil.DEFAULT_LOCALE
-    ): String {
-        return try {
-            val fromFormat: DateFormat = SimpleDateFormat(currentFormat, currentLocale)
-            fromFormat.isLenient = false
-            val toFormat: DateFormat = SimpleDateFormat(newFormat, locale)
-            toFormat.isLenient = false
 
-            val date = fromFormat.parse(dateString)
-            toFormat.format(date)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            dateString
-        }
-    }
+    val DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss"
+    val DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm"
+
     fun getInitialDateRange(onInitialDateRangeCreated : (startDate : Date, endDate : Date) -> Unit){
         val endCalender = GregorianCalendar.getInstance()
         val startCalender = GregorianCalendar().apply {
@@ -36,6 +17,17 @@ object SaldoDateUtil {
         setMidnight(startCalender)
         setMidnight(endCalender)
         onInitialDateRangeCreated(startCalender.time, endCalender.time)
+    }
+
+    fun isDatesAreSame(date1 : Date?, date2 : Date?): Boolean {
+        if(date1 == null || date2 == null)
+            return false
+        val cal1 = Calendar.getInstance()
+        val cal2 = Calendar.getInstance()
+        cal1.time = date1
+        cal2.time = date2
+        return (cal1[Calendar.DAY_OF_YEAR] == cal2[Calendar.DAY_OF_YEAR] &&
+                cal1[Calendar.YEAR] == cal2[Calendar.YEAR])
     }
 
     fun setMidnight(cal: Calendar) {

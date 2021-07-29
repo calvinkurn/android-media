@@ -37,11 +37,11 @@ constructor(graphqlRepository: GraphqlRepository)
     }
 
     @Throws(ParseException::class)
-    private fun getRequestParams(startDateUnix: Date,
-                                 endDateUnix: Date, transactionType: Int, page: Int)
+    private fun getRequestParams(startDate: Date,
+                                 endDate: Date, transactionType: Int, page: Int)
             : MutableMap<String, Any?> {
-        val formattedStartDateStr = getFormattedDate(startDateUnix)
-        val formattedEndDateStr = getFormattedDate(endDateUnix)
+        val formattedStartDateStr = getFormattedDate(startDate)
+        val formattedEndDateStr = getFormattedDate(endDate)
         return mutableMapOf(
                 PARAM_START_DATE to formattedStartDateStr,
                 PARAM_END_DATE to formattedEndDateStr,
