@@ -39,6 +39,7 @@ class GetInteractiveLeaderboardUseCase @Inject constructor(
                 winnerDetail
                 loserMessage
                 loserDetail
+                topchatMessage
             }
             summary {
                 totalParticipant

@@ -51,7 +51,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             )
             RouteManager.route(
                 requireContext(),
-                ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG,
+                "${ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG}$ADDITIONAL_ARG",
                 winner.id,
                 winner.topChatMessage
             )
@@ -187,5 +187,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     companion object {
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
         private const val HEIGHT_MULTIPLIER = 0.67f
+        private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
     }
 }

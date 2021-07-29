@@ -4,16 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.model.PlayInteractiveModelBuilder
-import com.tokopedia.play.model.PlaySocketResponseBuilder
+import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -45,13 +43,22 @@ class PlayLiveInitialInteractiveTest {
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
+    private val videoInfoBuilder = PlayVideoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live)
+            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            videoMetaInfo = videoInfoBuilder.buildVideoMeta(
+                    videoPlayer = videoInfoBuilder.buildCompleteGeneralVideoPlayer()
+            )
     )
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
     private val interactiveModelBuilder = PlayInteractiveModelBuilder()
 
     private val socket: PlayChannelWebSocket = mockk(relaxed = true)
+
+    init {
+        every { mockRemoteConfig.getBoolean(any(), any()) } returns true
+    }
 
     @Before
     fun setUp() {
@@ -108,7 +115,8 @@ class PlayLiveInitialInteractiveTest {
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
                 interactiveRepo = interactiveRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                remoteConfig = mockRemoteConfig,
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
@@ -141,7 +149,8 @@ class PlayLiveInitialInteractiveTest {
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
                 interactiveRepo = interactiveRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                remoteConfig = mockRemoteConfig,
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)

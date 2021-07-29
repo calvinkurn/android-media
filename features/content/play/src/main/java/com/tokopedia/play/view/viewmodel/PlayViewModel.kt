@@ -121,6 +121,16 @@ class PlayViewModel @Inject constructor(
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
 
+    /**
+     * Interactive Remote Config defaults to true, because it should be enabled by default,
+     * and will be disabled only if something goes wrong
+     */
+    private val isInteractiveRemoteConfigEnabled: Boolean
+        get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE, true)
+
+    private val isInteractiveAllowed: Boolean
+        get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral && isInteractiveRemoteConfigEnabled
+
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
 
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
@@ -1021,7 +1031,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkLeaderboard(channelId: String) {
-        if (!channelType.isLive) return
+        if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = interactiveLeaderboard
@@ -1029,7 +1039,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkInteractive(channelId: String) {
-        if (!channelType.isLive) return
+        if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _interactive.value = PlayInteractiveUiState.Loading
 
@@ -1049,6 +1059,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+        if (!isInteractiveAllowed) return
         val interactiveUiState = mapInteractiveToState(interactive)
         interactiveRepo.setDetail(interactive.id.toString(), interactive)
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
@@ -1057,9 +1068,7 @@ class PlayViewModel @Inject constructor(
             interactiveRepo.setFinished(interactive.id.toString())
         }
 
-        if (interactiveRepo.getActiveInteractiveId() != null) {
-            _interactive.value = interactiveUiState
-        }
+        _interactive.value = if (interactiveRepo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
 
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
             val channelId = mChannelData?.id ?: return
@@ -1278,8 +1287,6 @@ class PlayViewModel @Inject constructor(
             _leaderboardInfo.value = interactiveLeaderboard
 
             if (userInLeaderboard != null && isUserJoined) {
-                showCoachMark(interactiveLeaderboard)
-
                 if (userInLeaderboard.id == userId) {
                     _uiEvent.emit(
                             ShowWinningDialogEvent(
@@ -1288,7 +1295,7 @@ class PlayViewModel @Inject constructor(
                                     interactiveLeaderboard.config.winnerDetail
                             )
                     )
-                }
+                } else showCoachMark(interactiveLeaderboard)
             }
         }
 
@@ -1461,6 +1468,7 @@ class PlayViewModel @Inject constructor(
 
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
