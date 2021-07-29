@@ -73,22 +73,22 @@ object ReviewUtil {
 fun getReviewStar(ratingCount: Int): Int {
     return when (ratingCount) {
         ReviewConstants.RATING_ONE -> {
-            R.drawable.review_ic_rating_star_one
+            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_one
         }
         ReviewConstants.RATING_TWO -> {
-            R.drawable.review_ic_rating_star_two
+            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_two
         }
         ReviewConstants.RATING_THREE -> {
-            R.drawable.review_ic_rating_star_three
+            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_three
         }
         ReviewConstants.RATING_FOUR -> {
-            R.drawable.review_ic_rating_star_four
+            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_four
         }
         ReviewConstants.RATING_FIVE -> {
-            R.drawable.review_ic_rating_star_five
+            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_five
         }
         else -> {
-            R.drawable.review_ic_rating_star_zero
+            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_zero
         }
     }
 }

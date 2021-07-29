@@ -24,6 +24,7 @@ android {
         main {
             res.srcDirs = [
                     pathSources,
+                    pathSources + 'historydetail',
                     pathSources + 'inboxreview',
                     pathSources + 'reviewdetail',
                     pathSources + 'reviewlist',
