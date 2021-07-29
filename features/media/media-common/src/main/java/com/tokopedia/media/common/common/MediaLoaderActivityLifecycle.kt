@@ -5,11 +5,11 @@ import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.RouteManager.getIntent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
+import com.tokopedia.config.BuildConfig.VERSION_NAME
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.logger.utils.Priority
@@ -23,18 +23,15 @@ import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import com.bumptech.glide.Glide.getPhotoCacheDir as getGlidePhotoCacheDir
-import com.tokopedia.applink.RouteManager.getIntent as getIntent
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
 class MediaLoaderActivityLifecycle(
         private val context: Context
-) : ActivityLifecycleCallbacks, CoroutineScope {
+) : ActivityLifecycleCallbacks {
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.IO
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val preferences by lazy { MediaSettingPreferences(context) }
-
     private val bitmapSize by lazy { MediaBitmapSize(context) }
 
     private val logger by lazy {
@@ -62,7 +59,9 @@ class MediaLoaderActivityLifecycle(
         logger.returnFromOtherActivity = true
     }
 
-    override fun onActivityDestroyed(activity: Activity) {}
+    override fun onActivityDestroyed(activity: Activity) {
+        scope.cancel()
+    }
 
     override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {}
 
@@ -73,15 +72,7 @@ class MediaLoaderActivityLifecycle(
         logger.openedPageCountTotal++
         logger.addJourney(activity)
 
-        if (!preferences.glideMigration()) {
-            launch {
-                Glide.get(context).clearDiskCache()
-
-                withContext(Dispatchers.Main) {
-                    preferences.setGlideMigration(true)
-                }
-            }
-        }
+        glideMigration()
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -127,7 +118,20 @@ class MediaLoaderActivityLifecycle(
         }, DELAY_PRE_SHOW_TOAST)
     }
 
+    private fun glideMigration() {
+        if (!preferences.glideMigration() && VERSION_NAME == MIGRATION_VERSION_SUPPORT) {
+            scope.launch {
+                Glide.get(context).clearDiskCache()
+
+                withContext(Dispatchers.Main) {
+                    preferences.setGlideMigration(true)
+                }
+            }
+        }
+    }
+
     companion object {
+        private const val MIGRATION_VERSION_SUPPORT = "3.137"
         private const val DELAY_PRE_SHOW_TOAST = 2500L
 
         // for data usage logger
