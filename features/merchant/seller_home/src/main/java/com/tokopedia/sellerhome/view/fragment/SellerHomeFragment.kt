@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,7 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -105,6 +107,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val TOAST_DURATION = 5000L
 
         private const val DEFAULT_HEIGHT_DP = 720f
+
+        private const val ANNIV_ILLUSTRATION_OS = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_os.png"
+        private const val ANNIV_ILLUSTRATION_PM = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_pm.png"
+        private const val ANNIV_ILLUSTRATION_RM = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_rm.png"
     }
 
     @Inject
@@ -163,6 +169,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var recommendationWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
+    private var anniversaryIllustrationImage: AppCompatImageView? = null
     private var isEligibleShowRecommendationCoachMark: Boolean = false
     private val coachMark: CoachMark2? by lazy {
         context?.let {
@@ -437,6 +444,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun setupView() = view?.run {
         emptyState = findViewById(R.id.empty_state_seller_home)
+        anniversaryIllustrationImage = findViewById(R.id.iv_sah_home_thematic)
 
         val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -1044,9 +1052,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
-            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            isOfficialStore -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+                anniversaryIllustrationImage?.loadImage(ANNIV_ILLUSTRATION_OS)
+            }
+            isPowerMerchant -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+                anniversaryIllustrationImage?.loadImage(ANNIV_ILLUSTRATION_PM)
+            }
+            else -> {
+                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+                anniversaryIllustrationImage?.loadImage(ANNIV_ILLUSTRATION_RM)
+            }
         }
     }
 
