@@ -719,8 +719,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
         }
 
-        Handler().postDelayed({ flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter() },
-                QUICK_FILTER_INDICATOR_DELAY)
+        flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
     }
 
     private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
@@ -812,7 +811,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
         private const val HIDE_HORIZONTAL_PROGRESS_DELAY: Long = 500
-        private const val QUICK_FILTER_INDICATOR_DELAY: Long = 50
 
         private const val QUICK_FILTER_DIRECT_ORDER = 0
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1
