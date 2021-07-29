@@ -139,6 +139,62 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
+    fun setMessage(msg: CharSequence?) {
+        message?.text = msg
+    }
+
+    fun setHourTime(time: String) {
+        hourTime?.text = time
+    }
+
+    private fun showReadStatus() {
+        checkMark?.show()
+    }
+
+    private fun hideReadStatus() {
+        checkMark?.hide()
+    }
+
+    fun changeReadStatus(readStatus: Drawable?) {
+        checkMark?.setImageDrawable(readStatus)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun setMessageOnTouchListener(onTouchListener: MessageOnTouchListener) {
+        message?.setOnTouchListener(onTouchListener)
+    }
+
+    fun hideInfo() {
+        info?.hide()
+    }
+
+    fun showInfo(label: String) {
+        info?.text = label
+        info?.show()
+    }
+
+    fun getMsg(): String {
+        return message?.text.toString()
+    }
+
+    fun renderHeaderAttachment(attachment: Any?) {
+        header?.show()
+        when (attachment) {
+            is HeaderCtaMessageAttachment -> renderCtaHeader(attachment)
+            else -> header?.hide()
+        }
+    }
+
+    private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
+        headerCta?.setOnClickListener {
+            listener?.changeAddress(attachment)
+        }
+    }
+
+    fun hideAttachmentHeader() {
+        header?.hide()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (message == null || status == null || info == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -334,63 +390,6 @@ class FlexBoxChatLayout : ViewGroup {
             bottomStatus
         )
 
-    }
-
-
-    fun setMessage(msg: CharSequence?) {
-        message?.text = msg
-    }
-
-    fun setHourTime(time: String) {
-        hourTime?.text = time
-    }
-
-    private fun showReadStatus() {
-        checkMark?.show()
-    }
-
-    private fun hideReadStatus() {
-        checkMark?.hide()
-    }
-
-    fun changeReadStatus(readStatus: Drawable?) {
-        checkMark?.setImageDrawable(readStatus)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun setMessageOnTouchListener(onTouchListener: MessageOnTouchListener) {
-        message?.setOnTouchListener(onTouchListener)
-    }
-
-    fun hideInfo() {
-        info?.hide()
-    }
-
-    fun showInfo(label: String) {
-        info?.text = label
-        info?.show()
-    }
-
-    fun getMsg(): String {
-        return message?.text.toString()
-    }
-
-    fun renderHeaderAttachment(attachment: Any?) {
-        header?.show()
-        when (attachment) {
-            is HeaderCtaMessageAttachment -> renderCtaHeader(attachment)
-            else -> header?.hide()
-        }
-    }
-
-    private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
-        headerCta?.setOnClickListener {
-            listener?.changeAddress(attachment)
-        }
-    }
-
-    fun hideAttachmentHeader() {
-        header?.hide()
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
