@@ -133,6 +133,8 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Then verify PopularSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
         `Then verify DynamicInitialStateSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
         `Then verify InitialStateProductListDataView`(visitableList, expectedData, expectedDefaultDimension90)
+        `Then verify InitialStateChipWidgetDataView`(visitableList, expectedData, expectedDefaultDimension90)
+
 
         `Then verify RecentSearchDataView only have n items`(3, visitableList[4] as RecentSearchDataView)
     }

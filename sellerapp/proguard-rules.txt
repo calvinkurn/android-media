@@ -265,3 +265,9 @@
 -keep class com.newrelic.** { *; }
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
+
+# Embrace
+-keep class io.embrace.android.** { *; }
+-dontwarn com.jsoniter.extra.JacksonCompatibility*
+-dontwarn com.jsoniter.output.DynamicCodegen
+-dontwarn com.jsoniter.DynamicCodegen

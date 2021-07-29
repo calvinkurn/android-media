@@ -44,6 +44,7 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
@@ -119,7 +120,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     initView()
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
+                    showErrorView(it.throwable)
                 }
             }
             stopTrace()
@@ -280,6 +281,18 @@ class HotelBookingFragment : HotelBaseFragment() {
             })
             (binding?.tvGuestInput?.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
+    }
+
+    fun showErrorView(error: Throwable?){
+        binding?.containerError?.root?.visible()
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, error,
+                    { onErrorRetryClicked() }, it
+                )
+            }
+        }
+        hideLoadingBar()
     }
 
     private fun initProgressDialog() {
@@ -494,7 +507,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title))
             binding?.bookingPayNowPromoTicker?.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
         }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
-            setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+            setupPromoTicker(promoData.state,
                     promoData.title,
                     promoData.description)
             binding?.bookingPayNowPromoTicker?.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
@@ -529,6 +542,12 @@ class HotelBookingFragment : HotelBaseFragment() {
             binding?.bookingPayNowPromoTicker?.state = ButtonPromoCheckoutView.State.ACTIVE
         }else if(state == TickerCheckoutView.State.EMPTY){
             binding?.bookingPayNowPromoTicker?.state = ButtonPromoCheckoutView.State.LOADING
+        }else if(state == TickerCheckoutView.State.FAILED){
+            binding?.bookingPayNowPromoTicker?.state = ButtonPromoCheckoutView.State.ACTIVE
+            view?.let { v ->
+                Toaster.build(v, getString(R.string.hotel_error_cancel_promo), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            }
         }
     }
 
@@ -540,7 +559,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onResetPromo(){
-        bookingViewModel.applyPromoData(PromoData(state = TickerCheckoutView.State.ACTIVE))
         bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
     }
 
@@ -670,6 +688,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+        binding?.containerError?.root?.hide()
         bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
     }
 
@@ -707,6 +726,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val COUPON_EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
+        const val POLICY_VIEW_TEXT_SIZE = 14f
 
 
         fun getInstance(cartId: String): HotelBookingFragment =

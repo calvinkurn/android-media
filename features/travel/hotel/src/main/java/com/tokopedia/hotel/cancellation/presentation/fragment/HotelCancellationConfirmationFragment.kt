@@ -26,7 +26,10 @@ import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellation
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.databinding.FragmentHotelCancellationConfirmationBinding
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -84,6 +87,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+        binding?.containerError?.root?.hide()
         submitCancellation()
     }
 
@@ -110,7 +114,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
                 is Success -> {
                     initView(it.data)
                 }
-                is Fail -> { showErrorState(it.throwable) }
+                is Fail -> { showErrorView(it.throwable) }
             }
             hideLoadingState()
         })
@@ -165,6 +169,18 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             }
         }
         return button
+    }
+
+    fun showErrorView(error: Throwable?){
+        hideLoadingState()
+        binding?.containerError?.root?.visible()
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, error,
+                    { onErrorRetryClicked() }, it
+                )
+            }
+        }
     }
 
     companion object {

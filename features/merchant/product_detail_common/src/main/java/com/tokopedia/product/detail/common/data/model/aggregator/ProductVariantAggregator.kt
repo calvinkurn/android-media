@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common.data.model.aggregator
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
@@ -10,10 +11,10 @@ import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouse
  * Created by Yehezkiel on 05/05/21
  */
 
-data class ProductVariantAggregatorResponse (
+data class ProductVariantAggregatorResponse(
         @SerializedName("pdpGetVariantComponent")
         @Expose
-        val response : ProductVariantAggregator = ProductVariantAggregator()
+        val response: ProductVariantAggregator = ProductVariantAggregator()
 )
 
 data class ProductVariantAggregator(
@@ -27,5 +28,17 @@ data class ProductVariantAggregator(
 
         @SerializedName("warehouseInfo")
         @Expose
-        val nearestWarehouse: List<NearestWarehouseResponse> = listOf()
+        val nearestWarehouse: List<NearestWarehouseResponse> = listOf(),
+
+        @SerializedName("basicInfo")
+        @Expose
+        val basicInfo: SimpleBasicInfo = SimpleBasicInfo(),
+
+        @SerializedName("shopInfo")
+        @Expose
+        val shopInfo: SimpleShopInfo = SimpleShopInfo(),
+
+        @SerializedName("bebasOngkir")
+        @Expose
+        var bebasOngkir: BebasOngkir = BebasOngkir()
 )

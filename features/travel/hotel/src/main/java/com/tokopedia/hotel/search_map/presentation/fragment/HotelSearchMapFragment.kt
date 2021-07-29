@@ -45,6 +45,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.databinding.FragmentHotelSearchMapBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
@@ -301,6 +302,25 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun isAutoLoadEnabled(): Boolean = true
 
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
+
+    override fun showGetListError(throwable: Throwable?) {
+        binding?.containerError?.root?.visible()
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, throwable,
+                    { onRetryClicked() }, it
+                )
+            }
+        }
+    }
+
+    override fun onRetryClicked() {
+        binding?.let {
+            it.containerError.root.hide()
+            halfExpandBottomSheet()
+        }
+        super.onRetryClicked()
+    }
 
     override fun loadInitialData() {
         hotelSearchMapViewModel.searchParam.page = defaultInitialPage
@@ -961,7 +981,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         return try{
             val mapCenter: Double = googleMap.cameraPosition.target.latitude
             val southMap: Double = googleMap.projection.visibleRegion.latLngBounds.southwest.latitude
-            val diff = (mapCenter - southMap) / 4
+            val diff = (mapCenter - southMap) / MAP_CENTER_DIVIDER
             val newLat: Double = latLng.latitude - diff
             LatLng(newLat, latLng.longitude)
         }catch (t: Throwable) {
@@ -1557,6 +1577,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
         private const val MAX_RADIUS: Float = 10.5f
+        private const val MAP_CENTER_DIVIDER = 4
+        private const val SLIDE_MINUS_OPACITY: Float = 1f
+        private const val SLIDE_MULT_OPACITY: Float = 3f
 
         const val PREFERENCES_NAME = "hotel_search_map_preferences"
         const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"

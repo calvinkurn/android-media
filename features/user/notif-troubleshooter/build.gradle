@@ -7,6 +7,12 @@ repositories {
     mavenCentral()
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()
@@ -30,6 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.icon

@@ -45,38 +45,21 @@ import kotlinx.android.synthetic.main.item_balance_widget.view.*
 
 class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
 
+    var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
     fun setItemMap(itemMap: HomeBalanceModel) {
-        this.itemMap = HomeBalanceModel()
         this.itemMap = itemMap
         notifyDataSetChanged()
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.attachedRecyclerView = recyclerView
+    }
+
     fun getItemMap():  HomeBalanceModel {
         return itemMap
-    }
-
-    fun getTokopointsDataPosition(): Int {
-        getItemMap().let {
-            val keys =  it.balanceDrawerItemModels.filterValues { model -> model.drawerItemType == TYPE_TOKOPOINT }.keys
-            if (keys.isNotEmpty()) {
-                return keys.first()
-            }
-        }
-        return -1
-    }
-
-    fun getGopayDataPosition(): Int {
-        getItemMap().let {
-            val keys =  it.balanceDrawerItemModels.filterValues { model ->
-                model.drawerItemType == TYPE_WALLET_APP_LINKED || model.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-            }.keys
-            if (keys.isNotEmpty()) {
-                return keys.first()
-            }
-        }
-        return -1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -102,6 +85,9 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
             this.listener = listener
             renderTokoPoint(drawerItem)
+            this.itemView.tag = String.format(
+                itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
+            )
             this.isOvoAvailable = isOvoAvailable
         }
 
