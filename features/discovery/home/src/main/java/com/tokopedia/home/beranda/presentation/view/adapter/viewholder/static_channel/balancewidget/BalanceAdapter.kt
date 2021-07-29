@@ -23,6 +23,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
@@ -43,26 +45,21 @@ import kotlinx.android.synthetic.main.item_balance_widget.view.*
 
 class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
 
+    var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
     fun setItemMap(itemMap: HomeBalanceModel) {
-        this.itemMap = HomeBalanceModel()
         this.itemMap = itemMap
         notifyDataSetChanged()
     }
 
-    fun getItemMap():  HomeBalanceModel {
-        return itemMap
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.attachedRecyclerView = recyclerView
     }
 
-    fun getTokopointsDataPosition(): Int {
-        getItemMap().let {
-            val keys =  it.balanceDrawerItemModels.filterValues { model -> model.drawerItemType == TYPE_TOKOPOINT }.keys
-            if (keys.isNotEmpty()) {
-                return keys.first()
-            }
-        }
-        return -1
+    fun getItemMap():  HomeBalanceModel {
+        return itemMap
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -88,6 +85,9 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
             this.listener = listener
             renderTokoPoint(drawerItem)
+            this.itemView.tag = String.format(
+                itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
+            )
             this.isOvoAvailable = isOvoAvailable
         }
 
@@ -177,7 +177,15 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             walletPendingAction ={
                                 //handle click for type wallet pending
 
-                            })
+                            },
+                            walletAppAction = {
+                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                    isLinked = it,
+                                    userId = listener?.userId?:""
+                                )
+                                listener?.onSectionItemClicked(element.redirectUrl)
+                            }
+                    )
 
                     itemView.home_tv_btn_action_balance.handleItemCLickType(
                             element = element,
@@ -258,7 +266,15 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 walletAnalytics.eventClickActivationOvoHomepage()
                                 val intentBalanceWallet = RouteManager.getIntent(itemView.context, element.applinkActionText)
                                 itemView.context.startActivity(intentBalanceWallet)
-                            })
+                            },
+                            walletAppAction = {
+                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                    isLinked = it,
+                                    userId = listener?.userId?:""
+                                )
+                                listener?.onSectionItemClicked(element.redirectUrl)
+                            }
+                    )
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
                     itemView.home_container_action_balance.show()
@@ -269,14 +285,16 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                             ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
                             rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
                             bboAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()}
+                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
+                            walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
                     )
                     itemView.home_tv_btn_action_balance.handleItemCLickType(
                             element = element,
                             ovoWalletAction = {listener?.onRefreshTokoCashButtonClicked()},
                             rewardsAction = {listener?.onRefreshTokoPointButtonClicked()},
                             bboAction = {listener?.onRefreshTokoPointButtonClicked()},
-                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()}
+                            tokopointsAction = {listener?.onRefreshTokoPointButtonClicked()},
+                            walletAppAction = { listener?.onRefreshTokoCashButtonClicked() }
                     )
                 }
             }
@@ -346,7 +364,9 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                              bboAction: () -> Unit= {},
                                              walletTopupAction: () -> Unit= {},
                                              walletOtherAction: () -> Unit= {},
-                                             walletPendingAction: () -> Unit= {}) {
+                                             walletPendingAction: () -> Unit= {},
+                                             walletAppAction: (isLinked: Boolean) -> Unit = {}
+        ) {
             setOnClickListener {
                 when (element.drawerItemType) {
                     TYPE_TOKOPOINT -> tokopointsAction.invoke()
@@ -357,6 +377,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     TYPE_WALLET_WITH_TOPUP -> walletTopupAction.invoke()
                     TYPE_WALLET_OTHER -> walletOtherAction.invoke()
                     TYPE_WALLET_PENDING_CASHBACK -> walletPendingAction.invoke()
+                    TYPE_WALLET_APP_LINKED -> walletAppAction.invoke(true)
+                    TYPE_WALLET_APP_NOT_LINKED -> walletAppAction.invoke(false)
                 }
             }
         }

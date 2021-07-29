@@ -77,7 +77,7 @@ data class ComponentData(
         val children : List<VariantChild> = listOf(),
         //endregioncopy
 
-        //region best seller data
+        //region one liners data
         @SerializedName("productID")
         val productId: String = "",
         @SerializedName("oneLinerContent")

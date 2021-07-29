@@ -10,8 +10,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.suggestion.SuggestionListener
 import com.tokopedia.autocomplete.util.safeSetSpan
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
@@ -19,7 +21,7 @@ import java.util.*
 
 class SuggestionDoubleLineViewHolder(
         itemView: View,
-        private val clickListener: SuggestionClickListener
+        private val listener: SuggestionListener
 ) : AbstractViewHolder<SuggestionDoubleLineDataDataView>(itemView) {
 
     companion object {
@@ -34,7 +36,6 @@ class SuggestionDoubleLineViewHolder(
         bindIconTitle(item)
         bindIconSubtitle(item)
         bindSubtitle(item)
-        setSearchQueryStartIndexInKeyword(item)
         bindTextTitle(item)
         bindLabel(item)
         bindShortcutButton(item)
@@ -63,6 +64,16 @@ class SuggestionDoubleLineViewHolder(
         itemView.doubleLineSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
     }
 
+    private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
+        if (item.isBoldText()) {
+            setSearchQueryStartIndexInKeyword(item)
+            bindBoldTextTitle(item)
+        }
+        else {
+            bindNormalTextTitle(item)
+        }
+    }
+
     private fun setSearchQueryStartIndexInKeyword(item: SuggestionDoubleLineDataDataView) {
         val displayName = item.title
         val searchTerm = item.searchTerm
@@ -72,7 +83,7 @@ class SuggestionDoubleLineViewHolder(
         } else -1
     }
 
-    private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
+    private fun bindBoldTextTitle(item: SuggestionDoubleLineDataDataView) {
         itemView.doubleLineTitle?.weightType = Typography.BOLD
         if (searchQueryStartIndexInKeyword == -1) {
             itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
@@ -108,6 +119,10 @@ class SuggestionDoubleLineViewHolder(
         )
     }
 
+    private fun bindNormalTextTitle(item: SuggestionDoubleLineDataDataView) {
+        itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
+    }
+
     private fun bindLabel(item: SuggestionDoubleLineDataDataView) {
         itemView.doubleLineLabel?.setTextAndCheckShow(item.label)
         if (itemView.doubleLineLabel.text.isNotEmpty()) {
@@ -123,8 +138,14 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindListener(item: SuggestionDoubleLineDataDataView) {
         itemView.autocompleteDoubleLineItem?.setOnClickListener {
-            clickListener.onItemClicked(item)
+            listener.onItemClicked(item)
         }
+
+        itemView.autocompleteDoubleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
+            override fun onViewHint() {
+                listener.onItemImpressed(item)
+            }
+        })
     }
 
     private fun <T : View> T?.shouldShowOrHideWithAction(shouldShow: Boolean, action: (T) -> Unit) {

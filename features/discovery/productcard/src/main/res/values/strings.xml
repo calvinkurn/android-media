@@ -3,7 +3,6 @@
 
     <string name="product_card_review_count_format">(%d)</string>
     <string name="product_card_text_add_to_cart_grid">+ Keranjang</string>
-    <string name="product_card_text_add_to_cart_list">Tambah ke Keranjang</string>
     <string name="product_card_text_remove_product">Hapus Produk</string>
     <string name="product_card_topads">Ad</string>
     <string name="product_card_module_text_sold_out">Terjual Habis</string>
