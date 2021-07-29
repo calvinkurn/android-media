@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase

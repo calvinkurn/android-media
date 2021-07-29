@@ -7,7 +7,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
-import com.tokopedia.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.cart.data.model.request.UndoDeleteCartRequest
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
@@ -23,8 +22,6 @@ import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -45,8 +42,8 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.subscriptions.CompositeSubscription
-import java.lang.RuntimeException
 import javax.inject.Inject
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -149,23 +146,50 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.let {
             it.showProgressLoading()
 
-            val removeAllItem = allCartItemData.size == removedCartItems.size
-
+            val removeAllItems = allCartItemData.size == removedCartItems.size
             val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
                 toBeDeletedCartIds.add(cartItemData.originData.cartId.toString())
             }
 
-            val removeCartRequest = RemoveCartRequest()
-            removeCartRequest.addWishlist = if (addWishList) 1 else 0
-            removeCartRequest.cartIds = toBeDeletedCartIds
+            deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
+            deleteCartUseCase.execute(
+                    onSuccess = {
+                        onSuccessDeleteCartItems(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)
+                    },
+                    onError = {
+                        onErrorDeleteCartItems(forceExpandCollapsedUnavailableItems, it)
+                    }
+            )
+        }
+    }
 
-            val requestParams = RequestParams.create()
-            requestParams.putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
+    private fun onErrorDeleteCartItems(forceExpandCollapsedUnavailableItems: Boolean,
+                                       throwable: Throwable) {
+        view?.let { view ->
+            if (forceExpandCollapsedUnavailableItems) {
+                view.reCollapseExpandedDeletedUnavailableItems()
+            }
+            view.hideProgressLoading()
+            view.showToastMessageRed(throwable)
+        }
+    }
 
-            compositeSubscription.add(deleteCartUseCase.createObservable(requestParams)
-                    .subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
-                            removeAllItem, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)))
+    private fun onSuccessDeleteCartItems(toBeDeletedCartIds: ArrayList<String>,
+                                         removeAllItems: Boolean,
+                                         forceExpandCollapsedUnavailableItems: Boolean,
+                                         addWishList: Boolean,
+                                         isFromGlobalCheckbox: Boolean) {
+        view?.let { view ->
+            view.renderLoadGetCartDataFinish()
+            view.onDeleteCartDataSuccess(toBeDeletedCartIds, removeAllItems, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)
+
+            val params = view.generateGeneralParamValidateUse()
+            if (!removeAllItems && (view.checkHitValidateUseIsNeeded(params))) {
+                view.showPromoCheckoutStickyButtonLoading()
+                doUpdateCartAndValidateUse(params)
+            }
+            processUpdateCartCounter()
         }
     }
 
