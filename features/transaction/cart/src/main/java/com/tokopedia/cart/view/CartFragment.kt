@@ -2763,8 +2763,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun renderErrorToShipmentForm(outOfServiceData: OutOfService) {
-        renderCartOutOfService(outOfServiceData)
+    override fun renderErrorToShipmentForm(outOfService: OutOfService) {
+        renderCartOutOfService(outOfService)
     }
 
     private fun disableSwipeRefresh() {

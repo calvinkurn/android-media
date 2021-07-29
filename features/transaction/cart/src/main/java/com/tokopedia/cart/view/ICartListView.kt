@@ -51,7 +51,7 @@ interface ICartListView : CustomerView {
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderErrorToShipmentForm(outOfServiceData: OutOfService)
+    fun renderErrorToShipmentForm(outOfService: OutOfService)
 
     fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
