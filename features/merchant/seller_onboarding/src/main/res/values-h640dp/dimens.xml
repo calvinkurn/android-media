@@ -14,7 +14,7 @@
     <dimen name="sob_dimen_manage_image_2_height">108dp</dimen>
     <dimen name="sob_dimen_promo_image_1_width">208dp</dimen>
     <dimen name="sob_dimen_statistic_image_1_width">177dp</dimen>
-    <dimen name="sob_title_top_margin">54dp</dimen>
+    <dimen name="sob_title_top_margin">64dp</dimen>
     <dimen name="sob_view_pager_bottom_margin">12dp</dimen>
     <dimen name="sob_skip_btn_top_margin">18dp</dimen>
     <dimen name="sob_message_smart_reply_top_margin">70dp</dimen>
