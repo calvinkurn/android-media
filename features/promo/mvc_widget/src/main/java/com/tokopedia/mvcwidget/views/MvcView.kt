@@ -15,7 +15,6 @@ import java.util.*
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
-* 2. isMainContainerSetFitsSystemWindows must be true if activity/fragment layout is setFitsSystemWindows(false) or setFitsSystemWindows = false
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
     companion object{
@@ -32,7 +31,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var mvcAnimationHandler: MvcAnimationHandler
 
     var shopId: String = ""
-    var isMainContainerSetFitsSystemWindows = false
 
     @MvcSource
     var source: Int = MvcSource.SHOP
@@ -63,11 +61,26 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false, @MvcSource source: Int) {
+    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int) {
         this.source = source
-        this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         this.shopId = shopId
-        setMVCData(mvcData.animatedInfoList)
+        val iconUrl = mvcData.animatedInfoList?.get(0)?.iconURL
+        val arrayList = arrayListOf<AnimatedInfos>()
+        val animatedInfos1 = AnimatedInfos("First title","First subtitle","$iconUrl")
+        val animatedInfos2 = AnimatedInfos("Second title","Second subtitle","$iconUrl")
+        val animatedInfos3 = AnimatedInfos("Third title","Third subtitle","$iconUrl")
+        val animatedInfos4 = AnimatedInfos("Fourth title","Fourth subtitle","$iconUrl")
+        val animatedInfos5 = AnimatedInfos("Fifth title","Fifth subtitle","$iconUrl")
+        val animatedInfos6 = AnimatedInfos("Sixth title","Sixth subtitle","$iconUrl")
+        arrayList.add(animatedInfos1)
+        arrayList.add(animatedInfos2)
+        arrayList.add(animatedInfos3)
+        arrayList.add(animatedInfos4)
+        arrayList.add(animatedInfos5)
+        arrayList.add(animatedInfos6)
+        setMVCData(arrayList)
+//        setMVCData(mvcData.animatedInfoList)
+//        setMVCData(mvcData.animatedInfoList)
     }
 
     private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {

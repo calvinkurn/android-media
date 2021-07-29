@@ -107,8 +107,9 @@ class TransParentActivity : BaseActivity() {
 
         bottomSheet.setOnDismissListener {
             if (isOnResume) {
-                if(childView?.isUserRegisteredAsMember == true){
-                    setResult(MvcView.RESULT_CODE_OK,BroadcastIntents.getJadiMemberIntent())
+                if(childView?.bundleForDataUpdate != null){
+                    val intent = IntentManger.getJadiMemberIntent(childView?.bundleForDataUpdate!!)
+                    setResult(MvcView.RESULT_CODE_OK,intent)
                 }
                 finish()
                 Tracker.closeMainBottomSheet(shopId, userSession.userId, mvcSource)

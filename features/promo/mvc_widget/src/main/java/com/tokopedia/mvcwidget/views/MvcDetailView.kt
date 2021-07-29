@@ -1,7 +1,7 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -37,8 +37,6 @@ class MvcDetailView @JvmOverloads constructor(
     var addBottomMarginOnToast = false
     var userSession: UserSession? = null
 
-    var isUserRegisteredAsMember:Boolean?=null
-
     private val widgetImpression = WidgetImpression()
 
     override fun getWidgetImpression(): WidgetImpression {
@@ -51,6 +49,7 @@ class MvcDetailView @JvmOverloads constructor(
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
     private var shopId = ""
+    var bundleForDataUpdate:Bundle? = null
     override fun getShopId(): String {
         return this.shopId
     }
@@ -108,11 +107,15 @@ class MvcDetailView @JvmOverloads constructor(
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
                     handleMembershipRegistrationSuccess(it.data)
-                    performActionAfterUserIsRegisteredAsMember()
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     handleMembershipRegistrationError(it.error)
                 }
+            }
+        })
+        viewModel.mvcSummatLiveData.observe(context as AppCompatActivity, Observer {
+            if (it.status == LiveDataResult.STATUS.SUCCESS && it.data!=null) {
+                handleMvcDataChanged(it.data)
             }
         })
 
@@ -136,9 +139,9 @@ class MvcDetailView @JvmOverloads constructor(
         }
     }
 
-    private fun performActionAfterUserIsRegisteredAsMember(){
-        isUserRegisteredAsMember = true
-//        BroadcastIntents.broadcastJadiMember(context)
+
+    private fun handleMvcDataChanged(data:TokopointsCatalogMVCSummaryResponse){
+        bundleForDataUpdate = IntentManger.prepareBundleForJadiMember(data)
     }
 
     private fun toggleLoading(showLoading: Boolean) {
@@ -266,6 +269,7 @@ class MvcDetailView @JvmOverloads constructor(
         super.onDetachedFromWindow()
         viewModel.listLiveData.removeObservers(context as AppCompatActivity)
         viewModel.membershipLiveData.removeObservers(context as AppCompatActivity)
+        viewModel.mvcSummatLiveData.removeObservers(context as AppCompatActivity)
     }
 
     override fun handleFollowButtonClick() {

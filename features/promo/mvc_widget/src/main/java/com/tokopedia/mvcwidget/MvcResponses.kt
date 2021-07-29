@@ -1,12 +1,13 @@
 package com.tokopedia.mvcwidget
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.DEFAULT
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_CLOSE
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
-import java.util.*
+import kotlinx.android.parcel.Parcelize
 
 data class TokopointsCatalogMVCListResponse(
         @SerializedName("tokopointsCatalogMVCList") val data: TokopointsCatalogMVCList? = null
@@ -74,11 +75,12 @@ data class TokopointsCatalogMVCSummary(
         @SerializedName("animatedInfos") val animatedInfoList: List<AnimatedInfos?>?
         )
 
+@Parcelize
 data class AnimatedInfos(
         @SerializedName("title") val title: String?,
         @SerializedName("subTitle") val subTitle: String?,
         @SerializedName("iconURL") val iconURL: String?
-)
+):Parcelable
 
 data class MembershipRegisterResponse(
         @SerializedName("membershipRegister") val data: MembershipRegister? = null
