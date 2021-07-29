@@ -15,11 +15,11 @@ class GetAllTypeTransactionUseCase
                     graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<GqlAllDepositSummaryResponse>(graphqlRepository) {
 
-    fun loadAllTypeTransactions(startDateUnix: Long, endDateUnix: Long,
+    fun loadAllTypeTransactions(startDate: Date, endDate: Date,
                            onSuccess: (response: GqlAllDepositSummaryResponse) -> Unit,
                            onError: (Throwable) -> Unit) {
         try {
-            val params = getRequestParams(startDateUnix, endDateUnix)
+            val params = getRequestParams(startDate, endDate)
             this.setTypeClass(GqlAllDepositSummaryResponse::class.java)
             this.setRequestParams(params)
             this.setGraphqlQuery(query)
@@ -35,20 +35,19 @@ class GetAllTypeTransactionUseCase
     }
 
     @Throws(ParseException::class)
-    private fun getRequestParams(startDateUnix: Long, endDateUnix: Long): MutableMap<String, Any?> {
-        val formattedStartDateStr = getFormattedDate(startDateUnix)
-        val formattedEndDateStr = getFormattedDate(endDateUnix)
+    private fun getRequestParams(startDate: Date, endDate: Date): MutableMap<String, Any?> {
+        val formattedStartDateStr = getFormattedDate(startDate)
+        val formattedEndDateStr = getFormattedDate(endDate)
         return mutableMapOf(
                 PARAM_START_DATE to formattedStartDateStr,
                 PARAM_END_DATE to formattedEndDateStr,
                 PARAM_PER_PAGE to 25,
-                PARAM_PAGE to 0
+                PARAM_PAGE to 1
         )
     }
 
     @Throws(ParseException::class)
-    private fun getFormattedDate(unixTime: Long): String {
-        val date = Date(unixTime)
+    private fun getFormattedDate(date: Date): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return dateFormat.format(date)
     }

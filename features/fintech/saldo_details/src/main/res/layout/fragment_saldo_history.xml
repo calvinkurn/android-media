@@ -19,7 +19,7 @@
         android:paddingEnd="@dimen/sd_dp_18"
         android:paddingRight="@dimen/sd_dp_18"
         android:text="@string/sp_transaction_history_heading"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 
     <LinearLayout
@@ -28,6 +28,7 @@
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:padding="@dimen/sd_dp_18"
+        android:visibility="gone"
         android:weightSum="2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -152,6 +153,60 @@
 
     </LinearLayout>
 
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardUnifyDateContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:padding="@dimen/unify_space_8">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconCalender"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
+                app:icon_name="CALENDAR"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:icon_color_light_enable="@color/Unify_N500"
+                app:icon_color_night_enable="@color/Unify_N500"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSelectedDateRange"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_68"
+                tools:text="1 Des 2020 - 31 Des 2020"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/selectDateIcon"
+                app:layout_constraintStart_toEndOf="@id/iconCalender"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/unify_space_8"/>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/selectDateIcon"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:icon_color_light_enable="@color/Unify_N500"
+                app:icon_color_night_enable="@color/Unify_N500"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </com.tokopedia.unifycomponents.CardUnify>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
