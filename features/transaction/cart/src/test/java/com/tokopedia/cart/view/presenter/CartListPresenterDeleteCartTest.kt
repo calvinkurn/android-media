@@ -1,16 +1,18 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
-import com.tokopedia.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.cartcommon.data.response.deletecart.Data
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -19,9 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
@@ -79,10 +79,17 @@ object CartListPresenterDeleteCartTest : Spek({
         Scenario("remove all cart data") {
 
             val emptyCartListData = CartListData()
-            val deleteCartData = DeleteCartData(isSuccess = true)
+            val deleteCartData = RemoveFromCartData(
+                    status = "OK",
+                    data = Data(success = 1)
+            )
 
             Given("success delete") {
-                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(RemoveFromCartData) -> Unit>().invoke(deleteCartData)
+                }
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
             }
 
             Given("empty cart list data") {
@@ -104,7 +111,10 @@ object CartListPresenterDeleteCartTest : Spek({
 
         Scenario("remove some cart data") {
 
-            val deleteCartData = DeleteCartData(isSuccess = true)
+            val deleteCartData = RemoveFromCartData(
+                    status = "OK",
+                    data = Data(success = 1)
+            )
             val firstCartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
             }
@@ -114,7 +124,11 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             Given("success delete") {
-                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(RemoveFromCartData) -> Unit>().invoke(deleteCartData)
+                }
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
             }
 
             When("process delete cart item") {
@@ -131,7 +145,10 @@ object CartListPresenterDeleteCartTest : Spek({
 
         Scenario("remove some cart data and insurance data") {
 
-            val deleteCartData = DeleteCartData(isSuccess = true)
+            val deleteCartData = RemoveFromCartData(
+                    status = "OK",
+                    data = Data(success = 1)
+            )
             val firstCartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
             }
@@ -141,7 +158,11 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             Given("success delete") {
-                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(RemoveFromCartData) -> Unit>().invoke(deleteCartData)
+                }
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
             }
 
             When("process delete cart item") {
@@ -156,38 +177,20 @@ object CartListPresenterDeleteCartTest : Spek({
             }
         }
 
-        Scenario("fail remove cart data") {
-
-            val errorMessage = "fail testing delete"
-            val deleteCartData = DeleteCartData(isSuccess = false, message = errorMessage)
-            val cartItemData = CartItemData().apply {
-                originData = CartItemData.OriginData()
-            }
-
-            Given("fail delete") {
-                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
-            }
-
-            When("process delete cart item") {
-                cartListPresenter.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false)
-            }
-
-            Then("should show error message") {
-                verify {
-                    view.showToastMessageRed(errorMessage)
-                }
-            }
-        }
-
         Scenario("fail remove cart data with exception") {
 
             val cartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
             }
-            val exception = CartResponseErrorException("fail testing delete")
+            val errorMessage = "Error Message"
+            val throwable = ResponseErrorException(errorMessage)
 
             Given("fail delete") {
-                every { deleteCartUseCase.createObservable(any()) } returns Observable.error(exception)
+                coEvery { deleteCartUseCase.setParams(any()) } just Runs
+                coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+                }
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
             }
 
             When("process delete cart item") {
@@ -196,7 +199,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should show error message") {
                 verify {
-                    view.showToastMessageRed(exception)
+                    view.showToastMessageRed(throwable)
                 }
             }
         }
