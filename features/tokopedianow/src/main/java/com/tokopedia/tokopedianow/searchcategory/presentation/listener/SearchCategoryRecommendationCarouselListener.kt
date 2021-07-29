@@ -16,6 +16,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onImpressedRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -23,6 +24,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onClickRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -30,6 +32,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onATCNonVariantRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             recommendationCarouselPosition: Int,
@@ -37,6 +40,7 @@ interface SearchCategoryRecommendationCarouselListener {
     )
 
     fun onAddVariantRecommendationCarouselItem(
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
     )
