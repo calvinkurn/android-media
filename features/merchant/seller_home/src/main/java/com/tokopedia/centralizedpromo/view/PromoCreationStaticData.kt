@@ -50,7 +50,7 @@ object PromoCreationStaticData {
                 PromoCreationUiModel(
                     R.drawable.ic_sah_free_shipping,
                     resourceProvider.getPromoCreationTitleFreeShipping(),
-                    resourceProvider.getPromoCreationTitleFreeShipping(),
+                    resourceProvider.getPromoCreationDescriptionFreeShipping(),
                     "",
                     applink
                 )
