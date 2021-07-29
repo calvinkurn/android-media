@@ -161,24 +161,6 @@ class TokoNowSearchFragment:
         RouteManager.route(context, applinkToSearchResult)
     }
 
-    override fun onATCNonVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: RecommendationCarouselDataView?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        recommendationCarouselPosition: Int,
-        quantity: Int
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onAddVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: RecommendationCarouselDataView?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem
-    ) {
-        TODO("Not yet implemented")
-    }
-
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
         val trackingQueue = trackingQueue ?: return
 
