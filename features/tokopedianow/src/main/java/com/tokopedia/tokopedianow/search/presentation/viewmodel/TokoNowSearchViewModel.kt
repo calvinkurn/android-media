@@ -18,7 +18,11 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
+import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
+import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
+import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
@@ -79,6 +83,7 @@ class TokoNowSearchViewModel @Inject constructor (
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
+    private var searchCategoryJumper: SearchCategoryJumperData? = null
 
     override val tokonowSource: String
         get() = TOKONOW
@@ -94,6 +99,7 @@ class TokoNowSearchViewModel @Inject constructor (
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         suggestionModel = searchModel.searchProduct.data.suggestion
+        searchCategoryJumper = searchModel.searchCategoryJumper
 
         val searchProductHeader = searchModel.searchProduct.header
 
@@ -143,6 +149,31 @@ class TokoNowSearchViewModel @Inject constructor (
 
         return quickFilterIndex + 1
     }
+
+    override fun createFooterVisitableList() =
+            listOf(
+                createCategoryJumperDataView(),
+                CTATokopediaNowHomeDataView(),
+            )
+
+    private fun createCategoryJumperDataView(): CategoryJumperDataView {
+        val categoryJumperItemList =
+                searchCategoryJumper
+                        ?.getJumperItemList()
+                        ?.map(this::mapToCategoryJumperItem)
+                        ?: listOf()
+
+        return CategoryJumperDataView(
+                title = searchCategoryJumper?.getTitle() ?: "",
+                itemList = categoryJumperItemList
+        )
+    }
+
+    private fun mapToCategoryJumperItem(jumperData: JumperData) =
+            CategoryJumperDataView.Item(
+                    title = jumperData.title,
+                    applink = jumperData.applink,
+            )
 
     private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
         val eventLabel = query +

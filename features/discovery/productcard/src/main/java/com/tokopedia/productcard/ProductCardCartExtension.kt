@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.utils.MAX_VARIANT_QUANTITY
 import com.tokopedia.productcard.utils.QUANTITY_EDITOR_DEBOUNCE_IN_MS
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -89,8 +90,20 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
-        if (!productCardModel.canShowQuantityEditor()) return
+        if (!productCardModel.canShowQuantityEditor())
+            removeQuantityEditorComponents()
+        else
+            showQuantityEditorComponent(productCardModel)
+    }
 
+    private fun removeQuantityEditorComponents() {
+        clear()
+
+        quantityEditorNonVariant?.gone()
+        buttonDeleteCart?.gone()
+    }
+
+    private fun showQuantityEditorComponent(productCardModel: ProductCardModel) {
         val shouldShowCartEditorComponent = productCardModel.shouldShowCartEditorComponent()
 
         configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
@@ -180,12 +193,12 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
+
         val quantity = nonVariant.quantity
         if (quantity > 0)
             this.setValue(quantity)
-
-        this.maxValue = nonVariant.maxQuantity
-        this.minValue = nonVariant.minQuantity
     }
 
     private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
@@ -216,7 +229,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderTextVariantQuantity(quantity: Int) {
-        if (quantity > 99)
+        if (quantity > MAX_VARIANT_QUANTITY)
             textVariantQuantity?.text =
                     context?.getString(R.string.product_card_text_variant_quantity_grid)
         else

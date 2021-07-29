@@ -15,11 +15,14 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.validation.BranchHelperValidation;
+import com.tokopedia.track.TrackApp;
+
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -108,6 +111,8 @@ public class BranchHelper {
 
             if (branchIOPayment.isNewBuyer()) {
                 sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
+                //Firebase first transaction event
+                sendFirebaseFirstTransactionEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
             }
             new BranchHelperValidation().validatePurchaseEvent(branchIOPayment, revenuePrice, shippingPrice);
         } catch (Exception ex) {
@@ -237,9 +242,24 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
                 .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
                 .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
+    }
+
+    public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice){
+        Map<String, Object> eventDataMap = new HashMap<>();
+        eventDataMap.put(LinkerConstants.KEY_ORDERID, branchIOPayment.getOrderId());
+        eventDataMap.put(LinkerConstants.KEY_CURRENCY, CurrencyType.IDR);
+        eventDataMap.put(LinkerConstants.KEY_SHIPPING_PRICE, shippingPrice);
+        eventDataMap.put(LinkerConstants.KEY_REVENUE, revenuePrice);
+        eventDataMap.put(LinkerConstants.KEY_PAYMENT, branchIOPayment.getPaymentId());
+        eventDataMap.put(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType());
+        eventDataMap.put(LinkerConstants.KEY_USERID, userId);
+        eventDataMap.put(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+        eventDataMap.put(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FB_FIRST_TXN);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
     }
 
     private static void saveBranchEvent(BranchEvent branchEvent) {
