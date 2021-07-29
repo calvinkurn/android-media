@@ -16,6 +16,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -50,6 +51,8 @@ class PlayWinnerBadgeInteractiveTest {
             )
     )
 
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
+
     private val interactiveModelBuilder = PlayInteractiveModelBuilder()
 
     private val socketFlow = MutableStateFlow<WebSocketAction>(
@@ -63,6 +66,7 @@ class PlayWinnerBadgeInteractiveTest {
 
     init {
         every { socket.listenAsFlow() } returns socketFlow
+        every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
     @Before
@@ -89,7 +93,8 @@ class PlayWinnerBadgeInteractiveTest {
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
                 interactiveRepo = interactiveRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                remoteConfig = mockRemoteConfig,
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
