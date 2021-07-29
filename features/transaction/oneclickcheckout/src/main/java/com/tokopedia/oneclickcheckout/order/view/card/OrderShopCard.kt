@@ -122,7 +122,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                     orderSummaryAnalytics.eventViewErrorOrderLevelTicker(shop.shopId.toString(), shop.unblockingErrorMessage)
                     shop.hasTriggerViewErrorOrderLevelTicker = true
                 }
-            } else if (shop.shopTicker.isNotBlank()) {
+            } else if (!shop.shouldValidateWeight() && shop.shopTicker.isNotBlank()) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
                 tickerOrderShop.setHtmlDescription(shop.shopTicker)
                 tickerOrderShop.visible()

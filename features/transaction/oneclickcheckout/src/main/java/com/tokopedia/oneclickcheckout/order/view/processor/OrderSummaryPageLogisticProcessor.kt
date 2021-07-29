@@ -77,7 +77,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 productList.add(Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra))
             }
         }
-        if (orderShop.maximumWeight > 0 && totalWeight > orderShop.maximumWeight) {
+        if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {
             // overweight
             return null to (totalWeight - orderShop.maximumWeight)
         }

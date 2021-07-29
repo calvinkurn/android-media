@@ -44,6 +44,10 @@ data class OrderShop(
     val isError: Boolean
         get() = errors.isNotEmpty()
 
+    fun shouldValidateWeight(): Boolean {
+        return maximumWeight > 0 && maximumWeightWording.isNotBlank()
+    }
+
     companion object {
         const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
     }
