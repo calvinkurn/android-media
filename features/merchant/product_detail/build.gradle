@@ -87,6 +87,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
@@ -127,6 +128,9 @@ dependencies {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore

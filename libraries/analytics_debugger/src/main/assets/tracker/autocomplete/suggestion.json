@@ -109,6 +109,16 @@
       ],
       "userId": ".+",
       "sessionIris": ".+"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav",
+      "eventAction": "click - related autocomplete",
+      "eventLabel": "keyword: .+ - value: .+ - po: .+ - page: .+",
+      "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     }
   ]
 }

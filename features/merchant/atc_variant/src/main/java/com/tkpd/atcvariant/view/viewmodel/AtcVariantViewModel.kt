@@ -21,9 +21,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
@@ -52,6 +53,10 @@ class AtcVariantViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val updateCartUseCase: UpdateCartUseCase
 ) : ViewModel() {
+
+    companion object {
+        private const val INITIAL_POSITION_SHIMMERING = 99L
+    }
 
     //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
@@ -87,6 +92,11 @@ class AtcVariantViewModel @Inject constructor(
         get() = _titleVariantName
 
     private var isShopOwner: Boolean = false
+
+    //updated with the previous page data as well
+    fun getVariantAggregatorData() : ProductVariantAggregatorUiData? {
+        return aggregatorData
+    }
 
     fun onVariantClicked(isTokoNow: Boolean,
                          selectedOptionKey: String,
@@ -184,7 +194,7 @@ class AtcVariantViewModel @Inject constructor(
 
     fun decideInitialValue(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            _initialData.postValue(listOf(VariantShimmeringDataModel(99L)).asSuccess())
+            _initialData.postValue(listOf(VariantShimmeringDataModel(INITIAL_POSITION_SHIMMERING)).asSuccess())
             isShopOwner = aggregatorParams.isShopOwner
 
             getAggregatorAndMiniCartData(aggregatorParams, isLoggedIn)
@@ -331,7 +341,7 @@ class AtcVariantViewModel @Inject constructor(
                shopIdInt: Int,
                categoryName: String,
                userId: String,
-               shippingMinPrice: Int,
+               shippingMinPrice: Double,
                trackerAttributionPdp: String,
                trackerListNamePdp: String,
                isTokoNow: Boolean) {
@@ -385,8 +395,13 @@ class AtcVariantViewModel @Inject constructor(
     private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
+            val updateCartRequest = UpdateCartRequest(
+                    cartId = copyOfMiniCartItem.cartId,
+                    quantity = copyOfMiniCartItem.quantity,
+                    notes = copyOfMiniCartItem.notes
+            )
             updateCartUseCase.setParams(
-                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    updateCartRequestList = listOf(updateCartRequest),
                     source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
             )
             val result = withContext(dispatcher.io) {
