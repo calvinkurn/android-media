@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.view
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -122,6 +123,7 @@ abstract class BaseSearchCategoryFragment:
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
+    protected val carouselScrollPosition = SparseIntArray()
 
     private var movingPosition = 0
 
@@ -316,6 +318,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
+            carouselScrollPosition.clear()
             getViewModel().onViewReloadPage()
         }
     }
@@ -777,6 +780,14 @@ abstract class BaseSearchCategoryFragment:
     override fun onLocalizingAddressLoginSuccessBottomSheet() { }
 
     override fun onDismissChooseAddressBottomSheet() { }
+
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
+        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    }
+
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
+        return carouselScrollPosition.get(adapterPosition)
+    }
 
     override fun onBindRecommendationCarousel(
             element: RecommendationCarouselDataView,

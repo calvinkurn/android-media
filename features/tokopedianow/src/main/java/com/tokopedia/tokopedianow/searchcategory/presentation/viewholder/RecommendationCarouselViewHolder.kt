@@ -31,11 +31,14 @@ class RecommendationCarouselViewHolder(
     override fun bind(element: RecommendationCarouselDataView?) {
         element ?: return
         val recomWidget = recommendationCarouselWidgetView ?: return
+        val scrollToPosition =
+                recommendationCarouselListener.onGetCarouselScrollPosition(adapterPosition)
 
         recomWidget.bind(
                 carouselData = element.carouselData,
                 adapterPosition = adapterPosition,
                 widgetListener = this,
+                scrollToPosition = scrollToPosition,
         )
         recommendationCarouselListener.onBindRecommendationCarousel(element, adapterPosition)
     }
@@ -47,10 +50,10 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
     ) {
         recommendationCarouselListener.onImpressedRecommendationCarouselItem(
-                data,
-                recomItem,
-                itemPosition,
-                adapterPosition
+                data = data,
+                recomItem = recomItem,
+                itemPosition = itemPosition,
+                adapterPosition = adapterPosition
         )
     }
 
@@ -62,10 +65,10 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
     ) {
         recommendationCarouselListener.onClickRecommendationCarouselItem(
-                data,
-                recomItem,
-                itemPosition,
-                adapterPosition
+                data = data,
+                recomItem = recomItem,
+                itemPosition = itemPosition,
+                adapterPosition = adapterPosition
         )
     }
 
@@ -75,6 +78,8 @@ class RecommendationCarouselViewHolder(
             adapterPosition: Int,
             quantity: Int,
     ) {
+        saveCarouselScrollPosition()
+
         val recommendationCarouselPosition = this.adapterPosition
 
         recommendationCarouselListener.onATCNonVariantRecommendationCarouselItem(
@@ -85,14 +90,25 @@ class RecommendationCarouselViewHolder(
         )
     }
 
+    private fun saveCarouselScrollPosition() {
+        val adapterPosition = this.adapterPosition
+        val carouselScrollPosition =
+                recommendationCarouselWidgetView?.getCurrentPosition() ?: 0
+
+        recommendationCarouselListener.onSaveCarouselScrollPosition(
+                adapterPosition = adapterPosition,
+                scrollPosition = carouselScrollPosition,
+        )
+    }
+
     override fun onRecomProductCardAddVariantClick(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             adapterPosition: Int,
     ) {
         recommendationCarouselListener.onAddVariantRecommendationCarouselItem(
-                data,
-                recomItem,
+                data = data,
+                recomItem = recomItem,
         )
     }
 
@@ -118,5 +134,10 @@ class RecommendationCarouselViewHolder(
 
     override fun onChannelWidgetEmpty() {
 
+    }
+
+    override fun onViewRecycled() {
+        saveCarouselScrollPosition()
+        super.onViewRecycled()
     }
 }

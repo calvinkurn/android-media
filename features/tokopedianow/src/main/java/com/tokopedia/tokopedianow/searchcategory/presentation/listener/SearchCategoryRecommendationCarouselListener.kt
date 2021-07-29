@@ -6,6 +6,10 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.Recommendati
 
 interface SearchCategoryRecommendationCarouselListener {
 
+    fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
+
+    fun onGetCarouselScrollPosition(adapterPosition: Int): Int
+
     fun onBindRecommendationCarousel(
             element: RecommendationCarouselDataView,
             adapterPosition: Int,
