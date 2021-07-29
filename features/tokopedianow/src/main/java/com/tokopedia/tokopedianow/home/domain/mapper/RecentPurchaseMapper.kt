@@ -33,8 +33,8 @@ object RecentPurchaseMapper {
     private fun mapToProductCardUiModel(response: RecentPurchaseData): List<HomeProductCardUiModel> {
         return response.products.map {
             HomeProductCardUiModel(
-                it.shop.id,
                 it.id,
+                it.shop.id,
                 it.stock.toInt(),
                 createProductCardModel(it),
                 HomeLayoutType.RECENT_PURCHASE

@@ -6,8 +6,8 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeProductCardAdapter.*
 
 data class HomeProductCardUiModel (
-    val shopId: String,
     val productId: String,
+    val shopId: String,
     val quantity: Int,
     var product: ProductCardModel = ProductCardModel(),
     @HomeLayoutType val type: String
