@@ -274,7 +274,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun getNavToolbarHint(): List<HintData> {
         val hint = getString(R.string.tokopedianow_search_bar_hint)
 
-        return listOf(HintData(hint, ""))
+        return listOf(HintData(hint, hint))
     }
 
     protected open fun onSearchBarClick(hint: String = "") {
