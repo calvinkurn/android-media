@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -48,7 +49,7 @@ object ProductRecomMapper {
                         shopName = grid.shop.shopName,
                         appUrl = grid.applink,
                         pageName = pageName,
-                        parentID = grid.parentProductId.toIntOrZero(),
+                        parentID = grid.parentProductId.toLongOrZero(),
                         isRecomProductShowVariantAndCart = true,
                         isTopAds = grid.isTopads,
                         isFreeOngkirActive = grid.isFreeOngkirActive,

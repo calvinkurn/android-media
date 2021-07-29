@@ -269,7 +269,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
-        onView(withId(R.id.qty_editor_pdp)).assertVisible()
+        onView(withId(R.id.qty_tokonow_non_var)).assertVisible()
                 .check(matches(ViewAttributeMatcher {
                     val qtyEditor = (it as QuantityEditorUnify)
                     qtyEditor.getValue() == 5
@@ -319,7 +319,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_buy_now)).perform(click())
         Thread.sleep(300)
 
-        onView(withId(R.id.qty_editor_pdp)).assertVisible()
+        onView(withId(R.id.qty_tokonow_non_var)).assertVisible()
                 .check(matches(ViewAttributeMatcher {
                     val qtyEditor = (it as QuantityEditorUnify)
                     qtyEditor.getValue() == 2
