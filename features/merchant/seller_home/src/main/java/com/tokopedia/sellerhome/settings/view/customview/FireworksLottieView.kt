@@ -13,7 +13,7 @@ class FireworksLottieView @JvmOverloads constructor(context: Context,
     companion object {
         private const val FIREWORKS_ANIM_URL = "https://assets.tokopedia.net/asts/android/seller_home/tokopedia_seller_anniv_anim.json"
 
-        private const val FIREWORKS_REPEAT_COUNT = 3
+        private const val FIREWORKS_REPEAT_COUNT = 2
     }
 
     private var listener: Listener? = null

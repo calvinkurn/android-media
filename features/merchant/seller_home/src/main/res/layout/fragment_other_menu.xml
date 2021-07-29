@@ -33,8 +33,7 @@
         android:translationY="@dimen/spacing_lvl2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/iv_sah_other_status_header"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:src="@drawable/ic_pm_icon_header"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sv_sah_other_menu"

@@ -25,7 +25,7 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -1054,15 +1054,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         when {
             isOfficialStore -> {
                 viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-                anniversaryIllustrationImage?.loadImage(ANNIV_ILLUSTRATION_OS)
+                anniversaryIllustrationImage?.loadImageWithoutPlaceholder(ANNIV_ILLUSTRATION_OS)
             }
             isPowerMerchant -> {
                 viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-                anniversaryIllustrationImage?.loadImage(ANNIV_ILLUSTRATION_PM)
+                anniversaryIllustrationImage?.loadImageWithoutPlaceholder(ANNIV_ILLUSTRATION_PM)
             }
             else -> {
                 viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
-                anniversaryIllustrationImage?.loadImage(ANNIV_ILLUSTRATION_RM)
+                anniversaryIllustrationImage?.loadImageWithoutPlaceholder(ANNIV_ILLUSTRATION_RM)
             }
         }
     }
