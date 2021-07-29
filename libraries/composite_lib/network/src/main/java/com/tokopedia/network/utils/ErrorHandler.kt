@@ -115,7 +115,7 @@ open class ErrorHandler {
         }
 
         private fun getErrorMessageHTTP(e: Throwable): String {
-            return if (e is MessageErrorException && !TextUtils.isEmpty(e.message)) {
+            return if (e is MessageErrorException && !TextUtils.isEmpty(e.errorCode)) {
                 e.errorCode
             } else {
                 "000"
