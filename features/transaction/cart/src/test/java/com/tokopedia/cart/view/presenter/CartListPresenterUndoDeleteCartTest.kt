@@ -1,15 +1,17 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.cartcommon.data.response.undodeletecart.Data
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -18,12 +20,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 object CartListPresenterUndoDeleteCartTest : Spek({
@@ -73,13 +72,16 @@ object CartListPresenterUndoDeleteCartTest : Spek({
 
         Scenario("undo delete cart success") {
 
-            val response = UndoDeleteCartData().apply {
-                isSuccess = true
-                message = "Berhasil"
-            }
+            val response = UndoDeleteCartDataResponse(
+                    status = "OK",
+                    data = Data(success = 1, message = listOf("success message"))
+            )
 
             Given("success response") {
-                every { undoDeleteCartUseCase.createObservable(any()) } returns Observable.just(response)
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(response)
+                }
             }
 
             When("process undo delete") {
@@ -88,32 +90,7 @@ object CartListPresenterUndoDeleteCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.onUndoDeleteCartDataSuccess(response)
-                }
-            }
-
-        }
-
-        Scenario("undo delete cart failed") {
-
-            val messageError = "Gagal"
-
-            val response = UndoDeleteCartData().apply {
-                isSuccess = false
-                message = messageError
-            }
-
-            Given("error response") {
-                every { undoDeleteCartUseCase.createObservable(any()) } returns Observable.just(response)
-            }
-
-            When("process undo delete") {
-                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
-            }
-
-            Then("should render error") {
-                verify {
-                    view.showToastMessageRed(messageError)
+                    view.onUndoDeleteCartDataSuccess()
                 }
             }
 
@@ -121,10 +98,14 @@ object CartListPresenterUndoDeleteCartTest : Spek({
 
         Scenario("undo delete cart failed with exception") {
 
-            val exception = CartResponseErrorException()
+            val errorMessage = "Error Message"
+            val throwable = ResponseErrorException(errorMessage)
 
             Given("error response") {
-                every { undoDeleteCartUseCase.createObservable(any()) } returns Observable.error(exception)
+                coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+                coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+                    secondArg<(Throwable) -> Unit>().invoke(throwable)
+                }
             }
 
             When("process undo delete") {
@@ -133,7 +114,7 @@ object CartListPresenterUndoDeleteCartTest : Spek({
 
             Then("should render error") {
                 verify {
-                    view.showToastMessageRed(exception)
+                    view.showToastMessageRed(throwable)
                 }
             }
 
