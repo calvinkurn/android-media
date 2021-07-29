@@ -73,4 +73,7 @@ object BuyerConsts {
     const val PRODUCT_PRICE = "product_price"
     const val CATEGORY = "category"
     const val PRODUCT_NAME = "product_name"
+
+    const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+    const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
 }
