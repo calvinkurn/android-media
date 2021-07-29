@@ -17,12 +17,12 @@ constructor(@Named(GqlQueryModule.DEPOSITE_ALL_TRANSACTION_QUERY) val query: Str
             graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<GqlCompleteTransactionResponse>(graphqlRepository) {
 
-    fun loadTypeTransactions(startDateUnix: Long, endDateUnix: Long,
+    fun loadTypeTransactions(page: Int, startDate: Date, endDate: Date,
                              transactionType: TransactionType,
                              onSuccess: (response: GqlCompleteTransactionResponse) -> Unit,
                              onError: (Throwable) -> Unit) {
         try {
-            val params = getRequestParams(startDateUnix, endDateUnix, transactionType.type)
+            val params = getRequestParams(startDate, endDate, transactionType.type, page)
             this.setTypeClass(GqlCompleteTransactionResponse::class.java)
             this.setRequestParams(params)
             this.setGraphqlQuery(query)
@@ -38,8 +38,8 @@ constructor(@Named(GqlQueryModule.DEPOSITE_ALL_TRANSACTION_QUERY) val query: Str
     }
 
     @Throws(ParseException::class)
-    private fun getRequestParams(startDateUnix: Long,
-                                 endDateUnix: Long, transactionType: Int)
+    private fun getRequestParams(startDateUnix: Date,
+                                 endDateUnix: Date, transactionType: Int, page: Int)
             : MutableMap<String, Any?> {
         val formattedStartDateStr = getFormattedDate(startDateUnix)
         val formattedEndDateStr = getFormattedDate(endDateUnix)
@@ -47,14 +47,13 @@ constructor(@Named(GqlQueryModule.DEPOSITE_ALL_TRANSACTION_QUERY) val query: Str
                 PARAM_START_DATE to formattedStartDateStr,
                 PARAM_END_DATE to formattedEndDateStr,
                 PARAM_PER_PAGE to 25,
-                PARAM_PAGE to 0,
+                PARAM_PAGE to page,
                 PARAM_SALDO_TYPE to transactionType
         )
     }
 
     @Throws(ParseException::class)
-    private fun getFormattedDate(unixTime: Long): String {
-        val date = Date(unixTime)
+    private fun getFormattedDate(date: Date): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         return dateFormat.format(date)
     }

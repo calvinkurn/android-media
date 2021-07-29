@@ -11,6 +11,10 @@ import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.view.fragment.new.*
 import com.tokopedia.saldodetails.view.viewmodel.state.*
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class TransactionHistoryViewModel @Inject constructor(
@@ -18,8 +22,10 @@ class TransactionHistoryViewModel @Inject constructor(
         private val getTypeTransactionsUseCase: GetTypeTransactionsUseCase,
 ) : BaseViewModel(Main) {
 
-    private var startUnixTime: Long = 0L
-    private var endUnixTime: Long = 0L
+    //todo create Different use case for all other transaction for load more
+
+    private var startDate: Date = Date()
+    private var endDate: Date = Date()
 
     private val allTransactionList = arrayListOf<DepositHistoryList>()
     private val refundTransactionList = arrayListOf<DepositHistoryList>()
@@ -40,17 +46,16 @@ class TransactionHistoryViewModel @Inject constructor(
         }
     }
 
-
-    fun refreshAllTabsData(startUnixTime: Long, endUnixTime: Long) {
-        this.startUnixTime = startUnixTime
-        this.endUnixTime = endUnixTime
+    fun refreshAllTabsData(startDate: Date, endDate: Date) {
+        this.startDate = startDate
+        this.endDate = endDate
         clearPrevData()
         cancelTransactionLoading()
         allTransactionLiveData.postValue(InitialLoadingState)
         refundTransactionLiveData.postValue(InitialLoadingState)
         salesTransactionLiveData.postValue(InitialLoadingState)
         incomeTransactionLiveData.postValue(InitialLoadingState)
-        getAllTypeTransactionUseCase.loadAllTypeTransactions(startUnixTime, endUnixTime,
+        getAllTypeTransactionUseCase.loadAllTypeTransactions(startDate, endDate,
                 {
                     onAllTabDataLoaded(it)
                 }, {
@@ -60,18 +65,22 @@ class TransactionHistoryViewModel @Inject constructor(
     }
 
     fun loadMoreTransaction(page: Int, transactionType: TransactionType) {
-        updateLoadMoreState(transactionType)
-        if (transactionType == SalesTransaction) {
-            loadMoreSaleTransaction(page)
-        } else {
-            getTypeTransactionsUseCase.loadTypeTransactions(
-                    startUnixTime, endUnixTime, transactionType, {
-                notifyAndAddLoadMoreTransaction(it, transactionType)
-            }, {
-                notifyLoadMoreError(it, transactionType)
+        //launch {
+            updateLoadMoreState(transactionType)
+            //delay(10000L)
+            if (transactionType == SalesTransaction) {
+                loadMoreSaleTransaction(page)
+            } else {
+                getTypeTransactionsUseCase.loadTypeTransactions(page,
+                    startDate, endDate, transactionType, {
+                        notifyAndAddLoadMoreTransaction(it, transactionType)
+                    }, {
+                        notifyLoadMoreError(it, transactionType)
+                    }
+                )
             }
-            )
-        }
+        //}
+
     }
 
     private fun loadMoreSaleTransaction(page: Int) {
@@ -89,12 +98,12 @@ class TransactionHistoryViewModel @Inject constructor(
             }
             response.buyerDepositHistory?.let {
                 refundTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
-                refundTransactionLiveData.postValue(SaldoHistoryResponse(allTransactionList,
+                refundTransactionLiveData.postValue(SaldoHistoryResponse(refundTransactionList,
                         it.isHaveNextPage))
             }
             response.sellerDepositHistory?.let {
                 incomeTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
-                incomeTransactionLiveData.postValue(SaldoHistoryResponse(allTransactionList,
+                incomeTransactionLiveData.postValue(SaldoHistoryResponse(incomeTransactionList,
                         it.isHaveNextPage))
             }
         }
@@ -112,9 +121,9 @@ class TransactionHistoryViewModel @Inject constructor(
     private fun updateLoadMoreState(transactionType: TransactionType) {
         when (transactionType) {
             AllTransaction -> allTransactionLiveData.postValue(LoadingMoreState)
-            RefundTransaction -> allTransactionLiveData.postValue(LoadingMoreState)
-            IncomeTransaction -> allTransactionLiveData.postValue(LoadingMoreState)
-            SalesTransaction -> allTransactionLiveData.postValue(LoadingMoreState)
+            RefundTransaction -> refundTransactionLiveData.postValue(LoadingMoreState)
+            IncomeTransaction -> incomeTransactionLiveData.postValue(LoadingMoreState)
+            SalesTransaction -> salesTransactionLiveData.postValue(LoadingMoreState)
         }
     }
 

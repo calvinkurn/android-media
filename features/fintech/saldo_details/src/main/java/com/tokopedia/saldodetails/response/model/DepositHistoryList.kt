@@ -4,23 +4,22 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.viewmodel.ParcelableViewModel
 
-class DepositHistoryList : ParcelableViewModel<SaldoDetailTransactionFactory> {
-
+data class DepositHistoryList(
     @SerializedName("note")
-    var note: String? = null
-
+    var note: String? = null,
     @SerializedName("amount")
-    var amount: Double = 0.0
-
-    @SerializedName("image")
-    var imageURL: String? = null
-
+    var amount: Double = 0.0,
     @SerializedName("create_time")
-    var createTime: String? = null
-
+    var createTime: String,
     @SerializedName("type_description")
-    var typeDescription: String? = null
-
+    var typeDescription: String? = null,
+    @SerializedName("withdrawal_status_string")
+    var withdrawalStatusString: String? = null,
+    @SerializedName("withdrawal_status_color")
+    var withdrawalStatusColor: Int,
+    @SerializedName("have_detail")
+    var haveDetail: Boolean)
+: ParcelableViewModel<SaldoDetailTransactionFactory> {
     override fun type(typeFactory: SaldoDetailTransactionFactory): Int {
         return typeFactory.type(this)
     }

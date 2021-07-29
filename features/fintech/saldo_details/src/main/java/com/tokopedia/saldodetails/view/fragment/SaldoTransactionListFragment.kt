@@ -6,22 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoTransactionAdapter
+import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
-import com.tokopedia.saldodetails.view.fragment.new.TransactionType
-import com.tokopedia.saldodetails.view.fragment.new.TransactionTypeMapper
+import com.tokopedia.saldodetails.view.fragment.new.*
 import com.tokopedia.saldodetails.view.viewmodel.TransactionHistoryViewModel
 import com.tokopedia.saldodetails.view.viewmodel.state.*
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
 class SaldoTransactionListFragment : BaseDaggerFragment() {
-
-    lateinit var adapter : SaldoTransactionAdapter
 
 
     @Inject
@@ -39,6 +39,12 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
 
     private lateinit var transactionType: TransactionType
+
+    private val adapter : SaldoTransactionAdapter by lazy {
+        SaldoTransactionAdapter(getAdapterTypeFactory())
+    }
+
+    private var endlessRecyclerViewScrollListener : EndlessRecyclerViewScrollListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +73,19 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     }
 
     private fun initRecyclerView(){
-        adapter = SaldoTransactionAdapter(getAdapterTypeFactory())
         transactionRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         transactionRecyclerView.adapter = adapter
+        endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
+        transactionRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener!!)
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
+    private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : DataEndLessScrollListener(transactionRecyclerView?.layoutManager, adapter) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                transactionHistoryViewModel?.loadMoreTransaction(page, transactionType)
+            }
+        }
     }
 
     private fun initObservers() {
@@ -78,11 +94,15 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         ) {
             when (it) {
                 is InitialLoadingError -> {
+                    //todo
                 }
                 is LoadMoreError -> {
-                    //try to show error...
+                    //todo try to show error...
                 }
-                LoadingMoreState, InitialLoadingState -> {
+                LoadingMoreState-> adapter.showLoadingInAdapter()
+                InitialLoadingState -> {
+                    endlessRecyclerViewScrollListener?.resetState()
+                    adapter.clearAllElements()
                     adapter.showLoadingInAdapter()
                 }
                 is SaldoHistoryResponse -> onDataLoaded(it.historyList, it.hasMore)
@@ -92,9 +112,18 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
 
     private fun onDataLoaded(historyList: ArrayList<DepositHistoryList>, hasMore: Boolean) {
         adapter.addAllElements(historyList)
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasMore)
     }
 
-    private fun getAdapterTypeFactory(): SaldoDetailTransactionFactory  = SaldoDetailTransactionFactory()
+    private fun getAdapterTypeFactory(): SaldoDetailTransactionFactory  = SaldoDetailTransactionFactory(::openDetailPage)
+
+    private fun openDetailPage(visitable: Visitable<*>){
+        if(visitable is DepositHistoryList){
+            //todo Abhijeet
+        }
+    }
+
 
     companion object {
         val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"

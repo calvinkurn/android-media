@@ -2,9 +2,9 @@ package com.tokopedia.saldodetails.view.fragment.new
 
 object TransactionTitle{
     const val ALL_TRANSACTION = "Semua"
-    const val SALDO_REFUND = "Refund"
+    const val SALDO_REFUND = "Saldo Refund"
     const val SALDO_SALES = "Penjualan"
-    const val SALDO_INCOME = "Penghasilan"
+    const val SALDO_INCOME = "Saldo Penghasilan"
 }
 
 

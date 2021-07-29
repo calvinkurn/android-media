@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 
-abstract class DataEndLessScrollListener protected constructor(layoutManager: RecyclerView.LayoutManager?,
-                                                               private val onDataEndlessScrollListener: OnDataEndlessScrollListener?) : EndlessRecyclerViewScrollListener(layoutManager) {
+abstract class DataEndLessScrollListener(layoutManager: RecyclerView.LayoutManager?,
+                                         private val onDataEndlessScrollListener: OnDataEndlessScrollListener?) : EndlessRecyclerViewScrollListener(layoutManager) {
 
     interface OnDataEndlessScrollListener {
         fun endlessDataSize(): Int
