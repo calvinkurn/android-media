@@ -1072,7 +1072,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         itemView.findViewById<Typography>(R.id.home_account_member_layout_title)?.let {
             memberTitle = it
         }
-
         itemView.findViewById<ImageUnify>(R.id.home_account_member_layout_member_icon)?.let {
             memberIcon = it
         }
@@ -1140,6 +1139,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                                 COMPONENT_NAME_TOP_ADS)
             }
         }
+    }
+
+    override fun onLinkingAccountClicked() {
+        showBottomSheetLinkAccount()
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
@@ -1274,6 +1277,19 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 bottomSheet.show(this, "bottom sheet add name")
             }
         }
+    }
+
+    private fun showBottomSheetLinkAccount() {
+        val child = View.inflate(context, R.layout.layout_bottom_sheet_link_account, null)
+        val btnPrimary: UnifyButton = child.findViewById(R.id.bottom_sheet_link_account_btn)
+        val imagePrimary: ImageUnify = child.findViewById(R.id.bottom_sheet_link_account_image)
+
+        BottomSheetUnify().apply {
+//            ImageUtils.loadImage(imagePrimary)
+            btnPrimary.setOnClickListener { }
+            setChild(child)
+            setCloseClickListener { dismiss() }
+        }.show(parentFragmentManager, "linkAccount")
     }
 
     private fun gotoChangeName(profile: ProfileDataView) {
