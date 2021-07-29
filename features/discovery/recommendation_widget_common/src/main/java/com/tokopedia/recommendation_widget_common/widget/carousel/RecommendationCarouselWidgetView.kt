@@ -1,10 +1,13 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -132,7 +135,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
         typeFactory = CommonRecomCarouselCardTypeFactoryImpl(carouselData.recommendationData)
         adapter = RecommendationCarouselAdapter(typeFactory)
-        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        layoutManager = createLayoutManager()
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
@@ -140,6 +143,27 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isInitialized = true
     }
 
+    private fun createLayoutManager(): LinearLayoutManager {
+        return object: LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+            override fun requestChildRectangleOnScreen(
+                    parent: RecyclerView,
+                    child: View,
+                    rect: Rect,
+                    immediate: Boolean,
+                    focusedChildVisible: Boolean
+            ): Boolean {
+                return if ((child as? ViewGroup)?.focusedChild is CardView) {
+                    false
+                } else super.requestChildRectangleOnScreen(
+                        parent,
+                        child,
+                        rect,
+                        immediate,
+                        focusedChildVisible
+                )
+            }
+        }
+    }
 
     private fun impressChannel(carouselData: RecommendationCarouselData) {
         itemView.addOnImpressionListener(carouselData) {
