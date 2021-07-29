@@ -34,19 +34,6 @@
             app:layout_constraintWidth_percent="0.6"
             />
 
-<!--        <ImageView-->
-<!--            android:layout_width="@dimen/layout_lvl0"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:adjustViewBounds="true"-->
-<!--            android:scaleType="fitStart"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintWidth_percent="0.6"-->
-<!--            />-->
-
     </com.tokopedia.play_common.view.RoundedConstraintLayout>
 
     <com.airbnb.lottie.LottieAnimationView
@@ -54,20 +41,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        app:layout_constraintBottom_toBottomOf="@id/fl_interactive_tap"
-        app:layout_constraintEnd_toEndOf="@id/fl_interactive_tap"
-        app:layout_constraintStart_toStartOf="@id/fl_interactive_tap"
+        app:layout_constraintBottom_toBottomOf="@id/lottie_button_tap"
+        app:layout_constraintEnd_toEndOf="@id/lottie_button_tap"
+        app:layout_constraintStart_toStartOf="@id/lottie_button_tap"
         />
 
-<!--    <com.airbnb.lottie.LottieAnimationView-->
-<!--        android:id="@+id/lottie_button_tap"-->
-<!--        android:layout_width="@dimen/play_interactive_tap_action"-->
-<!--        android:layout_height="@dimen/play_interactive_tap_action"-->
-<!--        android:layout_marginEnd="@dimen/spacing_lvl1"-->
-<!--        android:layout_marginBottom="@dimen/spacing_lvl4"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"-->
-<!--        app:layout_constraintEnd_toEndOf="@id/cl_tap_background"-->
-<!--        />-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_button_tap"
+        android:layout_width="@dimen/play_interactive_tap_action"
+        android:layout_height="@dimen/play_interactive_tap_action"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/cl_tap_background"
+        app:layout_constraintEnd_toEndOf="@id/cl_tap_background"
+        />
 
     <FrameLayout
         android:id="@+id/fl_interactive_tap"

@@ -1092,6 +1092,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+        if (!channelType.isLive || videoOrientation.isHorizontal || videoPlayer.isYouTube) return
         val interactiveUiState = mapInteractiveToState(interactive)
         interactiveRepo.setDetail(interactive.id.toString(), interactive)
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {

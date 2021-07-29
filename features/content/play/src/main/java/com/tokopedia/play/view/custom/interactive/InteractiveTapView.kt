@@ -8,12 +8,19 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import java.net.UnknownHostException
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Created by jegul on 05/07/21
@@ -31,11 +38,17 @@ class InteractiveTapView : ConstraintLayout {
     private val tvTapAction: TextView
     private val clTapBackground: RoundedConstraintLayout
     private val lottieConfettiTap: LottieAnimationView
-//    private val lottieButtonTap: LottieAnimationView
+    private val lottieButtonTap: LottieAnimationView
 
     private val lottieConfettiListener: Animator.AnimatorListener
 
     private var mListener: Listener? = null
+
+    private val isButtonLottieLoaded = AtomicBoolean(false)
+    private val isConfettiLottieLoaded = AtomicBoolean(false)
+
+    private val buttonLottieRetryCount = AtomicInteger(0)
+    private val confettiLottieRetryCount = AtomicInteger(0)
 
     init {
         val view = View.inflate(context, R.layout.view_interactive_tap, this)
@@ -46,7 +59,7 @@ class InteractiveTapView : ConstraintLayout {
         tvTapAction = view.findViewById(R.id.tv_tap_action)
         clTapBackground = view.findViewById(R.id.cl_tap_background)
         lottieConfettiTap = view.findViewById(R.id.lottie_confetti_tap)
-//        lottieButtonTap = view.findViewById(R.id.lottie_button_tap)
+        lottieButtonTap = view.findViewById(R.id.lottie_button_tap)
 
         lottieConfettiListener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -66,13 +79,34 @@ class InteractiveTapView : ConstraintLayout {
     }
 
     private fun setupView(view: View) {
-//        lottieButtonTap.setAnimationFromUrl(context.getString(R.string.lottie_button_tap), LOTTIE_BUTTON_CACHE_KEY)
-//        lottieButtonTap.repeatCount = LottieDrawable.INFINITE
-//        lottieButtonTap.playAnimation()
+        fun setupLottieButton() {
+            lottieButtonTap.setFailureListener {
+                if (it is UnknownHostException && buttonLottieRetryCount.getAndIncrement() < MAX_RETRY_COUNT) loadButtonTapLottie()
+            }
+            lottieButtonTap.addLottieOnCompositionLoadedListener {
+                isButtonLottieLoaded.compareAndSet(false, true)
+                invalidateLottieState()
+            }
+            lottieButtonTap.repeatCount = LottieDrawable.INFINITE
+            lottieButtonTap.playAnimation()
+            loadButtonTapLottie()
+        }
 
-        lottieConfettiTap.addAnimatorListener(lottieConfettiListener)
-        lottieConfettiTap.setMinProgress(0.2f)
-        lottieConfettiTap.setAnimationFromUrl(context.getString(R.string.lottie_confetti_tap), LOTTIE_CONFETTI_CACHE_KEY)
+        fun setupLottieConfetti() {
+            lottieConfettiTap.setFailureListener {
+                if (it is UnknownHostException && confettiLottieRetryCount.getAndIncrement() < MAX_RETRY_COUNT) loadConfettiTapLottie()
+            }
+            lottieConfettiTap.addLottieOnCompositionLoadedListener {
+                isConfettiLottieLoaded.compareAndSet(false, true)
+                invalidateLottieState()
+            }
+            lottieConfettiTap.addAnimatorListener(lottieConfettiListener)
+            lottieConfettiTap.setMinProgress(0.2f)
+            loadConfettiTapLottie()
+        }
+
+        setupLottieButton()
+        setupLottieConfetti()
     }
 
     fun setTimer(durationInMs: Long, onFinished: () -> Unit) {
@@ -96,13 +130,8 @@ class InteractiveTapView : ConstraintLayout {
                 else Mode.Follow
         )
 
-        flInteractiveTap.setOnClickListener {
-            if (!shouldShow) {
-                playTapAnimation()
-                mListener?.onTapClicked(this)
-            }
-            else mListener?.onFollowClicked(this)
-        }
+        flInteractiveTap.setOnClickListener(getButtonTapClickedListener(isFollowMode = shouldShow))
+        lottieButtonTap.setOnClickListener(getButtonTapClickedListener(isFollowMode = shouldShow))
     }
 
     fun setListener(listener: Listener?) {
@@ -131,10 +160,42 @@ class InteractiveTapView : ConstraintLayout {
         if (!lottieConfettiTap.isAnimating) lottieConfettiTap.playAnimation()
     }
 
+    private fun getButtonTapClickedListener(isFollowMode: Boolean) = OnClickListener {
+        if (!isFollowMode) {
+            playTapAnimation()
+            mListener?.onTapClicked(this)
+        }
+        else mListener?.onFollowClicked(this)
+    }
+
+    private fun loadButtonTapLottie() {
+        lottieButtonTap.setAnimationFromUrl(context.getString(R.string.lottie_button_tap), LOTTIE_BUTTON_CACHE_KEY)
+    }
+
+    private fun loadConfettiTapLottie() {
+        lottieConfettiTap.setAnimationFromUrl(context.getString(R.string.lottie_confetti_tap), LOTTIE_CONFETTI_CACHE_KEY)
+    }
+
+    private fun invalidateLottieState() = synchronized(this) {
+        if (isButtonLottieLoaded.get() && isConfettiLottieLoaded.get()) {
+            mListener?.onAnimationLoadedFromUrl(this@InteractiveTapView)
+
+            lottieButtonTap.visibility = View.VISIBLE
+            lottieConfettiTap.visibility = View.VISIBLE
+            flInteractiveTap.visibility = View.GONE
+        } else {
+            flInteractiveTap.visibility = View.VISIBLE
+            lottieButtonTap.visibility = View.GONE
+            lottieConfettiTap.visibility = View.GONE
+        }
+    }
+
     companion object {
 
         private const val LOTTIE_CONFETTI_CACHE_KEY = "CONFETTI_INTERACTIVE_TAP"
         private const val LOTTIE_BUTTON_CACHE_KEY = "BUTTON_INTERACTIVE_TAP"
+
+        private const val MAX_RETRY_COUNT = 3
     }
 
     private enum class Mode {
@@ -146,5 +207,7 @@ class InteractiveTapView : ConstraintLayout {
 
         fun onTapClicked(view: InteractiveTapView)
         fun onFollowClicked(view: InteractiveTapView)
+
+        fun onAnimationLoadedFromUrl(view: InteractiveTapView)
     }
 }
