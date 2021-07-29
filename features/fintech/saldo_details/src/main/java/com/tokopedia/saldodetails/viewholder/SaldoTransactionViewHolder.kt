@@ -73,7 +73,7 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
         onClick(element)
     }
 
-    fun getLocalLabelColor(serverColorInt: Int): Int {
+    private fun getLocalLabelColor(serverColorInt: Int): Int {
         return when(serverColorInt){
             1-> Label.GENERAL_LIGHT_GREEN
             2-> Label.GENERAL_LIGHT_ORANGE
@@ -81,9 +81,6 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
             else -> Label.GENERAL_DARK_GREY
         }
     }
-
-
-
 
     companion object {
         private val DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss"

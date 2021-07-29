@@ -216,7 +216,6 @@
 
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/transaction_history_tab_layout"
-            style="?tabTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"

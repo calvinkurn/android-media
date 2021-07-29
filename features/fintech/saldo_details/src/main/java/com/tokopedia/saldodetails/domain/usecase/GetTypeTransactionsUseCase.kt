@@ -1,20 +1,19 @@
-package com.tokopedia.saldodetails.domain
+package com.tokopedia.saldodetails.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.saldodetails.di.GqlQueryModule
-import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse
+import com.tokopedia.saldodetails.domain.query.GQL_LOAD_TYPE_TRANSACTION_LIST
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.view.fragment.new.TransactionType
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 
+@GqlQuery("GqlLoadTypeTransactionList", GQL_LOAD_TYPE_TRANSACTION_LIST)
 class GetTypeTransactionsUseCase @Inject
-constructor(@Named(GqlQueryModule.DEPOSITE_ALL_TRANSACTION_QUERY) val query: String,
-            graphqlRepository: GraphqlRepository)
+constructor(graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<GqlCompleteTransactionResponse>(graphqlRepository) {
 
     fun loadTypeTransactions(page: Int, startDate: Date, endDate: Date,
@@ -25,7 +24,7 @@ constructor(@Named(GqlQueryModule.DEPOSITE_ALL_TRANSACTION_QUERY) val query: Str
             val params = getRequestParams(startDate, endDate, transactionType.type, page)
             this.setTypeClass(GqlCompleteTransactionResponse::class.java)
             this.setRequestParams(params)
-            this.setGraphqlQuery(query)
+            this.setGraphqlQuery(GqlLoadTypeTransactionList.GQL_QUERY)
             execute({
                 onSuccess(it)
             }, {
