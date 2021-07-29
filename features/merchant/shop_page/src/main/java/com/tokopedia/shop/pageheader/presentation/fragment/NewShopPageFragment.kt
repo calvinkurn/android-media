@@ -139,6 +139,7 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -166,7 +167,8 @@ class NewShopPageFragment :
         ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
         ShopHeaderPlayWidgetViewHolder.Listener,
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
-        ShareBottomsheetListener
+        ShareBottomsheetListener,
+        ScreenShotListener
 {
 
     companion object {
@@ -336,6 +338,11 @@ class NewShopPageFragment :
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.new_shop_page_main, container, false)
 
+
+    override fun onStop() {
+        UniversalShareBottomSheet.clearState()
+        super.onStop()
+    }
 
     override fun onDestroy() {
         shopViewModel?.shopPageP1Data?.removeObservers(this)
@@ -855,6 +862,7 @@ class NewShopPageFragment :
         }
     }
 
+
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             initialProductFilterParameter = it
@@ -1066,6 +1074,7 @@ class NewShopPageFragment :
         removeTemporaryShopImage(shopImageFilePath)
         setShopName()
         checkIfChooseAddressWidgetDataUpdated()
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -2315,6 +2324,10 @@ class NewShopPageFragment :
         shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
     }
 
+    override fun screenShotTaken() {
+        showUniversalShareBottomSheet()
+    }
+
     private fun showUniversalShareBottomSheet() {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@NewShopPageFragment)
@@ -2327,5 +2340,14 @@ class NewShopPageFragment :
             imageSaved(shopImageFilePath)
         }
         universalShareBottomSheet?.show(fragmentManager)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
     }
 }

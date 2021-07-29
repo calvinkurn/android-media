@@ -32,6 +32,19 @@ class SharingUtil {
         private const val copyLinkToastString = "Sip, link berhasil disalin!"
         private const val actionBtnTxt = "OK"
 
+        const val labelWhatsapp = "whatsapp"
+        const val labelFbfeed = "fbfeed"
+        const val labelFbstory = "fbstory"
+        const val labelIgfeed = "igfeed"
+        const val labelIgstory = "igstory"
+        const val labelLine = "line"
+        const val labelTwitter = "twitter"
+        const val labelTelegram = "telegram"
+        const val labelSalinLink = "salinlink"
+        const val labelSms = "sms"
+        const val labelEmail = "email"
+        const val labelOthers = "lainnya"
+
         fun saveViewCaptureToStorage(
             resource: Bitmap,
             imageSaved: (savedImgPath: String) -> Unit
