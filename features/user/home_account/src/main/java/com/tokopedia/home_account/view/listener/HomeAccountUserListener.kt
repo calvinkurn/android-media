@@ -31,4 +31,5 @@ interface HomeAccountUserListener {
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationThreeDotsClicked(item: RecommendationItem, adapterPosition: Int)
+    fun onLinkingAccountClicked()
 }
