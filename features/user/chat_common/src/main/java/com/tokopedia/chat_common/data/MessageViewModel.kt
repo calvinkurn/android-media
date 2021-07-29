@@ -47,7 +47,10 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     /**
      * constructor for WS response
      */
-    constructor(pojo: ChatSocketPojo) : super(
+    constructor(
+        pojo: ChatSocketPojo,
+        attachment: Any? = null
+    ) : super(
             messageId = pojo.msgId.toString(),
             fromUid = pojo.fromUid,
             from = pojo.from,
@@ -63,6 +66,7 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
             source = pojo.source
     ) {
         label = pojo.label
+        this.attachment = attachment
     }
 
     constructor(

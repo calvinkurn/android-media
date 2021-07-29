@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_MSG
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -28,6 +30,8 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
 
 ) : WebsocketMessageMapper() {
 
+    private val gson = GsonBuilder().create()
+
     override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
         return MessageViewModel(pojo)
     }
@@ -37,8 +41,19 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)
             TYPE_QUOTATION -> convertToQuotation(pojo, jsonAttributes)
             TYPE_STICKER.toString() -> convertToSticker(pojo, jsonAttributes)
+            TYPE_CTA_HEADER_MSG -> convertToCtaHeaderMsg(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
+    }
+
+    private fun convertToCtaHeaderMsg(
+        pojo: ChatSocketPojo,
+        jsonAttributes: JsonObject
+    ): Visitable<*> {
+        val attachment = gson.fromJson(
+            jsonAttributes, HeaderCtaMessageAttachment::class.java
+        )
+        return MessageViewModel(pojo, attachment)
     }
 
     private fun convertToSticker(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
