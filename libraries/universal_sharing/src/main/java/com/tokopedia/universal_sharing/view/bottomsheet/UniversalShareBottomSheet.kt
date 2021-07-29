@@ -65,7 +65,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
         private const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
         //add remote config handling
-        private var featureFlagRemoteConfigKey: String = "android_enable_custom_sharing"
+        private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
+        private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
+        private var featureFlagRemoteConfigKey: String = ""
         //Optons Flag
         private var isImageOnlySharing: Boolean = false
         private var screenShotImagePath: String = ""
@@ -74,16 +76,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
-        fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = ""): Boolean{
+        fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean{
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
-            isEnabled = if(!TextUtils.isEmpty(remoteConfigKey)){
-                featureFlagRemoteConfigKey = remoteConfigKey
-                remoteConfig.getBoolean(remoteConfigKey)
-            } else{
-                featureFlagRemoteConfigKey = "android_enable_custom_sharing"
-                remoteConfig.getBoolean(featureFlagRemoteConfigKey)
-            }
+            isEnabled = remoteConfig.getBoolean(remoteConfigKey)
+            featureFlagRemoteConfigKey = remoteConfigKey
             return isEnabled
         }
 
@@ -95,11 +92,17 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             screenShotImagePath = imgPath
         }
 
-        fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener, fragment: Fragment){
-            if(screenshotDetector == null) {
-                screenshotDetector = ScreenshotDetector(context, screenShotListener)
+        fun createAndStartScreenShotDetector(context: Context, screenShotListener: ScreenShotListener,
+                                             fragment: Fragment, remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG){
+            val isEnabled: Boolean
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            isEnabled = remoteConfig.getBoolean(remoteConfigKey)
+            if(isEnabled) {
+                if (screenshotDetector == null) {
+                    screenshotDetector = ScreenshotDetector(context, screenShotListener)
+                }
+                screenshotDetector?.detectScreenshots(fragment)
             }
-            screenshotDetector?.detectScreenshots(fragment)
         }
 
         fun getScreenShotDetector(): ScreenshotDetector? {
