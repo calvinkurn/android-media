@@ -171,10 +171,12 @@ class ScreenRecordService : Service(), CoroutineScope {
 
             mediaRecorder.setOutputFormat(profile.fileFormat)
 
-            mediaRecorder.setAudioEncoder(profile.audioCodec)
-            mediaRecorder.setAudioChannels(profile.audioChannels)
-            mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
-            mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+            if (isRecordMic) {
+                mediaRecorder.setAudioEncoder(profile.audioCodec)
+                mediaRecorder.setAudioChannels(profile.audioChannels)
+                mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
+                mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+            }
 
             mediaRecorder.setVideoFrameRate(profile.videoFrameRate)
             mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
