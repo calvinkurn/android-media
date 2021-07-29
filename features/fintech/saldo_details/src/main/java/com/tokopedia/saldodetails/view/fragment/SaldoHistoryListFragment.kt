@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.response.model.DepositActivityResponse
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
 import com.tokopedia.saldodetails.utils.*/*
@@ -25,12 +24,11 @@ import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 
 
-class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() {
+class SaldoHistoryListFragment /*: BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() */{
 
-
+/*
     private var recyclerView: RecyclerView? = null
     private var adapter: SaldoDepositAdapter? = null
-    lateinit var saldoHistoryFragment: SaldoHistoryContract.View
     lateinit var viewModel: SaldoHistoryViewModel
     private var transactionType: String? = null
 
@@ -47,11 +45,11 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     private fun addObserver() {
         if (::viewModel.isInitialized) {
-            /*when (transactionType) {
+            *//*when (transactionType) {
                 FOR_ALL -> addAllTransactionObserver()
                 FOR_BUYER -> buyerObserver()
                 FOR_SELLER -> sellerObserver()
-            }*/
+            }*//*
         }
     }
 
@@ -127,9 +125,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 when (transactionType) {
-                    /*FOR_ALL -> viewModel.loadMoreAllTransaction(page)
+                    *//*FOR_ALL -> viewModel.loadMoreAllTransaction(page)
                     FOR_BUYER -> viewModel.loadMoreBuyerTransaction(page)
-                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page)*/
+                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page)*//*
                 }
             }
         }
@@ -150,5 +148,5 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     override fun getScreenName() = null
 
-    private fun getDefaultEmptyViewModel() = EmptyModel()
+    private fun getDefaultEmptyViewModel() = EmptyModel()*/
 }
