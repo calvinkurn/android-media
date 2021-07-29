@@ -24,11 +24,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
                                                         private val executorDispatchers: CoroutineDispatchers) {
 
-    suspend fun atcOcc(productId: String, userId: String): OccGlobalEvent {
+    suspend fun atcOcc(productIds: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = atcOccMultiExternalUseCase.get().setParams(listOf(productId), userId).executeOnBackground()
+                val response = atcOccMultiExternalUseCase.get().setParams(productIds.split(","), userId).executeOnBackground()
                 if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")

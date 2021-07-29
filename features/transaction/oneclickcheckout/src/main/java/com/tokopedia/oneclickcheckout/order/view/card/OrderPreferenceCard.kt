@@ -149,6 +149,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingDuration.text = binding.root.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
             tvShippingDuration.visible()
             tvShippingDurationEta.gone()
+            tvShippingCourierNotes.gone()
             setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
@@ -207,6 +208,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingCourier.text = binding.root.context.getString(R.string.lbl_shipping_with_name, logisticPromoViewModel.title)
             tvShippingDuration.gone()
             btnChangeDuration.gone()
+            tvShippingCourierNotes.gone()
             if (logisticPromoViewModel.benefitAmount >= logisticPromoViewModel.shippingRate) {
                 tvShippingPrice.gone()
             } else {
@@ -264,6 +266,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
             }
             tvShippingCourierEta.visible()
+            tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
             setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
                 val shippingRecommendationData = shipment.shippingRecommendationData
@@ -290,6 +293,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     ?: 0, false).removeDecimalSuffix()
             tvShippingPrice.visible()
             tvShippingCourierEta.gone()
+            tvShippingCourierNotes.gone()
             setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
@@ -354,6 +358,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             iconReloadShipping.gone()
             tvShippingPrice.gone()
             tvShippingCourierEta.gone()
+            tvShippingCourierNotes.gone()
             tickerShippingPromo.gone()
         }
     }
@@ -380,6 +385,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             btnReloadShipping.visible()
             iconReloadShipping.visible()
             tvShippingPrice.gone()
+            tvShippingCourierNotes.gone()
             tvShippingCourierEta.gone()
             tickerShippingPromo.gone()
         }
@@ -391,6 +397,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingDurationEta.gone()
             btnChangeDuration.gone()
             tvShippingCourierEta.gone()
+            tvShippingCourierNotes.gone()
             btnChangeCourier.gone()
             tvShippingErrorMessage.gone()
             btnReloadShipping.gone()

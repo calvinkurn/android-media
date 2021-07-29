@@ -121,6 +121,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private var orderProfile: OrderProfile? = null
 
+    private lateinit var adapter: OrderSummaryPageAdapter
+
+    private var progressDialog: AlertDialog? = null
+
+    private var shouldUpdateCart: Boolean = true
+    private var shouldDismissProgressDialog: Boolean = false
+
+    // Last saved PPP state based on productId
+    private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
+
+    private var source: String = SOURCE_OTHERS
+    private var shouldShowToaster: Boolean = false
+
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
         try {
             val childCount = it.rvOrderSummaryPage.childCount
@@ -135,19 +148,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             Timber.d(t)
         }
     }
-
-    private lateinit var adapter: OrderSummaryPageAdapter
-
-    private var progressDialog: AlertDialog? = null
-
-    private var shouldUpdateCart: Boolean = true
-    private var shouldDismissProgressDialog: Boolean = false
-
-    // Last saved PPP state based on productId
-    private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
-
-    private var source: String = SOURCE_OTHERS
-    private var shouldShowToaster: Boolean = false
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -270,6 +270,32 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         initViewModel(savedInstanceState)
     }
 
+    override fun onStart() {
+        shouldUpdateCart = true
+        shouldDismissProgressDialog = false
+        super.onStart()
+    }
+
+    fun setIsFinishing() {
+        shouldUpdateCart = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (binding.loaderContent.visibility == View.GONE && shouldUpdateCart) {
+            viewModel.updateCart()
+        }
+        if (shouldDismissProgressDialog && progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
+            viewModel.globalEvent.value = OccGlobalEvent.Normal
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(SAVE_HAS_DONE_ATC, viewModel.orderProducts.value.isNotEmpty())
+    }
+
     private fun initViews() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -383,6 +409,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderProfile() {
         viewModel.orderProfile.observe(viewLifecycleOwner) {
+            orderProfile = it
             adapter.profile = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
@@ -411,29 +438,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccState.FirstLoad -> showMainContent(it.data)
                 is OccState.Success -> showMainContent(it.data)
-            }
-        }
-    }
-
-    private fun showMainContent(data: OrderPreference) {
-        view?.also { _ ->
-            binding.loaderContent.animateGone()
-            binding.globalError.animateGone()
-            adapter.onboarding = data.onboarding
-            adapter.ticker = data.ticker
-            binding.rvOrderSummaryPage.scrollToPosition(0)
-            if (binding.rvOrderSummaryPage.isComputingLayout) {
-                binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
-                }
-            } else {
-                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
-            }
-            if (data.hasValidProfile) {
-                binding.rvOrderSummaryPage.show()
-                binding.layoutNoAddress.root.animateGone()
-            } else {
-                binding.rvOrderSummaryPage.gone()
             }
         }
     }
@@ -641,6 +645,31 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun validateAddressState(addressState: AddressState) {
+        if (addressState.popupMessage.isNotBlank()) {
+            view?.let {
+                Toaster.build(it, addressState.popupMessage).show()
+            }
+        }
+
+        when (addressState.errorCode) {
+            AddressState.ERROR_CODE_OPEN_ADDRESS_LIST -> {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
+                intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.address.state)
+                intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
+                startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
+            }
+            AddressState.ERROR_CODE_OPEN_ANA -> {
+                showLayoutNoAddress()
+            }
+            else -> {
+                if (addressState.address.addressId > 0) {
+                    updateLocalCacheAddressData(addressState.address)
+                }
+            }
+        }
+    }
+
     private fun updateLocalCacheAddressData(addressModel: ChosenAddressModel) {
         activity?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
@@ -708,6 +737,32 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
+        address?.let {
+            val locationPass = LocationPass()
+            locationPass.cityName = it.cityName
+            locationPass.districtName = it.districtName
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+            val bundle = Bundle()
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+            intent.putExtras(bundle)
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            if (shouldUpdatePinpointFlag) {
+                viewModel.changePinpoint()
+            }
+        }
+    }
+
+    private fun forceShowOnboarding(onboarding: OccOnboarding?) {
+        if (onboarding?.isForceShowCoachMark == true) {
+            if (onboarding.coachmarkType == COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE) {
+                showNewOnboarding(onboarding)
+            }
+            viewModel.consumeForceShowOnboarding()
+        }
+    }
+
     private fun showNewOnboarding(onboarding: OccOnboarding) {
         view?.let {
             it.post {
@@ -763,120 +818,289 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun forceShowOnboarding(onboarding: OccOnboarding?) {
-        if (onboarding?.isForceShowCoachMark == true) {
-            if (onboarding.coachmarkType == COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE) {
-                showNewOnboarding(onboarding)
+    private fun handleError(throwable: Throwable?) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
-            viewModel.consumeForceShowOnboarding()
-        }
-    }
-
-    private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
-        address?.let {
-            val locationPass = LocationPass()
-            locationPass.cityName = it.cityName
-            locationPass.districtName = it.districtName
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-            val bundle = Bundle()
-            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-            intent.putExtras(bundle)
-            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-            if (shouldUpdatePinpointFlag) {
-                viewModel.changePinpoint()
+            is RuntimeException -> {
+                when (throwable.localizedMessage?.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.build(it, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
             }
-        }
-    }
-
-    private fun getOrderInsuranceCardListener(): OrderInsuranceCard.OrderInsuranceCardListener {
-        return object : OrderInsuranceCard.OrderInsuranceCardListener {
-            override fun onInsuranceChecked(isChecked: Boolean) {
-                viewModel.setInsuranceCheck(isChecked)
-            }
-
-            override fun onClickInsuranceInfo(title: String, message: String, image: Int) {
-                context?.also { ctx ->
-                    GeneralBottomSheet().apply {
-                        setTitle(title)
-                        setDesc(message)
-                        setButtonText(getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
-                        setIcon(image)
-                        setButtonOnClickListener { it.dismiss() }
-                    }.show(ctx, parentFragmentManager)
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    var message = throwable?.message
+                    if (throwable !is AkamaiErrorException) {
+                        message = ErrorHandler.getErrorMessage(it.context, throwable)
+                    }
+                    Toaster.build(it, message
+                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
     }
 
-    private fun getOrderPromoCardListener(): OrderPromoCard.OrderPromoCardListener {
-        return object : OrderPromoCard.OrderPromoCardListener {
-            override fun onClickRetryValidatePromo() {
-                viewModel.validateUsePromo()
+    private fun showGlobalError(type: Int) {
+        binding.globalError.setType(type)
+        binding.globalError.setActionClickListener {
+            shouldShowToaster = false
+            refresh()
+        }
+        binding.rvOrderSummaryPage.gone()
+        binding.layoutNoAddress.root.animateGone()
+        binding.globalError.animateShow()
+    }
+
+    private fun handleAtcError(atcError: OccGlobalEvent.AtcError) {
+        if (atcError.throwable != null) {
+            when (atcError.throwable) {
+                is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                    view?.let {
+                        showAtcGlobalError(GlobalError.NO_CONNECTION)
+                    }
+                }
+                is RuntimeException -> {
+                    when (atcError.throwable.localizedMessage?.toIntOrNull() ?: 0) {
+                        ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showAtcGlobalError(GlobalError.NO_CONNECTION)
+                        ReponseStatus.NOT_FOUND -> showAtcGlobalError(GlobalError.PAGE_NOT_FOUND)
+                        ReponseStatus.INTERNAL_SERVER_ERROR -> showAtcGlobalError(GlobalError.SERVER_ERROR)
+                        else -> {
+                            view?.let {
+                                showAtcGlobalError(GlobalError.SERVER_ERROR)
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    view?.let {
+                        showAtcGlobalError(GlobalError.SERVER_ERROR)
+                    }
+                }
             }
+            if (atcError.throwable is AkamaiErrorException) {
+                view?.let {
+                    Toaster.build(it, atcError.throwable.message
+                            ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
+                }
+            }
+        } else {
+            binding.globalError.setType(GlobalError.SERVER_ERROR)
+            binding.globalError.setActionClickListener {
+                arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
+                    atcOcc(productId)
+                }
+            }
+            if (atcError.errorMessage.isNotBlank()) {
+                binding.globalError.errorDescription.text = atcError.errorMessage
+            }
+            binding.globalError.errorAction.text = context?.getString(R.string.lbl_try_again)
+            binding.globalError.errorSecondaryAction.text = context?.getString(R.string.lbl_go_to_home)
+            binding.globalError.errorSecondaryAction.visible()
+            binding.globalError.setSecondaryActionClickListener {
+                RouteManager.route(context, ApplinkConst.HOME)
+                activity?.finish()
+            }
+            binding.rvOrderSummaryPage.gone()
+            binding.layoutNoAddress.root.animateGone()
+            binding.globalError.animateShow()
+        }
+    }
 
-            override fun onClickPromo() {
-                viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
-                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
-                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
+    private fun showAtcGlobalError(type: Int) {
+        binding.globalError.setType(type)
+        binding.globalError.setActionClickListener {
+            arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
+                atcOcc(productId)
+            }
+        }
+        binding.globalError.errorAction.text = context?.getString(R.string.lbl_try_again)
+        binding.globalError.errorSecondaryAction.text = context?.getString(R.string.lbl_go_to_home)
+        binding.globalError.errorSecondaryAction.visible()
+        binding.globalError.setSecondaryActionClickListener {
+            RouteManager.route(context, ApplinkConst.HOME)
+            activity?.finish()
+        }
+        binding.rvOrderSummaryPage.gone()
+        binding.layoutNoAddress.root.animateGone()
+        binding.globalError.animateShow()
+    }
 
-                    val codes = validateUsePromoRequest.codes
-                    val promoCodes = ArrayList<String>()
-                    for (code in codes) {
-                        if (code != null) {
-                            promoCodes.add(code)
-                        }
+    private fun atcOcc(productIds: String) {
+        viewModel.atcOcc(productIds)
+    }
+
+    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true, uiMessage: OccUIMessage? = null) {
+        if (shouldHideAll) {
+            binding.rvOrderSummaryPage.gone()
+            binding.layoutNoAddress.root.animateGone()
+            binding.globalError.animateGone()
+            binding.loaderContent.animateShow()
+        }
+        viewModel.getOccCart(isFullRefresh, source, uiMessage)
+    }
+
+    private fun setSourceFromPDP() {
+        var sourceArgs = arguments?.getString(QUERY_SOURCE, SOURCE_PDP)
+        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART) {
+            sourceArgs = SOURCE_PDP
+        }
+        source = sourceArgs
+    }
+
+    private fun showToasterSuccess() {
+        shouldShowToaster = false
+        if (viewModel.orderPreference.value is OccState.FirstLoad) {
+            view?.let {
+                it.post {
+                    val successToaster = viewModel.getActivationData().successToaster
+                    if (successToaster.isNotBlank()) {
+                        Toaster.build(it, successToaster, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                     }
-                    if (validateUsePromoRequest.orders.isNotEmpty()) {
-                        val orderCodes = validateUsePromoRequest.orders[0]?.codes
-                                ?: mutableListOf()
-                        for (code in orderCodes) {
-                            promoCodes.add(code)
-                        }
-                    }
-                    orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
-                    startActivityForResult(intent, REQUEST_CODE_PROMO)
                 }
             }
         }
     }
 
-    private fun getOrderTotalPaymentCardListener(): OrderTotalPaymentCard.OrderTotalPaymentCardListener {
-        return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
-            override fun onOrderDetailClicked(orderCost: OrderCost) {
-                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
-                OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
+    private fun showMainContent(data: OrderPreference) {
+        view?.also { _ ->
+            binding.loaderContent.animateGone()
+            binding.globalError.animateGone()
+            adapter.onboarding = data.onboarding
+            adapter.ticker = data.ticker
+            binding.rvOrderSummaryPage.scrollToPosition(0)
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+                }
+            } else {
+                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
             }
+            if (data.hasValidProfile) {
+                binding.rvOrderSummaryPage.show()
+                binding.layoutNoAddress.root.animateGone()
+            } else {
+                binding.rvOrderSummaryPage.gone()
+            }
+        }
+    }
 
-            override fun onPayClicked() {
+    private fun showPrompt(prompt: OccPrompt) {
+        val ctx = context ?: return
+        if (prompt.type == OccPrompt.TYPE_DIALOG) {
+            showDialogPrompt(prompt, ctx)
+        } else if (prompt.type == OccPrompt.TYPE_BOTTOM_SHEET) {
+            showBottomSheetPrompt(prompt, parentFragmentManager, ctx)
+        }
+    }
+
+    private fun showDialogPrompt(prompt: OccPrompt, ctx: Context) {
+        val actionType = if (prompt.buttons.size > 1) DialogUnify.HORIZONTAL_ACTION else DialogUnify.SINGLE_ACTION
+        val dialogUnify = DialogUnify(ctx, actionType, DialogUnify.NO_IMAGE)
+        dialogUnify.apply {
+            setTitle(prompt.title)
+            setDescription(prompt.description)
+            prompt.getPrimaryButton()?.also { primaryButton ->
+                setPrimaryCTAText(primaryButton.text)
+                setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, primaryButton) }
+                prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
+                    setSecondaryCTAText(secondaryButton.text)
+                    setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, secondaryButton) }
+                }
+            }
+            setOverlayClose(false)
+            setCancelable(false)
+        }.show()
+    }
+
+    private fun onDialogPromptButtonClicked(dialog: DialogUnify, button: OccPromptButton) {
+        when (button.action) {
+            OccPromptButton.ACTION_OPEN -> {
+                RouteManager.route(context, button.link)
+                activity?.finish()
+            }
+            OccPromptButton.ACTION_RELOAD -> {
+                dialog.dismiss()
+                source = SOURCE_OTHERS
+                shouldShowToaster = false
+                refresh()
+            }
+            OccPromptButton.ACTION_RETRY -> {
+                dialog.dismiss()
                 viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }
     }
 
-    private fun validateAddressState(addressState: AddressState) {
-        if (addressState.popupMessage.isNotBlank()) {
-            view?.let {
-                Toaster.build(it, addressState.popupMessage).show()
+    private fun showBottomSheetPrompt(prompt: OccPrompt, fm: FragmentManager, ctx: Context) {
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.apply {
+            showCloseIcon = true
+            val child = View.inflate(ctx, R.layout.bottom_sheet_error_checkout, null)
+            child.findViewById<EmptyStateUnify>(R.id.es_checkout).apply {
+                setImageUrl(prompt.imageUrl)
+                setTitle(prompt.title)
+                setDescription(prompt.description)
+                prompt.getPrimaryButton()?.also { primaryButton ->
+                    setPrimaryCTAText(primaryButton.text)
+                    setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, primaryButton) }
+                    prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
+                        setSecondaryCTAText(secondaryButton.text)
+                        setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, secondaryButton) }
+                    }
+                }
+            }
+            setChild(child)
+        }.show(fm, null)
+    }
+
+    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, button: OccPromptButton) {
+        when (button.action) {
+            OccPromptButton.ACTION_OPEN -> {
+                RouteManager.route(context, button.link)
+                activity?.finish()
+            }
+            OccPromptButton.ACTION_RELOAD -> {
+                bottomSheet.dismiss()
+                source = SOURCE_OTHERS
+                shouldShowToaster = false
+                refresh()
+            }
+            OccPromptButton.ACTION_RETRY -> {
+                bottomSheet.dismiss()
+                viewModel.finalUpdate(onSuccessCheckout(), false)
             }
         }
+    }
 
-        when (addressState.errorCode) {
-            AddressState.ERROR_CODE_OPEN_ADDRESS_LIST -> {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
-                intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.address.state)
-                intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
-                startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
-            }
-            AddressState.ERROR_CODE_OPEN_ANA -> {
-                showLayoutNoAddress()
-            }
-            else -> {
-                if (addressState.address.addressId > 0) {
-                    updateLocalCacheAddressData(addressState.address)
+    private fun onSuccessCheckout(): (CheckoutOccResult) -> Unit = { checkoutOccResult: CheckoutOccResult ->
+        view?.let { v ->
+            activity?.let {
+                val redirectParam = checkoutOccResult.paymentParameter.redirectParam
+                if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
+                    val paymentPassData = PaymentPassData()
+                    paymentPassData.redirectUrl = redirectParam.url
+                    paymentPassData.queryString = redirectParam.form
+                    paymentPassData.method = redirectParam.method
+
+                    shouldUpdateCart = false
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutOccResult.error.message)
+                    startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    shouldDismissProgressDialog = true
+                } else {
+                    viewModel.globalEvent.value = OccGlobalEvent.Normal
+                    Toaster.build(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
@@ -1078,293 +1302,70 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleError(throwable: Throwable?) {
-        when (throwable) {
-            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                showGlobalError(GlobalError.NO_CONNECTION)
+    private fun getOrderInsuranceCardListener(): OrderInsuranceCard.OrderInsuranceCardListener {
+        return object : OrderInsuranceCard.OrderInsuranceCardListener {
+            override fun onInsuranceChecked(isChecked: Boolean) {
+                viewModel.setInsuranceCheck(isChecked)
             }
-            is RuntimeException -> {
-                when (throwable.localizedMessage?.toIntOrNull()) {
-                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
-                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
-                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-                    else -> {
-                        view?.let {
-                            showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.build(it, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
+
+            override fun onClickInsuranceInfo(title: String, message: String, image: Int) {
+                context?.also { ctx ->
+                    GeneralBottomSheet().apply {
+                        setTitle(title)
+                        setDesc(message)
+                        setButtonText(getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+                        setIcon(image)
+                        setButtonOnClickListener { it.dismiss() }
+                    }.show(ctx, parentFragmentManager)
+                }
+            }
+        }
+    }
+
+    private fun getOrderPromoCardListener(): OrderPromoCard.OrderPromoCardListener {
+        return object : OrderPromoCard.OrderPromoCardListener {
+            override fun onClickRetryValidatePromo() {
+                viewModel.validateUsePromo()
+            }
+
+            override fun onClickPromo() {
+                viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
+                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
+                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
+
+                    val codes = validateUsePromoRequest.codes
+                    val promoCodes = ArrayList<String>()
+                    for (code in codes) {
+                        if (code != null) {
+                            promoCodes.add(code)
                         }
                     }
-                }
-            }
-            else -> {
-                view?.let {
-                    showGlobalError(GlobalError.SERVER_ERROR)
-                    var message = throwable?.message
-                    if (throwable !is AkamaiErrorException) {
-                        message = ErrorHandler.getErrorMessage(it.context, throwable)
-                    }
-                    Toaster.build(it, message
-                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
-                }
-            }
-        }
-    }
-
-    private fun showGlobalError(type: Int) {
-        binding.globalError.setType(type)
-        binding.globalError.setActionClickListener {
-            shouldShowToaster = false
-            refresh()
-        }
-        binding.rvOrderSummaryPage.gone()
-        binding.layoutNoAddress.root.animateGone()
-        binding.globalError.animateShow()
-    }
-
-    private fun handleAtcError(atcError: OccGlobalEvent.AtcError) {
-        if (atcError.throwable != null) {
-            when (atcError.throwable) {
-                is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                    view?.let {
-                        showAtcGlobalError(GlobalError.NO_CONNECTION)
-                    }
-                }
-                is RuntimeException -> {
-                    when (atcError.throwable.localizedMessage?.toIntOrNull() ?: 0) {
-                        ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showAtcGlobalError(GlobalError.NO_CONNECTION)
-                        ReponseStatus.NOT_FOUND -> showAtcGlobalError(GlobalError.PAGE_NOT_FOUND)
-                        ReponseStatus.INTERNAL_SERVER_ERROR -> showAtcGlobalError(GlobalError.SERVER_ERROR)
-                        else -> {
-                            view?.let {
-                                showAtcGlobalError(GlobalError.SERVER_ERROR)
-                            }
+                    if (validateUsePromoRequest.orders.isNotEmpty()) {
+                        val orderCodes = validateUsePromoRequest.orders[0]?.codes
+                                ?: mutableListOf()
+                        for (code in orderCodes) {
+                            promoCodes.add(code)
                         }
                     }
-                }
-                else -> {
-                    view?.let {
-                        showAtcGlobalError(GlobalError.SERVER_ERROR)
-                    }
-                }
-            }
-            if (atcError.throwable is AkamaiErrorException) {
-                view?.let {
-                    Toaster.build(it, atcError.throwable.message
-                            ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
-                }
-            }
-        } else {
-            binding.globalError.setType(GlobalError.SERVER_ERROR)
-            binding.globalError.setActionClickListener {
-                arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
-                    atcOcc(productId)
-                }
-            }
-            if (atcError.errorMessage.isNotBlank()) {
-                binding.globalError.errorDescription.text = atcError.errorMessage
-            }
-            binding.globalError.errorAction.text = context?.getString(R.string.lbl_try_again)
-            binding.globalError.errorSecondaryAction.text = context?.getString(R.string.lbl_go_to_home)
-            binding.globalError.errorSecondaryAction.visible()
-            binding.globalError.setSecondaryActionClickListener {
-                RouteManager.route(context, ApplinkConst.HOME)
-                activity?.finish()
-            }
-            binding.rvOrderSummaryPage.gone()
-            binding.layoutNoAddress.root.animateGone()
-            binding.globalError.animateShow()
-        }
-    }
-
-    private fun showAtcGlobalError(type: Int) {
-        binding.globalError.setType(type)
-        binding.globalError.setActionClickListener {
-            arguments?.getString(QUERY_PRODUCT_ID)?.let { productId ->
-                atcOcc(productId)
-            }
-        }
-        binding.globalError.errorAction.text = context?.getString(R.string.lbl_try_again)
-        binding.globalError.errorSecondaryAction.text = context?.getString(R.string.lbl_go_to_home)
-        binding.globalError.errorSecondaryAction.visible()
-        binding.globalError.setSecondaryActionClickListener {
-            RouteManager.route(context, ApplinkConst.HOME)
-            activity?.finish()
-        }
-        binding.rvOrderSummaryPage.gone()
-        binding.layoutNoAddress.root.animateGone()
-        binding.globalError.animateShow()
-    }
-
-    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true, uiMessage: OccUIMessage? = null) {
-        if (shouldHideAll) {
-            binding.rvOrderSummaryPage.gone()
-            binding.layoutNoAddress.root.animateGone()
-            binding.globalError.animateGone()
-            binding.loaderContent.animateShow()
-        }
-        viewModel.getOccCart(isFullRefresh, source, uiMessage)
-    }
-
-    private fun atcOcc(productId: String) {
-        viewModel.atcOcc(productId)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(SAVE_HAS_DONE_ATC, viewModel.orderProducts.value.isNotEmpty())
-    }
-
-    private fun onSuccessCheckout(): (CheckoutOccResult) -> Unit = { checkoutOccResult: CheckoutOccResult ->
-        view?.let { v ->
-            activity?.let {
-                val redirectParam = checkoutOccResult.paymentParameter.redirectParam
-                if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
-                    val paymentPassData = PaymentPassData()
-                    paymentPassData.redirectUrl = redirectParam.url
-                    paymentPassData.queryString = redirectParam.form
-                    paymentPassData.method = redirectParam.method
-
-                    shouldUpdateCart = false
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutOccResult.error.message)
-                    startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
-                    shouldDismissProgressDialog = true
-                } else {
-                    viewModel.globalEvent.value = OccGlobalEvent.Normal
-                    Toaster.build(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR).show()
+                    orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
+                    startActivityForResult(intent, REQUEST_CODE_PROMO)
                 }
             }
         }
     }
 
-    private fun showPrompt(prompt: OccPrompt) {
-        val ctx = context ?: return
-        if (prompt.type == OccPrompt.TYPE_DIALOG) {
-            showDialogPrompt(prompt, ctx)
-        } else if (prompt.type == OccPrompt.TYPE_BOTTOM_SHEET) {
-            showBottomSheetPrompt(prompt, parentFragmentManager, ctx)
-        }
-    }
+    private fun getOrderTotalPaymentCardListener(): OrderTotalPaymentCard.OrderTotalPaymentCardListener {
+        return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
+            override fun onOrderDetailClicked(orderCost: OrderCost) {
+                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
+                OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
+            }
 
-    private fun showDialogPrompt(prompt: OccPrompt, ctx: Context) {
-        val actionType = if (prompt.buttons.size > 1) DialogUnify.HORIZONTAL_ACTION else DialogUnify.SINGLE_ACTION
-        val dialogUnify = DialogUnify(ctx, actionType, DialogUnify.NO_IMAGE)
-        dialogUnify.apply {
-            setTitle(prompt.title)
-            setDescription(prompt.description)
-            prompt.getPrimaryButton()?.also { primaryButton ->
-                setPrimaryCTAText(primaryButton.text)
-                setPrimaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, primaryButton) }
-                prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
-                    setSecondaryCTAText(secondaryButton.text)
-                    setSecondaryCTAClickListener { onDialogPromptButtonClicked(dialogUnify, secondaryButton) }
-                }
-            }
-            setOverlayClose(false)
-            setCancelable(false)
-        }.show()
-    }
-
-    private fun onDialogPromptButtonClicked(dialog: DialogUnify, button: OccPromptButton) {
-        when (button.action) {
-            OccPromptButton.ACTION_OPEN -> {
-                RouteManager.route(context, button.link)
-                activity?.finish()
-            }
-            OccPromptButton.ACTION_RELOAD -> {
-                dialog.dismiss()
-                source = SOURCE_OTHERS
-                shouldShowToaster = false
-                refresh()
-            }
-            OccPromptButton.ACTION_RETRY -> {
-                dialog.dismiss()
+            override fun onPayClicked() {
                 viewModel.finalUpdate(onSuccessCheckout(), false)
-            }
-        }
-    }
-
-    private fun showBottomSheetPrompt(prompt: OccPrompt, fm: FragmentManager, ctx: Context) {
-        val bottomSheetUnify = BottomSheetUnify()
-        bottomSheetUnify.apply {
-            showCloseIcon = true
-            val child = View.inflate(ctx, R.layout.bottom_sheet_error_checkout, null)
-            child.findViewById<EmptyStateUnify>(R.id.es_checkout).apply {
-                setImageUrl(prompt.imageUrl)
-                setTitle(prompt.title)
-                setDescription(prompt.description)
-                prompt.getPrimaryButton()?.also { primaryButton ->
-                    setPrimaryCTAText(primaryButton.text)
-                    setPrimaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, primaryButton) }
-                    prompt.getSecondButton(primaryButton)?.also { secondaryButton ->
-                        setSecondaryCTAText(secondaryButton.text)
-                        setSecondaryCTAClickListener { onBottomSheetPromptButtonClicked(bottomSheetUnify, secondaryButton) }
-                    }
-                }
-            }
-            setChild(child)
-        }.show(fm, null)
-    }
-
-    private fun onBottomSheetPromptButtonClicked(bottomSheet: BottomSheetUnify, button: OccPromptButton) {
-        when (button.action) {
-            OccPromptButton.ACTION_OPEN -> {
-                RouteManager.route(context, button.link)
-                activity?.finish()
-            }
-            OccPromptButton.ACTION_RELOAD -> {
-                bottomSheet.dismiss()
-                source = SOURCE_OTHERS
-                shouldShowToaster = false
-                refresh()
-            }
-            OccPromptButton.ACTION_RETRY -> {
-                bottomSheet.dismiss()
-                viewModel.finalUpdate(onSuccessCheckout(), false)
-            }
-        }
-    }
-
-    override fun onStart() {
-        shouldUpdateCart = true
-        shouldDismissProgressDialog = false
-        super.onStart()
-    }
-
-    fun setIsFinishing() {
-        shouldUpdateCart = false
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (binding.loaderContent.visibility == View.GONE && shouldUpdateCart) {
-            viewModel.updateCart()
-        }
-        if (shouldDismissProgressDialog && progressDialog?.isShowing == true) {
-            progressDialog?.dismiss()
-            viewModel.globalEvent.value = OccGlobalEvent.Normal
-        }
-    }
-
-    private fun setSourceFromPDP() {
-        var sourceArgs = arguments?.getString(QUERY_SOURCE, SOURCE_PDP)
-        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART) {
-            sourceArgs = SOURCE_PDP
-        }
-        source = sourceArgs
-    }
-
-    private fun showToasterSuccess() {
-        shouldShowToaster = false
-        if (viewModel.orderPreference.value is OccState.FirstLoad) {
-            view?.let {
-                it.post {
-                    val successToaster = viewModel.getActivationData().successToaster
-                    if (successToaster.isNotBlank()) {
-                        Toaster.build(it, successToaster, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                    }
-                }
             }
         }
     }
