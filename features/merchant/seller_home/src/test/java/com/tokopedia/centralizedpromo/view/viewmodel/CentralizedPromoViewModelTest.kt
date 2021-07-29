@@ -3,9 +3,9 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
+import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
-import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -33,6 +33,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var context: Context
+
+    @RelaxedMockK
+    lateinit var resourcesProvider: CentralizedPromoResourceProvider
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -88,7 +91,7 @@ class CentralizedPromoViewModelTest {
 
     private val viewModel : CentralizedPromoViewModel by lazy {
         CentralizedPromoViewModel(
-            context,
+            resourcesProvider,
             userSession,
             getOnGoingPromotionUseCase,
             getChatBlastSellerMetadataUseCase,
@@ -164,7 +167,7 @@ class CentralizedPromoViewModelTest {
         } returns true
 
         every {
-            context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, any<Integer>())
+            resourcesProvider.composeBroadcastChatFreeQuotaLabel(any())
         } returns String.format("%d kuota gratis", 200)
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
