@@ -139,6 +139,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
+    public static final String FEED_PAGE = "FeedPlusContainerFragment";
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
@@ -357,7 +358,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
             super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-            reloadPage();
+            reloadPage(HOME_MENU);
         }
     }
 
@@ -643,7 +644,18 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage();
+            FragmentManager manager = getSupportFragmentManager();
+            int position = HOME_MENU;
+            if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
+                for (int i = 0; i < manager.getFragments().size(); i++) {
+                    Fragment frag = manager.getFragments().get(i);
+                    if (frag.getClass().getName().equalsIgnoreCase(currentFragment.getClass().getName())) {
+                        position = i;
+                        break;
+                    }
+                }
+            }
+            reloadPage(position);
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
@@ -681,8 +693,9 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
-    private void reloadPage() {
+    private void reloadPage(int position) {
         finish();
+        getIntent().putExtra(ARGS_TAB_POSITION, position);
         startActivity(getIntent());
     }
 
