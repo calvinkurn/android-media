@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
@@ -31,6 +32,7 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -39,6 +41,7 @@ import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.io.File
 import java.io.File.separator
 import java.io.FileOutputStream
@@ -87,6 +90,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     renderData(it.data)
                 }
                 is Fail -> {
+                    showErrorView(it.throwable)
                 }
             }
         })
@@ -134,6 +138,12 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         }
     }
 
+    fun showErrorView(error: Throwable){
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error)
+        }
+    }
 
     private fun getScreenBitmap(): Bitmap? {
         val v = container_root
@@ -219,7 +229,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         val values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / CONVERT_TIME_MILLIS);
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
         return values
     }
@@ -227,7 +237,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     private fun saveImageToStream(bitmap: Bitmap, outputStream: OutputStream?) {
         if (outputStream != null) {
             try {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                bitmap.compress(Bitmap.CompressFormat.PNG, BITMAP_QUALITY, outputStream)
                 outputStream.close()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -346,6 +356,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     }
 
     override fun onErrorRetryClicked() {
+        view?.let {
+            container_error.hide()
+        }
         eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
     }
 
@@ -374,6 +387,8 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         const val SHARE_IMG_REQUEST_CODE = 4532
         const val FILENAME = "Tokopedia"
+        const val CONVERT_TIME_MILLIS = 1000
+        const val BITMAP_QUALITY = 100
 
         fun getInstance(orderId: String): HotelEVoucherFragment = HotelEVoucherFragment().also {
             it.arguments = Bundle().apply {
