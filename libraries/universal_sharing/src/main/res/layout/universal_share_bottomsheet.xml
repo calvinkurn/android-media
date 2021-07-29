@@ -63,7 +63,7 @@
         android:id="@+id/tokopedia_link"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
-        android:text="tokopedia.link"
+        android:text="@string/tokopedia_link"
         android:textColor="@color/clr_31353B"
         android:textSize="@dimen/sp_14"
         app:typographyType="body_3"
