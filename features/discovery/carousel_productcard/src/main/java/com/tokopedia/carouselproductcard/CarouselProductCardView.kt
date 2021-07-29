@@ -2,8 +2,11 @@ package com.tokopedia.carouselproductcard
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.*
@@ -85,11 +88,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             finishCalculate: (() -> Unit)? = null,
-            customLayoutManager: LinearLayoutManager? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
-        initBindCarousel(true, recyclerViewPool, customLayoutManager)
+        initBindCarousel(true, recyclerViewPool)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
@@ -111,10 +113,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?, customLayoutManager: LinearLayoutManager? = null) {
+    private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?) {
         if (isInitialized) return
 
-        initLayoutManager(customLayoutManager)
+        initLayoutManager()
 
         if (isGrid) initGridAdapter()
         else initListAdapter()
@@ -147,8 +149,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         return carouselProductCardListenerInfo
     }
 
-    private fun initLayoutManager(customLayoutManager: LinearLayoutManager? = null) {
-        carouselLayoutManager = customLayoutManager ?: createProductCardCarouselLayoutManager()
+    private fun initLayoutManager() {
+        carouselLayoutManager = createProductCardCarouselLayoutManager()
     }
 
     private fun initGridAdapter() {
@@ -174,7 +176,25 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun createProductCardCarouselLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        return object: LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) {
+            override fun requestChildRectangleOnScreen(
+                    parent: RecyclerView,
+                    child: View,
+                    rect: Rect,
+                    immediate: Boolean,
+                    focusedChildVisible: Boolean
+            ): Boolean {
+                return if ((child as? ViewGroup)?.focusedChild is CardView) {
+                    false
+                } else super.requestChildRectangleOnScreen(
+                        parent,
+                        child,
+                        rect,
+                        immediate,
+                        focusedChildVisible
+                )
+            }
+        }
     }
 
     private fun initRecyclerView(recyclerViewPool: RecyclerView.RecycledViewPool?) {
