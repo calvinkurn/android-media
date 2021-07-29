@@ -660,10 +660,6 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
                     miniCartWidget?.updateData(shopIds)
-                    showToaster(
-                        message = it.data.data.message,
-                        type = TYPE_NORMAL
-                    )
 
                     // track add to cart
                     recomItem?.let { recomItem ->
