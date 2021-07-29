@@ -149,34 +149,8 @@ abstract class BaseTelcoPostpaidScreenShotTest {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
-    fun take_screenshot_input_number() {
-        Thread.sleep(2000)
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
-        Thread.sleep(2000)
-        CommonActions.findViewAndScreenShot(
-                R.id.container_search_number_telco,
-                generatePrefix(),
-                "search_number"
-        )
-
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER))
-        Espresso.closeSoftKeyboard()
-        Thread.sleep(2000)
-        CommonActions.findViewAndScreenShot(
-                R.id.container_search_number_telco,
-                generatePrefix(),
-                "search_number_filled"
-        )
-        onView(withId(R.id.searchbar_textfield)).perform(click(), pressImeActionButton())
-        Thread.sleep(2000)
-        CommonActions.findViewAndScreenShot(
-                R.id.telco_input_number_layout,
-                generatePrefix(),
-                "input_number_widget_filled"
-        )
-    }
-
     fun take_screenshot_interaction_promo() {
+        onView(withId(R.id.telco_ac_input_number)).perform(click())
         Thread.sleep(2000)
         val viewInteraction = onView(AllOf.allOf(
                 allOf(withId(R.id.recycler_view_menu_component), withParent(withId(R.id.layout_widget)),
