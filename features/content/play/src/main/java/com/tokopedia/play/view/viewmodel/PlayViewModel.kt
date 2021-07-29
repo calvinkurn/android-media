@@ -1333,8 +1333,6 @@ class PlayViewModel @Inject constructor(
             _leaderboardInfo.value = interactiveLeaderboard
 
             if (userInLeaderboard != null && isUserJoined) {
-                showCoachMark(interactiveLeaderboard)
-
                 if (userInLeaderboard.id == userId) {
                     _uiEvent.emit(
                             ShowWinningDialogEvent(
@@ -1343,7 +1341,7 @@ class PlayViewModel @Inject constructor(
                                     interactiveLeaderboard.config.winnerDetail
                             )
                     )
-                }
+                } else showCoachMark(interactiveLeaderboard)
             }
         }
 

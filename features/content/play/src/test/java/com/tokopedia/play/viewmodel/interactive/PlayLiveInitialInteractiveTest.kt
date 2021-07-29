@@ -11,6 +11,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -49,10 +50,15 @@ class PlayLiveInitialInteractiveTest {
                     videoPlayer = videoInfoBuilder.buildCompleteGeneralVideoPlayer()
             )
     )
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
     private val interactiveModelBuilder = PlayInteractiveModelBuilder()
 
     private val socket: PlayChannelWebSocket = mockk(relaxed = true)
+
+    init {
+        every { mockRemoteConfig.getBoolean(any(), any()) } returns true
+    }
 
     @Before
     fun setUp() {
@@ -109,7 +115,8 @@ class PlayLiveInitialInteractiveTest {
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
                 interactiveRepo = interactiveRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                remoteConfig = mockRemoteConfig,
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
@@ -142,7 +149,8 @@ class PlayLiveInitialInteractiveTest {
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
                 interactiveRepo = interactiveRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                remoteConfig = mockRemoteConfig,
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
