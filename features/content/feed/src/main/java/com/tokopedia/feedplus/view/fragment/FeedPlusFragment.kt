@@ -202,6 +202,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterRefresh: Boolean = false
 
     private var isUserEventTrackerDoneTrack = false
+    private var isUserEventTrackerDoneOnResume = false
 
     private lateinit var shareData: LinkerData
     private  lateinit var reportBottomSheet: ReportBottomSheet
@@ -958,6 +959,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        if(isUserEventTrackerDoneOnResume) {
+            isUserEventTrackerDoneOnResume = false
+            feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
+        }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         registerNewFeedReceiver()
@@ -967,6 +972,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        isUserEventTrackerDoneOnResume = true
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         unRegisterNewFeedReceiver()

@@ -1558,6 +1558,20 @@ class FeedAnalyticTracker
         trackOpenScreenEvent(Screen.INTEREST_PICK_DETAIL)
     }
 
+    fun userVisitsFeed(isLoggedInStatus: Boolean) {
+
+        val map = mapOf(
+            KEY_EVENT to OPEN_SCREEN,
+            "isLoggedInStatus" to isLoggedInStatus.toString(),
+            KEY_EVENT_SCREEN_NAME to "/feed",
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+
     /**
      *
      *  * docs: https://docs.google.com/spreadsheets/d/1IRr-k5qfzFUz43mbkZDRtjKPAbXVrWDlHus5gCIqzFg/edit#gid=1450459047
