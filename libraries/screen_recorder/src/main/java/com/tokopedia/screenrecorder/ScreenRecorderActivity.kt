@@ -59,7 +59,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
         if (!allPermissionsGranted) {
             ActivityCompat.requestPermissions(
                     this,
-                    PERMISSIONS,
+                    PERMISSIONS.toTypedArray(),
                     REQUEST_PERMISSION_RECORD_SCREEN
             );
         } else {
