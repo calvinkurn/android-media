@@ -65,7 +65,6 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var cardStatusMatching: CardUnify? = null
     private var confettiAnim: LottieAnimationView?=null
     private val MEMBER_STATUS_BG_RADII = 16F
-    val ANIMATION_YAW = "https://ecs7.tokopedia.net/android/reputation/lottie_anim_pedi_5.json"
 
     fun bind(model: TopSectionResponse) {
 
@@ -83,7 +82,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
         containerStatusMatching = itemView.findViewById(R.id.container_statusmatching)
         tvStatusMatching = itemView.findViewById(R.id.tv_statusmatching)
-      //  backGroundImage = itemView.findViewById(R.id.iv_background)
+        backGroundImage = itemView.findViewById(R.id.iv_background)
         cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
         confettiAnim = itemView.findViewById(R.id.confetti_lottie)
 
@@ -94,9 +93,9 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             renderUserSaving(it)
         }}
         model.rewardTickerResponse?.let {
-            if (!it.rewardsTicker?.ticker?.tickerList.isNullOrEmpty()) {
+            if (!it.rewardsTickerList?.tickerList.isNullOrEmpty()) {
                 containerStatusMatching?.show()
-                renderStatusMatchingView(it.rewardsTicker?.ticker?.tickerList)
+                renderStatusMatchingView(it.rewardsTickerList?.tickerList)
             }
         }
     }
@@ -304,16 +303,8 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     }
 
     private fun playAnimation(){
-        confettiAnim?.cancelAnimation()
-        confettiAnim?.clearAnimation()
-        confettiAnim?.invalidate()
-
-        val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(itemView.context, ANIMATION_YAW)
-        lottieCompositionLottieTask.addListener { result ->
-            confettiAnim?.setComposition(result)
-            confettiAnim?.repeatCount = ValueAnimator.INFINITE
-            confettiAnim?.playAnimation()
-        }
+        confettiAnim?.repeatCount = ValueAnimator.INFINITE
+        confettiAnim?.playAnimation()
     }
 
     interface CardRuntimeHeightListener {

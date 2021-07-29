@@ -9,7 +9,7 @@ import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
-import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
@@ -34,7 +34,7 @@ class TokoPointsHomeViewModel @Inject constructor(
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
     var deferredSavingData: Deferred<UserSavingResponse>? = null
     var defferedRecomData: Deferred<RewardsRecommendation>? = null
-    var defferedRewardTickerResponse: Deferred<RewardTickerResponse>? = null
+    var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -109,12 +109,12 @@ class TokoPointsHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getStatusMatchingData(): Deferred<RewardTickerResponse> {
+    private suspend fun getStatusMatchingData(): Deferred<RewardTickerListResponse> {
         return async(Dispatchers.IO) {
-            var rewardTickerResponse = RewardTickerResponse()
+            var rewardTickerResponse = RewardTickerListResponse()
             try {
                 val response = tokopointsHomeUsecase.getUserStatusMatchingData()
-                rewardTickerResponse = response.getData(RewardTickerResponse::class.java)
+                rewardTickerResponse = response.getData(RewardTickerListResponse::class.java)
             } catch (e: Exception) {
             }
             rewardTickerResponse
@@ -131,7 +131,7 @@ data class TokopointSuccess(
 data class TopSectionResponse(
     val tokopediaRewardTopSection: TokopediaRewardTopSection,
     val userSavingResponse: TokopointsUserSaving?,
-    val rewardTickerResponse: RewardTickerResponse?
+    val rewardTickerResponse: RewardTickerListResponse?
 )
 
 data class RewardsRecommendation(
