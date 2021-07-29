@@ -19,10 +19,8 @@
 
     <com.tokopedia.sellerhome.settings.view.customview.FireworksLottieView
         android:id="@+id/lottie_anniv_fireworks"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintWidth_percent="0.65"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/iv_sah_other_status_header"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -31,12 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:translationY="@dimen/spacing_lvl2"
+        android:translationY="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/iv_sah_other_status_header"
-        app:layout_constraintStart_toEndOf="@id/lottie_anniv_fireworks"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:src="@tools:sample/avatars"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/sv_sah_other_menu"

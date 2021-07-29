@@ -19,10 +19,10 @@ sealed class ShopType(@LayoutRes val shopTypeLayoutRes: Int,
         val POWER_MERCHANT_HEADER = R.drawable.setting_pm_header_background
         val OFFICIAL_STORE_HEADER = R.drawable.setting_os_header_background
 
-        const val REGULAR_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_rm.png"
-        const val POWER_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_pm.png"
-        const val POWER_MERCHANT_PRO_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_pm_pro.png"
-        const val OFFICIAL_STORE_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_os.png"
+        const val REGULAR_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_rm_2x.png"
+        const val POWER_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_pm_2x.png"
+        const val POWER_MERCHANT_PRO_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_pm_pro_2x.png"
+        const val OFFICIAL_STORE_MERCHANT_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_banner_illu_os_2x.png"
     }
     object OfficialStore : ShopType(OFFICIAL_STORE_LAYOUT, OFFICIAL_STORE_HEADER, OFFICIAL_STORE_MERCHANT_ILLUSTRATION_URL)
 }
