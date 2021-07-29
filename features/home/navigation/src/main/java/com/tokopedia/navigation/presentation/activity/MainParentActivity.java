@@ -644,11 +644,10 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            FragmentManager manager = getSupportFragmentManager();
             int position = HOME_MENU;
             if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
-                for (int i = 0; i < manager.getFragments().size(); i++) {
-                    Fragment frag = manager.getFragments().get(i);
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment frag = fragmentList.get(i);
                     if (frag.getClass().getName().equalsIgnoreCase(currentFragment.getClass().getName())) {
                         position = i;
                         break;
