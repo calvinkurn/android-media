@@ -12,7 +12,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -45,6 +45,8 @@ class FlexBoxChatLayout : ViewGroup {
     /**
      * Header direct child
      */
+    var headerTitle: Typography? = null
+        private set
     var headerCta: Typography? = null
         private set
 
@@ -121,6 +123,7 @@ class FlexBoxChatLayout : ViewGroup {
             hourTime = it.findViewById(R.id.tvTime)
             info = it.findViewById(R.id.txt_info)
             header = it.findViewById(R.id.ll_msg_header)
+            headerTitle = it.findViewById(R.id.tp_header_title)
             headerCta = it.findViewById(R.id.tp_header_cta)
         }
         initCheckMarkVisibility()
@@ -185,14 +188,47 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
+    fun hideAttachmentHeader() {
+        header?.hide()
+    }
+
     private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
-        headerCta?.setOnClickListener {
-            listener?.changeAddress(attachment)
+        bindHeaderTitle(attachment)
+        if (attachment.hasVisibleCta()) {
+            headerCta?.show()
+            bindHeaderCtaTitle(attachment)
+            binDHeaderCtaState(attachment)
+            bindHeaderCtaClick(attachment)
+        } else {
+            headerCta?.hide()
         }
     }
 
-    fun hideAttachmentHeader() {
-        header?.hide()
+    private fun bindHeaderTitle(attachment: HeaderCtaMessageAttachment) {
+        headerTitle?.text = attachment.header
+    }
+
+    private fun binDHeaderCtaState(attachment: HeaderCtaMessageAttachment) {
+        val ctaColor = when (attachment.status) {
+            HeaderCtaMessageAttachment.STATUS_ENABLED ->
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            HeaderCtaMessageAttachment.STATUS_DISABLED ->
+                com.tokopedia.unifyprinciples.R.color.Neutral_N700_32
+            else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_32
+        }
+        val color = ContextCompat.getColor(context, ctaColor)
+        headerCta?.setTextColor(color)
+    }
+
+    private fun bindHeaderCtaTitle(attachment: HeaderCtaMessageAttachment) {
+        headerCta?.text = attachment.textUrl
+    }
+
+    private fun bindHeaderCtaClick(attachment: HeaderCtaMessageAttachment) {
+        headerCta?.setOnClickListener {
+            listener?.changeAddress(attachment)
+        }
+        headerCta?.isClickable = attachment.isClickable()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

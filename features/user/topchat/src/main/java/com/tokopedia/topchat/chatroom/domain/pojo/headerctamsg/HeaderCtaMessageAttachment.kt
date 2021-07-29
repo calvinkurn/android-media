@@ -31,4 +31,19 @@ data class HeaderCtaMessageAttachment(
             SendableProductPreview(productPreview)
         }
     }
+
+    fun hasVisibleCta(): Boolean {
+        return type != TYPE_NO_BUTTON
+    }
+
+    fun isClickable(): Boolean {
+        return status == STATUS_ENABLED
+    }
+
+    companion object {
+        const val TYPE_NO_BUTTON = 0
+
+        const val STATUS_ENABLED = 1
+        const val STATUS_DISABLED = 0
+    }
 }
