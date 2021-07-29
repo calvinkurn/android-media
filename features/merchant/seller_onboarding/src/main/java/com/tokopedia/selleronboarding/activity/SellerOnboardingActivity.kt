@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
+import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
 import com.tokopedia.selleronboarding.model.*
 import com.tokopedia.selleronboarding.old.utils.StatusBarHelper
 import kotlinx.android.synthetic.main.activity_sob_onboarding.*
@@ -127,6 +128,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setSlideIndicator(position: Int) {
         pageIndicatorSob?.setCurrentIndicator(position)
+        SellerOnboardingV2Analytic.sendEventImpressionOnboarding(getPositionViewPager())
     }
 
     private fun setupButtonClickListener() {
@@ -135,8 +137,10 @@ class SellerOnboardingActivity : BaseActivity() {
             val isLastSlide = sobViewPager?.currentItem == lastSlideIndex
             if (isLastSlide) {
                 goToLoginPage()
+                SellerOnboardingV2Analytic.sendEventClickGetIn()
             } else {
                 moveToNextSlide()
+                SellerOnboardingV2Analytic.sendEventClickNextPage(getPositionViewPager())
             }
         }
 
@@ -144,6 +148,7 @@ class SellerOnboardingActivity : BaseActivity() {
             moveToPreviousSlide()
         }
         tvSobSkip?.setOnClickListener {
+            SellerOnboardingV2Analytic.sendEventClickSkipPage(getPositionViewPager())
             goToLoginPage()
         }
     }
@@ -199,4 +204,6 @@ class SellerOnboardingActivity : BaseActivity() {
             )
         }
     }
+
+    private fun getPositionViewPager(): Int = sobViewPager?.currentItem.orZero() + 1
 }
