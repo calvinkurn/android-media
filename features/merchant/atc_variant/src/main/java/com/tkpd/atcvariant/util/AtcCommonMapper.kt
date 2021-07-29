@@ -35,7 +35,7 @@ object AtcCommonMapper {
                         trackerAttributionPdp: String,
                         trackerListNamePdp: String,
                         categoryName: String,
-                        shippingMinPrice: Int,
+                        shippingMinPrice: Double,
                         userId: String,
                         isTokoNow: Boolean,
                         selectedStock: Int
@@ -52,7 +52,7 @@ object AtcCommonMapper {
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false
-                    shippingPrice = shippingMinPrice
+                    shippingPrice = shippingMinPrice.roundToIntOrZero()
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
@@ -302,7 +302,8 @@ object AtcCommonMapper {
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
                 productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
-                productName = selectedChild?.name ?: ""
+                productName = selectedChild?.name ?: "",
+                finalPriceDouble = selectedChild?.finalPrice ?: 0.0
         )
         return productImage to headerData
     }
