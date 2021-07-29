@@ -53,7 +53,7 @@ class SellerOnboardingActivity : BaseActivity() {
         setupSliderItems()
         setupButtonClickListener()
 
-        pageIndicatorSob.setIndicator(sobAdapter.dataSize)
+        pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
     }
 
     private fun setupSlider() {
@@ -74,7 +74,7 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun updateHeaderBackground(position: Int) {
         try {
             val slideItem = slideItems[position]
-            imgSobHeader.loadImage(slideItem.headerResBg)
+            imgSobHeader?.loadImage(slideItem.headerResBg)
         } catch (e: IndexOutOfBoundsException) {
             //do nothing
         }
@@ -95,7 +95,7 @@ class SellerOnboardingActivity : BaseActivity() {
                 else -> viewObserver.alpha = 0.1f
             }
         }
-        sobViewPager.setPageTransformer(compositeTransformer)
+        sobViewPager?.setPageTransformer(compositeTransformer)
     }
 
     private fun updateNextButtonState(position: Int) {
@@ -112,12 +112,12 @@ class SellerOnboardingActivity : BaseActivity() {
         val firstSlideIndex = 0
         val shouldShowButton = position != firstSlideIndex
         if (shouldShowButton) {
-            if (!btnSobPrev.isVisible) {
+            if (btnSobPrev?.isVisible == false) {
                 val animation = AnimationUtils.loadAnimation(this, R.anim.anim_sob_popin)
                 btnSobPrev?.startAnimation(animation)
             }
         } else {
-            if (btnSobPrev.isVisible) {
+            if (btnSobPrev?.isVisible == true) {
                 val animation = AnimationUtils.loadAnimation(this, R.anim.anim_sob_popout)
                 btnSobPrev?.startAnimation(animation)
             }
@@ -132,7 +132,7 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun setupButtonClickListener() {
         btnSobNext?.setOnClickListener {
             val lastSlideIndex = slideItems.size.minus(1)
-            val isLastSlide = sobViewPager.currentItem == lastSlideIndex
+            val isLastSlide = sobViewPager?.currentItem == lastSlideIndex
             if (isLastSlide) {
                 goToLoginPage()
             } else {
