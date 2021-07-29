@@ -1,13 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.content.Context
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -22,7 +18,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
@@ -191,32 +186,7 @@ class ProductRecommendationViewHolder(
                 finishCalculate = {
                     view.rvProductRecom.show()
                     view.loadingRecom.gone()
-                },
-                customLayoutManager =
-                    if (product.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                        getLayoutManager(itemView.context)
-                    } else null
-                )
-    }
-
-    private fun getLayoutManager(context: Context): LinearLayoutManager =  object : LinearLayoutManager(context, HORIZONTAL, false) {
-        override fun requestChildRectangleOnScreen(
-                parent: RecyclerView,
-                child: View,
-                rect: Rect,
-                immediate: Boolean,
-                focusedChildVisible: Boolean
-        ): Boolean {
-            return if ((child as? ViewGroup)?.focusedChild is CardView) {
-                false
-            } else super.requestChildRectangleOnScreen(
-                    parent,
-                    child,
-                    rect,
-                    immediate,
-                    focusedChildVisible
-            )
-        }
+                })
     }
 
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) = ComponentTrackDataModel(element?.type

@@ -138,14 +138,16 @@ fun RecommendationItem.toProductCardModel(
 }
 
 var LABEL_FULFILLMENT: String = "fulfillment"
-var LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
+val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
+val DEFAULT_QTY_0: Int = 0
+val DEFAULT_QTY_1: Int = 1
 
 private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC
 }
 
 private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {
-    return if (this.isRecomCardShouldShowVariantOrCart()) 0 else 1
+    return if (this.isRecomCardShouldShowVariantOrCart()) DEFAULT_QTY_0 else DEFAULT_QTY_1
 }
 
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
