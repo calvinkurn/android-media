@@ -3,7 +3,6 @@ package com.tokopedia.universal_sharing.view.bottomsheet
 
 
 import android.Manifest
-import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
@@ -13,7 +12,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -63,14 +61,12 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(path)
-//                    Handler().postDelayed({
                     if(!ssUriPath.equals(path)) {
                         ssUriPath = path
                         if(!path.contains(pendingRegex)) {
                             screenShotListener.screenShotTaken()
                         }
                     }
-//                    }, 2500)
                 }
             }
         }
@@ -101,14 +97,12 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                     // do something
                     UniversalShareBottomSheet.setImageOnlySharingOption(true)
                     UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-//                    Handler().postDelayed({
                     if(!ssUriPath.equals(relativePath)) {
                         ssUriPath = relativePath
                         if(!relativePath.contains(pendingRegex)) {
                             screenShotListener.screenShotTaken()
                         }
                     }
-//                    }, 2500)
                 }
             }
         }
