@@ -74,6 +74,7 @@ private const val SPACE = 3
 private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
+private const val CAPTION_END = 120
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 
@@ -484,7 +485,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 hasSecondLine(caption.text)
             ) {
                 val captionEnd =
-                    if (findSubstringSecondLine(caption.text) < DynamicPostViewHolder.CAPTION_END)
+                    if (findSubstringSecondLine(caption.text) < CAPTION_END)
                         findSubstringSecondLine(caption.text)
                     else
                         DynamicPostViewHolder.CAPTION_END
