@@ -79,6 +79,10 @@ class ProfileViewHolder(
                     listener.onProfileAdapterReady(financialAdapter, memberAdapter)
                 }
             }
+
+            link_account_profile_btn?.setOnClickListener {
+                listener.onLinkingAccountClicked()
+            }
         }
     }
 
