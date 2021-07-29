@@ -2,9 +2,9 @@ package com.tokopedia.search.result.presentation.mapper
 
 import com.tokopedia.search.result.domain.model.SearchProductModel.*
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import java.util.*
 
 class InspirationCarouselProductDataViewMapper {
 
@@ -19,6 +19,8 @@ class InspirationCarouselProductDataViewMapper {
             ): List<InspirationCarouselDataView.Option.Product> {
 
         return inspirationCarouselProduct.mapIndexed { index, product ->
+            val isOrganicAds = product.isOrganicAds()
+
             InspirationCarouselDataView.Option.Product(
                     product.id,
                     product.name,
@@ -40,7 +42,13 @@ class InspirationCarouselProductDataViewMapper {
                     index + 1,
                     optionTitle,
                     product.shop.city,
+                    product.shop.name,
                     convertInspirationCarouselProductBadgeToBadgesItemList(product.badgeList),
+                    product.freeOngkir.mapToFreeOngkirDataView(),
+                    isOrganicAds,
+                    product.ads.productViewUrl,
+                    product.ads.productClickUrl,
+                    product.ads.productWishlistUrl,
             )
         }
     }
@@ -56,4 +64,7 @@ class InspirationCarouselProductDataViewMapper {
             )
         }
     }
+
+    private fun InspirationCarouselProductFreeOngkir.mapToFreeOngkirDataView() =
+        FreeOngkirDataView(isActive, imageUrl)
 }

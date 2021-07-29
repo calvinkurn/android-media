@@ -539,7 +539,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     sharedData?.shopId?.toIntOrZero() ?: 0,
                     viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
                     userSessionInterface.userId,
-                    sharedData?.minimumShippingPrice ?: 0,
+                    sharedData?.minimumShippingPrice ?: 0.0,
                     sharedData?.trackerAttribution ?: "",
                     sharedData?.trackerListNamePdp ?: "",
                     sharedData?.isTokoNow ?: false

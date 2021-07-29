@@ -66,6 +66,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                                     specSummary = it.value
                             )
                         },
+                        parentID = recommendation.parentID,
+                        isRecomProductShowVariantAndCart = isRecomCardShouldShowVariantOrCart()
                 )
             },
             title = title,
@@ -96,6 +98,14 @@ fun RecommendationItem.toProductCardModel(
         addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
         hasThreeDots: Boolean = false
 ) : ProductCardModel{
+    var variant: ProductCardModel.Variant? = null
+    var nonVariant: ProductCardModel.NonVariant? = null
+    var hasThreeDotsFinalValue = hasThreeDots
+    if (isRecomProductShowVariantAndCart) {
+        hasThreeDotsFinalValue = false
+        if (isProductHasParentID()) variant = ProductCardModel.Variant(quantity = quantity)
+        else nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
+    }
     return ProductCardModel(
             slashedPrice = slashedPrice,
             productName = name,
@@ -103,7 +113,7 @@ fun RecommendationItem.toProductCardModel(
             productImageUrl = imageUrl,
             isTopAds = isTopAds,
             isWishlistVisible = true,
-            hasThreeDots = hasThreeDots,
+            hasThreeDots = hasThreeDotsFinalValue,
             isWishlisted = isWishlist,
             discountPercentage = discountPercentage,
             reviewCount = countReview,
@@ -121,12 +131,18 @@ fun RecommendationItem.toProductCardModel(
                 ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl=it.imageUrl)
             },
             hasAddToCartButton = hasAddToCartButton,
-            addToCartButtonType = addToCartButtonType
+            addToCartButtonType = addToCartButtonType,
+            variant = variant,
+            nonVariant = nonVariant
     )
 }
 
 var LABEL_FULFILLMENT: String = "fulfillment"
+var LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 
+private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
+    return layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+}
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
     return this.any { it.position == LABEL_FULFILLMENT }
 }

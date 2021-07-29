@@ -217,20 +217,33 @@
             app:layout_constraintVertical_bias="1.0"
             app:typographyType="heading_6"
             app:unifyButtonSize="small"
-            app:unifyButtonType="transaction"
+            app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
             tools:visibility="visible" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/buttonDeleteCart"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/product_card_button_delete_cart_height"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_button_delete_cart_margin_top"
+            android:visibility="gone"
+            app:icon_name="DELETE"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonAddToCart"
+            app:layout_constraintBottom_toTopOf="@id/buttonAddVariant"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifycomponents.QuantityEditorUnify
             android:id="@+id/quantityEditorNonVariant"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_quantity_editor_height"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/product_card_quantity_editor_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:foreground="?selectableItemBackground"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/buttonDeleteCart"
             app:layout_constraintTop_toBottomOf="@id/buttonAddToCart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/buttonAddVariant"
