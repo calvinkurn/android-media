@@ -217,8 +217,7 @@ object HomeLayoutMapper {
             val parentId = miniCartItem.productParentId
             val quantity = if (parentId != DEFAULT_PARENT_ID) {
                 val miniCartItemsWithSameParentId = variantGroup[miniCartItem.productParentId]
-                val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
-                totalQuantity.orZero()
+                miniCartItemsWithSameParentId?.sumBy { it.quantity }.orZero()
             } else {
                 miniCartItem.quantity
             }
@@ -254,14 +253,14 @@ object HomeLayoutMapper {
                     deletedProducts.forEach { model ->
                         if (model.parentId != DEFAULT_PARENT_ID) {
                             val miniCartItemsWithSameParentId = variantGroup[model.parentId]
-                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
-                                updateProductRecomQuantity(model.productId, DEFAULT_QUANTITY)
+                                updateRecentPurchaseQuantity(model.productId, DEFAULT_QUANTITY)
                             } else {
-                                updateProductRecomQuantity(model.productId, totalQuantity.orZero())
+                                updateRecentPurchaseQuantity(model.productId, totalQuantity)
                             }
                         } else {
-                            updateProductRecomQuantity(model.productId, DEFAULT_QUANTITY)
+                            updateRecentPurchaseQuantity(model.productId, DEFAULT_QUANTITY)
                         }
                     }
                 }
@@ -276,11 +275,11 @@ object HomeLayoutMapper {
                     deletedProducts.forEach { item ->
                         if (item.parentID.toString() != DEFAULT_PARENT_ID) {
                             val miniCartItemsWithSameParentId = variantGroup[item.parentID.toString()]
-                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
+                            val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
                             } else {
-                                updateProductRecomQuantity(item.productId.toString(), totalQuantity.orZero())
+                                updateProductRecomQuantity(item.productId.toString(), totalQuantity)
                             }
                         } else {
                             updateProductRecomQuantity(item.productId.toString(), DEFAULT_QUANTITY)
