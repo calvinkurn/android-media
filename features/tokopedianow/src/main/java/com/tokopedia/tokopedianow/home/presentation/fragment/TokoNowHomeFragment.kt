@@ -32,7 +32,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -147,8 +146,9 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isVariantAdded = false
+    private var isFirstResumed = false
     private var isFirstImpressionOnBanner = false
+    private var isRefreshed = true
     private var headerName = ""
     private var channelId: String = ""
     private var productPosition: String = ""
@@ -212,6 +212,7 @@ class TokoNowHomeFragment: Fragment(),
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
+        isFirstResumed = true
     }
 
     override fun onTickerDismissed(id: String) {
@@ -223,7 +224,7 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
         }
         updateProductCard(miniCartSimplifiedData)
-        setupPadding(miniCartSimplifiedData)
+        setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
     private fun updateProductCard(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -285,13 +286,16 @@ class TokoNowHomeFragment: Fragment(),
         headerName: String,
         pageName: String
     ) {
-        analytics.onImpressProductRecom(
-            channelId = channelId,
-            headerName = headerName,
-            userId = userSession.userId,
-            recomItems = recomItems,
-            pageName = pageName
-        )
+        if (isRefreshed) {
+            isRefreshed = false
+            analytics.onImpressProductRecom(
+                channelId = channelId,
+                headerName = headerName,
+                userId = userSession.userId,
+                recomItems = recomItems,
+                pageName = pageName
+            )
+        }
     }
 
     override fun onSeeAllBannerClicked(channelId: String, headerName: String) {
@@ -321,6 +325,7 @@ class TokoNowHomeFragment: Fragment(),
         this.headerName = headerName
         this.recomItem = recomItem
         this.productPosition = position
+        this.channelId = channelId
     }
 
     override fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int) {
@@ -357,9 +362,6 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-            isVariantAdded = true
-        }
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
@@ -392,9 +394,15 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showEmptyState(id: String) {
-        rvLayoutManager?.setScrollEnabled(false)
-        viewModelTokoNow.getEmptyState(id)
+        if (id != EMPTY_STATE_NO_ADDRESS) {
+            rvLayoutManager?.setScrollEnabled(false)
+            viewModelTokoNow.getEmptyState(id)
+        } else {
+            viewModelTokoNow.getEmptyState(id)
+            viewModelTokoNow.getProductRecomOoc()
+        }
         miniCartWidget?.hide()
+        setupPadding(false)
     }
 
     private fun showFailedToFetchData() {
@@ -444,6 +452,7 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
+        isRefreshed = true
     }
 
     private fun setupNavToolbar() {
@@ -581,10 +590,10 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
-                setupPadding(it.data)
-                if (isVariantAdded) {
+                setupPadding(it.data.isShowMiniCartWidget)
+                if (isFirstResumed) {
                     updateProductCard(it.data)
-                    isVariantAdded = false
+                    isFirstResumed = false
                 }
             }
         }
@@ -614,30 +623,17 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.miniCartWidgetDataUpdated) {
-            miniCartWidget?.updateData(it)
-        }
-
         observe(viewModelTokoNow.miniCartAdd) {
             when(it) {
                 is Success -> {
+                    getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         type = TYPE_NORMAL
                     )
-                    getMiniCart()
 
-                    recomItem?.apply {
-                        analytics.onClickProductRecomAddToCart(
-                            channelId = channelId,
-                            headerName = headerName,
-                            userId = userSession.userId,
-                            quantity = it.data.data.quantity.toString(),
-                            recommendationItem = this,
-                            position = productPosition,
-                            cartId = it.data.data.cartId
-                        )
-                    }
+                    // track add to cart
+                    trackAddToCart(it.data.data.quantity, it.data.data.cartId)
                 }
                 is Fail -> {
                     showToaster(
@@ -653,6 +649,16 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
                     miniCartWidget?.updateData(shopIds)
+                    showToaster(
+                        message = it.data.data.message,
+                        type = TYPE_NORMAL
+                    )
+
+                    // track add to cart
+                    recomItem?.let { recomItem ->
+                        val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem.productId.toString())
+                        trackAddToCart(miniCartItem?.quantity.toZeroIfNull(), miniCartItem?.cartId.orEmpty())
+                    }
                 }
                 is Fail -> {
                     showToaster(
@@ -665,12 +671,38 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.miniCartRemove) {
             when(it) {
-                is Success -> getMiniCart()
+                is Success -> {
+                    getMiniCart()
+                    showToaster(
+                        message = it.data.second,
+                        type = TYPE_NORMAL
+                    )
+
+                    // track add to cart
+                    recomItem?.let { recomItem ->
+                        val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem.productId.toString())
+                        trackAddToCart(0, miniCartItem?.cartId.orEmpty())
+                    }
+                }
                 is Fail -> {
                     val message = it.throwable.message.orEmpty()
                     showToaster(message = message, type = TYPE_ERROR)
                 }
             }
+        }
+    }
+
+    private fun trackAddToCart(quantity: Int, cartId: String) {
+        recomItem?.apply {
+            analytics.onClickProductRecomAddToCart(
+                channelId = channelId,
+                headerName = headerName,
+                userId = userSession.userId,
+                quantity = quantity.toString(),
+                recommendationItem = this,
+                position = productPosition,
+                cartId = cartId
+            )
         }
     }
 
@@ -735,10 +767,10 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun setupPadding(data: MiniCartSimplifiedData) {
+    private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
-            val paddingBottom = if (data.isShowMiniCartWidget) {
-                miniCartWidget?.height.orZero()
+            val paddingBottom = if (isShowMiniCartWidget) {
+                miniCartWidget?.layoutParams?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()

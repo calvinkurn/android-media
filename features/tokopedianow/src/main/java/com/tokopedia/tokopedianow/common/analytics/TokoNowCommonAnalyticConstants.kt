@@ -34,6 +34,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_SHOP_TYPE = "shop_type"
         const val KEY_USER_ID = "userId"
         const val KEY_PRODUCT_ID = "productId"
+        const val KEY_CATEGORY_ID = "category_id"
         const val KEY_PAGE_SOURCE = "pageSource"
         const val KEY_INDEX = "index"
         const val KEY_ITEMS = "items"
