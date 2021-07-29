@@ -13,21 +13,22 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitm
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.isDark
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizebitmapAndKeepRatio
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
 import android.graphics.Bitmap.createBitmap as createBitmap
 
-data class Watermark (
-    var context: Context,
-    var backgroundImg: Bitmap? = null,
-    var watermarkImg: ImageUIModel? = null,
-    var watermarkText: TextUIModel? = null,
-    var watermarkTextAndImage: TextAndImageUIModel? = null,
-    var outputImage: Bitmap? = null,
-    var canvasBitmap: Bitmap? = null,
-    var watermarkBitmap: Bitmap? = null,
-    var isTitleMode: Boolean,
-    var isCombine: Boolean,
-    var onlyWatermark: Boolean
+data class Watermark(
+        var context: Context,
+        var backgroundImg: Bitmap? = null,
+        var watermarkImg: ImageUIModel? = null,
+        var watermarkText: TextUIModel? = null,
+        var watermarkTextAndImage: TextAndImageUIModel? = null,
+        var outputImage: Bitmap? = null,
+        var canvasBitmap: Bitmap? = null,
+        var watermarkBitmap: Bitmap? = null,
+        var isTitleMode: Boolean,
+        var isCombine: Boolean,
+        var onlyWatermark: Boolean
 ) {
 
     init {
@@ -58,11 +59,11 @@ data class Watermark (
         val squareBitmapSize = 2000
 
         val logoBitmap = watermark.image!!.resizeBitmap(watermark.imageSize.toFloat(), squareBitmapSize)
-        val textBitmap = watermark.text.textAsBitmap(context, watermark)
+        val textBitmap = watermark.text.textAsBitmap(context, watermark, logoBitmap.height)
 
         createScaledWatermark(
-            bitmap = logoBitmap.combineBitmapWithPadding(textBitmap),
-            config = watermark
+                bitmap = logoBitmap.combineBitmapWithPadding(textBitmap),
+                config = watermark
         )
     }
 
@@ -75,11 +76,11 @@ data class Watermark (
         if (watermark == null) return
 
         val logoBitmap = watermark.image!!.resizeBitmap(watermark.imageSize.toFloat(), backgroundImg!!.width)
-        val textBitmap = watermark.text.textAsBitmap(context, watermark)
+        val textBitmap = watermark.text.textAsBitmap(context, watermark, logoBitmap.height)
 
         createWatermark(
-            bitmap = logoBitmap.combineBitmapWithPadding(textBitmap),
-            config = watermark
+                bitmap = logoBitmap.combineBitmapWithPadding(textBitmap),
+                config = watermark
         )
     }
 
@@ -92,13 +93,13 @@ data class Watermark (
         if (watermarkImg == null) return
 
         val bitmap = watermarkImg.image!!.resizeBitmap(
-            watermarkImg.imageSize.toFloat(),
-            backgroundImg!!.width
+                watermarkImg.imageSize.toFloat(),
+                backgroundImg!!.width
         )
 
         createWatermark(
-            bitmap = bitmap,
-            config = watermarkImg
+                bitmap = bitmap,
+                config = watermarkImg
         )
     }
 
@@ -113,14 +114,14 @@ data class Watermark (
         val textBitmap = watermarkText.text.textAsBitmap(context, watermarkText)
 
         createWatermark(
-            bitmap = textBitmap,
-            config = watermarkText
+                bitmap = textBitmap,
+                config = watermarkText
         )
     }
 
     private fun createScaledWatermark(
-        bitmap: Bitmap,
-        config: BaseWatermark?
+            bitmap: Bitmap,
+            config: BaseWatermark?
     ) {
         if (config == null) return
 
@@ -160,8 +161,8 @@ data class Watermark (
     }
 
     private fun createWatermark(
-        bitmap: Bitmap,
-        config: BaseWatermark?
+            bitmap: Bitmap,
+            config: BaseWatermark?
     ) {
         if (config == null) return
 
@@ -183,18 +184,18 @@ data class Watermark (
 
             if (isTitleMode) {
                 paint.shader = BitmapShader(
-                    watermarkBitmap!!,
-                    Shader.TileMode.REPEAT,
-                    Shader.TileMode.REPEAT
+                        watermarkBitmap!!,
+                        Shader.TileMode.REPEAT,
+                        Shader.TileMode.REPEAT
                 )
 
                 canvas.drawRect(canvas.clipBounds, paint)
             } else {
                 canvas.drawBitmap(
-                    watermarkBitmap!!,
-                    (config.position.positionX * it.width).toFloat(),
-                    (config.position.positionY * it.height).toFloat(),
-                    paint
+                        watermarkBitmap!!,
+                        (config.position.positionX * it.width).toFloat(),
+                        (config.position.positionY * it.height).toFloat(),
+                        paint
                 )
             }
 
@@ -211,10 +212,10 @@ data class Watermark (
         // scaled resize the watermark container with divided by three
 
         var scaledWatermarkBitmap =
-            watermarkBitmap!!.downscaleToAllowedDimension(
-                mainBitmap = backgroundImg!!,
-                textLength = textLength
-            )?.addPadding(left = 10)
+                watermarkBitmap!!.downscaleToAllowedDimension(
+                        mainBitmap = backgroundImg!!,
+                        textLength = textLength
+                )
 
         if (!backgroundImg!!.isDark())
             scaledWatermarkBitmap = scaledWatermarkBitmap!!.changeColor(Color.RED)
@@ -222,22 +223,22 @@ data class Watermark (
 
         // merge the main bitmap with scaled watermark bitmap
         val resultBitmap = createBitmap(
-            widthMainBitmap,
-            heightMainBitmap,
-            backgroundImg!!.config
+                widthMainBitmap,
+                heightMainBitmap,
+                backgroundImg!!.config
         )
 
         Canvas(resultBitmap).apply {
             // first, draw the main bitmap into canvas
             drawBitmap(backgroundImg!!, 0f, 0f, null)
-            rotate(-45f)
+            rotate(-30f)
 
             // afterwards, draw tiles mode of watermark
             drawRect(this.clipBounds, Paint().apply {
                 shader = BitmapShader(
-                    scaledWatermarkBitmap!!,
-                    Shader.TileMode.REPEAT,
-                    Shader.TileMode.REPEAT
+                        scaledWatermarkBitmap!!,
+                        Shader.TileMode.REPEAT,
+                        Shader.TileMode.REPEAT
                 )
             })
         }
