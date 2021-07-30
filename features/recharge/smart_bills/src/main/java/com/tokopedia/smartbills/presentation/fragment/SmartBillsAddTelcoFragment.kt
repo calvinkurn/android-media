@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
@@ -25,6 +26,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.data.RechargeProduct
+import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
@@ -98,6 +100,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         observePrefix()
         observeSelectedPrefix()
         observeInquiry()
+        observeAddBill()
     }
 
     private fun getMenuDetailTicker(){
@@ -116,6 +119,10 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun getInquiryData(){
         viewModel.getInquiryData(viewModel.createInquiryParam(operatorActive.attributes.defaultProductId, getNumber()))
+    }
+
+    private fun addBills(){
+        viewModel.addBill(viewModel.createAddBillsParam(RechargeSBMAddBillRequest(selectedProduct?.id.toIntOrZero(), getNumber())))
     }
 
     private fun observeTicker(){
@@ -174,6 +181,40 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
                 }
            }
+        }
+    }
+
+    private fun observeAddBill(){
+        observe(viewModel.rechargeAddBills){
+            when(it){
+                is Fail -> {
+                    val throwable = it.throwable
+                    view?.let {
+                        Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+
+                }
+                is Success -> {
+                    val errorMessage = it.data.rechargeSBMAddBill.errorMessage
+                    val message = it.data.rechargeSBMAddBill.message
+                    if(!errorMessage.isNullOrEmpty()){
+                        view?.let {
+                            Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
+                    } else {
+                        if (!message.isNullOrEmpty()){
+                            view?.let {
+                                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                            }
+                        }
+                        //todo add finish() and activity result
+                        RouteManager.route(context, ApplinkConsInternalDigital.SMART_BILLS)
+                    }
+                }
+            }
         }
     }
 
@@ -275,18 +316,25 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             show()
             setOnClickListener {
                 hideKeyBoard()
-                isButtonTelcoLoading(true)
                 if (isPostaid()) {
                     if (getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
                             && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
                             && !operatorActive.id.isNullOrEmpty()){
+                                isButtonTelcoLoading(true)
                                 getInquiryData()
                             } else {
                                 validationNumber()
                             }
 
                 } else if (isPrepaid()) {
-
+                    if (getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
+                            && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
+                            && !selectedProduct?.id.isNullOrEmpty()){
+                        isButtonTelcoLoading(true)
+                        addBills()
+                    } else {
+                        validationNumber()
+                    }
                 }
             }
         }

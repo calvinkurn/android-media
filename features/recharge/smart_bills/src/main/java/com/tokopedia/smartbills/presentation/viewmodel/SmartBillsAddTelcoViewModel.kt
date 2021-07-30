@@ -19,6 +19,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.smartbills.data.RechargeAddBillsData
+import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -47,6 +49,10 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     private val mutableInquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val inquiryData: LiveData<Result<TopupBillsEnquiryData>>
         get() = mutableInquiryData
+
+    private val mutableRechargeAddBills= MutableLiveData<Result<RechargeAddBillsData>>()
+    val rechargeAddBills: LiveData<Result<RechargeAddBillsData>>
+        get() = mutableRechargeAddBills
 
     fun getMenuDetailAddTelco(mapParam: Map<String, Any>) {
         launchCatchError(block = {
@@ -114,6 +120,21 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         }
     }
 
+    fun addBill(mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                val graphqlRequest = GraphqlRequest(SmartBillsQueries.ADD_BILL_QUERY,
+                        RechargeAddBillsData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeAddBillsData>()
+
+            mutableRechargeAddBills.postValue(Success(data))
+        }) {
+            mutableRechargeAddBills.postValue(Fail(it))
+        }
+    }
+
     fun createMenuDetailAddTelcoParams(menuId: Int): Map<String, Any> {
         return mapOf(PARAM_MENU_ID to menuId)
     }
@@ -128,12 +149,17 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         return mapOf(PARAM_FIELDS to enquiryParams)
     }
 
+    fun createAddBillsParam(addBillRequest: RechargeSBMAddBillRequest): Map<String, Any> {
+        return mapOf(PARAM_ADD_REQUEST to addBillRequest)
+    }
+
 
     companion object{
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_CATEGORY_ID = "categoryID"
 
         const val PARAM_FIELDS = "fields"
+        const val PARAM_ADD_REQUEST = "addRequest"
 
         const val ENQUIRY_PARAM_DEVICE_ID = "device_id"
         const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "5"
