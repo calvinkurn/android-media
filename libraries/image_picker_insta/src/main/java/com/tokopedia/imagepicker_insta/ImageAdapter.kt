@@ -5,18 +5,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.Camera
+import com.tokopedia.imagepicker_insta.views.ToggleViewGroup
 
-class ImageAdapter(val dataList: List<Asset>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val selectedPositions = arrayListOf<Int>()
+class ImageAdapter(val dataList: List<Asset>, val contentHeight:Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    val selectedPositions = mutableSetOf<Int>()
+
+    private val TYPE_CAMERA = 0
+    private val TYPE_ASSET = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        if(viewType == 0){
-//            return CameraViewHolder.getInstance(parent)
-//        }else{
-        return PhotosViewHolder.getInstance(parent)
-//        }
+        if(viewType == TYPE_CAMERA){
+            return CameraViewHolder.getInstance(parent,contentHeight)
+        }else{
+            return PhotosViewHolder.getInstance(parent, contentHeight)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (dataList[position]is Camera) return TYPE_CAMERA
+        return TYPE_ASSET
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -24,6 +33,18 @@ class ImageAdapter(val dataList: List<Asset>) : RecyclerView.Adapter<RecyclerVie
             holder.setData()
         } else if (holder is PhotosViewHolder) {
             holder.setData(dataList[position])
+            holder.itemView.setOnClickListener {
+                if(selectedPositions.contains(position)){
+                    //un select
+                    selectedPositions.remove(position)
+                    holder.setChecked(false)
+                }else{
+                    //select
+                    selectedPositions.add(position)
+                    holder.setChecked(true)
+                }
+
+            }
         }
     }
 
@@ -35,8 +56,12 @@ class ImageAdapter(val dataList: List<Asset>) : RecyclerView.Adapter<RecyclerVie
 
 class CameraViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
     companion object {
-        fun getInstance(parent: ViewGroup): CameraViewHolder {
-            return CameraViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.imagepicker_insta_item_view_camera, parent, false))
+        fun getInstance(parent: ViewGroup,contentHeight: Int): CameraViewHolder {
+            val v = LayoutInflater.from(parent.context).inflate(R.layout.imagepicker_insta_item_view_camera, parent, false)
+            v.layoutParams.apply {
+                height = contentHeight
+            }
+            return CameraViewHolder(v)
         }
     }
 
@@ -46,15 +71,22 @@ class CameraViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-class PhotosViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
+class PhotosViewHolder(val photoView: View) : RecyclerView.ViewHolder(photoView) {
     companion object {
-        fun getInstance(parent: ViewGroup): PhotosViewHolder {
-            return PhotosViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.imagepicker_insta_item_view_photos, parent, false))
+        fun getInstance(parent: ViewGroup, contentHeight: Int): PhotosViewHolder {
+            val v = LayoutInflater.from(parent.context).inflate(R.layout.imagepicker_insta_item_view_photos, parent, false)
+            v.layoutParams.apply {
+                height = contentHeight
+            }
+            return PhotosViewHolder(v)
         }
     }
 
-    val imageImage = itemView.findViewById<AssetImageView>(R.id.item_view_image_photo)
+    val assetView = itemView.findViewById<ToggleViewGroup>(R.id.item_view_image_photo)
+    fun setChecked(isChecked:Boolean){
+        assetView.setChecked(isChecked)
+    }
     fun setData(asset: Asset) {
-        imageImage.loadAsset(asset)
+        assetView.loadAsset(asset)
     }
 }

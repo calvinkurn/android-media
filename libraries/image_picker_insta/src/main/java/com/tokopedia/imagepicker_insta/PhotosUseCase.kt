@@ -1,13 +1,13 @@
 package com.tokopedia.imagepicker_insta
 
 import android.content.Context
-import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import javax.inject.Inject
 
 class PhotosUseCase @Inject constructor() {
     val importer = PhotoImporter()
 
-    fun getPhotos(context: Context): List<Asset> {
+    fun getPhotos(context: Context): PhotosImporterData {
         return importer.importPhotos(context)
     }
 }

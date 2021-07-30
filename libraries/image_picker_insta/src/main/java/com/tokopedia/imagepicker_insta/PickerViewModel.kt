@@ -1,10 +1,8 @@
 package com.tokopedia.imagepicker_insta
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -15,7 +13,7 @@ class PickerViewModel @Inject constructor(
     val app: Application
 ) : BaseAndroidViewModel(workerDispatcher,app) {
 
-    val photosLiveData:MutableLiveData<LiveDataResult<List<Asset>>> = MutableLiveData()
+    val photosLiveData:MutableLiveData<LiveDataResult<PhotosImporterData>> = MutableLiveData()
     fun getPhotos() {
         launchCatchError(block = {
             photosLiveData.postValue(LiveDataResult.loading())

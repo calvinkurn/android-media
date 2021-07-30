@@ -5,8 +5,8 @@ import android.database.Cursor
 import android.provider.MediaStore
 import android.util.Log
 import android.util.SparseArray
-import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
+import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.imagepicker_insta.util.CursorUtil
 import com.tokopedia.imagepicker_insta.util.FileUtil
 import org.json.JSONException
@@ -15,21 +15,22 @@ import java.io.IOException
 
 class PhotoImporter {
 
-    fun importPhotos(context: Context):List<Asset>{
+    fun importPhotos(context: Context): PhotosImporterData {
         val photoNames = SparseArray<String>()
         val photoCursor = CursorUtil.getPhotoCursor(context,"",null)
         val photosOnPhone = SparseArray<JSONObject>()
-        val list = iteratePhotoCursor(photoCursor, photosOnPhone,photoNames)
+        val data = iteratePhotoCursor(photoCursor, photosOnPhone,photoNames)
 
         Log.d("Photos","${photosOnPhone.size()}")
-        return list
+        return data
     }
 
     protected fun iteratePhotoCursor(cur: Cursor?,
                                      photosOnPhone: SparseArray<JSONObject>,
                                      photoNames:SparseArray<String>
-    ):List<Asset> {
+    ):PhotosImporterData {
         val photosList = arrayListOf<PhotosData>()
+        val folders = hashSetOf<String>()
 
         if (cur != null && cur.count > 0) {
             try {
@@ -104,10 +105,12 @@ class PhotoImporter {
                                 }
                             }
 
+                            val folderName = item["nw_st"] as String
                             val photosData = PhotosData(filePath = name,
-                            folderName = item["nw_st"] as String,
+                            folderName = folderName,
                             mediaType = item["mt"] as String,
                             )
+                            folders.add(folderName)
                             photosList.add(photosData)
                         } catch (e: JSONException) {
                             e.printStackTrace()
@@ -119,7 +122,7 @@ class PhotoImporter {
                 cur.close()
             }
         }
-        return photosList
+        return PhotosImporterData(folders.toList(),photosList)
     }
 
     protected fun locationValid(latitude: Double, longitude: Double): Boolean? {
