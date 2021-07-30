@@ -75,3 +75,4 @@ include "libraries:screen_recorder"
 include "libraries:screenshot_observer"
 include "libraries:unit_test"
 include 'libraries:macrobenchmark'
+include 'libraries:image_picker_insta'

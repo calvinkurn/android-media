@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:id="@+id/item_view_image_camera"
+    android:layout_height="100dp">
+
+</androidx.appcompat.widget.AppCompatImageView>
