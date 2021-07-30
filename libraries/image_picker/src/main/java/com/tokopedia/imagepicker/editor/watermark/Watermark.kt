@@ -6,14 +6,11 @@ import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.addPadding
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.adjustRotation
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.changeColor
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapWithPadding
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.isDark
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizebitmapAndKeepRatio
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
 import android.graphics.Bitmap.createBitmap as createBitmap
 
@@ -232,6 +229,7 @@ data class Watermark(
             // first, draw the main bitmap into canvas
             drawBitmap(backgroundImg!!, 0f, 0f, null)
             rotate(-30f)
+            this.clipBounds.top = 600
 
             // afterwards, draw tiles mode of watermark
             drawRect(this.clipBounds, Paint().apply {

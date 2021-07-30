@@ -14,8 +14,6 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeScale
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 import com.tokopedia.imagepicker.editor.watermark.utils.takeAndEllipsizeOf
 import com.yalantis.ucrop.util.FastBitmapDrawable
-import android.graphics.Bitmap.Config.ARGB_8888 as ARGB_8888
-import android.graphics.Bitmap.createBitmap as createBitmap
 
 open class WatermarkBuilder {
 

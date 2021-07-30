@@ -19,9 +19,9 @@ object BitmapHelper {
         val paint = TextPaint().apply {
             // text size in pixel based on device dimension
             val textInPixel = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    properties.textSize.toFloat(),
-                    context.resources.displayMetrics
+                TypedValue.COMPLEX_UNIT_DIP,
+                properties.textSize.toFloat(),
+                context.resources.displayMetrics
             )
 
             // basic properties
@@ -42,10 +42,10 @@ object BitmapHelper {
                     || properties.textShadowXOffset != 0f
                     || properties.textShadowYOffset != 0f) {
                 setShadowLayer(
-                        properties.textShadowBlurRadius,
-                        properties.textShadowXOffset,
-                        properties.textShadowYOffset,
-                        properties.textShadowColor
+                    properties.textShadowBlurRadius,
+                    properties.textShadowXOffset,
+                    properties.textShadowYOffset,
+                    properties.textShadowColor
                 )
             }
 
@@ -60,10 +60,10 @@ object BitmapHelper {
         val bounds = Rect()
 
         paint.getTextBounds(
-                this,
-                0,
-                this.length,
-                bounds
+            this,
+            0,
+            this.length,
+            bounds
         )
 
         var boundWidth = bounds.width() + 20 // 20 is the threshold of white space
@@ -71,14 +71,13 @@ object BitmapHelper {
         while (boundHeight < height - 20) {
             paint.textSize += 1
             paint.getTextBounds(
-                    this,
-                    0,
-                    this.length,
-                    bounds
+                this,
+                0,
+                this.length,
+                bounds
             )
             boundHeight = bounds.height()
             boundWidth = bounds.width() + 20
-            println("cek height ${boundHeight}")
         }
         val textMaxWidth = paint.measureText(this).toInt()
 
@@ -88,28 +87,26 @@ object BitmapHelper {
 
         // create the static layout
         val staticLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    StaticLayout.Builder
-                            .obtain(this, 0, this.length, paint, textMaxWidth)
-                            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                            .setLineSpacing(2.0f, 2.0f)
-                            .setIncludePad(false)
-                            .build()
-                } else {
-                    StaticLayout(
-                            this,
-                            0,
-                            this.length,
-                            paint,
-                            textMaxWidth,
-                            Layout.Alignment.ALIGN_NORMAL,
-                            2.0f,
-                            2.0f,
-                            false
-                    )
-                }
-        // calculate the height of text bitmap
-//        val bitmapHeight = ((baseline + paint.descent() + 3) * staticLayout.lineCount).toInt()
-        // create bitmap
+            StaticLayout.Builder
+                .obtain(this, 0, this.length, paint, textMaxWidth)
+                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                .setLineSpacing(2.0f, 2.0f)
+                .setIncludePad(false)
+                .build()
+        } else {
+            StaticLayout(
+                this,
+                0,
+                this.length,
+                paint,
+                textMaxWidth,
+                Layout.Alignment.ALIGN_NORMAL,
+                2.0f,
+                2.0f,
+                false
+            )
+        }
+
         var bitmapResult = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
         if (boundWidth > 0 && boundHeight > 0) {
@@ -134,50 +131,37 @@ object BitmapHelper {
         matrix.postScale(scale, scale)
 
         return Bitmap.createBitmap(
-                this,
-                0,
-                0,
-                bitmapWidth,
-                bitmapHeight,
-                matrix,
-                true
+            this,
+            0,
+            0,
+            bitmapWidth,
+            bitmapHeight,
+            matrix,
+            true
         )
-    }
-
-    fun Bitmap.resizebitmapAndKeepRatio(newHeight: Int): Bitmap {
-        val ratio = this.height.toFloat() / this.width
-        val newWidth = newHeight / ratio
-
-        val scaleWidth = newWidth / this.width
-        val scaleHeight = newHeight.toFloat() / this.height
-
-        val matrix = Matrix()
-        matrix.postScale(scaleWidth, scaleHeight)
-
-        return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, false)
     }
 
     fun Bitmap.resizeScaledBitmap(maxImageSize: Int): Bitmap {
         val ratio = (maxImageSize / width).toFloat()
-                .coerceAtMost((maxImageSize / height).toFloat())
+            .coerceAtMost((maxImageSize / height).toFloat())
 
         val resultWidth = (ratio * width).roundToInt()
         val resultHeight = (ratio * height).roundToInt()
 
         return Bitmap.createScaledBitmap(
-                this,
-                resultWidth,
-                resultHeight,
-                true
+            this,
+            resultWidth,
+            resultHeight,
+            true
         )
     }
 
     fun Bitmap.adjustRotation(orientationAngle: Double): Bitmap {
         val matrix = Matrix()
         matrix.setRotate(
-                orientationAngle.toFloat(),
-                (this.width / 2).toFloat(),
-                (this.height / 2).toFloat()
+            orientationAngle.toFloat(),
+            (this.width / 2).toFloat(),
+            (this.height / 2).toFloat()
         )
 
         return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
@@ -186,17 +170,16 @@ object BitmapHelper {
     fun Bitmap.combineBitmapWithPadding(other: Bitmap): Bitmap {
         var thisPadding = 0f;
         var otherPadding = 0f
-        val thresholdSpace = 170 // space between first bitmap to other bitmap
+        val thresholdSpace = 200 // space between first bitmap to other bitmap
         val otherBitmap = other.addPadding(left = thresholdSpace, right = thresholdSpace)
 
 
         val width = this.width + otherBitmap.width
-        val height = maxOf(this.height, otherBitmap.height) + 75
+        val height = maxOf(this.height, otherBitmap.height) + thresholdSpace
 
         val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
 
-        println("cek this ${this.height} other ${other.height}")
         val topPadding = ((this.height / 2f) - (other.height / 2f)).absoluteValue
 
         if (this.height < other.height)
@@ -253,15 +236,15 @@ object BitmapHelper {
     }
 
     fun Bitmap.addPadding(
-            left: Int = 0,
-            top: Int = 0,
-            right: Int = 0,
-            bottom: Int = 0
+        left: Int = 0,
+        top: Int = 0,
+        right: Int = 0,
+        bottom: Int = 0
     ): Bitmap {
         val bitmap = Bitmap.createBitmap(
-                width + left + right, // width in pixels
-                height + top + bottom, // height in pixels
-                Bitmap.Config.ARGB_8888
+            width + left + right, // width in pixels
+            height + top + bottom, // height in pixels
+            Bitmap.Config.ARGB_8888
         )
 
         val canvas = Canvas(bitmap)
@@ -272,40 +255,44 @@ object BitmapHelper {
         Paint().apply {
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             canvas.drawRect(
-                    Rect(left, top, bitmap.width - right, bitmap.height - bottom),
-                    this
+                Rect(left, top, bitmap.width - right, bitmap.height - bottom),
+                this
             )
         }
 
         // finally, draw bitmap on canvas
         Paint().apply {
             canvas.drawBitmap(
-                    this@addPadding, // bitmap
-                    0f + left, // left
-                    0f + top, // top
-                    this // paint
+                this@addPadding, // bitmap
+                0f + left, // left
+                0f + top, // top
+                this // paint
             )
         }
-
         return bitmap
     }
 
     /**
      * resize the watermark bitmap by scaling with specific condition
-     * if text length (the user info name) have length more than 25,
-     * the size of watermark bitmap it will be resizing into (width / 2)
-     * otherwise, the scaling will be perform (width / 3) or (height / 4) based on orientation.
-     *
-     * the scaling will be calculate it on [scaleByDividedOfThreesHold]
+     * if the text length > 13 the scaling value will be 0.12 from the mainBitmap
+     * otherwise, the scaling will be 0.15 from the mainBitmap
      */
     fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
+        var scaleValue = 0.15f
+
+        if (textLength > 13)
+            scaleValue = 0.12f
 
         val inWidth = this.width
         val inHeight = this.height
+        var newHeight = 0f
 
         val ratio = inHeight.toFloat() / inWidth
 
-        val newHeight = mainBitmap.height * 0.1f
+        if (mainBitmap.height < mainBitmap.width)
+            newHeight = mainBitmap.height * scaleValue
+        else
+            newHeight = mainBitmap.width * scaleValue
         val newWidth = newHeight / ratio
 
         val scaleWidth = newWidth / inWidth
@@ -327,5 +314,4 @@ object BitmapHelper {
             this.height / 3.5f
         }
     }
-
 }
