@@ -117,8 +117,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
         //Saldo Refund
         saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.SALDO_SALES
-            fragment =  SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
+            title = TransactionTitle.SALDO_REFUND
+            fragment =  SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_REFUND)
         })
 
         //Saldo Penghasilan tab
