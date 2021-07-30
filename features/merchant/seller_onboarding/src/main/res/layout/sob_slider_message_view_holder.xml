@@ -36,37 +36,34 @@
         android:id="@+id/imgSobMessage1"
         android:layout_width="@dimen/sob_dimen_message_image_1_width"
         android:layout_height="@dimen/sob_dimen_message_image_1_height"
-        android:layout_marginTop="@dimen/dp_22"
         android:layout_marginStart="@dimen/sob_message_widget_start_margin"
-        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSobSliderMessageTitle"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:src="@drawable/onboarding_02_1" />
+        app:srcCompat="@drawable/ic_sob_widget_android" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage2"
         android:layout_width="@dimen/sob_dimen_message_image_2_width"
         android:layout_height="@dimen/sob_dimen_message_image_2_height"
-        android:layout_marginTop="@dimen/sob_message_smart_reply_top_margin"
         android:layout_marginEnd="@dimen/sob_message_smart_reply_end_margin"
-        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSobMessage1"
-        tools:src="@drawable/onboarding_02_2" />
+        app:srcCompat="@drawable/ic_sob_smart_reply" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage3"
         android:layout_width="@dimen/sob_dimen_message_image_3_width"
         android:layout_height="@dimen/sob_dimen_message_image_3_height"
         android:layout_marginStart="@dimen/sob_message_broadcast_start_margin"
-        android:layout_marginTop="@dimen/sob_message_broadcast_top_margin"
-        android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSobMessage2"
-        tools:src="@drawable/onboarding_02_3" />
+        app:srcCompat="@drawable/ic_sob_broadcast_chat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

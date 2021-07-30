@@ -11,8 +11,8 @@
         android:id="@+id/tvSobSliderHome"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
+        android:layout_marginTop="@dimen/sob_title_top_margin"
         android:text="@string/sob_slider_title_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,14 +23,13 @@
         android:id="@+id/imgSobHome"
         android:layout_width="@dimen/sob_dimen_home_image_width"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/layout_lvl3"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/layout_lvl3"
         app:layout_constrainedHeight="true"
-        app:layout_constraintHeight_percent="0.45"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSobSliderHome"
-        tools:src="@drawable/onboarding_01" />
+        app:srcCompat="@drawable/ic_sob_device_home" />
 </androidx.constraintlayout.widget.ConstraintLayout>
