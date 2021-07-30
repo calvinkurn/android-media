@@ -32,7 +32,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class TroubleshootViewModelTest {
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -102,12 +101,11 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
-        val expectedReturn = Success(NotificationTroubleshoot())
-        val expectedValue = expectedReturn.data.notificationSendTroubleshoot
+        val expectedValue = NotificationTroubleshoot().notificationSendTroubleshoot
 
         coEvery {
             troubleshootUseCase(any())
-        } returns expectedReturn
+        } returns NotificationTroubleshoot()
 
         viewModel.troubleshoot()
 
@@ -117,9 +115,8 @@ class TroubleshootViewModelTest {
 
     @Test fun `it should cannot troubleshoot`() = runBlockingTest {
         val expectedValue = Throwable()
-        val expectedReturn = Fail(expectedValue)
 
-        coEvery { troubleshootUseCase() } returns expectedReturn
+        coEvery { troubleshootUseCase(any()) } throws expectedValue
 
         viewModel.troubleshoot()
 
