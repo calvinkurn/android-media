@@ -613,8 +613,6 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(!isEmptyProductList)
         updateRecyclerViewScrollable(!isEmptyProductList)
 
-        if (isEmptyProductList) updateMiniCartVisibility(!isEmptyProductList)
-
         showPageContent()
     }
 
@@ -819,11 +817,7 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-        isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget && !isEmptyStateOrOutOfCoverage()
-    }
-
-    private fun isEmptyStateOrOutOfCoverage(): Boolean {
-        return visitableList.find { it is EmptyProductDataView || it is OutOfCoverageDataView} != null
+        isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget
     }
 
     private suspend fun updateMiniCartInBackground(

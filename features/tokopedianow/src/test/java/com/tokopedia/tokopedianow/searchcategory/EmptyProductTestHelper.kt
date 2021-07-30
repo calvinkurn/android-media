@@ -27,7 +27,6 @@ class EmptyProductTestHelper(
         `When view created`()
 
         `Then assert empty result visitable list`()
-        `Then assert mini cart is not visible`()
         `Then assert header background is hidden`()
     }
 
@@ -47,10 +46,6 @@ class EmptyProductTestHelper(
 
     private fun Visitable<*>.assertEmptyProductDataView() {
         assertThat(this, instanceOf(EmptyProductDataView::class.java))
-    }
-
-    private fun `Then assert mini cart is not visible`() {
-        assertThat(baseViewModel.isShowMiniCartLiveData.value, shouldBe(false))
     }
 
     private fun `Then assert header background is hidden`() {
