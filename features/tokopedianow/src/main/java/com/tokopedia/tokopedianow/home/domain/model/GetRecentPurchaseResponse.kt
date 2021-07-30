@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.network.exception.Header
@@ -42,6 +43,7 @@ data class GetRecentPurchaseResponse(
         val imageUrl: String = "",
         @Expose
         @SerializedName("price")
+        @SuppressLint("Invalid Data Type")
         val price: String = "",
         @Expose
         @SerializedName("slashedPrice")
