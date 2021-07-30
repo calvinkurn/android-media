@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -103,6 +104,9 @@ abstract class BasePdpViewModelTest {
     lateinit var miniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
 
     @RelaxedMockK
+    lateinit var getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase
+
+    @RelaxedMockK
     lateinit var updateCartUseCase: UpdateCartUseCase
 
     lateinit var spykViewModel: DynamicProductDetailViewModel
@@ -116,7 +120,7 @@ abstract class BasePdpViewModelTest {
         mockkStatic(RemoteConfigInstance::class)
         spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getP2DataAndMiniCartUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
-                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase }, userSessionInterface))
+                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase }, Lazy { getTopadsIsAdsUseCase }, userSessionInterface))
     }
 
     @After
@@ -131,6 +135,6 @@ abstract class BasePdpViewModelTest {
     private fun createViewModel(): DynamicProductDetailViewModel {
         return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getP2DataAndMiniCartUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
-                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase }, userSessionInterface)
+                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase }, Lazy { getTopadsIsAdsUseCase }, userSessionInterface)
     }
 }

@@ -18,6 +18,8 @@ public interface SearchConstant {
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
+    int CPM_TEMPLATE_ID = 4;
+    int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
     interface RecyclerView {
         int VIEW_LIST = 3;
