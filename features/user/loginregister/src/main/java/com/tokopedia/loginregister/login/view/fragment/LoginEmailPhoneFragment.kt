@@ -339,6 +339,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
+        initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
 
@@ -690,6 +691,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         showLoadingDiscover()
         context?.run {
             viewModel.discoverLogin()
+        }
+    }
+
+    private fun initKeyboardListener(view: View?) {
+        view?.run {
+            com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
+                override fun onKeyboardShow() {
+                    callTokopediaCare?.hide()
+                }
+
+                override fun onKeyboardHide() {
+                    callTokopediaCare?.show()
+                }
+            })
         }
     }
 
