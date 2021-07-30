@@ -133,7 +133,7 @@ object ProductTrackingCommon {
                 "not success - $errorMessage")
         mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
         mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
-        mapEvent[ProductTrackingConstant.Tracking.PROMO_ID] = productId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
         mapEvent[KEY_BUSINESS_UNIT] = generateBusinessUnit(pageSource)
         mapEvent[KEY_CURRENT_SITE] = CURRENT_SITE
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)

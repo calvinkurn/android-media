@@ -107,6 +107,8 @@ interface DynamicProductDetailListener {
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
     fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String)
     fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String)
+    fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int)
+    fun onRecomAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int)
 
     /**
      * ProductGeneralInfoViewHolder
@@ -169,4 +171,10 @@ interface DynamicProductDetailListener {
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType: Boolean)
+
+    /**
+     * ProductCategoryCarouselViewHolder
+     */
+    fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
 }
