@@ -22,7 +22,6 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapt
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
@@ -30,9 +29,6 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
-import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
-import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
-import com.tokopedia.topupbills.utils.CommonTelcoActions
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
 import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
@@ -45,6 +41,8 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.productItemRv_scrollToP
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_clickSeeMore
 import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithText
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.PREFERENCES_NAME
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.TELCO_COACH_MARK_HAS_SHOWN
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -58,6 +56,7 @@ class TelcoPrepaidLoginInstrumentTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
+    val localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
     @get:Rule
     var mRuntimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
@@ -82,6 +81,12 @@ class TelcoPrepaidLoginInstrumentTest {
         }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+        localCacheHandler.apply {
+            putBoolean(TELCO_COACH_MARK_HAS_SHOWN, true)
+            applyEditor()
+        }
+
         val intent = Intent(targetContext, TelcoPrepaidActivity::class.java).apply {
             putExtra(BaseTelcoActivity.PARAM_MENU_ID, TelcoComponentType.TELCO_PREPAID.toString())
             putExtra(BaseTelcoActivity.PARAM_CATEGORY_ID, TelcoCategoryType.CATEGORY_PULSA.toString())
@@ -111,15 +116,21 @@ class TelcoPrepaidLoginInstrumentTest {
     }
 
     fun validate_coachmark() {
-        Thread.sleep(4000)
-        val localCacheHandler = LocalCacheHandler(context, DigitalTelcoPrepaidFragment.PREFERENCES_NAME)
-        if (!localCacheHandler.getBoolean(DigitalTelcoPrepaidFragment.TELCO_COACH_MARK_HAS_SHOWN, false)) {
-            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+        Thread.sleep(2000)
+        if (!localCacheHandler.getBoolean(TELCO_COACH_MARK_HAS_SHOWN, false)) {
+            Thread.sleep(1000)
+            onView(withText(R.string.telco_title_showcase_client_number)).check(matches(isDisplayed()))
             onView(withId(R.id.text_next)).perform(click())
+
+            Thread.sleep(1000)
             onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
             onView(withId(R.id.text_previous)).perform(click())
-            onView(withText(R.string.Telco_title_showcase_client_number)).check(matches(isDisplayed()))
+
+            Thread.sleep(1000)
+            onView(withText(R.string.telco_title_showcase_client_number)).check(matches(isDisplayed()))
             onView(withId(R.id.text_next)).perform(click())
+
+            Thread.sleep(1000)
             onView(withText(R.string.telco_title_showcase_promo)).check(matches(isDisplayed()))
             onView(withId(R.id.text_next)).perform(click())
         }
@@ -147,7 +158,7 @@ class TelcoPrepaidLoginInstrumentTest {
 
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
     }
 
@@ -216,7 +227,7 @@ class TelcoPrepaidLoginInstrumentTest {
         private const val PATH_RESPONSE_PREPAID_MENU_DETAIL_LOGIN = "prepaid/response_mock_data_prepaid_menu_detail_login.json"
         private const val PATH_RESPONSE_PREPAID_FAV_NUMBER_LOGIN = "prepaid/response_mock_data_prepaid_fav_number_login.json"
         private const val PATH_RESPONSE_PREPAID_PREFIX_SELECT = "prepaid/response_mock_data_prepaid_prefix_select.json"
-        private const val PATH_RESPONSE_PREPAID_PRODUCT_MULTITAB = "prepaid/response_mock_data_prepaid_product_multitab.json"
+        private const val PATH_RESPONSE_PREPAID_PRODUCT_MULTITAB = "prepaid/response_mock_data_prepaid_product_multitab_with_mccm.json"
 
         private const val VALID_PHONE_NUMBER = "08123232323"
         private const val VALID_FAV_PHONE_NUMBER = "087855813789"

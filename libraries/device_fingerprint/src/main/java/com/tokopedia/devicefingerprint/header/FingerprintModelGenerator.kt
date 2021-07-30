@@ -42,33 +42,24 @@ object FingerprintModelGenerator {
     private const val FINGERPRINT_EXPIRED_TIME = 3_600
     private const val AT_TOKOPEDIA = "@tokopedia"
 
-    private var userSession:UserSessionInterface? = null
+    private var userSession: UserSessionInterface? = null
+    private var fingerprintLastTs = -1L
+    private var fingerprintCache = ""
 
     @JvmStatic
     fun generateFingerprintModel(context: Context): FingerprintModel {
         val fingerprintModel = FingerprintModel()
-        val fingerprintString = getFingerPrintJson(context).toBase64()
-        fingerprintModel.adsId = trimGoogleAdId(DeviceInfo.getAdsId(context))
-        fingerprintModel.fingerprintHash = fingerprintString
+        // adsid need to be gotten first, because there is possibility it make fingerprintJson expire.
+        fingerprintModel.adsId = DeviceInfo.getAdsId(context)
+        fingerprintModel.fingerprintHash = getFingerPrintJson(context).toBase64()
         fingerprintModel.registrarionId = getFCMId(context)
         return fingerprintModel
-    }
-
-    fun trimGoogleAdId(googleAdsId: String): String? {
-        val sb = StringBuilder(googleAdsId.length) //we know this is the capacity so we initialise with it:
-        for (element in googleAdsId) {
-            when (element) {
-                '\u2013', '\u2014', '\u2015' -> sb.append('-')
-                else -> sb.append(element)
-            }
-        }
-        return sb.toString()
     }
 
     fun getFCMId(context: Context): String {
         val userSession = UserSession(context)
         val deviceId = userSession.deviceId
-        if (TextUtils.isEmpty(deviceId)) {
+        if (deviceId.isNullOrEmpty()) {
             val uuid = getUUID(context)
             userSession.deviceId = uuid
             return uuid
@@ -78,20 +69,33 @@ object FingerprintModelGenerator {
     }
 
     private fun getFingerPrintJson(context: Context): String {
-        val sp = context.getSharedPreferences(FINGERPRINT_KEY_NAME, Context.MODE_PRIVATE)
-        val cache = sp.getString(FINGERPRINT_USE_CASE, "")
-        if (cache.isNullOrEmpty() || isFingerprintExpired(sp)) {
-            val fingerPrint = generateFingerprintData(context)
-            sp.edit().putString(FINGERPRINT_USE_CASE, fingerPrint).apply()
-            return fingerPrint
+        if (fingerprintCache.isEmpty()) {
+            fingerprintCache =
+                getFingerprintSharedPref(context).getString(FINGERPRINT_USE_CASE, "") ?: ""
         }
-        return cache
+        val now = (System.currentTimeMillis() / 1000)
+        if (fingerprintCache.isEmpty() || isFingerprintExpired(context, now)) {
+            fingerprintCache = generateFingerprintData(context)
+            getFingerprintSharedPref(context).edit().putString(FINGERPRINT_USE_CASE, fingerprintCache)
+                .putLong(FINGERPRINT_TS, now).apply()
+            fingerprintLastTs = now
+        }
+        return fingerprintCache
     }
 
-    private fun isFingerprintExpired(sp: SharedPreferences): Boolean {
-        val time: Long = sp.getLong(FINGERPRINT_TS, 0)
-        val currTime = System.currentTimeMillis() / 1000
-        return currTime - time > FINGERPRINT_EXPIRED_TIME
+    private fun getFingerprintSharedPref(context: Context): SharedPreferences {
+        return context.getSharedPreferences(FINGERPRINT_KEY_NAME, Context.MODE_PRIVATE)
+    }
+
+    private fun isFingerprintExpired(context: Context, now: Long): Boolean {
+        if (fingerprintLastTs == -1L) {
+            fingerprintLastTs = getFingerprintSharedPref(context).getLong(FINGERPRINT_TS, 0)
+        }
+        return now - fingerprintLastTs > FINGERPRINT_EXPIRED_TIME
+    }
+
+    fun expireFingerprint() {
+        fingerprintLastTs = 0
     }
 
     private fun generateFingerprintData(context: Context): String {
@@ -144,12 +148,13 @@ object FingerprintModelGenerator {
                 deviceDpi = deviceDpi,
                 pid = imei,
                 uuid = uuid,
-                inval = VisorFingerprintInstance.getDVToken(context))
+                inval = VisorFingerprintInstance.getDVToken(context),
+                installer = context.packageManager.getInstallerPackageName(context.packageName)?: "")
         return Gson().toJson(fp)
     }
 
-    fun getUserSession(context: Context):UserSessionInterface{
-        if (userSession ==null) {
+    fun getUserSession(context: Context): UserSessionInterface {
+        if (userSession == null) {
             userSession = UserSession(context)
         }
         return userSession!!

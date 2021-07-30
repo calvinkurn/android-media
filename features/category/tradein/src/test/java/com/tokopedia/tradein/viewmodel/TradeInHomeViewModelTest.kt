@@ -5,13 +5,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.common_tradein.model.ValidateTradePDP
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.tradein.TradeinConstants
-import com.tokopedia.tradein.model.DeviceDiagInputResponse
-import com.tokopedia.tradein.model.DeviceDiagnostics
-import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
-import com.tokopedia.tradein.usecase.ProcessMessageUseCase
+import com.tokopedia.common_tradein.model.DeviceDiagInputResponse
+import com.tokopedia.common_tradein.model.DeviceDiagnostics
+import com.tokopedia.common_tradein.model.HomeResult
+import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -34,11 +34,10 @@ class TradeInHomeViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    val checkMoneyInUseCase: CheckMoneyInUseCase = mockk()
     val processMessageUseCase: ProcessMessageUseCase = mockk()
     val userSession: UserSessionInterface = mockk()
 
-    var tradeInHomeViewModel = spyk(TradeInHomeViewModel(processMessageUseCase, checkMoneyInUseCase, userSession))
+    var tradeInHomeViewModel = spyk(TradeInHomeViewModel(processMessageUseCase, userSession))
 
     @RelaxedMockK
     lateinit var deviceDiagnostics: DeviceDiagnostics
@@ -179,73 +178,7 @@ class TradeInHomeViewModelTest {
 
     /**************************** checkDiagnosticsData() *******************************************/
 
-    /**************************** checkMoneyIn() *******************************************/
-    @Test
-    fun checkMoneyInException() {
-        val jsonObject = JSONObject()
-        val modelId = 2
-        val userId = "3"
-        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any(), any()) } throws Exception("check warningmessage value is called when exception thrown in checkMoneyIn")
-        coEvery { userSession.userId } returns userId
-
-        tradeInHomeViewModel.checkMoneyIn(modelId, jsonObject)
-
-        assertEquals(tradeInHomeViewModel.getWarningMessage().value, "check warningmessage value is called when exception thrown in checkMoneyIn")
-        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-    }
-
-    @Test
-    fun checkMoneyIn() {
-        val jsonObject = JSONObject("{\"min_price\":100000,\"max_price\":350000,\"model_id\":49,\"brand\":\"LG\",\"model\":\"Nexus 5\",\"model_display_name\":\"LG Nexus 5\"}")
-        val modelId = 2
-        val userId = "3"
-        val usedPrice = 4
-        tradeInHomeViewModel.tradeInType = 2
-        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any(), any()) } returns moneyInResponse
-
-        /**Not Eligible Case**/
-        coEvery { moneyInResponse?.response?.isEligible } returns false
-        coEvery { userSession.userId } returns userId
-
-        tradeInHomeViewModel.checkMoneyIn(modelId, jsonObject)
-
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.getDisplayMessage(), moneyInResponse?.response?.message)
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.priceStatus, HomeResult.PriceState.MONEYIN_ERROR)
-        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
-
-        /**Eligible case**/
-        coEvery { moneyInResponse?.response?.isEligible } returns true
-        coEvery { moneyInResponse?.response?.usedPrice } returns usedPrice
-        coEvery { moneyInResponse?.response?.isUseKyc } returns false
-        coEvery { userSession.userId } returns userId
-
-        tradeInHomeViewModel.checkMoneyIn(modelId, jsonObject)
-
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
-        assertEquals(tradeInHomeViewModel.tradeInParams.isEligible, 1)
-        assertEquals(tradeInHomeViewModel.tradeInParams.usedPrice, usedPrice)
-        assertEquals(tradeInHomeViewModel.tradeInParams.isUseKyc, 0)
-        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-    }
-    /**************************** checkMoneyIn() *******************************************/
-
     /**************************** onFinished() *******************************************/
-
-    @Test
-    fun onFinishedMoneyIn() {
-        val jsonObject = JSONObject("{\"min_price\":100000,\"max_price\":350000,\"model_id\":49,\"brand\":\"LG\",\"model\":\"Nexus 5\",\"model_display_name\":\"LG Nexus 5\"}")
-
-        /** Money in **/
-        tradeInHomeViewModel.tradeInType = 2
-        tradeInHomeViewModel.tradeInParams.usedPrice = 0
-        coEvery { userSession.userId } returns "3"
-        coEvery { checkMoneyInUseCase.checkMoneyIn(any(), any(), any(), any()) } returns moneyInResponse
-
-        tradeInHomeViewModel.onFinished(jsonObject)
-
-        verify(exactly = 1) { tradeInHomeViewModel.checkMoneyIn(any(), jsonObject) }
-    }
 
     @Test
     fun onFinishedException() {
@@ -276,8 +209,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onFinished(jsonObject)
 
-        verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), true)
+        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
         assertEquals(HomeResult.PriceState.DIAGNOSED_INVALID, tradeInHomeViewModel.homeResultData.value?.priceStatus)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
@@ -289,8 +221,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onFinished(jsonObject)
 
-        verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), true)
+        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
         assertEquals(HomeResult.PriceState.NOT_DIAGNOSED, tradeInHomeViewModel.homeResultData.value?.priceStatus)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
@@ -302,11 +233,10 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onFinished(jsonObject)
 
-        verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), true)
+        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
         assertEquals(HomeResult.PriceState.DIAGNOSED_VALID, tradeInHomeViewModel.homeResultData.value?.priceStatus)
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.getDeviceDisplayName(), "LG Nexus 5")
+        assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
 
     }
 
@@ -320,7 +250,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onError(jsonObject)
 
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), false)
+        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, false)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.displayMessage, "Error tradein")
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }
@@ -331,7 +261,7 @@ class TradeInHomeViewModelTest {
 
         tradeInHomeViewModel.onError(jsonObject)
 
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess(), false)
+        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, false)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.displayMessage, "")
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
     }

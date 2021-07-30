@@ -266,10 +266,14 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun getWhiteListedDomains() {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
-        val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-        if(whiteListedDomainsCsv.isNotBlank()) {
-            whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+        try {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
+            val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+            if(whiteListedDomainsCsv.isNotBlank()) {
+                whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+            }
+        } catch (e: Exception) {
+            whiteListedDomains = WhiteListedDomains()
         }
     }
 

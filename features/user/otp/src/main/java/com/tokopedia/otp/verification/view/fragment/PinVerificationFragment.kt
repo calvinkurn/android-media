@@ -13,7 +13,7 @@ import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.pin.PinUnify
 
-class PinVerificationFragment : VerificationFragment() {
+open class PinVerificationFragment : VerificationFragment() {
 
     override fun initView() {
         super.initView()

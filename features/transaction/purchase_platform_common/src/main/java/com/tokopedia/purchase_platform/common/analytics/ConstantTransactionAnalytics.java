@@ -49,6 +49,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String VIEW_CART_IRIS = "viewCartIris";
         String CLICK_REGISTER = "clickRegister";
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
@@ -520,6 +521,18 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BACK_BUTTON_NAV = "click back button nav";
         String CLICK_GLOBAL_MENU_NAV = "click global menu nav";
         String CLICK_WISHLIST_NAV = "click wishlist nav";
+
+        // Checkout TokoNow
+        String VIEW_TICKER_PRODUCT_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker product level error in checkout page";
+        String VIEW_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker order level error in checkout page";
+        String VIEW_TICKER_PAYMENT_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker payment level error in checkout page";
+        String CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "click lihat on ticker order level error in checkout page";
+        String CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER = "click refresh when error load courier";
+        String VIEW_ERROR_IN_COURIER_SECTION = "view error in courier section";
+
+        // Cart TokoNow
+        String VIEW_TOASTER_ERROR_IN_CART_PAGE = "view toaster error in cart page";
+        String LOAD_CART_WITH_UNAVAILABLE_PRODUCT = "load cart with unavailable product";
     }
 
     interface EventLabel {

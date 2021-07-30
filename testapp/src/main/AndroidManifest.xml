@@ -45,7 +45,7 @@
             android:authorities="com.tokopedia.tkpd.provider"
             android:grantUriPermissions="true"
             android:exported="false"
-            tools:replace="android:authorities">bg_button_enable.xml
+            tools:replace="android:authorities">
             <meta-data
                 tools:replace="android:resource"
                 android:name="android.support.FILE_PROVIDER_PATHS"

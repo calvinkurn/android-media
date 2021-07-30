@@ -16,4 +16,5 @@ data class ChosenAddressModel (
         var latitude: String = "",
         var longitude: String = "",
         var postalCode: String = "",
+        var tokonowModel: TokonowModel = TokonowModel()
 ): Parcelable

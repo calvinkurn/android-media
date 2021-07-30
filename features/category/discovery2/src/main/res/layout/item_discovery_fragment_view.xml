@@ -22,7 +22,7 @@
         android:layout_height="@dimen/dp_1"
         android:paddingTop="@dimen/dp_13"
         android:visibility="gone"
-        android:background="@color/icon_product_card_background_color"
+        android:background="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
         tools:visibility="visible"/>
@@ -81,7 +81,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="bottom"
-        app:tabBackground="@color/white"
+        app:tabBackground="@color/Unify_N0"
         android:visibility="gone"
         app:tabPaddingEnd="@dimen/dp_0"
         app:tabMode="fixed"

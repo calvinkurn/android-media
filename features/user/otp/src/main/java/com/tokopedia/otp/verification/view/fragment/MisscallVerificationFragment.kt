@@ -28,7 +28,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastReceiver.OnCallStateChange {
+open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastReceiver.OnCallStateChange {
 
     @Inject
     lateinit var phoneCallBroadcastReceiver: PhoneCallBroadcastReceiver

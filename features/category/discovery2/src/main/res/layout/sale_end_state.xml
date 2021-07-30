@@ -5,7 +5,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/dp_6"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/ongoing_end_title"
         app:layout_constraintEnd_toEndOf="@id/image_empty_state"
         app:layout_constraintStart_toStartOf="@id/image_empty_state"
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
         android:paddingHorizontal="@dimen/dp_25"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         android:gravity="center"
         android:text="@string/ongoing_end_description"

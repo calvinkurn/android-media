@@ -175,7 +175,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productStock?.toIntOrNull() -> {
                 statusLabel.apply {
                     unlockFeature = true
-                    val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, R.color.clr_AD31353B))}"
+                    val colorHexString = "#${Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))}"
                     statusLabel.setLabelType(colorHexString)
                     show()
                 }
@@ -230,13 +230,13 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
 
     private fun notifyMeActiveState() {
         notifyMeView.text = itemView.context.getString(R.string.active_reminder_text)
-        notifyMeView.setTextColor(MethodChecker.getColor(itemView.context, R.color.clr_ae31353b))
+        notifyMeView.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_active)
     }
 
     private fun notifyMeInActiveState() {
         notifyMeView.text = itemView.context.getString(R.string.remind_me_text)
-        notifyMeView.setTextColor(MethodChecker.getColor(itemView.context, R.color.greenColor))
+        notifyMeView.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         notifyMeView.setBackgroundResource(R.drawable.productcard_module_bg_button_inactive)
     }
 

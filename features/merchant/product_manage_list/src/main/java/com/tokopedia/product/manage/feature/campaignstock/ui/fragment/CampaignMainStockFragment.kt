@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductManage
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
+import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
@@ -98,6 +99,10 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private val source by lazy { arguments?.getString(EXTRA_SOURCE) }
 
+    private val shopId by lazy {
+        activity?.intent?.getStringExtra(CampaignStockActivity.SHOP_ID)
+    }
+
     private var campaignStockListener: CampaignStockListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -120,7 +125,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             onActiveStockChanged = ::onActiveStockChanged,
             onVariantStockChanged = ::onVariantStockChanged,
             onVariantStatusChanged = ::onVariantStatusChanged,
-            source = source?: CampaignStockFragment.DEFAULT_SOURCE
+            source = source ?: CampaignStockFragment.DEFAULT_SOURCE,
+            shopId = shopId ?: ""
     )
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}
