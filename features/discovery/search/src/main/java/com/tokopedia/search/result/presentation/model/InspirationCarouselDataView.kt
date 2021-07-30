@@ -80,7 +80,13 @@ class InspirationCarouselDataView(
                 val position: Int = 0,
                 val optionTitle: String = "",
                 val shopLocation: String = "",
+                val shopName: String = "",
                 val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
+                val freeOngkirDataView: FreeOngkirDataView = FreeOngkirDataView(),
+                val isOrganicAds: Boolean = false,
+                val topAdsViewUrl: String = "",
+                val topAdsClickUrl: String = "",
+                val topAdsWishlistUrl: String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {

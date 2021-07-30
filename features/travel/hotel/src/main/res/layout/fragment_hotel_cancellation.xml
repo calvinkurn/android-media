@@ -65,4 +65,9 @@
             tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
 
     </LinearLayout>
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </ScrollView>
