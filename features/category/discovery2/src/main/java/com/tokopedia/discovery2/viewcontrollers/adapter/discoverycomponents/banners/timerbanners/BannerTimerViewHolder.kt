@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.parsedColor
@@ -57,9 +58,20 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         constraintSet.applyTo(constraintLayout)
         configureTimerUI()
         constraintLayout.setOnClickListener {
-            bannerTimerViewModel.onBannerClicked(it.context)
+            handleUIClick(it)
         }
     }
+
+    private fun handleUIClick(view: View) {
+        when (view) {
+            constraintLayout -> {
+                bannerTimerViewModel.getApplink()?.let {
+                    RouteManager.route(context, it)
+                }
+            }
+        }
+    }
+
 
     private fun configureTimerUI() {
         bannerTimerViewModel.getComponent().let {
@@ -161,18 +173,18 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     private fun getTimerFontColour(componentItem: ComponentsItem?): Int {
         val fontColour = componentItem?.data?.firstOrNull()?.fontColor
         return if (fontColour.isNullOrEmpty()) {
-            MethodChecker.getColor(context, R.color.clr_ff8000)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
         } else {
-            parsedColor(context, fontColour, R.color.clr_ff8000)
+            parsedColor(context, fontColour, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
         }
     }
 
     private fun getTimerBoxColour(componentItem: ComponentsItem?): Int {
         val boxColor = componentItem?.data?.firstOrNull()?.boxColor
         return if (boxColor.isNullOrEmpty()) {
-            MethodChecker.getColor(context, R.color.white)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         } else {
-            parsedColor(context, boxColor, R.color.white)
+            parsedColor(context, boxColor, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
     }
 }

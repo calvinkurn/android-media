@@ -17,7 +17,7 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Created by jegul on 06/10/20
@@ -30,7 +30,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val flBorder: FrameLayout
-    private val ivCover: ImageView
+    private val ivCover: ImageUnify
     private val pvVideo: PlayerView
     private val llTotalView: LinearLayout
     private val tvTotalView: TextView
@@ -97,7 +97,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     fun setModel(model: PlayWidgetSmallChannelUiModel) {
         mModel = model
 
-        ivCover.loadImage(model.video.coverUrl)
+        ivCover.setImageUrl(model.video.coverUrl)
 
         handleType(model.channelType)
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)

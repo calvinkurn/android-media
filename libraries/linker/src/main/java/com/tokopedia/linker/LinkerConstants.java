@@ -60,6 +60,12 @@ public interface LinkerConstants {
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
     String KEY_DESKTOP_URL = "$desktop_url";
     String KEY_PAYMENT = "paymentID";
+    String KEY_ORDERID = "order_id";
+    String KEY_CURRENCY = "currency";
+    String KEY_SHIPPING_PRICE = "shipping_price";
+    String KEY_REVENUE = "revenue";
+    String KEY_EVENT = "event";
+    String EVENT_FB_FIRST_TXN = "marketplace_first_txn";
     String KEY_PRODUCTTYPE = "productType";
     String KEY_USERID = "userId";
     String KEY_OG_URL = "$og_url";
