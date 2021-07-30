@@ -193,12 +193,12 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
+
         val quantity = nonVariant.quantity
         if (quantity > 0)
             this.setValue(quantity)
-
-        this.maxValue = nonVariant.maxQuantity
-        this.minValue = nonVariant.minQuantity
     }
 
     private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
