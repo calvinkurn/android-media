@@ -2,16 +2,24 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.common.data.model.pdplayout.CategoryCarousel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
-data class PdpComparisonWidgetDataModel(
-        val type: String = "",
-        val name: String = "",
-        var recommendationWidget: RecommendationWidget
+/**
+ * Created by Yehezkiel on 13/07/21
+ */
+data class ProductCategoryCarouselDataModel(
+        var name: String = "",
+        var type: String = "",
+        var titleCarousel: String = "",
+        var linkText: String = "",
+        var applink: String = "",
+        var categoryList: List<CategoryCarousel> = listOf()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
+
+    override fun name(): String = name
 
     override fun type(): String = type
 
@@ -19,11 +27,12 @@ data class PdpComparisonWidgetDataModel(
         return typeFactory.type(this)
     }
 
-    override fun name(): String = name
-
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is PdpComparisonWidgetDataModel) {
-            newData.recommendationWidget == recommendationWidget
+        return if (newData is ProductCategoryCarouselDataModel) {
+            titleCarousel == newData.titleCarousel
+                    && linkText == newData.linkText
+                    && applink == newData.applink
+                    && categoryList.hashCode() == newData.categoryList.hashCode()
         } else {
             false
         }
@@ -34,6 +43,6 @@ data class PdpComparisonWidgetDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-        return Bundle()
+        return null
     }
 }
