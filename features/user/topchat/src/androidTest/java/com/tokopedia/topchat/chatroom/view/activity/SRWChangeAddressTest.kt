@@ -52,7 +52,16 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         assertMsgBubbleAt(0, withText("Attachment Body Msg"))
     }
 
-    // TODO: should hide cta when attachment does not have visible cta
+    @Test
+    fun should_hide_cta_when_attachment_does_not_have_visible_cta() {
+        // Given
+        getChatUseCase.response = getChatUseCase.srwChangeAddressNoCta
+        launchChatRoomActivity()
+
+        // Then
+        assertCtaHeaderMsgAtBubblePosition(0, not(isDisplayed()))
+    }
+
     // TODO: should resend SRW when user success change address
     // TODO: should hide msg header when attachment is null
 }
