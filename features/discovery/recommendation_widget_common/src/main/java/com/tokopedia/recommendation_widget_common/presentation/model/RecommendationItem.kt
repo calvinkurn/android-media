@@ -46,7 +46,7 @@ data class RecommendationItem(
         // for tracker field
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),
-        val parentID: Int = 0,
+        val parentID: Long = 0,
         val isRecomProductShowVariantAndCart:Boolean = false,
 ): ImpressHolder(){
 
@@ -153,7 +153,7 @@ data class RecommendationItem(
     }
 
     fun isProductHasParentID(): Boolean {
-        return parentID != 0
+        return parentID != 0L
     }
 
     fun updateItemCurrentStock(quantity: Int) {
