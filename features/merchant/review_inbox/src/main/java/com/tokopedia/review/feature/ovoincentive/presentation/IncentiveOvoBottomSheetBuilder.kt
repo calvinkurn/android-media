@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.ovoincentive.presentation
+package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 
 import android.content.Context
 import android.view.View
@@ -8,10 +8,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.common.analytics.ReviewTracking
-//import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,7 +36,7 @@ object IncentiveOvoBottomSheetBuilder {
             setupTermsAndConditionView(view, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, category, trackerData)
             setOnDismissListener {
                 trackerData?.let {
-//                    CreateReviewTracking.eventDismissTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.description ?: ".", it.reputationId, it.orderId, it.productId, it.userId)
+                    CreateReviewTracking.eventDismissTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.description ?: ".", it.reputationId, it.orderId, it.productId, it.userId)
                     return@setOnDismissListener
                 }
                 ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(category)
@@ -78,7 +79,7 @@ object IncentiveOvoBottomSheetBuilder {
                     val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
                     val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
                     val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
-//                    CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, trackerData.reputationId, trackerData.orderId, trackerData.feedbackId, trackerData.productId, trackerData.userId)
+                    CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, trackerData.reputationId, trackerData.orderId, trackerData.feedbackId, trackerData.productId, trackerData.userId)
                     incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                     incentiveOvoSubmittedTitle?.text = defaultTitle
                     incentiveOvoSubmittedSubtitle?.text = thankYouText
@@ -87,14 +88,14 @@ object IncentiveOvoBottomSheetBuilder {
                             setOnClickListener {
                                 dismiss()
                                 incentiveOvoListener.onClickReviewAnother()
-//                                CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
+                                CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
                             }
                         }
                         incentiveOvoLater?.apply {
                             setOnClickListener {
                                 dismiss()
                                 incentiveOvoListener.onClickCloseThankYouBottomSheet()
-//                                CreateReviewTracking.eventClickLater(defaultTitle, true)
+                                CreateReviewTracking.eventClickLater(defaultTitle, true)
                             }
                             show()
                         }
@@ -105,7 +106,7 @@ object IncentiveOvoBottomSheetBuilder {
                         setOnClickListener {
                             dismiss()
                             incentiveOvoListener.onClickCloseThankYouBottomSheet()
-//                            CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain?.productrevIncentiveOvo != null)
+                            CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain?.productrevIncentiveOvo != null)
                         }
                     }
                 }
@@ -126,7 +127,7 @@ object IncentiveOvoBottomSheetBuilder {
                     setOnClickListener {
                         dismiss()
                         trackerData?.let {
-//                            CreateReviewTracking.eventClickContinueTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.title ?: "", it.reputationId, it.orderId, it.productId, it.userId)
+                            CreateReviewTracking.eventClickContinueTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.title ?: "", it.reputationId, it.orderId, it.productId, it.userId)
                             return@setOnClickListener
                         }
                         ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)

@@ -59,7 +59,7 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ContainerUnify

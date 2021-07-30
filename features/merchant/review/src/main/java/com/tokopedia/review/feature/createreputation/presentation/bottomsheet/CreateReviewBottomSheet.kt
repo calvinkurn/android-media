@@ -47,7 +47,6 @@ import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster

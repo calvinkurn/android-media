@@ -48,7 +48,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -408,7 +408,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         if (ovoIncentiveBottomSheet == null) {
-            ovoIncentiveBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this, ReviewInboxTrackingConstants.PENDING_TAB) }
+            ovoIncentiveBottomSheet = context?.let { com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this, ReviewInboxTrackingConstants.PENDING_TAB) }
         }
         ovoIncentiveBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
