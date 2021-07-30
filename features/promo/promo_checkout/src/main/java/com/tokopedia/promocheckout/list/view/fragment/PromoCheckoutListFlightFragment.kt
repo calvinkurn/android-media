@@ -6,14 +6,13 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListFlightViewModel
 import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), PromoCheckoutListContract.View {
+class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(){
 
     @Inject
     lateinit var flightPromoViewModel: PromoCheckoutListFlightViewModel
