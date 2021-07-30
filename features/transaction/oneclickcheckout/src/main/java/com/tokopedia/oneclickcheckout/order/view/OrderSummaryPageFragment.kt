@@ -361,7 +361,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderProducts() {
         viewModel.orderProducts.observe(viewLifecycleOwner) {
-            adapter.product = it.firstOrNull()
             val oldSize = adapter.products.size
             val newSize = it.size
             adapter.products = it
@@ -630,7 +629,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     progressDialog?.dismiss()
                     view?.let { v ->
                         Toaster.build(v, it.toast.message, type = Toaster.TYPE_ERROR, actionText = it.toast.ctaText, clickListener = {
-                            binding.rvOrderSummaryPage.smoothScrollToPosition(0)
+                            binding.rvOrderSummaryPage.smoothScrollToPosition(adapter.getFirstErrorIndex())
                         }).show()
                         orderSummaryAnalytics.eventViewErrorToasterMessage(viewModel.getShopId(), it.toast.message)
                     }

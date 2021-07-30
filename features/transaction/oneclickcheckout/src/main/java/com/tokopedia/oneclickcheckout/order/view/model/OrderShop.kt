@@ -18,6 +18,7 @@ data class OrderShop(
         var longitude: String = "",
         var districtId: String = "",
         var cityName: String = "",
+        var warehouseId: Long = 0,
         var isFulfillment: Boolean = false,
         var fulfillmentBadgeUrl: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),

@@ -20,7 +20,6 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var ticker: TickerData? = null
     var onboarding: OccOnboarding = OccOnboarding()
     var shop: OrderShop = OrderShop()
-    var product: OrderProduct? = null
     var products: List<OrderProduct> = emptyList()
     var profile: OrderProfile = OrderProfile(enable = false)
     var shipment: OrderShipment = OrderShipment()
@@ -48,6 +47,18 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     private val totalPaymentIndexAddition = 6
     val totalPaymentIndex: Int
         get() = products.size + 6
+
+    fun getFirstErrorIndex(): Int {
+        if (shop.isError) {
+            return shopIndex
+        }
+        for (index in products.indices) {
+            if (products.getOrNull(index)?.isError == true) {
+                return productStartIndex + index
+            }
+        }
+        return 0
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

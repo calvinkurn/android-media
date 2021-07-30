@@ -132,7 +132,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
-                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it)
+                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it,
+                        clientNumber = telcoClientNumberWidget.getInputNumber())
             }
         })
 
@@ -148,10 +149,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showDynamicSpacer() {
-        val defaultSpaceHeight = 81
-        dynamicSpacer.layoutParams.height =
-                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
-                        ?: defaultSpaceHeight
+        dynamicSpacer.layoutParams.height = context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
+                ?: DEFAULT_SPACE_HEIGHT
         dynamicSpacer.requestLayout()
     }
 
@@ -182,6 +181,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         subscribeUi()
         initViewPager()
+        buyWidget.setBuyButtonLabel(getString(R.string.telco_pick_product))
+
+        //load data
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
         if (rechargeProductFromSlice.isNotEmpty()) {
@@ -469,12 +471,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
-                    productId)
+                    productId, telcoClientNumberWidget.getInputNumber())
         }
     }
 
     private fun renderProductViewPager() {
-        var idProductTab = 6L
+        var idProductTab = DEFAULT_ID_PRODUCT_TAB
         val listProductTab = mutableListOf<TelcoTabItem>()
         tabLayout.getUnifyTabLayout().removeAllTabs()
         listProductTab.add(
@@ -634,7 +636,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             val coachMarks = ArrayList<CoachMark2Item>()
             coachMarks.add(CoachMark2Item(telcoClientNumberWidget,
-                    getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_title_showcase_client_number),
                     getString(R.string.telco_label_showcase_client_number)))
             coachMarks.add(CoachMark2Item(viewPager,
                     getString(R.string.telco_title_showcase_promo),
@@ -682,6 +684,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         const val PREFERENCES_NAME = "telco_prepaid_preferences"
         const val TELCO_COACH_MARK_HAS_SHOWN = "telco_show_coach_mark"
         const val ID_PRODUCT_EMPTY = "-1"
+
+        private const val DEFAULT_SPACE_HEIGHT = 81
+        private const val DEFAULT_ID_PRODUCT_TAB = 6L
 
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"

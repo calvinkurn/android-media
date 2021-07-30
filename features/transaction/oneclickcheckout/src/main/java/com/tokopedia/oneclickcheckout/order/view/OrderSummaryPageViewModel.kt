@@ -161,7 +161,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setListName(orderProduct.productTrackerData.trackerListName)
                 setAttribution(orderProduct.productTrackerData.attribution)
                 setDiscountedPrice(orderProduct.isSlashPrice)
-                setWarehouseId(orderProduct.warehouseId.toString())
+                setWarehouseId(orderShop.value.warehouseId.toString())
                 setProductWeight(orderProduct.weight.toString())
                 setPromoCode(promoCodes)
                 setPromoDetails("")
