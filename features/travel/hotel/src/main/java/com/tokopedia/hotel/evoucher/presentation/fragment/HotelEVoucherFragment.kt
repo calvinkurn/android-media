@@ -107,9 +107,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         outState.putString(EXTRA_ORDER_ID, orderId)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHotelEVoucherBinding.inflate(inflater,container,false)
-        return binding?.root as View
+        return binding?.root?.rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

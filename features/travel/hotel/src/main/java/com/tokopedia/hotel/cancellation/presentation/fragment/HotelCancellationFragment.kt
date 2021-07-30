@@ -70,9 +70,9 @@ class HotelCancellationFragment : HotelBaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHotelCancellationBinding.inflate(inflater,container, false)
-        return binding?.root as View
+        return binding?.root?.rootView
     }
 
 
