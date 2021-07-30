@@ -158,6 +158,11 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             it.tvHotelHomepageNightCount.text = data.nightCount.toString()
             it.tvHotelHomepageGuestInfo.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 data.numOfRooms, data.numOfGuests))
+
+            it.tvHotelHomepageCheckinDate.setOnClickListener { configAndRenderCheckInDate() }
+            it.tvHotelHomepageCheckoutDate.setOnClickListener { configAndRenderCheckOutDate() }
+            it.tvHotelHomepageGuestInfo.setOnClickListener { onGuestInfoClicked() }
+            it.btnHotelHomepageSearch.setOnClickListener { onCheckAvailabilityClicked() }
         }
     }
 

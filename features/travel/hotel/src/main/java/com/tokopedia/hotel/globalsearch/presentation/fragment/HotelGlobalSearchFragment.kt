@@ -107,15 +107,15 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
 
     protected fun countRoomDuration(): Long = DateUtil.getDayDiff(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
 
-    private fun configAndRenderCheckInDate() {
+    fun configAndRenderCheckInDate() {
         openCalendarDialog(globalSearchModel.checkInDate, globalSearchModel.checkOutDate)
     }
 
-    private fun configAndRenderCheckOutDate() {
+    fun configAndRenderCheckOutDate() {
         openCalendarDialog(checkIn = globalSearchModel.checkInDate)
     }
 
-    private fun onGuestInfoClicked() {
+    fun onGuestInfoClicked() {
         activity?.let {
             val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
             hotelRoomAndGuestBottomSheets.listener = this
