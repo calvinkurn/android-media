@@ -48,7 +48,7 @@ object MediaListenerBuilder {
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
             // save for an accumulative bitmap size in local
-            Loader.bitmapSize()?.saveSize(fileSizeInMb)
+            Loader.bitmapSize()?.saveSize(fileSize)
 
             // only track if the URL from CDN service
             trackPerformancePostRender(

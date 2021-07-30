@@ -26,6 +26,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.Process
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
+import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.utils.network.NetworkTrafficUtils
@@ -112,15 +113,15 @@ class SessionDataUsageLogger constructor(
             "open_page" to openedPageCount.toString(),
             "diff_time" to getDiffDuration(lastSessionMillis, currentMillis),
             "conn_info" to connectionType.orEmpty(),
-            "net" to getFormattedMBSize(network),
-            "tx" to getFormattedMBSize(diffTx),
-            "rx" to getFormattedMBSize(diffRx),
-            "sum_net" to getFormattedMBSize(sumNetwork),
-            "sum_tx" to getFormattedMBSize(sumDiffTx),
-            "sum_rx" to getFormattedMBSize(sumDiffRx),
-            "boot_net" to getFormattedMBSize(bootNetwork),
-            "boot_tx" to getFormattedMBSize(bootTx),
-            "boot_rx" to getFormattedMBSize(bootRx)
+            "net" to network.formattedToMB(),
+            "tx" to diffTx.formattedToMB(),
+            "rx" to diffRx.formattedToMB(),
+            "sum_net" to sumNetwork.formattedToMB(),
+            "sum_tx" to sumDiffTx.formattedToMB(),
+            "sum_rx" to sumDiffRx.formattedToMB(),
+            "boot_net" to bootNetwork.formattedToMB(),
+            "boot_tx" to bootTx.formattedToMB(),
+            "boot_rx" to bootRx.formattedToMB()
         )
 
         // add an additional data
@@ -145,14 +146,7 @@ class SessionDataUsageLogger constructor(
         return String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis)
     }
 
-    private fun getFormattedMBSize(sizeInByte: Long): String {
-        val sizeInMB = sizeInByte.toFloat() / MB_SIZE
-        return String.format(Locale.ENGLISH, SIZE_FORMAT, sizeInMB)
-    }
-
     companion object {
         private const val TIME_FORMAT = "%.2f"
-        private const val SIZE_FORMAT = "%.2f"
-        private const val MB_SIZE: Long = 1000000
     }
 }
