@@ -91,20 +91,20 @@ interface CommonTopupBillsEventTracking {
         }
     }
 
-    interface General {
-        interface Key {
-            companion object {
-                const val BUSINESS_UNIT = "businessUnit"
-                const val CURRENT_SITE = "currentSite"
-                const val USER_ID ="userId"
-            }
-        }
-
-        interface Value {
-            companion object {
-                const val BUSINESS_UNIT_RECHARGE = "recharge"
-                const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
-            }
-        }
-    }
+//    interface General {
+//        interface Key {
+//            companion object {
+//                const val BUSINESS_UNIT = "businessUnit"
+//                const val CURRENT_SITE = "currentSite"
+//                const val USER_ID ="userId"
+//            }
+//        }
+//
+//        interface Value {
+//            companion object {
+//                const val BUSINESS_UNIT_RECHARGE = "recharge"
+//                const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
+//            }
+//        }
+//    }
 }

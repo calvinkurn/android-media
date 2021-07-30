@@ -30,16 +30,29 @@ import org.hamcrest.core.IsNot
 
 object CommonTelcoActions {
 
-    fun createOrderNumberWithType(number: String, type: TopupBillsSearchNumberFragment.InputNumberActionType): Instrumentation.ActivityResult {
+    fun createOrderNumberWithType(
+        number: String,
+        type: TopupBillsSearchNumberFragment.InputNumberActionType
+    ): Instrumentation.ActivityResult {
         val orderClientNumber = TopupBillsSeamlessFavNumberItem(clientNumber = number)
         val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, type.ordinal)
+        resultData.putExtra(
+            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER,
+            orderClientNumber
+        )
+        resultData.putExtra(
+            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
+            type.ordinal
+        )
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
-    fun stubSearchNumber(number: String, type: TopupBillsSearchNumberFragment.InputNumberActionType) {
-        Intents.intending(IntentMatchers.isInternal()).respondWith(createOrderNumberWithType(number, type))
+    fun stubSearchNumber(
+        number: String,
+        type: TopupBillsSearchNumberFragment.InputNumberActionType
+    ) {
+        Intents.intending(IntentMatchers.isInternal())
+            .respondWith(createOrderNumberWithType(number, type))
     }
 
     fun clientNumberWidget_clickTextField() {
@@ -72,14 +85,22 @@ object CommonTelcoActions {
     }
 
     fun promoItem_clickCopyButton(viewInteraction: ViewInteraction) {
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(0,
-            CommonActions.clickChildViewWithId(R.id.btn_copy_promo)))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                0,
+                CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+            )
+        )
     }
 
     fun promoItem_click(viewInteraction: ViewInteraction) {
-        viewInteraction.perform(RecyclerViewActions
-            .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(3,
-                CommonActions.clickChildViewWithId(R.id.promo_container)))
+        viewInteraction.perform(
+            RecyclerViewActions
+                .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                    3,
+                    CommonActions.clickChildViewWithId(R.id.promo_container)
+                )
+        )
     }
 
     fun pdp_validateProductViewDisplayed() {
@@ -99,20 +120,35 @@ object CommonTelcoActions {
     }
 
     fun productItem_click(viewInteraction: ViewInteraction) {
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(1, click()))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(
+                1,
+                click()
+            )
+        )
     }
 
     fun tabLayout_clickTabWithText(text: String) {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
+            click()
+        )
     }
 
     fun productItemRv_scrollToPosition(viewInteraction: ViewInteraction, position: Int) {
-        viewInteraction.perform(RecyclerViewActions.scrollToPosition<TelcoProductViewHolder>(position))
+        viewInteraction.perform(
+            RecyclerViewActions.scrollToPosition<TelcoProductViewHolder>(
+                position
+            )
+        )
     }
 
     fun productItem_clickSeeMore(viewInteraction: ViewInteraction, position: Int) {
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(position,
-            CommonActions.clickChildViewWithId(R.id.telco_see_more_btn)))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(
+                position,
+                CommonActions.clickChildViewWithId(R.id.telco_see_more_btn)
+            )
+        )
     }
 
     fun bottomSheet_close() {

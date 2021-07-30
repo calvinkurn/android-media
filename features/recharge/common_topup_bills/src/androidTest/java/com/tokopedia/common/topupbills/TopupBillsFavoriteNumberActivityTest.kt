@@ -61,7 +61,8 @@ class TopupBillsFavoriteNumberActivityTest {
     var intent: Intent? = null
 
     @get:Rule
-    var mRuntimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
+    var mRuntimePermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(Manifest.permission.READ_CONTACTS)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -73,7 +74,8 @@ class TopupBillsFavoriteNumberActivityTest {
     fun stubAllExternalIntents() {
         Intents.init()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IsNot.not(IntentMatchers.isInternal()))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         val extras = Bundle()
         extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
@@ -95,17 +97,22 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     private fun stubContactNumber() {
-        Intents.intending(AllOf.allOf(IntentMatchers.hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
-            IntentMatchers.hasAction(Intent.ACTION_PICK))
+        Intents.intending(
+            AllOf.allOf(
+                IntentMatchers.hasData(ContactsContract.CommonDataKinds.Phone.CONTENT_URI),
+                IntentMatchers.hasAction(Intent.ACTION_PICK)
+            )
         ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
     fun validate_favorite_number_page_happy_flow() {
-        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(
-            isMockFilledFavoriteNumber = true,
-            isMockUpdateFavoriteDetail = true
-        ))
+        setupGraphqlMockResponse(
+            TopupBillsFavoriteNumberMockResponseConfig(
+                isMockFilledFavoriteNumber = true,
+                isMockUpdateFavoriteDetail = true
+            )
+        )
         isCoachmarkDisabled(targetContext, false)
         mActivityRule.launchActivity(intent)
 
@@ -118,48 +125,59 @@ class TopupBillsFavoriteNumberActivityTest {
         validate_delete_favorite_number()
         validate_undo_delete_favorite_number()
 
-        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_HAPPY),
-            hasAllSuccess())
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_HAPPY),
+            hasAllSuccess()
+        )
     }
 
     @Test
     fun validate_favorite_number_empty_unhappy_flow() {
-        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(
-            isMockFilledFavoriteNumber = false,
-            isMockUpdateFavoriteDetail = false
-        ))
+        setupGraphqlMockResponse(
+            TopupBillsFavoriteNumberMockResponseConfig(
+                isMockFilledFavoriteNumber = false,
+                isMockUpdateFavoriteDetail = false
+            )
+        )
         isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
         Thread.sleep(3000)
         validate_empty_state()
 
-        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_UNHAPPY),
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_UNHAPPY),
             hasAllSuccess()
         )
     }
 
     @Test
     fun validate_favorite_number_page_favorite_detail_error_flow() {
-        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(
-            isMockFilledFavoriteNumber = true,
-            isMockUpdateFavoriteDetail = false
-        ))
+        setupGraphqlMockResponse(
+            TopupBillsFavoriteNumberMockResponseConfig(
+                isMockFilledFavoriteNumber = true,
+                isMockUpdateFavoriteDetail = false
+            )
+        )
         isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
         Thread.sleep(3000)
         validate_delete_favorite_number_fail()
 
-        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_DETAIL_UNHAPPY),
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_DETAIL_UNHAPPY),
             hasAllSuccess()
         )
     }
 
     fun validate_show_contents_favorite_number_page() {
         onView(withId(R.id.common_topupbills_search_number_input_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.common_topupbills_search_number_contact_picker)).check(matches(
-            isDisplayed()))
+        onView(withId(R.id.common_topupbills_search_number_contact_picker)).check(
+            matches(
+                isDisplayed()
+            )
+        )
         Thread.sleep(2000)
         onView(withId(R.id.common_topupbills_favorite_number_clue)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
@@ -251,12 +269,17 @@ class TopupBillsFavoriteNumberActivityTest {
 
     private fun modifyBottomSheet_typeNewClientName(name: String) {
         Thread.sleep(1000)
-        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input),
-            isDescendantOfA(withId(R.id.common_topupbills_favorite_number_name_field))))
+        onView(
+            allOf(
+                withId(com.tokopedia.unifycomponents.R.id.text_field_input),
+                isDescendantOfA(withId(R.id.common_topupbills_favorite_number_name_field))
+            )
+        )
             .perform(
                 clearText(),
                 typeText(name),
-                ViewActions.closeSoftKeyboard())
+                ViewActions.closeSoftKeyboard()
+            )
     }
 
     private fun isCoachmarkDisabled(context: Context, isDisabled: Boolean) {
@@ -285,9 +308,14 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     private fun favoriteNumberItem_clickMenu(position: Int) {
-        val viewInteraction = onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
-            position, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
+        val viewInteraction =
+            onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+                position,
+                CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)
+            )
+        )
     }
 
     private fun favoriteNumberMenu_validateContents() {
@@ -311,9 +339,12 @@ class TopupBillsFavoriteNumberActivityTest {
 
     companion object {
         const val APPLINK = ApplinkConsInternalDigital.FAVORITE_NUMBER
-        const val ANALYTICS_FAVORITE_NUMBER_HAPPY = "tracker/recharge/recharge_common_topup_bills/favorite_number_happy.json"
-        const val ANALYTICS_FAVORITE_NUMBER_UNHAPPY = "tracker/recharge/recharge_common_topup_bills/favorite_number_unhappy.json"
-        const val ANALYTICS_FAVORITE_NUMBER_DETAIL_UNHAPPY = "tracker/recharge/recharge_common_topup_bills/favorite_number_detail_unhappy.json"
+        const val ANALYTICS_FAVORITE_NUMBER_HAPPY =
+            "tracker/recharge/recharge_common_topup_bills/favorite_number_positive_flow.json"
+        const val ANALYTICS_FAVORITE_NUMBER_UNHAPPY =
+            "tracker/recharge/recharge_common_topup_bills/favorite_number_negative_flow.json"
+        const val ANALYTICS_FAVORITE_NUMBER_DETAIL_UNHAPPY =
+            "tracker/recharge/recharge_common_topup_bills/favorite_number_detail_negative_flow.json"
 
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"

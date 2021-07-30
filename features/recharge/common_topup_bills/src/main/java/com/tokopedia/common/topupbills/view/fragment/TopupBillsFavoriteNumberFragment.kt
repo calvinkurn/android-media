@@ -504,7 +504,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun undoDelete(deletedFavoriteNumber: UpdateFavoriteDetail? = null) {
         val favoriteDetail = deletedFavoriteNumber ?: lastDeletedNumber
-        val isDelete = false
+        val shouldDelete = false
         showShimmering()
         if (favoriteDetail != null) {
             topUpBillsViewModel.modifySeamlessFavoriteNumber(
@@ -515,7 +515,7 @@ class TopupBillsFavoriteNumberFragment :
                     clientNumber = favoriteDetail.clientNumber,
                     totalTransaction = favoriteDetail.totalTransaction,
                     label = favoriteDetail.label,
-                    isDelete = isDelete
+                    isDelete = shouldDelete
                 ),
                 FavoriteNumberActionType.UNDO_DELETE
             )
@@ -596,7 +596,7 @@ class TopupBillsFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
                 currentCategoryName, operatorName, userSession.userId)
 
-        val shouldShowDelete = clientNumbers.size > 1
+        val shouldShowDelete = clientNumbers.size > MIN_TOTAL_FAV_NUMBER
 
         val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(
                 favNumberItem, this, shouldShowDelete)
@@ -621,7 +621,7 @@ class TopupBillsFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
                 currentCategoryName, operatorName, userSession.userId)
 
-        val isDelete = false
+        val shouldDelete = false
         showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
@@ -631,7 +631,7 @@ class TopupBillsFavoriteNumberFragment :
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = newName,
-                        isDelete = isDelete
+                        isDelete = shouldDelete
                 ),
                 FavoriteNumberActionType.UPDATE
         )
@@ -676,7 +676,7 @@ class TopupBillsFavoriteNumberFragment :
                 currentCategoryName, operatorName, userSession.userId
         )
 
-        val isDelete = true
+        val shouldDelete = true
         showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
@@ -686,7 +686,7 @@ class TopupBillsFavoriteNumberFragment :
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = favNumberItem.clientName,
-                        isDelete = isDelete
+                        isDelete = shouldDelete
                 ),
                 FavoriteNumberActionType.DELETE
         ) {
@@ -711,16 +711,14 @@ class TopupBillsFavoriteNumberFragment :
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data?.let {
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
-                    activity?.let {
-                        data.data?.run {
-                            val contact = this.covertContactUriToContactData(it.contentResolver)
-                            val clientNumber = TopupBillsSeamlessFavNumberItem(
-                                    clientName = contact.givenName,
-                                    clientNumber = contact.contactNumber)
-                            navigateToPDP(InputNumberActionType.CONTACT, clientNumber)
-                        }
+            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                activity?.let {
+                    data.data?.run {
+                        val contact = this.covertContactUriToContactData(it.contentResolver)
+                        val clientNumber = TopupBillsSeamlessFavNumberItem(
+                                clientName = contact.givenName,
+                                clientNumber = contact.contactNumber)
+                        navigateToPDP(InputNumberActionType.CONTACT, clientNumber)
                     }
                 }
             }
@@ -778,6 +776,7 @@ class TopupBillsFavoriteNumberFragment :
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
 
         private const val DEFAULT_TOTAL_TRANSACTION = 0
+        private const val MIN_TOTAL_FAV_NUMBER = 1
 
         fun newInstance(clientNumberType: String, number: String,
                         operatorData: TelcoCatalogPrefixSelect?,

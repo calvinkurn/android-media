@@ -46,7 +46,7 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST) ?: listOf()
         }
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.common_topup_title_fav_number))
+        updateTitle(getString(R.string.common_topup_fav_number_title))
 
         //draw background without overdraw GPU
         window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)

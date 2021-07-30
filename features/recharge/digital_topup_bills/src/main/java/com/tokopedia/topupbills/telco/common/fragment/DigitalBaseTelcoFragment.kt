@@ -68,7 +68,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected lateinit var bannerImage: ImageView
     private lateinit var viewModel: SharedTelcoViewModel
     protected var listMenu = mutableListOf<TelcoTabItem>()
-    protected var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
+    protected var operatorData: TelcoCatalogPrefixSelect =
+        TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
 
     override var categoryId: Int = 0
         set(value) {
@@ -78,6 +79,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -122,14 +124,18 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
             for (item in tickers) {
-                messages.add(TickerData(item.name, item.content,
+                messages.add(
+                    TickerData(
+                        item.name, item.content,
                         when (item.type) {
                             "warning" -> Ticker.TYPE_WARNING
                             "info" -> Ticker.TYPE_INFORMATION
                             "success" -> Ticker.TYPE_ANNOUNCEMENT
                             "error" -> Ticker.TYPE_ERROR
                             else -> Ticker.TYPE_INFORMATION
-                        }))
+                        }
+                    )
+                )
             }
             context?.run {
                 tickerView.addPagerView(TickerPagerAdapter(this, messages), messages)
@@ -146,20 +152,20 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
-                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                            }
+                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
 
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                            }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
 
-                            override fun onPermissionGranted() {
-                                openContactPicker()
-                            }
-                        })
+                        override fun onPermissionGranted() {
+                            openContactPicker()
+                        }
+                    })
             }
         } else {
             openContactPicker()
@@ -171,13 +177,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
      * -) EXTRA_NUMBER_LIST: old favorite number param
      * */
     protected fun navigateFavoriteNumberPage(
-            clientNumber: String,
-            favNumberList: MutableList<TopupBillsFavNumberItem>,
-            dgCategoryIds: ArrayList<String>,
-            categoryName: String
+        clientNumber: String,
+        favNumberList: MutableList<TopupBillsFavNumberItem>,
+        dgCategoryIds: ArrayList<String>,
+        categoryName: String
     ) {
         context?.let {
-            val intent = RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
+            val intent =
+                RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
             val extras = Bundle()
             extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
@@ -186,7 +193,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
 
             /* EXTRA_NUMBER_LIST */
-            extras.putParcelableArrayList(EXTRA_NUMBER_LIST, favNumberList as java.util.ArrayList<out Parcelable>)
+            extras.putParcelableArrayList(
+                EXTRA_NUMBER_LIST,
+                favNumberList as java.util.ArrayList<out Parcelable>
+            )
 
             intent.putExtras(extras)
 
@@ -199,20 +209,35 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected fun openContactPicker() {
         val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+            Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        )
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
             view?.let {
-                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                Toaster.build(
+                    it,
+                    getString(R.string.error_message_contact_not_found),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+                ).show()
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         context?.run {
-            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+            permissionCheckerHelper.onRequestPermissionsResult(
+                this,
+                requestCode,
+                permissions,
+                grantResults
+            )
         }
     }
 
@@ -229,28 +254,32 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_DIGITAL_FAVORITE_NUMBER) {
                     if (data != null) {
-                        val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
-                        val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
+                        val inputNumberActionType =
+                            data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
+                        val orderClientNumber =
+                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
                         handleCallbackAnySearchNumber(
-                                "",
-                                orderClientNumber.clientNumber,
-                                orderClientNumber.productId,
-                                orderClientNumber.categoryId,
-                                inputNumberActionType
+                            "",
+                            orderClientNumber.clientNumber,
+                            orderClientNumber.productId,
+                            orderClientNumber.categoryId,
+                            inputNumberActionType
                         )
                     } else {
                         handleCallbackAnySearchNumberCancel()
                     }
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER) {
                     if (data != null) {
-                        val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
-                        val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
+                        val inputNumberActionType =
+                            data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
+                        val orderClientNumber =
+                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
                         handleCallbackAnySearchNumber(
-                                orderClientNumber.clientName,
-                                orderClientNumber.clientNumber,
-                                orderClientNumber.productId.toString(),
-                                orderClientNumber.categoryId.toString(),
-                                inputNumberActionType
+                            orderClientNumber.clientName,
+                            orderClientNumber.clientNumber,
+                            orderClientNumber.productId.toString(),
+                            orderClientNumber.categoryId.toString(),
+                            inputNumberActionType
                         )
                     } else {
                         handleCallbackAnySearchNumberCancel()
@@ -289,14 +318,22 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun onErrorCustomData() {
         val errorData = (viewModel.catalogPrefixSelect.value as Fail).throwable
         view?.run {
-            Toaster.build(this, ErrorHandler.getErrorMessage(context, errorData), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                this,
+                ErrorHandler.getErrorMessage(context, errorData),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
-    protected fun validatePhoneNumber(operatorData: TelcoCatalogPrefixSelect, clientNumberWidget: DigitalClientNumberWidget) {
+    protected fun validatePhoneNumber(
+        operatorData: TelcoCatalogPrefixSelect,
+        clientNumberWidget: DigitalClientNumberWidget
+    ) {
         for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
             val phoneIsValid = Pattern.compile(validation.rule)
-                    .matcher(clientNumberWidget.getInputNumber()).matches()
+                .matcher(clientNumberWidget.getInputNumber()).matches()
             if (!phoneIsValid) {
                 clientNumberWidget.setErrorInputNumber(validation.message)
                 break
@@ -316,7 +353,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         initiateMenuTelco(data.recommendations, data.promos)
     }
 
-    private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
+    private fun initiateMenuTelco(
+        recom: List<TopupBillsRecommendation>,
+        promo: List<TopupBillsPromo>
+    ) {
         listMenu.clear()
         var idTab = 1L
         if (recom.isNotEmpty()) {
@@ -342,7 +382,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
-        NetworkErrorHelper.showEmptyState(activity, pageContainer, ErrorHandler.getErrorMessage(context, error)) {
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            pageContainer,
+            ErrorHandler.getErrorMessage(context, error)
+        ) {
             getMenuDetail(getTelcoMenuId())
         }
     }
@@ -384,23 +428,33 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                ErrorHandler.getErrorMessage(requireContext(), error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            Toaster.build(
+                v,
+                ErrorHandler.getErrorMessage(requireContext(), error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+            ).show()
         }
     }
 
     private fun sendOpenScreenTracking() {
         rechargeAnalytics.eventOpenScreen(
-                userSession.userId,
-                topupAnalytics.getCategoryName(getTelcoCategoryId()),
-                getTelcoCategoryId().toString()
+            userSession.userId,
+            topupAnalytics.getCategoryName(getTelcoCategoryId()),
+            getTelcoCategoryId().toString()
         )
     }
 
@@ -480,11 +534,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected abstract fun errorSetFavNumbers()
 
     protected abstract fun handleCallbackAnySearchNumber(
-            clientName: String,
-            clientNumber: String,
-            productId: String,
-            categoryId: String,
-            inputNumberActionTypeIndex: Int)
+        clientName: String,
+        clientNumber: String,
+        productId: String,
+        categoryId: String,
+        inputNumberActionTypeIndex: Int
+    )
 
     protected abstract fun handleCallbackAnySearchNumberCancel()
 

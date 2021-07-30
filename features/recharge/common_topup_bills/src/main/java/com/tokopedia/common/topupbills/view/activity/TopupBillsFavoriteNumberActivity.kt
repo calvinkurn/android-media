@@ -50,7 +50,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
             this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
         }
         super.onCreate(savedInstanceState)
-        updateTitle(getString(R.string.common_topup_title_fav_number))
+        updateTitle(getString(R.string.common_topup_fav_number_title))
 
         //draw background without overdraw GPU
         window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
