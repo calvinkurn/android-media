@@ -29,7 +29,6 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
                     animatedInfoList = model.data.animatedInfoList,
             ),
                     shopId = model.data.shopId ?: "0",
-                    isMainContainerSetFitsSystemWindows = false,
                     source = MvcSource.SHOP
             )
         }
