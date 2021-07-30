@@ -21,7 +21,7 @@
     <string name="tokopedianow_home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="tokopedianow_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
 
-    <string name="tokopedianow_search_title">Hasil pencarian di TokoNOW!</string>
+    <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
     <string name="tokopedianow_all_category">Semua Kategori</string>
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
     <string name="tokopedianow_category_aisle_header">Lihat kategori lainnya</string>
