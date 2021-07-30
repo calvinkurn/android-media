@@ -1,18 +1,24 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import javax.inject.Inject
 
 class GetChatUseCaseStub @Inject constructor(
-        private val gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
-        mapper: TopChatRoomGetExistingChatMapper,
-        dispatchers: CoroutineDispatchers
+    private val gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
+    mapper: TopChatRoomGetExistingChatMapper,
+    dispatchers: CoroutineDispatchers
 ) : GetChatUseCase(gqlUseCase, mapper, dispatchers) {
+
+    private val changeAddressResponsePath =
+        "success_get_chat_replies_with_srw_change_address.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -22,7 +28,43 @@ class GetChatUseCaseStub @Inject constructor(
 
     val defaultChangeAddressResponse: GetExistingChatPojo
         get() = AndroidFileUtil.parse(
-            "success_get_chat_replies_with_srw_change_address.json",
+            changeAddressResponsePath,
             GetExistingChatPojo::class.java
         )
+
+    val srwChangeAddressCtaDisabled: GetExistingChatPojo
+        get() = alterResponseOf(changeAddressResponsePath) {
+            val attachment = it.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies).get(0).asJsonObject
+                .getAsJsonObject(attachment)
+            val attr = attachment.getAsJsonPrimitive(attributes).asString
+            val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
+            attrObj.addProperty(status, HeaderCtaMessageAttachment.STATUS_DISABLED)
+            attrObj.addProperty(text_url, "Disabled")
+            attachment.addProperty(attributes, attrObj.toString())
+        }
+
+    private val chatReplies = "chatReplies"
+    private val list = "list"
+    private val chats = "chats"
+    private val replies = "replies"
+    private val attachment = "attachment"
+    private val attributes = "attributes"
+    private val status = "status"
+    private val text_url = "text_url"
+
+    private fun alterResponseOf(
+        responsePath: String,
+        altercation: (JsonObject) -> Unit
+    ): GetExistingChatPojo {
+        val responseObj: JsonObject = AndroidFileUtil.parse(
+            responsePath, JsonObject::class.java
+        )
+        altercation(responseObj)
+        return CommonUtil.fromJson(
+            responseObj.toString(), GetExistingChatPojo::class.java
+        )
+    }
 }

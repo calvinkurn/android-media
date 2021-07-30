@@ -2,9 +2,10 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
-class SRWChangeAddress : TopchatRoomTest() {
+class SRWChangeAddressTest : TopchatRoomTest() {
 
     @Test
     fun should_show_attachment_title_when_msg_cta_attachment_is_not_null() {
@@ -29,7 +30,18 @@ class SRWChangeAddress : TopchatRoomTest() {
         assertCtaHeaderMsgAtBubblePosition(0, isEnabled())
     }
 
-    // TODO: should show cta disabled state when attachment status disabled
+    @Test
+    fun should_show_cta_disabled_state_when_attachment_status_disabled() {
+        // Given
+        getChatUseCase.response = getChatUseCase.srwChangeAddressCtaDisabled
+        launchChatRoomActivity()
+
+        // Then
+        assertCtaHeaderMsgAtBubblePosition(0, isDisplayed())
+        assertCtaHeaderMsgAtBubblePosition(0, withText("Disabled"))
+        assertCtaHeaderMsgAtBubblePosition(0, not(isEnabled()))
+    }
+
     // TODO: should show attachment body text as bubble message
     // TODO: should hide cta when attachment does not have visible cta
     // TODO: should resend SRW when user success change address
