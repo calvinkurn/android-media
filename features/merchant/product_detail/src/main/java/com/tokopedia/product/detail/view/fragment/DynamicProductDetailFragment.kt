@@ -888,6 +888,35 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    override fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String) {
+        DynamicProductDetailTracking.ImpulsiveBanner.impressImpulsiveBanner(
+                widget = data,
+                userId = viewModel.userId,
+                productId = productId ?: "",
+                templateNameType = templateNameType,
+                basicData = ProductRecomLayoutBasicData(
+                        generalLayoutName = getPdpDataSource()?.layoutName ?: "",
+                        categoryName = getPdpDataSource()?.basic?.category?.name ?: "",
+                        categoryId = getPdpDataSource()?.basic?.category?.id ?: ""
+                )
+        )
+    }
+
+    override fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String) {
+        DynamicProductDetailTracking.ImpulsiveBanner.clickImpulsiveBanner(
+                widget = data,
+                userId = viewModel.userId,
+                productId = productId ?: "",
+                templateNameType = templateNameType,
+                basicData = ProductRecomLayoutBasicData(
+                        generalLayoutName = getPdpDataSource()?.layoutName ?: "",
+                        categoryName = getPdpDataSource()?.basic?.category?.name ?: "",
+                        categoryId = getPdpDataSource()?.basic?.category?.id ?: ""
+                )
+        )
+        goToApplink(appLink)
+    }
+
     override fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
         pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
@@ -906,6 +935,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     }
             )
         }
+
     }
 
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
