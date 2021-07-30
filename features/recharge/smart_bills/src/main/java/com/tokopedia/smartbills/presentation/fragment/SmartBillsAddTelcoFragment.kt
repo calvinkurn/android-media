@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
@@ -30,7 +31,9 @@ import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
+import com.tokopedia.smartbills.presentation.widget.SmartBillAddInquiryCallback
 import com.tokopedia.smartbills.presentation.widget.SmartBillsGetNominalCallback
+import com.tokopedia.smartbills.presentation.widget.SmartBillsInquiryBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsNominalBottomSheet
 import com.tokopedia.smartbills.util.SmartBillsGlobalError.errorSBMHandlerGlobalError
 import com.tokopedia.unifycomponents.Toaster
@@ -121,8 +124,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         viewModel.getInquiryData(viewModel.createInquiryParam(operatorActive.attributes.defaultProductId, getNumber()))
     }
 
-    private fun addBills(){
-        viewModel.addBill(viewModel.createAddBillsParam(RechargeSBMAddBillRequest(selectedProduct?.id.toIntOrZero(), getNumber())))
+    private fun addBills(productId: Int, clientNumber: String){
+        viewModel.addBill(viewModel.createAddBillsParam(RechargeSBMAddBillRequest(productId, clientNumber)))
     }
 
     private fun observeTicker(){
@@ -178,7 +181,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
                 }
                 is Success -> {
-
+                    showInquiryBottomSheet(it.data)
                 }
            }
         }
@@ -331,7 +334,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                             && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
                             && !selectedProduct?.id.isNullOrEmpty()){
                         isButtonTelcoLoading(true)
-                        addBills()
+                        addBills(selectedProduct?.id.toIntOrZero(), getNumber())
                     } else {
                         validationNumber()
                     }
@@ -364,6 +367,17 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 setErrorNumber(false, "")
             }
         }
+    }
+
+    private fun showInquiryBottomSheet(inquiry: TopupBillsEnquiryData){
+        val attribute = inquiry.enquiry.attributes
+        val inquiryBottomSheet = SmartBillsInquiryBottomSheet(object : SmartBillAddInquiryCallback{
+            override fun onInquiryClicked() {
+                addBills(attribute.productId.toIntOrZero(), attribute.clientNumber)
+            }
+        })
+        inquiryBottomSheet.addSBMInquiry(attribute.mainInfoList)
+        inquiryBottomSheet.show(requireFragmentManager(), "")
     }
 
     private fun setErrorNumber(isError: Boolean, message: String){
