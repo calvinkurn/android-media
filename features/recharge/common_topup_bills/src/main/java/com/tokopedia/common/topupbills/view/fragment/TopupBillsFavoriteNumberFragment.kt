@@ -483,7 +483,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun onSuccessDeleteClientName(deletedFavoriteNumber: UpdateFavoriteDetail) {
         view?.let {
-            Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name),
+            Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name, deletedFavoriteNumber.clientNumber),
                 Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
                 getString(R.string.common_topup_fav_number_toaster_undo_delete)
             ) { undoDelete(deletedFavoriteNumber) }.show()
