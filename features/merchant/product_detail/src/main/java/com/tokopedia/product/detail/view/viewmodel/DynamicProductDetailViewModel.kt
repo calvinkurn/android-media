@@ -127,6 +127,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
+        private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
         private const val WISHLIST_ERROR_TYPE = "error_wishlist"
         private const val WISHLIST_STATUS_KEY = "wishlist_status"
@@ -1057,7 +1058,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
                 val result = deleteCartUseCase.get().executeOnBackground()
-                val isFailed = result.data.success == 0 || result.status.equals("ERROR", true)
+                val isFailed = result.data.success == 0 || result.status.equals(TEXT_ERROR, true)
                 if (isFailed) {
                     val error = result.errorMessage.firstOrNull() ?: result.data.message.firstOrNull()
                     onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
