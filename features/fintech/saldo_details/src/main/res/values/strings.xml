@@ -107,4 +107,7 @@
     <string name="saldo_transferred_amount">Jumlah yang Ditransfer</string>
     <string name="saldo_withdrawal_info_details">Rincian penarikan</string>
     <string name="saldo_withdrawal_balance_status">Status penarikan saldo</string>
+    <string name="saldo_sales_detail_view_order">Lihat Detail Pesanan</string>
+    <string name="saldo_sales_total_received">Total Diterima</string>
+    <string name="saldo_sales_invoice_copied_toast">Invoice berhasil disalin</string>
 </resources>

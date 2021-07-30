@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoWithdrawalStatusAdapter
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
@@ -14,10 +17,13 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoData
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.view.viewmodel.WithdrawalDetailViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.saldo_fragment_withdrawl_detail.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
@@ -54,8 +60,12 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        viewModel?.getWithdrawalInfo(withdrawalId.toString())
+        loadWithdrawalDetail()
         initAdapter()
+    }
+
+    private fun loadWithdrawalDetail() {
+        viewModel?.getWithdrawalInfo(withdrawalId.toString())
     }
 
     private fun initAdapter() {
@@ -75,24 +85,57 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorLoading(throwable: Throwable) {
-
+        // hide Loading
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
+            is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
+            else -> setGlobalErrors(GlobalError.SERVER_ERROR)
+        }
     }
 
+
+    private fun setGlobalErrors(errorType: Int) {
+        dataGroup.gone()
+        saldoWithdrawalDetailGlobalError.setType(errorType)
+        saldoWithdrawalDetailGlobalError.visible()
+        saldoWithdrawalDetailGlobalError.setActionClickListener {
+            saldoWithdrawalDetailGlobalError.gone()
+            loadWithdrawalDetail()
+        }
+    }
+
+
     private fun onSuccessWithdrawalDetailLoaded(data: WithdrawalInfoData) {
+        setDataViewVisibility()
+        setHeaderData(data)
+        setFeeDetailBreakup(data)
+        setWithdrawalStatusData(data)
+    }
+
+    private fun setHeaderData(data: WithdrawalInfoData) {
         tvWithdrawalAmount.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.amount, false)
         tvBankName.text = data.bankName
         tvAccountName.text = "${data.accountNumber} - ${data.accountName}"
         tvWithdrawalDate.text = data.createdTime
-        withdrawalStatusLabel.setLabelType(
-            SaldoDateUtil.getLocalLabelColor(data.labelColor)
-        )
+        withdrawalStatusLabel.setLabelType(SaldoDateUtil.getLocalLabelColor(data.labelColor))
         withdrawalStatusLabel.setLabel(data.labelStatus)
+
+    }
+    private fun setFeeDetailBreakup(data: WithdrawalInfoData) {
         llWithdrawalDetail.setData(data.feeDetailData)
+    }
+
+    private fun setWithdrawalStatusData(data: WithdrawalInfoData) {
         (rvWithdrawalStatus.adapter as SaldoWithdrawalStatusAdapter).apply {
             historyList = data.withdrawalInfoHistory
             notifyDataSetChanged()
         }
+    }
+
+    private fun setDataViewVisibility() {
+        // hide Loading
+        dataGroup.visible()
     }
 
     companion object {

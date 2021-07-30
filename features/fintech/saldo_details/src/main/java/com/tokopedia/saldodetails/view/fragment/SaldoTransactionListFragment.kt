@@ -133,7 +133,6 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
             context?.let { startActivity(SaldoWithdrawalDetailActivity.newInstance(it, visitable.withdrawalId))}
         } else if (visitable is SalesTransactionDetail){
             context?.let { startActivity(SaldoSalesDetailActivity.newInstance(it, visitable.summaryID))}
-
         }
     }
 

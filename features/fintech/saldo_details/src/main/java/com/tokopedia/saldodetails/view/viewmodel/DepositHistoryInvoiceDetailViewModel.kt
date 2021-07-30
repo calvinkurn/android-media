@@ -43,6 +43,13 @@ class DepositHistoryInvoiceDetailViewModel @Inject constructor(
         } ?: kotlin.run { "" }
     }
 
+    fun getInvoiceDetailUrl(): String {
+        return _depositHistoryLiveData.value?.let {
+            if (it is Success) it.data.invoiceUrl
+            else ""
+        } ?: kotlin.run { "" }
+    }
+
     override fun onCleared() {
         getDepositHistoryInfoUseCase.cancelJobs()
         super.onCleared()

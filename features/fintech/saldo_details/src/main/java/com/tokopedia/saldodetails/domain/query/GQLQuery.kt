@@ -109,7 +109,7 @@ const val GQL_WITHDRAWAL_DETAIL =
 
 const val GQL_DEPOSIT_HISTORY_INVOICE = """
     query MidasDepositHistoryInvoiceDetail(${'$'}summaryID: String!) {
-         MidasDepositHistoryInvoiceDetail(summaryID: (${'$'}summaryID) {
+         MidasDepositHistoryInvoiceDetail(summaryID: ${'$'}summaryID) {
             is_success
             deposit_history {
                 total_amount

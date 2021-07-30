@@ -34,7 +34,7 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         inflateTitle()
         inflateDetailList(feeDetailData)
         inflateDivider()
-        inflateAmount(feeDetailData.getOrNull(2))
+        inflateAmount(feeDetailData.getOrNull(feeDetailData.size - 1))
     }
 
     private fun inflateDivider() {
@@ -57,14 +57,16 @@ class WithdrawalDetailsList @JvmOverloads constructor(
     }
 
     private fun inflateAmount(amountData: FeeDetailData?) {
-        val view = getLayout()
-        setWithdrawalText(view.tvDetailTitle, amountData?.feeType ?: "")
-        setWithdrawalText(view.tvDetailAmount, getAmountString(amountData?.amount))
-        addView(view)
+        amountData?.let {
+            val view = getLayout()
+            setWithdrawalText(view.tvDetailTitle, amountData.feeType)
+            setWithdrawalText(view.tvDetailAmount, getAmountString(amountData.amount))
+            addView(view)
+        }
     }
 
     private fun inflateDetailList(feeDetailData: ArrayList<FeeDetailData>) {
-        for (i in 0 until feeDetailData.size-1) {
+        for (i in 0 until feeDetailData.size - 1) {
             val view = getLayout()
             view.tvDetailTitle.text = feeDetailData[i].feeType
             view.tvDetailAmount.text = getAmountString(feeDetailData[i].amount)
@@ -90,7 +92,9 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         textView.visible()
     }
 
-    private fun getAmountString(amount: Double?) = CurrencyFormatUtil.convertPriceValueToIdrFormat(amount ?: 0.0, false)
+    private fun getAmountString(amount: Double?) =
+        CurrencyFormatUtil.convertPriceValueToIdrFormat(amount ?: 0.0, false)
+
     companion object {
         const val VIEW_TYPE_DETAIL = 1
         const val VIEW_TYPE_SEPARATOR = 2
