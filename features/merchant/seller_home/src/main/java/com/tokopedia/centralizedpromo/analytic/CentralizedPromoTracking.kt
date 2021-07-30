@@ -1,7 +1,5 @@
 package com.tokopedia.centralizedpromo.analytic
 
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_CLICK
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_FREE_SHIPPING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_MVC_CLICK_CLOSE
@@ -100,28 +98,6 @@ object CentralizedPromoTracking {
                 event = EVENT_NAME_CLICK,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
                 action = arrayOf(EVENT_ACTION_PROMO_CREATION_CLICK, widgetName).joinToString(" - "),
-                label = ""
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(data)
-    }
-
-    fun sendImpressionArticle() {
-        val data = createMap(
-                event = EVENT_NAME_IMPRESSION,
-                category = EVENT_CATEGORY_ADS_AND_PROMO,
-                action = EVENT_ACTION_EDUCATION_IMPRESSION,
-                label = ""
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(data)
-    }
-
-    fun sendClickArticleItem(title: String) {
-        val data = createMap(
-                event = EVENT_NAME_CLICK,
-                category = EVENT_CATEGORY_ADS_AND_PROMO,
-                action = arrayOf(EVENT_ACTION_EDUCATION_CLICK, title).joinToString(" - "),
                 label = ""
         )
 
