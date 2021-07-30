@@ -100,18 +100,6 @@ object HomeLayoutMapper {
             add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
         }
 
-        add(
-            HomeLayoutItemUiModel(
-                HomeRecentPurchaseUiModel(
-                    id = "1001",
-                    title = "",
-                    emptyList(),
-                    TokoNowLayoutState.LOADING
-                ),
-                HomeLayoutItemState.NOT_LOADED
-            )
-        )
-
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             mapToHomeUiModel(it)?.let { item ->
                 add(item)
