@@ -147,7 +147,7 @@ class PlayFragment @Inject constructor(
         onPageFocused()
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
-        }, 200)
+        }, KEYBOARD_REGISTER_DELAY)
     }
 
     override fun onPause() {
@@ -615,5 +615,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        private const val KEYBOARD_REGISTER_DELAY = 200L
     }
 }

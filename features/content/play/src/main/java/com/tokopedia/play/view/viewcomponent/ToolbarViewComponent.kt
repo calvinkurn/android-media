@@ -89,7 +89,7 @@ class ToolbarViewComponent(
         if (cartUiModel.shouldShow) rlCart.show() else rlCart.gone()
         if (cartUiModel.count > 0) {
             tvBadgeCart.show()
-            tvBadgeCart.text =  if (cartUiModel.count > 99) getString(R.string.play_mock_cart) else cartUiModel.count.toString()
+            tvBadgeCart.text =  if (cartUiModel.count > CART_MAXIMUM_COUNT) getString(R.string.play_mock_cart) else cartUiModel.count.toString()
         } else {
             tvBadgeCart.invisible()
         }
@@ -105,6 +105,11 @@ class ToolbarViewComponent(
 
     fun setIsShareable(isShow: Boolean) {
         if (isShow) ivCopyLink.show() else ivCopyLink.hide()
+    }
+
+    companion object {
+
+        private const val CART_MAXIMUM_COUNT = 99
     }
 
     interface Listener {
