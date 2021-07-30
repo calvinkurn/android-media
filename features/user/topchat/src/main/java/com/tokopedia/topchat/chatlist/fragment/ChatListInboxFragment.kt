@@ -612,7 +612,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun deleteChat(element: ItemChatListPojo, itemPosition: Int) {
-        viewModel.chatMoveToTrash(element.msgId.toInt())
+        viewModel.chatMoveToTrash(element.msgId)
         itemPositionLongClicked = itemPosition
     }
 

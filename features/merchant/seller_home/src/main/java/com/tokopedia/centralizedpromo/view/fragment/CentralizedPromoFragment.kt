@@ -68,8 +68,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     private val partialViews by lazy {
         return@lazy mapOf(
                 LayoutType.ON_GOING_PROMO to createOnGoingPromoView(),
-                LayoutType.PROMO_CREATION to createPromoRecommendationView(),
-                LayoutType.POST to createPromoPostView()
+                LayoutType.PROMO_CREATION to createPromoRecommendationView()
         )
     }
 
@@ -147,8 +146,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         partialViews.forEach { it.value.renderLoading() }
         getLayoutData(
                 LayoutType.ON_GOING_PROMO,
-                LayoutType.PROMO_CREATION,
-                LayoutType.POST
+                LayoutType.PROMO_CREATION
         )
     }
 

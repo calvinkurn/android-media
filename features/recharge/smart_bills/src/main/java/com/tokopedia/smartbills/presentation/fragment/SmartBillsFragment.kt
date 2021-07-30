@@ -436,8 +436,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 }
 
                 // Get first viewholder item for coach marks
-                rv_smart_bills_items.post {
-                    val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+                rv_smart_bills_items?.post {
+                    val billItemView = (rv_smart_bills_items?.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
                     val coachMarks = ArrayList<CoachMark2Item>()
                     coachMarks.add(
                             CoachMark2Item(

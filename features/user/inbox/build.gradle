@@ -85,6 +85,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.topAdsSdk)
     androidTestImplementation projectOrAar(rootProject.ext.features.atc_common)
     androidTestImplementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
