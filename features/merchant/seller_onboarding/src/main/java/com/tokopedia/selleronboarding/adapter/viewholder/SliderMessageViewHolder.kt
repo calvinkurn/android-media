@@ -1,11 +1,15 @@
 package com.tokopedia.selleronboarding.adapter.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
+import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
+import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
 import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
 
 /**
@@ -26,7 +30,6 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
                 tvSobSliderMessageTitle.translationY = itemView.viewObserver.translationY
             }
             imgSobMessage1.run {
-                loadImage(R.drawable.onboarding_02_1)
                 viewTreeObserver.addOnDrawListener {
                     scaleX = observer.scaleX
                     scaleY = observer.scaleY
@@ -34,7 +37,6 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
                 }
             }
             imgSobMessage2.run {
-                loadImage(R.drawable.onboarding_02_2)
                 viewTreeObserver.addOnDrawListener {
                     scaleX = observer.scaleX
                     scaleY = observer.scaleY
@@ -42,7 +44,6 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
                 }
             }
             imgSobMessage3.run {
-                loadImage(R.drawable.onboarding_02_3)
                 viewTreeObserver.addOnDrawListener {
                     scaleX = observer.scaleX
                     scaleY = observer.scaleY
@@ -55,6 +56,17 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
                     alpha = observer.alpha
                 }
             }
+
+            setupMarginTitleSob { setMarginMessageTitle() }
+        }
+    }
+
+    private fun setMarginMessageTitle() {
+        with(itemView) {
+            val tvSobCurrentView = tvSobSliderMessageTitle?.layoutParams as? ConstraintLayout.LayoutParams
+            tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+            tvSobSliderMessageTitle?.layoutParams = tvSobCurrentView
         }
     }
 }
