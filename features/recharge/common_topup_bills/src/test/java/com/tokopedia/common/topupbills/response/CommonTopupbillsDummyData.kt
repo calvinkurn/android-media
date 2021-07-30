@@ -1,6 +1,5 @@
 package com.tokopedia.common.topupbills.response
 
-import com.tokopedia.common.topupbills.CommonTopupBillsViewModelTest
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsCatalog
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
@@ -18,11 +17,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
-import com.tokopedia.common_digital.atc.data.response.AttributesCart
-import com.tokopedia.common_digital.atc.data.response.AutoApplyVoucher
-import com.tokopedia.common_digital.atc.data.response.CrossSellingConfig
-import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.common_digital.atc.data.response.RelationshipsCart
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {
@@ -86,7 +80,7 @@ object CommonTopupbillsDummyData {
     fun getSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberData {
         return TopupBillsSeamlessFavNumberData(
                 seamlessFavoriteNumber = TopupBillsSeamlessFavNumber(
-                        categoryId = 578,
+                        categoryId = "578",
                         clientNumber = "081288888888",
                         favoriteNumbers = listOf(
                                 TopupBillsSeamlessFavNumberItem(
@@ -94,8 +88,8 @@ object CommonTopupbillsDummyData {
                                         clientName = ""
                                 )
                         ),
-                        operatorId = 123,
-                        productId = 5
+                        operatorId = "123",
+                        productId = "5"
                 )
         )
     }

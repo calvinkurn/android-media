@@ -7,15 +7,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopupBillsSeamlessFavNumberItem (
         @SerializedName("category_id")
-        val categoryId: Int = -1,
+        val categoryId: String = "",
         @SerializedName("client_number")
         val clientNumber: String = "",
         @SerializedName("label")
         var clientName: String = "",
         @SerializedName("operator_id")
-        val operatorId: Int = -1,
+        val operatorId: String = "",
         @SerializedName("product_id")
-        val productId: Int = -1,
+        val productId: String = "",
         @SerializedName("icon_url")
         val iconUrl: String = ""
 ): Parcelable

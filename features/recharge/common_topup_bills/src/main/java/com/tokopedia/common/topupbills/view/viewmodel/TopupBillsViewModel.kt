@@ -35,10 +35,11 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 28/08/19.
  */
-class TopupBillsViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                              private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-                                              val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.io) {
+class TopupBillsViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     private val _enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
@@ -49,11 +50,11 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         get() = _menuDetailData
 
     private val _catalogPluginData = MutableLiveData<Result<RechargeCatalogPlugin>>()
-    val catalogPluginData : LiveData<Result<RechargeCatalogPlugin>>
+    val catalogPluginData: LiveData<Result<RechargeCatalogPlugin>>
         get() = _catalogPluginData
 
     private val _favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
-    val favNumberData : LiveData<Result<TopupBillsFavNumber>>
+    val favNumberData: LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
 
     private val _seamlessFavNumberData = MutableLiveData<Result<TopupBillsSeamlessFavNumber>>()
@@ -73,11 +74,11 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         get() = _seamlessFavNumberUndoDeleteData
 
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
-    val checkVoucherData : LiveData<Result<PromoData>>
+    val checkVoucherData: LiveData<Result<PromoData>>
         get() = _checkVoucherData
 
     private val _expressCheckoutData = MutableLiveData<Result<RechargeExpressCheckoutData>>()
-    val expressCheckoutData : LiveData<Result<RechargeExpressCheckoutData>>
+    val expressCheckoutData: LiveData<Result<RechargeExpressCheckoutData>>
         get() = _expressCheckoutData
 
     private var checkVoucherJob: Job? = null
@@ -93,8 +94,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 }.getSuccessData()
 
                 // If data is pending delay query call
-                with (data.enquiry) {
-                    if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * 1000)
+                with(data.enquiry) {
+                    if (status == STATUS_PENDING && retryDuration > RETRY_DURATION)
+                        delay((retryDuration.toLong()) * 1000)
                 }
             } while (data.enquiry.status != STATUS_DONE)
 
@@ -109,11 +111,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getMenuDetail(
+        rawQuery: String,
+        mapParam: Map<String, Any>,
+        isLoadFromCloud: Boolean = false
+    ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
-                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                val graphqlRequest =
+                    GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
+                val graphqlCacheStrategy =
+                    GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
@@ -127,7 +135,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     fun getCatalogPluginData(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
+                val graphqlRequest =
+                    GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeCatalogPlugin.Response>().response
 
@@ -141,11 +150,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getFavoriteNumbers(
+        rawQuery: String,
+        mapParam: Map<String, Any>,
+        isLoadFromCloud: Boolean = false
+    ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
-                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                val graphqlRequest =
+                    GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
+                val graphqlCacheStrategy =
+                    GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
@@ -163,7 +178,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
+                val graphqlRequest =
+                    GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberData>()
 
@@ -187,7 +203,11 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberModData::class.java, mapParam)
+                val graphqlRequest = GraphqlRequest(
+                    rawQuery,
+                    TopupBillsSeamlessFavNumberModData::class.java,
+                    mapParam
+                )
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
@@ -213,7 +233,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         checkVoucherJob = CoroutineScope(coroutineContext).launch {
             delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
             digitalCheckVoucherUseCase.execute(
-                    digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
+                digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel),
+                getCheckVoucherSubscriber()
             )
         }
     }
@@ -223,9 +244,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     private fun getCheckVoucherSubscriber(): Subscriber<GraphqlResponse> {
-        return object: Subscriber<GraphqlResponse>() {
+        return object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
-                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+                val checkVoucherData =
+                    objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
                 _checkVoucherData.value = Success(mapVoucherData(checkVoucherData.voucherData))
             }
 
@@ -241,17 +263,20 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     private fun mapVoucherData(data: CheckVoucherDigitalData): PromoData {
-        return PromoData(data.isCoupon,
-                data.code,
-                data.message.text,
-                data.titleDescription,
-                state = data.message.state.mapToStatePromoCheckout())
+        return PromoData(
+            data.isCoupon,
+            data.code,
+            data.message.text,
+            data.titleDescription,
+            state = data.message.state.mapToStatePromoCheckout()
+        )
     }
 
     fun processExpressCheckout(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, RechargeExpressCheckout.Response::class.java, mapParam)
+                val graphqlRequest =
+                    GraphqlRequest(rawQuery, RechargeExpressCheckout.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeExpressCheckout.Response>().response
 
@@ -273,10 +298,24 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun createEnquiryParams(operatorId: String, productId: String, inputData: Map<String, String>): List<TopupBillsEnquiryQuery> {
+    fun createEnquiryParams(
+        operatorId: String,
+        productId: String,
+        inputData: Map<String, String>
+    ): List<TopupBillsEnquiryQuery> {
         val enquiryParams = mutableListOf<TopupBillsEnquiryQuery>()
-        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_SOURCE_TYPE, ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE))
-        enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_DEVICE_ID, ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE))
+        enquiryParams.add(
+            TopupBillsEnquiryQuery(
+                ENQUIRY_PARAM_SOURCE_TYPE,
+                ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE
+            )
+        )
+        enquiryParams.add(
+            TopupBillsEnquiryQuery(
+                ENQUIRY_PARAM_DEVICE_ID,
+                ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE
+            )
+        )
         enquiryParams.add(TopupBillsEnquiryQuery(ENQUIRY_PARAM_PRODUCT_ID, productId))
         inputData.forEach { (key, value) ->
             enquiryParams.add(TopupBillsEnquiryQuery(key, value))
@@ -312,53 +351,56 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION to "",
                 FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to "",
                 FAVORITE_NUMBER_PARAM_SUBSCRIPTION to false,
-                FAVORITE_NUMBER_PARAM_LIMIT to 10
-        ))
-    }
-
-    fun createSeamlessFavoriteNumberUpdateParams(
-            categoryId: Int,
-            productId: Int,
-            clientNumber: String,
-            totalTransaction: Int,
-            label: String,
-            isDelete: Boolean
-    ): Map<String, Any> {
-        return mapOf(
-               FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
-                       FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
-                       FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
-                       FAVORITE_NUMBER_PARAM_LAST_PRODUCT to productId,
-                       FAVORITE_NUMBER_PARAM_LABEL to label,
-                       FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
-                       FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
-                       FAVORITE_NUMBER_PARAM_SOURCE to FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP,
-                       FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
-                       FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
-               )
+                FAVORITE_NUMBER_PARAM_LIMIT to FAVORITE_NUMBER_LIMIT
+            )
         )
     }
 
-    fun createExpressCheckoutParams(productId: Int,
-                                    inputs: Map<String, String>,
-                                    transactionAmount: Int = 0,
-                                    voucherCode: String = "",
-                                    checkOtp: Boolean = false,
-                                    isInstantCheckout: Boolean = false,
-                                    addToMyBills: Boolean = false): Map<String, Any> {
+    fun createSeamlessFavoriteNumberUpdateParams(
+        categoryId: Int,
+        productId: Int,
+        clientNumber: String,
+        totalTransaction: Int,
+        label: String,
+        isDelete: Boolean
+    ): Map<String, Any> {
+        return mapOf(
+            FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
+                FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
+                FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
+                FAVORITE_NUMBER_PARAM_LAST_PRODUCT to productId,
+                FAVORITE_NUMBER_PARAM_LABEL to label,
+                FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
+                FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
+                FAVORITE_NUMBER_PARAM_SOURCE to FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP,
+                FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
+                FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
+            )
+        )
+    }
+
+    fun createExpressCheckoutParams(
+        productId: Int,
+        inputs: Map<String, String>,
+        transactionAmount: Int = 0,
+        voucherCode: String = "",
+        checkOtp: Boolean = false,
+        isInstantCheckout: Boolean = false,
+        addToMyBills: Boolean = false
+    ): Map<String, Any> {
         val fields = mutableListOf<Map<String, String>>()
         for ((key, value) in inputs) {
             fields.add(createExpressCheckoutFieldParam(key, value))
         }
 
         val params = mutableMapOf(
-                PARAM_FIELDS to fields,
-                EXPRESS_PARAM_INSTANT_CHECKOUT to isInstantCheckout,
-                EXPRESS_PARAM_VOUCHER_CODE to voucherCode,
-                EXPRESS_PARAM_PRODUCT_ID to productId,
-                EXPRESS_PARAM_DEVICE_ID to EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE,
-                EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills,
-                EXPRESS_PARAM_CHECK_OTP to checkOtp
+            PARAM_FIELDS to fields,
+            EXPRESS_PARAM_INSTANT_CHECKOUT to isInstantCheckout,
+            EXPRESS_PARAM_VOUCHER_CODE to voucherCode,
+            EXPRESS_PARAM_PRODUCT_ID to productId,
+            EXPRESS_PARAM_DEVICE_ID to EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE,
+            EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills,
+            EXPRESS_PARAM_CHECK_OTP to checkOtp
         )
         if (transactionAmount > 0) params[EXPRESS_PARAM_TRANSACTION_AMOUNT] = transactionAmount
         return mapOf(PARAM_CART to params)
@@ -411,7 +453,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
         const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
         const val FAVORITE_NUMBER_PARAM_UPDATE_REQUEST = "updateRequest"
-        const val FAVORITE_NUMBER_PARAM_CATEGORY_ID ="categoryID"
+        const val FAVORITE_NUMBER_PARAM_CATEGORY_ID = "categoryID"
         const val FAVORITE_NUMBER_PARAM_CLIENT_NUMBER = "clientNumber"
         const val FAVORITE_NUMBER_PARAM_LAST_PRODUCT = "lastProduct"
         const val FAVORITE_NUMBER_PARAM_LABEL = "label"
@@ -430,6 +472,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val NULL_RESPONSE = "null response"
 
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
+        const val FAVORITE_NUMBER_LIMIT = 10
+        const val RETRY_DURATION = 0
     }
 
 }
