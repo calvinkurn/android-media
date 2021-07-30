@@ -25,6 +25,8 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.ReviewInboxConstants
+import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
@@ -42,11 +44,10 @@ import com.tokopedia.review.feature.createreputation.presentation.listener.TextA
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.*
-import com.tokopedia.review.common.ReviewInboxConstants
-import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -854,7 +855,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData(), thankYouBottomSheetText) }
+            thankYouBottomSheet = context?.let { IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData(), thankYouBottomSheetText) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }

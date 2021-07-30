@@ -1,29 +1,23 @@
-package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
+package com.tokopedia.review.feature.ovoincentive.presentation
 
 import android.content.Context
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.common.analytics.ReviewTracking
-import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
+import com.tokopedia.review.feature.ovoincentive.analytics.IncentiveOvoTracking
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
-import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
-import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.incentive_ovo_tnc_bottom_sheet.view.*
 
 object IncentiveOvoBottomSheetBuilder {
 
-    private const val THANK_YOU_BOTTOMSHEET_IMAGE_URL = "https://images.tokopedia.net/img/android/review/review_incentive_submitted_resize.png"
     private const val ADD_RATING_URL = "https://ecs7.tokopedia.net/android/others/ic_add_rating_incentive_tnc.png"
     private const val ADD_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/ic_add_photo_incentive_tnc.png"
     private const val ADD_REVIEW_URL = "https://ecs7.tokopedia.net/android/others/ic_add_review_incentive_tnc.png"
@@ -36,7 +30,7 @@ object IncentiveOvoBottomSheetBuilder {
             setupTermsAndConditionView(view, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, category, trackerData)
             setOnDismissListener {
                 trackerData?.let {
-                    CreateReviewTracking.eventDismissTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.description ?: ".", it.reputationId, it.orderId, it.productId, it.userId)
+                    IncentiveOvoTracking.eventDismissTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.description ?: ".", it.reputationId, it.orderId, it.productId, it.userId)
                     return@setOnDismissListener
                 }
                 ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(category)
@@ -59,64 +53,6 @@ object IncentiveOvoBottomSheetBuilder {
         return bottomSheetUnify
     }
 
-    fun getThankYouBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, incentiveOvoListener: IncentiveOvoListener, trackerData: ThankYouBottomSheetTrackerData, thankYouText: String): BottomSheetUnify {
-        val bottomSheetUnify = BottomSheetUnify()
-        val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
-        bottomSheetUnify.setChild(child)
-        setupThankYouView(child, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, trackerData, thankYouText)
-        return bottomSheetUnify
-    }
-
-    private fun setupThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, trackerData: ThankYouBottomSheetTrackerData, thankYouText: String) {
-        bottomSheet.run {
-            view.apply {
-                overlayClickDismiss = false
-                showCloseIcon = false
-                bottomSheet.setShowListener {
-                    val incentiveOvoSubmittedImage = view.findViewById<AppCompatImageView>(R.id.incentiveOvoSubmittedImage)
-                    val incentiveOvoSubmittedTitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedTitle)
-                    val incentiveOvoSubmittedSubtitle: com.tokopedia.unifyprinciples.Typography? = view.findViewById(R.id.incentiveOvoSubmittedSubtitle)
-                    val incentiveOvoSendAnother: UnifyButton? = view.findViewById(R.id.incentiveOvoSendAnother)
-                    val incentiveOvoLater: UnifyButton? = view.findViewById(R.id.incentiveOvoLater)
-                    val defaultTitle = context?.getString(R.string.review_create_thank_you_title) ?: ""
-                    CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, trackerData.reputationId, trackerData.orderId, trackerData.feedbackId, trackerData.productId, trackerData.userId)
-                    incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
-                    incentiveOvoSubmittedTitle?.text = defaultTitle
-                    incentiveOvoSubmittedSubtitle?.text = thankYouText
-                    productRevIncentiveOvoDomain?.productrevIncentiveOvo?.let {
-                        incentiveOvoSendAnother?.apply {
-                            setOnClickListener {
-                                dismiss()
-                                incentiveOvoListener.onClickReviewAnother()
-                                CreateReviewTracking.eventClickSendAnother(defaultTitle, true)
-                            }
-                        }
-                        incentiveOvoLater?.apply {
-                            setOnClickListener {
-                                dismiss()
-                                incentiveOvoListener.onClickCloseThankYouBottomSheet()
-                                CreateReviewTracking.eventClickLater(defaultTitle, true)
-                            }
-                            show()
-                        }
-                        return@setShowListener
-                    }
-                    incentiveOvoSendAnother?.apply {
-                        text = context.getString(R.string.review_create_thank_you_default_button)
-                        setOnClickListener {
-                            dismiss()
-                            incentiveOvoListener.onClickCloseThankYouBottomSheet()
-                            CreateReviewTracking.eventClickOk(defaultTitle, productRevIncentiveOvoDomain?.productrevIncentiveOvo != null)
-                        }
-                    }
-                }
-                bottomSheet.setOnDismissListener {
-                    incentiveOvoListener.onClickCloseThankYouBottomSheet()
-                }
-            }
-        }
-    }
-
     private fun setupTermsAndConditionView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, category: String, trackerData: TncBottomSheetTrackerData?) {
         bottomSheet.apply {
             view.apply {
@@ -127,7 +63,7 @@ object IncentiveOvoBottomSheetBuilder {
                     setOnClickListener {
                         dismiss()
                         trackerData?.let {
-                            CreateReviewTracking.eventClickContinueTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.title ?: "", it.reputationId, it.orderId, it.productId, it.userId)
+                            IncentiveOvoTracking.eventClickContinueTncBottomSheet(productRevIncentiveOvoDomain.productrevIncentiveOvo?.title ?: "", it.reputationId, it.orderId, it.productId, it.userId)
                             return@setOnClickListener
                         }
                         ReviewTracking.onClickContinueIncentiveOvoBottomSheetTracker(category)
