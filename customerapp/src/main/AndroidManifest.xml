@@ -50,7 +50,6 @@
         android:theme="@style/Theme.Tokopedia3"
         android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup">
-        <profileable android:shell="true"/>
         <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
            android:value="false"/>
         <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
