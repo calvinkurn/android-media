@@ -468,11 +468,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     private fun setAnimationAppBarLayout() {
         val fadeIn = AlphaAnimation(0f, 1.0f)
-        fadeIn.duration = 300
+        fadeIn.duration = FADE_IN_DURATION
         fadeIn.fillAfter = true
 
         val fadeOut = AlphaAnimation(1.0f, 0f)
-        fadeOut.duration = 300
+        fadeOut.duration = FADE_OUT_DURATION
         fadeOut.fillAfter = true
 
         //initial appBar state is expanded
@@ -560,5 +560,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
+
+        const val FADE_IN_DURATION: Long = 300
+        const val FADE_OUT_DURATION: Long = 300
     }
 }
