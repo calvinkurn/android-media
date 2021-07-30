@@ -45,10 +45,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.stickylogin.common.StickyLoginConstant
-import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
@@ -62,6 +59,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -79,15 +77,14 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardVi
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
-
 import java.util.*
 import javax.inject.Inject
 
@@ -105,7 +102,6 @@ class TokoNowHomeFragment: Fragment(),
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
-        private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
@@ -189,7 +185,6 @@ class TokoNowHomeFragment: Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupNavToolbar()
-        stickyLoginSetup()
         setupStatusBar()
         setupRecyclerView()
         setupSwipeRefreshLayout()
@@ -373,11 +368,6 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
-                stickyLoginLoadContent()
-            }
-        }
     }
 
     private fun initInjector() {
@@ -459,7 +449,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun onRefreshLayout() {
         resetMovingPosition()
         removeAllScrollListener()
-        hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollPosition.clear()
         loadLayout()
@@ -594,7 +583,6 @@ class TokoNowHomeFragment: Fragment(),
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
-                stickyLoginLoadContent()
             }
         }
 
@@ -731,36 +719,6 @@ class TokoNowHomeFragment: Fragment(),
         swipeLayout?.isRefreshing = false
     }
 
-    private fun stickyLoginSetup(){
-        sticky_login_tokonow?.let {
-            it.page = StickyLoginConstant.Page.HOME
-            it.lifecycleOwner = viewLifecycleOwner
-            it.setStickyAction(object : StickyLoginAction {
-                override fun onClick() {
-                    context?.let {
-                        val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                        startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
-                    }
-                }
-
-                override fun onDismiss() {
-                }
-
-                override fun onViewChange(isShowing: Boolean) {
-                }
-            })
-        }
-        hideStickyLogin()
-    }
-
-    private fun stickyLoginLoadContent(){
-        sticky_login_tokonow.loadContent()
-    }
-
-    private fun hideStickyLogin(){
-        sticky_login_tokonow.hide()
-    }
-
     private fun resetMovingPosition() {
         movingPosition = 0
     }
@@ -770,7 +728,6 @@ class TokoNowHomeFragment: Fragment(),
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
             miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget?.show()
-            hideStickyLogin()
         } else {
             miniCartWidget?.hide()
         }
