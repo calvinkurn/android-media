@@ -1,8 +1,12 @@
 package com.tokopedia.vouchergame.detail.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
+import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
+import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -10,6 +14,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel.Companion.VOUCHER_NOT_FOUND_ERROR
@@ -19,6 +24,7 @@ import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -40,6 +46,9 @@ class VoucherGameDetailViewModelTest {
     @MockK
     lateinit var voucherGameListUseCase: VoucherGameListUseCase
 
+    @RelaxedMockK
+    lateinit var catalogProductInputUseCase: RechargeCatalogProductInputUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -54,30 +63,27 @@ class VoucherGameDetailViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         voucherGameDetailViewModel =
-                VoucherGameDetailViewModel(voucherGameListUseCase, graphqlRepository, CoroutineTestDispatchersProvider)
+                VoucherGameDetailViewModel(voucherGameListUseCase, catalogProductInputUseCase, graphqlRepository, CoroutineTestDispatchersProvider)
     }
 
     @Test
     fun getVoucherGameProducts_Success() {
         val dataCollection = listOf(
-                VoucherGameProductData.DataCollection("collection_1", listOf(VoucherGameProduct(id = "1"), VoucherGameProduct(id = "2"))),
-                VoucherGameProductData.DataCollection("collection_2", listOf(VoucherGameProduct(id = "3")))
+                CatalogProductData.DataCollection("collection_1", "", listOf(CatalogProduct(id = "1"), CatalogProduct(id = "2"))),
+                CatalogProductData.DataCollection("collection_2", "", listOf(CatalogProduct(id = "3")))
         )
-        val voucherGameDetailData = VoucherGameDetailData.Response(VoucherGameDetailData(
+        val catalogData = CatalogData.Response(CatalogData(
                 enquiryFields = listOf(CatalogProductInput("1",
                         dataCollections = listOf(CatalogProductInput.DataCollection(name = "name")),
                         validations = listOf(CatalogProductInput.Validation(1)))),
-                product = VoucherGameProductData("data", dataCollections = dataCollection)
+                product = CatalogProductData("data", dataCollections = dataCollection)
         ))
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = VoucherGameDetailData.Response::class.java
-        result[objectType] = voucherGameDetailData
-        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { catalogProductInputUseCase.execute(any(), any(), any())} answers {
+            secondArg<(CatalogData.Response) -> Unit>().invoke(catalogData)
+        }
 
-        voucherGameDetailViewModel.getVoucherGameProducts("", mapParams)
+        voucherGameDetailViewModel.getVoucherGameProducts(mapParams)
         val actualData = voucherGameDetailViewModel.voucherGameProducts.value
         assert(actualData is Success)
         val response = (actualData as Success).data
@@ -110,11 +116,14 @@ class VoucherGameDetailViewModelTest {
 
     @Test
     fun getVoucherGameProducts_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
-
-        voucherGameDetailViewModel.getVoucherGameProducts("", mapParams)
+        val throwable = Throwable("Error")
+        coEvery { catalogProductInputUseCase.execute(any(), any(), any())} answers {
+            thirdArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+        voucherGameDetailViewModel.getVoucherGameProducts(mapParams)
         val actualData = voucherGameDetailViewModel.voucherGameProducts.value
         assert(actualData is Fail)
+        assert((actualData as Fail).throwable.message == throwable.message)
     }
 
     @Test
