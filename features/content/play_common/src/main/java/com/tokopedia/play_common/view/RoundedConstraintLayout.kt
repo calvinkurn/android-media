@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.os.Build
@@ -34,10 +35,12 @@ open class RoundedConstraintLayout : ConstraintLayout {
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) roundedHelper.setupCorner(w.toFloat(), h.toFloat())
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun dispatchDraw(canvas: Canvas) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val save = canvas.save()

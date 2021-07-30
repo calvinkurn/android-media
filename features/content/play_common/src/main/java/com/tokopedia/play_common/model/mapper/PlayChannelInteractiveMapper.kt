@@ -1,9 +1,9 @@
 package com.tokopedia.play_common.model.mapper
 
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.play_common.model.dto.InteractiveType
-import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.interactive.InteractiveType
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import javax.inject.Inject
 
 /**

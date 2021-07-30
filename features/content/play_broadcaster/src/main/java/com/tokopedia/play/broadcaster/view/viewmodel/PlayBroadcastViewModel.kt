@@ -35,7 +35,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
-import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -408,7 +408,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun startTimer() {
         viewModelScope.launch {
-            delay(1000)
+            delay(START_COUNTDOWN_DELAY)
             countDownTimer.start()
         }
         // TODO("find the best way to trigger engagement tools")
@@ -479,7 +479,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun isCreateSessionAllowed(durationInMs: Long): Boolean {
         val remainingLiveDuration = countDownTimer.remainingDurationInMs
-        val delayGqlDuration = TimeUnit.SECONDS.toMillis(3)
+        val delayGqlDuration = INTERACTIVE_GQL_CREATE_DELAY
         return remainingLiveDuration > durationInMs + delayGqlDuration
     }
 
@@ -542,7 +542,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun onInteractiveFinished() {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
-        delay(3000)
+        delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
         val err = getLeaderboardInfo()
         if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
             val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
@@ -742,5 +742,13 @@ class PlayBroadcastViewModel @Inject constructor(
                 _observableShareInfo.value = it
             }
         }
+    }
+
+    companion object {
+
+        private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
+        private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
+
+        private const val START_COUNTDOWN_DELAY = 1000L
     }
 }

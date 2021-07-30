@@ -1,5 +1,6 @@
-package com.tokopedia.play_common.model.dto
+package com.tokopedia.play_common.model.dto.interactive
 
+import java.util.concurrent.TimeUnit
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -56,11 +57,11 @@ sealed class PlayInteractiveTimeStatus {
                     requireNotNull(countdownStartInSec)
                     requireNotNull(countdownEndInSec)
                     require(countdownEndInSec > countdownStartInSec)
-                    Scheduled(countdownStartInSec * 1000L, (countdownEndInSec - countdownStartInSec) * 1000L)
+                    Scheduled(TimeUnit.SECONDS.toMillis(countdownStartInSec.toLong()), TimeUnit.SECONDS.toMillis(countdownEndInSec.toLong() - countdownStartInSec.toLong()))
                 }
                 1 -> {
                     requireNotNull(countdownEndInSec)
-                    Live(countdownEndInSec * 1000L)
+                    Live(TimeUnit.SECONDS.toMillis(countdownEndInSec.toLong()))
                 }
                 2 -> Finished
                 else -> Unknown
