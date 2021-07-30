@@ -174,6 +174,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
         cart_details {
           products {
+            errors
             cart_id
             product_id
             parent_id
