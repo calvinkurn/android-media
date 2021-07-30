@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
@@ -32,6 +34,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -67,6 +70,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         private const val MAX_CLOSE_HOUR = 23
         private const val MAX_CLOSE_MINUTE = 59
         private const val MAX_CLOSE_MINUTE_BY_TIME_PICKER = 55
+        private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
 
         @JvmStatic
         fun createInstance(): ShopSettingsSetOperationalHoursFragment = ShopSettingsSetOperationalHoursFragment()
@@ -137,6 +141,18 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 activity?.onBackPressed()
             }
         }
+
+        holidayTicker?.setHtmlDescription(getString(
+                R.string.shop_operational_hour_desc_ticker_holiday,
+                getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
+        ))
+        holidayTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(context, String.format(WEBVIEW_APPLINK_FORMAT, ApplinkConst.WEBVIEW, linkUrl))
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     private fun setBackgroundColor() = activity?.run {

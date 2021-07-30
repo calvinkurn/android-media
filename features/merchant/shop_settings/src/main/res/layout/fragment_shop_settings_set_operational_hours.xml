@@ -29,13 +29,14 @@
         android:id="@+id/ops_hour_holiday_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tickerType="warning"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_shop_set_operational_hours"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:closeButtonVisibility="visible"
         app:descriptionText="@string/shop_operational_hour_desc_ticker_holiday"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 
     <ScrollView
