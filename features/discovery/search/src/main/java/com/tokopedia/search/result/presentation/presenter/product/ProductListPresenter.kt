@@ -1162,7 +1162,7 @@ class ProductListPresenter @Inject constructor(
                 && cpm.promotedText.isNotEmpty()
     }
 
-    private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == 4
+    private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == SearchConstant.CPM_TEMPLATE_ID
 
     private fun createCpmDataView(cpmData: CpmData): CpmDataView? {
         if (cpmModel == null) return null
@@ -1283,7 +1283,7 @@ class ProductListPresenter @Inject constructor(
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
         broadMatchVisitableList.add(SeparatorDataView())
-        broadMatchVisitableList.add(SuggestionDataView(data.title))
+        if (data.title.isNotEmpty()) broadMatchVisitableList.add(SuggestionDataView(data.title))
         broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type))
         broadMatchVisitableList.add(SeparatorDataView())
 
@@ -1310,9 +1310,15 @@ class ProductListPresenter @Inject constructor(
                                 labelGroupDataList = product.labelGroupDataList,
                                 badgeItemDataViewList = product.badgeItemDataViewList,
                                 shopLocation = product.shopLocation,
+                                shopName = product.shopName,
                                 position = index + 1,
                                 alternativeKeyword = option.title,
-                                carouselProductType = determineInspirationCarouselProductType(type, option),
+                                carouselProductType = determineInspirationCarouselProductType(type, option, product),
+                                freeOngkirDataView = product.freeOngkirDataView,
+                                isOrganicAds = product.isOrganicAds,
+                                topAdsViewUrl = product.topAdsViewUrl,
+                                topAdsClickUrl = product.topAdsClickUrl,
+                                topAdsWishlistUrl = product.topAdsWishlistUrl,
                         )
                     }
             )
@@ -1321,10 +1327,11 @@ class ProductListPresenter @Inject constructor(
 
     private fun determineInspirationCarouselProductType(
             type: String,
-            option: InspirationCarouselDataView.Option
+            option: InspirationCarouselDataView.Option,
+            product: InspirationCarouselDataView.Option.Product,
     ): CarouselProductType {
         return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
-            BroadMatchProduct(isOrganicAds = false, hasThreeDots = false)
+            BroadMatchProduct(false)
         else
             DynamicCarouselProduct(option.inspirationCarouselType)
     }
@@ -1574,7 +1581,7 @@ class ProductListPresenter @Inject constructor(
             val categoryIdString = productItemDataView.categoryID.toString()
             val categoryName = productItemDataView.categoryName
 
-            if (i < 3) {
+            if (i < SearchConstant.GENERAL_SEARCH_TRACKING_PRODUCT_COUNT) {
                 prodIdArray.add(productId)
                 afProdIds.put(productId)
                 moengageTrackingCategory[categoryIdString] = categoryName
