@@ -11,8 +11,8 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.mockk

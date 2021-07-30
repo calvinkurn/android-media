@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.storage.interactive
 
-import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import javax.inject.Inject
 
 /**

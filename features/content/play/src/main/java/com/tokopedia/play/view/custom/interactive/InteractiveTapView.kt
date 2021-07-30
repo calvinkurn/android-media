@@ -65,11 +65,11 @@ class InteractiveTapView : ConstraintLayout {
             override fun onAnimationStart(animation: Animator) {}
 
             override fun onAnimationEnd(animation: Animator) {
-                lottieConfettiTap.progress = 0f
+                lottieConfettiTap.progress = LOTTIE_START_PROGRESS
             }
 
             override fun onAnimationCancel(animation: Animator) {
-                lottieConfettiTap.progress = 0f
+                lottieConfettiTap.progress = LOTTIE_START_PROGRESS
             }
 
             override fun onAnimationRepeat(animation: Animator) {}
@@ -101,7 +101,7 @@ class InteractiveTapView : ConstraintLayout {
                 invalidateLottieState()
             }
             lottieConfettiTap.addAnimatorListener(lottieConfettiListener)
-            lottieConfettiTap.setMinProgress(0.2f)
+            lottieConfettiTap.setMinProgress(LOTTIE_CONFETTI_MIN_PROGRESS)
             loadConfettiTapLottie()
         }
 
@@ -191,6 +191,9 @@ class InteractiveTapView : ConstraintLayout {
         private const val LOTTIE_BUTTON_CACHE_KEY = "BUTTON_INTERACTIVE_TAP"
 
         private const val MAX_RETRY_COUNT = 3
+
+        private const val LOTTIE_CONFETTI_MIN_PROGRESS = 0.2f
+        private const val LOTTIE_START_PROGRESS = 0f
     }
 
     private enum class Mode {
