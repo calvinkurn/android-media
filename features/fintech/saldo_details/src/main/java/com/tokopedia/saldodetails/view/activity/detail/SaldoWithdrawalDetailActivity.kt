@@ -17,6 +17,7 @@ class SaldoWithdrawalDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDe
 
     @Inject
     lateinit var userSession: UserSession
+
     private val saldoComponent by lazy(LazyThreadSafetyMode.NONE) {
         SaldoDetailsComponentInstance.getComponent(
             this
@@ -38,13 +39,20 @@ class SaldoWithdrawalDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDe
     }
 
     override fun getComponent() = saldoComponent
-    override fun getNewFragment() = SaldoWithdrawalDetailFragment.newInstance()
+    override fun getNewFragment() = SaldoWithdrawalDetailFragment.newInstance(
+        intent.getLongExtra(WITHDRAWAL_ID, 0)
+    )
+
     override fun getTagFragment() = TAG
 
     companion object {
-        fun newInstance(context: Context): Intent {
-            return Intent(context, SaldoWithdrawalDetailActivity::class.java)
+        const val WITHDRAWAL_ID = "withdrawalId"
+        fun newInstance(context: Context, withdrawalId: Long): Intent {
+            val intent = Intent(context, SaldoWithdrawalDetailActivity::class.java)
+            intent.putExtra(WITHDRAWAL_ID, withdrawalId)
+            return intent
         }
+
         private val TAG = "DETAIL_FRAGMENT"
 
     }

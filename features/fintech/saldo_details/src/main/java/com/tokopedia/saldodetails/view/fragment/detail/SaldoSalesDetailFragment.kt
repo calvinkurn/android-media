@@ -23,7 +23,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     private val viewModel: DepositHistoryInvoiceDetailViewModel? by lazy(LazyThreadSafetyMode.NONE) {
-        parentFragment?.let {
+        activity?.let {
             val viewModelProvider = ViewModelProvider(it, viewModelFactory.get())
             viewModelProvider.get(DepositHistoryInvoiceDetailViewModel::class.java)
         } ?: run {

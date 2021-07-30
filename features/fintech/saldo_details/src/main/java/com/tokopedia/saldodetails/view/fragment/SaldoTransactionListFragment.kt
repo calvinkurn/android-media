@@ -121,8 +121,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
 
     private fun openDetailPage(visitable: Visitable<*>){
         if(visitable is DepositHistoryList){
-            //todo Abhijeet
-            startActivity(SaldoWithdrawalDetailActivity.newInstance(requireContext()))
+            context?.let {startActivity(SaldoWithdrawalDetailActivity.newInstance(it, visitable.withdrawalId))}
         }
     }
 

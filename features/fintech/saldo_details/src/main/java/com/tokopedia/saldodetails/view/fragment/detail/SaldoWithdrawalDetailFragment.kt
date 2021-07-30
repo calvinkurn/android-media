@@ -25,12 +25,16 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     private val viewModel: WithdrawalDetailViewModel? by lazy(LazyThreadSafetyMode.NONE) {
-        parentFragment?.let {
+        activity?.let {
             val viewModelProvider = ViewModelProvider(it, viewModelFactory.get())
             viewModelProvider.get(WithdrawalDetailViewModel::class.java)
         } ?: run {
             null
         }
+    }
+
+    private val withdrawalId: Long by lazy {
+        arguments?.getLong(WITHDRAWAL_ID) ?: run { 0 }
     }
 
     override fun getScreenName(): String? = null
@@ -49,7 +53,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        viewModel?.getWithdrawalInfo("")
+        viewModel?.getWithdrawalInfo(withdrawalId.toString())
         initAdapter()
     }
 
@@ -89,6 +93,13 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance() = SaldoWithdrawalDetailFragment()
+        const val WITHDRAWAL_ID = "withdrawalId"
+
+        fun newInstance(withdrawalId: Long): SaldoWithdrawalDetailFragment {
+            val fragment = SaldoWithdrawalDetailFragment()
+            val bundle = Bundle().apply { putLong(WITHDRAWAL_ID, withdrawalId) }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

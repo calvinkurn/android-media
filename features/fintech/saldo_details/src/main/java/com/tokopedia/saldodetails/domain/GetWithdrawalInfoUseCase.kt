@@ -64,32 +64,32 @@ class GetWithdrawalInfoUseCase
     companion object {
         private val WITHDRAWAL_ID = "withdrawalID"
 
-        const val GQL_WITHDRAWAL_DETAIL = """
-            query {
-            RichieGetWithdrawalInfo(${'$'}withdrawalID: String!) {
-               data {
-                 is_success
-                 withdrawal_info {
-                   withdrawal_id
-                   status
-                   status_string
-                   status_color
-                   amount
-                   fee
-                   transferred_amount
-                   create_time
-                   bank_name
-                   acc_no
-                   acc_name
-                   history {
-                     status
-                     title
-                     description
-                     create_time
-                   }
-                 }
-               }
-            message_error
+        const val GQL_WITHDRAWAL_DETAIL =
+            """query RichieGetWithdrawalInfo(${'$'}withdrawalID: String) {
+            RichieGetWithdrawalInfo(withdrawalID: ${'$'}withdrawalID) {
+                data {
+                    is_success
+                    withdrawal_info {
+                        withdrawal_id
+                        status
+                        status_string
+                        status_color
+                        amount
+                        fee
+                        transferred_amount
+                        create_time
+                        bank_name
+                        acc_no
+                        acc_name
+                        history {
+                          status
+                          title
+                          description
+                          create_time
+                        }
+                    }
+                }
+                message_error
             }
         }"""
     }

@@ -51,8 +51,8 @@ class GetDepositHistoryInfoUseCase
         private const val SUMMARY_ID = "summaryID"
 
         const val GQL_DEPOSIT_HISTORY = """
-            query {
-                MidasDepositHistoryInvoiceDetail(${'$'}summaryID: String!) {
+            query MidasDepositHistoryInvoiceDetail(${'$'}summaryID: String!) {
+                 MidasDepositHistoryInvoiceDetail(summaryID: (${'$'}summaryID) {
                     is_success
                     deposit_history {
                         total_amount
@@ -66,7 +66,8 @@ class GetDepositHistoryInfoUseCase
                         }
                     }
                 }
-            }"""
+       
+        }"""
     }
 
 }

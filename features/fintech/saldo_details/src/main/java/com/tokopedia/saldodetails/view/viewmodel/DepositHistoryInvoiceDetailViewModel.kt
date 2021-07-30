@@ -43,4 +43,9 @@ class DepositHistoryInvoiceDetailViewModel @Inject constructor(
         } ?: kotlin.run { "" }
     }
 
+    override fun onCleared() {
+        getDepositHistoryInfoUseCase.cancelJobs()
+        super.onCleared()
+    }
+
 }
