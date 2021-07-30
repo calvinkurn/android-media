@@ -33,6 +33,9 @@ import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFac
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListViewModel
