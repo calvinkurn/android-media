@@ -241,7 +241,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
 
         if (mIsRestoredfromBackStack) {
             isLoadingInitialData = true
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+            promoCheckoutListViewModel.getPromoList(serviceId, categoryId, pageNo)
             promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
         }
         super.onResume()
@@ -250,7 +250,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
     override fun loadData(page: Int) {
         if (isCouponActive) {
             pageNo = page
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+            promoCheckoutListViewModel.getPromoList(serviceId, categoryId, pageNo)
         }
         promoCheckoutListMarketplacePresenter.getListLastSeen(serviceId, resources)
         promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)

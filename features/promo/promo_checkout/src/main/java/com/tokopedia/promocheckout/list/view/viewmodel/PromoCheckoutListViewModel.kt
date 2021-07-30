@@ -36,7 +36,7 @@ class PromoCheckoutListViewModel @Inject constructor(private val dispatcher: Cor
     val showLoading = MutableLiveData<Boolean>()
 
     fun getPromoList(serviceId: String, categoryId: Int, page: Int){
-        showLoading.value = true
+        showLoading.postValue(true)
         launchCatchError(block = {
            val data =  withContext(dispatcher.io){
                val variables = HashMap<String, Any>()
@@ -44,15 +44,10 @@ class PromoCheckoutListViewModel @Inject constructor(private val dispatcher: Cor
                val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutList(), DataPromoCheckoutList::class.java, variables, false)
                graphqlRepository.getReseponse(listOf(graphqlRequest))
            }.getSuccessData<DataPromoCheckoutList>()
-            if(data.tokopointsCouponList?.tokopointsCouponData?.isNotEmpty() == true){
-                showLoading.postValue( false)
-                _dataPromoCheckoutList.postValue(Success(data))
-            }else{
-                showLoading.postValue( true)
-                _dataPromoCheckoutList.postValue(Fail(Throwable()))
-            }
+            showLoading.postValue( false)
+            _dataPromoCheckoutList.postValue(Success(data))
         }){
-            showLoading.postValue( true)
+            showLoading.postValue( false)
             _dataPromoCheckoutList.postValue(Fail(it))
         }
     }

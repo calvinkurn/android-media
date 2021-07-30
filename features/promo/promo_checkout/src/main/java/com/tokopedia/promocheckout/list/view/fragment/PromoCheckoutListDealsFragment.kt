@@ -121,9 +121,9 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun loadData(page: Int) {
         if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryID, page, resources)
+            promoCheckoutListViewModel.getPromoList(serviceId, categoryId, page)
         }
-        promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(resources)
+        promoCheckoutListViewModel.getPromoLastSeen(listOf(categoryId))
     }
 
     companion object {

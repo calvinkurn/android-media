@@ -48,7 +48,7 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
 
     override fun loadData(page: Int) {
         if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+            promoCheckoutListViewModel.getPromoList(serviceId, categoryId, page)
         }
     }
 

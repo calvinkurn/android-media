@@ -33,10 +33,7 @@ import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFac
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -108,7 +105,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
                         it.data.tokopointsCouponList?.tokopointsPaging?.isHasNext ?: false)
                 }
                 is Fail ->{
-
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -119,19 +116,19 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
                     renderListLastSeen(it.data, false)
                 }
                 is Fail ->{
-
+                    showGetListLastSeenError(it.throwable)
                 }
             }
         })
     }
 
-    fun showProgressLoading() {
+    open fun showProgressLoading() {
         activity?.let {
             if (!it.isFinishing) progressDialog.show()
         }
     }
 
-    fun hideProgressLoading() {
+    open fun hideProgressLoading() {
         activity?.let {
             if (!it.isFinishing) progressDialog.hide()
         }
