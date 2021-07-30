@@ -35,6 +35,9 @@ class PushController(val context: Context) : CoroutineScope {
     private val isOfflinePushEnabled
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
 
+    private val isAutoRedirect
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(AUTO_REDIRECTION_REMOTE_CONFIG_KEY, false)
+
     fun handleNotificationBundle(bundle: Bundle) {
         try {
             val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
@@ -194,7 +197,9 @@ class PushController(val context: Context) : CoroutineScope {
     private fun checkOtpPushNotif(applink: String?): Boolean {
         val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         return if (Build.VERSION.SDK_INT < ANDROID_12_SDK_VERSION &&
-                !keyguardManager.isKeyguardLocked) {
+                !keyguardManager.isKeyguardLocked &&
+            isAutoRedirect
+        ) {
             applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
         } else {
             false
@@ -210,5 +215,6 @@ class PushController(val context: Context) : CoroutineScope {
 
     companion object {
         const val ANDROID_12_SDK_VERSION = 31
+        const val AUTO_REDIRECTION_REMOTE_CONFIG_KEY = "android_user_otp_push_notif_auto_redirection"
     }
 }
