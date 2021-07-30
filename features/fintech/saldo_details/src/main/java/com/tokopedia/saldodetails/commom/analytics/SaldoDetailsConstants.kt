@@ -46,4 +46,11 @@ object SaldoDetailsConstants {
             val SALDO_PAGE = "saldo page"
         }
     }
+
+    interface DetailScreenParams {
+        companion object {
+            val WITHDRAWAL_ID = "withdrawalID"
+            val SUMMARY_ID = "summaryID"
+        }
+    }
 }

@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.saldo_withdrawal_status_item_view.view.*
 
 class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-    fun bindData(model: WithdrawalInfoHistory, position: Int) {
-        setSeparator(position)
+    fun bindData(model: WithdrawalInfoHistory, isFirstItem: Boolean, showDescendingLine: Boolean) {
+        setSeparator(isFirstItem, showDescendingLine)
         setDetails(model)
     }
 
@@ -27,8 +27,8 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
         }
     }
 
-    private fun setSeparator(position: Int) {
-        if (position == 0) {
+    private fun setSeparator(isFirstItem: Boolean, showDescendingLine: Boolean) {
+        if (isFirstItem) {
             view.ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_circle_light_green))
             view.statusDivider.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         }
@@ -37,9 +37,8 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
             view.statusDivider.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         }
 
-        val showDivider = position != 4
-        if (showDivider) view.statusDivider.visible()
-        view.statusDivider.gone()
+        if (showDescendingLine) view.statusDivider.visible()
+        else view.statusDivider.gone()
 
     }
 
@@ -48,5 +47,6 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
 
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = SaldoWithdrawalStatusDetailViewHolder(
             inflater.inflate(LAYOUT_ID, parent, false)
-        )    }
+        )
+    }
 }

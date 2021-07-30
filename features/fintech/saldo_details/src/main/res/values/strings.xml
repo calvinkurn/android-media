@@ -106,4 +106,5 @@
     <string name="saldo_withdrawal_fee">Biaya Penarikan</string>
     <string name="saldo_transferred_amount">Jumlah yang Ditransfer</string>
     <string name="saldo_withdrawal_info_details">Rincian penarikan</string>
+    <string name="saldo_withdrawal_balance_status">Status penarikan saldo</string>
 </resources>

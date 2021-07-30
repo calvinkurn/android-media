@@ -16,7 +16,7 @@ class SaldoWithdrawalStatusAdapter(var historyList: ArrayList<WithdrawalInfoHist
     }
 
     override fun onBindViewHolder(holder: SaldoWithdrawalStatusDetailViewHolder, position: Int) {
-        holder.bindData(historyList[position], position)
+        holder.bindData(historyList[position], position == 0, position != historyList.size-1)
     }
 
     override fun getItemCount() = historyList.size

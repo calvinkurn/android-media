@@ -7,6 +7,7 @@ import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.detail.SaldoWithdrawalDetailFragment
@@ -46,7 +47,6 @@ class SaldoWithdrawalDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDe
     override fun getTagFragment() = TAG
 
     companion object {
-        const val WITHDRAWAL_ID = "withdrawalId"
         fun newInstance(context: Context, withdrawalId: Long): Intent {
             val intent = Intent(context, SaldoWithdrawalDetailActivity::class.java)
             intent.putExtra(WITHDRAWAL_ID, withdrawalId)

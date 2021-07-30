@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.DepositHistoryData
 import com.tokopedia.saldodetails.view.viewmodel.DepositHistoryInvoiceDetailViewModel
@@ -31,6 +33,10 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private val summaryId: Long by lazy {
+        arguments?.getLong(SUMMARY_ID) ?: run { 0 }
+    }
+
     override fun getScreenName(): String? = null
     override fun initInjector() = getComponent(SaldoDetailsComponent::class.java).inject(this)
 
@@ -47,9 +53,8 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        viewModel?.getInvoiceDetail("")
+        viewModel?.getInvoiceDetail(summaryId.toString())
         btnViewOrderDetails.setOnClickListener {
-            // open order page
             openOrderDetailPage()
         }
     }
@@ -62,7 +67,6 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
             }
         })
     }
-
 
     private fun onSuccessSalesDetailLoaded(data: DepositHistoryData) {
         tvWithdrawalAmount.text =
@@ -83,6 +87,11 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun getInstance() = SaldoSalesDetailFragment()
+        fun newInstance(summaryId: Long) : SaldoSalesDetailFragment {
+            val fragment = SaldoSalesDetailFragment()
+            val bundle = Bundle().apply { putLong(SUMMARY_ID, summaryId) }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

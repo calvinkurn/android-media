@@ -56,8 +56,6 @@ data class FeeDetailData(
 )
 
 data class WithdrawalInfoHistory(
-    @SerializedName("status")
-    val historyStatus: Int,
     @SerializedName("title")
     val historyTitle: String,
     @SerializedName("description")

@@ -7,6 +7,7 @@ import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.detail.SaldoSalesDetailFragment
@@ -38,12 +39,16 @@ class SaldoSalesDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDetails
     }
 
     override fun getComponent() = saldoComponent
-    override fun getNewFragment() = SaldoSalesDetailFragment.getInstance()
+    override fun getNewFragment() = SaldoSalesDetailFragment.newInstance(
+        intent.getLongExtra(SUMMARY_ID, 0)
+    )
     override fun getTagFragment() = TAG
 
     companion object {
-        fun newInstance(context: Context): Intent {
-            return Intent(context, SaldoSalesDetailActivity::class.java)
+        fun newInstance(context: Context, summaryId: Long): Intent {
+            val intent =  Intent(context, SaldoSalesDetailActivity::class.java)
+            intent.putExtra(SUMMARY_ID, summaryId)
+            return intent
         }
         private val TAG = "DETAIL_FRAGMENT"
 

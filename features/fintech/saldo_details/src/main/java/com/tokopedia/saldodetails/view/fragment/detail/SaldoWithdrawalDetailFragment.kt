@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoWithdrawalStatusAdapter
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoData
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
@@ -88,12 +89,13 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
         )
         withdrawalStatusLabel.setLabel(data.labelStatus)
         llWithdrawalDetail.setData(data.feeDetailData)
-        (rvWithdrawalStatus.adapter as SaldoWithdrawalStatusAdapter).historyList =
-            data.withdrawalInfoHistory
+        (rvWithdrawalStatus.adapter as SaldoWithdrawalStatusAdapter).apply {
+            historyList = data.withdrawalInfoHistory
+            notifyDataSetChanged()
+        }
     }
 
     companion object {
-        const val WITHDRAWAL_ID = "withdrawalId"
 
         fun newInstance(withdrawalId: Long): SaldoWithdrawalDetailFragment {
             val fragment = SaldoWithdrawalDetailFragment()

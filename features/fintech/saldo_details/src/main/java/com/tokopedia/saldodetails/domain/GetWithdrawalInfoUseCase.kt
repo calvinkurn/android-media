@@ -5,8 +5,9 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsScope
-import com.tokopedia.saldodetails.domain.GetWithdrawalInfoUseCase.Companion.GQL_WITHDRAWAL_DETAIL
+import com.tokopedia.saldodetails.domain.query.GQL_WITHDRAWAL_DETAIL
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.FeeDetailData
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.ResponseGetWithdrawalInfo
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoData
@@ -17,8 +18,7 @@ class GetWithdrawalInfoUseCase
 @Inject constructor(
     @SaldoDetailsScope val context: Context,
     graphqlRepository: GraphqlRepository
-) :
-    GraphqlUseCase<ResponseGetWithdrawalInfo>(graphqlRepository) {
+) : GraphqlUseCase<ResponseGetWithdrawalInfo>(graphqlRepository) {
 
     fun getWithdrawalInfo(
         withdrawalId: String,
@@ -55,43 +55,8 @@ class GetWithdrawalInfoUseCase
         )
 
 
-    private fun getRequestParams(withdrawalId: String): MutableMap<String, Any?> {
-        return mutableMapOf(
+    private fun getRequestParams(withdrawalId: String) =
+        mutableMapOf(
             WITHDRAWAL_ID to withdrawalId,
         )
-    }
-
-    companion object {
-        private val WITHDRAWAL_ID = "withdrawalID"
-
-        const val GQL_WITHDRAWAL_DETAIL =
-            """query RichieGetWithdrawalInfo(${'$'}withdrawalID: String) {
-            RichieGetWithdrawalInfo(withdrawalID: ${'$'}withdrawalID) {
-                data {
-                    is_success
-                    withdrawal_info {
-                        withdrawal_id
-                        status
-                        status_string
-                        status_color
-                        amount
-                        fee
-                        transferred_amount
-                        create_time
-                        bank_name
-                        acc_no
-                        acc_name
-                        history {
-                          status
-                          title
-                          description
-                          create_time
-                        }
-                    }
-                }
-                message_error
-            }
-        }"""
-    }
-
 }
