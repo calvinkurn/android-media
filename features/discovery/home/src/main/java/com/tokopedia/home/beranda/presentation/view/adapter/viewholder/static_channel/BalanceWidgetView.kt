@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
+import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
