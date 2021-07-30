@@ -174,7 +174,7 @@ data class RecommendationEntity (
         @SerializedName("foreignTitle")
         val foreignTitle: String = ""
         @SerializedName("thematicID")
-        val thematicID: Long = 0
+        val thematicID: Long = 0L
 
         class Assets {
             @SerializedName("banner")
