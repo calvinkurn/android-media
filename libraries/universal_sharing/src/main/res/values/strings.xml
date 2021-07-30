@@ -28,5 +28,19 @@
     <string name="label_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
     <string name="label_close">Tutup</string>
     <string name="screen_shot_thumbnail_title">Yay, screenshot &amp; link tersimpan</string>
+    <!--    content description -->
+    <string name="desc_logo">Social Media Logo</string>
+    <string name="desc_img_option">Share Image Option</string>
+    <string name="desc_img_border">Image Option Border</string>
+    <string name="desc_img_selector">Image Option Selected</string>
+    <string name="desc_img_preview">Share Image Preview</string>
+    <string name="desc_img_thumbnail">Image Thumbnail</string>
+    <string name="desc_img_copy_link">Salin Link</string>
+    <string name="desc_img_sms">SMS</string>
+    <string name="desc_img_email">E-mail</string>
+    <string name="desc_img_others">Lainnya</string>
+    <string name="img_options_heading">Mau kasih lihat foto yang mana?</string>
+    <string name="tn_title">Title</string>
+    <string name="tokopedia_link">tokopedia.link</string>
 
 </resources>

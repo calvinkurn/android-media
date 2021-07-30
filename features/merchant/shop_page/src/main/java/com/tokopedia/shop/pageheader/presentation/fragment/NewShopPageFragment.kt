@@ -877,7 +877,6 @@ class NewShopPageFragment :
         }
     }
 
-
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             initialProductFilterParameter = it

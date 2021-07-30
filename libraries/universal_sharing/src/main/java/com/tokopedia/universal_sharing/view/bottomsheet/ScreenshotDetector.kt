@@ -19,9 +19,8 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 class ScreenshotDetector(internal val context: Context, private val screenShotListener: ScreenShotListener) {
 
     private var contentObserver: ContentObserver? = null
-    //permission request code
-    val READ_EXTERNAL_STORAGE_REQUEST = 500
     val pendingRegex = ".pending"
+    val screenShotRegex = "screenshot"
     private var ssUriPath = ""
 
     fun start() {
@@ -57,7 +56,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
             val dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
             while (cursor.moveToNext()) {
                 val path = cursor.getString(dataColumn)
-                if (path.contains("screenshot", true)) {
+                if (path.contains(screenShotRegex, true)) {
                     // do something
                     if(!ssUriPath.equals(path)) {
                         ssUriPath = path
@@ -91,8 +90,8 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
             while (cursor.moveToNext()) {
                 val name = cursor.getString(displayNameColumn)
                 val relativePath = cursor.getString(relativePathColumn)
-                if (name.contains("screenshot", true) or
-                    relativePath.contains("screenshot", true)
+                if (name.contains(screenShotRegex, true) or
+                    relativePath.contains(screenShotRegex, true)
                 ) {
                     // do something
                     if(!ssUriPath.equals(relativePath)) {
@@ -158,5 +157,10 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                 return
             }
         }
+    }
+
+    companion object {
+        //permission request code
+        const val READ_EXTERNAL_STORAGE_REQUEST = 500
     }
 }

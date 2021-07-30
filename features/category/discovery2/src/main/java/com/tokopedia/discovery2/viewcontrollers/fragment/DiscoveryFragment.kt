@@ -82,10 +82,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -110,7 +106,7 @@ class DiscoveryFragment :
         View.OnClickListener,
         LihatSemuaViewHolder.OnLihatSemuaClickListener,
         TabLayout.OnTabSelectedListener,
-        ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener{
+        ChooseAddressWidget.ChooseAddressWidgetListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -128,7 +124,6 @@ class DiscoveryFragment :
     private var shouldShowChooseAddressWidget:Boolean = true
     private lateinit var coordinatorLayout:CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
-    private var pageInfoHolder:PageInfo? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -148,7 +143,6 @@ class DiscoveryFragment :
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -534,29 +528,18 @@ class DiscoveryFragment :
         } else {
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
-        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
-            showUniversalShareBottomSheet(data)
-        }
-        else {
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                    linkerDataMapper(data), object : ShareCallback {
-                        override fun urlCreated(linkerShareData: LinkerShareResult) {
-                            if (linkerShareData.url != null) {
-                                Utils.shareData(
-                                    activity,
-                                    data?.share?.description,
-                                    linkerShareData.url
-                                )
-                            }
-                        }
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                linkerDataMapper(data), object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult) {
+                if (linkerShareData.url != null) {
+                    Utils.shareData(activity, data?.share?.description, linkerShareData.url)
+                }
+            }
 
-                        override fun onError(linkerError: LinkerError) {
-                            Utils.shareData(activity, data?.share?.description, data?.share?.url)
-                        }
-                    })
-            )
-        }
+            override fun onError(linkerError: LinkerError) {
+                Utils.shareData(activity, data?.share?.description, data?.share?.url)
+            }
+        }))
     }
 
     private fun linkerDataMapper(data: PageInfo?): LinkerShareData {
@@ -1050,45 +1033,4 @@ class DiscoveryFragment :
     }
 
 
-
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        var linkerShareData = linkerDataMapper(pageInfoHolder)
-        linkerShareData.linkerData.apply {
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        }
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = pageInfoHolder?.share?.description+linkerShareData?.url ?: ""
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    universalShareBottomSheet?.dismiss()
-                }
-
-                override fun onError(linkerError: LinkerError?) {}
-            })
-        )
-    }
-
-    override fun onCloseOptionClicked() {
-        universalShareBottomSheet?.dismiss()
-    }
-
-    private fun showUniversalShareBottomSheet(data:PageInfo?) {
-        pageInfoHolder = data
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@DiscoveryFragment)
-            setUtmCampaignData("Discovery", "{userId}", "{pageID}", "Share")
-            setMetaData(
-                "{thumb_nail_title}", "{thumb_nail_title}"
-            )
-            //set the Image Url of the Image that represents page
-            setOgImageUrl("{og_img_url}")
-        }
-        universalShareBottomSheet?.show(fragmentManager)
-    }
 }
