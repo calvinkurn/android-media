@@ -2953,7 +2953,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun gotoNewUserZonePage() {
         activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
+            val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            it.startActivities(arrayOf(intentHome, intentNewUser))
         }
     }
 }
