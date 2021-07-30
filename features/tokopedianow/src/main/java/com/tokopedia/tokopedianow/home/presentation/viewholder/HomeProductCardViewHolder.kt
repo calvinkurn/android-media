@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.tokopedianow.R
@@ -31,6 +32,7 @@ class HomeProductCardViewHolder(
             setProductModel(data.product)
             setOnClickListener {
                 goToProductDetail(data)
+                listener?.onProductCardClicked(adapterPosition, data)
             }
             setAddVariantClickListener {
                 goToAtcVariant(data)
@@ -38,6 +40,11 @@ class HomeProductCardViewHolder(
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
                     listener?.onProductQuantityChanged(data, quantity)
+                }
+            })
+            setImageProductViewHintListener(data, object : ViewHintListener {
+                override fun onViewHint() {
+                    listener?.onProductCardImpressed(data)
                 }
             })
         }
@@ -66,5 +73,7 @@ class HomeProductCardViewHolder(
 
     interface HomeProductCardListener {
         fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int)
+        fun onProductCardImpressed(data: HomeProductCardUiModel)
+        fun onProductCardClicked(position: Int, data: HomeProductCardUiModel)
     }
 }
