@@ -11,37 +11,37 @@ interface SearchCategoryRecommendationCarouselListener {
     fun onGetCarouselScrollPosition(adapterPosition: Int): Int
 
     fun onBindRecommendationCarousel(
-        element: RecommendationCarouselDataView,
-        adapterPosition: Int,
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
     )
 
     fun onImpressedRecommendationCarouselItem(
-        recommendationCarouselDataView: RecommendationCarouselDataView?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        itemPosition: Int,
-        adapterPosition: Int
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
     )
 
     fun onClickRecommendationCarouselItem(
-        recommendationCarouselDataView: RecommendationCarouselDataView?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        itemPosition: Int,
-        adapterPosition: Int
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            itemPosition: Int,
+            adapterPosition: Int
     )
 
     fun onATCNonVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: RecommendationCarouselDataView?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        recommendationCarouselPosition: Int,
-        quantity: Int,
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
+            recommendationCarouselPosition: Int,
+            quantity: Int,
     )
 
     fun onAddVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: RecommendationCarouselDataView?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
+            recommendationCarouselDataView: RecommendationCarouselDataView?,
+            data: RecommendationCarouselData,
+            recomItem: RecommendationItem,
     )
 }
