@@ -915,6 +915,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 )
         )
         goToApplink(appLink)
+    }
 
     override fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
         pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
