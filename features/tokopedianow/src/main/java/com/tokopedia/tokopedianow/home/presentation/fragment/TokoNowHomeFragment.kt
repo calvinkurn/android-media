@@ -63,6 +63,7 @@ import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -350,6 +351,12 @@ class TokoNowHomeFragment: Fragment(),
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
         this.recomItem = null
+    }
+
+    override fun onProductCardImpressed(data: HomeProductCardUiModel) {
+        when(data.type) {
+            RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
+        }
     }
 
     override fun isMainViewVisible(): Boolean = true
@@ -711,6 +718,11 @@ class TokoNowHomeFragment: Fragment(),
                 cartId = cartId
             )
         }
+    }
+
+    private fun trackRecentPurchaseImpression(data: HomeProductCardUiModel) {
+        val productList = viewModelTokoNow.getRecentPurchaseProducts()
+        analytics.onImpressRecentPurchase(userSession.userId, data, productList)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {

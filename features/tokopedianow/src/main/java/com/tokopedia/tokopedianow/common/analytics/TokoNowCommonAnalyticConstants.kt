@@ -7,6 +7,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
+        const val EVENT_PRODUCT_VIEW = "productView"
         const val EVENT_ADD_TO_CART = "add_to_cart"
     }
 
@@ -44,12 +45,24 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_ITEM_VARIANT = "item_variant"
         const val KEY_ITEM_BRAND = "item_brand"
         const val KEY_ITEM_CATEGORY = "item_category"
+        const val KEY_BRAND = "brand"
+        const val KEY_CATEGORY = "category"
+        const val KEY_ID = "id"
+        const val KEY_LIST = "list"
+        const val KEY_NAME = "name"
+        const val KEY_POSITION = "position"
         const val KEY_PRICE = "price"
+        const val KEY_VARIANT = "variant"
+        const val KEY_CURRENCY_CODE = "currencyCode"
+        const val KEY_IMPRESSIONS = "impressions"
+        const val KEY_ECOMMERCE = "ecommerce"
     }
 
     object VALUE {
         const val CURRENT_SITE_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
+        const val LIST_HOME_PAGE_PAST_PURCHASE_WIDGET = "/tokonow - homepage - past_purchase_widget"
+        const val CURRENCY_CODE_IDR = "IDR"
     }
 }

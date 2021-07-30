@@ -399,6 +399,12 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun getRecentPurchaseProducts(): List<HomeProductCardUiModel> {
+        val item = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
+        val recentPurchase = item?.layout as? HomeRecentPurchaseUiModel
+        return recentPurchase?.productList.orEmpty()
+    }
+
     /**
      * Add home component mapping here.
      *
