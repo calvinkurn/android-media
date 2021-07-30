@@ -20,8 +20,10 @@ import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -489,6 +491,38 @@ class OrderSummaryPageRobot {
         }))
     }
 
+    fun assertShopTicker(tickerMessage: String? = null,
+                         isCustom: Boolean = false) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item is OrderShopCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert shop badge"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (tickerMessage != null && isCustom) {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_shop).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
+                    assertEquals(tickerMessage, view.findViewById<Typography>(R.id.occ_custom_ticker_description).text.toString())
+                } else if (tickerMessage != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.ticker_order_shop).visibility)
+                    assertEquals(tickerMessage, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_shop).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
+                }
+            }
+        }))
+    }
+
     fun assertProductCard(index: Int = 0,
                           productName: String,
                           productPrice: String,
@@ -506,6 +540,7 @@ class OrderSummaryPageRobot {
             override fun getDescription(): String = "assert product $index card"
 
             override fun perform(uiController: UiController?, view: View) {
+                assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_product).visibility)
                 assertEquals(productName, view.findViewById<Typography>(R.id.tv_product_name).text.toString())
                 assertEquals(productPrice, view.findViewById<Typography>(R.id.tv_product_price).text.toString())
                 if (productSlashPrice == null) {
@@ -572,6 +607,45 @@ class OrderSummaryPageRobot {
 
             override fun perform(uiController: UiController?, view: View) {
                 assertEquals(qty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
+            }
+        }))
+    }
+
+    fun assertProductError(index: Int = 0,
+                           productName: String = "",
+                           productPrice: String = "",
+                           productVariant: String? = null,
+                           tickerMessage: String? = null) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert product $index card error"
+
+            override fun perform(uiController: UiController?, view: View) {
+                if (tickerMessage != null) {
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.ticker_order_product).visibility)
+                    assertEquals(tickerMessage, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_product).visibility)
+                }
+                assertEquals(productName, view.findViewById<Typography>(R.id.tv_product_name).text.toString())
+                assertEquals(productPrice, view.findViewById<Typography>(R.id.tv_product_price).text.toString())
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                assertEquals(View.GONE, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).visibility)
+                if (productVariant == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                    assertEquals(productVariant, view.findViewById<Typography>(R.id.tv_product_variant).text.toString())
+                }
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_qty_left).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_alert_message).visibility)
+                assertEquals(0, view.findViewById<ViewGroup>(R.id.flexbox_order_product_info).childCount)
+                assertEquals(View.GONE, view.findViewById<QuantityEditorUnify>(R.id.qty_editor_product).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
+                assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_preview).visibility)
+                assertEquals(View.GONE, view.findViewById<View>(R.id.tf_note).visibility)
             }
         }))
     }
