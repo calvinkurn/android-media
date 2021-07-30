@@ -31,8 +31,10 @@ import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMME
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
@@ -95,6 +97,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartUpdate
     val miniCartRemove: LiveData<Result<Pair<String,String>>>
         get() = _miniCartRemove
+    val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
+        get() = _homeAddToCartTracker
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -103,6 +107,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
+    private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
 
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
@@ -325,6 +330,7 @@ class TokoNowHomeViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            trackProductAddToCart(productId, quantity, type)
             homeLayoutItemList.updateProductQuantity(
                 productId,
                 quantity,
@@ -514,6 +520,24 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+    }
+
+    private fun trackProductAddToCart(productId: String, quantity: Int, type: String) {
+        when(type) {
+            RECENT_PURCHASE -> trackRecentPurchaseAddToCart(productId, quantity)
+        }
+    }
+
+    private fun trackRecentPurchaseAddToCart(productId: String, quantity: Int) {
+        val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
+        val recentPurchase = homeItem?.layout as? HomeRecentPurchaseUiModel
+        val product = recentPurchase?.productList?.firstOrNull { it.productId == productId }
+
+        product?.let {
+            val position = recentPurchase.productList.indexOf(it)
+            val data = HomeAddToCartTracker(position, quantity, it)
+            _homeAddToCartTracker.postValue(data)
+        }
     }
 
     private fun shouldLoadLayout(item: HomeLayoutItemUiModel): Boolean {

@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NAME_PROMOTION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ATC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
@@ -24,6 +25,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ACTION_FIELD
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ADD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BRAND
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -70,6 +72,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENCY_CODE_IDR
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_ATC_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM
@@ -110,6 +113,7 @@ class HomeAnalytics {
         const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOM = "impression on tokonow product recom homepage"
         const val EVENT_ACTION_IMPRESSION_PAST_PURCHASE = "impression on past purchase widget"
         const val EVENT_ACTION_CLICK_PAST_PURCHASE = "click product on past purchase widget"
+        const val EVENT_ACTION_ATC_PAST_PURCHASE = "click atc on past purchase widget"
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART = "click add to cart on tokonow product recom homepage"
     }
 
@@ -376,6 +380,36 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
     }
 
+    fun onRecentPurchaseAddToCart(position: Int, quantity: Int, userId: String, data: HomeProductCardUiModel) {
+        val products = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            ).apply {
+                putString(KEY_CATEGORY_ID, "")
+                putString(KEY_QUANTITY, quantity.toString())
+                putString(KEY_SHOP_ID, data.shopId)
+                putString(KEY_SHOP_NAME, "")
+                putString(KEY_SHOP_TYPE, "")
+            }
+        )
+
+        val eventLabel = getProductCardLabel(data)
+        val ecommerceDataLayer = getEcommerceATCDataLayer(products)
+
+        val dataLayer = getProductDataLayer(
+            event = EVENT_ATC,
+            action = EVENT_ACTION_ATC_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            userId = userId,
+            ecommerceDataLayer = ecommerceDataLayer
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ATC, dataLayer)
+    }
+
     private fun ecommerceDataLayerBannerClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): Bundle {
         return Bundle().apply {
             putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
@@ -486,7 +520,9 @@ class HomeAnalytics {
     }
 
     private fun getEcommerceClickDataLayer(products: ArrayList<Bundle>): Bundle {
-        val list = Bundle().apply { putString(KEY_LIST, LIST_HOME_PAGE_PAST_PURCHASE_WIDGET) }
+        val list = Bundle().apply {
+            putString(KEY_LIST, LIST_HOME_PAGE_PAST_PURCHASE_WIDGET)
+        }
 
         val click = Bundle().apply {
             putParcelable(KEY_ACTION_FIELD, list)
@@ -494,6 +530,11 @@ class HomeAnalytics {
         }
 
         return Bundle().apply { putParcelable(KEY_CLICK, click) }
+    }
+
+    private fun getEcommerceATCDataLayer(products: ArrayList<Bundle>): Bundle {
+        val click = Bundle().apply { putParcelableArrayList(KEY_PRODUCTS, products) }
+        return Bundle().apply { putParcelable(KEY_ADD, click) }
     }
 
     private fun productRecomItemDataLayer(index: String, productId: String, productName: String, price: String, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
@@ -533,7 +574,7 @@ class HomeAnalytics {
         getTracker().sendGeneralEvent(dataLayer.getHomeGeneralTracker())
     }
 
-    private fun MutableMap<String, Any>.getHomeGeneralTracker(): MutableMap<String, Any>? {
+    private fun MutableMap<String, Any>.getHomeGeneralTracker(): MutableMap<String, Any> {
         this[TrackAppUtils.EVENT] = EVENT_CLICK_TOKONOW
         this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
         this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE

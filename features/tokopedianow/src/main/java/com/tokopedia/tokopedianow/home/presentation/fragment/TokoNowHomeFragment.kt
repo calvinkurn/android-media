@@ -710,6 +710,16 @@ class TokoNowHomeFragment: Fragment(),
                 }
             }
         }
+
+        observe(viewModelTokoNow.homeAddToCartTracker) {
+            when(it.data) {
+                is HomeProductCardUiModel -> trackRecentPurchaseAddToCart(
+                    it.position,
+                    it.quantity,
+                    it.data
+                )
+            }
+        }
     }
 
     private fun trackAddToCart(quantity: Int, cartId: String) {
@@ -734,6 +744,10 @@ class TokoNowHomeFragment: Fragment(),
     private fun trackRecentPurchaseClick(data: HomeProductCardUiModel) {
         val productList = viewModelTokoNow.getRecentPurchaseProducts()
         analytics.onClickRecentPurchase(userSession.userId, data, productList)
+    }
+
+    private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: HomeProductCardUiModel) {
+        analytics.onRecentPurchaseAddToCart(position, quantity, userSession.userId, data)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
