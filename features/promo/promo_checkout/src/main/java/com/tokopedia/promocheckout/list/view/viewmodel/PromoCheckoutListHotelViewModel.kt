@@ -23,7 +23,7 @@ import javax.inject.Inject
 /**
  * @author: astidhiyaa on 31/07/21.
  */
-class PromoCheckoutListHotelViewModel@Inject constructor(private val dispatcher: CoroutineDispatchers,
+class PromoCheckoutListHotelViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                          private val graphqlRepository: GraphqlRepository,
                                                          val checkVoucherMapper: HotelCheckVoucherMapper
 ): BaseViewModel(dispatcher.io) {
