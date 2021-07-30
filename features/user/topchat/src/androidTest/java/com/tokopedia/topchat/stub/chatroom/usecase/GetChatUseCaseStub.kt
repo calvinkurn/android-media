@@ -33,17 +33,16 @@ class GetChatUseCaseStub @Inject constructor(
         )
 
     val srwChangeAddressCtaDisabled: GetExistingChatPojo
-        get() = alterResponseOf(changeAddressResponsePath) {
-            val attachment = it.getAsJsonObject(chatReplies)
-                .getAsJsonArray(list).get(0).asJsonObject
-                .getAsJsonArray(chats).get(0).asJsonObject
-                .getAsJsonArray(replies).get(0).asJsonObject
-                .getAsJsonObject(attachment)
-            val attr = attachment.getAsJsonPrimitive(attributes).asString
-            val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
-            attrObj.addProperty(status, HeaderCtaMessageAttachment.STATUS_DISABLED)
-            attrObj.addProperty(text_url, "Disabled")
-            attachment.addProperty(attributes, attrObj.toString())
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            alterAttachmentAttributesAt(
+                listPosition = 0,
+                chatsPosition = 0,
+                repliesPosition = 0,
+                responseObj = response
+            ) { attr ->
+                attr.addProperty(status, HeaderCtaMessageAttachment.STATUS_DISABLED)
+                attr.addProperty(text_url, "Disabled")
+            }
         }
 
     private val chatReplies = "chatReplies"
@@ -54,6 +53,24 @@ class GetChatUseCaseStub @Inject constructor(
     private val attributes = "attributes"
     private val status = "status"
     private val text_url = "text_url"
+
+    private fun alterAttachmentAttributesAt(
+        listPosition: Int,
+        chatsPosition: Int,
+        repliesPosition: Int,
+        responseObj: JsonObject,
+        altercation: (JsonObject) -> Unit
+    ) {
+        val attachment = responseObj.getAsJsonObject(chatReplies)
+            .getAsJsonArray(list).get(listPosition).asJsonObject
+            .getAsJsonArray(chats).get(chatsPosition).asJsonObject
+            .getAsJsonArray(replies).get(repliesPosition).asJsonObject
+            .getAsJsonObject(attachment)
+        val attr = attachment.getAsJsonPrimitive(attributes).asString
+        val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
+        altercation(attrObj)
+        attachment.addProperty(attributes, attrObj.toString())
+    }
 
     private fun alterResponseOf(
         responsePath: String,
