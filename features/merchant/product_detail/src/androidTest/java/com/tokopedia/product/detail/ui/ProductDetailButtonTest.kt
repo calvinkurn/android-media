@@ -20,6 +20,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
+import com.tokopedia.product.detail.ui.interceptor.*
 import com.tokopedia.product.detail.util.*
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -83,8 +84,8 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_empty_button_initial_data() {
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_negative_case.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_negative_case.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_NEGATIVE_CASE_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NEGATIVE_CASE_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -145,7 +146,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     //region Error case
     @Test
     fun check_default_button_p2_error_product_empty() {
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_negative_case.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_NEGATIVE_CASE_PATH
         customInterceptor.customP2ErrorResponsePath = "custom error"
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
@@ -166,8 +167,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_default_button_p2_error() {
-        customInterceptor.resetInterceptor()
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_test.json"
         customInterceptor.customP2ErrorResponsePath = "custom error"
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
@@ -196,9 +195,9 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun check_button_atc_variant_noMinicart_tokonow_login() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_tokonow_variant.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_tokonow_variant.json"
-        customInterceptor.customMiniCartResponsePath = "raw/response_mock_mini_cart_empty.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_VARIANT_TOKONOW_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
+        customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_EMPTY_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -221,9 +220,9 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     fun check_button_atc_variant_minicart_tokonow_login() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
 
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_tokonow_variant.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_tokonow_variant.json"
-        customInterceptor.customMiniCartResponsePath = "raw/response_mock_mini_cart_non_var.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_VARIANT_TOKONOW_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH
+        customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -254,10 +253,10 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
     @Test
     fun check_button_atc_non_variant_non_login_tokonow() {
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_tokonow_nonvar.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_tokonow_nonvar.json"
-        customInterceptor.customMiniCartResponsePath = "raw/response_mock_mini_cart_empty.json"
-        customInterceptor.customAtcV2ResponsePath = "raw/response_mock_success_atc_tokonow_nonvar.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
+        customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_EMPTY_PATH
+        customInterceptor.customAtcV2ResponsePath = RESPONSE_SUCCESS_ATC_NON_VARIANT_TOKONOW_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -279,9 +278,9 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     @Test
     fun check_quantity_editor_button_non_variant_login_minicart_tokonow() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_tokonow_nonvar.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_tokonow_nonvar.json"
-        customInterceptor.customMiniCartResponsePath = "raw/response_mock_mini_cart_non_var.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
+        customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -301,10 +300,10 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
         InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
 
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_tokonow_nonvar.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_tokonow_nonvar.json"
-        customInterceptor.customMiniCartResponsePath = "raw/response_mock_mini_cart_empty.json"
-        customInterceptor.customAtcV2ResponsePath = "raw/response_mock_success_atc_tokonow_nonvar.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_NON_VARIANT_TOKONOW_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH
+        customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_EMPTY_PATH
+        customInterceptor.customAtcV2ResponsePath = RESPONSE_SUCCESS_ATC_NON_VARIANT_TOKONOW_PATH
 
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
@@ -328,7 +327,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         check_button_atc_variant_noMinicart_tokonow_login()
         customInterceptor.resetInterceptor()
-        customInterceptor.customMiniCartResponsePath = "raw/response_mock_mini_cart_non_var.json"
+        customInterceptor.customMiniCartResponsePath = RESPONSE_MINICART_PATH
 
         intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         onView(withId(R.id.btn_buy_now)).perform(click())
@@ -439,8 +438,8 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     }
 
     private fun createMockModelConfig() {
-        customInterceptor.customP1ResponsePath = "raw/response_mock_p1_test.json"
-        customInterceptor.customP2DataResponsePath = "raw/response_mock_p2_ui_test.json"
-        customInterceptor.customTickerResponsePath = "raw/response_get_ticker_sticky_login.json"
+        customInterceptor.customP1ResponsePath = RESPONSE_P1_PATH
+        customInterceptor.customP2DataResponsePath = RESPONSE_P2_DATA_PATH
+        customInterceptor.customTickerResponsePath = RESPONSE_TICKER_PATH
     }
 }

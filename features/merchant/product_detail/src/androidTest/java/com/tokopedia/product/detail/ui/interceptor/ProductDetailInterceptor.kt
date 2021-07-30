@@ -62,3 +62,21 @@ const val GET_PDP_P1 = "pdpGetLayout"
 const val GET_PDP_P2_DATA = "GetPdpGetData"
 const val GET_SUCCESS_ATC = "add_to_cart_v2"
 const val GET_TICKER = "get_ticker"
+
+const val RESPONSE_P1_PATH = "raw/response_mock_p1_test.json"
+const val RESPONSE_P2_DATA_PATH = "raw/response_mock_p2_ui_test.json"
+const val RESPONSE_TICKER_PATH = "raw/response_get_ticker_sticky_login.json"
+
+const val RESPONSE_MINICART_EMPTY_PATH = "raw/response_mock_mini_cart_empty.json"
+const val RESPONSE_MINICART_PATH = "raw/response_mock_mini_cart_non_var.json"
+
+const val RESPONSE_P1_NEGATIVE_CASE_PATH = "raw/response_mock_p1_negative_case.json"
+const val RESPONSE_P2_DATA_NEGATIVE_CASE_PATH = "raw/response_mock_p2_negative_case.json"
+
+const val RESPONSE_P1_VARIANT_TOKONOW_PATH = "raw/response_mock_p1_tokonow_variant.json"
+const val RESPONSE_P2_DATA_VARIANT_TOKONOW_PATH = "raw/response_mock_p2_tokonow_variant.json"
+
+const val RESPONSE_P1_NON_VARIANT_TOKONOW_PATH = "raw/response_mock_p1_tokonow_nonvar.json"
+const val RESPONSE_P2_DATA_NON_VARIANT_TOKONOW_PATH = "raw/response_mock_p2_tokonow_nonvar.json"
+
+const val RESPONSE_SUCCESS_ATC_NON_VARIANT_TOKONOW_PATH = "raw/response_mock_success_atc_tokonow_nonvar.json"

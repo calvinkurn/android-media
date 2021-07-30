@@ -10,13 +10,14 @@ class ProductDetailMockResponse: MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(KEY_CONTAINS_PDP_GET_LAYOUT, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_pdp_get_layout), FIND_BY_CONTAINS)
-        addMockResponse(KEY_CONTAINS_DISCUSSION_MOST_HELPFUL, getJsonFromResource("raw/response_mock_discussion_most_helpful.json"), FIND_BY_CONTAINS)
+        addMockResponse(KEY_CONTAINS_DISCUSSION_MOST_HELPFUL, getJsonFromResource(DISCUSSION_MOST_HELPFUL_PATH), FIND_BY_CONTAINS)
         return this
     }
 
     companion object {
         private const val KEY_CONTAINS_PDP_GET_LAYOUT = "pdpGetLayout"
         private const val KEY_CONTAINS_DISCUSSION_MOST_HELPFUL = "discussionMostHelpful"
+        const val DISCUSSION_MOST_HELPFUL_PATH = "raw/response_mock_discussion_most_helpful.json"
     }
 
 }
