@@ -129,7 +129,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.VIEW_EMPTY_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_EMPTY_FAVORITE_NUMBER,
                         TrackAppUtils.EVENT_LABEL, categoryName,
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -143,7 +143,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.VIEW_COACHMARK,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_COACHMARK,
                         TrackAppUtils.EVENT_LABEL, categoryName,
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -157,7 +157,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.CLICK_CONTINUE,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_CONTINUE,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -171,7 +171,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.CLICK_KEBAB_MENU,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_KEBAB_MENU,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -185,7 +185,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.VIEW_EDIT_BOTTOM_SHEET,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_EDIT_BOTTOM_SHEET,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -199,7 +199,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.CLICK_SAVE_BOTTOM_SHEET,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_SAVE_BOTTOM_SHEET,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -213,7 +213,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.VIEW_DELETION_POP_UP,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_DELETION_POP_UP,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -227,7 +227,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.CLICK_CONFIRM_DELETE_POP_UP,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_CONFIRM_DELETE_POP_UP,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -241,7 +241,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.VIEW_DELETION_SUCCESS_TOASTER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_DELETION_SUCCESS_TOASTER,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
@@ -255,7 +255,7 @@ class CommonTopupBillsAnalytics {
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
-                        TrackAppUtils.EVENT_ACTION, Action.VIEW_DELETION_FAILED_TOASTER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_DELETION_FAILED_TOASTER,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,

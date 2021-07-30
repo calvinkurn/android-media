@@ -32,16 +32,16 @@ interface CommonTopupBillsEventTracking {
             const val VIEW_CHECKOUT = "view checkout"
             const val CLICK_PROCEED_TO_PAYMENT = "click proceed to payment"
             const val CLICK_REMOVE_PROMO = "click 'x' on promo"
-            const val VIEW_EMPTY_FAVORITE_NUMBER= "view empty favorite number"
-            const val VIEW_COACHMARK = "view coachmark"
-            const val CLICK_CONTINUE = "click lanjut transaksi"
-            const val CLICK_KEBAB_MENU = "click kebab menu"
-            const val VIEW_EDIT_BOTTOM_SHEET = "view edit bottom sheet"
-            const val CLICK_SAVE_BOTTOM_SHEET = "click simpan on edit bottom sheet"
-            const val VIEW_DELETION_POP_UP = "view deletion pop up"
-            const val CLICK_CONFIRM_DELETE_POP_UP = "click hapus on deletion pop up"
-            const val VIEW_DELETION_SUCCESS_TOASTER = "view deletion success toaster"
-            const val VIEW_DELETION_FAILED_TOASTER = "view deletion failed toaster"
+            const val FAVNUMBER_VIEW_EMPTY_FAVORITE_NUMBER= "view empty favorite number"
+            const val FAVNUMBER_VIEW_COACHMARK = "view coachmark"
+            const val FAVNUMBER_CLICK_CONTINUE = "click lanjut transaksi"
+            const val FAVNUMBER_CLICK_KEBAB_MENU = "click kebab menu"
+            const val FAVNUMBER_VIEW_EDIT_BOTTOM_SHEET = "view edit bottom sheet"
+            const val FAVNUMBER_CLICK_SAVE_BOTTOM_SHEET = "click simpan on edit bottom sheet"
+            const val FAVNUMBER_VIEW_DELETION_POP_UP = "view deletion pop up"
+            const val FAVNUMBER_CLICK_CONFIRM_DELETE_POP_UP = "click hapus on deletion pop up"
+            const val FAVNUMBER_VIEW_DELETION_SUCCESS_TOASTER = "view deletion success toaster"
+            const val FAVNUMBER_VIEW_DELETION_FAILED_TOASTER = "view deletion failed toaster"
         }
     }
 
@@ -90,21 +90,4 @@ interface CommonTopupBillsEventTracking {
             const val ACTION_FIELD_CLICK_CHECKOUT = "click checkout"
         }
     }
-
-//    interface General {
-//        interface Key {
-//            companion object {
-//                const val BUSINESS_UNIT = "businessUnit"
-//                const val CURRENT_SITE = "currentSite"
-//                const val USER_ID ="userId"
-//            }
-//        }
-//
-//        interface Value {
-//            companion object {
-//                const val BUSINESS_UNIT_RECHARGE = "recharge"
-//                const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"
-//            }
-//        }
-//    }
 }
