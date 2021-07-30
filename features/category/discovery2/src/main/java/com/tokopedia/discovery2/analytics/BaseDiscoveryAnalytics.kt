@@ -90,4 +90,5 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {}
     open fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
     open fun onTopAdsProductItemListener(position: Int, product: Product, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
+    open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {}
 }

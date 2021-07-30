@@ -177,7 +177,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     override fun onReviewScoreClicked(score: Int): Boolean {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickSmiley(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
-            viewModel.submitReputation(it.data.reputation.reputationId.toLongOrZero(), score)
+            viewModel.submitReputation(it.data.reputation.reputationId, score)
         }
         return false
     }
