@@ -779,7 +779,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
             val paddingBottom = if (isShowMiniCartWidget) {
-                miniCartWidget?.layoutParams?.height.orZero()
+                miniCartWidget?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
