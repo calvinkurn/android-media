@@ -141,7 +141,7 @@ class MvcDetailView @JvmOverloads constructor(
 
 
     private fun handleMvcDataChanged(data:TokopointsCatalogMVCSummaryResponse){
-        bundleForDataUpdate = IntentManger.prepareBundleForJadiMember(data)
+        bundleForDataUpdate = IntentManger.prepareBundleForJadiMember(data, shopId)
     }
 
     private fun toggleLoading(showLoading: Boolean) {
