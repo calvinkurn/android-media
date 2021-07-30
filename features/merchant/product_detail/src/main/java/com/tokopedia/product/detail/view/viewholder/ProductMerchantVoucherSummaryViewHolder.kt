@@ -36,7 +36,7 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View): AbstractViewHolde
     }
 
     private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String) {
-        merchantVoucher?.setData(MvcData(animatedInfos), shopId,false, MvcSource.PDP)
+        merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP)
         merchantVoucher?.show()
     }
 
