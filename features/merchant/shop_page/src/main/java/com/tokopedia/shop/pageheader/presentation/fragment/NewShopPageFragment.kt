@@ -2352,13 +2352,13 @@ class NewShopPageFragment :
                     // send gtm tracker
                     if(isGeneralShareBottomSheet) {
                         shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.socialMediaName.orEmpty(),
+                                shareModel.channel.orEmpty(),
                                 customDimensionShopPage,
                                 userId
                         )
                     } else{
                         shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.socialMediaName.orEmpty(),
+                                shareModel.channel.orEmpty(),
                                 customDimensionShopPage,
                                 userId
                         )
