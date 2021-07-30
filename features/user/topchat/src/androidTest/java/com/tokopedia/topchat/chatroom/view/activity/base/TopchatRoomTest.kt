@@ -610,6 +610,14 @@ abstract class TopchatRoomTest {
         ).check(matches(matcher))
     }
 
+    protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.tvMessage
+            )
+        ).check(matches(matcher))
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)

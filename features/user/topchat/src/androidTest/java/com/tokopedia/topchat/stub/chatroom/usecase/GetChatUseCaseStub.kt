@@ -45,6 +45,18 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    val srwChangeAddressBodyMsg: GetExistingChatPojo
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            alterAttachmentAttributesAt(
+                listPosition = 0,
+                chatsPosition = 0,
+                repliesPosition = 0,
+                responseObj = response
+            ) { attr ->
+                attr.addProperty(body, "Attachment Body Msg")
+            }
+        }
+
     private val chatReplies = "chatReplies"
     private val list = "list"
     private val chats = "chats"
@@ -53,6 +65,7 @@ class GetChatUseCaseStub @Inject constructor(
     private val attributes = "attributes"
     private val status = "status"
     private val text_url = "text_url"
+    private val body = "body"
 
     private fun alterAttachmentAttributesAt(
         listPosition: Int,
