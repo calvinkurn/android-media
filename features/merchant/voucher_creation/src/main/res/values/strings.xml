@@ -290,7 +290,9 @@
     <string name="mvc_stop_success">Voucher telah dihentikan dan dipindahkan ke Riwayat Voucher</string>
     <string name="mvc_stop_fail">Voucher tidak berhasil dihentikan</string>
     <string name="mvc_share_message_private">Dapatkan %s dengan kode promo %s untuk belanja lebih hemat di toko %s.</string>
-    <string name="mvc_share_message_public">Gunakan Voucher %s untuk belanja lebih hemat di toko %s.</string>
+    <string name="mvc_share_message_public">Gunakan Voucher \" %s \" untuk belanja lebih hemat di toko %s.</string>
+    <string name="mvc_success_create_title">Yay! Voucher %s berhasil ditambahkan</string>
+    <string name="mvc_success_create_desc">Segera bagikan Voucher kamu, ya</string>
     <string name="mvc_voucher_scheduled_title">Yay, voucher dijadwalkan!</string>
     <string name="mvc_voucher_period_info">Voucher %s aktif pada %s</string>
     <string name="mvc_via_broadcast">Lewat Broadcast</string>

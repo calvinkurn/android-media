@@ -6,15 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
+import com.tokopedia.vouchercreation.detail.view.component.StartEndVoucher
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
+import kotlinx.android.synthetic.main.bottomsheet_mvc_success_create.view.*
 
-class SuccessCreateBottomSheet : BottomSheetUnify() {
+class SuccessCreateBottomSheet: BottomSheetUnify() {
 
     companion object {
         @JvmStatic
@@ -30,7 +31,7 @@ class SuccessCreateBottomSheet : BottomSheetUnify() {
 
         const val TAG: String = "SuccessCreateBottomSheet"
 
-        private const val DATE_FORMAT = "dd MMMM yyyy"
+        private const val DATE_FORMAT = "dd MMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"
 
         private const val VOUCHER = "voucher"
@@ -40,18 +41,10 @@ class SuccessCreateBottomSheet : BottomSheetUnify() {
         arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
 
-    private var voucherPeriodInfoView: Typography? = null
-    private var broadCastButton: View? = null
-    private var socialMediaShareButton: View? = null
-
     private var onShareClickAction: (VoucherUiModel) -> Unit = {}
-    private var onBroadCastClickAction: (VoucherUiModel) -> Unit = {}
+    private var onDownloadClickAction: (VoucherUiModel) -> Unit = {}
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initBottomSheet(container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -63,47 +56,33 @@ class SuccessCreateBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet(container: ViewGroup?) {
         val child = LayoutInflater.from(context)
-            .inflate(R.layout.bottomsheet_mvc_success_create, container, false)
+                .inflate(R.layout.bottomsheet_mvc_success_create, container, false)
         setChild(child)
     }
 
     private fun setupView(view: View) {
-        // voucher period info setup
-        voucherPeriodInfoView = view.findViewById(R.id.tgp_voucher_period_info)
-        voucherUiModel?.let { uiModel ->
-            val startDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, DATE_FORMAT)
-            val endDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, DATE_FORMAT)
-            val startHour = String.format(
-                context?.getString(R.string.mvc_hour_wib).toBlankOrString(),
-                DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, HOUR_FORMAT)
-            )
-            val endHour = String.format(
-                context?.getString(R.string.mvc_hour_wib).toBlankOrString(),
-                DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, HOUR_FORMAT)
-            )
-            val startPeriod = "$startDate, $startHour"
-            val endPeriod = "$endDate, $endHour"
-            val voucherPeriod = "$startPeriod - $endPeriod"
-            val voucherPeriodInfo = String.format(
-                context?.getString(R.string.mvc_voucher_period_info).toBlankOrString(),
-                uiModel.name,
-                voucherPeriod
-            )
-            voucherPeriodInfoView?.text = voucherPeriodInfo
-        }
+        with(view) {
+            voucherUiModel?.let { uiModel ->
+                successTitle?.text = String.format(context?.getString(R.string.mvc_success_create_title).toBlankOrString(), uiModel.typeFormatted)
 
-        // broad cast button setup
-        broadCastButton = view.findViewById(R.id.broadcast_button)
-        broadCastButton?.setOnClickListener {
-            voucherUiModel?.run(onBroadCastClickAction)
-        }
+                successImage?.loadImageWithoutPlaceholder(uiModel.imageSquare)
 
-        // social media button setup
-        socialMediaShareButton = view.findViewById(R.id.social_media_share_button)
-        val isPublic = voucherUiModel?.isPublic ?: false
-        if (isPublic) socialMediaShareButton?.hide()
-        socialMediaShareButton?.setOnClickListener {
-            voucherUiModel?.run(onShareClickAction)
+                val startDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, DATE_FORMAT)
+                val endDate = DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, DATE_FORMAT)
+                val startHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(uiModel.startTime, HOUR_FORMAT))
+                val endHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(uiModel.finishTime, HOUR_FORMAT))
+                successDate?.run {
+                    setStartTime(StartEndVoucher.Model(startDate, startHour))
+                    setEndTime(StartEndVoucher.Model(endDate, endHour))
+                }
+
+                successShareButton?.setOnClickListener {
+                    voucherUiModel?.run(onShareClickAction)
+                }
+                successDownloadButton?.setOnClickListener {
+                    voucherUiModel?.run(onDownloadClickAction)
+                }
+            }
         }
     }
 
@@ -116,8 +95,8 @@ class SuccessCreateBottomSheet : BottomSheetUnify() {
         return this
     }
 
-    fun setOnBroadCastClickListener(action: (VoucherUiModel) -> Unit): SuccessCreateBottomSheet {
-        onBroadCastClickAction = action
+    fun setOnDownloadClickListener(action: (VoucherUiModel) -> Unit): SuccessCreateBottomSheet {
+        onDownloadClickAction = action
         return this
     }
 }

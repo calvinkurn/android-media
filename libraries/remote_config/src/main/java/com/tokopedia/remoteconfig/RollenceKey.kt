@@ -20,6 +20,9 @@ object RollenceKey {
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
     const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
 
+    // Merchant Voucher Creation
+    const val BROADCAST_VOUCHER_AB_TEST_KEY = "broadcast_voucher"
+
     //home
     const val HOME_VARIANT_REVAMP = "home revamp"
     const val HOME_VARIANT_OLD = "Existing Home"

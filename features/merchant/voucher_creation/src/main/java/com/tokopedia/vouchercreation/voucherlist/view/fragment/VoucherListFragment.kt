@@ -70,10 +70,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapter
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.SuccessCreateBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.*
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBy
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
@@ -396,6 +393,10 @@ class VoucherListFragment :
     }
 
     override fun onBroadCastClickListener(voucherId: Int) {
+        VoucherCreationTracking.sendBroadCastChatClickTracking(
+            category = VoucherCreationAnalyticConstant.EventCategory.VoucherList.PAGE,
+            shopId = userSession.shopId
+        )
         SharingUtil.shareToBroadCastChat(requireContext(), voucherId)
     }
 
@@ -1100,7 +1101,12 @@ class VoucherListFragment :
             (activity as? MvcPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
-                    setOnSuccessGetVoucherList(it.data)
+                    val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
+                    val voucherList = it.data
+                    voucherList.forEach { voucherUiModel ->
+                        voucherUiModel.showNewBc = showNewBroadCastExperience
+                    }
+                    setOnSuccessGetVoucherList(voucherList)
                     rvVoucherList?.setOnLayoutListenerReady()
                 }
                 is Fail -> setOnErrorGetVoucherList(it.throwable)
@@ -1181,30 +1187,50 @@ class VoucherListFragment :
             when (result) {
                 is Success -> {
                     result.data.let { uiModel ->
-                        SuccessCreateBottomSheet.createInstance(uiModel)
-                            .setOnShareClickListener {
-                                VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                    step = VoucherCreationStep.REVIEW,
-                                    action = Click.VOUCHER_SUCCESS_SHARE_NOW,
-                                    userId = userSession.userId
-                                )
-                                showShareBottomSheet(uiModel)
-                            }
-                            .setOnBroadCastClickListener {
-                                SharingUtil.shareToBroadCastChat(requireContext(), uiModel.id)
-                            }
-                            .apply {
-                                clearContentPadding = true
-                                setCloseClickListener {
-                                    VoucherCreationTracking.sendCreateVoucherClickTracking(
-                                        step = VoucherCreationStep.REVIEW,
-                                        action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
-                                        userId = userSession.userId
-                                    )
-                                    dismiss()
+                        val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
+                        if (showNewBroadCastExperience) {
+                            showBroadCastVoucherBottomSheet(uiModel)
+                        } else {
+                            if (uiModel.isPublic) {
+                                view?.run {
+                                    Toaster.make(this,
+                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                                        Toaster.LENGTH_LONG,
+                                        Toaster.TYPE_NORMAL,
+                                        context?.getString(R.string.mvc_oke).toBlankOrString(),
+                                        View.OnClickListener {})
                                 }
+                            } else {
+                                SuccessCreateBottomSheet.createInstance(uiModel)
+                                    .setOnShareClickListener {
+                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                            step = VoucherCreationStep.REVIEW,
+                                            action = Click.VOUCHER_SUCCESS_SHARE_NOW,
+                                            userId = userSession.userId
+                                        )
+                                        showShareBottomSheet(uiModel)
+                                    }
+                                    .setOnDownloadClickListener {
+                                        VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                            step = VoucherCreationStep.REVIEW,
+                                            action = Click.VOUCHER_SUCCESS_DOWNLOAD,
+                                            userId = userSession.userId
+                                        )
+                                        showDownloadBottomSheet(uiModel)
+                                    }
+                                    .apply {
+                                        setCloseClickListener {
+                                            VoucherCreationTracking.sendCreateVoucherClickTracking(
+                                                step = VoucherCreationStep.REVIEW,
+                                                action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                                                userId = userSession.userId
+                                            )
+                                            dismiss()
+                                        }
+                                    }
+                                    .show(childFragmentManager)
                             }
-                            .show(childFragmentManager)
+                        }
                     }
                 }
                 is Fail -> {
@@ -1234,6 +1260,37 @@ class VoucherListFragment :
                 }
             }
         })
+    }
+
+    private fun showBroadCastVoucherBottomSheet(uiModel: VoucherUiModel) {
+        BroadCastVoucherBottomSheet.createInstance(uiModel)
+            .setOnShareClickListener {
+                VoucherCreationTracking.sendCreateVoucherClickTracking(
+                    step = VoucherCreationStep.REVIEW,
+                    action = Click.VOUCHER_SUCCESS_SHARE_NOW,
+                    userId = userSession.userId
+                )
+                showShareBottomSheet(uiModel)
+            }
+            .setOnBroadCastClickListener {
+                VoucherCreationTracking.sendBroadCastChatClickTracking(
+                    category = VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.PAGE,
+                    shopId = userSession.shopId
+                )
+                SharingUtil.shareToBroadCastChat(requireContext(), uiModel.id)
+            }
+            .apply {
+                clearContentPadding = true
+                setCloseClickListener {
+                    VoucherCreationTracking.sendCreateVoucherClickTracking(
+                        step = VoucherCreationStep.REVIEW,
+                        action = Click.VOUCHER_SUCCESS_CLICK_BACK_BUTTON,
+                        userId = userSession.userId
+                    )
+                    dismiss()
+                }
+            }
+            .show(childFragmentManager)
     }
 
     private fun onCreateVoucherClicked() {
