@@ -30,10 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
@@ -230,6 +227,7 @@ class NewShopPageFragment :
     private var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
     private var stickyLoginView: StickyLoginView? = null
+    private var isLoginFromStickyLogin = false
     private var shopPageFragmentHeaderViewHolder: NewShopPageFragmentHeaderViewHolder? = null
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
@@ -906,6 +904,7 @@ class NewShopPageFragment :
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
+                isLoginFromStickyLogin = true
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
             }
 
@@ -1569,6 +1568,13 @@ class NewShopPageFragment :
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
+
+                if (data != null && isLoginFromStickyLogin) {
+                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+                    if (isSuccessRegister) {
+                        gotoNewUserZonePage()
+                    }
+                }
             }
         } else if (requestCode == REQUEST_CODE_FOLLOW) {
             if (resultCode == Activity.RESULT_OK) {
@@ -2245,6 +2251,12 @@ class NewShopPageFragment :
         if (scrollToTopButton?.isShown == true) {
             scrollToTopButton?.hide()
             scrollToTopButton?.gone()
+        }
+    }
+
+    private fun gotoNewUserZonePage() {
+        activity?.let {
+            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 }

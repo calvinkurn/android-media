@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,10 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.*
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -341,6 +339,13 @@ class TokoNowHomeFragment: Fragment(),
         when (requestCode) {
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 stickyLoginLoadContent()
+
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+                    if (isSuccessRegister) {
+                        gotoNewUserZonePage()
+                    }
+                }
             }
         }
     }
@@ -1014,6 +1019,12 @@ class TokoNowHomeFragment: Fragment(),
                 super.onScrolled(recyclerView, dx, dy)
                 loadMoreLayoutData()
             }
+        }
+    }
+
+    private fun gotoNewUserZonePage() {
+        activity?.let {
+            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }
 }
