@@ -359,9 +359,9 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onProductCardClicked(data: HomeProductCardUiModel) {
+    override fun onProductCardClicked(position: Int, data: HomeProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseClick(data)
+            RECENT_PURCHASE -> trackRecentPurchaseClick(position, data)
         }
     }
 
@@ -741,9 +741,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onImpressRecentPurchase(userSession.userId, data, productList)
     }
 
-    private fun trackRecentPurchaseClick(data: HomeProductCardUiModel) {
-        val productList = viewModelTokoNow.getRecentPurchaseProducts()
-        analytics.onClickRecentPurchase(userSession.userId, data, productList)
+    private fun trackRecentPurchaseClick(position: Int, data: HomeProductCardUiModel) {
+        analytics.onClickRecentPurchase(position, userSession.userId, data)
     }
 
     private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: HomeProductCardUiModel) {

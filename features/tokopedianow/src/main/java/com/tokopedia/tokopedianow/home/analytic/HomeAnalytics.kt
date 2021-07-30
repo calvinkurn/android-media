@@ -352,19 +352,15 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
     }
 
-    fun onClickRecentPurchase(userId: String, data: HomeProductCardUiModel, productList: List<HomeProductCardUiModel>) {
-        val products = arrayListOf<Bundle>().apply {
-            productList.forEachIndexed { position, item ->
-                add(
-                    productCardItemDataLayer(
-                        position = position.toString(),
-                        id = item.productId,
-                        name = item.product.productName,
-                        price = item.product.formattedPrice
-                    )
-                )
-            }
-        }
+    fun onClickRecentPurchase(position: Int, userId: String, data: HomeProductCardUiModel) {
+        val products = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            )
+        )
 
         val eventLabel = getProductCardLabel(data)
         val ecommerceDataLayer = getEcommerceClickDataLayer(products)

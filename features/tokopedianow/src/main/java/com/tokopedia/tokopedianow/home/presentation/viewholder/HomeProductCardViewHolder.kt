@@ -32,7 +32,7 @@ class HomeProductCardViewHolder(
             setProductModel(data.product)
             setOnClickListener {
                 goToProductDetail(data)
-                listener?.onProductCardClicked(data)
+                listener?.onProductCardClicked(adapterPosition, data)
             }
             setAddVariantClickListener {
                 goToAtcVariant(data)
@@ -74,6 +74,6 @@ class HomeProductCardViewHolder(
     interface HomeProductCardListener {
         fun onProductQuantityChanged(data: HomeProductCardUiModel, quantity: Int)
         fun onProductCardImpressed(data: HomeProductCardUiModel)
-        fun onProductCardClicked(data: HomeProductCardUiModel)
+        fun onProductCardClicked(position: Int, data: HomeProductCardUiModel)
     }
 }
