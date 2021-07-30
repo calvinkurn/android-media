@@ -92,7 +92,6 @@ class ShopHomeVoucherViewHolder(
                             model.data.animatedInfoList
                     ),
                             shopId = model.data.shopId ?: "0",
-                            isMainContainerSetFitsSystemWindows = false,
                             source = MvcSource.SHOP
                     )
                 }
