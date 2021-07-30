@@ -360,6 +360,7 @@ abstract class BaseSearchCategoryViewModel(
 
         initFilterController(headerDataView)
         createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
+        processEmptyState(isEmptyProductList)
         updateViewForFirstPage(isEmptyProductList)
     }
 
@@ -384,7 +385,7 @@ abstract class BaseSearchCategoryViewModel(
             createVisitableListWithProduct(headerDataView, contentDataView)
     }
 
-    private fun createVisitableListWithEmptyProduct() {
+    protected open fun createVisitableListWithEmptyProduct() {
         val activeFilterList = filterController.getActiveFilterOptionList()
 
         visitableList.add(chooseAddressDataView)
@@ -600,6 +601,10 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createFooterVisitableList() = listOf<Visitable<*>>()
 
+    protected open fun processEmptyState(isEmptyProductList: Boolean) {
+
+    }
+
     private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
         clearVisitableListLiveData()
         updateVisitableListLiveData()
@@ -619,6 +624,12 @@ abstract class BaseSearchCategoryViewModel(
 
     protected fun updateVisitableListLiveData() {
         visitableListMutableLiveData.value = visitableList
+    }
+
+    protected open suspend fun suspendUpdateVisitableListLiveData() {
+        withContext(baseDispatcher.main) {
+            updateVisitableListLiveData()
+        }
     }
 
     protected open fun updateNextPageData() {

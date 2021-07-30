@@ -20,7 +20,7 @@ interface SearchCategoryRecommendationCarouselListener {
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
-            adapterPosition: Int
+            adapterPosition: Int,
     )
 
     fun onClickRecommendationCarouselItem(

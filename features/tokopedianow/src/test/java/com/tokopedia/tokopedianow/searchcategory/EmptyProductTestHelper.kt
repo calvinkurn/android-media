@@ -41,6 +41,8 @@ class EmptyProductTestHelper(
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
         visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
+
+        callback.`Then assert empty result visitable list`(visitableList)
     }
 
     private fun Visitable<*>.assertEmptyProductDataView() {
@@ -182,5 +184,6 @@ class EmptyProductTestHelper(
                 count: Int,
                 requestParamsSlot: MutableList<RequestParams>,
         )
+        fun `Then assert empty result visitable list`(visitableList: List<Visitable<*>>)
     }
 }

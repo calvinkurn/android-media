@@ -25,12 +25,16 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
-class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
+class TokoNowCategoryFragment:
+        BaseSearchCategoryFragment(),
+        CategoryAisleListener,
+        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener {
 
     companion object {
         @JvmStatic
@@ -93,6 +97,7 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
             categoryAisleListener = this,
             outOfCoverageListener = this,
             recommendationCarouselListener = this,
+            tokoNowCategoryGridListener = this,
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -258,4 +263,12 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
     override fun getEventLabel(isOOC: Boolean): String {
         return getViewModel().categoryIdTracking
     }
+
+    override fun onCategoryRetried() {
+        getViewModel().onCategoryGridRetry()
+    }
+
+    override fun onAllCategoryClicked() { }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) { }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -21,10 +22,17 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
@@ -55,6 +63,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         deleteCartUseCase: DeleteCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         getRecommendationUseCase: GetRecommendationUseCase,
+        private val getCategoryListUseCase: GetCategoryListUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
         userSession: UserSessionInterface,
@@ -158,6 +167,89 @@ class TokoNowCategoryViewModel @Inject constructor (
                 imgUrl = navigationItem?.imageUrl ?: "",
                 applink = navigationItem?.applinks ?: "",
         )
+    }
+
+    override fun createVisitableListWithEmptyProduct() {
+        super.createVisitableListWithEmptyProduct()
+
+        if (filterController.isFilterActive()) return
+
+        val categoryGridIndex = minOf(visitableList.size, 2)
+        val categoryGridUIModel = TokoNowCategoryGridUiModel(
+                id = "",
+                title = CATEGORY_GRID_TITLE,
+                categoryList = null,
+                state = TokoNowLayoutState.LOADING,
+        )
+        visitableList.add(categoryGridIndex, categoryGridUIModel)
+    }
+
+    override fun processEmptyState(isEmptyProductList: Boolean) {
+        loadCategoryGrid(isEmptyProductList)
+    }
+
+    private fun loadCategoryGrid(isEmptyProductList: Boolean) {
+        launchCatchError(
+                block = { tryLoadCategoryGrid(isEmptyProductList) },
+                onError = { catchLoadCategoryGridError() }
+        )
+    }
+
+    private suspend fun tryLoadCategoryGrid(isEmptyProductList: Boolean) {
+        if (!isEmptyProductList) return
+
+        val categoryList = getCategoryList()
+
+        updateCategoryUIModel(
+                categoryItemListUIModel = HomeCategoryMapper.mapToCategoryList(categoryList),
+                categoryUIModelState = TokoNowLayoutState.SHOW,
+        )
+    }
+
+    private suspend fun getCategoryList() =
+            getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH)?.data
+
+    private suspend fun updateCategoryUIModel(
+            categoryItemListUIModel: List<TokoNowCategoryItemUiModel>?,
+            categoryUIModelState: Int,
+    ) {
+        val currentCategoryUIModel = getCategoryGridUIModelInVisitableList() ?: return
+
+        val updatedCategoryUiModel = currentCategoryUIModel.copy(
+                categoryList = categoryItemListUIModel,
+                state = categoryUIModelState,
+        )
+
+        replaceCategoryUIModelInVisitableList(currentCategoryUIModel, updatedCategoryUiModel)
+
+        suspendUpdateVisitableListLiveData()
+    }
+
+    private fun getCategoryGridUIModelInVisitableList(): TokoNowCategoryGridUiModel? {
+        return visitableList
+                .find { it is TokoNowCategoryGridUiModel }
+                as? TokoNowCategoryGridUiModel
+    }
+
+    private fun replaceCategoryUIModelInVisitableList(
+            current: TokoNowCategoryGridUiModel,
+            updated: TokoNowCategoryGridUiModel,
+    ) {
+        val position = visitableList.indexOf(current)
+
+        visitableList.removeAt(position)
+        visitableList.add(position, updated)
+    }
+
+    private suspend fun catchLoadCategoryGridError() {
+        updateCategoryUIModel(
+                categoryItemListUIModel = null,
+                categoryUIModelState = TokoNowLayoutState.HIDE
+        )
+    }
+
+    fun onCategoryGridRetry() {
+        processEmptyState(true)
     }
 
     override fun executeLoadMore() {
