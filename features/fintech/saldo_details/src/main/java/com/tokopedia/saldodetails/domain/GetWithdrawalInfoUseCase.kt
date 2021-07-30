@@ -21,7 +21,7 @@ class GetWithdrawalInfoUseCase
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ResponseGetWithdrawalInfo>(graphqlRepository) {
 
-    fun getWithdrawalInfo(withdrawalId: String, onSuccess: (WithdrawalInfoData) -> Unit, onError: (Throwable) -> Unit) {
+    fun getWithdrawalInfo(onSuccess: (WithdrawalInfoData) -> Unit, onError: (Throwable) -> Unit, withdrawalId: String) {
         try {
             this.setTypeClass(ResponseGetWithdrawalInfo::class.java)
             this.setRequestParams(getRequestParams(withdrawalId))

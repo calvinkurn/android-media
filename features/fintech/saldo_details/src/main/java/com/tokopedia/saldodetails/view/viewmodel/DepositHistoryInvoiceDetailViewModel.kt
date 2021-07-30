@@ -3,17 +3,20 @@ package com.tokopedia.saldodetails.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.saldodetails.di.DispatcherModule
 import com.tokopedia.saldodetails.domain.GetDepositHistoryInfoUseCase
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.DepositHistoryData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import javax.inject.Named
 
 class DepositHistoryInvoiceDetailViewModel @Inject constructor(
-    private val getDepositHistoryInfoUseCase: GetDepositHistoryInfoUseCase
-) : BaseViewModel(Dispatchers.Main) {
+    private val getDepositHistoryInfoUseCase: GetDepositHistoryInfoUseCase,
+    @Named(DispatcherModule.MAIN) val dispatcher: CoroutineDispatcher,
+    ) : BaseViewModel(dispatcher) {
 
     private val _depositHistoryLiveData = MutableLiveData<Result<DepositHistoryData>>()
     val depositHistoryLiveData: LiveData<Result<DepositHistoryData>> = _depositHistoryLiveData
@@ -21,9 +24,9 @@ class DepositHistoryInvoiceDetailViewModel @Inject constructor(
     fun getInvoiceDetail(summaryId: String) {
         getDepositHistoryInfoUseCase.cancelJobs()
         getDepositHistoryInfoUseCase.getDepositHistoryInvoiceInfo(
-            summaryId,
             ::onSuccessDepositHistoryInvoice,
-            ::onErrorDepositHistoryInvoice
+            ::onErrorDepositHistoryInvoice,
+            summaryId
         )
     }
 
@@ -33,7 +36,6 @@ class DepositHistoryInvoiceDetailViewModel @Inject constructor(
 
     private fun onErrorDepositHistoryInvoice(throwable: Throwable) {
         _depositHistoryLiveData.postValue(Fail(throwable))
-
     }
 
     fun getOrderDetailUrl(): String {

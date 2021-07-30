@@ -20,11 +20,7 @@ class GetDepositHistoryInfoUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ResponseDepositHistoryInvoiceInfo>(graphqlRepository) {
 
-    fun getDepositHistoryInvoiceInfo(
-        summaryId: String,
-        onSuccess: (DepositHistoryData) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
+    fun getDepositHistoryInvoiceInfo(onSuccess: (DepositHistoryData) -> Unit, onError: (Throwable) -> Unit, summaryId: String) {
         try {
             this.setTypeClass(ResponseDepositHistoryInvoiceInfo::class.java)
             this.setRequestParams(getRequestParams(summaryId))
