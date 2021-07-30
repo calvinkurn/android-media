@@ -7,9 +7,9 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -26,9 +26,9 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirProduct
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -45,6 +45,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1462,6 +1463,28 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
+
+    //getProductTopadsStatus
+    @Test
+    fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
+        val productId = "12345"
+        val paramsTest = "txsc=asdf"
+        val expectedResponse = TopadsIsAdsQuery(
+                TopAdsGetDynamicSlottingData(
+                        productList = listOf(TopAdsGetDynamicSlottingDataProduct(isCharge = true)),
+                        status = TopadsStatus(
+                                error_code = 200,
+                                message = "OK"
+                        )
+                ))
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns  expectedResponse
+
+        viewModel.getProductTopadsStatus(productId, paramsTest)
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground()}
+
+        Assert.assertTrue(expectedResponse.data.status.error_code in 200 .. 300 && expectedResponse.data.productList[0].isCharge)
+    }
+
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
 
@@ -1499,6 +1522,10 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify {
             moveProductToEtalaseUseCase.cancelJobs()
+        }
+
+        verify {
+            getTopadsIsAdsUseCase.cancelJobs()
         }
 
         verify {

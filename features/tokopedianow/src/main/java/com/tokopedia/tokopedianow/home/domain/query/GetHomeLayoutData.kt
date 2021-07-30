@@ -19,6 +19,7 @@ internal object GetHomeLayoutData {
              showPromoBadge
              categoryID
              perso_type
+             pageName
              campaignCode
              has_close_button
              header {
@@ -64,7 +65,9 @@ internal object GetHomeLayoutData {
                productViewCountFormatted
                isOutOfStock
                warehouseID
+               parentProductID
                minOrder
+               stock
                shop {
                  shopID
                }

@@ -3,6 +3,7 @@ ext {
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
             authentication          : "com.tokopedia.authentication:authentication:1.0.19",
+            authenticationExt       : "com.tokopedia.authentication.ext:authentication:1.0.1",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
             globalconfig            : "com.tokopedia.config:global_config:1.0.14",
             url                     : "com.tokopedia.url:url:1.0.10",
@@ -12,7 +13,6 @@ ext {
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.9",
-            chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
             akamaiBMP               : "AkamaiBMP:AkamaiBMP:3.1.0@aar",
             fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.10",
             fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.6",

@@ -44,6 +44,7 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
@@ -65,6 +66,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
+import kotlinx.android.synthetic.main.fragment_hotel_booking.container_error
+import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 
@@ -116,7 +120,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     initView()
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
+                    showErrorView(it.throwable)
                 }
             }
             stopTrace()
@@ -280,6 +284,15 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
+    fun showErrorView(error: Throwable?){
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, error,
+                { onErrorRetryClicked() }, global_error)
+        }
+        hideLoadingBar()
+    }
+
     private fun initProgressDialog() {
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(R.string.hotel_progress_dialog_title))
@@ -379,7 +392,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 context?.run {
                     val policyView = InfoTextView(this)
                     policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
-                    policyView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    policyView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, POLICY_VIEW_TEXT_SIZE)
                     policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
                     hotelCancellationPolicyBottomSheets.addContentView(policyView)
                 }
@@ -488,7 +501,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title))
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
         }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
-            setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+            setupPromoTicker(promoData.state,
                     promoData.title,
                     promoData.description)
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
@@ -523,6 +536,12 @@ class HotelBookingFragment : HotelBaseFragment() {
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
         }else if(state == TickerCheckoutView.State.EMPTY){
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.LOADING
+        }else if(state == TickerCheckoutView.State.FAILED){
+            booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
+            view?.let { v ->
+                Toaster.build(v, getString(R.string.hotel_error_cancel_promo), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            }
         }
     }
 
@@ -534,7 +553,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onResetPromo(){
-        bookingViewModel.applyPromoData(PromoData(state = TickerCheckoutView.State.ACTIVE))
         bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
     }
 
@@ -664,6 +682,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+        container_error.hide()
         bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
     }
 
@@ -701,6 +720,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val COUPON_EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
+        const val POLICY_VIEW_TEXT_SIZE = 14f
 
 
         fun getInstance(cartId: String): HotelBookingFragment =

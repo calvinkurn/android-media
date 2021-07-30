@@ -13,10 +13,6 @@ object CentralizedPromoConstant {
     const val EVENT_ACTION_PROMO_CREATION_IMPRESSION = "impression form submission"
     const val EVENT_ACTION_PROMO_CREATION_CLICK = "click form submission"
 
-    // TIPS & TRICK
-    const val EVENT_ACTION_EDUCATION_IMPRESSION = "impression education"
-    const val EVENT_ACTION_EDUCATION_CLICK = "click education"
-
     // POWER MERCHANT
     const val EVENT_CATEGORY_SELLER_APP = "tokopedia seller app"
     const val EVENT_CATEGORY_MAIN_APP = "tokopedia main app"
