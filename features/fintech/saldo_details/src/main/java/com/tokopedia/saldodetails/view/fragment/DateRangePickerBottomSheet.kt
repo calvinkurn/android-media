@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.utils.SaldoDateUtil.setMidnight
+import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.saldo_bottomsheet_choose_date.*
 import java.util.*
@@ -17,20 +17,24 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
     val maxDate = Date()
     val minDate = Date(System.currentTimeMillis() - (10 * 365 * 24 * 3600 * 1000L))
 
-    var defaultStartDate: Date? = null
-    var defaultEndDate: Date? = null
+    var defaultDateFrom: Date? = null
+    var defaultDateTo: Date? = null
+
+    var newSelectedDateFrom : Date? = Date()
+    var newSelectedDateTO : Date? = Date()
+
     lateinit var childView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments?.containsKey(ARG_START_DATE) == true
-            && arguments?.containsKey(ARG_END_DATE) == true
+        if (arguments?.containsKey(ARG_DATE_FROM) == true
+            && arguments?.containsKey(ARG_DATE_TO) == true
         ) {
-            defaultStartDate = arguments?.getSerializable(ARG_START_DATE) as Date
-            defaultEndDate = arguments?.getSerializable(ARG_END_DATE) as Date
+            defaultDateFrom = arguments?.getSerializable(ARG_DATE_FROM) as Date
+            defaultDateTo = arguments?.getSerializable(ARG_DATE_TO) as Date
         } else {
-            defaultStartDate = Date()
-            defaultEndDate = Date()
+            defaultDateFrom = Date()
+            defaultDateTo = Date()
         }
     }
 
@@ -50,21 +54,26 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         childView.layoutParams.height = (getScreenHeight() / 3 * 2)
         initCalender()
         unifyButtonSelect.setOnClickListener {
-            if (defaultStartDate != null && defaultEndDate != null) {
+            if (newSelectedDateFrom != null && newSelectedDateTO != null &&
+                !(SaldoDateUtil.isDatesAreSame(newSelectedDateTO, defaultDateTo)
+                        && SaldoDateUtil.isDatesAreSame(newSelectedDateFrom, defaultDateFrom))) {
                 if (parentFragment is OnDateRangeSelectListener) {
                     (parentFragment as OnDateRangeSelectListener)
-                        .onDateRangeSelected(defaultStartDate!!, defaultEndDate!!)
-                    dismissAllowingStateLoss()
+                        .onDateRangeSelected(newSelectedDateFrom!!, newSelectedDateTO!!)
+
                 }
             }
+            dismissAllowingStateLoss()
         }
     }
 
     private fun initCalender() {
+        newSelectedDateFrom = defaultDateFrom
+        newSelectedDateTO = defaultDateTo
         calendar_unify.calendarPickerView?.init(minDate, maxDate, arrayListOf())
             ?.inMode(CalendarPickerView.SelectionMode.RANGE)
             ?.maxRange(30)
-            ?.withSelectedDates(arrayListOf(defaultStartDate!!, defaultEndDate!!))
+            ?.withSelectedDates(arrayListOf(defaultDateFrom!!, defaultDateTo!!))
         calendar_unify.calendarPickerView?.selectDateClickListener()
         calendar_unify.calendarPickerView?.outOfRange()
     }
@@ -75,16 +84,16 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
                 val selectedDates = calendar_unify.calendarPickerView?.selectedDates
                 when {
                     selectedDates.isNullOrEmpty() -> {
-                        defaultStartDate = null
-                        defaultEndDate = null
+                        newSelectedDateFrom = null
+                        newSelectedDateTO = null
                     }
                     selectedDates.size == 1 -> {
-                        defaultEndDate = selectedDates[0]
-                        defaultStartDate = selectedDates[0]
+                        newSelectedDateFrom = selectedDates[0]
+                        newSelectedDateTO = selectedDates[0]
                     }
                     else -> {
-                        defaultStartDate = selectedDates.first()
-                        defaultEndDate = selectedDates.last()
+                        newSelectedDateFrom = selectedDates.first()
+                        newSelectedDateTO = selectedDates.last()
                     }
                 }
             }
@@ -99,6 +108,7 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
                 //todo post out of 30 days range
+                // <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
             }
 
         })
@@ -115,21 +125,20 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        val ARG_START_DATE = "ARG_START_DATE"
-        val ARG_END_DATE = "ARG_END_DATE"
-        fun getInstance(startDate: Date?, endDate: Date?): DateRangePickerBottomSheet {
+        val ARG_DATE_FROM = "ARG_DATE_FROM"
+        val ARG_DATE_TO = "ARG_DATE_TO"
+        fun getInstance(dateFrom: Date?, dateTo: Date?): DateRangePickerBottomSheet {
             return DateRangePickerBottomSheet().apply {
                 val bundle = Bundle()
-                bundle.putSerializable(ARG_START_DATE, startDate ?: Date())
-                bundle.putSerializable(ARG_END_DATE, endDate ?: Date())
+                bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
+                bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
                 arguments = bundle
             }
         }
     }
 
-
 }
 
 interface OnDateRangeSelectListener {
-    fun onDateRangeSelected(startDate: Date, endDate: Date)
+    fun onDateRangeSelected(dateFrom: Date, dateTo: Date)
 }

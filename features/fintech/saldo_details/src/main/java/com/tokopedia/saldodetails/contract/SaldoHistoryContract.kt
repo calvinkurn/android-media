@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
-import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 
 class SaldoHistoryContract {
@@ -64,19 +63,4 @@ class SaldoHistoryContract {
 
     }
 
-    interface Presenter {
-        fun setFirstDateParameter(view : View)
-
-        fun onSearchClicked(startDate : String, endDate : String)
-
-        fun onEndDateClicked(datePicker: SaldoDatePickerUtil, view : View)
-
-        fun onStartDateClicked(datePicker: SaldoDatePickerUtil, view : View)
-
-//        fun loadMore(lastItemPosition: Int, visibleItem: Int)
-
-        fun getSummaryDeposit()
-
-        fun onRefresh()
-    }
 }

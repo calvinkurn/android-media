@@ -23,8 +23,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: GetDepositSummaryUseCase, val getAllTransactionUsecase: GetAllTransactionUsecase) : BaseViewModel(Dispatchers.Main), SaldoHistoryContract.Presenter {
-
+class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: GetDepositSummaryUseCase, val getAllTransactionUsecase: GetAllTransactionUsecase) : BaseViewModel(Dispatchers.Main)/*, SaldoHistoryContract.Presenter */{
+/*
     val buyerResponseLiveData = MutableLiveData<Resources<DepositActivityResponse>>()
     val sellerResponseLiveData = MutableLiveData<Resources<DepositActivityResponse>>()
     val allDepositResponseLiveData = MutableLiveData<Resources<DepositActivityResponse>>()
@@ -94,7 +94,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
     }
 
 
-    override fun onSearchClicked(startDate: String, endDate: String) {
+     fun onSearchClicked(startDate: String, endDate: String) {
         setDates(startDate, endDate)
         getSummaryDeposit()
     }
@@ -121,7 +121,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
     }
 
 
-    override fun onEndDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
+   *//* override fun onEndDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
         val date = dateFormatter(view.getEndDate())
         date?.let {
             datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
@@ -134,7 +134,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
                 }
             })
         }
-    }
+    }*//*
 
     override fun onStartDateClicked(datePicker: SaldoDatePickerUtil, view: SaldoHistoryContract.View) {
         val date = dateFormatter(view.getStartDate())
@@ -192,6 +192,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         return sdf_ws.format(formattedStart)
 
     }
+*//*
 
     override fun getSummaryDeposit() {
         launchCatchError(block = {
@@ -205,6 +206,7 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         }
 
     }
+*//*
 
     private fun onError(e: Throwable) {
         if (e is UnknownHostException || e is SocketTimeoutException) {
@@ -359,5 +361,5 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         private val SELLER_SALDO = 1
         private val BUYER_SALDO = 0
         private val ALL_SALDO = 2
-    }
+    }*/
 }

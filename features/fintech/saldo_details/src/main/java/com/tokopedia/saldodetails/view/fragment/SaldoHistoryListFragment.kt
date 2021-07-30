@@ -14,34 +14,21 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
-import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.response.model.DepositActivityResponse
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
-import com.tokopedia.saldodetails.utils.*
+import com.tokopedia.saldodetails.utils.*/*
 import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_ALL
 import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_BUYER
 import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.FOR_SELLER
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.TRANSACTION_TYPE
+import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment.Companion.TRANSACTION_TYPE*/
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 
 
-class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() {
+class SaldoHistoryListFragment /*: BaseListFragment<DepositHistoryList, SaldoDetailTransactionFactory>() */{
 
-    companion object {
-        fun createInstance(type: String, saldoHistoryViewModel: SaldoHistoryViewModel, saldoHistoryFragment: SaldoHistoryContract.View): SaldoHistoryListFragment {
-            val saldoHistoryListFragment = SaldoHistoryListFragment()
-            val bundle = Bundle()
-            bundle.putString(TRANSACTION_TYPE, type)
-            saldoHistoryListFragment.arguments = bundle
-            saldoHistoryListFragment.viewModel = saldoHistoryViewModel
-            saldoHistoryListFragment.saldoHistoryFragment = saldoHistoryFragment
-            return saldoHistoryListFragment
-        }
-    }
-
+/*
     private var recyclerView: RecyclerView? = null
     private var adapter: SaldoDepositAdapter? = null
-    lateinit var saldoHistoryFragment: SaldoHistoryContract.View
     lateinit var viewModel: SaldoHistoryViewModel
     private var transactionType: String? = null
 
@@ -58,11 +45,11 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     private fun addObserver() {
         if (::viewModel.isInitialized) {
-            when (transactionType) {
+            *//*when (transactionType) {
                 FOR_ALL -> addAllTransactionObserver()
                 FOR_BUYER -> buyerObserver()
                 FOR_SELLER -> sellerObserver()
-            }
+            }*//*
         }
     }
 
@@ -125,7 +112,7 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
     }
 
     private fun initialVar() {
-        transactionType = arguments?.getString(TRANSACTION_TYPE)
+        //transactionType = arguments?.getString(TRANSACTION_TYPE)
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView?.layoutManager = linearLayoutManager
         recyclerView?.adapter = adapter
@@ -138,9 +125,9 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 when (transactionType) {
-                    FOR_ALL -> viewModel.loadMoreAllTransaction(page)
+                    *//*FOR_ALL -> viewModel.loadMoreAllTransaction(page)
                     FOR_BUYER -> viewModel.loadMoreBuyerTransaction(page)
-                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page)
+                    FOR_SELLER -> viewModel.loadMoreSellerTransaction(page)*//*
                 }
             }
         }
@@ -161,5 +148,5 @@ class SaldoHistoryListFragment : BaseListFragment<DepositHistoryList, SaldoDetai
 
     override fun getScreenName() = null
 
-    private fun getDefaultEmptyViewModel() = EmptyModel()
+    private fun getDefaultEmptyViewModel() = EmptyModel()*/
 }

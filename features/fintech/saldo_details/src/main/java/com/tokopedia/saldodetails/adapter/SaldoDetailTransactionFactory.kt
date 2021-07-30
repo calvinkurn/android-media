@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
 import com.tokopedia.saldodetails.viewholder.SaldoListEmptyViewHolder
 import com.tokopedia.saldodetails.viewholder.SaldoTransactionViewHolder
+import com.tokopedia.saldodetails.viewholder.SalesSaldoTransactionViewHolder
 
 class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> Unit) : BaseAdapterTypeFactory() {
 
@@ -20,6 +22,9 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
             }
             SaldoListEmptyViewHolder.LAYOUT -> {
                 return SaldoListEmptyViewHolder(parent)
+            }
+            SalesSaldoTransactionViewHolder.LAYOUT -> {
+                return SalesSaldoTransactionViewHolder(parent, onItemClick)
             }
             else -> {
                 viewHolder = super.createViewHolder(parent, type)
@@ -34,5 +39,9 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
 
     override fun type(vm: EmptyModel): Int {
         return SaldoListEmptyViewHolder.LAYOUT
+    }
+
+    fun type(salesTransactionDetail: SalesTransactionDetail): Int {
+        return SalesSaldoTransactionViewHolder.LAYOUT
     }
 }
