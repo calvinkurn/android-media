@@ -62,7 +62,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             products.forEach {
                 if (!it.isError) {
                     checkoutProducts.add(ProductData(
-                            it.productId,
+                            it.productId.toString(),
                             it.orderQuantity,
                             it.notes,
                             it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
@@ -75,7 +75,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                             ShopProduct(
                                     shopId = shop.shopId,
                                     isPreorder = products.first().isPreOrder,
-                                    warehouseId = products.first().warehouseId,
+                                    warehouseId = shop.warehouseId,
                                     finsurance = if (orderShipment.insurance.isCheckInsurance) 1 else 0,
                                     productData = checkoutProducts,
                                     shippingInfo = ShippingInfo(

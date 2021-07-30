@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -19,7 +18,6 @@ import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
@@ -362,23 +360,17 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         measureRecyclerViewPaddingDebounceJob?.cancel()
         measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(500)
-            with(viewBinding) {
-                val screenHeight = getScreenHeight()
-                totalAmount.measure(0, 0)
-                val totalAmountHeight = totalAmount.measuredHeight
-                val headerHeight = rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_96)
-                        ?: 0
-                val availableHeight = screenHeight - totalAmountHeight - headerHeight
-                rvMiniCartList.measure(0, 0)
-                val rvHeight = rvMiniCartList.measuredHeight
-                val exceedHeight = rvHeight >= availableHeight
-                if (!exceedHeight) {
-                    rvMiniCartList.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
-                    rvMiniCartList.requestLayout()
-                } else {
-                    rvMiniCartList.layoutParams.height = availableHeight
-                    rvMiniCartList.requestLayout()
-                }
+            adjustRecyclerViewPadding(viewBinding)
+        }
+    }
+
+    private fun adjustRecyclerViewPadding(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        with(viewBinding) {
+            if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1)) {
+                rvMiniCartList.setPadding(0, 0, 0, rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                        ?: 0)
+            } else {
+                rvMiniCartList.setPadding(0, 0, 0, 0)
             }
         }
     }

@@ -28,7 +28,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = atcOccMultiExternalUseCase.get().setParams(productIds.split(","), userId).executeOnBackground()
+                val listProductId = productIds.split(",").filter { it.isNotBlank() }
+                val response = atcOccMultiExternalUseCase.get().setParams(listProductId, userId).executeOnBackground()
                 if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")

@@ -60,9 +60,8 @@ data class ShopProduct(
 )
 
 data class ProductData(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("product_quantity")
         val productQuantity: Int = 0,
         @SerializedName("product_notes")

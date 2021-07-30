@@ -251,6 +251,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           badge_url
         }
         warehouse {
+          warehouse_id
           is_fulfillment
         }
       }
