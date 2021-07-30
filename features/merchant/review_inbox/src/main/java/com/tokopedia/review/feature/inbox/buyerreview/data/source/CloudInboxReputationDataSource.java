@@ -4,7 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.review.common.util.ReviewUtil;
+import com.tokopedia.review.common.util.ReviewInboxUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetFirstTimeInboxReputationUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetInboxReputationUseCase;
@@ -42,7 +42,7 @@ public class CloudInboxReputationDataSource {
                 AuthHelper.generateParamsNetwork(
                         userSessionInterface.getUserId(),
                         userSessionInterface.getDeviceId(),
-                        ReviewUtil.INSTANCE.convertMapObjectToString(requestParams.getParameters())))
+                        ReviewInboxUtil.INSTANCE.convertMapObjectToString(requestParams.getParameters())))
                 .map(inboxReputationMapper)
                 .doOnNext(saveToCache(requestParams));
     }

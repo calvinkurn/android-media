@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.source;
 
 import com.tokopedia.authentication.AuthHelper;
 
-import com.tokopedia.review.common.util.ReviewUtil;
+import com.tokopedia.review.common.util.ReviewInboxUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService;
@@ -33,7 +33,7 @@ public class CloudDeleteReviewResponseDataSource {
                 .deleteReviewResponse(AuthHelper.generateParamsNetwork(
                         userSession.getUserId(),
                         userSession.getDeviceId(),
-                        ReviewUtil.INSTANCE.convertMapObjectToString(requestParams.getParameters())))
+                        ReviewInboxUtil.INSTANCE.convertMapObjectToString(requestParams.getParameters())))
                 .map(deleteReviewResponseMapper);
     }
 }

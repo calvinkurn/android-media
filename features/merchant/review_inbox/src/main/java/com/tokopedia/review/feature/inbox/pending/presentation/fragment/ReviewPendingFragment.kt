@@ -35,7 +35,7 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
-import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.ReviewInboxUtil
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
@@ -240,7 +240,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onUrlClicked(url: String): Boolean {
         context?.let {
-            return ReviewUtil.routeToWebview(it, ovoIncentiveBottomSheet, url)
+            return ReviewInboxUtil.routeToWebview(it, ovoIncentiveBottomSheet, url)
         }
         return false
     }

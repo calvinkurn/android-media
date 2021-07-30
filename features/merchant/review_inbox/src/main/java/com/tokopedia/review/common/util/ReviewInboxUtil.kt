@@ -1,14 +1,13 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
-import android.util.TypedValue
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.util.*
 
-object ReviewUtil {
+object ReviewInboxUtil {
 
     fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
         val newMap = HashMap<String, String>()
@@ -16,10 +15,6 @@ object ReviewUtil {
             newMap[key] = value.toString()
         }
         return newMap
-    }
-
-    fun DptoPx(context: Context, dp: Int): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
     }
 
     fun routeToWebview(context: Context, bottomSheet: BottomSheetUnify?, url: String): Boolean {

@@ -35,14 +35,6 @@ object ReviewUtil {
         return data.indexOf(dateKeyword)
     }
 
-    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
-        val newMap = HashMap<String, String>()
-        for ((key, value) in map) {
-            newMap[key] = value.toString()
-        }
-        return newMap
-    }
-
     fun DptoPx(context: Context, dp: Int): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
     }
@@ -67,29 +59,6 @@ object ReviewUtil {
     fun formatReviewCollapse(context: Context, review: String): CharSequence? {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
         return HtmlLinkHelper(context, formattedText.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
-    }
-}
-
-fun getReviewStar(ratingCount: Int): Int {
-    return when (ratingCount) {
-        ReviewConstants.RATING_ONE -> {
-            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_one
-        }
-        ReviewConstants.RATING_TWO -> {
-            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_two
-        }
-        ReviewConstants.RATING_THREE -> {
-            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_three
-        }
-        ReviewConstants.RATING_FOUR -> {
-            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_four
-        }
-        ReviewConstants.RATING_FIVE -> {
-            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_five
-        }
-        else -> {
-            com.tokopedia.review.inbox.R.drawable.review_ic_rating_star_zero
-        }
     }
 }
 

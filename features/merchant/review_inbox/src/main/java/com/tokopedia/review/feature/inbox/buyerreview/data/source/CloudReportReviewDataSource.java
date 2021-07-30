@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.inbox.buyerreview.data.source;
 
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.review.common.util.ReviewUtil;
+import com.tokopedia.review.common.util.ReviewInboxUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReportReviewMapper;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService;
@@ -33,7 +33,7 @@ public class CloudReportReviewDataSource {
                 .reportReview(AuthHelper.generateParamsNetwork(
                         userSession.getUserId(),
                         userSession.getDeviceId(),
-                        ReviewUtil.INSTANCE.convertMapObjectToString(requestParams.getParameters())
+                        ReviewInboxUtil.INSTANCE.convertMapObjectToString(requestParams.getParameters())
                 ))
                 .map(reportReviewMapper);
     }
