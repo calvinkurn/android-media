@@ -18,7 +18,6 @@ import android.os.IBinder
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import com.tokopedia.utils.file.PublicFolderUtil
@@ -28,14 +27,20 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifyprinciples.Typography
 
-@TargetApi(21)
+const val ANDROID_LOLLIPOP = 21
+
+@TargetApi(ANDROID_LOLLIPOP)
 class ScreenRecordService : Service(), CoroutineScope {
 
     companion object {
         const val ACTION_INIT = "ACTION_INIT"
         const val EXTRA_MEDIA_PROEJECTION_RESULT_CODE = "EXTRA_MEDIA_PROEJECTION_RESULT_CODE"
         const val EXTRA_MEDIA_PROEJECTION_RESULT_DATA = "EXTRA_MEDIA_PROEJECTION_RESULT_DATA"
+
+        private const val ONE_SECOND_MS = 1000L
+        private const val HALF_SECOND_MS = 500L
 
         private const val MAX_RECORD_DURATION_SECOND = 60
         private const val PRE_RECORD_COUNTDOWN_SECOND = 3
@@ -83,7 +88,7 @@ class ScreenRecordService : Service(), CoroutineScope {
     private lateinit var internalStoragePath: String
     private lateinit var resultVideoPath: String
 
-    lateinit var preRecordCountDownText: TextView
+    lateinit var preRecordCountDownText: Typography
     lateinit var mWindowManager: WindowManager
 
     override fun onCreate() {
@@ -177,7 +182,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
             //short delay to give time after start service and before request media projection
             //to avoid "Media projections require a foreground service of type ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION" issue
-            Thread.sleep(500)
+            Thread.sleep(HALF_SECOND_MS)
 
             val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
             mediaProjection = projectionManager
@@ -232,7 +237,7 @@ class ScreenRecordService : Service(), CoroutineScope {
                 while (remainingDurationSecond > 0) {
                     preRecordCountDownText.text = remainingDurationSecond.toString()
                     withContext(backgroundCoroutineContext) {
-                        Thread.sleep(1000)
+                        Thread.sleep(ONE_SECOND_MS)
                     }
                     remainingDurationSecond--
                 }
@@ -258,7 +263,7 @@ class ScreenRecordService : Service(), CoroutineScope {
                         ongoingNotifBuilder.setContentText(formatRemainingTime(remainingDurationSecond)).build()
                 notificationManager?.notify(NOTIF_ID, notif)
                 withContext(backgroundCoroutineContext) {
-                    Thread.sleep(1000)
+                    Thread.sleep(ONE_SECOND_MS)
                 }
                 remainingDurationSecond--
             }
@@ -270,7 +275,7 @@ class ScreenRecordService : Service(), CoroutineScope {
         val formatDate: DateFormat = SimpleDateFormat(
                 "- mm:ss", Locale("in", "ID")
         )
-        return formatDate.format(Date(second * 1000L))
+        return formatDate.format(Date(second * ONE_SECOND_MS))
     }
 
     private fun stopRecord() {
@@ -391,7 +396,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun showPreRecordCountDown() {
         try {
-            preRecordCountDownText = TextView(this)
+            preRecordCountDownText = Typography(this)
             preRecordCountDownText.textSize = PRE_RECORD_COUNTDOWN_TEXT_SIZE_SP
             preRecordCountDownText.setTextColor(resources.getColor(R.color.pre_record_countdown_text_color))
             preRecordCountDownText.setLayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
