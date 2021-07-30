@@ -46,7 +46,7 @@ data class RecommendationItem(
         // for tracker field
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),
-        val parentID: Long = 0,
+        val parentID: Long = 0L,
         val isRecomProductShowVariantAndCart:Boolean = false,
 ): ImpressHolder(){
 
