@@ -35,11 +35,6 @@ class RechargeHomepageAdapter(val context: Context,
     }
 
     fun showGetListError(e: Throwable) {
-//        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
-//            showLoading()
-//            loaderListener.loadData()
-//        }
-
         val errorNetworkModel = ErrorNetworkModel()
 
         var pair = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder())
