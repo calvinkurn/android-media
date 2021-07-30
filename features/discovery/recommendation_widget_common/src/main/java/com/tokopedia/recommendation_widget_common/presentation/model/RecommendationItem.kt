@@ -48,7 +48,7 @@ data class RecommendationItem(
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),
         //for tokonow
-        val parentID: Long = 0,
+        val parentID: Long = 0L,
         val isRecomProductShowVariantAndCart:Boolean = false,
         var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
 ): ImpressHolder(){
