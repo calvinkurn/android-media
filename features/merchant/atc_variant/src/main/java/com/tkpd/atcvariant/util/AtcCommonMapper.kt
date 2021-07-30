@@ -30,6 +30,13 @@ import com.tokopedia.usecase.coroutines.Success
  */
 object AtcCommonMapper {
 
+    private const val KEY_COLOUR_VARIANT = "colour"
+    private const val KEY_VALUE_VARIANT = "value"
+    private const val KEY_HEX_VARIANT = "hex"
+    private const val KEY_ID_VARIANT = "id"
+    private const val KEY_SIZE_VARIANT = "size"
+    private const val DEFAULT_MIN_ORDER = 1
+
     fun generateAtcData(actionButtonCart: Int,
                         selectedChild: VariantChild?,
                         selectedWarehouse: WarehouseInfo?,
@@ -326,11 +333,11 @@ object AtcCommonMapper {
         val productUrl = productInfo?.url ?: ""
         val isActive = productInfo?.isBuyable ?: true
         val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
-        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
-        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
-        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
-        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
-        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+        val productColorVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
+        val productColorHexVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_HEX_VARIANT) ?: ""
+        val productSizeVariant = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
+        val productColorVariantId = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
+        val productSizeVariantId = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
         val productPreview = ProductPreview(
                 id = productId,
                 imageUrl = productImageUrl,
@@ -348,7 +355,7 @@ object AtcCommonMapper {
                 priceBeforeInt = priceBeforeDouble,
                 dropPercentage = dropPercentage,
                 isActive = isActive,
-                remainingStock = productInfo?.getVariantFinalStock() ?: 1
+                remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

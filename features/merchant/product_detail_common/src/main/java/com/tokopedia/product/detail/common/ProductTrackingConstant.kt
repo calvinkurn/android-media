@@ -231,6 +231,7 @@ object ProductTrackingConstant {
         const val EVENT_COMPONENT_CLICK_BEST_SELLER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
+        const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
     }
 
     object Report {
