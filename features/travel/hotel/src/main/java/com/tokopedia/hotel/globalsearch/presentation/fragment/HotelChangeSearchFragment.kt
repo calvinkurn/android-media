@@ -152,6 +152,13 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             it.setText(globalSearchModel.destinationName)
             it.setOnClickListener { onDestinationChangeClicked() }
         }
+        binding?.layoutGlobalSearch?.let {
+            it.tvHotelHomepageCheckinDate.setText(data.checkInDateFmt)
+            it.tvHotelHomepageCheckoutDate.setText(data.checkOutDateFmt)
+            it.tvHotelHomepageNightCount.text = data.nightCount.toString()
+            it.tvHotelHomepageGuestInfo.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+                data.numOfRooms, data.numOfGuests))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

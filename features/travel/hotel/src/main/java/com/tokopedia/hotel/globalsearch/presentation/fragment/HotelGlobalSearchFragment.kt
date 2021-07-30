@@ -31,6 +31,7 @@ import java.util.*
 open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
 
     protected val globalSearchModel: HotelGlobalSearchModel = HotelGlobalSearchModel()
+    protected var data: HotelGlobalSearchModel = HotelGlobalSearchModel()
     private var binding by autoClearedNullable<FragmentHotelGlobalSearchBinding>()
 
 
@@ -78,7 +79,7 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
     }
 
     open fun renderView() {
-        val data = globalSearchModel
+        data = globalSearchModel
 
         val todayWithoutTime = DateUtil.getCurrentCalendar().time.removeTime()
         val tomorrow = todayWithoutTime.addTimeToSpesificDate(Calendar.DATE, 1)
