@@ -2217,7 +2217,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chooseAddressBottomSheet.show(childFragmentManager, "")
     }
 
-    private fun getChangeAddressListener(
+    protected fun getChangeAddressListener(
     ): ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
         return object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
             override fun onLocalizingAddressServerDown() {

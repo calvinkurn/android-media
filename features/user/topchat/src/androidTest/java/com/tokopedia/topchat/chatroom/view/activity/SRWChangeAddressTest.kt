@@ -1,7 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.matchers.isSender
+import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -62,6 +65,21 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         assertCtaHeaderMsgAtBubblePosition(0, not(isDisplayed()))
     }
 
-    // TODO: should resend SRW when user success change address
+    @Test
+    fun should_resend_SRW_when_user_success_change_address() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
+        TopChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
+        launchChatRoomActivity()
+        val totalItemList = activity.getTotalItemInChat()
+
+        // When
+        clickCtaHeaderMsgAtBubblePosition(0)
+
+        // Then
+        assertChatRecyclerview(hasTotalItemOf(totalItemList + 1))
+        assertChatRecyclerview(isSender(0))
+    }
+
     // TODO: should hide msg header when attachment is null
 }
