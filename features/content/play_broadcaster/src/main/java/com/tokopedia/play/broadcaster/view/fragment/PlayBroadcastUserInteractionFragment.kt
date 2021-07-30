@@ -247,9 +247,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun startCountDown() {
         val animationProperty = PlayTimerCountDown.AnimationProperty.Builder()
-                .setFullRotationInterval(3000)
-                .setTextCountDownInterval(2000)
-                .setTotalCount(3)
+                .setFullRotationInterval(TIMER_ROTATION_INTERVAL)
+                .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
+                .setTotalCount(TIMER_ANIMATION_TOTAL_COUNT)
                 .build()
 
         countdownTimer.visible()
@@ -642,5 +642,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     companion object {
         const val KEY_START_COUNTDOWN = "start_count_down"
+
+        private const val TIMER_ROTATION_INTERVAL = 3000L
+        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 2000L
+        private const val TIMER_ANIMATION_TOTAL_COUNT = 3
     }
 }

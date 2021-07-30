@@ -687,7 +687,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         viewModelScope.launchCatchError(block = {
-            val remainingDuration = duration.remaining*1000
+            val remainingDuration = TimeUnit.SECONDS.toMillis(duration.remaining)
             countDownTimer.restart(duration = remainingDuration)
         }) { }
     }
