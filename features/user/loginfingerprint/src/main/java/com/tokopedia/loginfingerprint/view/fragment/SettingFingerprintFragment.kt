@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -106,7 +105,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                     enableSwitch = false
                     fragment_fingerprint_setting_switch?.isChecked = true
                     tracker.trackRemoveFingerprintFailed(it.throwable.message ?: "")
-                    NetworkErrorHelper.showSnackbar(activity, it.throwable.message)
+                    showToaster(it.throwable.message)
                 }
             }
             enableSwitch = true
@@ -124,6 +123,19 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
             enableSwitch = true
             hideLoading()
         })
+    }
+
+    private fun showToaster(message: String?) {
+        if(context != null) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message ?: getString(R.string.error_default_fp),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+        }
     }
 
     private fun goToVerification() {
@@ -166,7 +178,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     fun onErrorRegisterFingerprint(throwable: Throwable) {
         tracker.trackRegisterFpFailed(throwable.message ?: "")
-        NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
+        showToaster(throwable.message)
     }
 
     fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintPojo) {
@@ -176,9 +188,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     fun onFailedGetFingerprintStatus(throwable: Throwable) {
-        activity?.let {
-            NetworkErrorHelper.showSnackbar(activity, throwable.message)
-        }
+        showToaster(throwable.message)
     }
 
     fun loading() {
