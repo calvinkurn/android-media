@@ -8,6 +8,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
         const val EVENT_PRODUCT_VIEW = "productView"
+        const val EVENT_PRODUCT_CLICK = "productClick"
         const val EVENT_ADD_TO_CART = "add_to_cart"
     }
 
@@ -56,6 +57,9 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_CURRENCY_CODE = "currencyCode"
         const val KEY_IMPRESSIONS = "impressions"
         const val KEY_ECOMMERCE = "ecommerce"
+        const val KEY_CLICK = "click"
+        const val KEY_ACTION_FIELD = "actionField"
+        const val KEY_PRODUCTS = "products"
     }
 
     object VALUE {

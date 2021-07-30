@@ -18,15 +18,18 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NAME_PROMOTI
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ACTION_FIELD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BRAND
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_SLOT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENCY_CODE
@@ -54,6 +57,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PAGE_SOURCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_POSITION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRICE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCTS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PROMOTIONS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_QUANTITY
@@ -67,6 +71,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PAST_PURCHASE
@@ -104,6 +109,7 @@ class HomeAnalytics {
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM = "click product on tokonow product recom homepage"
         const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOM = "impression on tokonow product recom homepage"
         const val EVENT_ACTION_IMPRESSION_PAST_PURCHASE = "impression on past purchase widget"
+        const val EVENT_ACTION_CLICK_PAST_PURCHASE = "click product on past purchase widget"
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART = "click add to cart on tokonow product recom homepage"
     }
 
@@ -321,27 +327,53 @@ class HomeAnalytics {
                         position = position.toString(),
                         id = item.productId,
                         name = item.product.productName,
+                        price = item.product.formattedPrice,
+                        list = LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
+                    )
+                )
+            }
+        }
+
+        val eventLabel = getProductCardLabel(data)
+        val ecommerceDataLayer = getEcommerceImpressionDataLayer(productList)
+
+        val dataLayer = getProductDataLayer(
+            event = EVENT_PRODUCT_VIEW,
+            action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            userId = userId,
+            ecommerceDataLayer = ecommerceDataLayer
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
+    }
+
+    fun onClickRecentPurchase(userId: String, data: HomeProductCardUiModel, productList: List<HomeProductCardUiModel>) {
+        val products = arrayListOf<Bundle>().apply {
+            productList.forEachIndexed { position, item ->
+                add(
+                    productCardItemDataLayer(
+                        position = position.toString(),
+                        id = item.productId,
+                        name = item.product.productName,
                         price = item.product.formattedPrice
                     )
                 )
             }
         }
 
-        val halalLabel = getHalalLabel(data.product.labelGroupList)
-        val slashedPriceLabel = getSlashedPriceLabel(data.product.slashedPrice)
-        val variantLabel = getVariantLabel(data.parentId)
-        val label = "$halalLabel - $slashedPriceLabel - $variantLabel"
-        val ecommerceDataLayer = getEcommerceDataLayer(productList)
+        val eventLabel = getProductCardLabel(data)
+        val ecommerceDataLayer = getEcommerceClickDataLayer(products)
 
         val dataLayer = getProductDataLayer(
-            event = EVENT_PRODUCT_VIEW,
-            action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
+            event = EVENT_PRODUCT_CLICK,
+            action = EVENT_ACTION_CLICK_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
-            label = label,
+            label = eventLabel,
             userId = userId,
             ecommerceDataLayer = ecommerceDataLayer
         )
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
     }
 
     private fun ecommerceDataLayerBannerClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): Bundle {
@@ -446,11 +478,22 @@ class HomeAnalytics {
         }
     }
 
-    private fun getEcommerceDataLayer(products: ArrayList<Bundle>): Bundle {
+    private fun getEcommerceImpressionDataLayer(products: ArrayList<Bundle>): Bundle {
         return Bundle().apply {
             putString(KEY_CURRENCY_CODE, CURRENCY_CODE_IDR)
             putParcelableArrayList(KEY_IMPRESSIONS, products)
         }
+    }
+
+    private fun getEcommerceClickDataLayer(products: ArrayList<Bundle>): Bundle {
+        val list = Bundle().apply { putString(KEY_LIST, LIST_HOME_PAGE_PAST_PURCHASE_WIDGET) }
+
+        val click = Bundle().apply {
+            putParcelable(KEY_ACTION_FIELD, list)
+            putParcelableArrayList(KEY_PRODUCTS, products)
+        }
+
+        return Bundle().apply { putParcelable(KEY_CLICK, click) }
     }
 
     private fun productRecomItemDataLayer(index: String, productId: String, productName: String, price: String, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
@@ -465,12 +508,16 @@ class HomeAnalytics {
         }
     }
 
-    private fun productCardItemDataLayer(position: String, id: String, name: String, price: String, brand: String = "", category: String = "", variant: String = ""): Bundle {
+    private fun productCardItemDataLayer(position: String, id: String, name: String, price: String, list: String = "", brand: String = "", category: String = "", variant: String = ""): Bundle {
         return Bundle().apply {
             putString(KEY_BRAND, brand)
             putString(KEY_CATEGORY, category)
             putString(KEY_ID, id)
-            putString(KEY_LIST, LIST_HOME_PAGE_PAST_PURCHASE_WIDGET)
+
+            if(list.isNotEmpty()) {
+                putString(KEY_LIST, list)
+            }
+
             putString(KEY_NAME, name)
             putString(KEY_POSITION, position)
             putString(KEY_PRICE, price)
@@ -504,5 +551,12 @@ class HomeAnalytics {
 
     private fun getVariantLabel(parentProductId: String?): String {
         return if(parentProductId.isNullOrEmpty()) WITHOUT_VARIANT else WITH_VARIANT
+    }
+
+    private fun getProductCardLabel(data: HomeProductCardUiModel): String {
+        val halalLabel = getHalalLabel(data.product.labelGroupList)
+        val slashedPriceLabel = getSlashedPriceLabel(data.product.slashedPrice)
+        val variantLabel = getVariantLabel(data.parentId)
+        return "$halalLabel - $slashedPriceLabel - $variantLabel"
     }
 }

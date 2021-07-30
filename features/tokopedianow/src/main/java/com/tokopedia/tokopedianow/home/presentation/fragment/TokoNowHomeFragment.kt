@@ -359,6 +359,12 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
+    override fun onProductCardClicked(data: HomeProductCardUiModel) {
+        when(data.type) {
+            RECENT_PURCHASE -> trackRecentPurchaseClick(data)
+        }
+    }
+
     override fun isMainViewVisible(): Boolean = true
 
     override fun isBannerImpressed(id: String): Boolean = true
@@ -723,6 +729,11 @@ class TokoNowHomeFragment: Fragment(),
     private fun trackRecentPurchaseImpression(data: HomeProductCardUiModel) {
         val productList = viewModelTokoNow.getRecentPurchaseProducts()
         analytics.onImpressRecentPurchase(userSession.userId, data, productList)
+    }
+
+    private fun trackRecentPurchaseClick(data: HomeProductCardUiModel) {
+        val productList = viewModelTokoNow.getRecentPurchaseProducts()
+        analytics.onClickRecentPurchase(userSession.userId, data, productList)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
