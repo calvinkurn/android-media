@@ -859,23 +859,31 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String, basicData: ProductRecomLayoutBasicData) {
+    override fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String) {
         DynamicProductDetailTracking.ImpulsiveBanner.impressImpulsiveBanner(
                 widget = data,
                 userId = viewModel.userId,
                 productId = productId ?: "",
                 templateNameType = templateNameType,
-                basicData = basicData
+                basicData = ProductRecomLayoutBasicData(
+                        generalLayoutName = getPdpDataSource()?.layoutName ?: "",
+                        categoryName = getPdpDataSource()?.basic?.category?.name ?: "",
+                        categoryId = getPdpDataSource()?.basic?.category?.id ?: ""
+                )
         )
     }
 
-    override fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String, basicData: ProductRecomLayoutBasicData) {
+    override fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String) {
         DynamicProductDetailTracking.ImpulsiveBanner.clickImpulsiveBanner(
                 widget = data,
                 userId = viewModel.userId,
                 productId = productId ?: "",
                 templateNameType = templateNameType,
-                basicData = basicData
+                basicData = ProductRecomLayoutBasicData(
+                        generalLayoutName = getPdpDataSource()?.layoutName ?: "",
+                        categoryName = getPdpDataSource()?.basic?.category?.name ?: "",
+                        categoryId = getPdpDataSource()?.basic?.category?.id ?: ""
+                )
         )
         goToApplink(appLink)
     }

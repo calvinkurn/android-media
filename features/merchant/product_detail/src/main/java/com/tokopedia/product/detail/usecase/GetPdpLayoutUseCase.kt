@@ -340,18 +340,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components, buildBasicData(data))
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
-    }
-
-    private fun buildBasicData(data: PdpGetLayout) : ProductRecomLayoutBasicData {
-        return ProductRecomLayoutBasicData(
-                generalLayoutName= data.generalName,
-                categoryId = data.basicInfo.category.id,
-                categoryName = data.basicInfo.category.name
-        )
     }
 
 }

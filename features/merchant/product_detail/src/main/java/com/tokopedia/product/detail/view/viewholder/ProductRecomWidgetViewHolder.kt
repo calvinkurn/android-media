@@ -7,9 +7,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
-import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -106,7 +104,6 @@ class ProductRecomWidgetViewHolder (
         listener.onRecommendationBannerImpressed(
                 data = data.recommendationData,
                 templateNameType = productRecom?.name ?: "",
-                basicData = productRecom?.basicData ?: ProductRecomLayoutBasicData()
         )
     }
 
@@ -115,7 +112,6 @@ class ProductRecomWidgetViewHolder (
                 appLink = applink,
                 data = data.recommendationData,
                 templateNameType = productRecom?.name ?: "",
-                basicData = productRecom?.basicData ?: ProductRecomLayoutBasicData()
         )
     }
 

@@ -105,8 +105,8 @@ interface DynamicProductDetailListener {
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
-    fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String, basicData: ProductRecomLayoutBasicData)
-    fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String, basicData: ProductRecomLayoutBasicData)
+    fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String)
+    fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String)
 
     /**
      * ProductGeneralInfoViewHolder

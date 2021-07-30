@@ -12,7 +12,6 @@ data class ProductRecomWidgetDataModel(
         val type: String = "",
         val name: String = "",
         var recomWidgetData: RecommendationWidget? = null,
-        val basicData: ProductRecomLayoutBasicData? = null,
 
         //UI Data
         var filterData: List<AnnotationChip>? = null,
