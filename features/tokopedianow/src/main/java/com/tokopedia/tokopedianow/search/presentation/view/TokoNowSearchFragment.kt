@@ -14,6 +14,9 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.search.di.SearchComponent
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
@@ -21,11 +24,19 @@ import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
@@ -37,8 +48,6 @@ class TokoNowSearchFragment:
         CTATokoNowHomeListener {
 
     companion object {
-        private const val PAGE_NAME_SEARCH = "empty search result"
-        private const val LIST_PAGE = "searchproduct"
         @JvmStatic
         fun create(): TokoNowSearchFragment {
             return TokoNowSearchFragment()
@@ -273,19 +282,47 @@ class TokoNowSearchFragment:
         goToTokopediaNowHome()
     }
 
-    override fun getSearchListPage(): String {
-        return LIST_PAGE
+    override fun getImpressionEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            IMPRESSION_SRP_RECOM_OOC
+        } else {
+            IMPRESSION_SRP_PRODUCT_TOKONOW
+        }
     }
 
-    override fun getSearchAndroidPageName(): String {
-        return PAGE_NAME_SEARCH
+    override fun getClickEventAction(isOOC: Boolean): String {
+        return if (isOOC) {
+            CLICK_SRP_RECOM_OOC
+        } else {
+            CLICK_SRP_PRODUCT_TOKONOW
+        }
     }
 
-    override fun getPageId(): String {
-        return ""
+    override fun getAtcEventAction(isOOC: Boolean): String {
+        return CLICK_ATC_SRP_PRODUCT_TOKONOW
     }
 
-    override fun getEventLabel(): String {
+    override fun getEventCategory(isOOC: Boolean): String {
+        return TOKONOW_EMPTY_RESULT
+    }
+
+    override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
+        return if (isOOC) {
+            String.format(
+                VALUE_LIST_OOC,
+                RECOM_LIST_PAGE,
+                recommendationItem.recommendationType,
+                if (recommendationItem.isTopAds) VALUE_TOPADS else ""
+            )
+        } else {
+            ProductRecommendationTracking.buildTokonowRecommendationList(
+                pageList = RECOM_LIST_PAGE,
+                pageRecommendationType = recommendationItem.recommendationType
+            )
+        }
+    }
+
+    override fun getEventLabel(isOOC: Boolean): String {
         return getViewModel().query
     }
 }
