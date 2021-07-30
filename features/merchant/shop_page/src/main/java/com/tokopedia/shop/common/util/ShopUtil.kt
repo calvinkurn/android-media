@@ -100,11 +100,10 @@ object ShopUtil {
     }
 
     fun isUsingNewShareBottomSheet(context: Context): Boolean {
-        return true
-//        return UniversalShareBottomSheet.isCustomSharingEnabled(
-//                context,
-//                ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
-//        )
+        return UniversalShareBottomSheet.isCustomSharingEnabled(
+                context,
+                ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
+        )
     }
 
     fun joinStringWithDelimiter(vararg listString: String, delimiter: String): String {
