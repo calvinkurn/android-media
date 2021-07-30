@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -125,7 +126,6 @@ class TokoNowHomeFragment: Fragment(),
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
         const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
-        const val MAIN_SHOP_ID = "11530573"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -1131,7 +1131,7 @@ class TokoNowHomeFragment: Fragment(),
                 resources.getString(R.string.tokopedianow_home_share_main_text),
                 SHARE_URL,
                 userSession.userId,
-                MAIN_SHOP_ID,
+                TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2,
                 if(isScreenShot) resources.getString(R.string.tokopedianow_home_share_thumbnail_title_ss)
                 else resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
                 THUMBNAIL_IMAGE_SHARE_URL,
