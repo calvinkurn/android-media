@@ -1885,7 +1885,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                    if (isSuccessRegister) {
+                    if (isSuccessRegister && getUserSession().isLoggedIn) {
                         gotoNewUserZonePage()
                     }
                 }
@@ -2958,6 +2958,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
             it.startActivities(arrayOf(intentHome, intentNewUser))
+            it.finish()
         }
     }
 }
