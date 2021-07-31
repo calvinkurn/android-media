@@ -165,6 +165,7 @@ class TopupBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
+            // TODO: [Misael] change to setValue
             _favNumberData.postValue(Success(data.favNumber))
         }) {
             _favNumberData.postValue(Fail(it))

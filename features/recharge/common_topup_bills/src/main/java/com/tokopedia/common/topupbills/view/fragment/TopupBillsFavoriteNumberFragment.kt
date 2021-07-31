@@ -64,6 +64,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -592,7 +593,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId)
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
                 currentCategoryName, operatorName, userSession.userId)
 
@@ -604,7 +605,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     override fun onChangeNameMenuClicked(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId)
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventImpressionEditBottomSheet(
                 currentCategoryName, operatorName, userSession.userId)
 
@@ -617,7 +618,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId)
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
                 currentCategoryName, operatorName, userSession.userId)
 
@@ -626,8 +627,8 @@ class TopupBillsFavoriteNumberFragment :
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = favNumberItem.categoryId,
-                        productId = favNumberItem.productId,
+                        categoryId = favNumberItem.categoryId.toIntOrZero(),
+                        productId = favNumberItem.productId.toIntOrZero(),
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = newName,
@@ -664,14 +665,14 @@ class TopupBillsFavoriteNumberFragment :
             }
         }
 
-        val operatorName = getOperatorNameById(favNumberItem.operatorId)
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberDeletePopUp(
                 currentCategoryName, operatorName, userSession.userId
         )
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId)
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
         commonTopupBillsAnalytics.eventClickFavoriteNumberConfirmDelete(
                 currentCategoryName, operatorName, userSession.userId
         )
@@ -681,8 +682,8 @@ class TopupBillsFavoriteNumberFragment :
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = favNumberItem.categoryId,
-                        productId = favNumberItem.productId,
+                        categoryId = favNumberItem.categoryId.toIntOrZero(),
+                        productId = favNumberItem.productId.toIntOrZero(),
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = favNumberItem.clientName,
