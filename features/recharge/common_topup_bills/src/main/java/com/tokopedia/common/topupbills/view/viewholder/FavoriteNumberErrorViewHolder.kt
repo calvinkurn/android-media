@@ -18,7 +18,7 @@ class FavoriteNumberErrorViewHolder(
                 errorStateListener.refreshFavoriteNumberPage()
             }
             commonTopupBillsErrorStateImg.setImageResource(
-                R.drawable.common_topup_ic_error_illustration
+                R.drawable.common_topup_ic_illustration_error
             )
         }
     }

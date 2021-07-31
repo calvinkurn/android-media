@@ -165,7 +165,6 @@ class TopupBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
-            // TODO: [Misael] change to setValue
             _favNumberData.postValue(Success(data.favNumber))
         }) {
             _favNumberData.postValue(Fail(it))
@@ -184,7 +183,7 @@ class TopupBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberData>()
 
-            _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber))
+            _seamlessFavNumberData.value = Success(data.seamlessFavoriteNumber)
         }) {
             val errMsg = when (prevActionType) {
                 UPDATE -> ERROR_FETCH_AFTER_UPDATE
@@ -192,7 +191,7 @@ class TopupBillsViewModel @Inject constructor(
                 UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
                 else -> it.message
             }
-            _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
+            _seamlessFavNumberData.value = Fail(Throwable(errMsg))
         }
     }
 
@@ -213,18 +212,18 @@ class TopupBillsViewModel @Inject constructor(
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
             when (actionType) {
-                UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
-                DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
-                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
+                UPDATE -> _seamlessFavNumberUpdateData.value = Success(data.updateFavoriteDetail)
+                DELETE -> _seamlessFavNumberDeleteData.value = Success(data.updateFavoriteDetail)
+                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.value = Success(data.updateFavoriteDetail)
             }
         }) {
             when (actionType) {
-                UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
+                UPDATE -> _seamlessFavNumberUpdateData.value = Fail(it)
                 DELETE -> {
-                    _seamlessFavNumberDeleteData.postValue(Fail(it))
+                    _seamlessFavNumberDeleteData.value = Fail(it)
                     onModifyCallback?.invoke()
                 }
-                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
+                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.value = Fail(it)
             }
         }
     }
