@@ -74,7 +74,7 @@ object TopChatWebSocketParam {
         productProfile.addProperty("name", product.name)
         productProfile.addProperty("price", product.price)
         productProfile.addProperty("price_before", productPreview.priceBefore)
-        productProfile.addProperty("price_before_int", productPreview.priceBeforeInt)
+        productProfile.addProperty("price_before_int", productPreview.priceBeforeInt.toLong())
         productProfile.addProperty("drop_percentage", productPreview.dropPercentage)
         productProfile.addProperty("image_url", product.productImageThumbnail)
         productProfile.addProperty("url", product.productUrl)

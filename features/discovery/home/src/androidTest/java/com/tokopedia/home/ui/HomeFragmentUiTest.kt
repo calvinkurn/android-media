@@ -267,16 +267,6 @@ class HomeFragmentUiTest {
         )
 
         assertCoachmarkAndNext(
-            title = ChooseAddressUtils.coachMark2Item(context, View(context)).title.toString(),
-            desc = ChooseAddressUtils.coachMark2Item(context, View(context)).description.toString()
-        )
-
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_wallet_title,
-            descRes = R.string.onboarding_coachmark_wallet_description
-        )
-
-        assertCoachmarkAndNext(
             titleRes = R.string.home_gopay_coachmark_title,
             descRes = R.string.home_gopay_coachmark_description
         )

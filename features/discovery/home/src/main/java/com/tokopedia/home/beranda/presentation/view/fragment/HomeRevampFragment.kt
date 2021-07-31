@@ -728,34 +728,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
 
-        //add location
-        if (isLocalizingAddressNeedShowCoachMark(requireContext())) {
-            val chooseLocationWidget = getLocationWidgetView()
-            chooseLocationWidget?.let {
-                if (it.isVisible) {
-                    this.add(
-                            ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
-                    )
-                }
-            }
-        }
         //add balance widget
         //uncomment this to activate balance widget coachmark
-
-        if (!skipBalanceWidget && !isBalanceWidgetCoachmarkShown(requireContext())) {
-            val balanceWidget = getTokopointsBalanceWidgetView()
-            balanceWidget?.let {
-                this.add(
-                        CoachMark2Item(
-                                balanceWidget,
-                                getString(R.string.onboarding_coachmark_wallet_title),
-                                getString(R.string.onboarding_coachmark_wallet_description)
-                        )
-                )
-                tokopointsCoachmarkPosition = (this.size-1)
-            }
-        }
-
         if (isUsingWalletApp()) {
             if (!skipBalanceWidget && !isWalletAppCoachmarkShown(requireContext())) {
                 val gopayWidget = getGopayBalanceWidgetView()

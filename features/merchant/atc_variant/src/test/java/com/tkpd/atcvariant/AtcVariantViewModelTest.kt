@@ -1,6 +1,7 @@
 package com.tkpd.atcvariant
 
 import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
+import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.util.AtcVariantJsonHelper.generateParamsVariantFulfilled
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -8,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
@@ -16,10 +18,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.slot
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -30,6 +29,13 @@ import org.junit.Test
 class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     //region helper function
+    @Test
+    fun `get aggreagator data`() {
+        `render initial variant with given child id and hit gql tokonow`()
+        val data = viewModel.getVariantAggregatorData()
+
+        Assert.assertNotNull(data)
+    }
     @Test
     fun `fail get selected option ids`() {
         decideFailValueHitGqlAggregator()
@@ -133,7 +139,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         }
 
-        Assert.assertEquals(viewModel.variantActivityResult.value?.shouldRefreshPreviousPage, true)
+        Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
     }
     //endregion
 
@@ -287,12 +293,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertButton(expectedIsBuyable = true,
                 expectedCartText = "+ Keranjang Hijau M")
 
-        val updateResultData = viewModel.variantActivityResult.value
+        val updateResultData = viewModel.getActivityResultData()
         val variantDataVisitable = visitablesData[1] as VariantComponentDataModel
-        Assert.assertTrue(updateResultData != null)
-        Assert.assertTrue(updateResultData?.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
+        Assert.assertTrue(updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
                 ?: false)
-        Assert.assertEquals(updateResultData?.selectedProductId, "2147818586")
+        Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
     }
 
     /**
@@ -347,9 +352,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.addWishlist(productId, "")
 
-        val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertTrue(updateResultData != null)
-        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, true)
+        val updateResultData = viewModel.getActivityResultData()
+        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
 
         assertButton(false,
                 "check_wishlist",
@@ -370,9 +374,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.addWishlist(productId, "")
 
-        val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertTrue(updateResultData != null)
-        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, true)
+        val updateResultData = viewModel.getActivityResultData()
+        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
 
         assertButton(false, null, null, null)
         Assert.assertTrue(viewModel.addWishlistResult.value is Success)
@@ -391,8 +394,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.addWishlist(productId, "")
 
-        val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, false)
+        val updateResultData = viewModel.getActivityResultData()
+        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, false)
 
         assertButton(false,
                 "remind_me",
@@ -405,17 +408,86 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
     //region atc
     @Test
+    fun `on success delete cart`() {
+        `render initial variant with given child id and hit gql tokonow`()
+        `on success atc tokonow`()
+
+        val mockData = RemoveFromCartData(data = com.tokopedia.cartcommon.data.response.deletecart.Data(message = listOf("sukses delete cart")))
+        coEvery {
+            deleteCartUseCase.executeOnBackground()
+        } returns mockData
+
+        viewModel.deleteProductInCart("2147818593")
+
+        val cartId = slot<List<String>>()
+
+        coVerify { deleteCartUseCase.executeOnBackground() }
+        verify { deleteCartUseCase.setParams(capture(cartId)) }
+
+        val cartIdDeleted = cartId.captured.firstOrNull()
+        Assert.assertNotNull(cartIdDeleted)
+        Assert.assertEquals(cartIdDeleted ?: "", "2147818593")
+
+        Assert.assertNotNull(viewModel.deleteCartLiveData.value)
+        Assert.assertTrue(viewModel.deleteCartLiveData.value is Success)
+        Assert.assertNotNull((viewModel.deleteCartLiveData.value as Success).data, "sukses delete cart")
+
+        //after delete cart, delete icon must not visible
+        val quantityDataModel = (viewModel.initialData.value as Success).data.first {
+            it is VariantQuantityDataModel
+        } as VariantQuantityDataModel
+
+        Assert.assertEquals(quantityDataModel.shouldShowDeleteButton, false)
+
+        //after delete cart, button should back to cart redir + keranjang
+        assertButton(expectedCartText = "+ Keranjang", expectedIsBuyable = true)
+    }
+
+    @Test
+    fun `on fail delete cart`() {
+        `render initial variant with given child id and hit gql tokonow`()
+        `on success atc tokonow`()
+
+        coEvery {
+            deleteCartUseCase.executeOnBackground()
+        } throws Throwable("gagal delete cart")
+
+        viewModel.deleteProductInCart("2147818593")
+
+        val cartId = slot<List<String>>()
+
+        coVerify { deleteCartUseCase.executeOnBackground() }
+        verify { deleteCartUseCase.setParams(capture(cartId)) }
+
+        val cartIdDeleted = cartId.captured.firstOrNull()
+        Assert.assertNotNull(cartIdDeleted)
+        Assert.assertEquals(cartIdDeleted ?: "", "2147818593")
+
+        Assert.assertNotNull(viewModel.deleteCartLiveData.value)
+        Assert.assertTrue(viewModel.deleteCartLiveData.value is Fail)
+        Assert.assertNotNull((viewModel.deleteCartLiveData.value as Fail).throwable.message, "gagal delete cart")
+
+        val quantityDataModel = (viewModel.initialData.value as Success).data.first {
+            it is VariantQuantityDataModel
+        } as VariantQuantityDataModel
+
+        Assert.assertEquals(quantityDataModel.shouldShowDeleteButton, true)
+
+        assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
+    }
+
+    @Test
     fun `on success atc tokonow`() {
         `render initial variant with given child id and hit gql tokonow`()
         val actionButtonAtc = 2
 
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L, cartId = "2147818593"), status = "OK")
         val slotRequest = slot<RequestParams>()
         coEvery {
             addToCartUseCase.createObservable(capture(slotRequest)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyAtc = true)
 
         val request = slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
@@ -436,7 +508,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "attribution", "trackerlist", false)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "attribution", "trackerlist", false)
         verifyAtcUsecase(verifyAtc = true)
 
         val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartRequestParams
@@ -456,7 +528,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyAtc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -475,7 +547,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         } returns updateAtcResponse
 
         viewModel.updateQuantity(50, "2147818576")
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
             updateCartUseCase.setParams(capture(updateCartRequest), any())
@@ -497,7 +569,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             updateCartUseCase.executeOnBackground()
         } returns failUpdataAtcResponse
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
             updateCartUseCase.setParams(capture(updateCartRequest), any())
@@ -519,7 +591,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOcsUseCase.createObservable(capture(slot)).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 30000, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 30000.0, "", "", true)
         verifyAtcUsecase(verifyOcs = true)
 
         val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
@@ -540,7 +612,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOcsUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyOcs = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -557,7 +629,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOccUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -575,7 +647,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOccUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -593,7 +665,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             addToCartOccUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
 
-        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", false)
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", false)
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)

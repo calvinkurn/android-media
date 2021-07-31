@@ -271,8 +271,11 @@ abstract class BaseSearchCategoryFragment:
                 ) { }
             else this
 
-    protected open fun getNavToolbarHint() =
-            listOf(HintData("", ""))
+    protected open fun getNavToolbarHint(): List<HintData> {
+        val hint = getString(R.string.tokopedianow_search_bar_hint)
+
+        return listOf(HintData(hint, hint))
+    }
 
     protected open fun onSearchBarClick(hint: String = "") {
         val autoCompleteApplink = getAutoCompleteApplink()
