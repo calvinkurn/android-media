@@ -11,6 +11,7 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -48,13 +49,16 @@ abstract class BaseAtcVariantViewModelTest {
     @RelaxedMockK
     lateinit var updateCartUseCase: UpdateCartUseCase
 
+    @RelaxedMockK
+    lateinit var deleteCartUseCase: DeleteCartUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     val viewModel by lazy {
         AtcVariantViewModel(CoroutineTestDispatchersProvider, aggregatorMiniCartUseCase,
                 addToCartUseCase, addToCartOcsUseCase,
-                addToCartOccUseCase, addWishListUseCase, updateCartUseCase)
+                addToCartOccUseCase, addWishListUseCase, updateCartUseCase, deleteCartUseCase)
     }
 
     @Before
@@ -122,7 +126,7 @@ abstract class BaseAtcVariantViewModelTest {
         visitables.forEach {
             when (it) {
                 is VariantHeaderDataModel -> {
-                    Assert.assertEquals(it.headerData.productId, expectedSelectedProductId)
+                    Assert.assertEquals(it.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
                     Assert.assertEquals(it.headerData.productDiscountedPercentage, 0)
                     Assert.assertEquals(it.headerData.productStock, expectedSelectedStock)
