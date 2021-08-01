@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager.getIntent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
-import com.tokopedia.config.BuildConfig.VERSION_NAME
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.kotlin.extensions.view.formattedToMB
@@ -119,7 +119,7 @@ class MediaLoaderActivityLifecycle(
     }
 
     private fun glideMigration() {
-        if (!preferences.glideMigration() && VERSION_NAME == MIGRATION_VERSION_SUPPORT) {
+        if (!preferences.glideMigration() && GlobalConfig.VERSION_NAME == MIGRATION_VERSION_SUPPORT) {
             scope.launch {
                 Glide.get(context).clearDiskCache()
 
