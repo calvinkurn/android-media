@@ -4,7 +4,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberErrorStateBinding
-import com.tokopedia.common.topupbills.view.listener.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
 
 class FavoriteNumberErrorViewHolder(
@@ -21,6 +20,11 @@ class FavoriteNumberErrorViewHolder(
                 R.drawable.common_topup_ic_illustration_error
             )
         }
+    }
+
+    interface FavoriteNumberErrorStateListener {
+
+        fun refreshFavoriteNumberPage()
     }
 
     companion object {

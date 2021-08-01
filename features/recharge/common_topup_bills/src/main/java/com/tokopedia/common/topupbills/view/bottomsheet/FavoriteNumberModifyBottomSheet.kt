@@ -1,12 +1,9 @@
 package com.tokopedia.common.topupbills.view.bottomsheet
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.view.listener.FavoriteNumberModifyListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_modify.view.*
 
@@ -97,6 +94,10 @@ class FavoriteNumberModifyBottomSheet(
             return getString(R.string.common_topup_fav_number_validator_alphanumeric)
         }
         return null
+    }
+
+    interface FavoriteNumberModifyListener {
+        fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem)
     }
 
     companion object {

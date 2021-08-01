@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.*
 import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.view.*
 
 class FavoriteNumberMenuBottomSheet(
@@ -56,6 +54,11 @@ class FavoriteNumberMenuBottomSheet(
                 dismiss()
             }
         }
+    }
+
+    interface FavoriteNumberMenuListener {
+        fun onChangeNameMenuClicked(favNumberItem: TopupBillsSeamlessFavNumberItem)
+        fun onDeleteContactClicked(favNumberItem: TopupBillsSeamlessFavNumberItem)
     }
 
     companion object {
