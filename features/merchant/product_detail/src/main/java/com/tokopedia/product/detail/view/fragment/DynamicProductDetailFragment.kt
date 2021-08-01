@@ -278,7 +278,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var varToolbar: Toolbar? = null
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
-    private var isLoginFromStickyLogin = false
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
@@ -539,13 +538,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     when (viewModel.talkLastAction) {
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
-                    }
-                }
-
-                if (resultCode == Activity.RESULT_OK && data != null && isLoginFromStickyLogin) {
-                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
-                    if (isSuccessRegister) {
-                        gotoNewUserZonePage()
                     }
                 }
             }
@@ -2699,7 +2691,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         stickyLoginView?.lifecycleOwner = viewLifecycleOwner
         stickyLoginView?.setStickyAction(object : StickyLoginAction {
             override fun onClick() {
-                isLoginFromStickyLogin = true
                 goToLogin()
             }
 
@@ -3587,11 +3578,5 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String) {
         DynamicProductDetailTracking.Click.eventClickBestSeller(componentTrackDataModel, viewModel.getDynamicProductInfoP1, "", viewModel.userId)
         goToApplink(appLink)
-    }
-
-    private fun gotoNewUserZonePage() {
-        activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
-        }
     }
 }
