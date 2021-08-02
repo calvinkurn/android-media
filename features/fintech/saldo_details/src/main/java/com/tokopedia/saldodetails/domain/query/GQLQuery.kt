@@ -78,3 +78,49 @@ const val GQL_PENJUALAN_TRANSACTION_LIST = """
         }
 }   
 """
+
+const val GQL_WITHDRAWAL_DETAIL =
+    """query RichieGetWithdrawalInfo(${'$'}withdrawalID: String) {
+        RichieGetWithdrawalInfo(withdrawalID: ${'$'}withdrawalID) {
+            data {
+                is_success
+                withdrawal_info {
+                    withdrawal_id
+                    status
+                    status_string
+                    status_color
+                    amount
+                    fee
+                    transferred_amount
+                    create_time
+                    bank_name
+                    acc_no
+                    acc_name
+                    history {
+                      title
+                      description
+                      create_time
+                    }
+                }
+            }
+            message_error
+        }
+        }"""
+
+const val GQL_DEPOSIT_HISTORY_INVOICE = """
+    query MidasDepositHistoryInvoiceDetail(${'$'}summaryID: String!) {
+         MidasDepositHistoryInvoiceDetail(summaryID: ${'$'}summaryID) {
+            is_success
+            deposit_history {
+                total_amount
+                create_time
+                invoice_no
+                invoice_url
+                order_url_android
+                detail {
+                  type_description
+                  amount
+                }
+            }
+        }
+    }"""

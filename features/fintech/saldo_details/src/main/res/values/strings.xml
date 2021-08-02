@@ -95,9 +95,19 @@
     <string name="saldo_tanggal_ditahan">Tanggal Ditahan</string>
     <string name="saldo_dana_tertahan">Dana Tertahan</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
+    <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
+    <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
     <string name="saldo_info_ticker">Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia.</string>
     <string name="merchant_credit_mcl_logo_text">MCl Logo</string>
     <string name="saldo_prioritas_title">Saldo Prioritas</string>
     <string name="saldo_kyc_description_text">Status: Menunggu Verifikasi Aplikasi</string>
     <string name="saldo_transaction_empty_list">No Result</string>
+    <string name="saldo_withdrawal_amount">Jumlah Penarikan</string>
+    <string name="saldo_withdrawal_fee">Biaya Penarikan</string>
+    <string name="saldo_transferred_amount">Jumlah yang Ditransfer</string>
+    <string name="saldo_withdrawal_info_details">Rincian penarikan</string>
+    <string name="saldo_withdrawal_balance_status">Status penarikan saldo</string>
+    <string name="saldo_sales_detail_view_order">Lihat Detail Pesanan</string>
+    <string name="saldo_sales_total_received">Total Diterima</string>
+    <string name="saldo_sales_invoice_copied_toast">Invoice berhasil disalin</string>
 </resources>

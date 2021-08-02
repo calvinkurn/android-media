@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.saldodetails.view.viewmodel.DepositHistoryInvoiceDetailViewModel
 import com.tokopedia.saldodetails.view.viewmodel.TransactionHistoryViewModel
+import com.tokopedia.saldodetails.view.viewmodel.WithdrawalDetailViewModel
 import com.tokopedia.saldodetails.viewmodels.MerchantSaldoPriorityViewModel
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
@@ -43,4 +45,17 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TransactionHistoryViewModel::class)
     internal abstract fun transactionHistoryViewModel(viewModel: TransactionHistoryViewModel): ViewModel
+
+    @SaldoDetailsScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(WithdrawalDetailViewModel::class)
+    internal abstract fun withdrawalDetailViewModel(viewModel: WithdrawalDetailViewModel): ViewModel
+
+    @SaldoDetailsScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(DepositHistoryInvoiceDetailViewModel::class)
+    internal abstract fun depositHistoryInvoiceDetailViewModel(viewModel: DepositHistoryInvoiceDetailViewModel): ViewModel
+
 }

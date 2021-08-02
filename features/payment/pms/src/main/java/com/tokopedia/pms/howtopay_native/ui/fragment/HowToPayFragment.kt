@@ -328,6 +328,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                 val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
                         dataStr.replace(extraSpaceRegexStr, ""))
                 clipboard.setPrimaryClip(clip)
+
             }catch (e : Exception){}
             if (::appLinkPaymentInfo.isInitialized)
                 howToPayAnalytics.get().eventOnCopyCodeClick(appLinkPaymentInfo.payment_type)

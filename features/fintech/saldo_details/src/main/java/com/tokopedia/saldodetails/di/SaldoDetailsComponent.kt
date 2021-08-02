@@ -3,11 +3,11 @@ package com.tokopedia.saldodetails.di
 import android.content.Context
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
-import com.tokopedia.saldodetails.view.fragment.MerchantCreditDetailFragment
-import com.tokopedia.saldodetails.view.fragment.MerchantSaldoPriorityFragment
-import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment
-import com.tokopedia.saldodetails.view.fragment.SaldoTransactionListFragment
+import com.tokopedia.saldodetails.view.activity.detail.SaldoSalesDetailActivity
+import com.tokopedia.saldodetails.view.activity.detail.SaldoWithdrawalDetailActivity
+import com.tokopedia.saldodetails.view.fragment.*
+import com.tokopedia.saldodetails.view.fragment.detail.SaldoSalesDetailFragment
+import com.tokopedia.saldodetails.view.fragment.detail.SaldoWithdrawalDetailFragment
 import dagger.Component
 
 @SaldoDetailsScope
@@ -35,5 +35,9 @@ interface SaldoDetailsComponent {
     fun inject(saldoTransactionHistoryFragment: SaldoTransactionHistoryFragment)
 
     fun inject(saldoHoldInfoActivity: SaldoHoldInfoActivity)
+    fun inject(saldoWithdrawalDetailActivity: SaldoWithdrawalDetailActivity)
+    fun inject(saldoSalesDetailActivity: SaldoSalesDetailActivity)
+    fun inject(saldoWithdrawalDetailFragment: SaldoWithdrawalDetailFragment)
+    fun inject(saldoSalesDetailFragment: SaldoSalesDetailFragment)
 
 }
