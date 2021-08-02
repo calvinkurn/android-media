@@ -33,7 +33,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private var errorHolder: FrameLayout = itemView.findViewById(R.id.filter_error_view)
 
     init {
-        linearLayoutManager.initialPrefetchItemCount = 4
+        linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mDiscoveryRecycleAdapter.setHasStableIds(true)
@@ -180,5 +180,9 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     override fun getInnerRecycleView(): RecyclerView {
         return mProductCarouselRecyclerView
+    }
+
+    companion object{
+        const val PREFETCH_ITEM_COUNT = 4
     }
 }
