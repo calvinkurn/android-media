@@ -148,6 +148,7 @@ object GqlQueryConstant {
             "                    location\n" +
             "                    isAllowManage\n" +
             "                    shopSnippetURL\n" +
+            "                    branchLinkDomain\n" +
             "                    statusInfo {\n" +
             "                        shopStatus\n" +
             "                        statusMessage\n" +

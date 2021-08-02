@@ -8,7 +8,7 @@ data class BalanceDrawerItemModel(
         val applinkContainer: String = "",
         val applinkActionText: String = "",
         val redirectUrl: String = "",
-        val iconImageUrl: String = "",
+        val iconImageUrl: String? = null,
         val defaultIconRes: Int? = null,
         var balanceTitleTextAttribute: BalanceTextAttribute? = null,
         var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,

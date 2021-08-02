@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Outline
@@ -37,6 +38,7 @@ class RoundedImageView : AppCompatImageView {
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun dispatchDraw(canvas: Canvas) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             val save = canvas.save()

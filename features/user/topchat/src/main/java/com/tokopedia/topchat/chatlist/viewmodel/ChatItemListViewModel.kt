@@ -35,14 +35,13 @@ import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetada
 import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -67,16 +66,17 @@ interface ChatItemListContract {
 }
 
 class ChatItemListViewModel @Inject constructor(
-        private val repository: GraphqlRepository,
-        private val queries: Map<String, String>,
-        private val chatWhitelistFeature: GetChatWhitelistFeature,
-        private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
-        private val pinChatUseCase: MutationPinChatUseCase,
-        private val unpinChatUseCase: MutationUnpinChatUseCase,
-        private val getChatListUseCase: GetChatListMessageUseCase,
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
-        private val userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatcher
+    private val repository: GraphqlRepository,
+    private val queries: Map<String, String>,
+    private val chatWhitelistFeature: GetChatWhitelistFeature,
+    private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
+    private val pinChatUseCase: MutationPinChatUseCase,
+    private val unpinChatUseCase: MutationUnpinChatUseCase,
+    private val getChatListUseCase: GetChatListMessageUseCase,
+    private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val userSession: UserSessionInterface,
+    private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
     var filter: String = PARAM_FILTER_ALL
@@ -202,22 +202,20 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     override fun chatMoveToTrash(messageId: String) {
-        queries[QUERY_DELETE_CHAT_MESSAGE]?.let { query ->
-            val params = mapOf(PARAM_MESSAGE_ID to messageId.toLong())
-
-            launchCatchError(block = {
-                val data = withContext(dispatcher) {
-                    val request = GraphqlRequest(query, ChatDeleteStatus::class.java, params)
-                    repository.getReseponse(listOf(request))
-                }.getSuccessData<ChatDeleteStatus>()
-
-                if (data.chatMoveToTrash.list.isNotEmpty()) {
-                    val deletedChat = data.chatMoveToTrash.list.first()
-                    _deleteChat.value = Success(deletedChat)
-                    clearFromPinUnpin(deletedChat.messageId.toString())
+        launch {
+            try {
+                val result = moveChatToTrashUseCase.execute(messageId)
+                if(result.chatMoveToTrash.list.isNotEmpty()) {
+                    val deletedChat = result.chatMoveToTrash.list.first()
+                    if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                        _deleteChat.value = Success(deletedChat)
+                        clearFromPinUnpin(deletedChat.messageId.toString())
+                    } else {
+                        _deleteChat.value = Fail(Throwable(deletedChat.detailResponse))
+                    }
                 }
-            }) {
-                _deleteChat.value = Fail(it)
+            } catch (throwable: Throwable) {
+                _deleteChat.value = Fail(throwable)
             }
         }
     }

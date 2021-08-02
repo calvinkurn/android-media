@@ -82,7 +82,6 @@
         android:id="@+id/swipeRefreshPdp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:descendantFocusability="blocksDescendants"
         app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toTopOf="@+id/pdp_button_barrier"
         app:layout_constraintLeft_toLeftOf="parent"

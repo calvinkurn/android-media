@@ -48,22 +48,10 @@ public class CMNotificationFactory {
                 return null;
             }
             switch (baseNotificationModel.getType()) {
-
                 case CMConstant.NotificationType.GENERAL:
-                    if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
-                        return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
-                    }
-                    return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
-
-                case CMConstant.NotificationType.ACTION_BUTTONS:
-                    return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
-
                 case CMConstant.NotificationType.BIG_IMAGE:
-                    if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
-                        return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
-                    }
-                    return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
-
+                case CMConstant.NotificationType.ACTION_BUTTONS:
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
                 case CMConstant.NotificationType.PERSISTENT:
                     CMEvents.postGAEvent(PersistentEvent.EVENT_VIEW_NOTIFICATION, PersistentEvent.EVENT_CATEGORY,
                             PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, PersistentEvent.EVENT_LABEL);
