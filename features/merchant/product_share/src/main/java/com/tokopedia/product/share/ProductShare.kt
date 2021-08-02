@@ -236,8 +236,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 feature = shareModel.feature
                 channel = shareModel.channel
                 campaign = shareModel.campaign
-                ogTitle = productData.productName
-                ogDescription = productData.productShareDescription
+                ogTitle = generateOgTitle(productData)
+                ogDescription = generateOgDescription(productData)
                 if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                     ogImageUrl = shareModel.ogImgUrl
                 }
@@ -276,6 +276,14 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
     }
 
+    private fun generateOgTitle(productData: ProductData): String {
+        return "${productData.productName} - ${productData.priceText}"
+    }
+
+    private fun generateOgDescription(productData: ProductData): String {
+        return "${productData.shopName} - ${productData.productShareDescription}"
+    }
+
     override fun onCloseOptionClicked() {
         universalShareBottomSheet?.dismiss()
     }
@@ -305,12 +313,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             //Please replace userId and productId with actual values
             setUtmCampaignData("PDP", productData.userId, productData.productId, "Share")
             //example integration
-            var productImagesList: ArrayList<String> = ArrayList()
-            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/7736c4fc-d951-48ba-a74a-8d22557731d7.jpg")
-            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/80e43157-2eb1-4f6d-8697-b5ec12e867a1.jpg")
-            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/b289820f-a568-40a7-8dc9-967440e5088f.jpg")
-            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/76ff5584-31cc-44bb-833e-121e3d937598.jpg")
-            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/12e9194a-6456-4cd2-b250-c366153cac20.jpg")
             setMetaData(productData.productName ?: "",
                             productData.productImageUrl ?: "",
                             "", productImgList)
