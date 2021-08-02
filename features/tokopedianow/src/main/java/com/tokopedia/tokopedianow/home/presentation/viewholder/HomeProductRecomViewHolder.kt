@@ -103,6 +103,10 @@ class HomeProductRecomViewHolder(
         saveCarouselScrollPosition()
     }
 
+    override fun onWidgetFail(pageName: String, e: Exception) {
+
+    }
+
     private fun saveCarouselScrollPosition() {
         val adapterPosition = this.adapterPosition
         val carouselScrollPosition = productRecom.getCurrentPosition()
