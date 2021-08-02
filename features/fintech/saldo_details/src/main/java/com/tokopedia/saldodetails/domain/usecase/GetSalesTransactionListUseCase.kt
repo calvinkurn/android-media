@@ -16,9 +16,8 @@ class GetSalesTransactionListUseCase
 @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<GQLSalesTransactionListResponse>(graphqlRepository) {
 
-    fun loadSalesTransactions(page: Int, startDate: Date, endDate: Date,
-                             onSuccess: (response: GQLSalesTransactionListResponse) -> Unit,
-                             onError: (Throwable) -> Unit) {
+    fun loadSalesTransactions(onSuccess: (response: GQLSalesTransactionListResponse) -> Unit,
+                             onError: (Throwable) -> Unit, page: Int, startDate: Date, endDate: Date,) {
         try {
             val params = getRequestParams(startDate, endDate, page)
             this.setTypeClass(GQLSalesTransactionListResponse::class.java)

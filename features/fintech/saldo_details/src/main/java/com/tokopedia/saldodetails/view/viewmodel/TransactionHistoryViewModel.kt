@@ -84,7 +84,7 @@ class TransactionHistoryViewModel @Inject constructor(
     }
 
     private fun loadSaleTransaction(page: Int) {
-        getSalesTransactionListUseCase.loadSalesTransactions(page, dateFrom, dateTo, {
+        getSalesTransactionListUseCase.loadSalesTransactions({
             onSalesTabDataLoaded(it.salesTransactionListResponse, page)
         }, {
             if (page == 1) {
@@ -95,7 +95,7 @@ class TransactionHistoryViewModel @Inject constructor(
                 salesTransactionLiveData
                     .postValue(LoadMoreError(it))
             }
-        })
+        }, page, dateFrom, dateTo)
     }
 
     private fun onSalesTabDataLoaded(response: SalesTransactionListResponse, page: Int) {
@@ -169,13 +169,12 @@ class TransactionHistoryViewModel @Inject constructor(
         if (transactionType == SalesTransaction) {
             loadSaleTransaction(page)
         } else {
-            getTypeTransactionsUseCase.loadTypeTransactions(page,
-                dateFrom, dateTo, transactionType, {
+            getTypeTransactionsUseCase.loadTypeTransactions({
                     notifyAndAddLoadMoreTransaction(it, transactionType)
                 }, {
                     notifyLoadMoreError(it, transactionType)
                 }
-            )
+            , page, dateFrom, dateTo, transactionType)
         }
     }
 

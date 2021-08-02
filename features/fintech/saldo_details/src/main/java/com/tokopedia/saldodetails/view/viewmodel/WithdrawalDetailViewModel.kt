@@ -38,8 +38,8 @@ class WithdrawalDetailViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        getWithdrawalInfoUseCase.cancelJobs()
         super.onCleared()
+        getWithdrawalInfoUseCase.cancelJobs()
     }
 
 }

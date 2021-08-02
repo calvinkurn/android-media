@@ -53,8 +53,8 @@ class DepositHistoryInvoiceDetailViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        getDepositHistoryInfoUseCase.cancelJobs()
         super.onCleared()
+        getDepositHistoryInfoUseCase.cancelJobs()
     }
 
 }
