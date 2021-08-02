@@ -134,6 +134,7 @@ class ShopHomeNplCampaignViewHolder(
                         itemView.rv_product_carousel?.layoutManager?.onRestoreInstanceState(rvState)
                     }
                     val clickableBannerAreaWidth = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
+                    productListCampaignAdapter?.clearAllElements()
                     if(productList.isNotEmpty())
                         productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
                     productListCampaignAdapter?.addElement(productList)
