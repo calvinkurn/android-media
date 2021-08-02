@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
@@ -87,7 +86,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SharedTelcoViewModel::class.java)
         }
     }

@@ -9,7 +9,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -89,7 +88,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         activity?.let {
             performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_POSTPAID_TRACE)
 
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
             telcoTabViewModel = viewModelProvider.get(TelcoTabViewModel::class.java)
         }

@@ -13,9 +13,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -52,7 +49,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     protected open fun initiateViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
         }
     }

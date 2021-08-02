@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -82,7 +81,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(RechargeHomepageViewModel::class.java)
 
             adapter = RechargeHomepageAdapter(it, RechargeHomepageAdapterTypeFactory(this,

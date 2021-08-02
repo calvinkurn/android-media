@@ -9,7 +9,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
@@ -89,7 +88,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             performanceMonitoring = PerformanceMonitoring.start(DG_TELCO_PREPAID_TRACE)
             localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
 
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
             telcoTabViewModel = viewModelProvider.get(TelcoTabViewModel::class.java)
         }
