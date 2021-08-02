@@ -433,7 +433,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun renderErrorMessage(error: Throwable) {
         var errorThrowable = error
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
-            errorThrowable = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+            errorThrowable = MessageErrorException(getString(R.string.digital_common_grpc_toaster))
         }
         Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()
