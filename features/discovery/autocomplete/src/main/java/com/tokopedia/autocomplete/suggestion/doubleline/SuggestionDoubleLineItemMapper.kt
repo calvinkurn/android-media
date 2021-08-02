@@ -21,5 +21,6 @@ fun SuggestionItem.convertToDoubleLineVisitableList(searchTerm: String, position
     item.searchTerm = searchTerm
     item.position = position
     item.dimension90 = dimension90
+    item.trackingCode = this.tracking.code
     return item
 }

@@ -51,6 +51,7 @@ object ProductDetailConstant {
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
+    const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW = 1234
     const val DIFFUTIL_PAYLOAD = "payload"
 
     //Request Code
@@ -105,8 +106,10 @@ object ProductDetailConstant {
     const val REPORT = "report"
     const val MVC = "mvc"
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
+    const val CATEGORY_CAROUSEL = "category_carousel"
 
     const val BEST_SELLER = "best_seller"
+    const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
 
     //Arguments
@@ -123,7 +126,7 @@ object ProductDetailConstant {
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
-
+    const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -159,17 +162,6 @@ object ProductDetailConstant {
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
 
-    const val KEY_PRODUCT_DETAIL = "product detail"
-
-    //bo type
-    const val NO_BEBAS_ONGKIR = 0
-    const val BEBAS_ONGKIR_NORMAL = 1
-    const val BEBAS_ONGKIR_EXTRA = 2
-    const val BO_TOKONOW = 3
-
-    //shipping error code
-    const val SHIPPING_ERROR_WEIGHT = 50503
-
     const val ELIGIBLE_TRADE_IN = 1
 
     const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
@@ -185,4 +177,11 @@ object ProductDetailConstant {
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
 
     const val DEFAULT_ATC_MAX_ORDER = 100
+    const val DEFAULT_MIN_QTY = 1
+
+    const val VARIANT_SCROLL_DELAY = 200L
+    const val LOG_MAX_LENGTH = 1000
+    const val TOOLBAR_ELEVATION = 10F
+
+    const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
 }

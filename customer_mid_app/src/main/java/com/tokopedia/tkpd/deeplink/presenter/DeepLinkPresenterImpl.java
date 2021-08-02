@@ -845,6 +845,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 affiliateString,
                                 affiliateUUID);
                         productIntent.putExtra("layoutID", layoutTesting);
+                        productIntent.setData(uriData);
                         context.startActivity(productIntent);
                     } else {
                         Map<String, String> messageMap = new HashMap<>();
