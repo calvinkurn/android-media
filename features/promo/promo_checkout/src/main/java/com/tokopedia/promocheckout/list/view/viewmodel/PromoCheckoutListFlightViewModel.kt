@@ -12,7 +12,6 @@ import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -45,7 +44,7 @@ class PromoCheckoutListFlightViewModel @Inject constructor(private val dispatche
             showLoadingPromoFlight.postValue( false)
             if(!errors.isNullOrEmpty()){
                 val rawErrorMessage = errors[0].message
-                val errorMessage = Gson().fromJson(rawErrorMessage.substring(1, rawErrorMessage.length - 1), PromoCheckoutDetailFlightPresenter.Companion.FlightCheckVoucherError::class.java)
+                val errorMessage = Gson().fromJson(rawErrorMessage.substring(1, rawErrorMessage.length - 1), FlightCheckVoucherError::class.java)
                 _flightCheckVoucherResult.postValue(Fail(MessageErrorException(errorMessage.title)))
             }else{
                 val checkVoucherData = data.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
@@ -70,5 +69,7 @@ class PromoCheckoutListFlightViewModel @Inject constructor(private val dispatche
     companion object{
         const val PARAMNAME_CART_ID = "cartID"
         const val PARAMNAME_VOUCHER_CODE = "voucherCode"
+
+        data class FlightCheckVoucherError(val id: String, val status: String, val title: String)
     }
 }
