@@ -35,8 +35,9 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_S
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject

@@ -102,8 +102,6 @@ abstract class BaseSearchCategoryFragment:
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
-        const val VALUE_LIST_OOC = "/%s - rekomendasi untuk anda - %s%s - tokonow - ooc"
-        const val VALUE_TOPADS = "- topads"
     }
 
     @Inject

@@ -26,6 +26,8 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemD
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
