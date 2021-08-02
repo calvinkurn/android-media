@@ -1163,7 +1163,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                                 CoachMark2.POSITION_TOP
                         ),
                         CoachMark2Item(
-                            binding?.quickFilterSortHotelSearchMap?.sortFilterPrefix?.rootView ?: View(requireContext()),
+                            binding?.quickFilterSortHotelSearchMap?.sortFilterPrefix ?: View(requireContext()),
                                 getString(R.string.hotel_search_map_coach_mark_filter_title),
                                 getString(R.string.hotel_search_map_coach_mark_filter_desc),
                                 CoachMark2.POSITION_BOTTOM
