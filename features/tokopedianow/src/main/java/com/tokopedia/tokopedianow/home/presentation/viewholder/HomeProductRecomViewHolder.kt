@@ -3,11 +3,9 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
@@ -31,16 +29,16 @@ class HomeProductRecomViewHolder(
     private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
 
     private var channelId = ""
-    private var isFirstShowed = true
 
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         productRecom.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
-                state = RecommendationCarouselData.STATE_READY
+                state = RecommendationCarouselData.STATE_READY,
             ),
-            widgetListener = this
+            widgetListener = this,
+            scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition).orZero()
         )
     }
 
@@ -60,10 +58,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        if (isFirstShowed) {
-            listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName)
-            isFirstShowed = false
-        }
+        listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName)
     }
 
     override fun onSeeAllBannerClicked(
@@ -105,6 +100,17 @@ class HomeProductRecomViewHolder(
             shopId = recomItem.shopId.toString(),
             startActivitResult = (tokoNowListener?.getFragmentPage() as TokoNowHomeFragment)::startActivityForResult
         )
+        saveCarouselScrollPosition()
+    }
+
+    private fun saveCarouselScrollPosition() {
+        val adapterPosition = this.adapterPosition
+        val carouselScrollPosition = productRecom.getCurrentPosition()
+
+        listener?.onSaveCarouselScrollPosition(
+            adapterPosition = adapterPosition,
+            scrollPosition = carouselScrollPosition,
+        )
     }
 
     interface HomeProductRecomListener {
@@ -112,5 +118,7 @@ class HomeProductRecomViewHolder(
         fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String)
         fun onSeeAllBannerClicked(channelId: String, headerName: String)
         fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)
+        fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
+        fun onGetCarouselScrollPosition(adapterPosition: Int): Int
     }
 }

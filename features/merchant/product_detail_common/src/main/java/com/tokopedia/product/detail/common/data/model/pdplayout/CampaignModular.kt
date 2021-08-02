@@ -48,13 +48,19 @@ data class CampaignModular(
         @SerializedName("paymentInfoWording")
         val paymentInfoWording:String = ""
 ) {
+
+    companion object {
+        private const val ONE_THOUSAND = 1000L
+    }
+
     var discountedPriceFmt: String = ""
     var originalPriceFmt:String = ""
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDate = dateFormat.parse(endDate)
+            val endDateLong = endDateUnix.toLongOrNull()?:0
+            val endDateMillis = endDateLong * ONE_THOUSAND
+            val endDate = Date(endDateMillis)
             val now = System.currentTimeMillis()
             val diff = (endDate?.time ?: 0 - now).toFloat()
             if (diff < 0) {
