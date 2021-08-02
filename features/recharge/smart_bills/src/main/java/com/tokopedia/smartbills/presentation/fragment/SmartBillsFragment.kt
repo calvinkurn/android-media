@@ -470,7 +470,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
-        val catalogBottomSheet = SmartBillsCatalogBottomSheet()
+        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance()
         catalogBottomSheet.showSBMCatalog(catalogList)
         catalogBottomSheet.show(requireFragmentManager(), "")
     }

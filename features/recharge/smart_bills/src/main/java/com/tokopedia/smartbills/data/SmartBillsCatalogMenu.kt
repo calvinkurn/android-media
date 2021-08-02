@@ -16,7 +16,7 @@ data class SmartBillsCatalogMenu(
         @SerializedName("icon")
         @Expose
         val icon: String = "",
-        @SerializedName("applink")
+        @SerializedName("app_link")
         @Expose
         val applink: String = "",
         @SerializedName("slug_name")

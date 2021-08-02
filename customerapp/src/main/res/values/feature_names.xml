@@ -95,6 +95,7 @@
     <string name="recharge_slice_host">recharge_slice</string>
     <string name="recharge_slice_main_path">/main</string>
     <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
+    <string name="smart_bills_action_bar_title">Bayar Sekaligus</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
