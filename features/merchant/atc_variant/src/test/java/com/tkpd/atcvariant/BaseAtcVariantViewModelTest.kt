@@ -11,7 +11,6 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
