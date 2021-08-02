@@ -81,6 +81,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFacto
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
@@ -694,9 +695,6 @@ class TokoNowHomeFragment: Fragment(),
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         type = TYPE_NORMAL
                     )
-
-                    // track add to cart
-                    trackAddToCart(it.data.data.quantity, it.data.data.cartId)
                 }
                 is Fail -> {
                     showToaster(
@@ -712,12 +710,6 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
                     miniCartWidget?.updateData(shopIds)
-
-                    // track add to cart
-                    recomItem?.let { recomItem ->
-                        val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem.productId.toString())
-                        trackAddToCart(miniCartItem?.quantity.toZeroIfNull(), miniCartItem?.cartId.orEmpty())
-                    }
                 }
                 is Fail -> {
                     showToaster(
@@ -736,12 +728,6 @@ class TokoNowHomeFragment: Fragment(),
                         message = it.data.second,
                         type = TYPE_NORMAL
                     )
-
-                    // track add to cart
-                    recomItem?.let { recomItem ->
-                        val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem.productId.toString())
-                        trackAddToCart(0, miniCartItem?.cartId.orEmpty())
-                    }
                 }
                 is Fail -> {
                     val message = it.throwable.message.orEmpty()
@@ -757,22 +743,26 @@ class TokoNowHomeFragment: Fragment(),
                     it.quantity,
                     it.data
                 )
+                is HomeProductRecomUiModel -> trackProductRecomAddToCart(
+                    it.quantity,
+                    it.position,
+                    it.cartId,
+                    it.data
+                )
             }
         }
     }
 
-    private fun trackAddToCart(quantity: Int, cartId: String) {
-        recomItem?.apply {
-            analytics.onClickProductRecomAddToCart(
-                channelId = channelId,
-                headerName = headerName,
-                userId = userSession.userId,
-                quantity = quantity.toString(),
-                recommendationItem = this,
-                position = productPosition,
-                cartId = cartId
-            )
-        }
+    private fun trackProductRecomAddToCart(quantity: Int, position: Int, cartId: String, productRecomModel: HomeProductRecomUiModel) {
+        analytics.onClickProductRecomAddToCart(
+            channelId = productRecomModel.id,
+            headerName = productRecomModel.recomWidget.title,
+            userId = userSession.userId,
+            quantity = quantity.toString(),
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            position = position.toString(),
+            cartId = cartId
+        )
     }
 
     private fun trackRecentPurchaseImpression(data: HomeProductCardUiModel) {

@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
@@ -329,14 +330,14 @@ class TokoNowHomeViewModel @Inject constructor(
             quantity = quantity
         )
         addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            trackProductAddToCart(productId, quantity, type)
+        addToCartUseCase.execute({ model ->
+            trackProductAddToCart(productId, quantity, type, model.data.cartId)
             homeLayoutItemList.updateProductQuantity(
                 productId,
                 quantity,
                 type
             )
-            _miniCartAdd.postValue(Success(it))
+            _miniCartAdd.postValue(Success(model))
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
@@ -522,20 +523,33 @@ class TokoNowHomeViewModel @Inject constructor(
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
     }
 
-    private fun trackProductAddToCart(productId: String, quantity: Int, type: String) {
+    private fun trackProductAddToCart(productId: String, quantity: Int, type: String, cartId: String) {
         when(type) {
-            RECENT_PURCHASE -> trackRecentPurchaseAddToCart(productId, quantity)
+            RECENT_PURCHASE -> trackRecentPurchaseAddToCart(productId, quantity, cartId)
+            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
         }
     }
 
-    private fun trackRecentPurchaseAddToCart(productId: String, quantity: Int) {
+    private fun trackRecentPurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
         val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
         val recentPurchase = homeItem?.layout as? HomeRecentPurchaseUiModel
         val product = recentPurchase?.productList?.firstOrNull { it.productId == productId }
 
         product?.let {
             val position = recentPurchase.productList.indexOf(it)
-            val data = HomeAddToCartTracker(position, quantity, it)
+            val data = HomeAddToCartTracker(position, quantity,cartId, it)
+            _homeAddToCartTracker.postValue(data)
+        }
+    }
+
+    private fun trackRecentProductRecomAddToCart(productId: String, quantity: Int, cartId: String) {
+        val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeProductRecomUiModel }
+        val productRecom = homeItem?.layout as? HomeProductRecomUiModel
+        val product = productRecom?.recomWidget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId}
+
+        product?.let { item ->
+            val position = productRecom.recomWidget.recommendationItemList.indexOf(item)
+            val data = HomeAddToCartTracker(position, quantity, cartId, item)
             _homeAddToCartTracker.postValue(data)
         }
     }
