@@ -58,12 +58,6 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
-android.applicationVariants.all { variant ->
-    def variantNameCap = variant.name.capitalize()
-    task ("generateBundledResourcesHash${variantNameCap}")
-    task ("bundle${variantNameCap}JsAndAssets")
-}
-
 project.ext {
     defaultVersionCode = 418001101;
     defaultVersionName = "4.01-test";
