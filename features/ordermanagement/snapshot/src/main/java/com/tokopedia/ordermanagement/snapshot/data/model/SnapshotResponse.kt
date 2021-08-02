@@ -1,5 +1,6 @@
 package com.tokopedia.ordermanagement.snapshot.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class SnapshotResponse(
@@ -13,6 +14,13 @@ data class Data(
 )
 
 data class GetOrderSnapshot(
+	@field:SerializedName("bundle_id")
+	@field:SuppressLint("Invalid Data Type")
+	val bundleId: Long = 0,
+
+	@field:SerializedName("bundle_name")
+	val bundleName: String = "",
+
 	@field:SerializedName("product_price_formatted")
 	val productPriceFormatted: String = "",
 

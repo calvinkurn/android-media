@@ -104,6 +104,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 have_product_bundle
                 bundle_detail {
                   total_product
+                  product_bundling_icon
                   bundle {
                     bundle_id
                     bundle_name
@@ -121,6 +122,24 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       notes
                       thumbnail
                       bundle_id
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
                     }
                   }
                   non_bundle {
@@ -133,6 +152,24 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     notes
                     thumbnail
                     bundle_id
+                    button {
+                      key
+                      display_name
+                      type
+                      variant
+                      url
+                      popup {
+                        title
+                        body
+                        action_button {
+                          key
+                          display_name
+                          color
+                          type
+                          uri
+                        }
+                      }
+                    }
                   }
                 }
                 shipment {

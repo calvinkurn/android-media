@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.domain.models
 
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import com.google.gson.annotations.SerializedName
 
 data class GetBuyerOrderDetailResponse(
@@ -194,6 +195,8 @@ data class GetBuyerOrderDetailResponse(
             data class BundleDetail(
                     @SerializedName("bundle")
                     val bundleList: List<Bundle> = listOf(),
+                    @SerializedName("product_bundling_icon")
+                    val bundleIcon: String? = "",
                     @SerializedName("non_bundle")
                     val nonBundleList: List<Bundle.OrderDetail> = listOf()
             ) {
@@ -236,7 +239,9 @@ data class GetBuyerOrderDetailResponse(
                             @SerializedName("notes")
                             val notes: String = "",
                             @SerializedName("thumbnail")
-                            val thumbnail: String
+                            val thumbnail: String,
+                            @SerializedName("button")
+                            val button: Button? = Button()
                     )
                 }
             }

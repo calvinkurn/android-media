@@ -34,6 +34,8 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
         val QUERY = """
             query GetOrderSnapshot(${'$'}input:OrderSnapshotRequest!){   
                 get_order_snapshot(input:${'$'}input) {
+                  bundle_id
+                  bundle_name
                   pre_order
                   shop_image_primary_url
                   product_url

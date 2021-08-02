@@ -20,6 +20,41 @@ query GETCANCELREASON($input:CancelReasonRequest!) {
         r_code,
         reason
       }
+    },
+    have_product_bundle,
+    bundle_detail {
+      total_product,
+      product_bundling_icon,
+      bundle {
+        bundle_id,
+        bundle_name,
+        bundle_price,
+        bundle_quantity,
+        bundle_subtotal_price,
+        order_detail {
+          order_id,
+          order_dtl_id,
+          product_id,
+          product_name,
+          quantity,
+          product_price,
+          subtotal_price,
+          notes,
+          thumbnail,
+          bundle_id
+        }
+      },
+      non_bundle {
+        order_id,
+        product_id,
+        product_name,
+        quantity,
+        product_price,
+        subtotal_price,
+        notes,
+        thumbnail,
+        bundle_id
+      }
     }
   }
 }
