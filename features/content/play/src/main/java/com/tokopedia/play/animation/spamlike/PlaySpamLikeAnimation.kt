@@ -68,9 +68,9 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_special_voucher))
 
         positionList.add(view.findViewById(R.id.position1))
-        positionList.add(view.findViewById(R.id.position2))
-        positionList.add(view.findViewById(R.id.position3))
-        positionList.add(view.findViewById(R.id.position4))
+//        positionList.add(view.findViewById(R.id.position2))
+//        positionList.add(view.findViewById(R.id.position3))
+//        positionList.add(view.findViewById(R.id.position4))
 
         sizeList.add(Pair(50, 50))
         sizeMultiplyList.add(1.0f)
@@ -206,20 +206,12 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                     val image = ImageView(context)
                     image.setImageDrawable(dot)
 
-
-                    val dotPositionIdx = when (positionIdx) {
-                        0 -> positionIdx + 1
-                        positionList.size-1 -> positionIdx - 1
-                        else -> {
-                            if((0..1).random() == 0) positionIdx + 1
-                            else positionIdx - 1
-                        }
-                    }
-                    val position = positionList[dotPositionIdx]
+                    val position = positionList[positionIdx]
 
                     val coordinate = getImageCoordinate(position)
                     image.x = coordinate.first
                     image.y = coordinate.second
+                    image.id = View.generateViewId()
 
                     parentView?.addView(image)
 
@@ -269,8 +261,8 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         val threshold = (end - ((end - start) / 2))
         var alpha = 1.0f
 
-        val xStart = image.x - 50
-        val xEnd = image.x + 50
+        val xStart = image.x - 25
+        val xEnd = image.x + 25
         var xCurrent = image.x
 
         var xMove: PlaySpamLikeMove = if((0..1).random() % 2 == 0) PlaySpamLikeMove.Right else PlaySpamLikeMove.Left
