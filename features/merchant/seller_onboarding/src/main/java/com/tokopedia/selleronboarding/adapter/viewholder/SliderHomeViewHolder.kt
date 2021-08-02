@@ -7,9 +7,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderHomeUiModel
 import com.tokopedia.selleronboarding.utils.IMG_DEVICE_SCREEN_PERCENT
+import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
 import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
@@ -30,7 +32,6 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
 
     override fun bind(element: SobSliderHomeUiModel) {
         with(itemView) {
-
             tvSobSliderHome.viewTreeObserver.addOnDrawListener {
                 tvSobSliderHome.alpha = itemView.viewObserver.alpha
                 tvSobSliderHome.translationY = itemView.viewObserver.translationY
@@ -39,6 +40,9 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
                 itemView.imgSobHome.scaleX = itemView.viewObserver.scaleX
                 itemView.imgSobHome.scaleY = itemView.viewObserver.scaleY
                 runOneTimePopInAnimation()
+            }
+            imgSobHome?.loadImage(SobImageSliderUrl.IMG_SOB_HOME) {
+                setPlaceHolder(R.drawable.img_sob_home)
             }
             setupMarginTitleSob { setMarginTitleSobHome() }
         }

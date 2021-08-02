@@ -10,7 +10,7 @@
     <dimen name="sob_dimen_message_image_3_height">100dp</dimen>
     <dimen name="sob_dimen_manage_image_1_width">200dp</dimen>
     <dimen name="sob_dimen_manage_image_2_width">210dp</dimen>
-    <dimen name="sob_dimen_manage_image_1_height">180dp</dimen>
+    <dimen name="sob_dimen_manage_image_1_height">200dp</dimen>
     <dimen name="sob_dimen_manage_image_2_height">140dp</dimen>
     <dimen name="sob_dimen_promo_image_1_width">240dp</dimen>
     <dimen name="sob_dimen_statistic_image_1_width">205dp</dimen>
