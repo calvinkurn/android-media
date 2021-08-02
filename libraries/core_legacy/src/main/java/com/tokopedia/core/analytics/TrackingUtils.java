@@ -5,17 +5,11 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.track.TrackApp;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +20,7 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils{
+    private static final String PARAM_1 = "af_param_1";
     public static void eventCampaign(Context context, Campaign campaign) {
         if (!isValidCampaign(campaign.getCampaign())) return;
 
@@ -40,7 +35,7 @@ public class TrackingUtils{
     public static void activityBasedAFEvent(Context context, String tag) {
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(AppScreen.IDENTIFIER_HOME_ACTIVITY)) {
-            afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(context));
+            afValue.put(PARAM_1, CommonUtils.getUniqueDeviceID(context));
         }
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }

@@ -203,7 +203,6 @@ ext {
     ]
 
     analyticsDependencies = [
-            appsflyer  : "com.appsflyer:af-android-sdk:5.4.0@aar",
             installRef : "com.android.installreferrer:installreferrer:1.1",
             moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",

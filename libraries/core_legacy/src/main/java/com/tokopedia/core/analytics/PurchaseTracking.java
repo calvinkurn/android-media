@@ -1,15 +1,20 @@
 package com.tokopedia.core.analytics;
 
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME;
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
+
 import android.content.Context;
 import android.os.Bundle;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.track.AFInAppEventParameterName;
+import com.tokopedia.track.AFInAppEventType;
 import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
@@ -22,12 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import kotlin.Pair;
-
-import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
-import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
-import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME;
-import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
-import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by okasurya on 12/8/17.

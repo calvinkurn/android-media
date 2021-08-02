@@ -1,7 +1,7 @@
 package com.tokopedia.core.analytics;
 
-import com.appsflyer.AFInAppEventType;
 
+import com.tokopedia.track.AFInAppEventType;
 
 /**
  * @author by Nanda J.A on 6/16/2015.

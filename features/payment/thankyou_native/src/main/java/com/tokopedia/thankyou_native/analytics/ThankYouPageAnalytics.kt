@@ -1,7 +1,5 @@
 package com.tokopedia.thankyou_native.analytics
 
-import com.appsflyer.AFInAppEventParameterName
-import com.appsflyer.AFInAppEventType
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
@@ -15,6 +13,8 @@ import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.track.AFInAppEventParameterName
+import com.tokopedia.track.AFInAppEventType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics

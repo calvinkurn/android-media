@@ -2,9 +2,9 @@ package com.tokopedia.core.analytics;
 
 import android.content.Context;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.track.AFInAppEventParameterName;
+import com.tokopedia.track.AFInAppEventType;
 import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
