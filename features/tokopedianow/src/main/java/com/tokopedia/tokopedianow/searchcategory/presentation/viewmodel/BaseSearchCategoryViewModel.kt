@@ -828,7 +828,7 @@ abstract class BaseSearchCategoryViewModel(
                     updateProductItemQuantity(index, visitable, updatedProductIndices)
             }
 
-            updateRecommendationListQuantity(recommendationList, allMiniCartItemList)
+            updateRecommendationListQuantity(recommendationList)
             if (recommendationPositionInVisitableList != -1)
                 updatedProductIndices.add(recommendationPositionInVisitableList)
 
@@ -1122,35 +1122,25 @@ abstract class BaseSearchCategoryViewModel(
         recommendationList.clear()
         recommendationList.addAll(recommendationListData)
 
-        updateRecommendationListQuantity(recommendationList, allMiniCartItemList)
+        updateRecommendationListQuantity(recommendationList)
     }
 
-    private fun updateRecommendationListQuantity(
-            recommendationList: List<RecommendationWidget>?,
-            miniCartItemList: List<MiniCartItem>?,
-    ) {
-        recommendationList ?: return
-
+    private fun updateRecommendationListQuantity(recommendationList: List<RecommendationWidget>?) {
         recommendationList
-                .flatMap { it.recommendationItemList }
-                .forEach { item ->
-                    val productId = item.productId.toString()
-                    val quantity = getRecommendationItemQuantity(productId, miniCartItemList)
-
-                    item.quantity = quantity
-                }
+                ?.flatMap(RecommendationWidget::recommendationItemList)
+                ?.forEach(::setRecommendationItemQuantity)
     }
 
-    protected open fun getRecommendationItemQuantity(
-            productId: String?,
-            miniCartItemList: List<MiniCartItem>?,
-    ): Int {
-        productId ?: return 0
-        miniCartItemList ?: return 0
+    private fun setRecommendationItemQuantity(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val parentProductId = recommendationItem.parentID.toString()
 
-        val miniCartItem = miniCartItemList.find { it.productId == productId }
+        val quantity = if (parentProductId == NO_VARIANT_PARENT_PRODUCT_ID)
+            getProductNonVariantQuantity(productId)
+        else
+            getProductVariantTotalQuantity(parentProductId)
 
-        return miniCartItem?.quantity ?: 0
+        recommendationItem.quantity = quantity
     }
 
     protected open suspend fun getRecommendationCarouselError(
@@ -1289,6 +1279,6 @@ abstract class BaseSearchCategoryViewModel(
     )
 
     companion object {
-        private const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
+        const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
     }
 }

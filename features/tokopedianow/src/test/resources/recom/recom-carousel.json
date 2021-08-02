@@ -91,7 +91,7 @@
             "stock": 575,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 617608087
+            "parentID": 0
           },
           {
             "id": 574261652,
@@ -255,7 +255,7 @@
             "stock": 49880,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 0
+            "parentID": 1682734974
           },
           {
             "id": 576261651,
@@ -338,7 +338,7 @@
             "stock": 117,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 0
+            "parentID": 1682734974
           },
           {
             "id": 576261653,
@@ -398,7 +398,7 @@
             "stock": 966,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 0
+            "parentID": 1682734974
           },
           {
             "id": 576861653,
@@ -481,10 +481,10 @@
             "stock": 398,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 0
+            "parentID": 2682234972
           },
           {
-            "id": 576861653,
+            "id": 576861652,
             "name": "Susu beruang / Bear brand 189ml x30pc",
             "categoryBreadcrumbs": "Makanan & Minuman/Produk Susu/Susu segar & Pasteurisasi",
             "url": "https://www.tokopedia.com/cprint/susu-beruang-bear-brand-189ml-x30pc",
@@ -541,7 +541,7 @@
             "stock": 96,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 0
+            "parentID": 2682234972
           },
           {
             "id": 576861652,
@@ -618,7 +618,7 @@
             "stock": 8323,
             "isTopads": false,
             "specificationLabels": [],
-            "parentID": 0
+            "parentID": 2682234972
           },
           {
             "id": 1984093968,

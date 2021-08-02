@@ -13,13 +13,14 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel.Companion.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.slot
 import org.junit.Assert.assertThat
-import org.hamcrest.core.Is.`is` as shouldBe
+import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class BindRecommendationCarouselTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
@@ -183,20 +184,61 @@ class BindRecommendationCarouselTestHelper(
         baseViewModel.onViewResumed()
     }
 
-    private fun `Then assert quantity is updated from mini cart`(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        recommendationWidgetList.first().recommendationItemList.forEach {
-            it.assertQuantityFromMiniCart(miniCartSimplifiedData.miniCartItems)
+    private fun `Then assert quantity is updated from mini cart`(
+            miniCartSimplifiedData: MiniCartSimplifiedData,
+    ) {
+        val recommendationItems = recommendationWidgetList.first().recommendationItemList
+        val miniCartItems = miniCartSimplifiedData.miniCartItems
+
+        `Then assert product item non variant quantity`(miniCartItems, recommendationItems)
+        `Then assert product item variant quantity`(miniCartItems, recommendationItems)
+    }
+
+    private fun `Then assert product item non variant quantity`(
+            miniCartItems: List<MiniCartItem>,
+            productItems: List<RecommendationItem>,
+    ) {
+        val miniCartItemsNonVariant = miniCartItems.filter {
+            it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
+        }
+
+        miniCartItemsNonVariant.forEach { miniCartItem ->
+            val productItemIndexed = productItems.withIndex().find {
+                it.value.productId.toString() == miniCartItem.productId
+            }!!
+            val productItem = productItemIndexed.value
+            val reason = createInvalidNonVariantQtyReason(miniCartItem)
+            assertThat(reason, productItem.quantity, shouldBe(miniCartItem.quantity))
         }
     }
 
-    private fun RecommendationItem.assertQuantityFromMiniCart(
-            miniCartItemList: List<MiniCartItem>
-    ) {
-        val miniCartItem = miniCartItemList.find { it.productId == this.productId.toString() }
-        val expectedQuantity = miniCartItem?.quantity ?: 0
+    private fun createInvalidNonVariantQtyReason(miniCartItem: MiniCartItem) =
+            "Product \"${miniCartItem.productId}\" non variant quantity is invalid."
 
-        assertThat(this.quantity, shouldBe(expectedQuantity))
+    private fun `Then assert product item variant quantity`(
+            miniCartItems: List<MiniCartItem>,
+            productItems: List<RecommendationItem>,
+    ) {
+        val miniCartItemsVariant = miniCartItems.filter {
+            it.productParentId != NO_VARIANT_PARENT_PRODUCT_ID
+        }
+        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
+
+        miniCartItemsVariantGroup.forEach { miniCartItemGroup ->
+            val totalQuantity = miniCartItemGroup.value.sumBy { it.quantity }
+            val productItemIndexed = productItems.withIndex()
+                    .find { it.value.parentID.toString() == miniCartItemGroup.key }!!
+            val productItem = productItemIndexed.value
+            val parentProductId = productItem.parentID.toString()
+            val productId = productItem.productId.toString()
+
+            val reason = createInvalidVariantQtyReason(productId, parentProductId)
+            assertThat(reason, productItem.quantity, shouldBe(totalQuantity))
+        }
     }
+
+    private fun createInvalidVariantQtyReason(productId: String, parentProductId: String) =
+            "Product \"$productId\" with parent \"$parentProductId\" variant quantity is invalid"
 
     fun `update recommendation quantity on update mini cart`() {
         val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
