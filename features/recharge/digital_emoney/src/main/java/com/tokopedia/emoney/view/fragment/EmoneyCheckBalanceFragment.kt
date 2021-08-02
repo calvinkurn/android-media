@@ -195,7 +195,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             context?.let {
                 val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
                 if((throwable is SocketTimeoutException)){
-                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_error_title),
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
                             isButtonShow = true,
@@ -210,8 +210,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 } else {
                     showError(errorMessage,
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
-                            "",
-                            true, true)
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                            true,
+                            true)
                 }
             }
         })
@@ -233,7 +234,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 when (error.status) {
                     0 -> showCardLastBalance(it)
                     1 -> it.error?.let { error ->
-                        showError(error.title)
+                        showError(
+                                errorMessage = resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_error_title),
+                                errorMessageLabel =  error.title,
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                                isButtonShow = true,
+                                isGlobalErrorShow = false,
+                                tapCashWriteFailed = true
+                        )
                     }
                     else -> return@let
                 }
