@@ -170,10 +170,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            var errorThrowable = it
-            if ((it.message ?: "").contains(getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_timeout), true)) {
-                    errorThrowable = MessageErrorException(getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error))
-            }
             showError(ErrorHandler.getErrorMessage(context, errorThrowable),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
