@@ -120,7 +120,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         initView(view)
         encryptImage()
         setContentView()
-        if (projectId == 4) //TradeIn project Id
+        if (projectId == TRADE_IN_PROJECT_ID) //TradeIn project Id
             uploadButton?.setText(R.string.upload_button_tradein)
         return view
     }
@@ -563,6 +563,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     companion object {
         private var projectId = 0
+        private const val TRADE_IN_PROJECT_ID = 4
         private const val NOT_RETAKE = 0
         private const val RETAKE_KTP = 1
         private const val RETAKE_FACE = 2
