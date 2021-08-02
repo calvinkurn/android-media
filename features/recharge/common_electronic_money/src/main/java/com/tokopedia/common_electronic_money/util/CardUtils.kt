@@ -76,6 +76,7 @@ class CardUtils {
                 if (tag != null) {
                     val isoDep = IsoDep.get(tag)
                     isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
                     val bytes = isoDep.transceive(hexStringToByteArray(PREFIX_SELECT_COMMAND + TAPCASH_AID))
                     isoDep.close()
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED
