@@ -113,13 +113,8 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
-        `Then assert scrollable false`()
         `Then assert mini cart is not visible`()
         `Then assert out of coverage visitable list`()
-    }
-
-    private fun `Then assert scrollable false`() {
-        assertThat(tokoNowSearchViewModel.isRecyclerViewScrollEnabledLiveData.value, shouldBe(false))
     }
 
     private fun `Then assert mini cart is not visible`() {
@@ -149,7 +144,6 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
-        `Then assert scrollable false`()
         `Then assert mini cart is not visible`()
         `Then assert out of coverage visitable list`()
     }

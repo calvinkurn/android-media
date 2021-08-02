@@ -169,9 +169,6 @@ abstract class BaseSearchCategoryViewModel(
     protected val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
-    protected val isRecyclerViewScrollEnabledMutableLiveData = MutableLiveData(true)
-    val isRecyclerViewScrollEnabledLiveData: LiveData<Boolean> = isRecyclerViewScrollEnabledMutableLiveData
-
     protected val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
     val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
@@ -270,7 +267,6 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun showOutOfCoverage() {
-        updateRecyclerViewScrollable(false)
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
@@ -613,7 +609,6 @@ abstract class BaseSearchCategoryViewModel(
 
         updateNextPageData()
         updateHeaderBackgroundVisibility(!isEmptyProductList)
-        updateRecyclerViewScrollable(!isEmptyProductList)
 
         showPageContent()
     }
@@ -642,10 +637,6 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         isHeaderBackgroundVisibleMutableLiveData.value = isVisible
-    }
-
-    private fun updateRecyclerViewScrollable(isScrollable: Boolean) {
-        isRecyclerViewScrollEnabledMutableLiveData.value = isScrollable
     }
 
     private fun showPageContent() {

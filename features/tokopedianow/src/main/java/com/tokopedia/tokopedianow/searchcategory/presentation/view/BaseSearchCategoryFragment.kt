@@ -75,7 +75,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.CustomStaggeredGridLayoutManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -101,6 +100,7 @@ abstract class BaseSearchCategoryFragment:
         SearchCategoryRecommendationCarouselListener {
 
     companion object {
+        protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         const val VALUE_LIST_OOC = "/%s - rekomendasi untuk anda - %s%s - tokonow - ooc"
         const val VALUE_TOPADS = "- topads"
@@ -109,7 +109,6 @@ abstract class BaseSearchCategoryFragment:
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    protected var recyclerViewLayoutManager: CustomStaggeredGridLayoutManager? = null
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -358,14 +357,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        recyclerViewLayoutManager = CustomStaggeredGridLayoutManager()
-        recyclerViewLayoutManager?.gapStrategy = GAP_HANDLING_NONE
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = recyclerViewLayoutManager?.let{ createEndlessScrollListener(it) }
+        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
-        recyclerView?.layoutManager = recyclerViewLayoutManager
+        recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.addProductItemDecoration()
 
         endlessScrollListener?.let {
@@ -433,7 +432,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().errorATCMessageLiveData.observe(this::showErrorATCMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData.observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
-        getViewModel().isRecyclerViewScrollEnabledLiveData.observe(this::updateRecyclerViewScrollable)
         getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
         getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
         getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
@@ -705,10 +703,6 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
-    }
-
-    protected open fun updateRecyclerViewScrollable(isScrollable: Boolean) {
-        recyclerViewLayoutManager?.setScrollEnabled(isScrollable)
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
