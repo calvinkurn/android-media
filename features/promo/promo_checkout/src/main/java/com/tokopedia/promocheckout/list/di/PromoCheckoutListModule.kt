@@ -4,6 +4,9 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,6 +18,7 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
@@ -37,6 +41,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -250,4 +255,21 @@ class PromoCheckoutListModule {
     @Provides
     @PromoCheckoutListScope
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideRestRepository(interceptors: ArrayList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
+    }
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideDigitalInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor): ArrayList<Interceptor> {
+        val listInterceptor = arrayListOf<Interceptor>()
+        listInterceptor.add(tkpdAuthInterceptor)
+        return listInterceptor
+    }
 }

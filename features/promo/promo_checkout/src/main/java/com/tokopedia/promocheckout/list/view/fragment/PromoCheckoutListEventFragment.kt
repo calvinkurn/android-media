@@ -13,14 +13,13 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailEventActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListEventPresenter
-import javax.inject.Inject
+import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListEventViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
-class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
+class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(){
 
-    @Inject
-    lateinit var promoCheckoutListEventPresenter: PromoCheckoutListEventPresenter
+    private val promoCheckoutListEventViewModel: PromoCheckoutListEventViewModel by lazy { viewModelProvider.get(PromoCheckoutListEventViewModel::class.java) }
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
@@ -32,7 +31,29 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
         categoryId = arguments?.getInt(EXTRA_EVENT_CATEGORY_ID) ?: 1
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         eventVerifyBody = arguments?.getParcelable(EXTRA_EVENT_VERIFY) ?: EventVerifyBody()
-        promoCheckoutListEventPresenter.attachView(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        promoCheckoutListEventViewModel.showLoadingPromoEvent.observe(viewLifecycleOwner,{
+            if(it){
+                showProgressLoading()
+            }else{
+                hideProgressLoading()
+            }
+        })
+
+        promoCheckoutListEventViewModel.eventCheckVoucherResult.observe(viewLifecycleOwner,{
+            when(it){
+                is Success->{
+                    onSuccessCheckPromo(it.data)
+                }
+                is Fail ->{
+                    onErrorCheckPromo(it.throwable)
+                }
+            }
+        })
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -56,19 +77,14 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
-    override fun onDestroyView() {
-        promoCheckoutListEventPresenter.detachView()
-        super.onDestroyView()
-    }
-
     override fun onPromoCodeUse(promoCode: String) {
         if (promoCode.isNotEmpty()) {
             eventVerifyBody.promocode = promoCode
-            promoCheckoutListEventPresenter.checkPromoCode(promoCode, false, eventVerifyBody)
+            promoCheckoutListEventViewModel.checkPromoCode(promoCode, false, eventVerifyBody)
         }
     }
 
-    override fun onSuccessCheckPromo(data: DataUiModel) {
+    fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
