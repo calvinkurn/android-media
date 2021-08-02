@@ -41,7 +41,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private fun showParticipant(leaderboard: PlayLeaderboardUiModel) {
         tvOtherParticipant.text = leaderboard.otherParticipantText
 
-        winnerAdapter.setItems(leaderboard.winners)
+        winnerAdapter.setItemsAndAnimateChanges(leaderboard.winners)
 
         if (leaderboard.otherParticipant > 0) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()
