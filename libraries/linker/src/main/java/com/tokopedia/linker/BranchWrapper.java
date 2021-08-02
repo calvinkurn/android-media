@@ -278,7 +278,7 @@ public class BranchWrapper implements WrapperInterface {
                 break;
             case LinkerConstants.EVENT_SEARCH:
                 if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
-                        linkerGenericRequest.getDataObj() instanceof LinkerData) {
+                        linkerGenericRequest.getDataObj() instanceof ArrayList) {
                     BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
                 }
                 break;
