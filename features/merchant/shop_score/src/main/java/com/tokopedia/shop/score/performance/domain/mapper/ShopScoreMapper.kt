@@ -610,7 +610,7 @@ class ShopScoreMapper @Inject constructor(
             descPM = if (isNewSellerProjection)
                 context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
             else
-                context?.getString(R.string.desc_content_pm_section).orEmpty(),
+                context?.getString(R.string.desc_content_pm_not_eligible_pm_pro).orEmpty(),
             isNewSellerProjection = isNewSellerProjection
         )
     }

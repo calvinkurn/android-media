@@ -49,10 +49,11 @@ import javax.inject.Inject
 
 
 class ShopPerformancePageFragment : BaseDaggerFragment(),
-        ShopPerformanceListener, ItemShopPerformanceListener,
-        ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
-        ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemRegularMerchantListener, ItemRMPotentialPMProListener, ItemStatusPowerMerchantProListener, ItemPMPotentialPMProListener{
+    ShopPerformanceListener, ItemShopPerformanceListener,
+    ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
+    ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
+    GlobalErrorListener, ItemRegularMerchantListener, ItemRMPotentialPMProListener,
+    ItemStatusPowerMerchantProListener, ItemPMPotentialPMProListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -65,13 +66,19 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private val shopPerformanceAdapterTypeFactory by lazy {
-        ShopPerformanceAdapterTypeFactory(this, this,
-                this, this,
-                this, this, this,
-                this, this, this, this)
+        ShopPerformanceAdapterTypeFactory(
+            this, this,
+            this, this,
+            this, this, this,
+            this, this, this, this, this
+        )
     }
 
-    private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
+    private val shopPerformanceAdapter by lazy {
+        ShopPerformanceAdapter(
+            shopPerformanceAdapterTypeFactory
+        )
+    }
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
@@ -93,7 +100,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_shop_performance, container, false)
     }
 
@@ -130,7 +141,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             INFO_MENU_ID -> {
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SHOP_INFO_URL)
+                RouteManager.route(
+                    context,
+                    ApplinkConstInternalGlobal.WEBVIEW,
+                    ShopScoreConstant.SHOP_INFO_URL
+                )
                 shopScorePenaltyTracking.clickMenuCompleteInfo()
             }
             PENALTY_WARNING_MENU_ID -> {
@@ -150,12 +165,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onTooltipLevelClicked(level: Long) {
         val shopLevelData = shopScoreWrapperResponse?.shopScoreTooltipResponse?.result
         val bottomSheetShopTooltipLevel = BottomSheetShopTooltipLevel.createInstance(
-                shopLevel = level,
-                shopIncome = shopLevelData?.niv?.toString().orEmpty(),
-                productSold = shopLevelData?.itemSold.toString(),
-                period = shopLevelData?.period.orEmpty(),
-                nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate
-                        ?: "-")
+            shopLevel = level,
+            shopIncome = shopLevelData?.niv?.toString().orEmpty(),
+            productSold = shopLevelData?.itemSold.toString(),
+            period = shopLevelData?.period.orEmpty(),
+            nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate
+                ?: "-"
+        )
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
 
@@ -176,9 +192,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     /**
      * ItemShopPerformanceListener
      */
-    override fun onItemClickedToDetailBottomSheet(titlePerformanceDetail: String, identifierPerformanceDetail: String) {
+    override fun onItemClickedToDetailBottomSheet(
+        titlePerformanceDetail: String,
+        identifierPerformanceDetail: String
+    ) {
 
-        val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(titlePerformanceDetail, identifierPerformanceDetail)
+        val bottomSheetDetail = BottomSheetPerformanceDetail.createInstance(
+            titlePerformanceDetail,
+            identifierPerformanceDetail
+        )
         bottomSheetDetail.show(childFragmentManager)
     }
 
@@ -259,7 +281,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
-        val intent = SellerMigrationActivity.createIntent(context, SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SCREEN_NAME, appLinks)
+        val intent = SellerMigrationActivity.createIntent(
+            context,
+            SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER,
+            SCREEN_NAME,
+            appLinks
+        )
         startActivity(intent)
     }
 
@@ -322,7 +349,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onGotoBenefitPMPro() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SELLER_EDU_PM_PRO_URL)
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                ShopScoreConstant.SELLER_EDU_PM_PRO_URL
+            )
         }
     }
 
@@ -341,11 +372,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         if (faqData != null) {
             context?.let {
                 val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
-                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_END
+                val smoothScroller: RecyclerView.SmoothScroller =
+                    object : LinearSmoothScroller(it) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_END
+                        }
                     }
-                }
                 smoothScroller.targetPosition = positionFaqSection
                 rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
@@ -389,18 +421,26 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         rvShopPerformance?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                val performanceLayoutManager = rvShopPerformance.layoutManager as? LinearLayoutManager
+                val performanceLayoutManager =
+                    rvShopPerformance.layoutManager as? LinearLayoutManager
                 performanceLayoutManager?.let { layoutManager ->
                     val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
-                    val itemHeaderIndex = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
-                    val itemPeriodDetailPerformanceIndex = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
-                    val itemPMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
-                    val itemRMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
-                    val itemRMNonEligibleIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
-                    val itemPotentialPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
-                    val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
+                    val itemHeaderIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
+                    val itemPeriodDetailPerformanceIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
+                    val itemPMIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
+                    val itemRMIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
+                    val itemRMNonEligibleIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
+                    val itemPotentialPMProIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
+                    val itemPMProIndex =
+                        shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
 
 
                     if (coachMark?.isShowing == true) {
@@ -421,10 +461,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                             }
                             COACHMARK_LAST_POSITION_PM_RM -> {
                                 if (itemPMIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemRMIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemPotentialPMProIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemPMProIndex in firstVisiblePosition..lastVisiblePosition
+                                    || itemRMIndex in firstVisiblePosition..lastVisiblePosition
+                                    || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
+                                    || itemPotentialPMProIndex in firstVisiblePosition..lastVisiblePosition
+                                    || itemPMProIndex in firstVisiblePosition..lastVisiblePosition
                                 ) {
                                     coachMark?.animateShow()
                                 } else {
@@ -473,11 +513,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
-        val positionPotentialPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
-        val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
+        val positionPotentialPMPro =
+            shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
+        val positionPMPro =
+            shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
-        val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
-        val positionRMEligible = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
+        val positionRMNonEligible =
+            shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
+        val positionRMEligible =
+            shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
 
         var position = RecyclerView.NO_POSITION
 
@@ -504,11 +548,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun scrollToLastItemCoachMark() {
         getPositionLastItemCoachMark()?.let {
             context?.let { context ->
-                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_END
+                val smoothScroller: RecyclerView.SmoothScroller =
+                    object : LinearSmoothScroller(context) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_END
+                        }
                     }
-                }
                 smoothScroller.targetPosition = it
                 rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
@@ -516,14 +561,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToItemHeaderCoachMark() {
-        val positionItemHeader = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
+        val positionItemHeader =
+            shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
         context?.let {
             if (positionItemHeader != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_START
+                val smoothScroller: RecyclerView.SmoothScroller =
+                    object : LinearSmoothScroller(it) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_START
+                        }
                     }
-                }
                 smoothScroller.targetPosition = positionItemHeader
                 rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
@@ -531,14 +578,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToItemDetailCoachMark() {
-        val positionItemDetail = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
+        val positionItemDetail =
+            shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
         context?.let {
             if (positionItemDetail != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_END
+                val smoothScroller: RecyclerView.SmoothScroller =
+                    object : LinearSmoothScroller(it) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_END
+                        }
                     }
-                }
                 smoothScroller.targetPosition = positionItemDetail
                 rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
@@ -546,14 +595,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun scrollToItemParameterDetailCoachMark() {
-        val positionItemDetail = shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
+        val positionItemDetail =
+            shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
         context?.let {
             if (positionItemDetail != RecyclerView.NO_POSITION) {
-                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_END
+                val smoothScroller: RecyclerView.SmoothScroller =
+                    object : LinearSmoothScroller(it) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_END
+                        }
                     }
-                }
                 smoothScroller.targetPosition = positionItemDetail
                 rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
@@ -603,7 +654,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         return getPositionLastItemCoachMark()?.let { lastItemPosition ->
             val layoutManager = rvShopPerformance?.layoutManager as? LinearLayoutManager
             val lastItemView = layoutManager?.findLastCompletelyVisibleItemPosition()
-            val view = lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
+            val view =
+                lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
             val viewHolder = view?.let {
                 rvShopPerformance?.findContainingViewHolder(it)
             }
@@ -612,18 +664,21 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getHeaderPerformanceView(): View? {
-        val itemHeaderPosition = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
-            it != RecyclerView.NO_POSITION
-        }
+        val itemHeaderPosition =
+            shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }.takeIf {
+                it != RecyclerView.NO_POSITION
+            }
         val view = itemHeaderPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val headerViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return headerViewHolder?.itemView
     }
 
     private fun getPeriodDetailPerformanceView(): View? {
-        val itemPeriodPosition = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }.takeIf {
-            it != RecyclerView.NO_POSITION
-        }
+        val itemPeriodPosition =
+            shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
+                .takeIf {
+                    it != RecyclerView.NO_POSITION
+                }
         val view = itemPeriodPosition?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
         val periodViewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
         return periodViewHolder?.itemView
@@ -635,7 +690,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun goToPowerMerchantSubscribe(tab: String) {
         val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
+        val appLinkPMTab =
+            Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build()
+                .toString()
         context?.let { RouteManager.route(context, appLinkPMTab) }
     }
 
@@ -657,11 +714,18 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
-                    shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel(it.throwable))
+                    shopPerformanceAdapter.setShopPerformanceError(
+                        ItemShopPerformanceErrorUiModel(
+                            it.throwable
+                        )
+                    )
                     coachMark?.dismissCoachMark()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
-                            String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
-                                    ShopScoreReputationErrorLogger.SHOP_PERFORMANCE), it.throwable)
+                        String.format(
+                            ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
+                            ShopScoreReputationErrorLogger.SHOP_PERFORMANCE
+                        ), it.throwable
+                    )
                 }
             }
         }
@@ -675,7 +739,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Success -> {
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
-                    counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
+                    counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>()
+                        .firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
                     if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
                         Handler().postDelayed({
@@ -686,10 +751,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()
-                    shopPerformanceAdapter.setShopPerformanceError(ItemShopPerformanceErrorUiModel(it.throwable))
+                    shopPerformanceAdapter.setShopPerformanceError(
+                        ItemShopPerformanceErrorUiModel(
+                            it.throwable
+                        )
+                    )
                     coachMark?.dismissCoachMark()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
-                            ShopScoreReputationErrorLogger.SHOP_PERFORMANCE_ERROR, it.throwable)
+                        ShopScoreReputationErrorLogger.SHOP_PERFORMANCE_ERROR, it.throwable
+                    )
                 }
             }
         }

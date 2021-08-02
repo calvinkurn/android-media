@@ -6,26 +6,24 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository,
-                                                    private val userSession: UserSessionInterface
-) :
-        UseCase<ShopScoreWrapperResponse>() {
+class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository): UseCase<ShopScoreWrapperResponse>() {
 
     companion object {
-        const val SHOP_ID_STATUS_INFO = "shopID"
-        const val SHOP_ID_BENEFIT_INFO = "shop_id"
-        const val SHOP_SCORE_LEVEL_INPUT = "input"
-        const val SHOP_SCORE_TOOLTIP_KEY = "tooltip_key"
+        private const val SHOP_ID_STATUS_INFO = "shopID"
+        private const val SHOP_ID_BENEFIT_INFO = "shop_id"
+        private const val SHOP_SCORE_LEVEL_INPUT = "input"
+        private const val SHOP_SCORE_TOOLTIP_KEY = "tooltip_key"
+        private const val KEY_INCLUDING_PM_PRO_ELIGIBILITY = "including_pm_pro_eligibility"
+        private const val KEY_FILTER = "filter"
 
         val GOLD_PM_SHOP_INFO_QUERY = """
-            query goldGetPMShopInfo(${'$'}shop_id: Int!) {
-              goldGetPMShopInfo(shop_id:${'$'}shop_id, source: "android-shop-score", lang: "id", device: "android") {
+            query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}filter: GetPMShopInfoFilter) {
+              goldGetPMShopInfo(shop_id:${'$'}shop_id, source: "android-shop-score", lang: "id", device: "android", filter: ${'$'}filter) {
                 is_new_seller
                 shop_age
                 is_eligible_pm
@@ -127,15 +125,13 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         val shopScoreLevelParam = mapOf(SHOP_SCORE_LEVEL_INPUT to shopScoreLevelInput)
         val shopLevelParam = mapOf(SHOP_SCORE_LEVEL_INPUT to shopLevelTooltipInput)
 
-        val goldPMShopInfoParam = mapOf(SHOP_ID_BENEFIT_INFO to shopID)
-
         val getRecommendationToolsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
 
         val goldGetPMOStatusParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
 
         val shopScoreLevelRequest = GraphqlRequest(SHOP_SCORE_LEVEL_QUERY, ShopScoreLevelResponse::class.java, shopScoreLevelParam)
         val shopLevelRequest = GraphqlRequest(SHOP_LEVEL_TOOLTIP_QUERY, ShopLevelTooltipResponse::class.java, shopLevelParam)
-        val goldPMShopInfoRequest = GraphqlRequest(GOLD_PM_SHOP_INFO_QUERY, GoldGetPMShopInfoResponse::class.java, goldPMShopInfoParam)
+        val goldPMShopInfoRequest = GraphqlRequest(GOLD_PM_SHOP_INFO_QUERY, GoldGetPMShopInfoResponse::class.java, getGoldPMShopInfoParam(shopID))
 
         val getRecommendationToolsRequest =
                 GraphqlRequest(RECOMMENDATION_TOOLS_QUERY, GetRecommendationToolsResponse::class.java, getRecommendationToolsParam)
@@ -195,5 +191,15 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         }
 
         return shopScoreWrapperResponse
+    }
+
+    private fun getGoldPMShopInfoParam(shopID: Long): HashMap<String, Any> {
+        val filterPMPro: Map<String, Boolean> = mapOf(
+            KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
+        )
+        return RequestParams.create().apply {
+            putLong(SHOP_ID_BENEFIT_INFO, shopID)
+            putObject(KEY_FILTER, filterPMPro)
+        }.parameters
     }
 }

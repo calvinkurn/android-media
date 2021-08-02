@@ -47,7 +47,7 @@
 
     <string name="title_header_pm_section">Status tokomu saat ini</string>
     <string name="title_content_pm_section">Nikmati berbagai keuntungan eksklusif dengan gabung PM PRO, yuk!</string>
-    <string name="desc_content_pm_section">Tingkatkan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="desc_content_pm_not_eligible_pm_pro">Penuhi semua syarat untuk bergabung PM PRO dan dapatkan berbagai keuntungan eksklusifnya! &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
     <!--> PM Pro -->
@@ -61,7 +61,7 @@
     <string name="title_benefit_pm_pro">Toko dengan Power Merchant PRO punya keuntungan eksklusif:</string>
     <string name="title_item_benefit_1_pm_pro">Bebas Ongkir dengan biaya lebih rendah</string>
     <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant Pro untuk tingkatkan kepercayaan pembeli</string>
-    <string name="title_item_benefit_3_pm_pro">Dapat prioritas dukungan marketing</string>
+    <string name="title_item_benefit_3_pm_pro">Nikmati layanan prioritas Tokopedia Care</string>
 
     <!-- Example Text for display preview -->
     <string name="example_score_performance">80</string>
