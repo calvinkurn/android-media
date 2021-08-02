@@ -1897,15 +1897,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun sendTrackingATC(cartId: String) {
         val boData = viewModel.getBebasOngkirDataByProductId()
-        DynamicProductDetailTracking.Click.eventEcommerceBuy(buttonActionType,
-                viewModel.buttonActionText,
-                viewModel.userId,
-                cartId,
-                trackerAttributionPdp ?: "",
-                viewModel.getMultiOriginByProductId().isFulfillment,
-                DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
+        DynamicProductDetailTracking.Click.eventEcommerceBuy(
+                actionButton = buttonActionType,
+                buttonText = viewModel.buttonActionText,
+                userId = viewModel.userId,
+                cartId = cartId,
+                trackerAttribution = trackerAttributionPdp ?: "",
+                multiOrigin = viewModel.getMultiOriginByProductId().isFulfillment,
+                variantString = DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
-                viewModel.getDynamicProductInfoP1, boData.imageURL.isNotEmpty())
+                productInfo = viewModel.getDynamicProductInfoP1,
+                boType = boData.boType)
     }
 
     private fun validateOvo(result: AddToCartDataModel) {

@@ -15,6 +15,21 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
  */
 object ProductCartHelper {
 
+    fun getBoTrackerString(boType: Int): String {
+        return when (boType) {
+            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> {
+                "bebas ongkir extra"
+            }
+            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> {
+                "bebas ongkir"
+            }
+            ProductDetailCommonConstant.BO_TOKONOW -> {
+                "tokonow"
+            }
+            else -> "none/other"
+        }
+    }
+
     fun validateOvo(activity: FragmentActivity?,
                     result: AddToCartDataModel,
                     parentProductId: String,
