@@ -303,7 +303,8 @@ class TokoNowHomeFragment: Fragment(),
         recomItem: RecommendationItem,
         channelId: String,
         headerName: String,
-        position: String
+        position: String,
+        isOoc: Boolean
     ) {
         RouteManager.route(
             context,
@@ -315,7 +316,8 @@ class TokoNowHomeFragment: Fragment(),
             headerName = headerName,
             userId = userSession.userId,
             recommendationItem = recomItem,
-            position = position
+            position = position,
+            isOoc = isOoc
         )
     }
 
@@ -323,7 +325,8 @@ class TokoNowHomeFragment: Fragment(),
         recomItems: List<RecommendationItem>,
         channelId: String,
         headerName: String,
-        pageName: String
+        pageName: String,
+        isOoc: Boolean
     ) {
         if (isRefreshed) {
             isRefreshed = false
@@ -332,15 +335,17 @@ class TokoNowHomeFragment: Fragment(),
                 headerName = headerName,
                 userId = userSession.userId,
                 recomItems = recomItems,
-                pageName = pageName
+                pageName = pageName,
+                isOoc = isOoc
             )
         }
     }
 
-    override fun onSeeAllBannerClicked(channelId: String, headerName: String) {
+    override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean) {
         analytics.onClickAllProductRecom(
             channelId = channelId,
-            headerName = headerName
+            headerName = headerName,
+            isOoc = isOoc
         )
     }
 

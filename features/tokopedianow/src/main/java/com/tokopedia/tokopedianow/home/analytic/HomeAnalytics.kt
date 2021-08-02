@@ -74,15 +74,20 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_ATC_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_RECOM_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_RECOM_PAGE_SOURCE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARIANT
@@ -97,6 +102,7 @@ class HomeAnalytics {
 
     object CATEGORY{
         const val EVENT_CATEGORY_HOME_PAGE = "tokonow - homepage"
+        const val EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN = "tokonow homepage"
         const val EVENT_CATEGORY_RECOM_HOME_PAGE = "tokonow - recom homepage"
     }
 
@@ -109,8 +115,11 @@ class HomeAnalytics {
         const val EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY = "click category on category widget"
         const val EVENT_ACTION_IMPRESSION_SLIDER_BANNER = "impression slider banner"
         const val EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM = "click view all on tokonow recom homepage"
+        const val EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC = "click 'Cek Sekarang' on recom widget on tokonow homepage while the address is out of coverage (OOC)"
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM = "click product on tokonow product recom homepage"
+        const val EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC = "click product on recom widget on tokonow homepage while the address is out of coverage (OOC)"
         const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOM = "impression on tokonow product recom homepage"
+        const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC = "view product on recom widget on tokonow homepage while the address is out of coverage (OOC)"
         const val EVENT_ACTION_IMPRESSION_PAST_PURCHASE = "impression on past purchase widget"
         const val EVENT_ACTION_CLICK_PAST_PURCHASE = "click product on past purchase widget"
         const val EVENT_ACTION_ATC_PAST_PURCHASE = "click atc on past purchase widget"
@@ -127,6 +136,7 @@ class HomeAnalytics {
         const val NORMAL_PRICE = "normal price"
         const val WITH_VARIANT = "with variant"
         const val WITHOUT_VARIANT = "without variant"
+        const val PRODUCT_TOPADS = "product topads"
     }
 
     fun onClickSearchBar() {
@@ -229,26 +239,25 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onClickAllProductRecom(channelId: String, headerName: String) {
+    fun onClickAllProductRecom(channelId: String, headerName: String, isOoc: Boolean) {
         hitCommonHomeTracker(
             getDataLayer(
                 event = EVENT_CLICK_TOKONOW,
-                action = EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM,
-                category = EVENT_CATEGORY_RECOM_HOME_PAGE,
-                label = "{$channelId - $headerName}"
+                action = if (isOoc) EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM_OOC else EVENT_ACTION_CLICK_ALL_PRODUCT_RECOM,
+                category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
+                label = if (isOoc) " - $headerName" else "$channelId - $headerName"
             )
         )
     }
 
-    fun onClickProductRecom(channelId: String, headerName: String, userId: String, recommendationItem: RecommendationItem, position: String) {
+    fun onClickProductRecom(channelId: String, headerName: String, userId: String, recommendationItem: RecommendationItem, position: String, isOoc: Boolean) {
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,
-            action = EVENT_ACTION_CLICK_PRODUCT_RECOM,
-            category = EVENT_CATEGORY_RECOM_HOME_PAGE,
-            label = "$channelId - $headerName",
+            action = if (isOoc) EVENT_ACTION_CLICK_PRODUCT_RECOM_OOC else EVENT_ACTION_CLICK_PRODUCT_RECOM,
+            category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
+            label = if (isOoc) " - $headerName" else "$channelId - $headerName",
             userId = userId,
             productId = recommendationItem.productId.toString(),
-            needItemList = true,
             recommendationType = recommendationItem.recommendationType,
             pageName = recommendationItem.pageName,
             headerName = headerName,
@@ -257,14 +266,21 @@ class HomeAnalytics {
                     index = position,
                     productId = recommendationItem.productId.toString(),
                     productName = recommendationItem.name,
-                    price = recommendationItem.price
+                    price = recommendationItem.price,
+                    productCategory = recommendationItem.categoryBreadcrumbs
                 )
             )
         )
+        if (isOoc) {
+            dataLayer.remove(KEY_PAGE_SOURCE)
+            dataLayer.putString(KEY_ITEM_LIST, "{'list': '/tokonow - ${recommendationItem.pageName} - rekomendasi untuk anda - ${recommendationItem.recommendationType} - ${if (recommendationItem.isTopAds) PRODUCT_TOPADS else ""} - ooc'}")
+        } else {
+            dataLayer.putString(KEY_ITEM_LIST, "{'list': '/tokonow - recomproduct - carousel - ${recommendationItem.recommendationType} - ${recommendationItem.pageName} - $headerName'}")
+        }
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onImpressProductRecom(channelId: String, headerName: String, userId: String, recomItems: List<RecommendationItem>, pageName: String) {
+    fun onImpressProductRecom(channelId: String, headerName: String, userId: String, recomItems: List<RecommendationItem>, pageName: String, isOoc: Boolean) {
         val items = arrayListOf<Bundle>()
         recomItems.forEachIndexed { position, recomItem ->
             items.add(
@@ -272,22 +288,24 @@ class HomeAnalytics {
                     index = position.toString(),
                     productId = recomItem.productId.toString(),
                     productName = recomItem.name,
-                    price = recomItem.price
+                    price = recomItem.price,
+                    productCategory = recomItem.categoryBreadcrumbs
                 )
             )
         }
 
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
-            action = EVENT_ACTION_IMPRESSION_PRODUCT_RECOM,
-            category = EVENT_CATEGORY_RECOM_HOME_PAGE,
-            label = "$channelId - $headerName",
+            action = if (isOoc) EVENT_ACTION_IMPRESSION_PRODUCT_RECOM_OOC else EVENT_ACTION_IMPRESSION_PRODUCT_RECOM,
+            category = if (isOoc) EVENT_CATEGORY_HOME_PAGE_WITHOUT_HYPHEN else EVENT_CATEGORY_RECOM_HOME_PAGE,
+            label = if (isOoc) " - $headerName" else "$channelId - $headerName",
             userId = userId,
-            needItemList = false,
             pageName = pageName,
             headerName = headerName,
             items = items
         )
+
+        if (isOoc) dataLayer.remove(KEY_PAGE_SOURCE)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
@@ -314,7 +332,6 @@ class HomeAnalytics {
             label = "$channelId - $headerName",
             userId = userId,
             productId = recommendationItem.productId.toString(),
-            needItemList = false,
             recommendationType = recommendationItem.recommendationType,
             pageName = recommendationItem.pageName,
             headerName = headerName,
@@ -465,7 +482,7 @@ class HomeAnalytics {
         }
     }
 
-    private fun getEcommerceDataLayer(event: String, action: String, category: String, label: String = "", productId: String = "", userId: String, items: ArrayList<Bundle>, needItemList: Boolean, recommendationType: String = "", pageName: String, headerName: String,): Bundle {
+    private fun getEcommerceDataLayer(event: String, action: String, category: String, label: String = "", productId: String = "", userId: String, items: ArrayList<Bundle>, recommendationType: String = "", pageName: String, headerName: String,): Bundle {
         return Bundle().apply {
             putString(TrackAppUtils.EVENT, event)
             putString(TrackAppUtils.EVENT_ACTION, action)
@@ -478,9 +495,6 @@ class HomeAnalytics {
             putParcelableArrayList(KEY_ITEMS, items)
             if (productId.isNotBlank()) {
                 putString(KEY_PRODUCT_ID, productId)
-            }
-            if (needItemList) {
-                putString(KEY_ITEM_LIST, "{'list': '/tokonow - recomproduct - carousel - $recommendationType - $pageName - $headerName'}")
             }
         }
     }
