@@ -24,7 +24,7 @@ import javax.inject.Named
 
 class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
-    var validateToken: String = ""
+    private var validateToken: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -54,16 +54,6 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
-        if(validateToken.isEmpty()) {
-            showToaster(getString(R.string.error_default_fp_choose_account)) {
-                showLoadingProgress()
-                activity?.finish()
-            }
-//            NetworkErrorHelper.showEmptyState(context, view, "Terjadi kesalahan") {
-//                showLoadingProgress()
-//                activity?.finish()
-//            }
-        }
     }
 
     override fun initObserver() {
@@ -97,14 +87,18 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getFingerprintAccounts()
+        if(validateToken.isEmpty()) {
+            activity?.setResult(Activity.RESULT_CANCELED)
+            activity?.finish()
+        } else {
+            getFingerprintAccounts()
+        }
     }
 
     private fun getFingerprintAccounts() {
         showLoadingProgress()
         viewModel.getAccountListFingerprint(validateToken)
     }
-
 
     private fun onSuccessGetFingerprintAccounts(accountListDataModel: AccountListDataModel) {
         if (accountListDataModel.userDetailDataModels.size == 1) {
@@ -135,13 +129,13 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
         activity?.finish()
     }
 
-    private fun showToaster(message: String?, action: () -> Unit) {
+    private fun showToaster(message: String?, action: () -> Unit = {}) {
         if(context != null) {
             view?.let {
                 Toaster.build(
                     it,
                     message ?: getString(R.string.error_default_fp_choose_account),
-                    Toaster.LENGTH_LONG,
+                    Toaster.LENGTH_INDEFINITE,
                     Toaster.TYPE_ERROR,
                     "Coba lagi",
                 ) {

@@ -1586,11 +1586,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     viewModel.getUserInfo()
                 }
-            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
-                data?.extras?.let {
-                    val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
-                    val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
-                    onSuccessChooseAccountFingerprint(email, token)
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT) {
+                if(resultCode == Activity.RESULT_OK) {
+                    data?.extras?.let {
+                        val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
+                        val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
+                        onSuccessChooseAccountFingerprint(email, token)
+                    }
+                } else {
+                    showToaster(getString(R.string.error_login_fp_error))
                 }
             } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
