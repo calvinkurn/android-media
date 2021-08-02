@@ -84,7 +84,6 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_NEXT_PAGE -> {
                 activity?.let {
@@ -102,6 +101,10 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                     }
                     it.finish()
                 }
+            }
+
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
             }
         }
     }
@@ -137,7 +140,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             postDelayed({
                 setCurrentItem(0, true)
                 visibility = View.VISIBLE
-            }, 10)
+            }, DELAY)
 
             pageDots?.setViewpager(this)
             registerOnPageChangeCallback(OnPageChangeListener())
@@ -293,6 +296,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         const val ARG_DYNAMIC_ONBAORDING_DATA = "dynamicOnabordingData"
 
         private const val REQUEST_NEXT_PAGE = 679
+        private const val DELAY = 10L
 
         fun createInstance(bundle: Bundle): DynamicOnboardingFragment {
             val fragment = DynamicOnboardingFragment()

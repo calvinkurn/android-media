@@ -105,7 +105,6 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_REGISTER -> {
                 activity?.let {
@@ -123,6 +122,10 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                     }
                     it.finish()
                 }
+            }
+
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
             }
         }
     }
