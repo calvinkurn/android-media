@@ -192,12 +192,12 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     fun loading() {
-        fragment_fingerprint_setting_container?.alpha = 0.4F
+        fragment_fingerprint_setting_container?.alpha = LESS_ALPHA
         fragment_fingerprint_setting_loader.show()
     }
 
     fun hideLoading() {
-        fragment_fingerprint_setting_container?.alpha = 1.0F
+        fragment_fingerprint_setting_container?.alpha = NORMAL_ALPHA
         fragment_fingerprint_setting_loader.hide()
     }
 
@@ -238,6 +238,9 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
         const val OTP_SECURITY_QUESTION = 158
         const val REQUEST_SECURITY_QUESTION = 104
+
+        private const val NORMAL_ALPHA = 1.0F
+        private const val LESS_ALPHA = 0.4f
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = SettingFingerprintFragment()
