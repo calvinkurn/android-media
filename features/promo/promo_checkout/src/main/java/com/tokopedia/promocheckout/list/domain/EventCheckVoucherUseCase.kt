@@ -21,11 +21,12 @@ import javax.inject.Inject
  * @author: astidhiyaa on 02/08/21.
  */
 class EventCheckVoucherUseCase @Inject constructor(val restRepository: RestRepository): RestRequestUseCase(restRepository) {
+    val url = PromoCheckoutUrl.BASE_URL_EVENT_DEALS + PromoCheckoutUrl.EVENT_DEALS_POST_VERIFY_PATH
     var book :  HashMap<String, Boolean> = hashMapOf()
     var requestBody: EventVerifyBody = EventVerifyBody()
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
-        val restRequest = RestRequest.Builder(PromoCheckoutUrl.BASE_URL_EVENT_DEALS, EventVerifyResponse::class.java)
+        val restRequest = RestRequest.Builder(url, EventVerifyResponse::class.java)
             .setRequestType(RequestType.POST)
             .setQueryParams(book)
             .setBody(requestBody)
