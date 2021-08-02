@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
-                                 private val itemList: List<ProductListUiModel.ProductBundlingItemUiModel>): RecyclerView.Adapter<ProductBundlingItemAdapter.ViewHolder>() {
+                                 private val itemList: List<ProductListUiModel.ProductUiModel>): RecyclerView.Adapter<ProductBundlingItemAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -39,9 +39,9 @@ class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
         private val bundleItemProductNoteText: Typography? = itemView.findViewById(R.id.tv_item_bom_detail_bundling_product_note)
         private val bundleItemProductActionButton: UnifyButton? = itemView.findViewById(R.id.btn_item_bom_detail_bundling_action)
 
-        private var element: ProductListUiModel.ProductBundlingItemUiModel? = null
+        private var element: ProductListUiModel.ProductUiModel? = null
 
-        fun bind(model: ProductListUiModel.ProductBundlingItemUiModel?) {
+        fun bind(model: ProductListUiModel.ProductUiModel?) {
             model?.let {
                 element = it
                 setBundleItemThumbnail(it.productThumbnailUrl)
@@ -62,7 +62,6 @@ class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
         }
 
         private fun setBundleItemProductPriceQuantity(quantity: Int, priceText: String) {
-            // TODO: Check for logic to show quantity
             bundleItemProductPriceQuantityText?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
         }
 
@@ -112,8 +111,8 @@ class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
 
         interface Listener {
             fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
-            fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductBundlingItemUiModel)
-            fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductBundlingItemUiModel)
+            fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel)
+            fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel)
         }
     }
 }

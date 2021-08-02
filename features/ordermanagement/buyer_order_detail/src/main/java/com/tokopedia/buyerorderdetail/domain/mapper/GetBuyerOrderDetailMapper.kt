@@ -11,7 +11,6 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
-import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -22,7 +21,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.haveProductBundle, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
         )
     }
@@ -52,11 +51,30 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>,
+                                      haveProductBundle: Boolean,
+                                      bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?,
+                                      shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop,
+                                      orderId: String,
+                                      orderStatusId: String): ProductListUiModel {
+        val productList =
+                if (haveProductBundle) {
+                    mapProductList(products, orderId, orderStatusId)
+                } else {
+                    bundleDetail?.nonBundleList?.let { nonBundleProducts ->
+                        mapProductList(nonBundleProducts, orderId, orderStatusId)
+                    }.orEmpty()
+                }
+        val productBundlingList =
+                if (haveProductBundle) {
+                    mapProductBundle(bundleDetail, orderId, orderStatusId)
+                } else {
+                    null
+                }
         return ProductListUiModel(
-                productList = mapProductList(products, orderId, orderStatusId),
+                productList = productList,
                 productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
-                productBundlingList = mapProductBundle(bundleDetail, orderStatusId)
+                productBundlingList = productBundlingList
         )
     }
 
@@ -255,25 +273,15 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel>? {
+    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel>? {
         return bundleDetail?.bundleList?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
-                    // TODO: get actual action button
                     bundleName = bundle.bundleName,
-                    totalPrice = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
+                    bundleIconUrl = bundleDetail.bundleIcon.orEmpty(),
+                    totalPrice = bundle.bundleSubtotalPrice,
                     totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                     bundleItemList = bundle.orderDetailList.map { bundleDetail ->
-                        ProductListUiModel.ProductBundlingItemUiModel(
-                                orderId = bundleDetail.orderId.toString(),
-                                orderDetailId = bundleDetail.orderDetailId.toString(),
-                                orderStatusId = orderStatusId,
-                                productId = bundleDetail.productId,
-                                productName = bundleDetail.productName,
-                                productNote = bundleDetail.notes,
-                                productThumbnailUrl = bundleDetail.thumbnail,
-                                quantity = bundleDetail.quantity,
-                                productPrice = bundleDetail.productPrice
-                        )
+                        mapProduct(bundleDetail, orderId, orderStatusId)
                     }
             )
         }

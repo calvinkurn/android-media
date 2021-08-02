@@ -209,8 +209,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         trackBuyAgainProduct(listOf(product))
     }
 
-    override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductBundlingItemUiModel) {
-//        TODO("Check for action from PM")
+    override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel) {
+        onBuyAgainButtonClicked(uiModel)
     }
 
     override fun onClickShipmentInfoTnC() {

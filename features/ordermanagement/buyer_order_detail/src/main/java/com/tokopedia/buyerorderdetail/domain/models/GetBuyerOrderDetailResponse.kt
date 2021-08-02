@@ -2,7 +2,6 @@ package com.tokopedia.buyerorderdetail.domain.models
 
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import com.google.gson.annotations.SerializedName
 
 data class GetBuyerOrderDetailResponse(
@@ -169,6 +168,9 @@ data class GetBuyerOrderDetailResponse(
                     val categoryId: String = "0",
                     @SerializedName("notes")
                     val notes: String = "",
+                    @SuppressLint("Invalid Data Type")
+                    @SerializedName("bundle_id")
+                    val bundleId: Long? = 0,
                     @SerializedName("order_detail_id")
                     val orderDetailId: String = "0",
                     @SuppressLint("Invalid Data Type")
@@ -198,7 +200,7 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("product_bundling_icon")
                     val bundleIcon: String? = "",
                     @SerializedName("non_bundle")
-                    val nonBundleList: List<Bundle.OrderDetail> = listOf()
+                    val nonBundleList: List<Product> = listOf()
             ) {
                 data class Bundle(
                         @SuppressLint("Invalid Data Type")
@@ -213,37 +215,8 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("bundle_subtotal_price")
                         val bundleSubtotalPrice: Double = 0.0,
                         @SerializedName("order_detail")
-                        val orderDetailList: List<OrderDetail> = listOf()
-                ) {
-                    data class OrderDetail(
-                            @SuppressLint("Invalid Data Type")
-                            @SerializedName("bundle_id")
-                            val bundleId: Long = 0,
-                            @SuppressLint("Invalid Data Type")
-                            @SerializedName("order_id")
-                            val orderId: Long = 0,
-                            @SuppressLint("Invalid Data Type")
-                            @SerializedName("order_dtl_id")
-                            val orderDetailId: Long = 0,
-                            @SuppressLint("Invalid Data Type")
-                            @SerializedName("product_id")
-                            val productId: Long = 0,
-                            @SerializedName("product_name")
-                            val productName: String = "",
-                            @SerializedName("quantity")
-                            val quantity: Int = 0,
-                            @SerializedName("product_price")
-                            val productPrice: Double = 0.0,
-                            @SerializedName("subtotal_price")
-                            val subtotalPrice: Double = 0.0,
-                            @SerializedName("notes")
-                            val notes: String = "",
-                            @SerializedName("thumbnail")
-                            val thumbnail: String,
-                            @SerializedName("button")
-                            val button: Button? = Button()
-                    )
-                }
+                        val orderDetailList: List<Product> = listOf()
+                )
             }
 
             data class Shipment(

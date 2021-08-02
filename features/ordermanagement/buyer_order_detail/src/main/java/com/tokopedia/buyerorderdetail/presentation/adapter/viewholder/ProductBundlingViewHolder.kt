@@ -49,7 +49,7 @@ class ProductBundlingViewHolder(
     }
 
     override fun bind(element: ProductListUiModel.ProductBundlingUiModel) {
-        setupBundleHeader(element.bundleName)
+        setupBundleHeader(element.bundleName, element.bundleIconUrl)
         setupBundleAdapter(element.bundleItemList)
         setupBundleTotalPrice(element.totalPriceText)
     }
@@ -63,23 +63,29 @@ class ProductBundlingViewHolder(
         }
     }
 
-    override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductBundlingItemUiModel) {
+    override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel) {
         listener.onPurchaseAgainButtonClicked(uiModel)
     }
 
-    override fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductBundlingItemUiModel) {
-        uiModel.button?.url?.let {
+    override fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel) {
+        uiModel.button.url.let {
             navigator.openAppLink(it, false)
         }
         // TODO: Set correct tracker
     }
 
-    private fun setupBundleHeader(bundleName: String) {
+    private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
         bundlingNameText?.text = bundleName
-        bundlingIconImage?.setImageUrl(PRODUCT_BUNDLING_IMAGE_ICON_URL)
+        val iconUrl =
+                if (bundleIconUrl.isEmpty()) {
+                    PRODUCT_BUNDLING_IMAGE_ICON_URL
+                } else {
+                    bundleIconUrl
+                }
+        bundlingIconImage?.setImageUrl(iconUrl)
     }
 
-    private fun setupBundleAdapter(bundleItemList: List<ProductListUiModel.ProductBundlingItemUiModel>) {
+    private fun setupBundleAdapter(bundleItemList: List<ProductListUiModel.ProductUiModel>) {
         bundlingItemRecyclerView?.run {
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = ProductBundlingItemAdapter(this@ProductBundlingViewHolder, bundleItemList)
@@ -94,7 +100,7 @@ class ProductBundlingViewHolder(
     }
 
     interface Listener {
-        fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductBundlingItemUiModel)
+        fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel)
     }
 
 }

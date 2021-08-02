@@ -83,12 +83,12 @@ class BuyerOrderDetailNavigator(
         }
     }
 
-    private fun createProductBundleItemPayload(model: ProductListUiModel.ProductBundlingItemUiModel): JsonObject {
+    private fun createProductBundleItemPayload(model: ProductListUiModel.ProductUiModel): JsonObject {
         return JsonObject().apply {
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_ID, model.productId)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_NAME, model.productName)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_THUMBNAIL, model.productThumbnailUrl)
-            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_PRICE, model.productPrice)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_PRICE, model.price)
         }
     }
 
