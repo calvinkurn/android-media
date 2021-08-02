@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.calendar.CalendarPickerView
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
@@ -15,7 +16,7 @@ import java.util.*
 class DateRangePickerBottomSheet : BottomSheetUnify() {
 
     val maxDate = Date()
-    val minDate = Date(System.currentTimeMillis() - (10 * 365 * 24 * 3600 * 1000L))
+    val minDate = Date(System.currentTimeMillis() - FIFTY_YEAR_MILLIS)
 
     var defaultDateFrom: Date? = null
     var defaultDateTo: Date? = null
@@ -107,11 +108,23 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
     private fun CalendarPickerView.outOfRange() {
         setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
-                //todo post out of 30 days range
-                // <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
+                showMaxDaysDialog()
             }
-
         })
+    }
+
+    private fun showMaxDaysDialog(){
+        DialogUnify(context = this.requireContext(),
+            actionType = DialogUnify.SINGLE_ACTION,
+            imageType = DialogUnify.NO_IMAGE).apply {
+            setTitle("")
+            setDescription(getString(R.string.sp_title_max_day))
+            setPrimaryCTAText(getString(R.string.sp_btn_cancel))
+            setPrimaryCTAClickListener {
+                cancel()
+            }
+            show()
+        }
     }
 
     private fun setDefaultParams() {
@@ -125,6 +138,7 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        val FIFTY_YEAR_MILLIS = (50 * 365 * 24 * 3600 * 1000L)
         val ARG_DATE_FROM = "ARG_DATE_FROM"
         val ARG_DATE_TO = "ARG_DATE_TO"
         fun getInstance(dateFrom: Date?, dateTo: Date?): DateRangePickerBottomSheet {
