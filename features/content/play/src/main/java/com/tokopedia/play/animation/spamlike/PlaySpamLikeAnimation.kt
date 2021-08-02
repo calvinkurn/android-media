@@ -44,7 +44,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     private var DECREASE_SHOT = -1
     private var MAX_SHOT = 30
     private var SIZE_TYPE = PlaySpamLikeSize.MULTIPLY
-    private val DURATION = 1000L
+    private val DURATION = 1500L
     private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
 
@@ -261,8 +261,8 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         val threshold = (end - ((end - start) / 2))
         var alpha = 1.0f
 
-        val xStart = image.x - 25
-        val xEnd = image.x + 25
+        val xStart = image.x - 20
+        val xEnd = image.x + 20
         var xCurrent = image.x
 
         var xMove: PlaySpamLikeMove = if((0..1).random() % 2 == 0) PlaySpamLikeMove.Right else PlaySpamLikeMove.Left
