@@ -43,17 +43,28 @@ class ImageUploadUseCase @Inject constructor(
     }
 
     private fun generateParamFile(): RequestBody {
-        val file: File
-        try {
-            file = ImageProcessingUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
-        } catch (e: Exception) {
-            throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
+        val filePath = useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, "")
+        var file = File(filePath)
+
+        if (checkFileIsMoreThan10Mb(file)) {
+            try {
+                file = ImageProcessingUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
+            } catch (e: Exception) {
+                throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
+            }
         }
 
         return RequestBody.create(MediaType.parse("image/*"), file)
     }
 
+    private fun checkFileIsMoreThan10Mb(file: File): Boolean {
+        val maxFileSize = MAX_FILE_SIZE_IN_MB * 1024 * 1024
+        val fileSize = file.length()
+        return fileSize > maxFileSize
+    }
+
     companion object {
+        private const val MAX_FILE_SIZE_IN_MB = 10
         const val STATUS_OK = "OK"
     }
 }
