@@ -152,6 +152,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_NAME, linkerData.getLevel3Name())
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
+                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
                 .setRevenue(0)
                 .setCurrency(CurrencyType.IDR)
                 .addContentItems(buo);
@@ -235,10 +236,10 @@ public class BranchHelper {
         saveBranchEvent(branchEvent);
     }
 
-    public static void sendSearchEvent(Context context, LinkerData linkerData){
+    public static void sendSearchEvent(Context context, ArrayList<String> searchItems){
         BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
                 .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
-                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, linkerData.getId());
+                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, String.valueOf(searchItems));
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
     }

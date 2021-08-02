@@ -3,10 +3,6 @@ package com.tokopedia.autocomplete.analytics;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel;
 import com.tokopedia.iris.Iris;
-import com.tokopedia.linker.LinkerConstants;
-import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.linker.LinkerUtils;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -68,8 +64,6 @@ public class AutocompleteTracking {
                     PAGE_SOURCE, pageSource
             )
         );
-        //add branch search event
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_SEARCH, createLinkerData(label)));
     }
 
     public static void eventClickShop(String label, String pageSource) {
@@ -84,8 +78,6 @@ public class AutocompleteTracking {
                         PAGE_SOURCE, pageSource
                 )
         );
-        //add branch search event here
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_SEARCH, createLinkerData(label)));
     }
 
     public static void eventClickProfile(String label) {
@@ -136,8 +128,6 @@ public class AutocompleteTracking {
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
                 )
         );
-        //add branch search event
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_SEARCH, createLinkerData(label)));
     }
 
     public static void eventClickSubmit(String label) {
@@ -147,8 +137,6 @@ public class AutocompleteTracking {
                 AutocompleteEventTracking.Action.CLICK_SEARCH,
                 label
         );
-        //add branch search event
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_SEARCH, createLinkerData(label)));
     }
 
     public static void eventClickRecentView(Object productDataLayer, String label) {
@@ -505,11 +493,5 @@ public class AutocompleteTracking {
                 PAGE_SOURCE, pageSource
         );
         iris.saveEvent(map);
-    }
-
-    private static LinkerData createLinkerData(String label){
-        LinkerData linkerData = new LinkerData();
-        linkerData.setId(label);
-        return linkerData;
     }
 }
