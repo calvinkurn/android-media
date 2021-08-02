@@ -1,6 +1,5 @@
 package com.tokopedia.selleronboarding.adapter.viewholder
 
-import android.content.res.Configuration
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
@@ -24,6 +23,9 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_home_view_holder
         private const val ANIM_POP_IN_DURATION = 500L
+        private const val START_SCALE = 0f
+        private const val END_SCALE = 1f
+        private const val PIVOT_VALUE = 0.5f
     }
 
     override fun bind(element: SobSliderHomeUiModel) {
@@ -69,14 +71,11 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
 
     private fun runOneTimePopInAnimation() {
         with(itemView) {
-            val startScale = 0f
-            val endScale = 1f
-            val pivotValue = 0.5f
             val animation = ScaleAnimation(
-                    startScale, endScale,
-                    startScale, endScale,
-                    Animation.RELATIVE_TO_SELF, pivotValue,
-                    Animation.RELATIVE_TO_SELF, pivotValue
+                    START_SCALE, END_SCALE,
+                    START_SCALE, END_SCALE,
+                    Animation.RELATIVE_TO_SELF, PIVOT_VALUE,
+                    Animation.RELATIVE_TO_SELF, PIVOT_VALUE
             )
             animation.fillAfter = true
             animation.duration = ANIM_POP_IN_DURATION
