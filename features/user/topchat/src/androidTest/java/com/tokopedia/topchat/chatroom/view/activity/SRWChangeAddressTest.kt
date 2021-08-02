@@ -81,5 +81,14 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         assertChatRecyclerview(isSender(0))
     }
 
-    // TODO: should hide msg header when attachment is null
+    @Test
+    fun should_hide_msg_header_when_attachment_is_null() {
+        // Given
+        getChatUseCase.response = getChatUseCase.nullAttachment
+        launchChatRoomActivity()
+
+        // Then
+        assertMsgHeaderContainer(0, not(isDisplayed()))
+    }
+
 }

@@ -69,6 +69,15 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    val nullAttachment: GetExistingChatPojo
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies).get(0).asJsonObject
+                .remove(attachment)
+        }
+
     private val chatReplies = "chatReplies"
     private val list = "list"
     private val chats = "chats"
