@@ -5,7 +5,11 @@ import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import android.util.Log
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import com.tokopedia.graphql.util.Const
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.SignatureData
 import java.security.*
@@ -62,6 +66,7 @@ class CryptographyUtils: Cryptography {
                 val spec = X509EncodedKeySpec(publicKey.encoded)
                 return factory.generatePublic(spec) as RSAPublicKey
             } catch (e: Exception) {
+                log("GeneratePublicKey_Exception", data = "public_key=${publicKey.toNullStringIfNull()}#keystore=${keyStore.toNullStringIfNull()}", e)
                 e.printStackTrace()
             }
             return publicKey
@@ -92,6 +97,7 @@ class CryptographyUtils: Cryptography {
             keyStore?.load(null)
             generateKeyPair(keyStore)
         } catch (e: Exception) {
+            log("InitKeystore_Exception", data = "keystore=${keyStore?.toNullStringIfNull()}", e)
             e.printStackTrace()
         }
     }
@@ -104,6 +110,7 @@ class CryptographyUtils: Cryptography {
             signature?.initSign(key)
             true
         } catch (e: Exception) {
+            log("InitSignature_Exception", data = "signature=${signature?.toNullStringIfNull()}#keystore=${keyStore.toNullStringIfNull()}", e)
             e.printStackTrace()
             false
         }
@@ -138,6 +145,8 @@ class CryptographyUtils: Cryptography {
                 signText = Base64.encodeToString(signature.sign(),
                         Base64.NO_WRAP)
             } catch (e: Exception) {
+                log("GetSignature_Exception", data =
+                "text_to_encrypt=$textToEncrypt#keystore=${keyStore.toNullStringIfNull()}", e)
                 e.printStackTrace()
             }
             return signText
@@ -145,4 +154,21 @@ class CryptographyUtils: Cryptography {
         return ""
     }
 
+    private fun Any?.toNullStringIfNull(): String {
+        return if(this == null) "null" else "not null"
+    }
+
+    private fun log(type: String, data: String , throwable: Exception) {
+        val msg = mapOf(
+            "type" to type,
+            "data" to data,
+            "exception" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH)
+        )
+
+        ServerLogger.log(
+            Priority.P1,
+            "CRYPTOGRAPHY_ERROR",
+            msg
+        )
+    }
 }
