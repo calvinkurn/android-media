@@ -48,7 +48,7 @@ class ImageUploadUseCase @Inject constructor(
 
         if (checkFileIsMoreThan10Mb(file)) {
             try {
-                file = ImageProcessingUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
+                file = ImageProcessingUtil.compressImageFile(filePath, 100)
             } catch (e: Exception) {
                 throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
             }
