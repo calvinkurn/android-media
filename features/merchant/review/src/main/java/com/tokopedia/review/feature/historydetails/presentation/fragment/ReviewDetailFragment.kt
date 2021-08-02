@@ -387,7 +387,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private fun addHeaderIcons(editable: Boolean) {
         reviewDetailHeader.apply {
             clearIcons()
-            addRightIcon(R.drawable.ic_share)
+            addRightIcon(R.drawable.ic_history_details_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
                 (viewModel.reviewDetails.value as? Success)?.let {
                     ReviewDetailTracking.eventClickShare(it.data.product.productId, it.data.review.feedbackId, viewModel.getUserId())
