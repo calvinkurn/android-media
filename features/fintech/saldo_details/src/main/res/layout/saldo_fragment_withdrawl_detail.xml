@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/withdrawalProgress"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/saldoWithdrawalDetailGlobalError"
             android:layout_width="match_parent"
@@ -134,6 +143,7 @@
             app:constraint_referenced_ids="rvWithdrawalStatus, tvWithdrawalStatus,
             withdrawalStatusSeparator,llWithdrawalDetail, detailSeparator,
             tvAccountName, tvBankName, withdrawalStatusLabel,tvWithdrawalAmount"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

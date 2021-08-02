@@ -16,6 +16,7 @@ class TransactionInitialLoadingFailedViewHolder(itemView: View, val retryLoading
 
     override fun bind(element: TransactionErrorModel) {
         if(element.throwable is MessageErrorException){
+            // @Todo Custom error
             globalError.setType(GlobalError.SERVER_ERROR)
         }else {
             globalError.setType(GlobalError.NO_CONNECTION)
