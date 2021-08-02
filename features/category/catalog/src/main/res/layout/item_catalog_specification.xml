@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify
+    android:id="@+id/catalog_specifications_card_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dp_140"
     android:layout_height="@dimen/dp_140"

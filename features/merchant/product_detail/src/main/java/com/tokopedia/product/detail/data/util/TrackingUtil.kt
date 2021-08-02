@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -30,8 +31,8 @@ object TrackingUtil {
 
     fun getBoTypeString(boType: Int): String {
         return when (boType) {
-            ProductDetailConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
-            ProductDetailConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
             else -> ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
         }
     }
@@ -161,8 +162,8 @@ object TrackingUtil {
         return TextUtils.join("/", list)
     }
 
-    fun getFormattedPrice(price: Int): String {
-        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    fun getFormattedPrice(price: Double): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price, false, 0).formattedString
     }
 
     fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {

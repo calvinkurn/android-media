@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
@@ -146,12 +147,13 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         })
 
         eventPDPViewModel.isError.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if (it.error) {
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView) {
-                        loadDataAll()
-                        performanceMonitoring.stopTrace()
+            it?.let { error ->
+                if (error.error) {
+                    context?.let {
+                        EventGlobalError.errorEventHandlerGlobalError(it, error.throwable, container_error_event_pdp,
+                                global_error_pdp_event, { loadDataAll() })
                     }
+                    performanceMonitoring.stopTrace()
                 }
             }
         })
@@ -174,6 +176,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadDataAll() {
+        container_error_event_pdp.hide()
+        global_error_pdp_event.hide()
         eventPDPViewModel.getIntialList()
         requestData()
     }
@@ -253,13 +257,13 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
                 view.bottom_sheet_calendar.apply {
                     getActiveDate(productDetailData.dates).firstOrNull()?.let {
-                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData.dates))
+                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * DATE_LONG_VALUE), listHoliday, getActiveDate(productDetailData.dates))
                                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                     }
 
                     calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                         override fun onDateSelected(date: Date) {
-                            selectedDate = (date.time / 1000).toString()
+                            selectedDate = (date.time / DATE_LONG_VALUE).toString()
                             eventPDPTracking.onClickPickDate()
                             if (userSession.isLoggedIn) { goToTicketPage(productDetailData, selectedDate) }
                             else {
@@ -554,6 +558,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101
+
+        const val DATE_LONG_VALUE = 1000
 
         fun newInstance(urlPDP: String) = EventPDPFragment().also {
             it.arguments = Bundle().apply {

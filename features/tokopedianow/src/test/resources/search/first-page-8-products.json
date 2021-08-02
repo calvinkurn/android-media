@@ -677,5 +677,81 @@
         ]
       }
     ]
+  },
+
+  "searchJumper": {
+    "data": {
+      "title": "Mau belanja apa?",
+      "data": [
+        {
+          "title": "Bahan Makanan Kering",
+          "applink": "tokopedia://now/category/5000"
+        },
+        {
+          "title": "Bumbu Masakan",
+          "applink": "tokopedia://now/category/4807"
+        },
+        {
+          "title": "Daging & Seafood",
+          "applink": "tokopedia://now/category/4652"
+        },
+        {
+          "title": "Fashion",
+          "applink": "tokopedia://now/category/5061"
+        },
+        {
+          "title": "Gadget & Elektronik",
+          "applink": "tokopedia://now/category/5060"
+        },
+        {
+          "title": "Kesehatan",
+          "applink": "tokopedia://now/category/4722"
+        },
+        {
+          "title": "Makanan Jadi",
+          "applink": "tokopedia://now/category/4657"
+        },
+        {
+          "title": "Makanan Ringan",
+          "applink": "tokopedia://now/category/4681"
+        },
+        {
+          "title": "Makanan Sarapan",
+          "applink": "tokopedia://now/category/4693"
+        },
+        {
+          "title": "Mie, Pasta & Bihun",
+          "applink": "tokopedia://now/category/4666"
+        },
+        {
+          "title": "Minuman",
+          "applink": "tokopedia://now/category/5028"
+        },
+        {
+          "title": "Perawatan Tubuh & Kecantikan",
+          "applink": "tokopedia://now/category/4766"
+        },
+        {
+          "title": "Perlengkapan ibu & bayi",
+          "applink": "tokopedia://now/category/4709"
+        },
+        {
+          "title": "Perlengkapan Kebersihan",
+          "applink": "tokopedia://now/category/4737"
+        },
+        {
+          "title": "Rumah tangga",
+          "applink": "tokopedia://now/category/5026"
+        },
+        {
+          "title": "Sayur & Buah Segar",
+          "applink": "tokopedia://now/category/4858"
+        },
+        {
+          "title": "Telur & Olahan Susu",
+          "applink": "tokopedia://now/category/4809"
+        }
+      ]
+    }
   }
 }
