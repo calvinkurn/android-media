@@ -96,7 +96,7 @@ class TopupBillsViewModel @Inject constructor(
                 // If data is pending delay query call
                 with(data.enquiry) {
                     if (status == STATUS_PENDING && retryDuration > RETRY_DURATION)
-                        delay((retryDuration.toLong()) * 1000)
+                        delay((retryDuration.toLong()) * MULTIPLIER_1000)
                 }
             } while (data.enquiry.status != STATUS_DONE)
 
@@ -122,7 +122,7 @@ class TopupBillsViewModel @Inject constructor(
                     GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 val graphqlCacheStrategy =
                     GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * MULTIPLIER_5).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
@@ -474,6 +474,8 @@ class TopupBillsViewModel @Inject constructor(
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val FAVORITE_NUMBER_LIMIT = 10
         const val RETRY_DURATION = 0
+        const val MULTIPLIER_1000 = 1000
+        const val MULTIPLIER_5 = 5
     }
 
 }
