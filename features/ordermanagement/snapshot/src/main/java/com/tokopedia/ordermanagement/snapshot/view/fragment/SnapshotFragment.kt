@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PRODUCT_BUNDLE_NAME
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.ordermanagement.snapshot.R
@@ -52,7 +51,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
     private val REQUEST_CODE_LOGIN = 588
     private var orderId = ""
     private var orderDetailId = ""
-    private var productBundleName: String? = null
     private var isSnapshotFromSOM = false
     private var responseSnapshot = GetOrderSnapshot()
     private var srlSnapshot: SwipeToRefresh? = null
@@ -125,7 +123,6 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
             orderId = arguments?.getString(PARAM_ORDER_ID).toString()
             orderDetailId = arguments?.getString(PARAM_ORDER_DETAIL_ID).toString()
             isSnapshotFromSOM = arguments?.getBoolean(IS_SNAPSHOT_FROM_SOM) ?: false
-            productBundleName = arguments?.getString(PRODUCT_BUNDLE_NAME)
             val paramSnapshot = SnapshotParam(orderId = orderId, orderDetailId = orderDetailId)
             snapshotViewModel.loadSnapshot(paramSnapshot)
         }
@@ -161,9 +158,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                     SnapshotIdlingResource.decrement()
                     refreshHandler?.finishRefresh()
                     responseSnapshot = result.data
-                    snapshotAdapter.snapshotResponse = result.data.also {
-                        it.productBundleName = productBundleName
-                    }
+                    snapshotAdapter.snapshotResponse = result.data
                     snapshotAdapter.showContent()
                     btnSnapshotToPdp?.apply {
                         visible()

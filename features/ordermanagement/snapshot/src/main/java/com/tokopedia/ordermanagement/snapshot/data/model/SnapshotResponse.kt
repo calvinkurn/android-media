@@ -62,11 +62,7 @@ data class GetOrderSnapshot(
 
 	@field:SerializedName("campaign_data")
 	val campaignData: CampaignData = CampaignData()
-) {
-
-	var productBundleName: String? = null
-
-}
+)
 
 data class ShopSummary(
 	@field:SerializedName("shop_id")

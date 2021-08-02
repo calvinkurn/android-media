@@ -131,10 +131,10 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             itemView.context.getString(R.string.snapshot_ticker_info).replace(CREATED_TIME, it) }?.let {
             tickerInfo.setHtmlDescription(it) }
 
-        dataObject.productBundleName.let { bundleName ->
-            productBundlingInfoLayout?.showWithCondition(bundleName != null)
+        dataObject.bundleName.let { bundleName ->
+            productBundlingInfoLayout?.showWithCondition(bundleName.isNotEmpty())
             productBundlingIconImage?.setImageUrl(SnapshotConsts.BUNDLING_ICON_URL)
-            productBundlingNameText?.text = bundleName.orEmpty()
+            productBundlingNameText?.text = bundleName
         }
 
         productPrice.text = dataObject.productAdditionalData.productPrice
