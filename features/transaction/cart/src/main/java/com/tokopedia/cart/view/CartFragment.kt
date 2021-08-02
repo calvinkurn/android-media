@@ -3106,10 +3106,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         val allShopGroupDataList = cartAdapter.allShopGroupDataList
+
+        // Check if cart list has more than 1 shop, and it's a toko now
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
             allShopGroupDataList[0].let {
                 it.isCollapsible = false
                 it.isCollapsed = false
+                it.shopGroupAvailableData?.isShowPin = false
                 val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
                         ?: "")
                 if (index != RecyclerView.NO_POSITION) {
@@ -3118,6 +3121,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
+        // Check if cart list has more than 1 shop, and first shop is toko now
         if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
             allShopGroupDataList[0].let {
                 if ((it.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0) == 1) {
@@ -3580,9 +3584,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
         if (cartShopHolderData != null) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0 > 10) {
-                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId ?: "")
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId
+                        ?: "")
             } else {
-                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId ?: "")
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopHolderData.shopGroupAvailableData?.shopId
+                        ?: "")
             }
             cartShopHolderData.isCollapsed = false
             onNeedToUpdateViewItem(index)
