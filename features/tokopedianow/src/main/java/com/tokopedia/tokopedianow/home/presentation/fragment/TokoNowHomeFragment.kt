@@ -167,7 +167,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isFirstResumed = false
     private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -234,8 +233,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onResume() {
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
-        getMiniCart()
-        isFirstResumed = true
+        getMiniCart(refreshProductList = true)
         context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
@@ -252,7 +250,7 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
-        updateProductCard(miniCartSimplifiedData)
+        viewModelTokoNow.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
@@ -267,11 +265,6 @@ class TokoNowHomeFragment: Fragment(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
-    }
-
-    private fun updateProductCard(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModelTokoNow.setMiniCartSimplifiedData(miniCartSimplifiedData)
-        viewModelTokoNow.updateProductCard(miniCartSimplifiedData, true)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -423,11 +416,6 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-
     private fun initInjector() {
         DaggerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -477,7 +465,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showLayout() {
         getHomeLayout()
-        getMiniCart()
+        getMiniCart(refreshProductList = false)
     }
 
     private fun loadHeaderBackground() {
@@ -650,14 +638,16 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
+        observe(viewModelTokoNow.productAddToCartQuantity) {
+            if(it is Success) {
+                showHomeLayout(it.data)
+            }
+        }
+
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
-                if (isFirstResumed) {
-                    updateProductCard(it.data)
-                    isFirstResumed = false
-                }
             }
         }
 
@@ -689,11 +679,10 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartAdd) {
             when(it) {
                 is Success -> {
-                    getMiniCart()
-                    showToaster(
-                        message = it.data.errorMessage.joinToString(separator = ", "),
-                        type = TYPE_NORMAL
-                    )
+                    val message = it.data.errorMessage.joinToString(separator = ", ")
+
+                    getMiniCart(refreshProductList = false)
+                    showToaster(message = message, type = TYPE_NORMAL)
 
                     // track add to cart
                     trackAddToCart(it.data.data.quantity, it.data.data.cartId)
@@ -731,11 +720,8 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartRemove) {
             when(it) {
                 is Success -> {
-                    getMiniCart()
-                    showToaster(
-                        message = it.data.second,
-                        type = TYPE_NORMAL
-                    )
+                    getMiniCart(refreshProductList = false)
+                    showToaster(message = it.data.second, type = TYPE_NORMAL)
 
                     // track add to cart
                     recomItem?.let { recomItem ->
@@ -870,9 +856,8 @@ class TokoNowHomeFragment: Fragment(),
                 loadNextItem(data)
             }
             isLoadDataFinished -> {
-                rvHome?.post {
-                    addLoadMoreListener()
-                }
+                getProductAddToCartQuantity()
+                rvHome?.post { addLoadMoreListener() }
             }
             !isLoadDataFinished -> loadNextItem(data)
         }
@@ -956,10 +941,16 @@ class TokoNowHomeFragment: Fragment(),
         viewModelTokoNow.getHomeLayout()
     }
 
-    private fun getMiniCart()  {
+    private fun getMiniCart(refreshProductList: Boolean)  {
         val shopId = listOf(localCacheModel?.shop_id.orEmpty())
         val warehouseId = localCacheModel?.warehouse_id
-        viewModelTokoNow.getMiniCart(shopId, warehouseId)
+        viewModelTokoNow.getMiniCart(shopId, warehouseId, refreshProductList)
+    }
+
+    private fun getProductAddToCartQuantity()  {
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        viewModelTokoNow.getProductAddToCartQuantity(shopId, warehouseId)
     }
 
     private fun loadLayout() {

@@ -99,6 +99,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartRemove
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
+    val productAddToCartQuantity: LiveData<Result<HomeLayoutListUiModel>>
+        get() = _productAddToCartQuantity
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -108,6 +110,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
+    private val _productAddToCartQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
@@ -254,12 +257,19 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
+    fun getMiniCart(shopId: List<String>, warehouseId: String?, refreshProductList: Boolean) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
-                    setMiniCartSimplifiedData(it)
+                    val isInitialLoad = _homeLayoutList.value == null
+
+                    if(refreshProductList && !isInitialLoad) {
+                        setProductAddToCartQuantity(it)
+                    } else {
+                        setMiniCartAndProductQuantity(it)
+                    }
+
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -312,83 +322,42 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Get product add to cart quantity based on mini cart data.
+     * The quantity will be shown in product list quantity editor.
+     *
+     * @param shopId id obtained from choose address widget
+     * @param warehouseId id obtained from choose address widget
+     */
+    fun getProductAddToCartQuantity(shopId: List<String>, warehouseId: String?) {
+        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.execute({
+                    setProductAddToCartQuantity(it)
+                }, {
+                    _productAddToCartQuantity.postValue(Fail(it))
+                })
+            }) {
+                _productAddToCartQuantity.postValue(Fail(it))
+            }
+        }
+    }
+
     fun getMiniCartItem(productId: String): MiniCartItem? {
         return miniCartSimplifiedData?.miniCartItems
             ?.firstOrNull { it.productId == productId }
     }
 
-    private fun addItemToCart(
-        productId: String,
-        shopId: String,
-        quantity: Int,
-        @HomeLayoutType type: String
-    ) {
-        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
-            shopId = shopId,
-            quantity = quantity
-        )
-        addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute({
-            trackProductAddToCart(productId, quantity, type)
-            homeLayoutItemList.updateProductQuantity(
-                productId,
-                quantity,
-                type
-            )
-            _miniCartAdd.postValue(Success(it))
-        }, {
-            _miniCartAdd.postValue(Fail(it))
-        })
-    }
-
-    private fun updateItemCart(miniCartItem: MiniCartItem, quantity: Int) {
-        miniCartItem.quantity = quantity
-        val updateCartRequest = UpdateCartRequest(
-            cartId = miniCartItem.cartId,
-            quantity = miniCartItem.quantity,
-            notes = miniCartItem.notes
-        )
-        updateCartUseCase.setParams(
-            updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
-        )
-        updateCartUseCase.execute({
-            _miniCartUpdate.value = Success(it)
-        }, {
-            _miniCartUpdate.postValue(Fail(it))
-        })
-    }
-
-    private fun removeItemCart(miniCartItem: MiniCartItem, @HomeLayoutType type: String) {
-        deleteCartUseCase.setParams(
-            cartIdList = listOf(miniCartItem.cartId)
-        )
-        deleteCartUseCase.execute({
-            val productId = miniCartItem.productId
-            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
-            homeLayoutItemList.setQuantityToZero(productId, type)
-            _miniCartRemove.postValue(Success(data))
-        }, {
-            _miniCartRemove.postValue(Fail(it))
-        })
-    }
-
-    fun updateProductCard(item: MiniCartSimplifiedData, needToObserve: Boolean) {
-        homeLayoutItemList.updateRecentPurchaseQuantity(item)
-        homeLayoutItemList.updateProductRecomQuantity(item)
-
-        if (needToObserve) {
+    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
+        launchCatchError(block = {
+            setMiniCartAndProductQuantity(miniCart)
             val data = HomeLayoutListUiModel(
                 result = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW
             )
-            _homeLayoutList.postValue(Success(data))
-        }
-    }
-
-    fun setMiniCartSimplifiedData(data: MiniCartSimplifiedData) {
-        miniCartSimplifiedData = data
+            _productAddToCartQuantity.postValue(Success(data))
+        }) {}
     }
 
     fun removeTickerWidget(id: String) {
@@ -477,9 +446,6 @@ class TokoNowHomeViewModel @Inject constructor(
             val channelId = item.visitableId
             val response = getHomeLayoutDataUseCase.execute(channelId)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
-            miniCartSimplifiedData?.let {
-                updateProductCard(it, false)
-            }
         }) {
             val id = item.visitableId
             homeLayoutItemList.removeItem(id)
@@ -520,6 +486,77 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+    }
+
+    private fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        @HomeLayoutType type: String
+    ) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            trackProductAddToCart(productId, quantity, type)
+            homeLayoutItemList.updateProductQuantity(
+                productId,
+                quantity,
+                type
+            )
+            _miniCartAdd.postValue(Success(it))
+        }, {
+            _miniCartAdd.postValue(Fail(it))
+        })
+    }
+
+    private fun updateItemCart(miniCartItem: MiniCartItem, quantity: Int) {
+        miniCartItem.quantity = quantity
+        val updateCartRequest = UpdateCartRequest(
+            cartId = miniCartItem.cartId,
+            quantity = miniCartItem.quantity,
+            notes = miniCartItem.notes
+        )
+        updateCartUseCase.setParams(
+            updateCartRequestList = listOf(updateCartRequest),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
+        updateCartUseCase.execute({
+            _miniCartUpdate.value = Success(it)
+        }, {
+            _miniCartUpdate.postValue(Fail(it))
+        })
+    }
+
+    private fun removeItemCart(miniCartItem: MiniCartItem, @HomeLayoutType type: String) {
+        deleteCartUseCase.setParams(
+            cartIdList = listOf(miniCartItem.cartId)
+        )
+        deleteCartUseCase.execute({
+            val productId = miniCartItem.productId
+            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
+            homeLayoutItemList.setQuantityToZero(productId, type)
+            _miniCartRemove.postValue(Success(data))
+        }, {
+            _miniCartRemove.postValue(Fail(it))
+        })
+    }
+
+    private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
+        setMiniCartSimplifiedData(miniCart)
+        updateProductQuantity(miniCart)
+    }
+
+    private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
+        homeLayoutItemList.updateRecentPurchaseQuantity(miniCart)
+        homeLayoutItemList.updateProductRecomQuantity(miniCart)
+    }
+
+    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
+        miniCartSimplifiedData = miniCart
     }
 
     private fun trackProductAddToCart(productId: String, quantity: Int, type: String) {
