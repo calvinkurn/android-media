@@ -41,7 +41,7 @@
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSobSliderMessageTitle"
-        app:srcCompat="@drawable/ic_sob_widget_android" />
+        app:srcCompat="@drawable/img_sob_widget_android" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage2"
@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSobMessage1"
-        app:srcCompat="@drawable/ic_sob_smart_reply" />
+        tools:src="@drawable/img_sob_smart_reply" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage3"
@@ -65,6 +65,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSobMessage2"
-        app:srcCompat="@drawable/ic_sob_broadcast_chat" />
+        tools:src="@drawable/img_sob_broadcast_chat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,9 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
+import com.tokopedia.selleronboarding.utils.IMG_DEVICE_SCREEN_PERCENT
+import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
 import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
+import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
 import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
+import kotlinx.android.synthetic.main.sob_slider_promo_view_holder.view.*
 
 /**
  * Created By @ilhamsuaib on 20/07/21
@@ -19,6 +23,8 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
 
     companion object {
         val RES_LAYOUT = R.layout.sob_slider_manage_view_holder
+
+        const val NO_SPACE_MARGIN = 0
     }
 
     override fun bind(element: SobSliderManageUiModel) {
@@ -28,28 +34,40 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
                         tvSobSliderManageTitle.alpha = itemView.viewObserver.alpha
                         tvSobSliderManageTitle.translationY = itemView.viewObserver.translationY
                     }
-            imgSobManage1.run {
+            imgSobManage1?.run {
                 viewTreeObserver.addOnDrawListener {
                     scaleX = itemView.viewObserver.scaleX
                     scaleY = itemView.viewObserver.scaleY
                     alpha = itemView.viewObserver.alpha
                 }
             }
-            imgSobManage2.run {
+            imgSobManage2?.run {
                 viewTreeObserver.addOnDrawListener {
                     scaleX = itemView.viewObserver.scaleX
                     scaleY = itemView.viewObserver.scaleY
                     alpha = itemView.viewObserver.alpha
                 }
             }
-            imgSobManageBg.run {
+            imgSobManageBg?.run {
                 loadImage(R.drawable.bg_sob_circle)
                 viewTreeObserver.addOnDrawListener {
                     alpha = itemView.viewObserver.alpha
                 }
             }
 
+            setManageImageUrl()
             setupMarginTitleSob { setMarginManageTitle() }
+        }
+    }
+
+    private fun setManageImageUrl() {
+        with(itemView) {
+            imgSobManage1?.loadImage(SobImageSliderUrl.IMG_MANAGE_STOCK) {
+                setPlaceHolder(R.drawable.img_sob_manage_stock)
+            }
+            imgSobManage2?.loadImage(SobImageSliderUrl.IMG_SOM_CARD) {
+                setPlaceHolder(R.drawable.img_sob_som_card)
+            }
         }
     }
 
@@ -60,9 +78,13 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
             tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             tvSobSliderManageTitle?.layoutParams = tvSobCurrentView
 
-            val imgSobCurrentView = imgSobManage1?.layoutParams as? ConstraintLayout.LayoutParams
-            imgSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            imgSobManage1?.layoutParams = imgSobCurrentView
+            val imgSobCurrentView1 = imgSobManage1?.layoutParams as? ConstraintLayout.LayoutParams
+            imgSobCurrentView1?.topMargin = NO_SPACE_MARGIN
+            imgSobManage1?.layoutParams = imgSobCurrentView1
+
+            val imgSobCurrentView2 = imgSobManage2?.layoutParams as? ConstraintLayout.LayoutParams
+            imgSobCurrentView2?.bottomMargin = NO_SPACE_MARGIN
+            imgSobManage2?.layoutParams = imgSobCurrentView2
         }
     }
 }
