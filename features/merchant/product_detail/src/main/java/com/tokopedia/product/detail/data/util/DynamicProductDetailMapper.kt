@@ -23,6 +23,7 @@ object DynamicProductDetailMapper {
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
      * except info type
+     * If data already complete at P1 call, assign the value here.
      */
     fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
@@ -114,6 +115,20 @@ object DynamicProductDetailMapper {
                         OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
+                ProductDetailConstant.CATEGORY_CAROUSEL -> {
+                    //all data already provided in here (P1), so fill the data
+                    val carouselData = component.componentData.firstOrNull()
+
+                    if (carouselData?.categoryCarouselList?.isNotEmpty() == true) {
+                        listOfComponent.add(
+                                ProductCategoryCarouselDataModel(type = component.type,
+                                        name = component.componentName,
+                                        titleCarousel = carouselData.titleCarousel,
+                                        linkText = carouselData.linkText,
+                                        applink = carouselData.applink,
+                                        categoryList = carouselData.categoryCarouselList))
+                    }
+                }
             }
         }
         return listOfComponent
@@ -141,31 +156,31 @@ object DynamicProductDetailMapper {
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-            layoutName = data.generalName,
-            basic = data.basicInfo,
-            data = newDataWithMedia,
-            pdpSession = data.pdpSession,
-            bestSellerContent = bestSellerComponent,
-            stockAssuranceContent = stockAssuranceComponent
+                layoutName = data.generalName,
+                basic = data.basicInfo,
+                data = newDataWithMedia,
+                pdpSession = data.pdpSession,
+                bestSellerContent = bestSellerComponent,
+                stockAssuranceContent = stockAssuranceComponent
         )
     }
 
     private fun mapToOneLinersComponent(
-        componentName: String,
-        data: PdpGetLayout
+            componentName: String,
+            data: PdpGetLayout
     ): Map<String, OneLinersContent>? {
         return data.components.find {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                productID = it.productId,
-                content = it.oneLinerContent,
-                linkText = it.linkText,
-                color = it.color,
-                applink = it.applink,
-                separator = it.separator,
-                icon = it.icon,
-                isVisible = it.isVisible
+                    productID = it.productId,
+                    content = it.oneLinerContent,
+                    linkText = it.linkText,
+                    color = it.color,
+                    applink = it.applink,
+                    separator = it.separator,
+                    icon = it.icon,
+                    isVisible = it.isVisible
             )
         }?.associateBy { it.productID }
     }
@@ -297,13 +312,13 @@ object DynamicProductDetailMapper {
     }
 
     fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
-        return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
+        return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
     fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {
         val shouldAutoSelect = variantData.autoSelectedOptionIds()
         val isParent = selectedChild == null
-        val selectedOptionIds =  when {
+        val selectedOptionIds = when {
             isParent -> {
                 if (shouldAutoSelect.isNotEmpty()) {
                     //if product parent and able to auto select, do auto select

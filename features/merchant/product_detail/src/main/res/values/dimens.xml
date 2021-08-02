@@ -13,6 +13,7 @@
     <dimen name="pdp_dp_6">6dp</dimen>
     <dimen name="pdp_dp_7">7dp</dimen>
     <dimen name="pdp_dp_9">9dp</dimen>
+    <dimen name="pdp_dp_16">16dp</dimen>
     <dimen name="pdp_dp_10">10dp</dimen>
     <dimen name="pdp_dp_24">24dp</dimen>
     <dimen name="pdp_dp_40">40dp</dimen>

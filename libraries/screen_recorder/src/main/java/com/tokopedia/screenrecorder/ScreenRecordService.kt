@@ -38,6 +38,7 @@ class ScreenRecordService : Service(), CoroutineScope {
         const val ACTION_INIT = "ACTION_INIT"
         const val EXTRA_MEDIA_PROEJECTION_RESULT_CODE = "EXTRA_MEDIA_PROEJECTION_RESULT_CODE"
         const val EXTRA_MEDIA_PROEJECTION_RESULT_DATA = "EXTRA_MEDIA_PROEJECTION_RESULT_DATA"
+        const val EXTRA_RECORD_MIC = "EXTRA_RECORD_MIC"
 
         private const val ONE_SECOND_MS = 1000L
         private const val HALF_SECOND_MS = 500L
@@ -101,9 +102,10 @@ class ScreenRecordService : Service(), CoroutineScope {
         val action = intent.getAction()
         val projectionResultCode = intent.getIntExtra(EXTRA_MEDIA_PROEJECTION_RESULT_CODE, 0)
         val projectionResultData = intent.getParcelableExtra<Intent>(EXTRA_MEDIA_PROEJECTION_RESULT_DATA)
+        val isRecordMic = intent.getBooleanExtra(EXTRA_RECORD_MIC, false)
 
         when (action) {
-            ACTION_INIT -> init(projectionResultCode, projectionResultData!!)
+            ACTION_INIT -> init(projectionResultCode, projectionResultData!!, isRecordMic)
             ACTION_START_RECORD -> startPreRecordCountDown()
             ACTION_STOP_RECORD -> {
                 masterJob.cancel()
@@ -115,7 +117,7 @@ class ScreenRecordService : Service(), CoroutineScope {
         return START_NOT_STICKY
     }
 
-    private fun init(projectionResultCode: Int, projectionResultData: Intent) {
+    private fun init(projectionResultCode: Int, projectionResultData: Intent, isRecordMic: Boolean) {
         try {
 
             createNotificationChannel()
@@ -150,7 +152,10 @@ class ScreenRecordService : Service(), CoroutineScope {
             startForeground(NOTIF_ID, startServiceNotif)
 
             mediaRecorder = MediaRecorder()
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+
+            if (isRecordMic) {
+                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+            }
 
             mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
 
@@ -166,10 +171,12 @@ class ScreenRecordService : Service(), CoroutineScope {
 
             mediaRecorder.setOutputFormat(profile.fileFormat)
 
-            mediaRecorder.setAudioEncoder(profile.audioCodec)
-            mediaRecorder.setAudioChannels(profile.audioChannels)
-            mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
-            mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+            if (isRecordMic) {
+                mediaRecorder.setAudioEncoder(profile.audioCodec)
+                mediaRecorder.setAudioChannels(profile.audioChannels)
+                mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
+                mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+            }
 
             mediaRecorder.setVideoFrameRate(profile.videoFrameRate)
             mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
