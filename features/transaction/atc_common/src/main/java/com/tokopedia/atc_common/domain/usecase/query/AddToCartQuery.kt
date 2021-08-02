@@ -57,3 +57,23 @@ val QUERY_ADD_TO_CART_OCC = """
         }
     }
 """.trimIndent()
+
+val MUTATION_ADD_TO_CART_BUNDLE = """
+    mutation add_to_cart_bundle(${'$'}param: AddToCartBundleParam, ${'$'}chosen_address: ChosenAddressParam, ${'$'}dummy: Int) {
+      add_to_cart_bundle(param: ${'$'}param, chosen_address: ${'$'}chosen_address, dummy: ${'$'}dummy) {
+        error_message
+        status
+        data{
+          success
+          messages
+          data{
+            cart_id
+            product_id
+            quantity
+            notes
+            shop_id
+          }
+        }
+      }
+    }
+""".trimIndent()
