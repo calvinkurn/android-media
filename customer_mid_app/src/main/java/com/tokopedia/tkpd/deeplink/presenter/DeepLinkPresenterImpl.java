@@ -46,6 +46,8 @@ import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
@@ -611,6 +613,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         };
     }
 
+    private boolean isTokopediaNowShopId(String shopId) {
+        if(TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID);
+        } else {
+            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1) || shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2);
+        }
+    }
+
     private boolean isEtalase(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
@@ -729,6 +739,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 affiliateString,
                                 affiliateUUID);
                         productIntent.putExtra("layoutID", layoutTesting);
+                        productIntent.setData(uriData);
                         context.startActivity(productIntent);
                     } else {
                         Map<String, String> messageMap = new HashMap<>();

@@ -4,6 +4,7 @@
     <string name="kol_action_like">Like</string>
     <string name="kol_action_comment">Comment</string>
     <string name="kol_action_follow">Follow</string>
+    <string name="kol_Action_following">"following"</string>
 
     <!--Post Time-->
     <string name="post_time_just_now">Baru saja</string>
@@ -11,6 +12,20 @@
     <string name="post_time_hours_ago">\u0020jam yang lalu</string>
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
+
+    <!--Post Time new-->
+    <string name="post_time_just_now_new">1 mnt</string>
+    <string name="post_time_minutes_ago_new">mnt</string>
+    <string name="post_time_hours_ago_new">jam </string>
+    <string name="post_time_days_ago">hari</string>
+    <string name="post_time_hour_new">\u0020pukul\u0020</string>
+    <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
+
+    <!--Post Time Comment -->
+    <string name="comment_time_just_now"> Beberapa detik yang lalu</string>
+    <string name="comment_time_minutes_ago"> menit yang lalu</string>
+    <string name="comment_time_hours_ago"> jam yang lalu</string>
+    <string name="comment_time_days_ago"> hari yang lalu</string>
 
     <!-- Action -->
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
@@ -43,6 +58,10 @@
     <string name="msg_copy">Teks berhasil disalin.</string>
     <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
     <string name="error_occurred">terjadi kesalahan</string>
+
+    <!-- delete bottoms Sheet-->
+    <string name="feed_delete_comment">Hapus</string>
+    <string name="feed_report_comment">Laporkan</string>
 
     <!--Available Share Names-->
     <string name="share_whatsapp">WhatsApp</string>
@@ -78,6 +97,7 @@
     <string name="feed_try_again">Coba Lagi</string>
 
     <string name="feed_header_time_format" formatted="false">%s • %s</string>
+    <string name="feed_header_time_new" formatted="false">%s</string>
 
     <string name="content_desc_authorImage">image profil</string>
     <string name="content_desc_authorBadge">image badge</string>
@@ -85,7 +105,71 @@
     <string name="content_desc_headerAction">button action</string>
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
+    <string name="content_product_bs_title">Dalam post ini</string>
 
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
     <string name="feed_color_pojo_dms_hex_white_value">#fff</string>
+
+    <!--MENU OPTION BOTTOM SHEETS ASSETS-->
+    <string name="feed_component_report_it">Laporkan</string>
+    <string name="feed_component_follow">Follow</string>
+    <string name="feed_component_unfollow">Unfollow</string>
+    <string name="feed_component_not_interested">Tidak Tertarik</string>
+    <string name="feed_common_terjual">Terjual</string>
+
+    <!--Follow Functionalities ASSETS-->
+    <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_component_unfollow_fail_toast">Oops, gagal meng-unfollow.</string>
+    <string name="feed_component_follow_fail_toast">Oops, gagal mem-follow.</string>
+    <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
+    <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
+    <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
+    <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
+    <string name="feed_header_follow_count_less_text">Rekomendasi</string>
+
+
+    <!--REPORT BOTTOM SHEETS ASSETS-->
+    <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>
+    <string name="feed_component_report_description">Kamu akan melaporkan sebagai anonim, kecuali jika kamu melaporkan pelanggaran kekayaan intelektual. Jika ada seseorang dalam bahaya, segera hubungi layanan darurat terdekat.</string>
+    <string name="feed_component_report_subtext1">Postingan  ini spam</string>
+    <string name="feed_component_report_subtext2">Postingan tidak pantas</string>
+    <string name="feed_component_spam_report_header">Terima kasih sudah melapor, ya!</string>
+    <string name="feed_component_spam_report_subtext">Masukanmu sangat penting bagi kami untuk menjaga keamanan komunitas di Tokopedia.</string>
+    <string name="feed_component_report_option_text1">Pornografi atau aktivitas seksual</string>
+    <string name="feed_component_report_option_text2">Ucapan atau simbol kebencian</string>
+    <string name="feed_component_report_option_text3">Penipuan</string>
+    <string name="feed_component_report_option_text4">Penjualan barang ilegal dan terlarang</string>
+    <string name="feed_component_report_option_text5">Pelanggaran kekayaan intelektual</string>
+
+    <!--DYNAMIC POST ASSETS-->
+    <string name="feed_component_liked_count_text"> Disukai oleh <![CDATA["<font color='#212121'><b> %s orang</b></font> ]]></string>
+    <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
+    <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
+    <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
+    <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
+    <string name="feed_component_add_comment">Comment as %s…</string>
+    <string name="feed_component_read_more_button">Selengkapnya</string>
+
+    <!-- REPORT BOTTOMSHEET -->
+    <string name="feed_common_reason_type_spam" translatable="false">spam</string>
+    <string name="feed_common_reason_type_abuse" translatable="false">abuse</string>
+    <string name="feed_common_reason_type_inappropriate" translatable="false">inappropriate image</string>
+    <string name="feed_common_reason_type_others" translatable="false">custom</string>
+    <string name="feed_common_reason_desc_spam">Ini adalah spam</string>
+    <string name="feed_common_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
+    <string name="feed_common_reason_desc_inappropriate">Mengandung pornografi</string>
+    <string name="feed_common_reason_desc_others">Lainnya</string>
+
+    <!--PRODUCT_BOTTOMSSHEET -->
+    <string name="feed_product_info_sheet_add_to_wishlist">Simpan ke Wishlist</string>
+    <string name="feed_product_info_sheet_add_to_cart">Tambah ke Keranjang</string>
+    <string name="feed_product_info_sheet_share_product">Bagikan</string>
+
+    <!--SHARE-->
+    <string name="feed_share_default_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+
+    <!--POST-->
+    <string name="feed_post_tag_text">Lihat Produk</string>
+
+
 </resources>

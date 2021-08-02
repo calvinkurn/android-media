@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.loginregister.login.behaviour.activity.ChangeNameActivityStub
 import com.tokopedia.loginregister.login.behaviour.activity.ChooseAccountActivityStub
 import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 
 class LoginEmailPhoneFragmentStub: LoginEmailPhoneFragment() {
@@ -20,11 +21,11 @@ class LoginEmailPhoneFragmentStub: LoginEmailPhoneFragment() {
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         val intent = Intent(activity, ChooseAccountActivityStub::class.java)
-        startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
-        startActivityForResult(Intent(activity, VerificationActivityStub::class.java), REQUEST_LOGIN_PHONE)
+        startActivityForResult(Intent(activity, VerificationActivityStub::class.java), LoginConstants.Request.REQUEST_LOGIN_PHONE)
     }
 
     override fun onGoToChangeName() {

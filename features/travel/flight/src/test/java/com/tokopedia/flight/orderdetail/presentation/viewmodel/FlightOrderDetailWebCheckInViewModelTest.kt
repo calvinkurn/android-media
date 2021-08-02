@@ -69,7 +69,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
     @Test
     fun fetchOrderDetailData_successFetchingSingleAirline_shouldReturnSuccessWithData() {
         // given
-        coEvery { orderDetailUseCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns Success(DUMMY_ORDER_DETAIL_DATA)
         viewModel.orderId = "1234567890"
 
         // when
@@ -306,7 +306,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
     @Test
     fun fetchOrderDetailData_successFetchingMultiAirline_shouldReturnSuccessWithData() {
         // given
-        coEvery { orderDetailUseCase.execute(any(), any()) } returns DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns Success(DUMMY_ORDER_DETAIL_DATA_WITH_MULTI_AIRLINE)
         viewModel.orderId = "1234567890"
 
         // when
@@ -544,7 +544,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
     fun trackOnCheckInDeparture_MultiAirline() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { orderDetailUseCase.execute(any(), any()) } returns dummyData
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns Success(dummyData)
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()
@@ -566,7 +566,7 @@ class FlightOrderDetailWebCheckInViewModelTest {
     fun trackOnCheckInDeparture_SingleAirline() {
         // given
         val dummyData = DUMMY_ORDER_DETAIL_DATA
-        coEvery { orderDetailUseCase.execute(any(), any()) } returns dummyData
+        coEvery { orderDetailUseCase.execute(any(), any()) } returns Success(dummyData)
         coEvery { userSession.userId } returns "0987654321"
         viewModel.orderId = "1234567890"
         viewModel.fetchOrderDetailData()
