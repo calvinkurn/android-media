@@ -206,7 +206,10 @@ abstract class BaseSearchCategoryFragment:
         val navToolbar = navToolbar ?: return
 
         activity?.let {
-            navToolbar.setupToolbarWithStatusBar(it)
+            navToolbar.setupToolbarWithStatusBar(
+                    activity = it,
+                    applyPadding = false,
+            )
         }
 
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
@@ -216,7 +219,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun createNavRecyclerViewOnScrollListener(
             navToolbar: NavToolbar,
-    ): NavRecyclerViewScrollListener {
+    ): RecyclerView.OnScrollListener {
         val toolbarTransitionRangePixel =
                 resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
 
@@ -247,7 +250,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun configureStickyView() {
         val context = context ?: return
-        val top = NavToolbarExt.getFullToolbarHeight(context)
+        val top = NavToolbarExt.getToolbarHeight(context)
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
