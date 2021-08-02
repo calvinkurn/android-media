@@ -291,6 +291,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                             categoryId.orEmpty(), operatorActive.id, getNumber(), object : SmartBillsGetNominalCallback {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
                                             renderSelectedProduct(rechargeProduct)
+                                            setErrorNominal(false, "")
                                         }
                                     }).show(childFragmentManager)
                                 } else validationNumber()
@@ -319,24 +320,23 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             show()
             setOnClickListener {
                 hideKeyBoard()
-                if (isPostaid()) {
-                    if (getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
-                            && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
-                            && !operatorActive.id.isNullOrEmpty()){
+                if(getNumber().length < SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
+                        && getNumber().length > SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE){
+                    validationNumber()
+                } else if (isPostaid()) {
+                    if (!operatorActive.id.isNullOrEmpty()){
                                 isButtonTelcoLoading(true)
                                 getInquiryData()
-                            } else {
-                                validationNumber()
-                            }
+                    } else {
+                        validationNominal()
+                    }
 
                 } else if (isPrepaid()) {
-                    if (getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
-                            && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
-                            && !selectedProduct?.id.isNullOrEmpty()){
+                    if (!selectedProduct?.id.isNullOrEmpty()){
                         isButtonTelcoLoading(true)
                         addBills(selectedProduct?.id.toIntOrZero(), getNumber())
                     } else {
-                        validationNumber()
+                        validationNominal()
                     }
                 }
             }
@@ -369,6 +369,13 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun validationNominal(){
+        //todo diff between post and pre
+        if (operatorActive.id.isNullOrEmpty() || selectedProduct?.id.isNullOrEmpty()) {
+            setErrorNominal(true, resources.getString(R.string.smart_bills_add_bills_nominal_error))
+        }
+    }
+
     private fun showInquiryBottomSheet(inquiry: TopupBillsEnquiryData){
         val attribute = inquiry.enquiry.attributes
         val inquiryBottomSheet = SmartBillsInquiryBottomSheet(object : SmartBillAddInquiryCallback{
@@ -382,6 +389,13 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun setErrorNumber(isError: Boolean, message: String){
         text_field_sbm_product_number.apply {
+            setError(isError)
+            setMessage(message)
+        }
+    }
+
+    private fun setErrorNominal(isError: Boolean, message: String){
+        text_field_sbm_product_nominal.apply {
             setError(isError)
             setMessage(message)
         }

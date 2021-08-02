@@ -58,4 +58,5 @@
     <string name="smart_bills_add_bills_product_nominal_bottom_sheet_title">Mau pilih nominal berapa?</string>
     <string name="smart_bills_add_bills_product_placeholder_pulsa">Pulsa</string>
     <string name="smart_bills_add_bills_product_placeholder_data">Paket Data</string>
+    <string name="smart_bills_add_bills_nominal_error">Oops, nominal tidak boleh kosong</string>
 </resources>
