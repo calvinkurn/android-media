@@ -227,7 +227,7 @@ class DiscoveryDataMapper {
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton = dataItem.hasNotifyMe,
+                hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
         )
     }

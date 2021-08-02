@@ -39,6 +39,9 @@ class ReadReviewViewModel @Inject constructor(
     val userId: String
         get() = userSessionInterface.userId
 
+    val isLoggedIn: Boolean
+        get() = userSessionInterface.isLoggedIn
+
     private val _ratingAndTopics = MediatorLiveData<Result<ProductrevGetProductRatingAndTopic>>()
     val ratingAndTopic: LiveData<Result<ProductrevGetProductRatingAndTopic>>
         get() = _ratingAndTopics

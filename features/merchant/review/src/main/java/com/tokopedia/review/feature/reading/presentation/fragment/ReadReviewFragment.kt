@@ -209,6 +209,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         likeStatus: Int,
         index: Int
     ) {
+        if (!viewModel.isLoggedIn) {
+            goToLogin()
+            return
+        }
         ReadReviewTracking.trackOnLikeClicked(
             reviewId,
             isLiked(likeStatus),
@@ -920,6 +924,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
+    }
+
+    private fun goToLogin() {
+        RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     private fun goToHome() {
