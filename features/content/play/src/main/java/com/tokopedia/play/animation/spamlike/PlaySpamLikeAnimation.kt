@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
@@ -52,7 +53,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     private val imageList = mutableListOf<ImageView>()
 
     init {
-        View.inflate(context, R.layout.layout_play_spam_like, this)
+        val view = View.inflate(context, R.layout.layout_play_spam_like, this)
 
         val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeAnimation)
 
@@ -62,12 +63,13 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
 
         type.recycle()
 
-//        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_favorite))
+        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_shipping_voucher))
+        loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_special_voucher))
 
-        positionList.add(position1)
-        positionList.add(position2)
-        positionList.add(position3)
-        positionList.add(position4)
+        positionList.add(view.findViewById(R.id.position1))
+        positionList.add(view.findViewById(R.id.position2))
+        positionList.add(view.findViewById(R.id.position3))
+        positionList.add(view.findViewById(R.id.position4))
 
         sizeList.add(Pair(50, 50))
         sizeMultiplyList.add(1.0f)
@@ -77,7 +79,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         dotColorList.add(Color.GREEN)
         dotColorList.add(Color.CYAN)
 
-//        dot = ContextCompat.getDrawable(context, R.drawable.ic_dot)
+        dot = ContextCompat.getDrawable(context, R.drawable.shape_play_cart_dots)
     }
 
     /**

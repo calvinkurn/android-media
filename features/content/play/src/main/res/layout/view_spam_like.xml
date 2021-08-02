@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_like"
+    android:id="@+id/cl_spam_like"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:background="@color/play_dms_N700"
