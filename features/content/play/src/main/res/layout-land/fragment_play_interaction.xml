@@ -41,16 +41,6 @@
         />
 
     <include
-        android:id="@+id/view_spam_like"
-        layout="@layout/view_spam_like"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        app:layout_constraintBottom_toTopOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/view_like"
-        app:layout_constraintEnd_toEndOf="@id/view_like"
-        />
-
-    <include
         android:id="@+id/view_like"
         layout="@layout/view_like"
         android:layout_width="wrap_content"
