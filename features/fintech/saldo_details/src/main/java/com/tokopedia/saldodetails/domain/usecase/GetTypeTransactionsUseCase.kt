@@ -16,10 +16,10 @@ class GetTypeTransactionsUseCase @Inject
 constructor(graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<GqlCompleteTransactionResponse>(graphqlRepository) {
 
-    fun loadTypeTransactions(page: Int, startDate: Date, endDate: Date,
-                             transactionType: TransactionType,
-                             onSuccess: (response: GqlCompleteTransactionResponse) -> Unit,
-                             onError: (Throwable) -> Unit) {
+    fun loadTypeTransactions(onSuccess: (response: GqlCompleteTransactionResponse) -> Unit,
+                             onError: (Throwable) -> Unit,
+                             page: Int, startDate: Date, endDate: Date,
+                             transactionType: TransactionType) {
         try {
             val params = getRequestParams(startDate, endDate, transactionType.type, page)
             this.setTypeClass(GqlCompleteTransactionResponse::class.java)
