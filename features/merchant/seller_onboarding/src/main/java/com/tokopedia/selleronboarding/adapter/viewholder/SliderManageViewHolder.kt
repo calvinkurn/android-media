@@ -1,11 +1,17 @@
 package com.tokopedia.selleronboarding.adapter.viewholder
 
+import android.content.res.Configuration
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
+import com.tokopedia.selleronboarding.utils.IMG_DEVICE_SCREEN_PERCENT
+import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
+import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
 import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
 
 /**
@@ -26,7 +32,6 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
                         tvSobSliderManageTitle.translationY = itemView.viewObserver.translationY
                     }
             imgSobManage1.run {
-                loadImage(R.drawable.onboarding_03_1)
                 viewTreeObserver.addOnDrawListener {
                     scaleX = itemView.viewObserver.scaleX
                     scaleY = itemView.viewObserver.scaleY
@@ -34,7 +39,6 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
                 }
             }
             imgSobManage2.run {
-                loadImage(R.drawable.onboarding_03_2)
                 viewTreeObserver.addOnDrawListener {
                     scaleX = itemView.viewObserver.scaleX
                     scaleY = itemView.viewObserver.scaleY
@@ -47,6 +51,17 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
                     alpha = itemView.viewObserver.alpha
                 }
             }
+
+            setupMarginTitleSob { setMarginManageTitle() }
+        }
+    }
+
+    private fun setMarginManageTitle() {
+        with(itemView) {
+            val tvSobCurrentView = tvSobSliderManageTitle?.layoutParams as? ConstraintLayout.LayoutParams
+            tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+            tvSobSliderManageTitle?.layoutParams = tvSobCurrentView
         }
     }
 }
