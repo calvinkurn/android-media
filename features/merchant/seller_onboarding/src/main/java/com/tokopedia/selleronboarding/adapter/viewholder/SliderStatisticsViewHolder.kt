@@ -44,8 +44,7 @@ class SliderStatisticsViewHolder(itemView: View) : AbstractViewHolder<SobSliderS
         with(itemView) {
             val tvSobCurrentView = tvSobSliderStatisticTitle?.layoutParams as? ConstraintLayout.LayoutParams
             tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.bottomToTop = R.id.imgSobStatistic
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             tvSobSliderStatisticTitle?.layoutParams = tvSobCurrentView
 
             val imgSobCurrentView = imgSobStatistic?.layoutParams as? ConstraintLayout.LayoutParams

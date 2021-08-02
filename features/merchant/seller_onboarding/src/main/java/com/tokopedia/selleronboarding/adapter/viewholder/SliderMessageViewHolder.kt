@@ -65,7 +65,7 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
         with(itemView) {
             val tvSobCurrentView = tvSobSliderMessageTitle?.layoutParams as? ConstraintLayout.LayoutParams
             tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             tvSobSliderMessageTitle?.layoutParams = tvSobCurrentView
         }
     }

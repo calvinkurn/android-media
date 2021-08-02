@@ -11,7 +11,6 @@
         android:id="@+id/tvSobSliderMessageTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sob_title_top_margin"
         android:gravity="center"
         android:text="@string/sob_slider_title_message"
         app:layout_constraintEnd_toEndOf="parent"
