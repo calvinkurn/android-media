@@ -225,10 +225,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.visible()
             product.isEditingNotes = true
             tfNote.requestFocus()
-            tfNote.textFieldInput.textSize = 16f
+            tfNote.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+            tfNote.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
             tfNote.setCounter(product.maxCharNote)
-            tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
             if (noteTextWatcher != null) {
                 tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
             }

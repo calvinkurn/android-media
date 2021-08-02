@@ -9,9 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MULTI_PRODUCT_WHOLESALE_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import org.junit.After
@@ -31,6 +29,7 @@ class OrderSummaryPageActivityMultiProductTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
+    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -122,6 +121,366 @@ class OrderSummaryPageActivityMultiProductTest {
                     queryString = "transaction_id=123",
                     method = "POST"
             )
+        }
+    }
+
+    @Test
+    fun errorFlow_PartialCheckout() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertProductCard(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    shippingEta = null
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp216.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp200.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp216.000"
+                )
+                closeBottomSheet()
+            }
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_WITH_SOME_ERROR_RESPONSE_PATH
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertShopTicker(
+                    tickerMessage = "Yaah, ada 1 barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.",
+                    isCustom = true
+            )
+            assertProductError(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productVariant = "hitam, putih",
+                    tickerMessage = "Yaah, barang ini sudah tidak tersedia. Move on ke barang lainnya, yuk!"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    shippingEta = null
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp116.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp116.000"
+                )
+                closeBottomSheet()
+            }
+            checkoutInterceptor.customCheckoutResponsePath = null
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun errorFlow_OrderLevel() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertProductCard(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    shippingEta = null
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp216.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp200.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp216.000"
+                )
+                closeBottomSheet()
+            }
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_ORDER_ERROR_RESPONSE_PATH
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertShopTicker(
+                    tickerMessage = "Semua barang di pesanan ini tidak dapat diproses karena di luar jangkauan pengiriman.",
+                    isCustom = false
+            )
+            assertProductError(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productVariant = "hitam, putih",
+                    tickerMessage = null
+            )
+            assertProductError(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productVariant = "hitam, putih",
+                    tickerMessage = null
+            )
+
+            Thread.sleep(10000)
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPaymentButtonEnable(false)
+        }
+    }
+
+    @Test
+    fun errorFlow_AllProduct() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertProductCard(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Reguler (2-4 hari)",
+                    shippingCourier = "Kurir Rekomendasi",
+                    shippingPrice = "Rp15.000",
+                    shippingEta = null
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPayment("Rp216.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp200.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp216.000"
+                )
+                closeBottomSheet()
+            }
+
+            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MULTI_PRODUCT_ALL_ERROR_RESPONSE_PATH
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            pay()
+
+            assertShopCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    isFreeShipping = true,
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
+            )
+            assertShopTicker(
+                    tickerMessage = null,
+            )
+            assertProductError(
+                    index = 0,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productVariant = "hitam, putih",
+                    tickerMessage = "Yaah, barang ini sudah tidak tersedia. Move on ke barang lainnya, yuk!"
+            )
+            assertProductError(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productVariant = "hitam, putih",
+                    tickerMessage = "Yaah, barang ini sudah tidak tersedia. Move on ke barang lainnya, yuk!"
+            )
+
+            Thread.sleep(10000)
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPaymentButtonEnable(false)
         }
     }
 
