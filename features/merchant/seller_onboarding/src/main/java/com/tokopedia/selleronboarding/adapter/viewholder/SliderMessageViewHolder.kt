@@ -9,7 +9,6 @@ import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
 import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
-import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
 import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
 
 /**

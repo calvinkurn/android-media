@@ -16,7 +16,6 @@ class FireworksLottieView @JvmOverloads constructor(context: Context,
         private const val FIREWORKS_REPEAT_COUNT = 2
     }
 
-    private var listener: Listener? = null
     private var hasLoadedInitially = false
 
     init {
@@ -24,20 +23,12 @@ class FireworksLottieView @JvmOverloads constructor(context: Context,
         addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
-                listener?.onAnimationFinished()
-            }
+            override fun onAnimationEnd(animation: Animator?) {}
 
             override fun onAnimationCancel(animation: Animator?) {}
 
-            override fun onAnimationStart(animation: Animator?) {
-                listener?.onAnimationStarted()
-            }
+            override fun onAnimationStart(animation: Animator?) {}
         })
-    }
-
-    fun setListener(listener: Listener) {
-        this.listener = listener
     }
 
     fun animateFireworks() {
@@ -51,9 +42,7 @@ class FireworksLottieView @JvmOverloads constructor(context: Context,
                     setComposition(result)
                 }
 
-                addFailureListener { ex ->
-                    listener?.onDownloadAnimationFailed(ex)
-                }
+                addFailureListener { }
             }
         }
         if (!hasLoadedInitially) {
@@ -62,9 +51,4 @@ class FireworksLottieView @JvmOverloads constructor(context: Context,
         }
     }
 
-    interface Listener {
-        fun onAnimationStarted()
-        fun onAnimationFinished()
-        fun onDownloadAnimationFailed(ex: Throwable)
-    }
 }
