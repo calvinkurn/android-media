@@ -8,6 +8,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import kotlin.math.abs
@@ -43,7 +44,7 @@ object MediaListenerBuilder {
             val pageName = context.javaClass.name.split(".").last()
 
             val fileSize = resource?.allocationByteCount?.toString() ?: "0"
-            val fileSizeInMb = (fileSize.toDouble() / 1024) / 1024
+            val fileSizeInMb = fileSize.toLong().formattedToMB()
 
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
@@ -55,7 +56,7 @@ object MediaListenerBuilder {
                 performanceMonitoring,
                 pageName,
                 loadTime,
-                fileSizeInMb.toString()
+                fileSizeInMb
             )
 
             // override the load time into properties

@@ -14,7 +14,7 @@ class LoaderGlideModule: AppGlideModule() {
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         builder.setDiskCache(DiskLruCacheFactory(
             Glide.getPhotoCacheDir(context)?.absolutePath,
-            (LIMIT_CACHE_SIZE_IN_MB * 1024 * 1024).toLong()
+            (LIMIT_CACHE_SIZE_IN_MB * SIZE_IN_MB * SIZE_IN_MB).toLong()
         ))
         super.applyOptions(context, builder)
     }
@@ -33,6 +33,7 @@ class LoaderGlideModule: AppGlideModule() {
 
     companion object {
         private const val LIMIT_CACHE_SIZE_IN_MB = 50
+        private const val SIZE_IN_MB = 1024
     }
 
 }
