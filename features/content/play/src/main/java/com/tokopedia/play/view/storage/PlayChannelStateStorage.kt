@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 
 /**
  * Created by jegul on 19/01/21
@@ -23,7 +24,7 @@ class PlayChannelStateStorage {
 data class PlayChannelData(
         val id: String,
         val channelInfo: PlayChannelInfoUiModel,
-        val partnerInfo: PlayPartnerInfoUiModel,
+        val partnerInfo: PlayPartnerInfo,
         val likeInfo: PlayLikeInfoUiModel,
         val totalViewInfo: PlayTotalViewUiModel,
         val shareInfo: PlayShareInfoUiModel,
@@ -31,5 +32,6 @@ data class PlayChannelData(
         val pinnedInfo: PlayPinnedInfoUiModel,
         val quickReplyInfo: PlayQuickReplyInfoUiModel,
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
-        val statusInfo: PlayStatusInfoUiModel
+        val statusInfo: PlayStatusInfoUiModel,
+        val leaderboardInfo: PlayLeaderboardInfoUiModel,
 )

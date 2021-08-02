@@ -24,6 +24,7 @@ internal class GetRecommendationUseCaseRequest {
                       campaign{
                         appLandingPageLink
                         landingPageLink
+                        thematicID
                         assets {
                           banner{
                             apps
