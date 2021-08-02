@@ -1,7 +1,6 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.promocheckout.analytics.HotelPromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailHotelActivity
@@ -11,12 +10,10 @@ import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListHotelVie
 import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import javax.inject.Inject
 
 class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment() {
 
-    @Inject
-    lateinit var hotelPromoViewModel: PromoCheckoutListHotelViewModel
+    private val hotelPromoViewModel: PromoCheckoutListHotelViewModel by lazy { viewModelProvider.get(PromoCheckoutListHotelViewModel::class.java) }
 
     var cartID: String = ""
 
@@ -24,11 +21,6 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment() {
         super.onCreate(savedInstanceState)
         categoryId = HOTEL_CATEGORY_ID
         cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
-
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            hotelPromoViewModel = viewModelProvider.get(PromoCheckoutListHotelViewModel::class.java)
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

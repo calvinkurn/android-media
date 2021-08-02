@@ -47,7 +47,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var promoCheckoutListViewModel: PromoCheckoutListViewModel
+    val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    val promoCheckoutListViewModel: PromoCheckoutListViewModel by lazy { viewModelProvider.get(PromoCheckoutListViewModel::class.java) }
     private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(),this) }
 
     @Inject
@@ -62,15 +63,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
         return PromoCheckoutListAdapterFactory(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            promoCheckoutListViewModel = viewModelProvider.get(PromoCheckoutListViewModel::class.java)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -1,7 +1,6 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
@@ -10,12 +9,10 @@ import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListFlightVi
 import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import javax.inject.Inject
 
 class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(){
 
-    @Inject
-    lateinit var flightPromoViewModel: PromoCheckoutListFlightViewModel
+    private val flightPromoViewModel: PromoCheckoutListFlightViewModel by lazy { viewModelProvider.get(PromoCheckoutListFlightViewModel::class.java) }
 
     var cartID: String = ""
 
@@ -23,11 +20,6 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(){
         super.onCreate(savedInstanceState)
         categoryId = FLIGHT_CATEGORY_ID
         cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
-
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightPromoViewModel = viewModelProvider.get(PromoCheckoutListFlightViewModel::class.java)
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
