@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
-import com.tokopedia.play.animation.spamlike.PlaySpamLikeAnimation
 import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -28,7 +27,6 @@ class LikeViewComponent(
     private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
     private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
-    private val spamLike = findViewById<PlaySpamLikeAnimation>(R.id.spam_like)
 
     private val likeAnimatorListener = object : Animator.AnimatorListener {
 
@@ -49,7 +47,6 @@ class LikeViewComponent(
 
     init {
         animationLike.addAnimatorListener(likeAnimatorListener)
-        spamLike.setParentView(rootView as ViewGroup)
     }
 
     fun setEnabled(isEnabled: Boolean) {
@@ -75,14 +72,9 @@ class LikeViewComponent(
         }
     }
 
-    fun shot() {
-        spamLike.shot()
-    }
-
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         animationLike.removeAnimatorListener(likeAnimatorListener)
-        spamLike.clear()
     }
 
     private companion object {

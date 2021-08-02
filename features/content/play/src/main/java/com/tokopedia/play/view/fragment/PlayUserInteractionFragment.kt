@@ -130,6 +130,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+    private val spamLikeView by viewComponent { SpamLikeViewComponent(it, R.id.view_spam_like) }
 
     /**
      * Interactive
@@ -697,8 +698,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
                 isFirstTime = false
 
+                spamLikeView.shot()
                 likeView.setTotalLikes(it)
-                if(it.isLiked) likeView.shot()
             }
         })
     }

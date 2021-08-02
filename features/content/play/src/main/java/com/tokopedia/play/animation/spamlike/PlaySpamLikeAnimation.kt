@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -162,6 +163,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                 val coordinate = getImageCoordinate(position)
                 image.x = coordinate.first
                 image.y = coordinate.second
+                image.id = View.generateViewId()
 
                 parentView?.addView(image)
 
