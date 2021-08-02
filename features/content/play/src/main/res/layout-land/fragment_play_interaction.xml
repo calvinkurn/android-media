@@ -53,7 +53,7 @@
         />
 
     <include
-        android:id="view_spam_like"
+        android:id="@+id/view_spam_like"
         layout="@layout/view_spam_like"
         android:layout_width="0dp"
         android:layout_height="0dp"
