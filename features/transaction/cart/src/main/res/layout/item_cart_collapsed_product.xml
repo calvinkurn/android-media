@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_collapsed_product"
     android:layout_width="@dimen/dp_80"
-    android:layout_height="135dp">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_product"
@@ -25,6 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_product"
         app:typographyType="body_3"
+        tools:visibility="gone"
         tools:text="Biru" />
 
     <com.tokopedia.unifyprinciples.Typography

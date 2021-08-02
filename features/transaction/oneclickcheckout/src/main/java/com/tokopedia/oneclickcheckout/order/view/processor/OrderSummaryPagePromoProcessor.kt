@@ -179,7 +179,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        promoRequest.cartType = CheckoutConstant.PARAM_OCC
+        promoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
 
         if (lastValidateUsePromoRequest != null) {
             promoRequest.codes = ArrayList(lastValidateUsePromoRequest.codes.filterNotNull())
@@ -238,7 +238,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         validateUsePromoRequest.orders = listOf(ordersItem)
         validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC
+        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_OCC_MULTI
 
         if (lastValidateUsePromoRequest != null) {
             validateUsePromoRequest.codes = lastValidateUsePromoRequest.codes

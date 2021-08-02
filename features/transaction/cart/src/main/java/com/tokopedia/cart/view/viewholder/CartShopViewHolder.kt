@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -13,6 +14,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -39,7 +41,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
     }
 
-    fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData){
+    fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
     }
@@ -147,6 +149,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         if (itemDecorationCount > 0) {
             binding.rvCartItem.removeItemDecorationAt(0)
         }
+        binding.rvCartItem.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        binding.rvCartItem.requestLayout()
     }
 
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
@@ -159,6 +163,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         binding.rvCartItem.layoutManager = layoutManager
         binding.rvCartItem.adapter = cartCartCollapsedProductAdapter
+
+        setCollapsedRecyclerViewHeight(cartShopHolderData)
+
         val itemDecorationCount = binding.rvCartItem.itemDecorationCount
         if (itemDecorationCount > 0) {
             binding.rvCartItem.removeItemDecorationAt(0)
@@ -166,6 +173,24 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_48)?.toInt() ?: 0
         val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
         binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
+    }
+
+    private fun setCollapsedRecyclerViewHeight(cartShopHolderData: CartShopHolderData) {
+        var hasProductWithVarient = false
+        val cartItemDataList = cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList
+                ?: emptyList<CartItemHolderData>()
+        loop@ for (cartItemData in cartItemDataList) {
+            if (cartItemData.cartItemData.originData.variant.isNotBlank()) {
+                hasProductWithVarient = true
+                break@loop
+            }
+        }
+        if (hasProductWithVarient) {
+            binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_with_variant)
+        } else {
+            binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_without_variant)
+        }
+        binding.rvCartItem.requestLayout()
     }
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
