@@ -358,6 +358,7 @@
 
     <!-- Reading   -->
     <string name="review_reading_title">Ulasan Pembeli</string>
+    <string name="shop_review_reading_title">Ulasan dan Rating Toko</string>
     <string name="review_reading_bottom_sheet_statistics_description">Dihitung dari jumlah rating positif (bintang 4 dan 5) dibagi dengan total rating.</string>
     <string name="review_reading_rating_and_review_count">%s rating • %s ulasan</string>
     <string name="review_reading_rating_only_count">%d rating (tanpa ulasan)</string>

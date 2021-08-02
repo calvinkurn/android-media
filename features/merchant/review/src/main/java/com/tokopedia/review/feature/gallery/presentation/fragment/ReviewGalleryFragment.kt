@@ -98,7 +98,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     override fun onImageSwiped(previousIndex: Int, index: Int) {
         if (index != RecyclerView.NO_POSITION) {
-            ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
+            if(isProductReview())
+                ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
+            else
+                ReviewGalleryTracking.trackShopReviewSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, shopId)
             reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
         }
     }
@@ -219,7 +222,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike)
                 setLikeButtonClickListener {
-                    ReviewGalleryTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
+                    if(isProductReview())
+                        ReviewGalleryTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
+                    else
+                        ReviewGalleryTracking.trackOnShopReviewLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), shopId)
                     viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
                 }
                 setLikeButtonImage(likeDislike.isLiked())
@@ -290,7 +296,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun openExpandedReviewBottomSheet() {
-        ReviewGalleryTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+        if(isProductReview())
+            ReviewGalleryTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
+        else
+            ReviewGalleryTracking.trackOnShopReviewSeeAllClicked(productReview.feedbackID, productId)
         if (expandedReviewBottomSheet == null) {
             with(productReview) {
                 expandedReviewBottomSheet = ReviewGalleryExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
@@ -339,5 +348,9 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         } else {
             throwable.printStackTrace()
         }
+    }
+
+    private fun isProductReview(): Boolean {
+        return productId.isNotEmpty()
     }
 }

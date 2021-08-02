@@ -100,20 +100,19 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopReview(shopId: String?): String {
-        return if(isUsingNewShopReviewPage()){
-            UriUtil.buildUri("tokopedia-android-internal://marketplace/product/{id}/review", shopId)
-        } else{
+        return if (isUsingNewShopReviewPage()) {
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW, shopId)
+        } else {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
         }
     }
 
     fun isUsingNewShopReviewPage(): Boolean {
-//        val shopEtalaseRevampKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-//                AB_TEST_ROLLOUT_NEW_SHOP_ETALASE,
-//                ""
-//        )
-//        return shopEtalaseRevampKey.equals(AB_TEST_ROLLOUT_NEW_SHOP_ETALASE, true)
-        return false
+        val shopReviewAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                RollenceKey.AB_TEST_SHOP_REVIEW,
+                RollenceKey.OLD_REVIEW_SHOP
+        )
+        return shopReviewAbTestKey.equals(RollenceKey.NEW_REVIEW_SHOP, true)
     }
 
     fun getRegisteredNavigationProductReview(uri: Uri): String {

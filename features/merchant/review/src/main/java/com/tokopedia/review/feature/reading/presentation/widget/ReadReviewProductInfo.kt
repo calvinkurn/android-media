@@ -47,7 +47,13 @@ class ReadReviewProductInfo : BaseCustomView {
         this.productName?.text = productName
     }
 
-    fun setListener(isReportable: Boolean, reviewId: String, shopId: String, readReviewItemListener: ReadReviewItemListener) {
+    fun setListener(
+            isReportable: Boolean,
+            reviewId: String,
+            shopId: String,
+            productId: String,
+            readReviewItemListener: ReadReviewItemListener
+    ) {
         threeDotsMenu?.apply {
             if (isReportable) {
                 show()
@@ -57,6 +63,12 @@ class ReadReviewProductInfo : BaseCustomView {
             } else {
                 hide()
             }
+        }
+        productImage?.setOnClickListener {
+            readReviewItemListener.onProductInfoClicked(reviewId,shopId,productId)
+        }
+        productName?.setOnClickListener {
+            readReviewItemListener.onProductInfoClicked(reviewId,shopId,productId)
         }
     }
 

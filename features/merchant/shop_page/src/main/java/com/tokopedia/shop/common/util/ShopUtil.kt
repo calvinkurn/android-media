@@ -9,6 +9,9 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_ROLLOUT_NEW_SHOP_ETALASE
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
+import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
+import com.tokopedia.remoteconfig.RollenceKey.OLD_REVIEW_SHOP
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
@@ -97,11 +100,10 @@ object ShopUtil {
     }
 
     fun isUsingNewShopReviewPage(): Boolean {
-//        val shopEtalaseRevampKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-//                AB_TEST_ROLLOUT_NEW_SHOP_ETALASE,
-//                ""
-//        )
-//        return shopEtalaseRevampKey.equals(AB_TEST_ROLLOUT_NEW_SHOP_ETALASE, true)
-        return false
+        val shopReviewAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_SHOP_REVIEW,
+                OLD_REVIEW_SHOP
+        )
+        return shopReviewAbTestKey.equals(NEW_REVIEW_SHOP, true)
     }
 }

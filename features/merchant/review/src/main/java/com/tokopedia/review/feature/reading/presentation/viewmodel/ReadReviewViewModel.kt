@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
-import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
+import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
+import com.tokopedia.review.feature.reading.domain.usecase.GetShopRatingAndTopicsUseCase
+import com.tokopedia.review.feature.reading.domain.usecase.GetShopReviewListUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.uimodel.*
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
@@ -23,11 +23,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReadReviewViewModel @Inject constructor(
-    private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
-    private val getProductReviewListUseCase: GetProductReviewListUseCase,
-    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    dispatchers: CoroutineDispatchers
+        private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
+        private val getShopRatingAndTopicsUseCase: GetShopRatingAndTopicsUseCase,
+        private val getProductReviewListUseCase: GetProductReviewListUseCase,
+        private val getShopReviewListUseCase: GetShopReviewListUseCase,
+        private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -41,9 +43,17 @@ class ReadReviewViewModel @Inject constructor(
     val ratingAndTopic: LiveData<Result<ProductrevGetProductRatingAndTopic>>
         get() = _ratingAndTopics
 
+    private val _shopRatingAndTopics = MediatorLiveData<Result<ProductrevGetShopRatingAndTopic>>()
+    val shopRatingAndTopic: LiveData<Result<ProductrevGetShopRatingAndTopic>>
+        get() = _shopRatingAndTopics
+
     private val _productReviews = MediatorLiveData<Result<ProductrevGetProductReviewList>>()
     val productReviews: LiveData<Result<ProductrevGetProductReviewList>>
         get() = _productReviews
+
+    private val _shopReviews = MediatorLiveData<Result<ProductrevGetShopReviewList>>()
+    val shopReviews: LiveData<Result<ProductrevGetShopReviewList>>
+        get() = _shopReviews
 
     private val _toggleLikeReview = MutableLiveData<Result<ToggleLikeUiModel>>()
     val toggleLikeReview: LiveData<Result<ToggleLikeUiModel>>
@@ -52,15 +62,26 @@ class ReadReviewViewModel @Inject constructor(
     private val currentPage = MutableLiveData<Int>()
 
     private var productId: MutableLiveData<String> = MutableLiveData()
+    private var shopId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
     private var filter: SelectedFilters = SelectedFilters()
 
     init {
         _ratingAndTopics.addSource(productId) {
-            getRatingAndTopics(it)
+            if (isProductReview())
+                getRatingAndTopics(it)
+        }
+        _shopRatingAndTopics.addSource(shopId) {
+            if (!isProductReview())
+                getShopRatingAndTopics(it)
         }
         _productReviews.addSource(currentPage) {
-            getProductReviews(it)
+            if (isProductReview())
+                getProductReviews(it)
+        }
+        _shopReviews.addSource(currentPage) {
+            if (!isProductReview())
+                getShopReviews(it)
         }
     }
 
@@ -70,8 +91,18 @@ class ReadReviewViewModel @Inject constructor(
         sort = SortTypeConstants.MOST_HELPFUL_PARAM
     }
 
+    fun setShopId(shopid: String) {
+        this.shopId.value = shopid
+        filter.clear()
+        sort = SortTypeConstants.MOST_HELPFUL_PARAM
+    }
+
     fun getProductId(): String {
         return this.productId.value ?: ""
+    }
+
+    fun getShopId(): String {
+        return this.shopId.value ?: ""
     }
 
     fun setPage(page: Int) {
@@ -94,6 +125,43 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
+    fun mapShopReviewToReadReviewUiModel(
+            listShopReview: List<ShopReview>,
+            shopId: String,
+            shopName: String
+    ): List<ReadReviewUiModel> {
+        return listShopReview.map {
+            ReadReviewUiModel(
+                    reviewData = mapShopReviewDataToProductReviewData(it),
+                    isShopViewHolder = true,
+                    shopId = shopId,
+                    shopName = shopName,
+                    productImage = it.product.productImageURL,
+                    productName = it.product.productName,
+                    productId = it.product.productID
+            )
+        }
+    }
+
+    private fun mapShopReviewDataToProductReviewData(shopReview: ShopReview) = ProductReview().apply {
+        feedbackID = shopReview.reviewID
+        message = shopReview.reviewText
+        productRating = shopReview.rating
+        reviewCreateTimestamp = shopReview.reviewTime
+        isAnonymous = shopReview.state.isAnonymous
+        isReportable = shopReview.state.isReportable
+        reviewResponse = ProductReviewResponse(shopReview.replyText, shopReview.replyTime)
+        user = ProductReviewUser().apply {
+            userID = shopReview.reviewerID
+            fullName = shopReview.reviewerName
+        }
+        imageAttachments = shopReview.attachments.map {
+            ProductReviewAttachments(it.thumbnailURL, it.fullsizeURL)
+        }
+        likeDislike = shopReview.likeDislike
+        shopProductId = shopReview.product.productID
+    }
+
     fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(
@@ -109,6 +177,30 @@ class ReadReviewViewModel @Inject constructor(
                         index
                     )
                 )
+            )
+        }) {
+            _toggleLikeReview.postValue(Fail(it))
+        }
+    }
+
+    fun toggleLikeShopReview(reviewId: String, shopId: String, productId: String, likeStatus: Int, index: Int) {
+        launchCatchError(block = {
+            toggleLikeReviewUseCase.setParams(
+                    reviewId,
+                    shopId,
+                    productId,
+                    ReadReviewUtils.invertLikeStatus(likeStatus)
+            )
+            val data = toggleLikeReviewUseCase.executeOnBackground()
+
+            _toggleLikeReview.postValue(
+                    Success(
+                            ToggleLikeUiModel(
+                                    data.toggleProductReviewLike.likeStatus,
+                                    data.toggleProductReviewLike.totalLike,
+                                    index
+                            )
+                    )
             )
         }) {
             _toggleLikeReview.postValue(Fail(it))
@@ -194,6 +286,21 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
+    private fun getShopReviews(page: Int) {
+        launchCatchError(block = {
+            getShopReviewListUseCase.setParams(
+                    shopId.value.orEmpty(),
+                    page,
+                    sort,
+                    filter.mapFilterToRequestParams()
+            )
+            val data = getShopReviewListUseCase.executeOnBackground()
+            _shopReviews.postValue(Success(data.productrevGetShopReviewList))
+        }) {
+            _shopReviews.postValue(Fail(it))
+        }
+    }
+
     private fun getRatingAndTopics(productId: String) {
         launchCatchError(block = {
             getProductRatingAndTopicsUseCase.setParams(productId)
@@ -201,6 +308,16 @@ class ReadReviewViewModel @Inject constructor(
             _ratingAndTopics.postValue(Success(data.productrevGetProductRatingAndTopics))
         }) {
             _ratingAndTopics.postValue(Fail(it))
+        }
+    }
+
+    private fun getShopRatingAndTopics(shopId: String) {
+        launchCatchError(block = {
+            getShopRatingAndTopicsUseCase.setParams(shopId)
+            val data = getShopRatingAndTopicsUseCase.executeOnBackground()
+            _shopRatingAndTopics.postValue(Success(data.productrevGetShopRatingAndTopics))
+        }) {
+            _shopRatingAndTopics.postValue(Fail(it))
         }
     }
 
@@ -232,6 +349,13 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     private fun getTopicsMap(): Map<String, String> {
-        return (_ratingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
+        return if(isProductReview())
+            (_ratingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
+        else
+            (_shopRatingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
+    }
+
+    private fun isProductReview(): Boolean {
+        return productId.value?.isNotEmpty() == true
     }
 }

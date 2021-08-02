@@ -12,12 +12,15 @@ object ReadReviewTrackingConstants {
     const val KEY_CREATIVE = "creative"
     const val KEY_NAME = "name"
     const val KEY_POSITION = "position"
+    const val KEY_SHOP_ID = "shopId"
 
     const val BUSINESS_UNIT = "product detail page"
     const val CURRENT_SITE = "tokopediamarketplace"
     const val SCREEN_NAME = "review-pdp"
+    const val SCREEN_NAME_SHOP_REVIEW = "shoppage review - %1s"
 
     const val EVENT_CLICK_PDP = "clickPDP"
+    const val EVENT_CLICK_SHOP_PAGE = "clickShopPage"
     const val EVENT_PROMO_VIEW = "promoView"
 
     const val EVENT_ACTION_CLICK_POSITIVE_REVIEW_PERCENTAGE = "click - positive review percentage"
