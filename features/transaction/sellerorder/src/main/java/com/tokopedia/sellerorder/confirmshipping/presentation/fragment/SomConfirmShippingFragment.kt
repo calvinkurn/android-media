@@ -1,9 +1,11 @@
 package com.tokopedia.sellerorder.confirmshipping.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -27,6 +29,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIP
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
@@ -59,6 +62,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     private val somConfirmShippingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmShippingViewModel::class.java]
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            view.hideKeyboard()
+        }
+        false
     }
 
     companion object {
@@ -126,6 +137,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             switch_change_courier?.isChecked = false
             setBtnToConfirmShipping()
         }
+        view?.setOnTouchListener(hideKeyboardTouchListener)
     }
 
     private fun setupListeners() {
@@ -240,8 +252,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                         }
                     }
 
-                    label_choosen_courier?.setOnClickListener { showBottomSheetCourier(false) }
-                    iv_choose_courier?.setOnClickListener { showBottomSheetCourier(false) }
+                    label_choosen_courier?.setOnClickListener {
+                        view.hideKeyboard()
+                        showBottomSheetCourier(false)
+                    }
+                    iv_choose_courier?.setOnClickListener {
+                        view.hideKeyboard()
+                        showBottomSheetCourier(false)
+                    }
 
                     label_choosen_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
                     iv_choose_courier_service?.setOnClickListener { showBottomSheetCourier(true) }

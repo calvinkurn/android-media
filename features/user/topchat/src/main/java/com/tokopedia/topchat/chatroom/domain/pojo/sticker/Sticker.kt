@@ -31,7 +31,7 @@ data class Sticker(
                 groupUUID, stickerUUID, imageUrl, intention
         )
         val data = WebsocketAttachmentData(
-                message_id = messageId.toInt(),
+                message_id = messageId.toLong(),
                 message = intention,
                 source = "inbox",
                 attachment_type = TYPE_STICKER,

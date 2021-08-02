@@ -109,7 +109,7 @@ object ShopPageProductListMapper {
                     it.imageUrl = imageUri
                     it.totalReview = totalReview
                     if (isRated) {
-                        it.rating = rating.toDoubleOrZero()
+                        it.rating = ratingAverage.toDoubleOrZero()
                     }
                     if (cashback) {
                         it.cashback = cashbackDetail.cashbackPercent.toDouble()

@@ -14,6 +14,7 @@ class CardUtils {
 
     companion object {
 
+        private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
         private const val PREFIX_SELECT_COMMAND = "00A4040008"
         private const val TAPCASH_AID = "A000424E49100001"
         private const val EMONEY_AID = "0000000000000001"
@@ -39,6 +40,7 @@ class CardUtils {
                 if (tag != null) {
                     val isoDep = IsoDep.get(tag)
                     isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
                     val bytes = isoDep.transceive(hexStringToByteArray(PREFIX_SELECT_COMMAND + EMONEY_AID))
                     isoDep.close()
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED
@@ -56,6 +58,7 @@ class CardUtils {
                 if (tag != null) {
                     val isoDep = IsoDep.get(tag)
                     isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
                     val bytes = isoDep.transceive(BRIZZI_COMMAND)
                     isoDep.close()
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED_BRIZZI

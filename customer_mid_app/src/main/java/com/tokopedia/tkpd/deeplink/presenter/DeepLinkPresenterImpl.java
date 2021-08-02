@@ -568,7 +568,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (context != null) {
                     if (shopId != null) {
                         String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                        if (isEtalase(linkSegment)) {
+                        if (isTokopediaNowShopId(shopId)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.TokopediaNow.HOME);
+                        } else if (isEtalase(linkSegment)) {
                             RouteManager.route(context,
                                     bundle,
                                     ApplinkConst.SHOP_ETALASE,
@@ -841,6 +845,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 affiliateString,
                                 affiliateUUID);
                         productIntent.putExtra("layoutID", layoutTesting);
+                        productIntent.setData(uriData);
                         context.startActivity(productIntent);
                     } else {
                         Map<String, String> messageMap = new HashMap<>();

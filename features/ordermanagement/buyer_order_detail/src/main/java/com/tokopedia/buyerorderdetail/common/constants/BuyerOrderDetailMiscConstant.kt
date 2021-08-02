@@ -11,4 +11,7 @@ object BuyerOrderDetailMiscConstant {
     const val DAGGER_ATC_QUERY_NAME = "atcMultiQuery"
     const val TICKER_KEY_SHIPPING_INFO = "shipping_info_ticker"
     const val WAITING_INVOICE_ORDER_ID = "0"
+    const val RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED = 0
+    const val RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_TOASTER = 1
+    const val RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_DIALOG = 3
 }

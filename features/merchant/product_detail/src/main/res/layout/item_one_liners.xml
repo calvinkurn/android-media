@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/one_liners_top_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/one_liners_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/one_liners_top_separator">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/one_liners_icon_start"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/one_liners_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            tools:text="Stok Tersedia" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/one_liners_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            tools:text=" • Terakhir update minggu ini" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/one_liners_icon_right"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_N700"
+            app:icon_name="CHEVRON_RIGHT"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/one_liners_bottom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/one_liners_container"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
