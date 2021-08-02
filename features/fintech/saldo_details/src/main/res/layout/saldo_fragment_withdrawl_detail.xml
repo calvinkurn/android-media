@@ -23,18 +23,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/withdrawalStatusTicker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:closeButtonVisibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tickerShapeType="full"
-            app:tickerType="error" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvWithdrawalAmount"
             android:layout_width="wrap_content"
@@ -42,7 +30,7 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/withdrawalStatusTicker"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
             tools:text="Rp600.00" />
@@ -143,9 +131,9 @@
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/dataGroup"
-            app:constraint_referenced_ids="rvWithdrawalStatus, tvWithdrawalStatus, withdrawalStatusSeparator,
-            llWithdrawalDetail, detailSeparator, tvAccountName, tvBankName, withdrawalStatusLabel,
-            tvWithdrawalAmount"
+            app:constraint_referenced_ids="rvWithdrawalStatus, tvWithdrawalStatus,
+            withdrawalStatusSeparator,llWithdrawalDetail, detailSeparator,
+            tvAccountName, tvBankName, withdrawalStatusLabel,tvWithdrawalAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

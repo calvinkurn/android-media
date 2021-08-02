@@ -1,9 +1,10 @@
 package com.tokopedia.saldodetails.view.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.saldodetails.domain.model.GQLSalesTransactionListResponse
+import com.tokopedia.saldodetails.di.DispatcherModule
 import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.domain.model.SalesTransactionListResponse
 import com.tokopedia.saldodetails.domain.usecase.GetAllTypeTransactionUseCase
@@ -14,15 +15,17 @@ import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.view.fragment.new.*
 import com.tokopedia.saldodetails.view.viewmodel.state.*
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.CoroutineDispatcher
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class TransactionHistoryViewModel @Inject constructor(
     private val getAllTypeTransactionUseCase: GetAllTypeTransactionUseCase,
     private val getTypeTransactionsUseCase: GetTypeTransactionsUseCase,
     private val getSalesTransactionListUseCase: GetSalesTransactionListUseCase,
-) : BaseViewModel(Main) {
+    @Named(DispatcherModule.MAIN) val dispatcher: CoroutineDispatcher,
+) : BaseViewModel(dispatcher) {
 
 
     private var startDate: Date = Date()
@@ -33,13 +36,15 @@ class TransactionHistoryViewModel @Inject constructor(
     private val incomeTransactionList = arrayListOf<DepositHistoryList>()
     private val salesTransactionList = arrayListOf<SalesTransactionDetail>()
 
-    private val allTransactionLiveData = MutableLiveData<SaldoResponse>() //for All saldo transaction
-    private val refundTransactionLiveData = MutableLiveData<SaldoResponse>() //for Refund transaction
+    private val allTransactionLiveData =
+        MutableLiveData<SaldoResponse>() //for All saldo transaction
+    private val refundTransactionLiveData =
+        MutableLiveData<SaldoResponse>() //for Refund transaction
     private val incomeTransactionLiveData = MutableLiveData<SaldoResponse>() //for Saldo Penghasilan
     private val salesTransactionLiveData = MutableLiveData<SaldoResponse>() //for Saldo Penjualan
 
-    fun getLiveDataByTransactionType(transactionType: TransactionType) : LiveData<SaldoResponse>{
-        return when(transactionType){
+    fun getLiveDataByTransactionType(transactionType: TransactionType): LiveData<SaldoResponse> {
+        return when (transactionType) {
             AllTransaction -> allTransactionLiveData
             IncomeTransaction -> incomeTransactionLiveData
             RefundTransaction -> refundTransactionLiveData
@@ -56,12 +61,12 @@ class TransactionHistoryViewModel @Inject constructor(
         refundTransactionLiveData.postValue(InitialLoadingState)
         salesTransactionLiveData.postValue(InitialLoadingState)
         incomeTransactionLiveData.postValue(InitialLoadingState)
-        getAllTypeTransactionUseCase.loadAllTypeTransactions(startDate, endDate,
-                {
-                    onAllTabDataLoaded(it)
-                }, {
-            onAllTabsDataError(it)
-        }
+        getAllTypeTransactionUseCase.loadAllTypeTransactions(
+            {
+                onAllTabDataLoaded(it)
+            }, {
+                onAllTabsDataError(it)
+            }, startDate, endDate
         )
         loadSaleTransaction(1)
 
@@ -77,11 +82,11 @@ class TransactionHistoryViewModel @Inject constructor(
     private fun loadSaleTransaction(page: Int) {
         getSalesTransactionListUseCase.loadSalesTransactions(page, startDate, endDate, {
             onSalesTabDataLoaded(it.salesTransactionListResponse, page)
-        },{
-            if(page == 1){
+        }, {
+            if (page == 1) {
                 salesTransactionLiveData
                     .postValue(InitialLoadingError(it))
-            }else{
+            } else {
 
                 salesTransactionLiveData
                     .postValue(LoadMoreError(it))
@@ -89,18 +94,22 @@ class TransactionHistoryViewModel @Inject constructor(
         })
     }
 
-    private fun onSalesTabDataLoaded(response: SalesTransactionListResponse, page : Int) {
+    private fun onSalesTabDataLoaded(response: SalesTransactionListResponse, page: Int) {
         if (response.messageStatus == "Success") {
             response.transactionList.let {
                 salesTransactionList.addAll(it)
-                salesTransactionLiveData.postValue(SaldoHistoryResponse(salesTransactionList,
-                    response.isHaveNextPage))
+                salesTransactionLiveData.postValue(
+                    SaldoHistoryResponse(
+                        salesTransactionList,
+                        response.isHaveNextPage
+                    )
+                )
             }
         } else {
-            if(page == 1){
+            if (page == 1) {
                 salesTransactionLiveData
                     .postValue(InitialLoadingError(Exception(response.publicMessageTitle)))
-            }else{
+            } else {
 
                 salesTransactionLiveData
                     .postValue(LoadMoreError(Exception(response.publicMessageTitle)))
@@ -114,18 +123,30 @@ class TransactionHistoryViewModel @Inject constructor(
         } else {
             response.allDepositHistory?.let {
                 allTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
-                allTransactionLiveData.postValue(SaldoHistoryResponse(allTransactionList,
-                    it.isHaveNextPage))
+                allTransactionLiveData.postValue(
+                    SaldoHistoryResponse(
+                        allTransactionList,
+                        it.isHaveNextPage
+                    )
+                )
             }
             response.buyerDepositHistory?.let {
                 refundTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
-                refundTransactionLiveData.postValue(SaldoHistoryResponse(refundTransactionList,
-                    it.isHaveNextPage))
+                refundTransactionLiveData.postValue(
+                    SaldoHistoryResponse(
+                        refundTransactionList,
+                        it.isHaveNextPage
+                    )
+                )
             }
             response.sellerDepositHistory?.let {
                 incomeTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
-                incomeTransactionLiveData.postValue(SaldoHistoryResponse(incomeTransactionList,
-                    it.isHaveNextPage))
+                incomeTransactionLiveData.postValue(
+                    SaldoHistoryResponse(
+                        incomeTransactionList,
+                        it.isHaveNextPage
+                    )
+                )
             }
         }
     }
@@ -140,18 +161,18 @@ class TransactionHistoryViewModel @Inject constructor(
     }
 
     fun loadMoreTransaction(page: Int, transactionType: TransactionType) {
-            updateLoadMoreState(transactionType)
-            if (transactionType == SalesTransaction) {
-                loadSaleTransaction(page)
-            } else {
-                getTypeTransactionsUseCase.loadTypeTransactions(page,
-                    startDate, endDate, transactionType, {
-                        notifyAndAddLoadMoreTransaction(it, transactionType)
-                    }, {
-                        notifyLoadMoreError(it, transactionType)
-                    }
-                )
-            }
+        updateLoadMoreState(transactionType)
+        if (transactionType == SalesTransaction) {
+            loadSaleTransaction(page)
+        } else {
+            getTypeTransactionsUseCase.loadTypeTransactions(page,
+                startDate, endDate, transactionType, {
+                    notifyAndAddLoadMoreTransaction(it, transactionType)
+                }, {
+                    notifyLoadMoreError(it, transactionType)
+                }
+            )
+        }
     }
 
     private fun updateLoadMoreState(transactionType: TransactionType) {
@@ -163,30 +184,52 @@ class TransactionHistoryViewModel @Inject constructor(
         }
     }
 
-    private fun notifyAndAddLoadMoreTransaction(it: GqlCompleteTransactionResponse,
-                                                transactionType: TransactionType) {
+    private fun notifyAndAddLoadMoreTransaction(
+        it: GqlCompleteTransactionResponse,
+        transactionType: TransactionType
+    ) {
         if (it.allDepositHistory?.isHaveError == true) {
-            notifyLoadMoreError(Exception(it.allDepositHistory?.message ?: ""),
-                    transactionType)
+            notifyLoadMoreError(
+                Exception(it.allDepositHistory?.message ?: ""),
+                transactionType
+            )
         } else
             when (transactionType) {
                 AllTransaction -> {
-                    allTransactionList.addAll(it.allDepositHistory?.depositHistoryList
-                            ?: mutableListOf())
-                    allTransactionLiveData.postValue(SaldoHistoryResponse(allTransactionList,
-                            it.allDepositHistory?.isHaveNextPage ?: false))
+                    allTransactionList.addAll(
+                        it.allDepositHistory?.depositHistoryList
+                            ?: mutableListOf()
+                    )
+                    allTransactionLiveData.postValue(
+                        SaldoHistoryResponse(
+                            allTransactionList,
+                            it.allDepositHistory?.isHaveNextPage ?: false
+                        )
+                    )
                 }
                 RefundTransaction -> {
-                    refundTransactionList.addAll(it.allDepositHistory?.depositHistoryList
-                            ?: mutableListOf())
-                    refundTransactionLiveData.postValue(SaldoHistoryResponse(refundTransactionList,
-                            it.allDepositHistory?.isHaveNextPage ?: false))
+                    refundTransactionList.addAll(
+                        it.allDepositHistory?.depositHistoryList
+                            ?: mutableListOf()
+                    )
+                    refundTransactionLiveData.postValue(
+                        SaldoHistoryResponse(
+                            refundTransactionList,
+                            it.allDepositHistory?.isHaveNextPage ?: false
+                        )
+                    )
                 }
                 IncomeTransaction -> {
-                    incomeTransactionList.addAll(it.allDepositHistory?.depositHistoryList
-                            ?: mutableListOf())
-                    incomeTransactionLiveData.postValue(SaldoHistoryResponse(incomeTransactionList,
-                            it.allDepositHistory?.isHaveNextPage ?: false))
+                    incomeTransactionList.addAll(
+                        it.allDepositHistory?.depositHistoryList
+                            ?: mutableListOf()
+                    )
+                    incomeTransactionLiveData.postValue(
+                        SaldoHistoryResponse(
+                            incomeTransactionList,
+                            it.allDepositHistory?.isHaveNextPage ?: false
+                        )
+                    )
                 }
             }
     }

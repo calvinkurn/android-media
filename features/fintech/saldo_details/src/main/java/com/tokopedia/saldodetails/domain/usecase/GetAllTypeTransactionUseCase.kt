@@ -16,9 +16,9 @@ class GetAllTypeTransactionUseCase
     GraphqlUseCase<GqlAllDepositSummaryResponse>(graphqlRepository) {
 
     fun loadAllTypeTransactions(
-        startDate: Date, endDate: Date,
         onSuccess: (response: GqlAllDepositSummaryResponse) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: (Throwable) -> Unit,
+        startDate: Date, endDate: Date
     ) {
         try {
             val params = getRequestParams(startDate, endDate)
