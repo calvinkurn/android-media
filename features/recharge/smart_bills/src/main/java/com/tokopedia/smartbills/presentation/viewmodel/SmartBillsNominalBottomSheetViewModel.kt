@@ -52,11 +52,11 @@ class SmartBillsNominalBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun getProductByCategoryId(listProductAll: List<RechargeCatalogProductInput>, categoryId: String): List<RechargeProduct>? {
+    fun getProductByCategoryId(listProductAll: List<RechargeCatalogProductInput>, categoryName: String): List<RechargeProduct>? {
         val mutableListRechargeProduct = mutableListOf<RechargeProduct>()
 
         val listDataCollection = listProductAll.single {
-            it.id == categoryId
+            it.label == categoryName
         }.product.dataCollections
 
         for (dataCollection in listDataCollection){

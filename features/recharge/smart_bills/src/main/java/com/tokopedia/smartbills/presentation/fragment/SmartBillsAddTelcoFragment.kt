@@ -213,7 +213,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                         getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                             }
                         }
-                        //todo add finish() and activity result
+                        activity?.finish()
                         RouteManager.route(context, ApplinkConsInternalDigital.SMART_BILLS)
                     }
                 }

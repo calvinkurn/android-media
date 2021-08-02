@@ -466,7 +466,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun getCatalogData() {
         showProgressBar()
-        viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID))
+        viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
@@ -680,7 +680,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
         const val SOURCE = 1
 
-        const val PLATFORM_ID = 5
+        const val PLATFORM_ID_SBM = 48
 
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 

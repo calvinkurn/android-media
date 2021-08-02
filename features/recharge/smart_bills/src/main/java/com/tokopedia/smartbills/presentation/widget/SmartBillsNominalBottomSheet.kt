@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
+import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.di.DaggerSmartBillsComponent
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsNominalAdapter
@@ -124,7 +125,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         observe(viewModel.catalogProduct){
             when(it){
                 is Success -> {
-                    showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, categoryId))
+                    showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId)))
                 }
 
                 is Fail -> {
