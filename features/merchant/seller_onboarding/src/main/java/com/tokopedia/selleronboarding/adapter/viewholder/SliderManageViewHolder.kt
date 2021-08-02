@@ -1,6 +1,5 @@
 package com.tokopedia.selleronboarding.adapter.viewholder
 
-import android.content.res.Configuration
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -8,10 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
-import com.tokopedia.selleronboarding.utils.IMG_DEVICE_SCREEN_PERCENT
 import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
 import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
-import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
 import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
 
 /**
