@@ -192,19 +192,22 @@ object BitmapHelper {
         return resultBitmap
     }
 
+    //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
+    // if total of dark pixel > total of pixel * 0.45 count that as dark image
     fun Bitmap.isDark(): Boolean {
         var isDark = false
         val darkThreshold = this.width * this.height * 0.45f
         var darkPixels = 0
         val pixels = IntArray(this.width * this.height)
         this.getPixels(pixels, 0, this.width, 0, 0, this.width, this.height)
+        val luminanceThreshold = 150
         for (i in pixels.indices) {
             val color = pixels[i]
             val r = Color.red(color)
             val g = Color.green(color)
             val b = Color.blue(color)
             val luminance = 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
-            if (luminance < 150) {
+            if (luminance < luminanceThreshold) {
                 darkPixels++
             }
         }
@@ -280,8 +283,9 @@ object BitmapHelper {
     fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
         var scaleValue = 0.15f
 
-        if (textLength > 13)
+        if (textLength > 13) {
             scaleValue = 0.12f
+        }
 
         val inWidth = this.width
         val inHeight = this.height
