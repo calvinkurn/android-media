@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.common.utils
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.BROADCAST_VOUCHER_AB_TEST_KEY
 
 object RollenceUtil {
 
@@ -8,6 +9,7 @@ object RollenceUtil {
 
     fun getBroadCastVoucherRollenceValue(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform
-            .getBoolean(KEY_BROADCAST_VOUCHER, false)
+            .getString(BROADCAST_VOUCHER_AB_TEST_KEY, "")
+            .equals(KEY_BROADCAST_VOUCHER, ignoreCase = false)
     }
 }
