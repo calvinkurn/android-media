@@ -29,7 +29,6 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
         itemView.findViewById<Label>(R.id.labelSaldoTransactionStatus)
     private val iconNext = itemView.findViewById<IconUnify>(R.id.iconNextButton)
 
-
     override fun bind(element: DepositHistoryList) {
         val context = itemView.context
         tvTitle.text = element.typeDescription
@@ -85,7 +84,6 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
     }
 
     companion object {
-        @JvmField
         val LAYOUT = R.layout.item_saldo_transaction
     }
 

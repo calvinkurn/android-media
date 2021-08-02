@@ -126,7 +126,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     }
 
     private fun getAdapterTypeFactory(): SaldoDetailTransactionFactory =
-        SaldoDetailTransactionFactory(::openDetailPage)
+        SaldoDetailTransactionFactory(::openDetailPage, (transactionType == SalesTransaction))
 
     private fun openDetailPage(visitable: Visitable<*>) {
         if (visitable is DepositHistoryList) {

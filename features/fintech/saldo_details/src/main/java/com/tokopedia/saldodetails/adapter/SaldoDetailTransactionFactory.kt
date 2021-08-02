@@ -12,7 +12,8 @@ import com.tokopedia.saldodetails.viewholder.SaldoListEmptyViewHolder
 import com.tokopedia.saldodetails.viewholder.SaldoTransactionViewHolder
 import com.tokopedia.saldodetails.viewholder.SalesSaldoTransactionViewHolder
 
-class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> Unit) : BaseAdapterTypeFactory() {
+class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> Unit,
+                                    val isSaleTabAdapter : Boolean = false) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
@@ -21,7 +22,7 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
                 return SaldoTransactionViewHolder(parent, onItemClick)
             }
             SaldoListEmptyViewHolder.LAYOUT -> {
-                return SaldoListEmptyViewHolder(parent)
+                return SaldoListEmptyViewHolder(parent, isSaleTabAdapter)
             }
             SalesSaldoTransactionViewHolder.LAYOUT -> {
                 return SalesSaldoTransactionViewHolder(parent, onItemClick)

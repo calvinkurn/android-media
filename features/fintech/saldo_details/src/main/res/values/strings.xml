@@ -110,4 +110,7 @@
     <string name="saldo_sales_detail_view_order">Lihat Detail Pesanan</string>
     <string name="saldo_sales_total_received">Total Diterima</string>
     <string name="saldo_sales_invoice_copied_toast">Invoice berhasil disalin</string>
+    <string name="saldo_empty_sales_tab_title">Tokomu nggak ada penjualan pada rentang waktu ini</string>
+    <string name="saldo_empty_sales_tab_desc"><![CDATA[Mulai jualan & semangat majukan tokomu!]]></string>
+    <string name="saldo_empty_tab_title">Tidak ada transaksi pada rentang waktu ini</string>
 </resources>
