@@ -74,6 +74,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataVie
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
@@ -283,6 +284,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.clear()
         visitableList.add(chooseAddressDataView)
         visitableList.add(OutOfCoverageDataView())
+        visitableList.add(RecommendationCarouselDataView(pageName = OOC_TOKONOW))
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
