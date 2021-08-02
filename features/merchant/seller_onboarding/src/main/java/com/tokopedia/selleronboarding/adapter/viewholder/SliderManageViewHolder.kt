@@ -57,8 +57,12 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
         with(itemView) {
             val tvSobCurrentView = tvSobSliderManageTitle?.layoutParams as? ConstraintLayout.LayoutParams
             tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             tvSobSliderManageTitle?.layoutParams = tvSobCurrentView
+
+            val imgSobCurrentView = imgSobManage1?.layoutParams as? ConstraintLayout.LayoutParams
+            imgSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            imgSobManage1?.layoutParams = imgSobCurrentView
         }
     }
 }

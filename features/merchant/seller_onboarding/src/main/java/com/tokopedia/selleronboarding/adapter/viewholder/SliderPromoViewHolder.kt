@@ -42,8 +42,7 @@ class SliderPromoViewHolder(itemView: View) : AbstractViewHolder<SobSliderPromoU
         with(itemView) {
             val tvSobCurrentView = tvSobSliderPromoTitle?.layoutParams as? ConstraintLayout.LayoutParams
             tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.bottomToTop = R.id.imgSobPromo
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             tvSobSliderPromoTitle?.layoutParams = tvSobCurrentView
 
             val imgSobCurrentView = imgSobPromo?.layoutParams as? ConstraintLayout.LayoutParams

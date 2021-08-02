@@ -58,8 +58,7 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
         with(itemView) {
             val tvSobCurrentView = tvSobSliderHome?.layoutParams as? ConstraintLayout.LayoutParams
             tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.bottomToTop = R.id.imgSobHome
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
             tvSobSliderHome?.layoutParams = tvSobCurrentView
 
             val imgSobCurrentView = imgSobHome?.layoutParams as? ConstraintLayout.LayoutParams

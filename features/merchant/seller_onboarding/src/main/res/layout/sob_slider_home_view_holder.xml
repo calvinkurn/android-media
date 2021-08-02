@@ -12,7 +12,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="@dimen/sob_title_top_margin"
         android:text="@string/sob_slider_title_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
