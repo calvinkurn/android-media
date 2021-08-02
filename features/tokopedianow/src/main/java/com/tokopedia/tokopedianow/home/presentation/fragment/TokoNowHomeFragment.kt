@@ -124,7 +124,7 @@ class TokoNowHomeFragment: Fragment(),
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
-
+        const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
@@ -172,10 +172,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var headerName = ""
-    private var channelId: String = ""
-    private var productPosition: String = ""
-    private var recomItem: RecommendationItem? = null
     private var carouselScrollPosition = SparseIntArray()
 
     private val homeMainToolbarHeight: Int
@@ -365,10 +361,6 @@ class TokoNowHomeFragment: Fragment(),
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
-        this.headerName = headerName
-        this.recomItem = recomItem
-        this.productPosition = position
-        this.channelId = channelId
     }
 
     override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
@@ -390,7 +382,6 @@ class TokoNowHomeFragment: Fragment(),
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
-        this.recomItem = null
     }
 
     override fun onProductCardImpressed(data: HomeProductCardUiModel) {
@@ -423,11 +414,6 @@ class TokoNowHomeFragment: Fragment(),
             isFirstImpressionOnBanner = false
         }
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
 
     private fun initInjector() {
         DaggerHomeComponent.builder()

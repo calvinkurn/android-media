@@ -60,6 +60,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -309,7 +310,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when {
             miniCartItem == null -> addItemToCart(productId, shopId, quantity, type)
             quantity.isZero() -> removeItemCart(miniCartItem, type)
-            else -> updateItemCart(miniCartItem, quantity)
+            else -> updateItemCart(miniCartItem, quantity, type)
         }
     }
 
@@ -343,7 +344,11 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    private fun updateItemCart(miniCartItem: MiniCartItem, quantity: Int) {
+    private fun updateItemCart(
+        miniCartItem: MiniCartItem,
+        quantity: Int,
+        @HomeLayoutType type: String
+    ) {
         miniCartItem.quantity = quantity
         val updateCartRequest = UpdateCartRequest(
             cartId = miniCartItem.cartId,
@@ -355,6 +360,7 @@ class TokoNowHomeViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
+            trackProductUpdateCart(miniCartItem.productId, quantity, type, miniCartItem.cartId)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -369,6 +375,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val productId = miniCartItem.productId
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             homeLayoutItemList.setQuantityToZero(productId, type)
+            trackProductRemoveCart(miniCartItem.productId, type, miniCartItem.cartId)
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
@@ -529,6 +536,19 @@ class TokoNowHomeViewModel @Inject constructor(
             PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
         }
     }
+
+    private fun trackProductUpdateCart(productId: String, quantity: Int, type: String, cartId: String) {
+        when(type) {
+            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
+        }
+    }
+
+    private fun trackProductRemoveCart(productId: String, type: String, cartId: String) {
+        when(type) {
+            PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, DEFAULT_QUANTITY, cartId)
+        }
+    }
+
 
     private fun trackRecentPurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
         val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
