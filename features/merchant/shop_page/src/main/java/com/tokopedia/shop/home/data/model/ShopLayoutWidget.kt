@@ -58,6 +58,15 @@ data class ShopLayoutWidget(
                 val etalaseId: String = ""
         )
 
+        data class Showcase(
+                @SerializedName("imageUrl")
+                val imageUrl: String = "",
+                @SerializedName("appLink")
+                val appLink: String = "",
+                @SerializedName("Name")
+                val name: String = ""
+        )
+
         data class Data(
                 @SerializedName("imageUrl")
                 val imageUrl: String = "",

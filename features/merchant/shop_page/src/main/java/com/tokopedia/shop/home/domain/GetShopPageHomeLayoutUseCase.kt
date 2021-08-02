@@ -67,6 +67,11 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                       appLink
                       webLink
                     }
+                    ... on EtalaseWidget {
+                      imageUrl
+                      appLink
+                      Name
+                    }
                     ... on ProductWidget {
                       productID
                       name
