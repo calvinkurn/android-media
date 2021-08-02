@@ -99,6 +99,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
+    protected fun isCheckoutPassDataInitialized() = ::checkoutPassData.isInitialized
+
     private fun subscribeUi() {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
