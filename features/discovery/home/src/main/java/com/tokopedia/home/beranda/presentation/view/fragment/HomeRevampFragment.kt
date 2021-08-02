@@ -1251,7 +1251,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             } else if (getPageLoadTimeCallback() != null) {
                 getPageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
                 getPageLoadTimeCallback()?.startRenderPerformanceMonitoring()
-                homePerformanceMonitoringListener?.pageLoadTimePerformanceInterface?.stopEmbraceMonitoringOnly()
             }
         })
     }
