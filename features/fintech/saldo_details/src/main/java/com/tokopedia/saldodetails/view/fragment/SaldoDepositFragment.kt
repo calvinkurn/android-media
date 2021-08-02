@@ -53,6 +53,7 @@ import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -921,18 +922,35 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     fun refresh() {
         if (::saldoDetailViewModel.isInitialized)
             saldoDetailViewModel.getUserSaldoBalance()
-        saldoHistoryFragment!!.onRefresh()
+        saldoHistoryFragment?.onRefresh()
     }
 
     private fun setRetry() {
-        NetworkErrorHelper.createSnackbarWithAction(activity) { saldoDetailViewModel.getUserSaldoBalance() }
-            .showRetrySnackbar()
+        view?.let { view ->
+            Toaster.build(
+                view,
+                getString(R.string.saldo_network_error),
+                Toaster.LENGTH_INDEFINITE,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.saldo_retry)
+            ) {
+                saldoDetailViewModel.getUserSaldoBalance()
+                saldoHistoryFragment?.onRefresh()
+            }.show()
+        }
     }
 
     private fun setRetry(error: String) {
-        NetworkErrorHelper.createSnackbarWithAction(
-            activity, error
-        ) { saldoDetailViewModel.getUserSaldoBalance() }.showRetrySnackbar()
+        view?.let { view ->
+            Toaster.build(
+                view, getString(R.string.saldo_network_error),
+                Toaster.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL,
+                error
+            ) {
+                saldoDetailViewModel.getUserSaldoBalance()
+                saldoHistoryFragment?.onRefresh()
+            }.show()
+        }
     }
 
     override fun onDestroy() {

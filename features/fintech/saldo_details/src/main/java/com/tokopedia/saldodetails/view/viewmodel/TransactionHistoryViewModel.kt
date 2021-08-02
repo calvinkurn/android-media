@@ -1,9 +1,9 @@
 package com.tokopedia.saldodetails.view.viewmodel
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.saldodetails.di.DispatcherModule
 import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.domain.model.SalesTransactionListResponse
@@ -28,8 +28,8 @@ class TransactionHistoryViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
 
-    private var startDate: Date = Date()
-    private var endDate: Date = Date()
+    private var dateFrom: Date = Date()
+    private var dateTo: Date = Date()
 
     private val allTransactionList = arrayListOf<DepositHistoryList>()
     private val refundTransactionList = arrayListOf<DepositHistoryList>()
@@ -52,9 +52,9 @@ class TransactionHistoryViewModel @Inject constructor(
         }
     }
 
-    fun refreshAllTabsData(startDate: Date, endDate: Date) {
-        this.startDate = startDate
-        this.endDate = endDate
+    fun refreshAllTabsData(dateFrom: Date, dateTo: Date) {
+        this.dateFrom = dateFrom
+        this.dateTo = dateTo
         clearPrevData()
         cancelTransactionLoading()
         allTransactionLiveData.postValue(InitialLoadingState)
@@ -66,10 +66,14 @@ class TransactionHistoryViewModel @Inject constructor(
                 onAllTabDataLoaded(it)
             }, {
                 onAllTabsDataError(it)
-            }, startDate, endDate
+            }, dateFrom, dateTo
         )
         loadSaleTransaction(1)
 
+    }
+
+    fun retryAllTabLoading(){
+        refreshAllTabsData(dateFrom, dateTo)
     }
 
     private fun clearPrevData() {
@@ -80,7 +84,7 @@ class TransactionHistoryViewModel @Inject constructor(
     }
 
     private fun loadSaleTransaction(page: Int) {
-        getSalesTransactionListUseCase.loadSalesTransactions(page, startDate, endDate, {
+        getSalesTransactionListUseCase.loadSalesTransactions(page, dateFrom, dateTo, {
             onSalesTabDataLoaded(it.salesTransactionListResponse, page)
         }, {
             if (page == 1) {
@@ -108,18 +112,18 @@ class TransactionHistoryViewModel @Inject constructor(
         } else {
             if (page == 1) {
                 salesTransactionLiveData
-                    .postValue(InitialLoadingError(Exception(response.publicMessageTitle)))
+                    .postValue(InitialLoadingError(MessageErrorException(response.publicMessageTitle)))
             } else {
 
                 salesTransactionLiveData
-                    .postValue(LoadMoreError(Exception(response.publicMessageTitle)))
+                    .postValue(LoadMoreError(MessageErrorException(response.publicMessageTitle)))
             }
         }
     }
 
     private fun onAllTabDataLoaded(response: GqlAllDepositSummaryResponse) {
         if (response.isHavingError()) {
-            onAllTabsDataError(Exception(response.getErrorMessage()))
+            onAllTabsDataError(MessageErrorException(response.getErrorMessage()))
         } else {
             response.allDepositHistory?.let {
                 allTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
@@ -166,7 +170,7 @@ class TransactionHistoryViewModel @Inject constructor(
             loadSaleTransaction(page)
         } else {
             getTypeTransactionsUseCase.loadTypeTransactions(page,
-                startDate, endDate, transactionType, {
+                dateFrom, dateTo, transactionType, {
                     notifyAndAddLoadMoreTransaction(it, transactionType)
                 }, {
                     notifyLoadMoreError(it, transactionType)
@@ -190,7 +194,7 @@ class TransactionHistoryViewModel @Inject constructor(
     ) {
         if (it.allDepositHistory?.isHaveError == true) {
             notifyLoadMoreError(
-                Exception(it.allDepositHistory?.message ?: ""),
+                MessageErrorException(it.allDepositHistory?.message ?: ""),
                 transactionType
             )
         } else

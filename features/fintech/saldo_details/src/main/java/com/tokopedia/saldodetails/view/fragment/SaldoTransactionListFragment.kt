@@ -26,7 +26,6 @@ import javax.inject.Inject
 
 class SaldoTransactionListFragment : BaseDaggerFragment() {
 
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -103,7 +102,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         ) {
             when (it) {
                 is InitialLoadingError -> {
-                    //todo
+                    adapter.showInitialLoadingFailed(it.throwable)
                 }
                 is LoadMoreError -> {
                     //todo try to show error...
@@ -126,14 +125,36 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     }
 
     private fun getAdapterTypeFactory(): SaldoDetailTransactionFactory =
-        SaldoDetailTransactionFactory(::openDetailPage, (transactionType == SalesTransaction))
+        SaldoDetailTransactionFactory(
+            ::openDetailPage,
+            ::retryInitialLoading,
+            (transactionType == SalesTransaction)
+        )
 
     private fun openDetailPage(visitable: Visitable<*>) {
         if (visitable is DepositHistoryList) {
-            context?.let { startActivity(SaldoWithdrawalDetailActivity.newInstance(it, visitable.withdrawalId))}
-        } else if (visitable is SalesTransactionDetail){
-            context?.let { startActivity(SaldoSalesDetailActivity.newInstance(it, visitable.summaryID))}
+            context?.let {
+                startActivity(
+                    SaldoWithdrawalDetailActivity.newInstance(
+                        it,
+                        visitable.withdrawalId
+                    )
+                )
+            }
+        } else if (visitable is SalesTransactionDetail) {
+            context?.let {
+                startActivity(
+                    SaldoSalesDetailActivity.newInstance(
+                        it,
+                        visitable.summaryID
+                    )
+                )
+            }
         }
+    }
+
+    private fun retryInitialLoading() {
+        transactionHistoryViewModel?.retryAllTabLoading()
     }
 
 

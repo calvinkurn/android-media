@@ -26,7 +26,6 @@ import javax.inject.Inject
 
 class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, OnDateRangeSelectListener {
 
-
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
 
@@ -56,7 +55,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         super.onViewCreated(view, savedInstanceState)
         initialVar()
         initListeners()
-        addObserver()
         startInitialFetch()
     }
 
@@ -76,20 +74,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
         setDateRangeChanged(dateFrom, dateTo)
-    }
-
-    private fun addObserver() {
-        /*saldoHistoryViewModel.errors.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
-                if (it is ErrorType<*>) {
-                    val message = if (it.data is Int) getString(it.data) else it.data.toString()
-                    when (it.type) {
-                        NORMAL -> showErrorMessage(message)
-                        IN_VALID_DATE_ERROR -> showInvalidDateError(message)
-                    }
-                }
-            }
-        })*/
     }
 
     private fun initialVar() {

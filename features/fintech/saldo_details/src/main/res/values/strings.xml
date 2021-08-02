@@ -113,4 +113,6 @@
     <string name="saldo_empty_sales_tab_title">Tokomu nggak ada penjualan pada rentang waktu ini</string>
     <string name="saldo_empty_sales_tab_desc"><![CDATA[Mulai jualan & semangat majukan tokomu!]]></string>
     <string name="saldo_empty_tab_title">Tidak ada transaksi pada rentang waktu ini</string>
+    <string name="saldo_network_error">Terjadi kesalahan koneksi, silahkan coba lagi</string>
+    <string name="saldo_retry">coba lagi</string>
 </resources>

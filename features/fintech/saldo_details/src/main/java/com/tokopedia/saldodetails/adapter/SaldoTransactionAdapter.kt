@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
+import com.tokopedia.saldodetails.adapter.model.TransactionErrorModel
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
 
 class SaldoTransactionAdapter(adapterTypeFactory: SaldoDetailTransactionFactory) :
     BaseListAdapter<DepositHistoryList, SaldoDetailTransactionFactory>(adapterTypeFactory),
     DataEndLessScrollListener.OnDataEndlessScrollListener {
+
 
     private fun showEmptyState() {
         addElement(EmptyModel())
@@ -20,6 +22,11 @@ class SaldoTransactionAdapter(adapterTypeFactory: SaldoDetailTransactionFactory)
     fun showLoadingInAdapter() {
         removeErrorNetwork()
         showLoading()
+    }
+
+    fun showInitialLoadingFailed(throwable: Throwable){
+        setErrorNetworkModel(TransactionErrorModel(throwable))
+        showErrorNetwork()
     }
 
     fun addAllElements(element: List<Visitable<*>>) {
