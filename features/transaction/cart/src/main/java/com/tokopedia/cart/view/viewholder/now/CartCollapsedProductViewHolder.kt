@@ -54,6 +54,10 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
             viewBinding.textVariantName.gone()
         }
 
+        setPriceConstraint()
+    }
+
+    private fun setPriceConstraint() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(viewBinding.containerCollapsedProduct)
         if (viewBinding.textVariantName.isVisible) {
