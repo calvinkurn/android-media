@@ -256,7 +256,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            val (orderCost, _, updatedProductIndex) = calculator.calculateOrderCost(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
+            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel)
             updateOrderProducts.value = updatedProductIndex
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
