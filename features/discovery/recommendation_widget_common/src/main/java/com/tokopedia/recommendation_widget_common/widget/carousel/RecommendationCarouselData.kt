@@ -8,7 +8,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 data class RecommendationCarouselData(
         val recommendationData: RecommendationWidget = RecommendationWidget(),
-        val state: Int = 0
+        val state: Int = 0,
+        val isUsingWidgetViewModel: Boolean = false
 ): ImpressHolder() {
     companion object {
         const val STATE_LOADING: Int = 0

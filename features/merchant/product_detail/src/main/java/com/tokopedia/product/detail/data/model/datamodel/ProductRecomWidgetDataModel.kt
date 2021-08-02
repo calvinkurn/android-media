@@ -16,7 +16,8 @@ data class ProductRecomWidgetDataModel(
         //UI Data
         var filterData: List<AnnotationChip>? = null,
         var cardModel: List<ProductCardModel>? = null,
-        var position: Int = -1
+        var position: Int = -1,
+        var pageName: String = ""
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

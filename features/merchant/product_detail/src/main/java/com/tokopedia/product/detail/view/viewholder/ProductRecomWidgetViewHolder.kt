@@ -33,8 +33,15 @@ class ProductRecomWidgetViewHolder (
     override fun bind(element: ProductRecomWidgetDataModel) {
         productRecom = element
         itemView.visible()
-        if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
+
+        if ((element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) && element.pageName.isEmpty()) {
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
+        } else if (element.pageName.isNotEmpty()) {
+            recomWidget.bind(
+                    pageName = element.name,
+                    tempHeaderName = itemView.context.getString(R.string.title_other_product),
+                    adapterPosition = adapterPosition,
+                    widgetListener = this)
         } else {
             element.recomWidgetData?.let {
                 recomWidget.bind(
@@ -117,6 +124,10 @@ class ProductRecomWidgetViewHolder (
 
     override fun onChannelWidgetEmpty() {
         listener.onChannelRecommendationEmpty(adapterPosition, productRecom?.recomWidgetData)
+    }
+
+    override fun onWidgetFail(pageName: String, e: Exception) {
+        listener.onRecomWidgetFailedToLoad(pageName)
     }
 
     private fun getComponentTrackData(element: ProductRecomWidgetDataModel?) = ComponentTrackDataModel(element?.type

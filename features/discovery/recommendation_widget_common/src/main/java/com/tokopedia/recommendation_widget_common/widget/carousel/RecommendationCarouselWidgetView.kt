@@ -3,13 +3,17 @@ package com.tokopedia.recommendation_widget_common.widget.carousel
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -17,8 +21,15 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
+import com.tokopedia.recommendation_widget_common.di.RecommendationModule
+import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
+import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationWidgetModule
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
+import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -33,12 +44,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Created by yfsx on 5/3/21.
  */
 
-class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardListener, CoroutineScope {
+class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardListener, CoroutineScope, LifecycleObserver {
 
     private val masterJob = SupervisorJob()
 
@@ -51,13 +63,26 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var itemView: View
     private val itemContext: Context
     private var widgetListener: RecommendationCarouselWidgetListener? = null
+    private var scrollToPosition: Int = 0
     private lateinit var carouselData: RecommendationCarouselData
     private lateinit var typeFactory: CommonRecomCarouselCardTypeFactory
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecommendationCarouselAdapter
     private lateinit var layoutManager: LinearLayoutManager
+    private var pageName: String = ""
     private var adapterPosition: Int = 0
     private var isInitialized = false
+
+
+    private var lifecycleOwner: LifecycleOwner? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: RecommendationViewModel? by lazy {
+        context?.let {
+            initializeViewModel(it)
+        }
+    }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_widget_recommendation_carousel, this)
@@ -70,32 +95,82 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         const val NAME_CAMPAIGN_WIDGET = "Campaign-Widget"
     }
 
+    private fun initializeViewModel(it: Context): RecommendationViewModel? {
+        val component = DaggerRecommendationComponent.builder()
+                .recommendationWidgetModule(RecommendationWidgetModule())
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+        component.inject(this)
+        return when (it) {
+            is AppCompatActivity -> {
+                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+                viewModelProvider[RecommendationViewModel::class.java]
+            }
+            is ContextThemeWrapper -> {
+                val activity = it.getActivityFromContext()
+                activity?.let {
+                    if (activity is AppCompatActivity) {
+                        val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
+                        viewModelProvider[RecommendationViewModel::class.java]
+                    } else {
+                        null
+                    }
+                }
+            }
+            else -> {
+                null
+            }
+        }
+    }
+
     fun bind(
-            carouselData: RecommendationCarouselData,
+            carouselData: RecommendationCarouselData = RecommendationCarouselData(),
             adapterPosition: Int = 0,
             widgetListener: RecommendationCarouselWidgetListener?,
             scrollToPosition: Int = 0,
+            pageName: String = "",
+            tempHeaderName: String = ""
     ) {
+        try {
+            this.adapterPosition = adapterPosition
+            this.widgetListener = widgetListener
+            this.scrollToPosition = scrollToPosition
+            this.pageName = pageName
+            if (pageName.isEmpty()) bindWidgetWithData(carouselData)
+            else {
+                bindTemporaryHeader(tempHeaderName)
+                bindWidgetWithPageName(pageName)
+            }
+        } catch (e: Exception) {
+            this.widgetListener?.onWidgetFail(pageName, e)
+        }
+    }
+
+    private fun bindWidgetWithPageName(pageName: String) {
+        itemView.loadingRecom.visible()
+        viewModel?.loadRecommendation(pageName = pageName)
+    }
+
+    private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
-        this.widgetListener = widgetListener
-        this.adapterPosition = adapterPosition
         initVar()
         doActionBasedOnRecomState(carouselData.state,
-            onLoad = {
-                itemView.loadingRecom.visible()
-            },
-            onReady = {
-                itemView.loadingRecom.gone()
-                impressChannel(carouselData)
-                setHeaderComponent(carouselData)
-                setData(carouselData)
-                scrollCarousel(scrollToPosition)
-            },
-            onFailed = {
-                itemView.loadingRecom.gone()
-            }
+                onLoad = {
+                    itemView.loadingRecom.visible()
+                },
+                onReady = {
+                    itemView.loadingRecom.gone()
+                    impressChannel(carouselData)
+                    setHeaderComponent(carouselData)
+                    setData(carouselData)
+                    scrollCarousel(scrollToPosition)
+                },
+                onFailed = {
+                    itemView.loadingRecom.gone()
+                }
         )
     }
+
 
     fun bindTemporaryHeader(tempHeaderName: String) {
         itemView.recommendation_header_view.bindData(RecommendationWidget(title = tempHeaderName), null)
@@ -249,7 +324,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private fun doActionBasedOnRecomState(state: Int, onLoad: () -> Unit?, onReady: () -> Unit?, onFailed: () -> Unit?) {
-        when (carouselData.state) {
+        when (state) {
             STATE_LOADING -> {
                 onLoad.invoke()
             }
@@ -259,6 +334,28 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             STATE_FAILED -> {
                 onFailed.invoke()
             }
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private fun onStartListener(owner: LifecycleOwner){
+        this.lifecycleOwner = owner
+        observeLiveData()
+    }
+
+    private fun observeLiveData() {
+        lifecycleOwner?.let {owner ->
+            viewModel?.getRecommendationLiveData?.observe(owner, Observer {
+                it.doSuccessOrFail({ recom ->
+                    bindWidgetWithData(RecommendationCarouselData(
+                            recommendationData = recom.data,
+                            state = STATE_READY,
+                            isUsingWidgetViewModel = true
+                    ))
+                }, { throwable ->
+                    widgetListener?.onWidgetFail(pageName = pageName, Exception(throwable))
+                })
+            })
         }
     }
 }

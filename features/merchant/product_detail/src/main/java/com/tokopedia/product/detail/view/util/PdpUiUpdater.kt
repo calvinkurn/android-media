@@ -557,6 +557,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateRecommendationDataPageName(pageName: String) {
+        updateData(pageName) {
+            when (pageName) {
+                PDP_7 -> {
+                    (mapOfData[pageName] as? ProductRecomWidgetDataModel)?.run {
+                        this.pageName = pageName
+                    }
+                }
+            }
+        }
+    }
+
     fun removeEmptyRecommendation(data: RecommendationWidget) {
         removeComponent(data.pageName)
     }
