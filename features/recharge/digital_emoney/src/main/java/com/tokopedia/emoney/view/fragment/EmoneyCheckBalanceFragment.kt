@@ -141,7 +141,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
         emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {  throwable ->
             context?.let {
-                val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                var errorThrowable = throwable
+                if ((throwable.message ?: "").contains(getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_timeout), true)) {
+                    errorThrowable = MessageErrorException(getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error))
+                }
+                val errorMessage = ErrorHandler.getErrorMessage(it, errorThrowable)
                 if((throwable is SocketTimeoutException)){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),
@@ -166,7 +170,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(ErrorHandler.getErrorMessage(context, it),
+            var errorThrowable = it
+            if ((it.message ?: "").contains(getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_timeout), true)) {
+                    errorThrowable = MessageErrorException(getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error))
+            }
+            showError(ErrorHandler.getErrorMessage(context, errorThrowable),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                     true
