@@ -424,7 +424,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
-            loadInitialData()
+            loadData(FIRST_PAGE)
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else{
@@ -462,14 +462,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
+    private fun onSuccessGetPreviousChat(page: Int): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
                         (it is MessageViewModel && it.message.isEmpty()))
             }
-            renderList(list, it.canLoadMore)
+            if (page == FIRST_PAGE) isFirstPage = false
+            val filteredList= getViewState().clearDuplicate(list)
+            if (filteredList.isEmpty()) loadData(page + FIRST_PAGE)
+            renderList(filteredList, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
+            enableLoadMore()
         }
     }
 
@@ -492,7 +496,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPrevious(messageId, page, onError(), onSuccessGetPreviousChat(), onGetChatRatingListMessageError)
+        presenter.loadPrevious(messageId, page, onError(), onSuccessGetPreviousChat(page), onGetChatRatingListMessageError)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {

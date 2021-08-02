@@ -115,6 +115,27 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         adapter.data.clear()
     }
 
+    override fun clearDuplicate(list: List<Visitable<*>>): ArrayList<Visitable<*>> {
+        val filteredList = ArrayList<Visitable<*>>(list)
+        list.forEach { api ->
+            adapter.data.forEach { ws ->
+                when {
+                    ws is MessageViewModel && api is MessageViewModel -> {
+                        if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
+                            filteredList.remove(api)
+                        }
+                    }
+                    ws is BaseChatViewModel && api is BaseChatViewModel -> {
+                        if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
+                            filteredList.remove(api)
+                        }
+                    }
+                }
+            }
+        }
+        return filteredList
+    }
+
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
         if (chatroomViewModel.listChat.isNotEmpty()
                 && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {

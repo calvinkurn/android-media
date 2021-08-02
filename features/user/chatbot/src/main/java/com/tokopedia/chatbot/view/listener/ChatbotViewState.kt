@@ -71,4 +71,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun clearChatOnLoadChatHistory()
 
+    fun clearDuplicate(list: List<Visitable<*>>):ArrayList<Visitable<*>>
+
 }
