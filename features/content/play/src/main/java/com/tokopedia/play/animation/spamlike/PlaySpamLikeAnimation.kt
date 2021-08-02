@@ -58,6 +58,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
 
         isBouncing = type.getBoolean(R.styleable.PlaySpamLikeAnimation_bouncing, false)
         isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeAnimation_additionalShot, false)
+        MAX_SHOT = type.getInteger(R.styleable.PlaySpamLikeAnimation_maxShot, 30)
 
         type.recycle()
 

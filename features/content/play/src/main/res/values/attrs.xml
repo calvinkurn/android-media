@@ -11,5 +11,6 @@
     <declare-styleable name="PlaySpamLikeAnimation">
         <attr name="additionalShot" format="boolean" />
         <attr name="bouncing" format="boolean"/>
+        <attr name="maxShot" format="integer"/>
     </declare-styleable>
 </resources>
