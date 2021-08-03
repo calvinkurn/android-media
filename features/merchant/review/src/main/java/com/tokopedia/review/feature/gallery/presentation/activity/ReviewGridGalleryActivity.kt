@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.reading.presentation.activity
+package com.tokopedia.review.feature.gallery.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,9 +7,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGridGalleryFragment
 
-class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
+class ReviewGridGalleryActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -19,21 +19,21 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
     }
 
     override fun getNewFragment(): Fragment {
-        return ReadReviewFragment.createNewInstance(getDataFromApplink())
+        return ReviewGridGalleryFragment.createNewInstance(getDataFromApplink())
     }
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ReviewConstants.REVIEW_READING_PLT_PREPARE_METRICS,
-                ReviewConstants.REVIEW_READING_PLT_NETWORK_METRICS,
-                ReviewConstants.REVIEW_READING_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ReviewConstants.REVIEW_GRID_GALLERY_PLT_PREPARE_METRICS,
+            ReviewConstants.REVIEW_GRID_GALLERY_PLT_NETWORK_METRICS,
+            ReviewConstants.REVIEW_GRID_GALLERY_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
-        pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.REVIEW_READING_TRACE)
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.REVIEW_GRID_GALLERY_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
@@ -84,8 +84,7 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
         val uri = intent.data
         return if (uri != null) {
             val segments = uri.pathSegments
-            segments.getOrNull(segments.size - 2) ?: "0"
+            ""
         } else ""
     }
-
 }

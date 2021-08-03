@@ -132,14 +132,15 @@ object ReviewConstants {
     const val SELLER_REVIEW_REPLY_PLT_NETWORK_METRICS = "seller_review_reply_plt_network_metrics"
     const val SELLER_REVIEW_REPLY_PLT_RENDER_METRICS = "seller_review_reply_plt_render_metrics"
 
-    const val IV_MORE_FOCUS_SERVICE_PM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_pm@3x.png"
-    const val IV_MORE_FOCUS_SERVICE_RM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_rm@3x.png"
-    const val IV_MORE_INTEREST_BUYER = "https://images.tokopedia.net/img/android/shop_score/iv_more_interest_buyer@3x.png"
-
     const val REVIEW_READING_TRACE = "review_reading_trace"
     const val REVIEW_READING_PLT_PREPARE_METRICS = "review_reading_plt_prepare_metrics"
     const val REVIEW_READING_PLT_NETWORK_METRICS = "review_reading_plt_network_metrics"
     const val REVIEW_READING_PLT_RENDER_METRICS = "review_reading_plt_render_metrics"
+
+    const val REVIEW_GRID_GALLERY_TRACE = "review_grid_gallery_trace"
+    const val REVIEW_GRID_GALLERY_PLT_PREPARE_METRICS = "review_grid_gallery_plt_prepare_metrics"
+    const val REVIEW_GRID_GALLERY_PLT_NETWORK_METRICS = "review_grid_gallery_network_metrics"
+    const val REVIEW_GRID_GALLERY_PLT_RENDER_METRICS = "review_grid_gallery_render_metrics"
 
     const val RATING_ONE = 1
     const val RATING_TWO = 2

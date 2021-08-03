@@ -54,7 +54,7 @@ class ReadReviewViewModel @Inject constructor(
 
     private val currentPage = MutableLiveData<Int>()
 
-    private var productId: MutableLiveData<String> = MutableLiveData()
+    private val productId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
     private var filter: SelectedFilters = SelectedFilters()
 
