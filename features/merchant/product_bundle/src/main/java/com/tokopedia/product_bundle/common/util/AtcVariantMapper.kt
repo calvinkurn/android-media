@@ -36,7 +36,7 @@ object AtcVariantMapper {
         try {
             VariantChild(
                 productId = it.productID.toString(),
-                price = it.bundlePrice.toFloat(),
+                price = it.bundlePrice.toDouble(),
                 stock =  VariantStock(
                     stock = it.stock,
                     isBuyable = true,
@@ -51,8 +51,8 @@ object AtcVariantMapper {
                 ),
                 campaign = VariantCampaign(
                     isActive = true,
-                    originalPrice = it.originalPrice.toFloat(),
-                    discountedPrice = it.bundlePrice.toFloat(),
+                    originalPrice = it.originalPrice.toDouble(),
+                    discountedPrice = it.bundlePrice.toDouble(),
                     discountedPercentage = 10f,
                     stock = it.stock
                 )
