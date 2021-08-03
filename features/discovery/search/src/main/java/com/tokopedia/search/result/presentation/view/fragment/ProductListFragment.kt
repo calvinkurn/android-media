@@ -1328,7 +1328,6 @@ class ProductListFragment: BaseDaggerFragment(),
         if (data == null) return
 
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, getUserId())
-        TopAdsGtmTracker.eventSearchResultPromoView(activity, data, position)
     }
 
     override fun getRegistrationId() = presenter?.deviceId ?: ""
