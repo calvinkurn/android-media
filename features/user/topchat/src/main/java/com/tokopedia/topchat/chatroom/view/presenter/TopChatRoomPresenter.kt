@@ -85,6 +85,7 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.ceil
 
 /**
  * @author : Steven 11/12/18
@@ -578,12 +579,27 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         if (thisMessageId.isEmpty()) return
         val startTime = SendableViewModel.generateStartTime()
-        val question = QuestionUiModel("Pindah alamat gan", attachment.extras.intent)
+        val addressMasking = getAddressMasking()
+        val srwMessage = "Ubah alamat pengiriman \"Nama produk...\" ke $addressMasking"
+        val question = QuestionUiModel(srwMessage, attachment.extras.intent)
         val products = attachment.generateSendableProductPreview()
         topchatSendMessageWithWebsocket(
             thisMessageId, question.content, startTime,
             opponentId, question.intent, products
         )
+    }
+
+    private fun getAddressMasking(): String {
+        val addressLabel = userLocationInfo.label.trim()
+        val addresses = addressLabel.split(" ").toMutableList()
+        for (i in addresses.indices) {
+            val word = addresses[i]
+            val wordCount = word.length
+            val totalRemovedWord = ceil((wordCount * 30 / 100.0)).toInt()
+            val endIndex = wordCount - totalRemovedWord
+            addresses[i] = "${word.substring(0, endIndex)}${"*".repeat(totalRemovedWord)}"
+        }
+        return addresses.joinToString(" ")
     }
 
     /**
