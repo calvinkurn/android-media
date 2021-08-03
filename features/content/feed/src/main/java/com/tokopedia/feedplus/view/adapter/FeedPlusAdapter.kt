@@ -46,11 +46,10 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         }
     }
 
-    override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
-        super.onViewAttachedToWindow(holder)
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
         if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size) {
-            (holder as DynamicPostNewViewHolder).onItemDetach()
-
+            (holder as DynamicPostNewViewHolder).onItemDetach(list[holder.adapterPosition])
         }
     }
 

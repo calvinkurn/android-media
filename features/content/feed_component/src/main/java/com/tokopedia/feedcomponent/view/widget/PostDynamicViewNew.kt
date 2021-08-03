@@ -39,6 +39,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
@@ -1147,9 +1148,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         detach()
     }
 
-    fun detach(fromSlide: Boolean = false) {
+    fun detach(
+        fromSlide: Boolean = false, model: DynamicPostUiModel? = null
+    ) {
         if (!fromSlide)
-            carouselView.activeIndex = 0
+            model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+        carouselView.activeIndex = 0
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()

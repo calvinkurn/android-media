@@ -1029,7 +1029,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun getCurrentPosition(): Int {
-        var position = 0
+        var position: Int
         when {
             itemIsFullScreen() -> {
                 position = layoutManager?.findLastVisibleItemPosition() ?: 0
@@ -1043,6 +1043,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 position =
                     layoutManager?.findLastCompletelyVisibleItemPosition()
                         ?: 0
+            }
+            else ->{
+                position = layoutManager?.findLastVisibleItemPosition()?:0
             }
         }
         return position

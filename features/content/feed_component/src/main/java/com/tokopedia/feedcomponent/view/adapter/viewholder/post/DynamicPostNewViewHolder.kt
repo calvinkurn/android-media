@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.PAYLOAD_PLAY_VIDEO
@@ -75,8 +76,8 @@ open class DynamicPostNewViewHolder(
         )
     }
 
-    fun onItemDetach() {
-        postDynamicView?.detach()
+    fun onItemDetach(visitable: Visitable<*>) {
+        postDynamicView?.detach(false, visitable as DynamicPostUiModel)
     }
 
 }
