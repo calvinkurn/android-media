@@ -167,7 +167,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
+                is Fail -> {
+                    val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                        requireContext(), it.throwable, ErrorHandler.Builder().build())
+                    closeViewWithMessageAlert("$errMsg", errCode)
+                }
             }
         })
 
@@ -177,7 +181,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         })
 
         viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
+            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                requireContext(), it.throwable, ErrorHandler.Builder().build())
+            closeViewWithMessageAlert("$errMsg", errCode)
         })
 
         viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
@@ -322,7 +328,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
-    private fun showError(message: String) {
+    private fun showError(message: String, errorCode: String) {
         if (viewEmptyState != null) {
             viewEmptyState.setPrimaryCTAClickListener {
                 viewEmptyState.visibility = View.GONE
@@ -333,15 +339,17 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                     || message == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
                 viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection))
-                viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.noConnectionDesc))
+                viewEmptyState.setDescription(
+                    "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errorCode)")
             } else if (message == ErrorNetMessage.MESSAGE_ERROR_SERVER || message == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title))
                 viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500))
-                viewEmptyState.setDescription(getString(com.tokopedia.globalerror.R.string.error500Desc))
+                viewEmptyState.setDescription(
+                    "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errorCode)")
             } else {
                 viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
                 viewEmptyState.setImageUrl(getString(R.string.digital_cart_default_error_img_url))
-                viewEmptyState.setDescription(message)
+                viewEmptyState.setDescription("${message}. Kode Error: ($errorCode)")
             }
 
             viewEmptyState.setPrimaryCTAText(getString(R.string.digital_checkout_empty_state_btn))
@@ -375,7 +383,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener { /** do nothing **/ }).show()
     }
 
-    private fun closeViewWithMessageAlert(message: String) {
+    private fun closeViewWithMessageAlert(message: String, errorCode: String) {
         loaderCheckout.visibility = View.GONE
 
         if (cartPassData?.isFromPDP == true) {
@@ -384,7 +392,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         } else {
-            showError(message)
+            showError(message, errorCode)
         }
     }
 

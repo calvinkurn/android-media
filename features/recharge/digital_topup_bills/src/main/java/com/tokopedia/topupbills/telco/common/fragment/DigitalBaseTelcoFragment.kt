@@ -280,7 +280,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onMenuDetailError(error: Throwable) {
         super.onMenuDetailError(error)
-        NetworkErrorHelper.showEmptyState(activity, pageContainer, ErrorHandler.getErrorMessage(context, error)) {
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(activity, error, ErrorHandler.Builder().build())
+
+        NetworkErrorHelper.showEmptyState(
+            activity,
+            pageContainer,
+            errMsg,
+            "${getString(R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+            null,
+            DEFAULT_ICON_RES
+        ) {
             getMenuDetail(getTelcoMenuId())
         }
     }
@@ -414,5 +423,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
+
+        const val DEFAULT_ICON_RES = 0
     }
 }
