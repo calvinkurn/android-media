@@ -695,11 +695,11 @@ class PlayUserInteractionFragment @Inject constructor(
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
                 val shotAmount: Long
                 if (isFirstTime) {
-                    shotAmount = minOf(it.totalLike, 30)
+                    shotAmount = minOf(it.totalLike, spamLikeView.maxShot)
                     likeView.setEnabled(true)
                 }
                 else {
-                    shotAmount = minOf(it.previousLike - it.totalLike, 30)
+                    shotAmount = minOf(it.previousLike - it.totalLike, spamLikeView.maxShot)
                 }
 
                 likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)

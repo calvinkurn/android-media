@@ -25,6 +25,9 @@ class SpamLikeViewComponent(
         spamLike.setParentView(container)
     }
 
+    val maxShot: Long
+        get() = spamLike.getMaxShot().toLong()
+
     fun shot(amount: Int = 1) {
         CoroutineScope(Dispatchers.IO + job).launch {
             for(i in 1..amount) {

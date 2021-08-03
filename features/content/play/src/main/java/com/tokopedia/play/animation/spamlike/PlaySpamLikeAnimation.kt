@@ -129,6 +129,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         this.MAX_SHOT = maxShot
     }
 
+    fun getMaxShot(): Int = MAX_SHOT
 
     /**
      * Step shot()
