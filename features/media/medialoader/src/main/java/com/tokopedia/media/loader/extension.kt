@@ -13,7 +13,6 @@ import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
 import com.tokopedia.media.loader.utils.MediaTarget
-import com.tokopedia.media.loader.utils.drawableFromId
 import com.tokopedia.media.loader.MediaLoaderApi.loadImage as loadImageBuilder
 import com.tokopedia.media.loader.MediaLoaderTarget.loadImage as loadImageWithTarget
 
