@@ -64,23 +64,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int) {
         this.source = source
         this.shopId = shopId
-        val iconUrl = mvcData.animatedInfoList?.get(0)?.iconURL
-        val arrayList = arrayListOf<AnimatedInfos>()
-        val animatedInfos1 = AnimatedInfos("First title","First subtitle","$iconUrl")
-        val animatedInfos2 = AnimatedInfos("Second title","Second subtitle","$iconUrl")
-        val animatedInfos3 = AnimatedInfos("Third title","Third subtitle","$iconUrl")
-        val animatedInfos4 = AnimatedInfos("Fourth title","Fourth subtitle","$iconUrl")
-        val animatedInfos5 = AnimatedInfos("Fifth title","Fifth subtitle","$iconUrl")
-        val animatedInfos6 = AnimatedInfos("Sixth title","Sixth subtitle","$iconUrl")
-        arrayList.add(animatedInfos1)
-        arrayList.add(animatedInfos2)
-        arrayList.add(animatedInfos3)
-        arrayList.add(animatedInfos4)
-        arrayList.add(animatedInfos5)
-        arrayList.add(animatedInfos6)
-        setMVCData(arrayList)
-//        setMVCData(mvcData.animatedInfoList)
-//        setMVCData(mvcData.animatedInfoList)
+        setMVCData(mvcData.animatedInfoList)
     }
 
     private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {
