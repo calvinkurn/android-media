@@ -91,4 +91,5 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         assertMsgHeaderContainer(0, not(isDisplayed()))
     }
 
+    // TODO: should hide msg header divider if rendered as seller
 }
