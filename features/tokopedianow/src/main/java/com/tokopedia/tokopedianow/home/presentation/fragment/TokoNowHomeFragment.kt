@@ -635,7 +635,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getHomeLayout() {
-        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved)
+        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved, localCacheModel)
     }
 
     private fun getMiniCart()  {

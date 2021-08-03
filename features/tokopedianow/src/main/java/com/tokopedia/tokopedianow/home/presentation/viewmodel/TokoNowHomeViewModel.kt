@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -86,9 +87,9 @@ class TokoNowHomeViewModel @Inject constructor(
         _homeLayoutList.value = Success(data)
     }
 
-    fun getHomeLayout(hasTickerBeenRemoved: Boolean) {
+    fun getHomeLayout(hasTickerBeenRemoved: Boolean, localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
-            val homeLayoutResponse = getHomeLayoutListUseCase.execute()
+            val homeLayoutResponse = getHomeLayoutListUseCase.execute(localCacheModel)
             val tickerList = getTicker(hasTickerBeenRemoved)
             homeLayoutItemList = mapHomeLayoutList(
                 homeLayoutResponse,
