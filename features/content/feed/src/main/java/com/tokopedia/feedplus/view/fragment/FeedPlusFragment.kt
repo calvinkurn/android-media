@@ -229,6 +229,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     @Inject
     internal lateinit var userSession: UserSessionInterface
     private lateinit var productTagBS: ProductItemInfoBottomSheet
+    private var isCleared = false
     private val userIdInt: Int
         get() {
             return userSession.userId.toIntOrZero()
@@ -257,6 +258,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val TRUE = "true"
         private const val FEED_DETAIL = "feedcommunicationdetail"
         private const val BROADCAST_FEED = "BROADCAST_FEED"
+        private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
@@ -641,11 +643,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         newFeedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
-                if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
-                    val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
-                    if (isHaveNewFeed) {
-                        newFeed.visible()
-                        triggerNewFeedNotification()
+                if (intent != null && intent.action != null) {
+                    if (intent.action == BROADCAST_FEED) {
+                        val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
+                        if (isHaveNewFeed) {
+                            newFeed.visible()
+                            triggerNewFeedNotification()
+                        }
+                        if (layoutManager != null && adapter.getlist().isNotEmpty()) {
+                            isCleared = false
+                            adapter.notifyItemChanged(
+                                getCurrentPosition(),
+                                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
+                            )
+                        }
+                    } else if (intent.action == BROADCAST_VISIBLITY) {
+                        if (layoutManager != null && adapter.getlist().isNotEmpty() && !isCleared) {
+                            adapter.notifyItemChanged(
+                                getCurrentPosition(),
+                                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
+                            )
+                            isCleared = true
+                        }
+
                     }
                 }
             }
@@ -969,6 +989,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
 
             LocalBroadcastManager
                 .getInstance(requireActivity().applicationContext)
@@ -1005,18 +1026,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
             isUserVisibleHint = isVisibleToUser
         )
-        if (layoutManager != null && adapter.getlist().isNotEmpty()) {
-            if (isVisibleToUser)
-                adapter.notifyItemChanged(
-                    getCurrentPosition(),
-                    DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
-                )
-            else
-                adapter.notifyItemChanged(
-                    getCurrentPosition(),
-                    DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
-                )
-        }
     }
 
     private fun getCurrentPosition(): Int {

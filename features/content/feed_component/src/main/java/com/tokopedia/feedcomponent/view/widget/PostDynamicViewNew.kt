@@ -964,6 +964,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+                        feedMedia.canPlay = false
                         videoListener?.onVideoStopTrack(
                             feedXCard,
                             (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
@@ -1131,7 +1132,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         timestampText.text = spannableString
     }
 
-
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         videoPlayer?.resume()
@@ -1139,11 +1139,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
-        videoPlayer?.pause()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStop() {
         videoPlayer?.pause()
     }
 
