@@ -30,7 +30,9 @@ class PlaySocketToModelMapper @Inject constructor(
                 totalLike = input.totalLike,
                 totalLikeFormatted = input.totalLikeFormatted,
                 isLiked = false, /**Skip**/
-                source = LikeSource.Network
+                source = LikeSource.Network,
+                previousLike = input.totalLike,
+                previousLikeFormatted = input.totalLikeFormatted
         )
     }
 

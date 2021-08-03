@@ -24,7 +24,9 @@ data class PlayLikeStatusInfoUiModel(
         val totalLike: Long,
         val totalLikeFormatted: String,
         val isLiked: Boolean,
-        val source: LikeSource
+        val source: LikeSource,
+        val previousLike: Long,
+        val previousLikeFormatted: String,
 )
 
 enum class LikeSource {

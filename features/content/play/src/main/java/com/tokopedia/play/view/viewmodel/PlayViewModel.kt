@@ -745,7 +745,9 @@ class PlayViewModel @Inject constructor(
                             totalLike = finalTotalLike,
                             totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
                             isLiked = shouldLike,
-                            source = LikeSource.UserAction
+                            source = LikeSource.UserAction,
+                            previousLike = currentTotalLike,
+                            previousLikeFormatted = currentTotalLikeFmt
                     )
             )
         } else {
@@ -754,7 +756,9 @@ class PlayViewModel @Inject constructor(
                             totalLike = likeInfo.status.totalLike,
                             totalLikeFormatted = likeInfo.status.totalLikeFormatted,
                             isLiked = shouldLike,
-                            source = LikeSource.UserAction
+                            source = LikeSource.UserAction,
+                            previousLike = likeInfo.status.totalLike,
+                            previousLikeFormatted = likeInfo.status.totalLikeFormatted
                     )
             )
         }
@@ -950,7 +954,9 @@ class PlayViewModel @Inject constructor(
                         totalLike = totalLike.toLong(),
                         totalLikeFormatted = totalLikeFormatted,
                         isLiked = isLiked,
-                        source = LikeSource.Network
+                        source = LikeSource.Network,
+                        previousLike = totalLike.toLong(),
+                        previousLikeFormatted = totalLikeFormatted
                 )
                 _observableLikeInfo.value = likeParamInfo + newLikeStatus
 
@@ -961,7 +967,9 @@ class PlayViewModel @Inject constructor(
                     totalLike = 0,
                     totalLikeFormatted = "0",
                     isLiked = false,
-                    source = LikeSource.Network
+                    source = LikeSource.Network,
+                    previousLike = 0,
+                    previousLikeFormatted = "0"
             )
         })
     }
