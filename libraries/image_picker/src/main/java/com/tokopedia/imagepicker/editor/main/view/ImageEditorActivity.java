@@ -35,6 +35,7 @@ import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.file.FileUtil;
@@ -111,6 +112,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
     private ImageEditActionMainWidget imageEditActionMainWidget;
     private ItemSelectionWidget watermarkItemSelection;
+    private Typography titleWatermarkStyle;
     private View editorMainView;
     private View editorControlView;
     private View doneButton;
@@ -242,6 +244,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
         watermarkItemSelection = findViewById(R.id.watermark_item_selection);
+        titleWatermarkStyle = findViewById(R.id.txt_title_item);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
@@ -542,6 +545,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     hideAllControls();
                     setLastStateWatermarkImage();
                     layoutWatermark.setVisibility(View.VISIBLE);
+
                     tvActionTitle.setText(getString(R.string.watermark));
                     break;
                 case ACTION_CROP_ROTATE:
@@ -733,6 +737,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
                 }
         );
+        titleWatermarkStyle.setText(getString(R.string.editor_watermark_item));
     }
 
     @Override
