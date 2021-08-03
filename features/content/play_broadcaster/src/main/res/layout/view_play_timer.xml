@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_time_counter"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/play_stats_info_counter_height"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_play_dark_gray_rounded_corner"
+        android:paddingStart="@dimen/play_dp_12"
+        android:paddingTop="@dimen/play_dp_6"
+        android:paddingEnd="@dimen/play_dp_12"
+        android:paddingBottom="@dimen/play_dp_6"
         android:text="@string/play_live_broadcast_time_default"
         android:textColor="@color/Unify_Static_White"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2" />
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_time_counter_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:layout_gravity="center"
         android:background="@drawable/bg_play_red_rounded_corner"
-        android:drawablePadding="@dimen/spacing_lvl1"
-        android:gravity="center"
+        android:drawablePadding="@dimen/spacing_lvl2"
+        android:paddingStart="@dimen/play_dp_12"
+        android:paddingTop="@dimen/play_dp_6"
+        android:paddingEnd="@dimen/play_dp_12"
+        android:paddingBottom="@dimen/play_dp_6"
         android:textColor="@color/Unify_Static_White"
         android:textSize="@dimen/fontSize_lvl1"
-        android:textStyle="bold"
         android:visibility="invisible"
         app:drawableLeftCompat="@drawable/ic_play_clock_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_time_counter" />
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="05:00"
+        tools:visibility="visible"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

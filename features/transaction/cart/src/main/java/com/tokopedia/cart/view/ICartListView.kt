@@ -16,7 +16,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-import java.util.*
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -134,6 +133,4 @@ interface ICartListView : CustomerView {
     fun reCollapseExpandedDeletedUnavailableItems()
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
-
-
 }

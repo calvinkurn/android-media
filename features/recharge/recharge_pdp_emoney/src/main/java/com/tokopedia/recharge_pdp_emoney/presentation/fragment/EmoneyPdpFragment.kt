@@ -251,11 +251,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             var lastOffset = -1
             var lastIsCollapsed = false
 
-            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-                if (lastOffset == verticalOffSet) return
+            override fun onOffsetChanged(layoutAppBar: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet || layoutAppBar == null) return
 
                 lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                if (abs(verticalOffSet) >= layoutAppBar.totalScrollRange && !lastIsCollapsed) {
                     //Collapsed
                     lastIsCollapsed = true
                     (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = true

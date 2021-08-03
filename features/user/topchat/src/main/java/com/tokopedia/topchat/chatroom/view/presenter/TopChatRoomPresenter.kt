@@ -27,6 +27,7 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -36,7 +37,6 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -47,7 +47,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -57,9 +56,11 @@ import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
+import com.tokopedia.topchat.common.data.Status
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
@@ -74,6 +75,8 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
@@ -96,7 +99,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-    private var deleteMessageListUseCase: DeleteMessageListUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
@@ -112,6 +114,8 @@ open class TopChatRoomPresenter @Inject constructor(
     private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
     private val chatBackgroundUseCase: ChatBackgroundUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
+    private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -125,6 +129,8 @@ open class TopChatRoomPresenter @Inject constructor(
         private set
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
+    var attachProductWarehouseId = "0"
+        private set
     private var userLocationInfo = LocalCacheModel()
 
     private lateinit var webSocketUrl: String
@@ -201,6 +207,7 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
         this.userLocationInfo = userLocation
+        this.attachProductWarehouseId = userLocation.warehouse_id
     }
 
     override fun getProductIdPreview(): List<String> {
@@ -210,6 +217,26 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getAttachmentsPreview(): List<SendablePreview> {
         return attachmentsPreview
+    }
+
+    override fun adjustInterlocutorWarehouseId(msgId: String) {
+        attachProductWarehouseId = "0"
+        launchCatchError(
+            block = {
+                tokoNowWHUsecase.getWarehouseId(msgId)
+                    .flowOn(dispatchers.io)
+                    .collect {
+                        if (it.status == Status.SUCCESS) {
+                            attachProductWarehouseId = it.data
+                                ?.chatTokoNowWarehouse
+                                ?.warehouseId ?: "0"
+                        }
+                    }
+            },
+            onError = {
+                it.printStackTrace()
+            }
+        )
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -699,10 +726,21 @@ open class TopChatRoomPresenter @Inject constructor(
         onError: (Throwable) -> Unit,
         onSuccessDeleteConversation: () -> Unit
     ) {
-        deleteMessageListUseCase.execute(
-            DeleteMessageListUseCase.generateParam(messageId),
-            DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation)
-        )
+        launch {
+            try {
+                val result = moveChatToTrashUseCase.execute(messageId)
+                if(result.chatMoveToTrash.list.isNotEmpty()) {
+                    val deletedChat = result.chatMoveToTrash.list.first()
+                    if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                        onSuccessDeleteConversation()
+                    } else {
+                        onError(Throwable(deletedChat.detailResponse))
+                    }
+                }
+            } catch (throwable: Throwable) {
+                onError(throwable)
+            }
+        }
     }
 
     override fun getShopFollowingStatus(
@@ -718,7 +756,6 @@ open class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        deleteMessageListUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()

@@ -62,7 +62,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ImageClickListener, ReviewTemplateListener {
 
     companion object {
-        const val GOOD_RATING_THRESHOLD = 3
+        const val GOOD_RATING_THRESHOLD = 2
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
         fun createInstance(rating: Int, productId: String, reputationId: String, utmSource: String): CreateReviewBottomSheet {
