@@ -25,12 +25,12 @@ class MediaSettingPreferences constructor(
         applyEditor()
     }
 
-    fun setToasterVisibilityFlag(value: Boolean) {
+    fun hasShowToaster(value: Boolean) {
         putBoolean(KEY_MEDIA_TOASTER, value)
         applyEditor()
     }
 
-    fun setGlideMigration(value: Boolean) {
+    fun hasGlideMigration(value: Boolean) {
         putBoolean(KEY_GLIDE_CLEAR_CACHE, value)
         applyEditor()
     }

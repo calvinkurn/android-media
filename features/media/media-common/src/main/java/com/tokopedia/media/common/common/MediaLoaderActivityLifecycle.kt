@@ -99,8 +99,7 @@ class MediaLoaderActivityLifecycle(
         Handler().postDelayed({
             with(activity) {
                 window.decorView.findViewById<ViewGroup>(android.R.id.content)?.let {
-                    // set flag
-                    preferences.setToasterVisibilityFlag(true)
+                    preferences.hasShowToaster(true) // set flag
 
                     // show toaster
                     Toaster.build(
@@ -124,14 +123,14 @@ class MediaLoaderActivityLifecycle(
                 Glide.get(context).clearDiskCache()
 
                 withContext(Dispatchers.Main) {
-                    preferences.setGlideMigration(true)
+                    preferences.hasGlideMigration(true)
                 }
             }
         }
     }
 
     companion object {
-        private const val MIGRATION_VERSION_SUPPORT = "3.137"
+        private const val MIGRATION_VERSION_SUPPORT = "3.138"
         private const val DELAY_PRE_SHOW_TOAST = 2500L
 
         // for data usage logger
