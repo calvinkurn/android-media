@@ -194,10 +194,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
         visitableList.add(FeaturedShopDataModel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
         ))
-        if (!isCache) {
+        if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty()) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
-                    trackingQueue,
-                    channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
+                trackingQueue,
+                channel.convertPromoEnhanceLegoBannerDataLayerForCombination())
         }
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
                 visitableList.size, channel) }

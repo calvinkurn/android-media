@@ -71,6 +71,7 @@
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
 /features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
+/features/ordermanagement/snapshot/                     @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 
@@ -152,6 +153,7 @@
 /features/transaction/buyerorder/                       @tokopedia/android-minionbob-dev
 /features/transaction/purchase_platform_common/ 		@tokopedia/android-minionbob-dev
 /features/transaction/cart/        		                @tokopedia/android-minionbob-dev
+/features/transaction/cart_common/        		        @tokopedia/android-minionbob-dev
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
@@ -166,7 +168,6 @@
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
-/features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 /features/discovery/home_wishlist/                     	@tokopedia/android-minionbob-dev
 /features/discovery/wishlist_common/                	@tokopedia/android-minionbob-dev
 

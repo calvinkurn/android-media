@@ -53,6 +53,7 @@ object ProductDetailCommonConstant{
     const val KEY_NORMAL_BUTTON = "normal"
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
+    const val KEY_SAVE_BUTTON = "save"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val KEY_REMIND_ME = "remind_me"
@@ -84,6 +85,7 @@ object ProductDetailCommonConstant{
     const val ATC_UPDATE_BUTTON = 10
 
     const val REQUEST_CODE_CHECKOUT = 12382
+    const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198
 
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
@@ -94,5 +96,11 @@ object ProductDetailCommonConstant{
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
+
+    const val KEY_PRODUCT_DETAIL = "product detail"
+
+    //shipping error code
+    const val SHIPPING_ERROR_WEIGHT = 50503
+    const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
 
 }

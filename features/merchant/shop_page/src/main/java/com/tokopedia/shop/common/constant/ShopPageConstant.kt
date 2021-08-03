@@ -33,4 +33,5 @@ object ShopPageConstant {
     const val URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE = "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/empty_state_search_filter.png"
     const val ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET = "android_shop_page_enable_choose_address_widget_on_shop_page_header"
+    const val ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET = "android_shop_page_enable_universal_bottom_sheet"
 }

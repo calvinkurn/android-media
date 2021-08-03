@@ -10,10 +10,12 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantA
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.aggregator.SimpleBasicInfo
-import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
@@ -39,11 +41,13 @@ object AtcVariantHelper {
     const val CART_PAGESOURCE = "cart"
     const val SEARCH_PAGESOURCE = "search result"
     const val CATEGORY_PAGESOURCE = "category page"
+    const val BUNDLING_PAGESOURCE = "bundling page"
 
     /**
      * For PDP only
      */
     fun pdpToAtcVariant(context: Context,
+                        pageSource: String,
                         productInfoP1: DynamicProductInfoP1,
                         warehouseId: String,
                         pdpSession: String,
@@ -54,14 +58,15 @@ object AtcVariantHelper {
                         cartRedirection: Map<String, CartTypeData>,
                         miniCart: Map<String, MiniCartItem>?,
                         alternateCopy: List<AlternateCopy>?,
-                        boData: List<BebasOngkirProduct>?,
+                        boData: BebasOngkir?,
+                        rates: List<P2RatesEstimate>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
 
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,
-                pageSource = PDP_PAGESOURCE,
+                pageSource = pageSource,
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
@@ -71,17 +76,18 @@ object AtcVariantHelper {
                         cardRedirection = cartRedirection,
                         nearestWarehouse = warehouseResponse,
                         alternateCopy = alternateCopy ?: listOf(),
+                        rates = rates ?: listOf(),
                         simpleBasicInfo = SimpleBasicInfo(
                                 shopID = productInfoP1.basic.shopID,
                                 shopName = productInfoP1.basic.shopName,
                                 category = productInfoP1.basic.category
                         ),
                         shopType = productInfoP1.shopTypeString,
-                        boData = boData ?: listOf()
+                        boData = boData ?: BebasOngkir()
                 ),
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,
-                minimumShippingPrice = productInfoP1.basic.getDefaultOngkirInt(),
+                minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
@@ -110,5 +116,29 @@ object AtcVariantHelper {
                        startActivitResult: (Intent, Int) -> Unit) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString(), trackerCdListName)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
+    }
+
+    fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String): Map<String, CartTypeData>? {
+        if (!productVariant.hasChildren) return null
+        val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
+        productVariant.children.forEach {
+            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText)
+        }
+        return mapOfCartRedirection
+    }
+
+    private fun generateCartTypeDataSimpan(productId: String, buttonText: String): CartTypeData {
+        return CartTypeData(
+                productId = productId,
+                availableButtons = listOf(
+                        AvailableButton(
+                                cartType = ProductDetailCommonConstant.KEY_SAVE_BUTTON,
+                                color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                                text = buttonText,
+                                showRecommendation = false
+                        )),
+                unavailableButtons = listOf(ProductDetailCommonConstant.KEY_CHAT),
+                hideFloatingButton = false
+        )
     }
 }
