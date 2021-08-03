@@ -20,7 +20,7 @@ data class ReputationPenaltyRewardResponse(
         data class ReputationPenaltyAndRewardList(
             @Expose
             @SerializedName("id")
-            val id: String = "0",
+            val id: String = "",
             @Expose
             @SerializedName("information")
             val information: String = "",

@@ -142,7 +142,13 @@ class SellerReputationPenaltyFragment :
     }
 
     override fun onDateChoosen(sDate: Long, eDate: Long, lastSelection: Int, selectionType: Int) {
-        reputationPenaltyAdapter.updateDateFilter(sDate, eDate)
+        reputationPenaltyAdapter.apply {
+            removeReputationPenaltyListData()
+            removeEmptyStateReputationPenalty()
+            updateDateFilter(sDate, eDate)
+            showLoading()
+        }
+        endlessRecyclerViewScrollListener.resetState()
         sellerReputationViewModel.setDateFilterReputationPenalty(Pair(sDate, eDate))
     }
 
