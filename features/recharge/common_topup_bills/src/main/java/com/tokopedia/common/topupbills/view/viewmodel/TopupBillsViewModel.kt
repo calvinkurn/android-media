@@ -161,7 +161,7 @@ class TopupBillsViewModel @Inject constructor(
                     GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
                 val graphqlCacheStrategy =
                     GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
