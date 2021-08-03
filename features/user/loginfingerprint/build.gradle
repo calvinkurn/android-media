@@ -25,7 +25,7 @@ dependencies {
 
     //Features
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
 
     //Libraries
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -43,7 +43,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    //Support Libs Dependencies
+    implementation project(rootProject.ext.libraries.track)
 
     //Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

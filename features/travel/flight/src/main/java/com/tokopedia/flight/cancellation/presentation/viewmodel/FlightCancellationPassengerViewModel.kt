@@ -10,6 +10,9 @@ import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPa
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
@@ -30,8 +33,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
     private val passengerRelationsMap: HashMap<String, FlightCancellationPassengerModel> = hashMapOf()
     val selectedCancellationPassengerList: MutableList<FlightCancellationModel> = arrayListOf()
 
-    private val mutableCancellationPassengerList = MutableLiveData<List<FlightCancellationModel>>()
-    val cancellationPassengerList: LiveData<List<FlightCancellationModel>>
+    private val mutableCancellationPassengerList = MutableLiveData<Result<List<FlightCancellationModel>>>()
+    val cancellationPassengerList: LiveData<Result<List<FlightCancellationModel>>>
         get() = mutableCancellationPassengerList
 
     fun trackOnNext() {
@@ -109,15 +112,16 @@ class FlightCancellationPassengerViewModel @Inject constructor(
             passengerRelationsMap.clear()
             passengerRelationsMap.putAll(passengerRelations)
 
-            mutableCancellationPassengerList.postValue(cancellationList)
+            mutableCancellationPassengerList.postValue(Success(cancellationList))
         }) {
-            it.printStackTrace()
+            mutableCancellationPassengerList.postValue(Fail(it))
         }
     }
 
     fun checkPassenger(passengerModel: FlightCancellationPassengerModel, position: Int): Boolean {
         var shouldNotifyRelationChecked = false
-        if (position >= 0 && !selectedCancellationPassengerList[position].passengerModelList.contains(passengerModel)) {
+        if (position >= 0 && selectedCancellationPassengerList.size > position &&
+                !selectedCancellationPassengerList[position].passengerModelList.contains(passengerModel)) {
             selectedCancellationPassengerList[position].passengerModelList.add(passengerModel)
             if (passengerModel.relations.isNotEmpty()) {
                 checkAllRelations(passengerModel)

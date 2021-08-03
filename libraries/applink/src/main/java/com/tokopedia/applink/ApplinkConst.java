@@ -335,6 +335,8 @@ public interface ApplinkConst {
 
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
+    String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -394,6 +396,8 @@ public interface ApplinkConst {
     String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
+
+    String TELEPHONY_MASKING = "tokopedia://telephony-masking";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";

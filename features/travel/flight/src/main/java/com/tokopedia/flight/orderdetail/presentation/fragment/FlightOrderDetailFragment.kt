@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -38,6 +39,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDet
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -112,11 +114,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     var message = ""
                     try {
                         val gson = Gson()
-                        val errorData = gson.fromJson<FlightOrderDetailErrorModel>(it.throwable.message, FlightOrderDetailErrorModel::class.java)
-                        title = errorData.title
-                        message = errorData.message
-                    } catch (t: Throwable) {
-                        message = getString(R.string.flight_error_pick_journey)
+                        val itemType = object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
+                        val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(it.throwable.message, itemType)
+                        title = errorData[0].title
+                        message = errorData[0].message
+                    } catch (error: Throwable) {
+                        message = ErrorHandler.getErrorMessage(requireContext(), error)
                     }
                     renderErrorView(title, message)
                 }

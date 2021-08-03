@@ -55,6 +55,8 @@ interface InitialStateContract {
         fun onRefreshTokoNowPopularSearch()
 
         fun trackEventClickTokoNowDynamicSectionItem(label: String)
+
+        fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -81,5 +83,7 @@ interface InitialStateContract {
         fun onRecentViewClicked(item: BaseItemInitialStateSearch)
 
         fun onProductLineClicked(item: BaseItemInitialStateSearch)
+
+        fun onChipClicked(item: BaseItemInitialStateSearch)
     }
 }

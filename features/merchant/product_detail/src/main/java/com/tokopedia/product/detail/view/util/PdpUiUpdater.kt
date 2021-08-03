@@ -5,10 +5,13 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -16,16 +19,16 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
-import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import kotlin.math.roundToLong
@@ -53,9 +56,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val productTradeinMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.TRADE_IN] as? ProductGeneralInfoDataModel
-
-    val productMerchantVoucherMap: ProductMerchantVoucherDataModel?
-        get() = mapOfData[ProductDetailConstant.SHOP_VOUCHER] as? ProductMerchantVoucherDataModel
 
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
@@ -108,8 +108,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
         get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
 
-    val bestSellerData: BestSellerInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? BestSellerInfoDataModel
+    val bestSellerData: OneLinersDataModel?
+        get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? OneLinersDataModel
+
+    val stockAssuranceData: OneLinersDataModel?
+        get() = mapOfData[ProductDetailConstant.STOCK_ASSURANCE] as? OneLinersDataModel
 
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
@@ -212,6 +215,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     updateBestSellerData()
                 }
             }
+
+            updateData(ProductDetailConstant.STOCK_ASSURANCE) {
+                dataP1.stockAssuranceContent?.get(productId)?.let { content ->
+                    stockAssuranceData?.oneLinersContent = content
+                }
+            }
         }
     }
 
@@ -222,10 +231,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.BEST_SELLER) {
             bestSellerData?.run {
                 if (dataP1 == null) {
-                    this.bestSellerInfoContent = null
+                    this.oneLinersContent = null
                 } else {
                     dataP1.bestSellerContent?.let {
-                        this.bestSellerInfoContent = it[productId]
+                        this.oneLinersContent = it[productId]
                     }
                 }
             }
@@ -291,7 +300,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                      isProductWarehouse: Boolean,
                      isProductInCampaign: Boolean,
                      isOutOfStock: Boolean,
-                     boeImageUrl: String) {
+                     boeImageUrl: String,
+                     isProductParent: Boolean) {
         p2Data.let {
 
             updateData(ProductDetailConstant.TICKER_INFO) {
@@ -302,6 +312,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     this.isProductWarehouse = isProductWarehouse
                     this.isProductInCampaign = isProductInCampaign
                     this.isOutOfStock = isOutOfStock
+                    this.isProductParent = isProductParent
                 }
             }
 
@@ -355,12 +366,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shouldRenderSocialProof = true
                     buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
                     setSocialProofData()
-                }
-            }
-
-            updateData(ProductDetailConstant.SHOP_VOUCHER) {
-                productMerchantVoucherMap?.run {
-                    voucherData = ArrayList(it.vouchers)
                 }
             }
 
@@ -653,13 +658,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean) {
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean, isProductParent: Boolean) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 this.isProductWarehouse = isProductWarehouse
                 this.isProductInCampaign = isProductInCampaign
                 this.isOutOfStock = isOutOfStock
                 this.isUpcomingType = isUpcomingType
+                this.isProductParent = isProductParent
             }
         }
     }
@@ -668,6 +674,95 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.KEY_TOP_ADS) {
             topAdsImageData?.data = data
         }
+    }
+
+    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
+        mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
+            val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
+            productRecom.recomWidgetData?.let { recomData ->
+                if (recomData.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                    updateRecomWidgetQtyDataFromMiniCart(recomData.copy(), miniCart, key)
+                }
+            }
+        }
+    }
+
+    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem>?, key: String) {
+        val dataList = recomWidget.copyRecomItemList()
+        dataList.forEach { recomItem ->
+            //update data based on tokonow cart
+            if (recomItem.isRecomProductShowVariantAndCart) {
+                recomItem.setDefaultCurrentStock()
+                miniCart?.let { cartData ->
+                    recomItem.updateItemCurrentStock(when {
+                        recomItem.isProductHasParentID() -> {
+                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                        }
+                        cartData.containsKey(recomItem.productId.toString()) -> {
+                            cartData[recomItem.productId.toString()]?.quantity ?: 0
+                        }
+                        else -> 0
+                    })
+                }
+            }
+        }
+        updateData(key) {
+            updateRecomDataByKey(key, dataList)
+        }
+    }
+
+    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
+        var variantTotalItems = 0
+        miniCart.values.forEach { miniCartItem ->
+            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+                variantTotalItems+=miniCartItem.quantity
+            }
+        }
+        return variantTotalItems
+    }
+
+    fun updateCurrentQuantityRecomItem(recommendationItem: RecommendationItem) {
+        val key = recommendationItem.pageName
+        (mapOfData[key] as ProductRecommendationDataModel).recomWidgetData?.let { recomData ->
+            recomData.recommendationItemList.forEach loop@{ recomItem ->
+                if (recomItem.productId == recommendationItem.productId) {
+                    recomItem.currentQuantity = recommendationItem.currentQuantity
+                    return@loop
+                }
+            }
+        }
+    }
+
+    fun resetFailedRecomTokonowCard(recommendationItem: RecommendationItem) {
+        val key = recommendationItem.pageName
+        val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
+        productRecom.recomWidgetData?.let { recomData ->
+            val recomWidget = recomData.copy()
+            val dataList = recomWidget.copyRecomItemList()
+            var dataUpdated = false
+            dataList.forEach loop@{ recomItem ->
+                if (recomItem.productId == recommendationItem.productId) {
+                    recomItem.onFailedUpdateCart()
+                    dataUpdated = true
+                    return@loop
+                }
+            }
+            if (dataUpdated) {
+                updateRecomDataByKey(key, dataList)
+            }
+        }
+    }
+
+    private fun updateRecomDataByKey(key: String, dataList: List<RecommendationItem>) {
+        val newData = copyPDPRecomByKey(key)
+        newData.cardModel = dataList.toProductCardModels(false)
+        newData.recomWidgetData?.recommendationItemList = dataList
+        mapOfData[key] = newData
+    }
+
+    private fun copyPDPRecomByKey(key: String): ProductRecommendationDataModel {
+        val data = mapOfData[key] as ProductRecommendationDataModel
+        return ProductRecommendationDataModel().cloneData(data)
     }
 
     fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {

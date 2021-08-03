@@ -66,7 +66,7 @@ class PostLikeUseCase @Inject constructor(
             """.trimIndent()
         }
 
-        fun createParam(contentId: Int, contentType: Int, likeType: Int, action: Boolean): HashMap<String, Any> {
+        fun createParam(contentId: Long, contentType: Int, likeType: Int, action: Boolean): HashMap<String, Any> {
             return hashMapOf(
                     POST_ID to 0,
                     ACTION to if(action) 1 else 0,
