@@ -2,7 +2,7 @@ package com.tokopedia.product_bundle.common.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GetBundleInfoResponse(
+data class GetBundleByProductIdResponse(
         @SerializedName("error")
         val error: Error = Error(),
         @SerializedName("data")

@@ -21,7 +21,6 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
     private var productVariantsView: SpinnerView? = null
     private var productPriceView: DiscountPriceView? = null
 
-
     init {
         this.productImageView = itemView.findViewById(R.id.riv_product_image)
         this.productNameView = itemView.findViewById(R.id.tv_product_name)
