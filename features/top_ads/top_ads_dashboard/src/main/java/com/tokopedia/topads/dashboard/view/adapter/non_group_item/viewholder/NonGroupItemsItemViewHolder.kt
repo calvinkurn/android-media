@@ -102,19 +102,19 @@ class NonGroupItemsItemViewHolder(val view: View,
         }
 
         view.img_menu.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_IMG_MENU, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_IMG_MENU, "")
             sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName, item.data.groupId)
             sheet?.onEditAction = {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_UHBAH, "")
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_UHBAH, "")
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
             sheet?.onDeleteClick = {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_HAPUS, "")
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_HAPUS, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
             sheet?.changeStatus = {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                     CLICK_NON_AKTIFKAN, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)

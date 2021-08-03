@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
@@ -35,6 +36,9 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BID_TYPE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FROM_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
@@ -82,12 +86,16 @@ private const val EDIT_BIAYA_REKOMENDASI = "click - edit bid rekomendasi"
 private const val CLICK_GRAPH_SECTOR_1 = "click - graph selector 1"
 private const val CLICK_GRAPH_SECTOR_2 = "click - graph selector 2"
 private const val CLICK_GRAPH_SECTOR_3 = "click - graph selector 3"
+private const val CLICK_TAB_PRODUK = "click - tab produk"
+private const val CLICK_TAB_KATA_KUNCI = "click - tab kata kunci"
+private const val CLICK_TAB_NEG_KATA_KUNCI = "click - tab kata kunci negatif"
 class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener, ChangePlacementFilter {
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
     private var groupId: Int? = 0
     private var priceSpent: String? = "0"
+    private var isWhiteListedUser: Boolean = false
     private var groupStatus: String? = ""
     private var groupName: String? = ""
     private var autoBidStatus: String = ""
@@ -175,6 +183,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
         bundle.putInt("placementType", placementType)
+        bundle.putBoolean(ISWHITELISTEDUSER, isWhiteListedUser)
         bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
@@ -204,6 +213,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                     putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
                     putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
+                    putExtra(ISWHITELISTEDUSER, isWhiteListedUser)
                 }
                 startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
             }
@@ -250,6 +260,25 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 saveBidData(bid, "browse")
             }
         }
+
+        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when(tab?.position) {
+                    CONST_0 -> {
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TAB_PRODUK, "")
+                    }
+                    CONST_1 -> {
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TAB_KATA_KUNCI, "")
+                    }
+                    CONST_2 -> {
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                            CLICK_TAB_NEG_KATA_KUNCI, "")
+                    }
+                }
+            }
+        })
     }
 
     private fun saveBidData(bid: String, bidType: String) {
@@ -283,12 +312,21 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                         bid.toFloat()
                     )
                 )
-                bidTypeData?.add(
-                    TopAdsBidSettingsModel(
-                        "product_browse",
-                        rekommendedBid
+                if(isWhiteListedUser) {
+                    bidTypeData?.add(
+                        TopAdsBidSettingsModel(
+                            "product_browse",
+                            rekommendedBid
+                        )
                     )
-                )
+                } else {
+                    bidTypeData?.add(
+                        TopAdsBidSettingsModel(
+                            "product_browse",
+                            bid.toFloat()
+                        )
+                    )
+                }
             }
             dataMap[BID_TYPE] = bidTypeData
         } catch (e: NumberFormatException) {
@@ -309,6 +347,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             Snackbar.LENGTH_LONG,
             Toaster.TYPE_NORMAL
         ).show()
+        loadData()
     }
 
     private fun onErrorGroupEdit(error: String?) {
@@ -333,6 +372,18 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
         priceDaily = data.daiyBudget
+
+        if(isWhiteListedUser) {
+            editRekomendasiBudget.visibility = View.VISIBLE
+            per_click_rekomendasi.visibility = View.VISIBLE
+            budgetPerClick_rekomendasi.visibility = View.VISIBLE
+            biaya_rekommendasi.visibility = View.VISIBLE
+        } else {
+            editRekomendasiBudget.visibility = View.GONE
+            per_click_rekomendasi.visibility = View.GONE
+            budgetPerClick_rekomendasi.visibility = View.GONE
+            biaya_rekommendasi.visibility = View.GONE
+        }
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
             per_click.visibility = View.GONE
@@ -343,10 +394,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             budgetPerClick_rekomendasi.text = getString(com.tokopedia.topads.common.R.string.group_detail_bid_otomatis)
         } else {
             editpancarianBudget.visibility = View.VISIBLE
-            editRekomendasiBudget.visibility = View.VISIBLE
             autoBidStatus = ""
             per_click.visibility = View.VISIBLE
-            per_click_rekomendasi.visibility = View.VISIBLE
             data.bidSettings?.forEach {
                 if(it.bidType.equals("product_search")) {
                     budgetPerClick.text = "Rp " + it.priceBid?.toInt()
@@ -428,6 +477,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun getBundleArguments() {
         groupId = intent?.extras?.getInt(GROUP_ID)
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
+        isWhiteListedUser = intent?.extras?.getBoolean(ISWHITELISTEDUSER)?:false
     }
 
     private fun loadStatisticsData() {

@@ -178,8 +178,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info2 = view.findViewById(com.tokopedia.topads.common.R.id.info2)
         div = view.findViewById(com.tokopedia.topads.common.R.id.div)
 
-        biayaRekomendasi.visibility = View.VISIBLE
-        budgetInputRekomendasi.visibility = View.VISIBLE
+        if(sharedViewModel?.getIsWhiteListedUser()) {
+            biayaRekomendasi.visibility = View.VISIBLE
+            budgetInputRekomendasi.visibility = View.VISIBLE
+        } else {
+            biayaRekomendasi.visibility = View.GONE
+            budgetInputRekomendasi.visibility = View.GONE
+        }
 
         setAdapter()
         return view
@@ -751,9 +756,23 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
         }
+        bidTypeData?.clear()
         bidTypeData?.add(TopAdsBidSettingsModel("product_search", getCurrentBid().toFloat()))
-        bidTypeData?.add(TopAdsBidSettingsModel("product_browse", getCurrentRekommendedBid().toFloat()))
-//        bundle.putInt(Constants.PRICE_BID, getCurrentBid())
+        if(sharedViewModel?.getIsWhiteListedUser()) {
+            bidTypeData?.add(
+                TopAdsBidSettingsModel(
+                    "product_browse",
+                    getCurrentRekommendedBid().toFloat()
+                )
+            )
+        } else {
+            bidTypeData?.add(
+                TopAdsBidSettingsModel(
+                    "product_browse",
+                    getCurrentBid().toFloat()
+                )
+            )
+        }
         bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)

@@ -84,6 +84,7 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
         selectDate.date_image?.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         selectDate.next_image?.setImageDrawable(getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         selectDate.setOnClickListener {
+            handleDateClick(currentDate.text.toString())
             showBottomSheet()
         }
         setDateRangeText(SEVEN_DAYS_RANGE_INDEX)
@@ -172,7 +173,6 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
                 currentDate.text = text
             }
         }
-        handleDateClick(currentDate.text.toString())
     }
 
     private fun startCustomDatePicker() {

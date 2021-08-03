@@ -112,4 +112,5 @@ object ParamObject {
     const val NAME_EDIT = "isNameEdit"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val PUBLISHED = "published"
+    const val ISWHITELISTEDUSER = "isWhiteListedUser"
 }

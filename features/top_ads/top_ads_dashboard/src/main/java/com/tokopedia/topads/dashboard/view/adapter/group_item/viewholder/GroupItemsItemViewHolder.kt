@@ -124,10 +124,10 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_IMG_MENU, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_IMG_MENU, "")
             sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_UHBAH, "")
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_UHBAH, "")
                 if(item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
                     editDone.invoke(item.data.groupId, item.data.strategies[0])
                 } else {
@@ -136,12 +136,12 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
             sheet?.onDeleteClick = {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_HAPUS, "")
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_HAPUS, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
             sheet?.changeStatus = {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                     CLICK_NON_AKTIFKAN, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)

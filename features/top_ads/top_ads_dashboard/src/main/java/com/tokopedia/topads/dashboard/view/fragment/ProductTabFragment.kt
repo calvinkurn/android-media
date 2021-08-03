@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -63,7 +64,6 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
-private const val CLICK_TAB_PRODUK = "click - tab produk"
 private const val CLICK_FILTER = "click - filter produk"
 private const val CLICK_FILTER_TERAPKAN = "click - terapkan pop up filter"
 class ProductTabFragment : BaseDaggerFragment() {
@@ -82,6 +82,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var adIds: MutableList<String> = mutableListOf()
     private lateinit var loader: LoaderUnify
     private var placementType: Int = 0
+    private var isWhiteListedUser: Boolean = false
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -115,7 +116,6 @@ class ProductTabFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TAB_PRODUK, "")
         adapter = ProductAdapter(ProductAdapterTypeFactoryImpl(::onCheckedChange, ::setSelectMode))
     }
 
@@ -165,12 +165,13 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.placementType = arguments?.getInt("placementType", 0)!!
+        this.isWhiteListedUser = arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false
         fetchData()
         setPlacementTicker()
         btnFilter.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(true)
+            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
             groupFilterSheet.onSubmitClick = {
                 changePlacementFilter?.getSelectedFilter(groupFilterSheet.getSelectedAdPlacementType())
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
@@ -334,6 +335,10 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun setPlacementTicker() {
+        placement_tiker.visibility = when(isWhiteListedUser) {
+            true -> View.VISIBLE
+            false -> View.GONE
+        }
         when(groupFilterSheet.getSelectedAdPlacementType()) {
             0 -> {
                 placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)

@@ -27,7 +27,6 @@ private const val SELECTED_STATUS_3 = 3;
 private const val SELECTED_placement_type_0 = 0;
 private const val SELECTED_placement_type_2 = 2;
 private const val SELECTED_placement_type_3 = 3;
-private const val CLICK_TERAPKAN = "click - terapkan"
 
 class TopadsGroupFilterSheet : BottomSheetUnify() {
     var onSubmitClick: (() -> Unit)? = null
@@ -131,10 +130,6 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             view.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
         }
         view.submit.setOnClickListener { _ ->
-            context.let {
-                var eventLabel = "{${userSession.shopId}}" + "-" + "{${getSelectedText(context)}}" + "-" + "{${getSelectedSortId()}}"
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
-            }
             filterCount = 0
             if (selectedStatus != 0)
                 filterCount++

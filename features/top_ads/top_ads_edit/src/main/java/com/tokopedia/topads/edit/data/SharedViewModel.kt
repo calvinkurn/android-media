@@ -17,6 +17,7 @@ class SharedViewModel : ViewModel() {
     private var dailyBudget: MutableLiveData<Int> = MutableLiveData()
     private var rekomendedBudget: MutableLiveData<Int> = MutableLiveData()
     private var autoBidStatus: MutableLiveData<String> = MutableLiveData()
+    private var isWhiteListedUser: Boolean = false
 
     fun setProductIds(text: MutableList<String>) {
         productId.value = text
@@ -75,6 +76,14 @@ class SharedViewModel : ViewModel() {
 
     fun setAutoBidStatus(status: String) {
         autoBidStatus.value = status
+    }
+
+    fun setIsWhiteListedUser(isWhiteListedUser: Boolean) {
+        this.isWhiteListedUser = isWhiteListedUser
+    }
+
+    fun getIsWhiteListedUser() : Boolean {
+        return isWhiteListedUser
     }
 
 }

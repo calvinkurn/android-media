@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -53,8 +54,6 @@ import javax.inject.Inject
 /**
  * Created by Pika on 2/6/20.
  */
-
-private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_FILTER = "click - filter produk tanpa group"
 private const val CLICK_SEARCH_FIELD = "click - cari produk box"
 class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
@@ -71,9 +70,19 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
+    private var isWhiteListedUser: Boolean = false
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    companion object {
+        fun createInstance(bundle: Bundle): TopAdsDashWithoutGroupFragment {
+            val fragment = TopAdsDashWithoutGroupFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
             TopadsGroupFilterSheet.newInstance(context)
@@ -130,7 +139,6 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         adapter = NonGroupItemsListAdapter(NonGroupItemsAdapterTypeFactoryImpl(::setSelectMode, ::singleItemDelete,
                 ::statusChange, ::onEditProduct))
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TANPA_GRUP, "")
     }
 
     private fun setSelectMode(select: Boolean) {
@@ -176,11 +184,12 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isWhiteListedUser = arguments?.getBoolean(ISWHITELISTEDUSER)?:false
         fetchData()
         btnFilter.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(true)
+            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
             groupFilterSheet.onSubmitClick = {
                 fetchData()
             }
@@ -216,7 +225,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         view?.let {
             val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
             searchBar?.searchBarTextField?.setOnClickListener {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_SEARCH_FIELD, "")
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_SEARCH_FIELD, "")
             }
             com.tokopedia.topads.common.data.util.Utils.setSearchListener(searchBar, context, it, ::fetchData)
         }
@@ -367,7 +376,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                 startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(), ::onSuccessResult, ::onEmptyResult)
 
 
-        non_group_tiker.visibility = View.VISIBLE
+        non_group_tiker.visibility = when(isWhiteListedUser) {
+            true -> View.VISIBLE
+            false -> View.GONE
+        }
         when(groupFilterSheet.getSelectedAdPlacementType()) {
             0 -> {
                 non_group_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)

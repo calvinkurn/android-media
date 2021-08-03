@@ -152,7 +152,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                     }
                     IKLANKAN_PRODUK_TAB -> {
                         removeBtn()
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                             VIEW_IKLAN_PRODUK, "")
                     }
                     INSIGHT_PAGE -> {

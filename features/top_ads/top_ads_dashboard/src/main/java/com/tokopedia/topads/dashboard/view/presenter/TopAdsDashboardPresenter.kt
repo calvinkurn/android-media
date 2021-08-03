@@ -18,10 +18,7 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.model.DashGroupListResponse
-import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.model.GroupListDataItem
-import com.tokopedia.topads.common.data.model.ResponseCreateGroup
+import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
@@ -83,6 +80,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
             private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse>,
             private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
+            private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
@@ -482,6 +480,19 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 })
     }
 
+    fun getWhiteListedUser(onSuccess: (WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit) {
+        whiteListedUserUseCase.setParams()
+        whiteListedUserUseCase.executeQuerySafeMode(
+            {
+                onSuccess(it)
+            },
+            {
+                throwable ->
+                    throwable.printStackTrace()
+            }
+        )
+    }
+
     override fun detachView() {
         super.detachView()
         topAdsGetShopDepositUseCase.cancelJobs()
@@ -501,5 +512,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         bidInfoUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
+        whiteListedUserUseCase.cancelJobs()
     }
 }
