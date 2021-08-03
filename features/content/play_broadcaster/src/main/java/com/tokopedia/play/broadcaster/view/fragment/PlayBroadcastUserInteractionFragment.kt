@@ -74,7 +74,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
             override fun onCameraIconClicked() {
                 parentViewModel.switchCamera()
-                analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             }
 
             override fun onCloseIconClicked() {
@@ -183,11 +183,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         actionBarView.setActionTitle(getString(R.string.play_action_bar_end))
         ivShareLink.setOnClickListener{
             doCopyShareLink()
-            analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.title)
+            analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
         flProductTag.setOnClickListener {
             doShowProductInfo()
-            analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.title)
+            analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
 
         //TODO("Mock")
@@ -280,7 +280,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onFinish() {
                 countdownTimer.gone()
-                parentViewModel.startTimer()
+                parentViewModel.startLivePusherTimer()
             }
         })
     }
@@ -337,7 +337,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun showDialogWhenActionClose(): Boolean {
         getExitDialog().show()
-        analytic.viewDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.title)
+        analytic.viewDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         return true
     }
 
@@ -353,7 +353,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    secondaryListener = { dialog ->
                        dialog.dismiss()
                        parentViewModel.stopLiveStream(shouldNavigate = true)
-                       analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                       analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                    }
            )
         }
@@ -366,7 +366,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 message = getString(R.string.play_live_broadcast_dialog_end_timeout_desc),
                 buttonTitle = getString(R.string.play_live_broadcast_dialog_end_timeout_primary),
                 onClickListener = {
-                    analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                    analytic.clickDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                 }
         )
     }
@@ -487,7 +487,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
         }
-        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, state.error.reason)
+        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle, state.error.reason)
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -516,7 +516,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is PlayTimerState.Active -> showCounterDuration(it.remainingInMs)
                 is PlayTimerState.AlmostFinish -> showTimeRemaining(it.remainingInMinutes)
                 is PlayTimerState.Finish -> {
-                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
+                    analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }
             }

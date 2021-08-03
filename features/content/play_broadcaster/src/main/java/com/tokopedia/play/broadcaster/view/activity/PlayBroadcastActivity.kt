@@ -451,7 +451,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     viewModel.continueLiveStream()
-                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
+                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -462,7 +462,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         }
         if (!pauseLiveDialog.isShowing) {
             pauseLiveDialog.show()
-            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
+            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
         }
     }
 

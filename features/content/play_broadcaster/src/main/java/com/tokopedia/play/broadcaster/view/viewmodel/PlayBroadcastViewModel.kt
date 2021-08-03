@@ -15,10 +15,9 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
-import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
-import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorListener
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherState
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
@@ -30,7 +29,6 @@ import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
-import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayChannelLivePusherStateListener
@@ -93,7 +91,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = hydraConfigStore.getChannelId()
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
-    val title: String
+    val channelTitle: String
         get() {
             return when (val titleModel = mDataStore.getSetupDataStore().getTitle()) {
                 is PlayTitleUiModel.HasTitle -> titleModel.title
@@ -429,7 +427,7 @@ class PlayBroadcastViewModel @Inject constructor(
         reconnectJob()
     }
 
-    fun startTimer() {
+    fun startLivePusherTimer() {
         viewModelScope.launch {
             delay(START_COUNTDOWN_DELAY)
             countDownTimer.start()
@@ -581,7 +579,7 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
             val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
-            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusher.pusherState == ApsaraLivePusherState.Stop }
+            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusherMediator.state == PlayLivePusherState.Stop }
             _observableLeaderboardInfo.value = NetworkResult.Success(leaderboard)
             null
         } catch (err: Throwable) {
