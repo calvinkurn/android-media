@@ -79,6 +79,7 @@ import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
@@ -233,7 +234,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onResume() {
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
-        getMiniCart(refreshProductList = true)
+        getMiniCart()
         context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
@@ -465,7 +466,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showLayout() {
         getHomeLayout()
-        getMiniCart(refreshProductList = false)
+        getMiniCart()
     }
 
     private fun loadHeaderBackground() {
@@ -640,7 +641,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.productAddToCartQuantity) {
             if(it is Success) {
-                showHomeLayout(it.data)
+                rvHome.submitProduct(it.data)
             }
         }
 
@@ -681,7 +682,7 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val message = it.data.errorMessage.joinToString(separator = ", ")
 
-                    getMiniCart(refreshProductList = false)
+                    getMiniCart()
                     showToaster(message = message, type = TYPE_NORMAL)
 
                     // track add to cart
@@ -720,7 +721,7 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartRemove) {
             when(it) {
                 is Success -> {
-                    getMiniCart(refreshProductList = false)
+                    getMiniCart()
                     showToaster(message = it.data.second, type = TYPE_NORMAL)
 
                     // track add to cart
@@ -878,7 +879,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.result.map { it.layout }
+        val items = data.items.map { it.layout }
         adapter.submitList(items)
     }
 
@@ -941,10 +942,10 @@ class TokoNowHomeFragment: Fragment(),
         viewModelTokoNow.getHomeLayout()
     }
 
-    private fun getMiniCart(refreshProductList: Boolean)  {
+    private fun getMiniCart() {
         val shopId = listOf(localCacheModel?.shop_id.orEmpty())
         val warehouseId = localCacheModel?.warehouse_id
-        viewModelTokoNow.getMiniCart(shopId, warehouseId, refreshProductList)
+        viewModelTokoNow.getMiniCart(shopId, warehouseId)
     }
 
     private fun getProductAddToCartQuantity()  {

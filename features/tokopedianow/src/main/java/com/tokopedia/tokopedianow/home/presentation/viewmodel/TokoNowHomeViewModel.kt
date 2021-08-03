@@ -120,7 +120,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.LOADING,
                 isInitialLoad = true
         )
@@ -131,7 +131,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.HIDE
         )
         _homeLayoutList.postValue(Success(data))
@@ -149,7 +149,7 @@ class TokoNowHomeViewModel @Inject constructor(
             if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
                 homeLayoutItemList.addProductRecomOoc(recommendationWidgets.first())
                 val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.HIDE
                 )
                 _homeLayoutList.postValue(Success(data))
@@ -168,7 +168,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val homeLayoutResponse = getHomeLayoutListUseCase.execute()
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved)
             val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW,
                 isInitialLoad = true
             )
@@ -205,7 +205,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 val isLoadDataFinished = lastItemLoaded || !isLayoutVisible || allItemLoaded()
 
                 val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.SHOW,
                     nextItemIndex = nextItemIndex,
                     isInitialLoad = index == 0,
@@ -238,7 +238,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     getLayoutComponentData(layout, warehouseId)
 
                     val data = HomeLayoutListUiModel(
-                        result = homeLayoutItemList,
+                        items = homeLayoutItemList,
                         state = TokoNowLayoutState.LOAD_MORE
                     )
 
@@ -257,17 +257,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getMiniCart(shopId: List<String>, warehouseId: String?, refreshProductList: Boolean) {
+    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
                     val isInitialLoad = _homeLayoutList.value == null
 
-                    if(refreshProductList && !isInitialLoad) {
-                        setProductAddToCartQuantity(it)
-                    } else {
+                    if(isInitialLoad) {
                         setMiniCartAndProductQuantity(it)
+                    } else {
+                        setProductAddToCartQuantity(it)
                     }
 
                     _miniCart.postValue(Success(it))
@@ -293,14 +293,14 @@ class TokoNowHomeViewModel @Inject constructor(
             val response = getCategoryList(warehouseId)
             homeLayoutItemList.mapHomeCategoryGridData(item, response)
             val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, null)
             val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
@@ -353,7 +353,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
             val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW
             )
             _productAddToCartQuantity.postValue(Success(data))
@@ -366,7 +366,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.removeItem(id)
 
             val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW
             )
 

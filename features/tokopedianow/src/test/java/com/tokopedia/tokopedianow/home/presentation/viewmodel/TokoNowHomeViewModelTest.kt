@@ -27,7 +27,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout()
 
         val expectedResponse = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
@@ -158,7 +158,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233", false)
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
     }
@@ -168,7 +168,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(Exception())
 
-        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233", false)
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartFail()
     }
@@ -178,7 +178,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf(), warehouseId = "233", false)
+        viewModel.getMiniCart(shopId = listOf(), warehouseId = "233")
 
         verifyMiniCartNullResponse()
     }
@@ -188,7 +188,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "0", false)
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "0")
 
         verifyMiniCartNullResponse()
     }
@@ -197,7 +197,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `given user is not logged in when getMiniCart should not call use case`() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = false)
 
-        viewModel.getMiniCart(listOf("123"), "1", false)
+        viewModel.getMiniCart(listOf("123"), "1")
 
         verifyGetMiniCartUseCaseNotCalled()
         verifyMiniCartNullResponse()
@@ -377,7 +377,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
@@ -423,7 +423,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
@@ -461,7 +461,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.removeTickerWidget("1")
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -498,7 +498,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(1, "1", 0, 1)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -535,7 +535,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(2, "1", 0, 2)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(tickers = emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createCategoryGridDataModel(
