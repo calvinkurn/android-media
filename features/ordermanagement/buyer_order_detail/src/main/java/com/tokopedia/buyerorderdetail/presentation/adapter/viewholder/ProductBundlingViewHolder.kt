@@ -71,7 +71,7 @@ class ProductBundlingViewHolder(
         uiModel.button.url.let {
             navigator.openAppLink(it, false)
         }
-        // TODO: Set correct tracker
+        BuyerOrderDetailTracker.eventClickSimilarProduct(uiModel.orderStatusId, uiModel.orderId)
     }
 
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
