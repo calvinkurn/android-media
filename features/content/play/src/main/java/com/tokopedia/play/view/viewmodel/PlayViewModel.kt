@@ -738,30 +738,18 @@ class PlayViewModel @Inject constructor(
 
         val currentTotalLike = likeInfo.status.totalLike
         val currentTotalLikeFmt = likeInfo.status.totalLikeFormatted
-        if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
-            val finalTotalLike = (currentTotalLike + (if (shouldLike) 1 else -1)).coerceAtLeast(0)
-            _observableLikeInfo.value = likeInfo.copy(
-                    status = PlayLikeStatusInfoUiModel(
-                            totalLike = finalTotalLike,
-                            totalLikeFormatted = finalTotalLike.toAmountString(amountStringStepArray, separator = "."),
-                            isLiked = shouldLike,
-                            source = LikeSource.UserAction,
-                            previousLike = currentTotalLike,
-                            previousLikeFormatted = currentTotalLikeFmt
-                    )
+        val finalTotalLike = (currentTotalLike + (if (shouldLike) 1 else -1)).coerceAtLeast(0)
+
+        _observableLikeInfo.value = likeInfo.copy(
+            status = PlayLikeStatusInfoUiModel(
+                totalLike = finalTotalLike,
+                totalLikeFormatted = finalTotalLike.toAmountString(separator = ".", withSpacing = true),
+                isLiked = shouldLike,
+                source = LikeSource.UserAction,
+                previousLike = currentTotalLike,
+                previousLikeFormatted = currentTotalLikeFmt
             )
-        } else {
-            _observableLikeInfo.value = likeInfo.copy(
-                    status = PlayLikeStatusInfoUiModel(
-                            totalLike = likeInfo.status.totalLike,
-                            totalLikeFormatted = likeInfo.status.totalLikeFormatted,
-                            isLiked = shouldLike,
-                            source = LikeSource.UserAction,
-                            previousLike = likeInfo.status.totalLike,
-                            previousLikeFormatted = likeInfo.status.totalLikeFormatted
-                    )
-            )
-        }
+        )
     }
 
     /**
@@ -1170,7 +1158,9 @@ class PlayViewModel @Inject constructor(
                         status = currentLikeInfo.status.copy(
                                 totalLike = mappedResult.totalLike,
                                 totalLikeFormatted = mappedResult.totalLikeFormatted,
-                                source = mappedResult.source
+                                source = mappedResult.source,
+                                previousLike = currentLikeInfo.status.totalLike,
+                                previousLikeFormatted = currentLikeInfo.status.totalLikeFormatted
                         )
                 ) else currentLikeInfo.param + mappedResult
             }
