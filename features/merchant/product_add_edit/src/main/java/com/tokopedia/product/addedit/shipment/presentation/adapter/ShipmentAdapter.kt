@@ -47,7 +47,9 @@ class ShipmentAdapter: RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>(
             }
             shipmentItemName.text = data.shipperName
             for (x in shipperProduct.indices) {
-                stringBuilder.append(shipperProduct[x].shipperProductName).append(", ")
+                if (shipperProduct[x].uiHidden) {
+                    stringBuilder.append(shipperProduct[x].shipperProductName).append(", ")
+                }
             }
             shipmentItemCategory.text = stringBuilder.substring(0, stringBuilder.length - 2)
 
