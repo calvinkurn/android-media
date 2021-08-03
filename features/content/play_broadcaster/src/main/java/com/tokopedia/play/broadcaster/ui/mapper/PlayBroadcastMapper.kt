@@ -36,7 +36,10 @@ interface PlayBroadcastMapper {
             response: GetLiveFollowersResponse
     ): FollowerDataUiModel
 
-    fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia): LiveStreamInfoUiModel
+    fun mapLiveStream(
+        channelId: String,
+        media: CreateLiveStreamChannelResponse.GetMedia
+    ): LiveStreamInfoUiModel
 
     fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel>
 
@@ -74,5 +77,8 @@ interface PlayBroadcastMapper {
                               title: String,
                               durationInMs: Long): InteractiveSessionUiModel
 
-    fun mapLiveInfo(connection: PlayLivePusherConnection, config: PlayLivePusherConfig): PlayLiveInfoUiModel
+    fun mapLiveInfo(
+        connection: PlayLivePusherConnection,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel
 }
