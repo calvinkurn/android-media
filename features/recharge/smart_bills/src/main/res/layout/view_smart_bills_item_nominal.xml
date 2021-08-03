@@ -13,6 +13,8 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         />
@@ -24,6 +26,8 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:textColor="@color/Unify_N700_68"
@@ -37,6 +41,8 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/unify_space_12"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         />

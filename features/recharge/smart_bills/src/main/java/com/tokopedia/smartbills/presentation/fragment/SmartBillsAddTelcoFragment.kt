@@ -269,14 +269,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun showMainLayouts(){
         if(isPrepaid()) {
-            text_field_sbm_product_type.apply {
-                show()
-                textFieldInput.setText(CategoryTelcoType.getCategoryString(categoryId))
-                isEnabled = false
-            }
-
             text_field_sbm_product_nominal.apply {
-                show()
                 textFieldInput.keyListener = null
                 textFieldInput.setOnTouchListener(object : View.OnTouchListener {
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -302,6 +295,13 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 })
             }
         }
+
+        text_field_sbm_product_type.apply {
+            show()
+            textFieldInput.setText(CategoryTelcoType.getCategoryString(categoryId))
+            isEnabled = false
+        }
+
         text_field_sbm_product_number.apply {
             show()
             textFieldInput.addTextChangedListener(object : TextWatcher {
@@ -388,6 +388,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun setErrorNumber(isError: Boolean, message: String){
+        showNominal(!isError)
         text_field_sbm_product_number.apply {
             setError(isError)
             setMessage(message)
@@ -399,6 +400,11 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             setError(isError)
             setMessage(message)
         }
+    }
+
+    private fun showNominal(isShow: Boolean){
+        if (isShow && isPrepaid()) text_field_sbm_product_nominal.show()
+        else text_field_sbm_product_nominal.hide()
     }
 
     private fun showErrorState(throwable: Throwable){
