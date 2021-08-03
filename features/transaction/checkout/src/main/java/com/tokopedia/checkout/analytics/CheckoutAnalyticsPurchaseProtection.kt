@@ -29,11 +29,11 @@ class CheckoutAnalyticsPurchaseProtection @Inject constructor() : TransactionAna
      */
     fun eventClickOnBuy(userId: String, labelList: List<String>?) {
         labelList?.forEach { label ->
-            sendBayerClickEvent(userId, label)
+            sendBayarClickEvent(userId, label)
         }
     }
 
-    private fun sendBayerClickEvent(userId: String, label: String) {
+    private fun sendBayarClickEvent(userId: String, label: String) {
         val gtmData = getGtmData(ConstantTransactionAnalytics.EventName.PURCHASE_PROTECTION_CLICK,
             ConstantTransactionAnalytics.EventCategory.PURCHASE_PROTECTION,
             ConstantTransactionAnalytics.EventAction.CLICK_PURCHASE_PROTECTION_PAY,
