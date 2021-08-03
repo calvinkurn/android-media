@@ -125,7 +125,11 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         observe(viewModel.catalogProduct){
             when(it){
                 is Success -> {
-                    showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId)))
+                    if(it.data.multitabData.productInputs.isNullOrEmpty()){
+
+                    } else {
+                        showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId)))
+                    }
                 }
 
                 is Fail -> {

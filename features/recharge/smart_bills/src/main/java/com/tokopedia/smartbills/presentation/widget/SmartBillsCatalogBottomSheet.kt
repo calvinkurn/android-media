@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAddBillsAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class SmartBillsCatalogBottomSheet: BottomSheetUnify(), SmartBillsAddBillsAdapter.SmartBillsCatalogsListener {
+class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUnify(), SmartBillsAddBillsAdapter.SmartBillsCatalogsListener {
 
     init {
         isFullpage = false
@@ -54,14 +53,18 @@ class SmartBillsCatalogBottomSheet: BottomSheetUnify(), SmartBillsAddBillsAdapte
 
     override fun onCatalogClicked(applink: String) {
         dismiss()
-        RouteManager.route(context, applink)
+        listener.onCatalogClickCallback(applink)
     }
 
     companion object{
         private const val SMART_BILLS_CATALOG_SPAN = 5
 
-        fun newInstance(): SmartBillsCatalogBottomSheet {
-            return SmartBillsCatalogBottomSheet()
+        fun newInstance(listener: CatalogCallback): SmartBillsCatalogBottomSheet {
+            return SmartBillsCatalogBottomSheet(listener)
         }
+    }
+
+    interface CatalogCallback{
+        fun onCatalogClickCallback(applink: String)
     }
 }

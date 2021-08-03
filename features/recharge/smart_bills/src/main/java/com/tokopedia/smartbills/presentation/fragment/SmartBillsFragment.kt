@@ -75,7 +75,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         SmartBillsActivity.SbmActivityListener,
         SmartBillsToolTipBottomSheet.Listener,
         SmartBillsAccordionViewHolder.SBMAccordionListener,
-        SmartBillsEmptyStateViewHolder.EmptyStateSBMListener
+        SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
+        SmartBillsCatalogBottomSheet.CatalogCallback
 {
 
     @Inject
@@ -145,7 +146,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                                 swipeToRefresh?.isRefreshing ?: false
                         )
                     }
-                    if(ongoingMonth == null) {
+                    if (ongoingMonth == null) {
                         showGlobalError(getDataErrorException())
                     }
                 }
@@ -173,8 +174,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         listBills = bills
                         view_smart_bills_select_all_checkbox_container.show()
 
-                        if(!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
-                        tv_smart_bills_title.text = getNotAccordionSection(it.data.sections)?.title
+                        if (!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
+                            tv_smart_bills_title.text = getNotAccordionSection(it.data.sections)?.title
 
                         renderList(bills)
                         listAccordion = getAccordionSection(it.data.sections)
@@ -259,7 +260,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                     }
                     view?.let { v ->
-                        Toaster.build(v, getErrorHandling(throwable) ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        Toaster.build(v, getErrorHandling(throwable)
+                                ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -270,7 +272,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             hideProgressBar()
             when (it) {
                 is Success -> {
-                    if(it.data.isNotEmpty()) {
+                    if (it.data.isNotEmpty()) {
                         showCatalogBottomSheet(it.data)
                     } else {
                         view?.let { view ->
@@ -297,6 +299,20 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         if(requestCode == REQUEST_CODE_SETTING) {
             showLoading()
             loadInitialData()
+        } else if (requestCode == REQUEST_CODE_ADD_BILLS) {
+            if(resultCode == Activity.RESULT_OK){
+                swipeToRefresh?.isRefreshing = true
+                showLoading()
+                loadInitialData()
+                val message = data?.getStringExtra(EXTRA_ADD_BILLS_MESSAGE)
+                message?.let { message ->
+                    view?.let {
+                        Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+                }
+
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
     }
 
@@ -470,7 +486,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
-        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance()
+        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(this)
         catalogBottomSheet.showSBMCatalog(catalogList)
         catalogBottomSheet.show(requireFragmentManager(), "")
     }
@@ -625,6 +641,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smartBillsAnalytics.clickCollapseAccordion(titleAccordion)
     }
 
+    override fun onCatalogClickCallback(applink: String) {
+        val intent = RouteManager.getIntent(context, applink)
+        startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
+    }
+
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
     }
@@ -694,6 +715,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val REQUEST_CODE_SETTING = 1669
+
+        const val REQUEST_CODE_ADD_BILLS= 2030
+        const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"

@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -207,14 +208,11 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
                     } else {
-                        if (!message.isNullOrEmpty()){
-                            view?.let {
-                                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
-                            }
-                        }
+                        val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMART_BILLS)
+                        intent.putExtra(EXTRA_ADD_BILLS_MESSAGE, message)
+                        activity?.setResult(Activity.RESULT_OK, intent)
                         activity?.finish()
-                        RouteManager.route(context, ApplinkConsInternalDigital.SMART_BILLS)
+
                     }
                 }
             }
@@ -275,8 +273,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         when (event?.action) {
                             MotionEvent.ACTION_DOWN -> {
-                                if (getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
-                                        && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
+                                if (isNumberValid()
                                         && !operatorActive.id.isNullOrEmpty()
                                         && !menuId.isNullOrEmpty()
                                 ) {
@@ -285,6 +282,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
                                             renderSelectedProduct(rechargeProduct)
                                             setErrorNominal(false, "")
+                                            isDisableButton()
                                         }
                                     }).show(childFragmentManager)
                                 } else validationNumber()
@@ -318,25 +316,20 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
         btn_sbm_add_telco.apply {
             show()
+            isDisableButton()
             setOnClickListener {
                 hideKeyBoard()
-                if(getNumber().length < SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
-                        && getNumber().length > SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE){
+                if(!isNumberValid()){
                     validationNumber()
                 } else if (isPostaid()) {
                     if (!operatorActive.id.isNullOrEmpty()){
-                                isButtonTelcoLoading(true)
-                                getInquiryData()
-                    } else {
-                        validationNominal()
+                         isButtonTelcoLoading(true)
+                         getInquiryData()
                     }
-
                 } else if (isPrepaid()) {
                     if (!selectedProduct?.id.isNullOrEmpty()){
                         isButtonTelcoLoading(true)
                         addBills(selectedProduct?.id.toIntOrZero(), getNumber())
-                    } else {
-                        validationNominal()
                     }
                 }
             }
@@ -365,15 +358,14 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     break
                 }
                 setErrorNumber(false, "")
+                isDisableButton()
             }
         }
     }
 
-    private fun validationNominal(){
-        //todo diff between post and pre
-        if (operatorActive.id.isNullOrEmpty() || selectedProduct?.id.isNullOrEmpty()) {
-            setErrorNominal(true, resources.getString(R.string.smart_bills_add_bills_nominal_error))
-        }
+    private fun isNumberValid(): Boolean{
+        return getNumber().length >= SmartBillsAddTelcoViewModel.NUMBER_MIN_VALUE
+                && getNumber().length <= SmartBillsAddTelcoViewModel.NUMBER_MAX_CHECK_VALUE
     }
 
     private fun showInquiryBottomSheet(inquiry: TopupBillsEnquiryData){
@@ -433,6 +425,11 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         btn_sbm_add_telco.isLoading = isLoading
     }
 
+    private fun isDisableButton(){
+        btn_sbm_add_telco.isEnabled = ((isNumberValid() && isPostaid())
+                || (isNumberValid() && isPrepaid() && !selectedProduct?.id.isNullOrEmpty()))
+    }
+
     private fun hideKeyBoard(){
         val imm: InputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
@@ -441,5 +438,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     companion object {
         fun newInstance() = SmartBillsAddTelcoFragment()
+
+        const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
     }
 }
