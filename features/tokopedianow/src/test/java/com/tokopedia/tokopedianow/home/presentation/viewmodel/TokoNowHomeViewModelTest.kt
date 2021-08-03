@@ -13,8 +13,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -160,7 +158,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233", false)
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
     }
@@ -170,7 +168,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(Exception())
 
-        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233", false)
 
         verifyMiniCartFail()
     }
@@ -180,7 +178,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf(), warehouseId = "233")
+        viewModel.getMiniCart(shopId = listOf(), warehouseId = "233", false)
 
         verifyMiniCartNullResponse()
     }
@@ -190,7 +188,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "0")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "0", false)
 
         verifyMiniCartNullResponse()
     }
@@ -199,7 +197,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `given user is not logged in when getMiniCart should not call use case`() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = false)
 
-        viewModel.getMiniCart(listOf("123"), "1")
+        viewModel.getMiniCart(listOf("123"), "1", false)
 
         verifyGetMiniCartUseCaseNotCalled()
         verifyMiniCartNullResponse()
