@@ -62,5 +62,24 @@ data class ItemSelection(
                 isSelected = isSelected
             )
         }
+
+        @JvmStatic
+        fun createWithListPlaceholderBitmap(
+            name: String,
+            preview: String,
+            placeholderBitmap: List<Bitmap>,
+            itemType: Int,
+        ): List<ItemSelection> {
+            return placeholderBitmap.map { bitmap ->
+                ItemSelection(
+                    name = name,
+                    preview = preview,
+                    placeholderBitmap = bitmap,
+                    itemType = itemType,
+                    isSelected = false
+                )
+            }.apply { first().isSelected = true }
+        }
+
     }
 }

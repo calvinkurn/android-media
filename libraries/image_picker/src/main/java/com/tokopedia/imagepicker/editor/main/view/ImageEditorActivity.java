@@ -23,6 +23,7 @@ import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
+import com.tokopedia.imagepicker.editor.adapter.EditorItemSelectionAdapter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
@@ -41,6 +42,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -354,6 +356,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     if (fragment != null) {
                         fragment.saveWatermarkImage();
+                        isSetWatermark = false;
                     }
                     break;
                 case ACTION_BRIGHTNESS:
@@ -710,10 +713,10 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     /**
      * getCurrentBitmap is a method to get bitmap pooling active on gestureImageView from
      * [ImageEditPreviewFragment], this is for saving last state of bitmap temporarily on memory.
-     * @param bitmap
+     * @param bitmaps
      */
     @Override
-    public void itemSelectionWidgetPreview(Bitmap bitmap) {
+    public void itemSelectionWidgetPreview(Bitmap[] bitmaps) {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
         if (imageEditPreviewFragment == null) return;
@@ -721,13 +724,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
 
         watermarkItemSelection.setData(
-                ItemSelection.createWithPlaceholderBitmap(
+                ItemSelection.createWithListPlaceholderBitmap(
                         getString(R.string.editor_watermark_item),
                         preview,
-                        bitmap, // placeholder preview
-                        Constant.TYPE_WATERMARK_TOPED,
-                        true
-                )
+                        Arrays.asList(bitmaps), // placeholder preview
+                        Constant.TYPE_WATERMARK_TOPED
+                ), (bitmap, type) -> {
+                    imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
+                }
         );
     }
 

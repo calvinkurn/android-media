@@ -8,6 +8,7 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapWithPadding
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -182,13 +183,33 @@ object BitmapHelper {
 
         val topPadding = ((this.height / 2f) - (other.height / 2f)).absoluteValue
 
-        if (this.height < other.height)
+        if (this.height < other.height) {
             thisPadding = topPadding
-        else
+        }
+        else {
             otherPadding = topPadding
-
+        }
         canvas.drawBitmap(this, 0f, thisPadding, null)
         canvas.drawBitmap(otherBitmap, this.width.toFloat(), otherPadding, null)
+        return resultBitmap
+    }
+
+    fun Bitmap.combineBitmapTopDown(other: Bitmap): Bitmap {
+        var thisPadding = 0f;
+        var otherPadding = 0f
+        val padding = 20
+        var height = this.height + other.height + padding
+        val width = maxOf(this.width, other.width)
+        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
+        val topPadding = ((this.width / 2f) - (other.width / 2f)).absoluteValue
+        if (this.width < other.width) {
+            thisPadding = topPadding
+        } else {
+            otherPadding = topPadding
+        }
+        canvas.drawBitmap(this, thisPadding, 0f, null)
+        canvas.drawBitmap(other, otherPadding, (this.height + padding).toFloat(), null)
         return resultBitmap
     }
 

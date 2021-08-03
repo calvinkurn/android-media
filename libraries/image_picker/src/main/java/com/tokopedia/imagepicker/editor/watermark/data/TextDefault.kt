@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.editor.watermark.data
 import android.graphics.Color
 import android.graphics.Paint
 import androidx.annotation.ColorInt
+import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.takeAndEllipsizeOf
 

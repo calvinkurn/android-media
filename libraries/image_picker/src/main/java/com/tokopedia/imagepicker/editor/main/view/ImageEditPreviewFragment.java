@@ -29,6 +29,7 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+import java.lang.reflect.Array;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -101,7 +102,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         ImageRatioType getCurrentRatio();
 
-        void itemSelectionWidgetPreview(Bitmap bitmap);
+        void itemSelectionWidgetPreview(Bitmap[] bitmap);
     }
 
     public static ImageEditPreviewFragment newInstance(
@@ -393,9 +394,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     @Override
-    public void onSuccessGetWatermarkImage(Bitmap bitmap) {
-        gestureCropImageView.setImageBitmap(bitmap);
+    public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap[0]);
         onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
+    }
+
+    void setPreviewImageWatermark(Bitmap bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap);
     }
 
     private void initProgressBar(View view) {

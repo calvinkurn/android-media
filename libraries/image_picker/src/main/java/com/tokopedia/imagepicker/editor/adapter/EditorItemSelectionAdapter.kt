@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker.editor.adapter
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,7 @@ class EditorItemSelectionAdapter constructor(
         items[position].isSelected = true
         selectedPosition = position
 
-        listener?.onItemSelected(item.itemType)
+        item.placeholderBitmap?.let { bitmap -> listener?.onItemSelected(bitmap, item.itemType) }
         notifyDataSetChanged()
     }
 
@@ -102,7 +103,8 @@ class EditorItemSelectionAdapter constructor(
         }
 
         companion object {
-            @LayoutRes val LAYOUT = R.layout.view_edit_item_selection
+            @LayoutRes
+            val LAYOUT = R.layout.view_edit_item_selection
 
             fun create(viewGroup: ViewGroup): EditorItemSelectionViewHolder {
                 val layoutView = LayoutInflater
@@ -116,7 +118,7 @@ class EditorItemSelectionAdapter constructor(
     }
 
     interface EditorItemSelectionListener {
-        fun onItemSelected(type: Int)
+        fun onItemSelected(bitmap: Bitmap, type: Int)
     }
 
 }
