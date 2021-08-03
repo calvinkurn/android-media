@@ -379,7 +379,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             viewModel.getSelectedQuantity(productId)
         }
         val selectedChild = variantAggregatorData?.variantData?.getChildByProductId(productId)
-
+        val shopType = if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) ProductDetailCommonConstant.VALUE_TOKONOW else variantAggregatorData?.shopType
+                ?: ""
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -392,7 +393,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 quantity = selectedQuantity,
                 variantName = viewModel.titleVariantName.value ?: "",
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
-                shopType = variantAggregatorData?.shopType ?: "",
+                shopType = shopType,
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
                 categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
                 categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
