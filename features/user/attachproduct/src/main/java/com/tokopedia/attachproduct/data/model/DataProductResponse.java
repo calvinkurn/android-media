@@ -27,9 +27,23 @@ public class DataProductResponse {
     @SerializedName("price")
     @Expose
     private String productPrice;
+    @SerializedName("original_price")
+    @Expose
+    private String originalPrice;
+    @SerializedName("discount_percentage")
+    @Expose
+    private String discountPercentage;
     @SerializedName("shop")
     @Expose
     private DataShopResponse shop;
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public String getDiscountPercentage() {
+        return discountPercentage;
+    }
 
     public String getProductUrl() {
         return productUrl;
