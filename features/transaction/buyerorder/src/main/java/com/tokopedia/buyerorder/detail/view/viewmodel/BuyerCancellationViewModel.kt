@@ -112,7 +112,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
             emit(normalProductList)
         }.catch {
             emit(null)
-        }.flowOn(dispatcher.io)
+        }.flowOn(dispatcher.default)
     }
 
     private fun List<BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail.Bundle.OrderDetail>.mapToNormalProductList(): List<BuyerNormalProductUiModel> {
