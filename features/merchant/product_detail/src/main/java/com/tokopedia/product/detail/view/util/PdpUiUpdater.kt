@@ -120,6 +120,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
 
+    val productBundlingData: ProductBundlingDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -418,6 +421,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
+                }
+            }
+
+            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+                productBundlingData?.run {
+                    // TODO vindo - get with the same product id
+                    it.bundleInfo.getOrNull(0)?.let{bundleInfo->
+                        this.bundleInfo = bundleInfo
+                    }
                 }
             }
         }
