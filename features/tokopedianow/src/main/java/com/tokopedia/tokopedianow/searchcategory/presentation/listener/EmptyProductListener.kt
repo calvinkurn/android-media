@@ -4,9 +4,9 @@ import com.tokopedia.filter.common.data.Option
 
 interface EmptyProductListener {
 
-    fun onGoToGlobalSearch()
+    fun onFindInTokopediaClick()
 
-    fun onChangeKeywordButtonClick()
+    fun goToTokopediaNowHome()
 
     fun onRemoveFilterClick(option: Option)
 }

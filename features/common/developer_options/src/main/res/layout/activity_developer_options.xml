@@ -54,18 +54,6 @@
             app:unifyButtonSize="medium"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/test_onboarding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:gravity="center"
-            android:padding="@dimen/margin_small"
-            android:text="@string/test_onboarding"
-            app:unifyButtonType="main"
-            app:unifyButtonSize="medium"/>
-
-        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/force_crash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -5,6 +5,7 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -15,10 +16,14 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
     return listOf(
@@ -114,7 +119,8 @@ fun createLoadingState(): HomeLayoutListUiModel {
     mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             result = mutableList,
-            state = HomeLayoutState.LOADING
+            state = TokoNowLayoutState.LOADING,
+            isInitialLoad = true
     )
 }
 
@@ -126,7 +132,7 @@ fun createEmptyState(id: String): HomeLayoutListUiModel {
     mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             mutableList,
-            state = HomeLayoutState.HIDE
+            state = TokoNowLayoutState.HIDE
     )
 }
 
@@ -218,4 +224,61 @@ fun createCategoryGridListSecondFetch(): CategoryListResponse {
                             childList = listOf()
                     )
             ))
+}
+
+fun createDynamicLegoBannerDataModel(
+    id: String,
+    groupId: String,
+    headerName: String,
+    headerServerTimeUnix: Long = 0
+): DynamicLegoBannerDataModel {
+    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
+    val channelConfig = ChannelConfig(layout = "lego_3_image")
+    val channelModel = ChannelModel(
+        id = id,
+        groupId = groupId,
+        layout = "lego_3_image",
+        channelHeader = channelHeader,
+        channelConfig = channelConfig
+    )
+    return DynamicLegoBannerDataModel(channelModel = channelModel)
+}
+
+fun createSliderBannerDataModel(
+    id: String,
+    groupId: String,
+    headerName: String,
+    headerServerTimeUnix: Long = 0
+): BannerDataModel {
+    val channelHeader = ChannelHeader(name = headerName, serverTimeUnix = headerServerTimeUnix)
+    val channelConfig = ChannelConfig(layout = "banner_carousel_v2")
+    val channelModel = ChannelModel(
+        id = id,
+        groupId = groupId,
+        layout = "banner_carousel_v2",
+        channelHeader = channelHeader,
+        channelConfig = channelConfig
+    )
+    return BannerDataModel(channelModel = channelModel)
+}
+
+fun createCategoryGridDataModel(
+    id: String,
+    title: String,
+    categoryList: List<TokoNowCategoryItemUiModel>,
+    @TokoNowLayoutState state: Int
+): TokoNowCategoryGridUiModel {
+    return TokoNowCategoryGridUiModel(id, title, categoryList, state)
+}
+
+fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
+    return HomeTickerUiModel(id = "1", tickers = tickers)
+}
+
+fun createTickerData(
+    title: String = "Welcome to Tokonow",
+    description: String = "Tokonow is one of the best feature",
+    type: Int = TYPE_ANNOUNCEMENT
+): TickerData {
+    return TickerData(title = title, description = description, type = type)
 }
