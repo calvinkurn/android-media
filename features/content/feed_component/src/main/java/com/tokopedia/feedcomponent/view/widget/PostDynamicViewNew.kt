@@ -1151,9 +1151,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun detach(
         fromSlide: Boolean = false, model: DynamicPostUiModel? = null
     ) {
-        if (!fromSlide)
+        if (!fromSlide) {
+            carouselView.activeIndex = 0
             model?.feedXCard?.media?.firstOrNull()?.canPlay = false
-        carouselView.activeIndex = 0
+        }
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
