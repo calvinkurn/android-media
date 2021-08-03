@@ -33,7 +33,7 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
+import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.review.feature.reading.data.*
@@ -385,7 +385,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             cacheManager.put(SHOP_ID_KEY, shopId)
             cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
             startActivityForResult(
-                ReviewGalleryActivity.getIntent(
+                ReviewImagePreviewActivity.getIntent(
                     it, cacheManager.id
                         ?: ""
                 ), GALLERY_ACTIVITY_CODE
