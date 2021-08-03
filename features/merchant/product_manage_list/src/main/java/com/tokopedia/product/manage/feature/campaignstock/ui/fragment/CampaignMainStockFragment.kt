@@ -212,7 +212,9 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                     it.copy(isAllStockEmpty = true)
                 }
             }
-            notifyDataSetChanged()
+            getRecyclerView(view)?.post {
+                notifyDataSetChanged()
+            }
         }
     }
 
@@ -227,7 +229,9 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                 val item = TotalStockEditorUiModel(totalStock, isCampaign, access)
                 val index = data.indexOf(it)
                 data[index] = item
-                notifyItemChanged(index)
+                getRecyclerView(view)?.post {
+                    notifyItemChanged(index)
+                }
             }
         }
     }
@@ -252,11 +256,15 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
             if(ticker == null) {
                 data.add(ITEM_TICKER_POSITION, tickerUiModel)
-                notifyItemInserted(ITEM_TICKER_POSITION)
+                getRecyclerView(view)?.post {
+                    notifyItemInserted(ITEM_TICKER_POSITION)
+                }
             } else {
                 val index = data.indexOf(ticker)
                 data[index] = tickerUiModel
-                notifyItemChanged(index)
+                getRecyclerView(view)?.post {
+                    notifyItemChanged(index)
+                }
             }
         }
     }

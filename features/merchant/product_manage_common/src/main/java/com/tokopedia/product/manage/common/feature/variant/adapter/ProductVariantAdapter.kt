@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -16,13 +17,27 @@ class ProductVariantAdapter(
         private const val TICKER_POSITION = 0
     }
 
+    private var recyclerView: RecyclerView? = null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = null
+    }
+
     fun showTicker(tickerList: List<TickerData>) {
         val currentTicker = data.firstOrNull { it is ProductVariantTicker }
         val variantTicker = ProductVariantTicker(tickerList)
 
         if(currentTicker == null) {
             data.add(TICKER_POSITION, variantTicker)
-            notifyItemInserted(TICKER_POSITION)
+            recyclerView?.post {
+                notifyItemInserted(TICKER_POSITION)
+            }
         } else {
             updateItem<ProductVariantTicker> { variantTicker }
         }
@@ -46,7 +61,9 @@ class ProductVariantAdapter(
                 val index = data.indexOf(it)
                 data[index] = it.copy(isAllStockEmpty = false)
             }
-            notifyDataSetChanged()
+            recyclerView?.post {
+                notifyDataSetChanged()
+            }
         }
     }
 
@@ -56,7 +73,9 @@ class ProductVariantAdapter(
                 val index = data.indexOf(it)
                 data[index] = it.copy(isAllStockEmpty = true)
             }
-            notifyDataSetChanged()
+            recyclerView?.post {
+                notifyDataSetChanged()
+            }
         }
     }
 
@@ -71,7 +90,9 @@ class ProductVariantAdapter(
         getVariantList().firstOrNull { it.id == variantId }?.let {
             val index = data.indexOf(it)
             data[index] = block.invoke(it)
-            notifyItemChanged(index)
+            recyclerView?.post {
+                notifyItemChanged(index)
+            }
         }
     }
 
@@ -82,7 +103,9 @@ class ProductVariantAdapter(
             firstOrNull { it is T }?.let {
                 val index = indexOf(it)
                 data[index] = block(it)
-                notifyItemChanged(index)
+                recyclerView?.post {
+                    notifyItemChanged(index)
+                }
             }
         }
     }
@@ -92,7 +115,9 @@ class ProductVariantAdapter(
             firstOrNull { it is T }?.let {
                 val index = indexOf(it)
                 data.removeAt(index)
-                notifyItemRemoved(index)
+                recyclerView?.post {
+                    notifyItemRemoved(index)
+                }
             }
         }
     }
