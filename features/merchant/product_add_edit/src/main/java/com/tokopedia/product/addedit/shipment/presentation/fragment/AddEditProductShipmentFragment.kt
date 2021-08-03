@@ -9,6 +9,8 @@ import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -21,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS
@@ -57,6 +60,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.productlimitation.presentation.dialog.ProductLimitationBottomSheet
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
+import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
@@ -72,6 +76,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -90,10 +95,15 @@ class AddEditProductShipmentFragment:
     private var radioOptionalInsurance: RadioButtonUnify? = null
     private var tickerInsurance: Ticker? = null
 
+    private var radiosShipment: RadioGroup? = null
     private var radioStandarShipment: RadioButtonUnify? = null
     private var radioCustomShipment: RadioButtonUnify? = null
     private var btnChangeOnDemandShipment: Typography? = null
     private var btnChangeConventionalShipment: Typography? = null
+    private var shipmentListOnDemand: RecyclerView? = null
+    private var shipmentListConventional: RecyclerView? = null
+    private val shipmentOnDemandAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
+    private val shipmentConventionalAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -165,9 +175,12 @@ class AddEditProductShipmentFragment:
         setupWeightInput()
         setupInsuranceTicker()
         setupInsuranceRadios()
-        setupShipmentButton()
+        setupShipment()
         setupSubmitButton()
         setupOnBackPressed()
+
+        initShipmentData()
+        initObserver()
 
         // PLT monitoring
         stopNetworkRequestPerformanceMonitoring()
@@ -267,14 +280,37 @@ class AddEditProductShipmentFragment:
         radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
         tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
 
+        radiosShipment = requireView().findViewById(R.id.radios_cpl)
         radioStandarShipment = requireView().findViewById(R.id.radio_standard_shipment)
         radioCustomShipment = requireView().findViewById(R.id.radio_custom_shipment)
         btnChangeOnDemandShipment = requireView().findViewById(R.id.btn_change_on_demand)
         btnChangeConventionalShipment = requireView().findViewById(R.id.btn_change_conventional)
+        shipmentListOnDemand = requireView().findViewById(R.id.rv_on_demand)
+        shipmentListConventional = requireView().findViewById(R.id.rv_conventional)
+
 
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
         mainLayout = view.findViewById(R.id.main_layout)
+    }
+
+    private fun initShipmentData() {
+        shipmentViewModel.getCPLList(shopId.toLong(), productInputModel?.productId.toString())
+    }
+
+    private fun initObserver() {
+        shipmentViewModel.cplList.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    updateShipmentData(it.data)
+                }
+            }
+        })
+    }
+
+    private fun updateShipmentData(data: CustomProductLogisticModel) {
+        shipmentOnDemandAdapter.updateData(data.shipperList[0].shipper)
+        shipmentConventionalAdapter.updateData(data.shipperList[1].shipper)
     }
 
     private fun setupWeightInput() {
@@ -308,10 +344,37 @@ class AddEditProductShipmentFragment:
         }
     }
 
-    private fun setupShipmentButton() {
+    private fun setupShipment() {
+        setupShipmentRadios()
+        shipmentListOnDemand?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = shipmentOnDemandAdapter
+        }
+
+        shipmentListConventional?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = shipmentConventionalAdapter
+        }
+
         btnChangeOnDemandShipment?.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC)
             startActivityForResult(intent, 1234)
+        }
+
+        btnChangeConventionalShipment?.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC)
+            startActivityForResult(intent, 1234)
+        }
+    }
+
+    private fun setupShipmentRadios() {
+        radiosShipment?.setOnCheckedChangeListener { _, checkedId ->
+            val isStandardShipment = checkedId == R.id.radio_standard_shipment
+            if (isStandardShipment)  {
+                //standart shipment sent
+            } else {
+
+            }
         }
     }
 

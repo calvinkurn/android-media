@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingStart="@dimen/unify_space_16"
     android:paddingEnd="@dimen/unify_space_16"
@@ -63,12 +63,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/radios_cpl"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_info_dijemput"
-        android:layout_width="11dp"
-        android:layout_height="6dp"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
         android:layout_marginStart="@dimen/dp_4"
         app:icon_name="INFORMATION"
         app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
@@ -90,11 +90,12 @@
         tools:ignore="ContentDescription" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_dijemput_kurir"
+        android:id="@+id/rv_on_demand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:descendantFocusability="blocksDescendants"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_add_edit_shipment"
         app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -104,9 +105,9 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="Antar ke Kantor Agen"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_dijemput_kurir"
+        app:layout_constraintTop_toBottomOf="@id/rv_on_demand"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/btn_info_agen"
@@ -134,11 +135,12 @@
         tools:ignore="ContentDescription" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_agen"
+        android:id="@+id/rv_conventional"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:descendantFocusability="blocksDescendants"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_add_edit_shipment"
         app:layout_constraintTop_toBottomOf="@id/tv_agen" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

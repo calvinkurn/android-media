@@ -3,7 +3,7 @@ package com.tokopedia.logisticCommon.data.query
 object CustomProductLogisticQuery {
 
     val getCPL = """
-        query ongkirGetCPL(${'$'}input: OngkirGetCPLInput ){
+        query ongkirGetCPL(${'$'}input: OngkirGetCPLInput!){
           ongkirGetCPL (input:${'$'}input) {
             data {
               cpl_product {

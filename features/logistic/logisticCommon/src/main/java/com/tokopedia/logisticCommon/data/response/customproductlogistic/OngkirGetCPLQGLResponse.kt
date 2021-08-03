@@ -14,14 +14,14 @@ data class OngkirGetCPLResponse (
 
 data class GetCPLData (
     @SerializedName("cpl_product")
-    var cplProduct: CPLProduct = CPLProduct(),
+    var cplProduct: List<CPLProduct> = listOf(),
     @SerializedName("shipper_list")
     var shipperList: List<ShipperList> = listOf()
 )
 
 data class CPLProduct(
     @SerializedName("product_id")
-    var productId: Long = 0,
+    var productId: Int = 0,
     @SerializedName("cpl_status")
     var cplStatus: Int = 0,
     @SerializedName("shipper_services")
@@ -39,7 +39,7 @@ data class ShipperList(
 
 data class Shipper(
     @SerializedName("shipper_id")
-    var shipperId: Long = 0,
+    var shipperId: Int = 0,
     @SerializedName("shipper_name")
     var shipperName: String = "",
     @SerializedName("logo")
@@ -50,7 +50,7 @@ data class Shipper(
 
 data class ShipperProduct(
     @SerializedName("shipper_product_id")
-    var shipperProductId: Long = 0,
+    var shipperProductId: Int = 0,
     @SerializedName("shipper_product_name")
     var shipperProductName: String = "",
     @SerializedName("ui_hidden")

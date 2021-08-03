@@ -13,11 +13,13 @@ class CustomProductLogisticMapper @Inject constructor() {
         }
     }
 
-    fun mapCPLProduct(response: CPLProduct): CPLProductModel {
-        return CPLProductModel().apply {
-            productId = response.productId
-            cplStatus = response.cplStatus
-            shipperServices = response.shipperServices
+    fun mapCPLProduct(response: List<CPLProduct>): List<CPLProductModel> {
+        return response.map {
+            CPLProductModel(
+                it.productId,
+                it.cplStatus,
+                it.shipperServices
+            )
         }
     }
 
