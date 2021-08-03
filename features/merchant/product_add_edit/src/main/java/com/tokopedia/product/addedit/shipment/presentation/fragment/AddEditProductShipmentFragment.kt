@@ -16,6 +16,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -70,6 +71,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -87,6 +89,11 @@ class AddEditProductShipmentFragment:
     private var radioRequiredInsurance: RadioButtonUnify? = null
     private var radioOptionalInsurance: RadioButtonUnify? = null
     private var tickerInsurance: Ticker? = null
+
+    private var radioStandarShipment: RadioButtonUnify? = null
+    private var radioCustomShipment: RadioButtonUnify? = null
+    private var btnChangeOnDemandShipment: Typography? = null
+    private var btnChangeConventionalShipment: Typography? = null
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -158,6 +165,7 @@ class AddEditProductShipmentFragment:
         setupWeightInput()
         setupInsuranceTicker()
         setupInsuranceRadios()
+        setupShipmentButton()
         setupSubmitButton()
         setupOnBackPressed()
 
@@ -259,6 +267,11 @@ class AddEditProductShipmentFragment:
         radioOptionalInsurance = requireView().findViewById(R.id.radio_optional_insurance)
         tickerInsurance = requireView().findViewById(R.id.ticker_insurance)
 
+        radioStandarShipment = requireView().findViewById(R.id.radio_standard_shipment)
+        radioCustomShipment = requireView().findViewById(R.id.radio_custom_shipment)
+        btnChangeOnDemandShipment = requireView().findViewById(R.id.btn_change_on_demand)
+        btnChangeConventionalShipment = requireView().findViewById(R.id.btn_change_conventional)
+
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
         mainLayout = view.findViewById(R.id.main_layout)
@@ -292,6 +305,13 @@ class AddEditProductShipmentFragment:
             }
 
             tickerInsurance?.isVisible = !isRequired
+        }
+    }
+
+    private fun setupShipmentButton() {
+        btnChangeOnDemandShipment?.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC)
+            startActivityForResult(intent, 1234)
         }
     }
 

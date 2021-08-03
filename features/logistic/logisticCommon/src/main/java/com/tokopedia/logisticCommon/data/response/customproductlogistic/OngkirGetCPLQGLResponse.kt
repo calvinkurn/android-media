@@ -16,7 +16,7 @@ data class GetCPLData (
     @SerializedName("cpl_product")
     var cplProduct: CPLProduct = CPLProduct(),
     @SerializedName("shipper_list")
-    var shipperList: ShipperList = ShipperList()
+    var shipperList: List<ShipperList> = listOf()
 )
 
 data class CPLProduct(
@@ -34,7 +34,7 @@ data class ShipperList(
     @SerializedName("description")
     var description: String = "",
     @SerializedName("shipper")
-    var shipper: Shipper = Shipper()
+    var shipper: List<Shipper> = listOf()
 )
 
 data class Shipper(
@@ -45,7 +45,7 @@ data class Shipper(
     @SerializedName("logo")
     var logo: String = "",
     @SerializedName("shipper_product")
-    var shipperProduct: ShipperProduct = ShipperProduct()
+    var shipperProduct: List<ShipperProduct> = listOf()
 )
 
 data class ShipperProduct(

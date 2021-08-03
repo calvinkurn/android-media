@@ -212,6 +212,8 @@
 
     <string name="title_address_form">Detail Alamat</string>
 
+    <string name="title_activity_cpl">Detail Kurir Pengiriman</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 

@@ -25,6 +25,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4" />
 
+        <include
+            android:id="@+id/shipment_input_layout"
+            layout="@layout/add_edit_product_cpl_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4" />
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_end"
             android:contentDescription="@string/content_desc_btn_end"

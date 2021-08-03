@@ -8,15 +8,18 @@ import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGe
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
-class CustomProductLogisticRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
+class CustomProductLogisticRepository @Inject constructor(private val gql: GraphqlRepository) {
 
-    suspend fun getCPLList(shopId: Long, productId: String) {
+    suspend fun getCPLList(shopId: Long, productId: String): OngkirGetCPLQGLResponse {
         val param = mapOf(
             "input" to mapOf(
-                "shop_id" to shopId,
-                "product_ids" to productId))
-        val request = GraphqlRequest(CustomProductLogisticQuery.getCPL,
-            OngkirGetCPLQGLResponse::class.java, param)
+                "shop_id" to shopId,"product_ids" to productId
+            )
+        )
+        val request = GraphqlRequest(
+            CustomProductLogisticQuery.getCPL,
+            OngkirGetCPLQGLResponse::class.java, param
+        )
         return gql.getResponse(request)
     }
 }

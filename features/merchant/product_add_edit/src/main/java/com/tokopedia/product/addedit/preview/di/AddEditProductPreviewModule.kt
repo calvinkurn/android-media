@@ -33,4 +33,5 @@ class AddEditProductPreviewModule {
     ): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
     }
+
 }

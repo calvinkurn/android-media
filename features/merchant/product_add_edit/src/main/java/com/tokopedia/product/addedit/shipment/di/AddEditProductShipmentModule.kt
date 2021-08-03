@@ -2,6 +2,10 @@ package com.tokopedia.product.addedit.shipment.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
+import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionScope
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
@@ -34,6 +38,12 @@ class AddEditProductShipmentModule {
             userSession: UserSessionInterface
     ): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
+    }
+
+    @Provides
+    @AddEditProductShipmentScope
+    fun provideCustomProductLogisticRepository(graphqlRepository: GraphqlRepository): CustomProductLogisticRepository {
+        return CustomProductLogisticRepository(graphqlRepository)
     }
 
 }
