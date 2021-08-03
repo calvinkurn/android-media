@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.promocheckout.detail.view.viewmodel.PromoCheckoutDetailFlightViewModel
 import com.tokopedia.promocheckout.detail.view.viewmodel.PromoCheckoutDetailHotelViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,6 +22,10 @@ abstract class PromoCheckoutDetailViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PromoCheckoutDetailHotelViewModel::class)
-    internal abstract fun providePromoCheckoutDetailhotelViewModel(viewModel: PromoCheckoutDetailHotelViewModel): ViewModel
+    internal abstract fun providePromoCheckoutDetailHotelViewModel(viewModel: PromoCheckoutDetailHotelViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(PromoCheckoutDetailFlightViewModel::class)
+    internal abstract fun providePromoCheckoutDetailFlightViewModel(viewModel: PromoCheckoutDetailFlightViewModel): ViewModel
 }

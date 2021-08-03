@@ -105,7 +105,7 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailHotelViewModel.getDetail(codeCoupon)
+        promoCheckoutDetailHotelViewModel.getDetailPromo(codeCoupon)
     }
 
     override fun onClickUse() {

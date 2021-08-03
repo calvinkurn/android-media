@@ -5,7 +5,9 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -13,14 +15,19 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
+import com.tokopedia.promocheckout.detail.view.viewmodel.PromoCheckoutDetailFlightViewModel
 import com.tokopedia.promocheckout.util.ColorUtil
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
 
     @Inject
-    lateinit var promoCheckoutDetailFlightPresenter: PromoCheckoutDetailFlightPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val promoCheckoutDetailFlightViewModel: PromoCheckoutDetailFlightViewModel by lazy { viewModelProvider.get(
+        PromoCheckoutDetailFlightViewModel::class.java) }
 
     var cartID: String = ""
 
@@ -39,20 +46,77 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        promoCheckoutDetailFlightViewModel.showLoadingPromoFlight.observe(viewLifecycleOwner,{
+            if(it){
+                showLoading()
+            }else{
+                hideLoading()
+            }
+        })
+
+        promoCheckoutDetailFlightViewModel.showProgressLoadingPromoFlight.observe(viewLifecycleOwner,{
+            if(it){
+                showProgressLoading()
+            }else{
+                hideProgressLoading()
+            }
+        })
+
+        promoCheckoutDetailFlightViewModel.flightCheckVoucherResult.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessCheckPromo(it.data)
+                }
+                is Fail ->{
+                    if (it.throwable is MessageErrorException){
+                        onErrorCheckPromo(it.throwable)
+                    }else{
+                        onErrorCheckPromoStacking(it.throwable)
+                    }
+                }
+            }
+        })
+
+        promoCheckoutDetailFlightViewModel.promoCheckoutDetail.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessGetDetailPromo(it.data)
+                }
+                is Fail ->{
+                    onErroGetDetail(it.throwable)
+                }
+            }
+        })
+
+        promoCheckoutDetailFlightViewModel.cancelVoucher.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessCancelPromo()
+                }
+                is Fail ->{
+                    onErrorCancelPromo(it.throwable)
+                }
+            }
+        })
+    }
+
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailFlightPresenter.getDetailPromo(codeCoupon)
+        promoCheckoutDetailFlightViewModel.getDetailPromo(codeCoupon)
     }
 
     override fun onClickUse() {
         context?.run {
-            promoCheckoutDetailFlightPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            promoCheckoutDetailFlightViewModel.checkPromoCode(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,com.tokopedia.unifyprinciples.R.color.Unify_G200))
         }
     }
 
     override fun onClickCancel() {
         super.onClickCancel()
-        promoCheckoutDetailFlightPresenter.cancelPromo()
+        promoCheckoutDetailFlightViewModel.cancelPromo()
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
@@ -78,12 +142,6 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
                 .promoCheckoutDetailModule(PromoCheckoutDetailModule())
                 .build()
                 .inject(this)
-        promoCheckoutDetailFlightPresenter.attachView(this)
-    }
-
-    override fun onDestroy() {
-        promoCheckoutDetailFlightPresenter.detachView()
-        super.onDestroy()
     }
 
     companion object {
