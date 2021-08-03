@@ -1005,16 +1005,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
             isUserVisibleHint = isVisibleToUser
         )
-        if (isVisibleToUser)
-            adapter.notifyItemChanged(
-                getCurrentPosition(),
-                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
-            )
-        else
-            adapter.notifyItemChanged(
-                getCurrentPosition(),
-                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
-            )
+        if (layoutManager != null && adapter.getlist().isNotEmpty()) {
+            if (isVisibleToUser)
+                adapter.notifyItemChanged(
+                    getCurrentPosition(),
+                    DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
+                )
+            else
+                adapter.notifyItemChanged(
+                    getCurrentPosition(),
+                    DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
+                )
+        }
     }
 
     private fun getCurrentPosition(): Int {
