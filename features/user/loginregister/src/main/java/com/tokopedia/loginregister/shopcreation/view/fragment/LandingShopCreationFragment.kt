@@ -33,6 +33,7 @@ import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
 import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -50,7 +51,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private lateinit var toolbarShopCreation: Toolbar
     private lateinit var buttonOpenShop: UnifyButton
-    private lateinit var landingImage: ImageView
+    private lateinit var landingImage: ImageUnify
     private lateinit var loading: LoaderUnify
     private lateinit var mainView: View
     private lateinit var baseView: View

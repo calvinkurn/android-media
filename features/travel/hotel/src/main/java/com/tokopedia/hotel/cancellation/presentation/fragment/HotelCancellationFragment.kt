@@ -29,12 +29,16 @@ import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_hotel_booking.*
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation.*
+import kotlinx.android.synthetic.main.fragment_hotel_cancellation.container_error
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_refund_detail.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_summary.*
 import javax.inject.Inject
@@ -75,6 +79,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
 
     override fun onErrorRetryClicked() {
+        container_error.hide()
         showLoadingState()
         getCancellationData()
     }
@@ -114,13 +119,21 @@ class HotelCancellationFragment : HotelBaseFragment() {
                         ErrorHandlerHotel.isOrderNotFound(it.throwable) -> showErrorOrderNotFound()
                         ErrorHandlerHotel.isOrderHasBeenCancelled(it.throwable) -> showErrorOrderHasBeenCancelled()
                         else -> {
-                            hideLoadingState()
-                            showErrorState(it.throwable)
+                            showErrorView(it.throwable)
                         }
                     }
                 }
             }
         })
+    }
+
+    fun showErrorView(error: Throwable?){
+        hideLoadingState()
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, error,
+                { onErrorRetryClicked() }, global_error)
+        }
     }
 
     private fun showErrorOrderNotFound() {
@@ -186,7 +199,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
                     typography.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT)
                     typography.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
-                    typography.setLineSpacing(6f, 1f)
+                    typography.setLineSpacing(ADD_LINE_SPACING, MUL_LINE_SPACING)
                     typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     cancelInfoBottomSheet.setChild(typography)
 
@@ -260,6 +273,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
+        const val ADD_LINE_SPACING = 6f
+        const val MUL_LINE_SPACING = 1f
 
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationFragment =
