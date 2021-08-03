@@ -2738,7 +2738,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
-        view?.showToasterError(getErrorMessage(MessageErrorException(errorMessage)),
+        view?.showToasterError(getErrorMessage(errorMessage),
                 ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
@@ -2761,7 +2761,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
-        view?.showToasterError(getErrorMessage(MessageErrorException(errorMessage)),
+        view?.showToasterError(getErrorMessage(errorMessage),
                 ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
@@ -3448,6 +3448,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
         }
                 ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+    }
+
+    private fun getErrorMessage(errorMessage: String?): String {
+        return errorMessage ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun hideProgressDialog() {

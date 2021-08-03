@@ -199,9 +199,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                     view?.let { it1 ->
                         Toaster.build(it1, context?.getString(R.string.error_message_load_more_review_product).orEmpty(), type = Toaster.TYPE_ERROR,
                                 actionText = context?.getString(R.string.action_retry_toaster_review_product).orEmpty(),
-                                clickListener = {
+                                clickListener = View.OnClickListener {
                                     getReviewTemplate()
-                                })
+                                }).show()
                     }
                 }
             }
@@ -215,7 +215,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR).show()
                     }
                 }
             }
@@ -228,7 +228,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR).show()
                     }
                 }
             }
@@ -244,7 +244,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG).show()
                     }
                 }
             }
@@ -443,7 +443,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                                     productReplyUiModel?.productID ?: "",
                                     feedbackUiModel?.feedbackID ?: "")
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toString())
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID ?: "")
                             startActivity(intent)
                             bottomSheetReplyReview?.dismiss()
