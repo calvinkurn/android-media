@@ -101,6 +101,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var isCardAddressClicked: Boolean = false
     //flag variable to differentiate setState from address list or not
     private var isAddressListFlow: Boolean = false
+    //flag variable to support warehous location, ex: for tokonow
+    private var isSupportWarehouseLoc: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,7 +169,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             latitude = saveAddressDataModel.latitude,
                             longitude = saveAddressDataModel.longitude,
                             districtId = saveAddressDataModel.districtId.toString(),
-                            postalCode = saveAddressDataModel.postalCode
+                            postalCode = saveAddressDataModel.postalCode,
+                            isTokonow = isSupportWarehouseLoc
                     )
                     isSnippetAddressFlow = false
                     isAddressListFlow = false
@@ -186,7 +189,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             districtId = discomModel.districtId.toString(),
                             latitude = latitude.toString(),
                             longitude = longitude.toString(),
-                            postalCode = ""
+                            postalCode = "",
+                            isTokonow = isSupportWarehouseLoc
                     )
                     isSnippetAddressFlow = true
                     isAddressListFlow = false
@@ -204,7 +208,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             latitude = recipientAddress.latitude,
                             longitude = recipientAddress.longitude,
                             districtId = recipientAddress.destinationDistrictId.toString(),
-                            postalCode = recipientAddress.postalCode
+                            postalCode = recipientAddress.postalCode,
+                            isTokonow = isSupportWarehouseLoc
                     )
                     isSnippetAddressFlow = false
                     isAddressListFlow = true
@@ -221,7 +226,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     setInitialViewState()
                     val chooseAddressPref = context?.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
                     chooseAddressPref?.edit()?.clear()?.apply()
-                    viewModel.getDefaultChosenAddress("", source)
+                    viewModel.getDefaultChosenAddress("", source, isSupportWarehouseLoc)
                 }
             }
         }
@@ -270,6 +275,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
+        isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
         viewModel.getChosenAddressList(source)
     }
 
@@ -302,7 +308,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                 lat = data.latitude,
                                 long = data.longitude,
                                 label = "${data.districtName}, ${data.cityName}",
-                                postalCode = data.postalCode
+                                postalCode = data.postalCode,
+                                warehouseId = data.tokonowModel.warehouseId.toString(),
+                                shopId = data.tokonowModel.shopId.toString()
                         )
                     } else {
                         localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -312,7 +320,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                 lat = data.latitude,
                                 long = data.longitude,
                                 label = "${data.addressName} ${data.receiverName}",
-                                postalCode = data.postalCode
+                                postalCode = data.postalCode,
+                                warehouseId = data.tokonowModel.warehouseId.toString(),
+                                shopId = data.tokonowModel.shopId.toString()
                         )
                     }
 
@@ -355,7 +365,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                                         districtName = data.districtName,
                                         cityName = data.cityName
                                 )),
-                                postalCode = data.postalCode
+                                postalCode = data.postalCode,
+                                warehouseId = it.data.tokonow.warehouseId.toString(),
+                                shopId = it.data.tokonow.warehouseId.toString()
                         )
                         chooseAddressPref?.setLocalCache(localData)
                         if (isLoginFlow) {
@@ -519,7 +531,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 latitude = address.latitude,
                 longitude = address.longitude,
                 districtId = address.districtId,
-                postalCode = address.postalCode
+                postalCode = address.postalCode,
+                isTokonow = isSupportWarehouseLoc
         )
     }
 
@@ -538,7 +551,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setStateWithLocation(location: Location) {
         isLoginFlow = false
         setInitialViewState()
-        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source)
+        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source, isSupportWarehouseLoc)
     }
 
     private fun showGpsPopUp() {
@@ -609,5 +622,12 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         fun onLocalizingAddressLoginSuccessBottomSheet()
 
         fun onDismissChooseAddressBottomSheet()
+
+        /**
+         * To differentiate feature that need warehouse loc or not
+         */
+        fun isSupportWarehouseLoc(): Boolean {
+            return true
+        }
     }
 }

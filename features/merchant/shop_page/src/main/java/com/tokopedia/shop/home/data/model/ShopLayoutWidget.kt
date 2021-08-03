@@ -110,7 +110,7 @@ data class ShopLayoutWidget(
                 @SerializedName("isSoldOut")
                 val isSoldOut: Boolean = false,
                 @SerializedName("rating")
-                val rating: Double = 0.0,
+                val rating: String = "",
                 @SerializedName("totalReview")
                 val totalReview: String = "",
                 @SerializedName("isPO")

@@ -28,6 +28,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val contentMarginTop = getGridViewContentMarginTop(context, hasLabelBestSeller)
             val contentHeight = productCardModel.getContentHeightGrid(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonQuantityEditorSectionHeight = productCardModel.getQuantityEditorSectionHeight(context)
+            val buttonVariantSectionHeight = productCardModel.getVariantSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             productCardHeightList.add(
@@ -38,6 +40,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                             contentMarginTop +
                             contentHeight +
                             buttonAddToCartSectionHeight +
+                            buttonQuantityEditorSectionHeight +
+                            buttonVariantSectionHeight +
                             buttonNotifyMeSectionHeight
             )
         }
@@ -86,6 +90,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val contentHeight = productCardModel.getContentHeightList(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonQuantityEditorSectionHeight = productCardModel.getQuantityEditorSectionHeight(context)
+            val buttonVariantSectionHeight = productCardModel.getVariantSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             val totalHeight = cardPaddingTop +
@@ -96,6 +102,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
                     max(imageSize, contentHeight) +
                     buttonDeleteProductSectionHeight +
                     buttonAddToCartSectionHeight +
+                    buttonQuantityEditorSectionHeight +
+                    buttonVariantSectionHeight +
                     buttonNotifyMeSectionHeight
 
             productCardHeightList.add(totalHeight)
@@ -403,11 +411,33 @@ private fun ProductCardModel.getButtonDeleteProductSectionHeight(context: Contex
 }
 
 private fun ProductCardModel.getButtonAddToCartSectionHeight(context: Context): Int {
-    return if (hasAddToCartButton) {
+    return if (hasAddToCartButton || shouldShowAddToCartNonVariantQuantity()) {
         val buttonAddToCartMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_to_cart_margin_top)
         val buttonAddToCartHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_to_cart_height)
 
         buttonAddToCartMarginTop + buttonAddToCartHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getQuantityEditorSectionHeight(context: Context): Int {
+    return if (shouldShowCartEditorComponent()) {
+        val quantityEditorMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_quantity_editor_margin_top)
+        val quantityEditorHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_quantity_editor_height)
+
+        quantityEditorMarginTop + quantityEditorHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getVariantSectionHeight(context: Context): Int {
+    return if (hasVariant()) {
+        val addVariantButtonMarginTop = if (hasVariantWithQuantity()) context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
+        else context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
+
+        val addVariantButtonHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_height)
+
+        addVariantButtonMarginTop + addVariantButtonHeight
     }
     else 0
 }

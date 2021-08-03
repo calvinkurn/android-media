@@ -3,6 +3,7 @@ package com.tokopedia.productcard.test.utils
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 
 internal fun ViewGroup.getChildren(): List<View> {
     val children = mutableListOf<View>()
@@ -27,6 +28,7 @@ private fun MutableList<View>.addChildView(child: View?) {
     this.add(child)
 
     if (child is ViewGroup
-            && child !is ProgressBarUnify)
+            && child !is ProgressBarUnify
+            && child !is QuantityEditorUnify)
         this.addAll(child.getChildren())
 }

@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.inbox.container
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCounterResponseWrapper
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
@@ -185,27 +185,27 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
     private fun onCheckIsInboxUnified_returnsFalse() {
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             )
-        } returns AbTestPlatform.VARIANT_OLD_INBOX
+        } returns RollenceKey.VARIANT_OLD_INBOX
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
             )
-        } returns AbTestPlatform.NAVIGATION_VARIANT_OLD
+        } returns RollenceKey.NAVIGATION_VARIANT_OLD
     }
 
     private fun onCheckIsInboxUnified_returnsTrue() {
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             )
-        } returns AbTestPlatform.VARIANT_NEW_INBOX
+        } returns RollenceKey.VARIANT_NEW_INBOX
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
             )
-        } returns AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        } returns RollenceKey.NAVIGATION_VARIANT_REVAMP
     }
 
     private fun verifyTabCountersEquals(tabs: List<ReviewInboxTabs>) {
