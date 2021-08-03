@@ -1117,30 +1117,6 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
-        fun eventClickAtcAndBuyGoToVariant(buttonAction: Int, productId: String?) {
-            if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) {
-                eventClickAtcToVariantBottomSheet(productId)
-            } else {
-                eventClickBuyToVariantBottomSheet(productId)
-            }
-        }
-
-        fun eventClickBuyToVariantBottomSheet(productId: String?) {
-            if (productId.isNullOrEmpty()) {
-                return
-            }
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_VARIANT_BUY_BUTTON,
-                    ""
-            )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
-            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-        }
-
         fun eventClickAtcToVariantBottomSheet(productId: String?) {
             if (productId.isNullOrEmpty()) {
                 return

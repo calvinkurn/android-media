@@ -3047,7 +3047,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ?: false
 
             if (isVariant && viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-                DynamicProductDetailTracking.Click.eventClickAtcAndBuyGoToVariant(buttonAction, viewModel.getDynamicProductInfoP1?.basic?.productID
+                DynamicProductDetailTracking.Click.eventClickAtcToVariantBottomSheet(viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: "")
                 goToAtcVariant()
                 return@let
