@@ -95,6 +95,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var buttonActionType = 0
     private var buttonText = ""
     private var alreadyHitQtyTrack = false
+    private var shouldSetActivityResult = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -193,6 +194,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun observeData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
+            shouldSetActivityResult = it.pageSource != AtcVariantHelper.BUNDLING_PAGESOURCE
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })
 
@@ -394,8 +396,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
                 shopType = variantAggregatorData?.shopType ?: "",
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
-                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
-                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
+                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted()
+                        ?: "",
+                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted()
+                        ?: "",
                 isFreeOngkir = variantAggregatorData?.getIsFreeOngkirByBoType(productId) ?: false,
                 pageSource = aggregatorParams?.pageSource ?: "",
                 cdListName = aggregatorParams?.trackerCdListName ?: "")
@@ -450,8 +454,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        viewModel.getActivityResultData().let {
-            sharedViewModel.setActivityResult(it)
+        if (shouldSetActivityResult) {
+            viewModel.getActivityResultData().let {
+                sharedViewModel.setActivityResult(it)
+            }
         }
 
         super.onDismiss(dialog)
@@ -496,13 +502,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        this.buttonText = buttonText
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
-        doAtc(atcKey)
+        if (cartType == ProductDetailCommonConstant.KEY_SAVE_BUTTON) {
+            onSaveButtonClicked()
+        } else {
+            this.buttonText = buttonText
+            val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
+            doAtc(atcKey)
+        }
     }
 
     override fun isTokonow(): Boolean {
         return sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
+    }
+
+    private fun onSaveButtonClicked() {
+        shouldSetActivityResult = true
+        dismiss()
     }
 
     private fun goToImagePreview(listOfImage: ArrayList<String>) {
@@ -571,7 +586,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             viewModel.hitAtc(buttonAction,
                     sharedData?.shopId?.toIntOrZero() ?: 0,
-                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
+                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
+                            ?: "",
                     userSessionInterface.userId,
                     sharedData?.minimumShippingPrice ?: 0.0,
                     sharedData?.trackerAttribution ?: "",
@@ -602,14 +618,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         } ?: return false
     }
 
-    private fun goToHomePage(){
+    private fun goToHomePage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         activity?.finish()
     }
 
-    private fun goToChooseAddress(errorCode:Int) {
+    private fun goToChooseAddress(errorCode: Int) {
         if (errorCode == ProductDetailCommonConstant.SHIPPING_ERROR_WEIGHT) {
             goToTopChat()
         } else {
