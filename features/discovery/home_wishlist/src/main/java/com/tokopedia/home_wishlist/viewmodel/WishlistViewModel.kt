@@ -79,6 +79,7 @@ open class WishlistViewModel @Inject constructor(
     private val listRecommendationCarouselOnMarked : HashMap<Int, WishlistDataModel> = hashMapOf()
 
     private val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
+    private val wishlistCountData = WishlistLiveData<Int>(0)
 
     private val recommendationPositionInPage = 4
     private val maxItemInPage = 21
@@ -92,6 +93,8 @@ open class WishlistViewModel @Inject constructor(
     private var additionalParams: WishlistAdditionalParamRequest = WishlistAdditionalParamRequest()
 
     val wishlistLiveData: LiveData<List<WishlistDataModel>> get() = wishlistData
+    val wishlistCountLiveData: LiveData<Int> get() = wishlistCountData
+
     val isInBulkModeState: LiveData<Boolean> get() = isInBulkMode
     val isWishlistState: LiveData<Status> get() = wishlistState
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
@@ -150,6 +153,7 @@ open class WishlistViewModel @Inject constructor(
                 )
                 getRecommendationOnEmptyWishlist(0)
             } else {
+                wishlistCountData.value = data.totalData.toInt()
                 wishlistState.value = Status.SUCCESS
 
                 val visitableWishlist = data.items.mappingWishlistToVisitable(isInBulkMode.value ?: false)

@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -57,8 +58,20 @@ import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -100,6 +113,8 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private lateinit var trackingQueue: TrackingQueue
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     internal val viewModel by lazy { viewModelProvider.get(WishlistViewModel::class.java) }
     private val adapterFactory by lazy { WishlistTypeFactoryImpl(appExecutors) }
@@ -108,8 +123,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private val containerDelete by lazy { view?.findViewById<FrameLayout>(R.id.container_delete) }
     private val deleteButton by lazy { view?.findViewById<UnifyButton>(R.id.delete_button) }
-    private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
-    private val toolbar by lazy { view?.findViewById<Toolbar>(R.id.toolbar) }
+    private val navToolbar by lazy { view?.findViewById<NavToolbar>(R.id.navToolbar) }
     private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
@@ -119,6 +133,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
 
     private var additionalParamRequest: WishlistAdditionalParamRequest? = null
+    private var useNewInbox = false
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -137,7 +152,33 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initInboxAbTest()
         return inflater.inflate(R.layout.fragment_new_home_wishlist, container, false)
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = getAbTestPlatform().getString(
+            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun isNavRevamp(): Boolean {
+        return try {
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:
+            (getAbTestPlatform().getString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -249,22 +290,59 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun initView() {
-        initToolbar()
         initSwipeRefresh()
         initSearchView()
         initDeleteBulkButton()
         initRecyclerView()
+
+        activity?.let {
+            navToolbar?.setupToolbarWithStatusBar(it)
+            appBarLayout?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it), 0 , 0)
+        }
+        navToolbar?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+//            homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
+//                navToolbar = it,
+//                startTransitionPixel = homeMainToolbarHeight,
+//                toolbarTransitionRangePixel = searchBarTransitionRange,
+//                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+//                    override fun onAlphaChanged(offsetAlpha: Float) {
+//
+//                    }
+//
+//                    override fun onSwitchToDarkToolbar() {
+//                        navToolbar?.hideShadow()
+//                        requestStatusBarLight()
+//                    }
+//
+//                    override fun onSwitchToLightToolbar() {
+//                        requestStatusBarDark()
+//                    }
+//
+//                    override fun onYposChanged(yOffset: Int) {
+//                        backgroundViewImage.y = -(yOffset.toFloat())
+//                    }
+//                }
+//            ))
+            val icons = IconBuilder(
+                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+            ).addIcon(getInboxIcon()) {}
+            if (!useNewInbox) {
+                icons.addIcon(IconList.ID_NOTIFICATION) {}
+            }
+            icons.apply {
+                addIcon(IconList.ID_CART) {}
+                addIcon(IconList.ID_NAV_GLOBAL) {}
+            }
+            it.setIcon(icons)
+        }
     }
 
-    private fun initToolbar() {
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout?.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation)
-        }
-        toolbar?.let {
-            toolbarElevation = ToolbarElevationOffsetListener(activity as AppCompatActivity, it)
+    private fun getInboxIcon(): Int {
+        return if (useNewInbox) {
+            IconList.ID_INBOX
+        } else {
+            IconList.ID_MESSAGE
         }
     }
 
@@ -272,30 +350,30 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         swipeToRefresh?.setOnRefreshListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
-            viewModel.getWishlistData(searchView?.getSearchText() ?: "", generateWishlistAdditionalParamRequest())
+//            viewModel.getWishlistData(searchView?.getSearchText() ?: "", generateWishlistAdditionalParamRequest())
         }
     }
 
     private fun initSearchView() {
-        searchView?.setDelayTextChanged(250)
-        searchView?.setListener(object : CustomSearchView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                searchView?.hideKeyboard()
-            }
-
-            override fun onSearchTextChanged(text: String?) {
-                updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
-                viewModel.getWishlistData(text ?: "", generateWishlistAdditionalParamRequest())
-            }
-
-            override fun onManageDeleteWishlistClicked() {
-                manageDeleteWishlist()
-            }
-
-            override fun onCancelDeleteWishlistClicked() {
-                cancelDeleteWishlist()
-            }
-        })
+//        searchView?.setDelayTextChanged(250)
+//        searchView?.setListener(object : CustomSearchView.Listener {
+//            override fun onSearchSubmitted(text: String?) {
+//                searchView?.hideKeyboard()
+//            }
+//
+//            override fun onSearchTextChanged(text: String?) {
+//                updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
+//                viewModel.getWishlistData(text ?: "", generateWishlistAdditionalParamRequest())
+//            }
+//
+//            override fun onManageDeleteWishlistClicked() {
+//                manageDeleteWishlist()
+//            }
+//
+//            override fun onCancelDeleteWishlistClicked() {
+//                cancelDeleteWishlist()
+//            }
+//        })
     }
 
     private fun initDeleteBulkButton() {
@@ -325,7 +403,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                searchView?.hideKeyboard()
+//                searchView?.hideKeyboard()
             }
         })
     }
@@ -372,6 +450,13 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             if (response.isNotEmpty())
                 renderList(response)
             swipeToRefresh?.isRefreshing = false
+        })
+        viewModel.wishlistCountLiveData.observe(viewLifecycleOwner, {
+            if (it > 0) {
+                wishlist_tv_count.text = String.format(
+                    getString(R.string.label_wishlist_count, it.toString())
+                )
+            }
         })
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
             updateScrollListenerState(

@@ -103,7 +103,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-
+import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -145,6 +145,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int REQUEST_CODE_LOGIN = 12137;
     public static final String FEED_PAGE = "FeedPlusContainerFragment";
     public static final int UOH_MENU = 3;
+    public static final int WISHLIST_MENU = 4;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
@@ -526,6 +527,8 @@ public class MainParentActivity extends BaseActivity implements
             position = OS_MENU;
         } else if (i == UOH_MENU) {
             position = UOH_MENU;
+        } else if (i == WISHLIST_MENU) {
+            position = WISHLIST_MENU;
         }
         return position;
     }
@@ -721,6 +724,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
+            fragmentList.add(WishlistFragment.Companion.newInstance());
             Bundle bundle = new Bundle();
             bundle.putString("source_filter", "");
             bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);
@@ -1241,7 +1245,7 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if ((position == CART_MENU || position == UOH_MENU) && !presenter.get().isUserLogin()) {
+        if ((position == CART_MENU || position == UOH_MENU || position == WISHLIST_MENU) && !presenter.get().isUserLogin()) {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
@@ -1286,6 +1290,7 @@ public class MainParentActivity extends BaseActivity implements
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
             }
         } else {
+            menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, null, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 1f));
             menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), R.raw.bottom_nav_uoh, R.raw.bottom_nav_uoh_to_enabled, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_G500, true, 1f, 3f));
         }
         bottomNavigation.setMenu(menu);

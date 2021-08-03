@@ -5,6 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
@@ -14,8 +15,8 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            style="@style/Toolbar.Wishlist"
             android:layout_marginTop="?attr/actionBarSize"
+            style="@style/Toolbar.Wishlist"
             android:background="@color/Unify_N0"
             app:layout_behavior="com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior"
             app:elevation="@dimen/dp_4">
@@ -30,13 +31,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <com.tokopedia.home_wishlist.view.custom.CustomSearchView
-                        android:id="@+id/wishlist_search_view"
-                        android:layout_width="match_parent"
+                    android:descendantFocusability="beforeDescendants"
+                    android:fitsSystemWindows="true"
+                    android:focusableInTouchMode="true">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        app:typographyType="heading_4"
+                        android:id="@+id/wishlist_tv_count"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:layout_marginStart="@dimen/dp_16" />
+                        android:layout_marginStart="@dimen/dp_16"/>
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_manage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:foreground="?selectableItemBackgroundBorderless"
+                        android:paddingStart="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_12"
+                        android:paddingEnd="@dimen/dp_16"
+                        android:paddingBottom="@dimen/dp_12"
+                        android:text="@string/label_manage"
+                        android:textColor="@color/Unify_G500"
+                        app:typographyType="heading_6" />
+
                 </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -86,12 +108,21 @@
                 app:unifyButtonType="main"/>
         </FrameLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/navToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/Unify_N0"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
         android:visibility="visible"
-        app:titleTextAppearance="@style/Wishlist.TextAppearance"
-        app:theme="@style/Toolbar.Wishlist"/>
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarBackButton="none"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarPageName="/"
+        app:toolbarInitialFillColor="filled"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light"
+        />
 </FrameLayout>
