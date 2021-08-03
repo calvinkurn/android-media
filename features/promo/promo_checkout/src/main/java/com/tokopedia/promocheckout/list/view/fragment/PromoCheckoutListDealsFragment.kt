@@ -20,10 +20,11 @@ import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter
+import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListDealsViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import timber.log.Timber
-import javax.inject.Inject
 
 
 /**
@@ -32,8 +33,7 @@ import javax.inject.Inject
 
 class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
 
-    @Inject
-    lateinit var promoCheckoutListDealsPresenter: PromoCheckoutListDealsPresenter
+    private val dealsPromoCheckoutListViewModel: PromoCheckoutListDealsViewModel by lazy { viewModelProvider.get(PromoCheckoutListDealsViewModel::class.java) }
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
     var categoryID: Int = 1
@@ -44,7 +44,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         super.onCreate(savedInstanceState)
         categoryID = arguments?.getInt(EXTRA_CATEGORY_ID, 1) ?: 1
         checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
-        promoCheckoutListDealsPresenter.attachView(this)
         promoCodeApplied = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
     }
 
@@ -57,15 +56,51 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        dealsPromoCheckoutListViewModel.showLoadingPromoDeals.observe(viewLifecycleOwner, {
+            if (it) {
+                showProgressLoading()
+            } else {
+                hideProgressLoading()
+            }
+        })
+
+        dealsPromoCheckoutListViewModel.dealsCheckVoucherResult.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessCheckPromo(it.data)
+                }
+                is Fail->{
+                    onErrorCheckPromo(it.throwable)
+                }
+            }
+        })
+
+        dealsPromoCheckoutListViewModel.listTravelCollectiveBanner.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    if(it.data.isNotEmpty()){
+                        changeTitle(getString(R.string.promo_title_for_this_category))
+                    }
+                    renderListLastSeen(it.data, true)
+                }
+                is Fail->{
+                    showGetListLastSeenError(it.throwable)
+                }
+            }
+        })
+    }
+
     override fun onPromoCodeUse(promoCode: String) {
-        if (promoCheckoutListDealsPresenter.isViewAttached) promoCheckoutListDealsPresenter.attachView(this)
         if (promoCode.isNotEmpty()) {
             var requestBody: JsonObject? = null
             if (checkoutData.isNotBlank() || checkoutData.length > 0) {
                 val jsonElement: JsonElement = JsonParser().parse(checkoutData)
                 requestBody = jsonElement.asJsonObject
                 requestBody.addProperty(PROMOCODE, promoCode)
-                promoCheckoutListDealsPresenter.processCheckDealPromoCode(false, requestBody)
+                dealsPromoCheckoutListViewModel.processCheckDealPromoCode(false, requestBody)
             }
         }
     }
@@ -114,11 +149,6 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
         }
     }
 
-    override fun onDestroyView() {
-        promoCheckoutListDealsPresenter.detachView()
-        super.onDestroyView()
-    }
-
     override fun loadData(page: Int) {
         if (isCouponActive) {
             promoCheckoutListViewModel.getPromoList(serviceId, categoryId, page)
@@ -127,14 +157,13 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     }
 
     companion object {
-
-        val EXTRA_CATEGORY_ID = "EXTRA_CATEGORYID"
-        val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
-        val VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT"
-        val EXTRA_CHECKOUT_DATA = "checkoutdata"
-        val VOUCHER_CODE = "voucher_code"
-        val VOUCHER_MESSAGE = "voucher_message"
-        val PROMOCODE = "promocode"
+        const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORYID"
+        const val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
+        const val VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT"
+        const val EXTRA_CHECKOUT_DATA = "checkoutdata"
+        const val VOUCHER_CODE = "voucher_code"
+        const val VOUCHER_MESSAGE = "voucher_message"
+        const val PROMOCODE = "promocode"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, categoryId: Int?, pageTracking: Int?, productId: String?, checkoutData: String?): PromoCheckoutListDealsFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDealsFragment()

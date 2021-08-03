@@ -42,5 +42,10 @@ abstract class PromoCheckoutListViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PromoCheckoutListEventViewModel::class)
-    internal abstract fun provideCheckoutPromoCheckoutListViewModel(viewModel: PromoCheckoutListEventViewModel): ViewModel
+    internal abstract fun provideEventPromoCheckoutListViewModel(viewModel: PromoCheckoutListEventViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PromoCheckoutListDealsViewModel::class)
+    internal abstract fun provideDealsPromoCheckoutListViewModel(viewModel: PromoCheckoutListDealsViewModel): ViewModel
 }
