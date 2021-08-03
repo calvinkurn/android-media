@@ -176,21 +176,24 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun setCollapsedRecyclerViewHeight(cartShopHolderData: CartShopHolderData) {
-        var hasProductWithVarient = false
+        var hasProductWithVariant = false
         val cartItemDataList = cartShopHolderData.shopGroupAvailableData?.cartItemHolderDataList
                 ?: emptyList<CartItemHolderData>()
-        loop@ for (cartItemData in cartItemDataList) {
-            if (cartItemData.cartItemData.originData.variant.isNotBlank()) {
-                hasProductWithVarient = true
-                break@loop
+        if (cartItemDataList.isNotEmpty()) {
+            val maxIndex = min(cartItemDataList.size, 10)
+            loop@ for (cartItemData in cartItemDataList.subList(0, maxIndex)) {
+                if (cartItemData.cartItemData.originData.variant.isNotBlank()) {
+                    hasProductWithVariant = true
+                    break@loop
+                }
             }
+            if (hasProductWithVariant) {
+                binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_with_variant)
+            } else {
+                binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_without_variant)
+            }
+            binding.rvCartItem.requestLayout()
         }
-        if (hasProductWithVarient) {
-            binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_with_variant)
-        } else {
-            binding.rvCartItem.layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.cart_collapsed_inner_recycler_view_height_without_variant)
-        }
-        binding.rvCartItem.requestLayout()
     }
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
