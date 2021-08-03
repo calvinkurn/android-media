@@ -338,9 +338,21 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun onStartListener(owner: LifecycleOwner){
+    private fun startEvent(owner: LifecycleOwner){
         this.lifecycleOwner = owner
         observeLiveData()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private fun resumeEvent() {
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    private fun pauseEvent() {
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private fun destroyEvent() {
     }
 
     private fun observeLiveData() {

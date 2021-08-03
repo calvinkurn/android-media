@@ -33,7 +33,7 @@ class ProductRecomWidgetViewHolder (
     override fun bind(element: ProductRecomWidgetDataModel) {
         productRecom = element
         itemView.visible()
-
+        listener.setViewToLifecycleOwner(recomWidget)
         if ((element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) && element.pageName.isEmpty()) {
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
         } else if (element.pageName.isNotEmpty()) {
