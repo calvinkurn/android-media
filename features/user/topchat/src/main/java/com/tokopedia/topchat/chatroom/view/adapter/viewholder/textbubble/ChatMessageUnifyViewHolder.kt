@@ -114,7 +114,11 @@ class ChatMessageUnifyViewHolder(
 
     private fun bindAttachment(msg: MessageViewModel) {
         if (msg.hasAttachment()) {
-            fxChat?.renderHeaderAttachment(msg.attachment)
+            val shouldHideDivider = commonListener.isSeller() && msg.isSender
+            fxChat?.renderHeaderAttachment(
+                msg.attachment,
+                shouldHideDivider
+            )
         } else {
             fxChat?.hideAttachmentHeader()
         }

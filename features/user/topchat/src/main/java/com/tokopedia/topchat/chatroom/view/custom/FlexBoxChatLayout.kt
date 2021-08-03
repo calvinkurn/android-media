@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
@@ -48,6 +50,8 @@ class FlexBoxChatLayout : ViewGroup {
     var headerTitle: Typography? = null
         private set
     var headerCta: Typography? = null
+        private set
+    var headerDivider: View? = null
         private set
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
@@ -125,6 +129,7 @@ class FlexBoxChatLayout : ViewGroup {
             header = it.findViewById(R.id.ll_msg_header)
             headerTitle = it.findViewById(R.id.tp_header_title)
             headerCta = it.findViewById(R.id.tp_header_cta)
+            headerDivider = it.findViewById(R.id.v_header_divider)
         }
         initCheckMarkVisibility()
     }
@@ -180,10 +185,16 @@ class FlexBoxChatLayout : ViewGroup {
         return message?.text.toString()
     }
 
-    fun renderHeaderAttachment(attachment: Any?) {
+    fun renderHeaderAttachment(
+        attachment: Any?,
+        shouldHideDivider: Boolean
+    ) {
         header?.show()
         when (attachment) {
-            is HeaderCtaMessageAttachment -> renderCtaHeader(attachment)
+            is HeaderCtaMessageAttachment -> renderCtaHeader(
+                attachment,
+                shouldHideDivider
+            )
             else -> header?.hide()
         }
     }
@@ -192,10 +203,14 @@ class FlexBoxChatLayout : ViewGroup {
         header?.hide()
     }
 
-    private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
+    private fun renderCtaHeader(
+        attachment: HeaderCtaMessageAttachment,
+        shouldHideDivider: Boolean
+    ) {
         bindHeaderTitle(attachment)
         bindHeaderBody(attachment)
         bindHeaderCta(attachment)
+        bindHeaderDivider(shouldHideDivider)
     }
 
     private fun bindHeaderCta(attachment: HeaderCtaMessageAttachment) {
@@ -207,6 +222,10 @@ class FlexBoxChatLayout : ViewGroup {
         } else {
             headerCta?.hide()
         }
+    }
+
+    private fun bindHeaderDivider(shouldHideDivider: Boolean) {
+        headerDivider?.showWithCondition(!shouldHideDivider)
     }
 
     private fun bindHeaderBody(attachment: HeaderCtaMessageAttachment) {

@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingBottom="@dimen/unify_space_12"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -29,10 +30,10 @@
             tools:text="Ubah Alamat" />
 
         <View
+            android:id="@+id/v_header_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_topchat_1"
             android:layout_marginTop="@dimen/unify_space_12"
-            android:layout_marginBottom="@dimen/unify_space_12"
             android:background="@color/Unify_N75" />
     </LinearLayout>
 
