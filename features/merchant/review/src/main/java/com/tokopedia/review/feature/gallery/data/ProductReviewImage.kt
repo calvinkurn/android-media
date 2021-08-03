@@ -15,7 +15,7 @@ data class ProductrevGetReviewImage(
     val reviewImages: List<ReviewImage> = listOf(),
     @SerializedName("detail")
     @Expose
-    val reviewDetail: Detail = Detail(),
+    val detail: Detail = Detail(),
     @SerializedName("hasNext")
     @Expose
     val hasNext: Boolean = false
@@ -36,10 +36,10 @@ data class ReviewImage(
 data class Detail(
     @SerializedName("review")
     @Expose
-    val reviewDetail: ReviewDetail = ReviewDetail(),
+    val reviewDetail: List<ReviewDetail> = listOf(),
     @SerializedName("image")
     @Expose
-    val images: Image = Image(),
+    val images: List<Image> = listOf(),
     @SerializedName("imageCountFmt")
     @Expose
     val imageCountFmt: String = "",

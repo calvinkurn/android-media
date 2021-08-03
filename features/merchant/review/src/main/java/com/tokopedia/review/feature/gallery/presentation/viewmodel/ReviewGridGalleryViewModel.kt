@@ -41,6 +41,10 @@ class ReviewGridGalleryViewModel @Inject constructor(
         }
     }
 
+    fun setProductId(productId: String) {
+        this.productId.value = productId
+    }
+
     fun setPage(page: Int) {
         currentPage.value = page
     }

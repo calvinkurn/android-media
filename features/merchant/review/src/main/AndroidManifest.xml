@@ -188,6 +188,12 @@
             android:theme="@style/Theme.White">
         </activity>
 
+        <activity
+            android:name=".feature.gallery.presentation.activity.ReviewGridGalleryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+        </activity>
+
     </application>
 
 </manifest>
