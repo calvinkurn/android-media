@@ -5,6 +5,7 @@ plugins {
 gradleEnterprise {
     server = "http://172.21.57.32"
     buildScan {
+        captureTaskInputFiles = true
         publishAlways()
         tag (System.getenv('CI') ? 'CI' : 'LOCAL')
         if (System.getenv('CI')) {
