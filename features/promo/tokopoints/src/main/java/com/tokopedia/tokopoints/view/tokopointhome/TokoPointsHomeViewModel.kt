@@ -35,6 +35,8 @@ class TokoPointsHomeViewModel @Inject constructor(
     var deferredSavingData: Deferred<UserSavingResponse>? = null
     var defferedRecomData: Deferred<RewardsRecommendation>? = null
     var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
+    val PAGE_NAME = "rewards_page"
+    val PAGE_NUMBER = 1
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -85,7 +87,7 @@ class TokoPointsHomeViewModel @Inject constructor(
         return async(Dispatchers.IO) {
             var recommendation = RewardsRecommendation(listOf(), "", "")
             try {
-                val response = recommUsecase.getData(recommUsecase.getRequestParams(1, "", ""))
+                val response = recommUsecase.getData(recommUsecase.getRequestParams(PAGE_NUMBER,PAGE_NAME))
                 val recomWidget = response.first()
                 val title = recomWidget.title
                 val appLink = recomWidget.seeMoreAppLink

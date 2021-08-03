@@ -2,7 +2,6 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.mvcwidget.LiveDataResult
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -93,7 +92,7 @@ class TokoPointsHomeViewModelTest {
             }
         }
 
-        coEvery { recomUsecase.getRequestParams(1, "", "") } returns requestParams
+        coEvery { recomUsecase.getRequestParams(viewModel.PAGE_NUMBER, viewModel.PAGE_NAME) } returns requestParams
         every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
         coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
 
@@ -146,7 +145,7 @@ class TokoPointsHomeViewModelTest {
             }
         }
 
-        coEvery { recomUsecase.getRequestParams(1, "", "") } returns requestParams
+        coEvery { recomUsecase.getRequestParams(viewModel.PAGE_NUMBER, viewModel.PAGE_NAME) } returns requestParams
         every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
         coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)

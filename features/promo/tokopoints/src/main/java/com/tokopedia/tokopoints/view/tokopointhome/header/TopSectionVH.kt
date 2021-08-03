@@ -294,10 +294,15 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
 
     private fun renderStatusMatchingView(rewardTickerResponse: List<TickerListItem?>?) {
         cardStatusMatching?.setOnClickListener {
-            RouteManager.route(itemView.context, rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url)
+            rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url?.let { url ->
+                if (url.isNotEmpty()) {
+                    RouteManager.route(
+                        itemView.context,url)
+                }
+            }
         }
         playAnimation()
-       // backGroundImage?.loadImage(rewardTickerResponse?.get(0)?.metadata?.get(0)?.image?.url)
+        backGroundImage?.loadImage(rewardTickerResponse?.get(0)?.metadata?.get(0)?.image?.url)
         tvStatusMatching?.text = rewardTickerResponse?.get(0)?.metadata?.get(0)?.text?.content
 
     }
