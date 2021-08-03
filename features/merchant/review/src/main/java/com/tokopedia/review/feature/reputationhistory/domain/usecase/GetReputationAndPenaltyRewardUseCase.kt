@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.reputationhistory.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardWrapper
 import com.tokopedia.review.feature.reputationhistory.domain.mapper.SellerReputationPenaltyMapper
 import com.tokopedia.review.feature.reputationhistory.view.model.SellerReputationPenaltyMergeUiModel
@@ -17,7 +18,7 @@ class GetReputationAndPenaltyRewardUseCase @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val sellerReputationPenaltyMapper: SellerReputationPenaltyMapper
 ) {
-    suspend fun execute(shopId: String, page: Int, startDate: String, endDate: String): Result<SellerReputationPenaltyMergeUiModel> {
+    suspend fun execute(shopId: Long, page: Int, startDate: String, endDate: String): Result<SellerReputationPenaltyMergeUiModel> {
        return try {
            withContext(dispatcherProvider.io) {
                val getReputationShopResponse = async {

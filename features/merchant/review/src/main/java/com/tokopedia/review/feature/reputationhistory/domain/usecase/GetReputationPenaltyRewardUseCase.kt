@@ -13,10 +13,11 @@ class GetReputationPenaltyRewardUseCase @Inject constructor(
 
     private var params = mapOf<String, Any>()
 
-    fun setParams(shopId: String, page: Int, startDate: String, endDate: String) {
+    fun setParams(shopId: Long, page: Int, startDate: String, endDate: String) {
         params = RequestParams.create().apply {
-            putString(SHOP_ID_PARAM, shopId)
+            putLong(SHOP_ID_PARAM, shopId)
             putInt(PAGE_PARAM, page)
+            putInt(TOTAL_PARAM, TOTAL_DEFAULT)
             putString(START_DATE_PARAM, startDate)
             putString(END_DATE_PARAM, endDate)
         }.parameters
@@ -43,10 +44,12 @@ class GetReputationPenaltyRewardUseCase @Inject constructor(
         const val START_DATE_PARAM = "start_date"
         const val END_DATE_PARAM = "end_date"
         const val PAGE_PARAM = "page"
+        const val TOTAL_PARAM = "total"
+        const val TOTAL_DEFAULT = 10
 
         val REPUTATION_PENALTY_REWARD_QUERY = """
-            query reputation_penalty_and_reward(${'$'}shop_id: Int!, ${'$'}page: Int!, ${'$'}start_date: String!, ${'$'}end_date: String!){
-                reputation_penalty_and_reward(shop_id: ${'$'}shop_id, page: ${'$'}page, total: 10, start_date: ${'$'}start_date, end_date: ${'$'}end_date){
+            query reputation_penalty_and_reward(${'$'}shop_id: Int!, ${'$'}page: Int!, ${'$'}total: Int!, ${'$'}start_date: String!, ${'$'}end_date: String!){
+                reputation_penalty_and_reward(shop_id: ${'$'}shop_id, page: ${'$'}page, total: ${'$'}total, start_date: ${'$'}start_date, end_date: ${'$'}end_date){
                       list {
                         id
                         invoice_ref_num

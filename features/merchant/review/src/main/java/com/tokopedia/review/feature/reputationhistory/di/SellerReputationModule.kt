@@ -47,12 +47,6 @@ class SellerReputationModule {
 
     @SellerReputationScope
     @Provides
-    fun provideUserGraphqlRepository(): GraphqlRepository {
-        return getInstance().graphqlRepository
-    }
-
-    @SellerReputationScope
-    @Provides
     fun provideShopInfoCloud(
         @ApplicationContext context: Context?,
         api: ShopApi?

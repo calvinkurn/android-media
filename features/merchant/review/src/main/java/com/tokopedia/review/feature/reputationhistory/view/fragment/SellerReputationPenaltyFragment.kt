@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,21 +14,30 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.reputationhistory.di.DaggerSellerReputationComponent
 import com.tokopedia.review.feature.reputationhistory.di.SellerReputationComponent
+import com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationInfoActivity
 import com.tokopedia.review.feature.reputationhistory.view.adapter.ReputationPenaltyAdapterFactory
 import com.tokopedia.review.feature.reputationhistory.view.adapter.SellerReputationPenaltyAdapter
+import com.tokopedia.review.feature.reputationhistory.view.adapter.viewholder.SellerReputationShopViewHolder
 import com.tokopedia.review.feature.reputationhistory.view.helper.GMStatHeaderViewHelper
+import com.tokopedia.review.feature.reputationhistory.view.model.ReputationPenaltyUiModel
 import com.tokopedia.review.feature.reputationhistory.view.viewmodel.SellerReputationViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SellerReputationPenaltyFragment :
     BaseListFragment<Visitable<*>, ReputationPenaltyAdapterFactory>(),
-    HasComponent<SellerReputationComponent>, DatePickerResultListener.DatePickerResult {
+    HasComponent<SellerReputationComponent>, DatePickerResultListener.DatePickerResult,
+    SellerReputationShopViewHolder.SellerReputationInfoListener {
 
     @Inject
     lateinit var sellerReputationViewModel: SellerReputationViewModel
@@ -39,7 +49,7 @@ class SellerReputationPenaltyFragment :
 
 
     private val reputationPenaltyAdapterFactory by lazy {
-        ReputationPenaltyAdapterFactory(this)
+        ReputationPenaltyAdapterFactory(this, this)
     }
 
     private val reputationPenaltyAdapter by lazy {
@@ -63,8 +73,9 @@ class SellerReputationPenaltyFragment :
                 ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
-        datePickerResultListener =
-            DatePickerResultListener(this, GMStatHeaderViewHelper.MOVE_TO_SET_DATE)
+        datePickerResultListener = DatePickerResultListener(this, GMStatHeaderViewHelper.MOVE_TO_SET_DATE)
+        observeReputationPenalty()
+        observeReputationPenaltyLoadMore()
     }
 
     override fun getScreenName(): String {
@@ -100,13 +111,18 @@ class SellerReputationPenaltyFragment :
         return reputationPenaltyAdapterFactory
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        datePickerResultListener?.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun loadInitialData() {
         super.loadInitialData()
         sellerReputationViewModel.getReputationPenaltyRewardMerge()
     }
 
     override fun onSwipeRefresh() {
-        swipeToRefresh.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         showLoading()
         sellerReputationViewModel.getReputationPenaltyRewardMerge()
     }
@@ -128,5 +144,88 @@ class SellerReputationPenaltyFragment :
     override fun onDateChoosen(sDate: Long, eDate: Long, lastSelection: Int, selectionType: Int) {
         reputationPenaltyAdapter.updateDateFilter(sDate, eDate)
         sellerReputationViewModel.setDateFilterReputationPenalty(Pair(sDate, eDate))
+    }
+
+    override fun onClickReputationInfo() {
+        this@SellerReputationPenaltyFragment.startActivity(
+            Intent(
+                this@SellerReputationPenaltyFragment.activity,
+                SellerReputationInfoActivity::class.java
+            )
+        )
+    }
+
+    private fun observeReputationPenalty() {
+        observe(sellerReputationViewModel.reputationAndPenaltyMerge) {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    val baseReputationPenaltyData = it.data.baseSellerReputationList.filterNot { visitable -> visitable is ReputationPenaltyUiModel }
+                    val reputationPenaltyList = it.data.baseSellerReputationList.filterIsInstance<ReputationPenaltyUiModel>()
+                    reputationPenaltyAdapter.setReputationPenaltyMerge(baseReputationPenaltyData)
+                    onSuccessReputationPenaltyList(reputationPenaltyList, it.data.hasNext)
+                }
+                is Fail -> {
+                    showToasterErrorPenalty(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeReputationPenaltyLoadMore() {
+        observe(sellerReputationViewModel.reputationAndPenaltyReward) {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    onSuccessReputationPenaltyList(it.data.reputationPenaltyList, it.data.hasNext)
+                }
+                is Fail -> {
+                    showToasterErrorPenalty(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessReputationPenaltyList(
+        data: List<ReputationPenaltyUiModel>,
+        hasNext: String?) {
+        val reputationPenaltyList =
+            reputationPenaltyAdapter.list.filterIsInstance<ReputationPenaltyUiModel>()
+        if (reputationPenaltyList.isEmpty() && data.isEmpty()) {
+            reputationPenaltyAdapter.setEmptyStateReputationPenalty()
+        } else {
+            reputationPenaltyAdapter.updateReputationPenaltyListData(data)
+        }
+        val hasNextPenalty = hasNext != null
+        updateScrollListenerState(hasNextPenalty)
+    }
+
+    private fun showToasterErrorPenalty(throwable: Throwable) {
+        val messageError = context?.let { ErrorHandler.getErrorMessage(it, throwable) }
+        val actionError = getString(R.string.error_action_text_seller_reputation)
+        val reputationPenaltyList =
+            reputationPenaltyAdapter.list.filterIsInstance<ReputationPenaltyUiModel>()
+        view?.run {
+            messageError?.let {
+                Toaster.build(
+                    this,
+                    it, duration = Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR,
+                    actionText = actionError, clickListener = {
+                        if (reputationPenaltyList.isNotEmpty()) {
+                            loadData(endlessRecyclerViewScrollListener.currentPage)
+                        } else {
+                            loadInitialData()
+                        }
+                    }
+                ).show()
+            }
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): SellerReputationPenaltyFragment {
+            return SellerReputationPenaltyFragment()
+        }
     }
 }

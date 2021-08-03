@@ -13,9 +13,9 @@ class GetReputationShopUseCase @Inject constructor(
 
     private var params = mapOf<String, Any>()
 
-    fun setParams(shopId: String) {
+    fun setParams(shopId: Long) {
         params = RequestParams.create().apply {
-            putString(SHOP_IDS_PARAM, shopId)
+            putLong(SHOP_IDS_PARAM, shopId)
         }.parameters
     }
 

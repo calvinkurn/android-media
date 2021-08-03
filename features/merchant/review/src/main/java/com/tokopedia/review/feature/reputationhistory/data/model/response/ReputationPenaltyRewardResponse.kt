@@ -7,17 +7,17 @@ import com.google.gson.annotations.SerializedName
 data class ReputationPenaltyRewardResponse(
     @Expose
     @SerializedName("reputation_penalty_and_reward")
-    val reputationPenaltyAndReward: ReputationPenaltyAndReward = ReputationPenaltyAndReward()
+    val reputationPenaltyAndReward: ReputationPenaltyAndReward? = ReputationPenaltyAndReward()
 ) {
     data class ReputationPenaltyAndReward(
         @Expose
         @SerializedName("list")
-        val list: List<ReputationPenaltyRewardModel> = listOf(),
+        val penaltyList: List<ReputationPenaltyAndRewardList> = listOf(),
         @Expose
         @SerializedName("page")
         val page: Page = Page()
     ) {
-        data class ReputationPenaltyRewardModel(
+        data class ReputationPenaltyAndRewardList(
             @Expose
             @SerializedName("id")
             val id: String = "0",
@@ -34,13 +34,14 @@ data class ReputationPenaltyRewardResponse(
             @SerializedName("time_fmt")
             val timeFmt: String = ""
         )
+
+        data class Page(
+            @Expose
+            @SerializedName("next")
+            val next: String? = null,
+            @Expose
+            @SerializedName("prev")
+            val prev: String? = null
+        )
     }
-    data class Page(
-        @Expose
-        @SerializedName("next")
-        val next: String? = null,
-        @Expose
-        @SerializedName("prev")
-        val prev: String? = null
-    )
 }

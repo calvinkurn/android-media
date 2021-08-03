@@ -24,9 +24,9 @@ class SellerReputationPenaltyMapper @Inject constructor() {
                     startDate = startDate.convertDateTextToTimeStamp(SellerReputationViewModel.PATTERN_PENALTY_DATE_PARAM),
                     endDate = endDate.convertDateTextToTimeStamp(SellerReputationViewModel.PATTERN_PENALTY_DATE_PARAM)
                 ))
-                if (reputationPenaltyAndReward?.list?.isNotEmpty() == true) {
+                if (reputationPenaltyAndReward?.penaltyList?.isNotEmpty() == true) {
                     addAll(
-                        reputationPenaltyAndReward.list.map {
+                        reputationPenaltyAndReward.penaltyList.map {
                             ReputationPenaltyUiModel(
                                 date = it.timeFmt,
                                 invoice = it.invoiceRefNum,
@@ -41,12 +41,11 @@ class SellerReputationPenaltyMapper @Inject constructor() {
     }
 
     fun mapToPenaltyReputationList(reputationPenaltyRewardResponse: ReputationPenaltyRewardResponse): SellerReputationPenaltyUiModel {
-        val reputationPenaltyReward = reputationPenaltyRewardResponse.reputationPenaltyAndReward
         return SellerReputationPenaltyUiModel(
             reputationPenaltyList = mutableListOf<ReputationPenaltyUiModel>().apply {
-                if (reputationPenaltyReward.list.isNotEmpty()) {
+                if (reputationPenaltyRewardResponse.reputationPenaltyAndReward?.penaltyList?.isNotEmpty() == true) {
                     addAll(
-                        reputationPenaltyReward.list.map {
+                        reputationPenaltyRewardResponse.reputationPenaltyAndReward.penaltyList.map {
                             ReputationPenaltyUiModel(
                                 date = it.timeFmt,
                                 invoice = it.invoiceRefNum,
@@ -57,8 +56,8 @@ class SellerReputationPenaltyMapper @Inject constructor() {
                     )
                 }
             },
-            hasNext = reputationPenaltyReward.page.next,
-            hasPrev = reputationPenaltyReward.page.prev
+            hasNext = reputationPenaltyRewardResponse.reputationPenaltyAndReward?.page?.next,
+            hasPrev = reputationPenaltyRewardResponse.reputationPenaltyAndReward?.page?.prev
         )
     }
 }

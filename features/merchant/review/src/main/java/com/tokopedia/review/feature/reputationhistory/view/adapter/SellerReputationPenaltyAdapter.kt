@@ -10,7 +10,7 @@ import com.tokopedia.review.feature.reputationhistory.view.model.ReputationPenal
 class SellerReputationPenaltyAdapter(reputationPenaltyAdapterFactory: ReputationPenaltyAdapterFactory) :
     BaseListAdapter<Visitable<*>, ReputationPenaltyAdapterFactory>(reputationPenaltyAdapterFactory) {
 
-    fun setReputationPenaltyList(penaltyListUiModel: List<BaseSellerReputation>) {
+    fun setReputationPenaltyMerge(penaltyListUiModel: List<BaseSellerReputation>) {
         visitables.clear()
         visitables.addAll(penaltyListUiModel)
         notifyDataSetChanged()

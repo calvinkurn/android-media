@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.feature.reputationhistory.domain.mapper.SellerReputationPenaltyMapper
 import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationAndPenaltyRewardUseCase
 import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationPenaltyRewardUseCase
@@ -75,7 +76,7 @@ class SellerReputationViewModel @Inject constructor(
         launch(block = {
             val getReputationPenaltyRewardMergeResponse = withContext(dispatchers.io) {
                 getReputationAndPenaltyRewardUseCase.execute(
-                    userSession.shopId,
+                    userSession.shopId.toLongOrZero(),
                     FIRST_PAGE,
                     startDate,
                     endDate
@@ -88,7 +89,7 @@ class SellerReputationViewModel @Inject constructor(
     fun getReputationPenaltyList(page: Int = FIRST_PAGE) {
         launchCatchError(block = {
             val reputationPenaltyAndRewardResponse = withContext(dispatchers.io) {
-                getReputationPenaltyRewardUseCase.setParams(userSession.shopId, page, startDate, endDate)
+                getReputationPenaltyRewardUseCase.setParams(userSession.shopId.toLongOrZero(), page, startDate, endDate)
                 sellerReputationPenaltyMapper.mapToPenaltyReputationList(getReputationPenaltyRewardUseCase.executeOnBackground())
             }
             reputationPenaltyRewardMediator.postValue(Success(reputationPenaltyAndRewardResponse))
