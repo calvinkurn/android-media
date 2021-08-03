@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
+import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -48,7 +49,8 @@ data class ProductInfoP2UiData(
         var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
         var miniCart: MutableMap<String, MiniCartItem>? = null,
-        var alternateCopy: List<AlternateCopy> = listOf()
+        var alternateCopy: List<AlternateCopy> = listOf(),
+        var bundleInfo: List<BundleInfo> = emptyList()
 ) {
     fun getTotalStockMiniCartByParentId(parentId: String): Int {
         if (parentId == "0" || parentId.isEmpty()) return 0

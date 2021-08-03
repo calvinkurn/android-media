@@ -461,8 +461,32 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
-        }
-    }""".trimIndent()
+            bundleInfo {
+              productID
+              bundleID
+              groupID
+              name
+              type
+              status
+              titleComponent
+              finalPriceBundling
+              originalPriceBundling
+              savingPriceBundling
+              preorderString
+              bundleItems {
+                productID
+                name
+                picURL
+                status
+                quantity
+                originalPrice
+                bundlePrice
+                discountPercentage
+                stock
+              }
+  	        }
+          }
+        }""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -532,6 +556,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
+            p2UiData.bundleInfo = bundleInfo
         }
         return p2UiData
     }
