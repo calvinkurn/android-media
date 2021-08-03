@@ -37,7 +37,6 @@ import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.getOrAwaitValue
-import com.tokopedia.product.warehouse.model.ProductActionSubmit
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -1428,18 +1427,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.removeWishList(productId, null, {
             Assert.assertEquals(it, errorMessage)
         })
-    }
-
-    @Test
-    fun onSuccessCancelWarehouseJob() {
-        viewModel.cancelWarehouseUseCase()
-        verify { viewModel.cancelWarehouseUseCase() }
-    }
-
-    @Test
-    fun onSuccessCancelEtalaseJob() {
-        viewModel.cancelEtalaseUseCase()
-        verify { viewModel.cancelEtalaseUseCase() }
     }
 
     /**
