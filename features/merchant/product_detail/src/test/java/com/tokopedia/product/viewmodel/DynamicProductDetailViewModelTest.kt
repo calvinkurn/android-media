@@ -1679,14 +1679,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         verify {
-            moveProductToWarehouseUseCase.cancelJobs()
-        }
-
-        verify {
-            moveProductToEtalaseUseCase.cancelJobs()
-        }
-
-        verify {
             getTopadsIsAdsUseCase.cancelJobs()
         }
 
