@@ -218,6 +218,7 @@ class TokoNowHomeFragment: Fragment(),
         updateCurrentPageLocalCacheModelData()
 
         loadLayout()
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -236,7 +237,7 @@ class TokoNowHomeFragment: Fragment(),
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
         isFirstResumed = true
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        UniversalShareBottomSheet.getScreenShotDetector()?.start()
     }
 
     override fun onStop() {

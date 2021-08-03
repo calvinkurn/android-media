@@ -24,7 +24,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
     private var ssUriPath = ""
 
     fun start() {
-        if (contentObserver == null) {
+        if (haveStoragePermission() && contentObserver == null) {
             contentObserver = context.contentResolver.registerObserver()
         }
     }
