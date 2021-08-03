@@ -1501,7 +1501,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         binding?.containerEmptyResultState?.visible()
         binding?.containerEmptyResultState?.doOnNextLayout {
-            bottomSheetBehavior.peekHeight = binding?.containerEmptyResultState?.measuredHeight ?: 0 +
+            bottomSheetBehavior.peekHeight = binding?.containerEmptyResultState?.bottom ?: 0 +
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
         }
     }
