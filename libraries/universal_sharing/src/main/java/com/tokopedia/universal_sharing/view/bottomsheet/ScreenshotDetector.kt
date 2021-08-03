@@ -15,6 +15,7 @@ import android.provider.MediaStore
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import java.lang.Exception
 
 class ScreenshotDetector(internal val context: Context, private val screenShotListener: ScreenShotListener) {
 
@@ -43,67 +44,75 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
     }
 
     private fun queryDataColumn(uri: Uri) {
-        val projection = arrayOf(
-            MediaStore.Images.Media.DATA
-        )
-        context.contentResolver.query(
-            uri,
-            projection,
-            null,
-            null,
-            null
-        )?.use { cursor ->
-            val dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
-            while (cursor.moveToNext()) {
-                val path = cursor.getString(dataColumn)
-                if (path.contains(screenShotRegex, true)) {
-                    // do something
-                    if(!ssUriPath.equals(path)) {
-                        ssUriPath = path
-                        if(!path.contains(pendingRegex)) {
-                            UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                            UniversalShareBottomSheet.setScreenShotImagePath(path)
-                            screenShotListener.screenShotTaken()
+        try {
+            val projection = arrayOf(
+                MediaStore.Images.Media.DATA
+            )
+            context.contentResolver.query(
+                uri,
+                projection,
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                val dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
+                while (cursor.moveToNext()) {
+                    val path = cursor.getString(dataColumn)
+                    if (path.contains(screenShotRegex, true)) {
+                        // do something
+                        if (!ssUriPath.equals(path)) {
+                            ssUriPath = path
+                            if (!path.contains(pendingRegex)) {
+                                UniversalShareBottomSheet.setImageOnlySharingOption(true)
+                                UniversalShareBottomSheet.setScreenShotImagePath(path)
+                                screenShotListener.screenShotTaken()
+                            }
                         }
                     }
                 }
             }
+        }catch (exception:Exception){
+
         }
     }
 
     private fun queryRelativeDataColumn(uri: Uri) {
-        val projection = arrayOf(
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.DATA
-        )
-        context.contentResolver.query(
-            uri,
-            projection,
-            null,
-            null,
-            null
-        )?.use { cursor ->
-            val relativePathColumn =
-                cursor.getColumnIndex(MediaStore.Images.Media.DATA)
-            val displayNameColumn =
-                cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
-            while (cursor.moveToNext()) {
-                val name = cursor.getString(displayNameColumn)
-                val relativePath = cursor.getString(relativePathColumn)
-                if (name.contains(screenShotRegex, true) or
-                    relativePath.contains(screenShotRegex, true)
-                ) {
-                    // do something
-                    if(!ssUriPath.equals(relativePath)) {
-                        ssUriPath = relativePath
-                        if(!relativePath.contains(pendingRegex)) {
-                            UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                            UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-                            screenShotListener.screenShotTaken()
+        try {
+            val projection = arrayOf(
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DATA
+            )
+            context.contentResolver.query(
+                uri,
+                projection,
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                val relativePathColumn =
+                    cursor.getColumnIndex(MediaStore.Images.Media.DATA)
+                val displayNameColumn =
+                    cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
+                while (cursor.moveToNext()) {
+                    val name = cursor.getString(displayNameColumn)
+                    val relativePath = cursor.getString(relativePathColumn)
+                    if (name.contains(screenShotRegex, true) or
+                        relativePath.contains(screenShotRegex, true)
+                    ) {
+                        // do something
+                        if (!ssUriPath.equals(relativePath)) {
+                            ssUriPath = relativePath
+                            if (!relativePath.contains(pendingRegex)) {
+                                UniversalShareBottomSheet.setImageOnlySharingOption(true)
+                                UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
+                                screenShotListener.screenShotTaken()
+                            }
                         }
                     }
                 }
             }
+        }catch (exception:Exception){
+
         }
     }
 
