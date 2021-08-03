@@ -3,15 +3,17 @@ package com.tokopedia.discovery2.viewcontrollers.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +49,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -95,6 +98,7 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
+private const val ROTATION = 90f
 
 class DiscoveryFragment :
         BaseDaggerFragment(),
@@ -118,6 +122,8 @@ class DiscoveryFragment :
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
     private var shouldShowChooseAddressWidget:Boolean = true
+    private lateinit var coordinatorLayout:CoordinatorLayout
+    private lateinit var parentLayout: FrameLayout
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -134,6 +140,9 @@ class DiscoveryFragment :
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
     private var userAddressData: LocalCacheModel? = null
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private var lastVisibleComponent: ComponentsItem? = null
+    private var screenScrollPercentage = 0
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -223,6 +232,8 @@ class DiscoveryFragment :
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
         ivToTop = view.findViewById(R.id.toTopImg)
+        coordinatorLayout = view.findViewById(R.id.parent_coordinator)
+        parentLayout = view.findViewById(R.id.parent_frame)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
@@ -233,6 +244,7 @@ class DiscoveryFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
                     ivToTop.hide()
+                    calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
@@ -262,6 +274,48 @@ class DiscoveryFragment :
         })
     }
 
+    private fun calculateScrollDepth(recyclerView: RecyclerView) {
+        if(::discoveryViewModel.isInitialized){
+            val offset =
+                recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
+            val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+            val range = recyclerView.computeVerticalScrollRange() // max scroll height
+
+            val currentScrollDepth = discoveryViewModel.getScrollDepth(offset, extent, range)
+            if (screenScrollPercentage == 0 || currentScrollDepth > screenScrollPercentage) {
+                screenScrollPercentage = currentScrollDepth
+            }
+            updateLastVisibleComponent()
+        }
+    }
+
+    private fun updateLastVisibleComponent() {
+        if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName)
+        ) {
+            return
+        }
+        staggeredGridLayoutManager?.findLastVisibleItemPositions(null)?.let { positionArray ->
+            if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
+                if (discoveryAdapter.currentList.size <= positionArray.first()) return
+                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
+
+                if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName)
+                ) {
+                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
+                        .getComponent(
+                            lastVisibleComponent!!.parentComponentId,
+                            lastVisibleComponent!!.pageEndPoint
+                        )
+                }
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
@@ -278,7 +332,8 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+            staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            setLayoutManager(staggeredGridLayoutManager!!)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
@@ -368,11 +423,11 @@ class DiscoveryFragment :
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
                 if (widgetVisibilityStatus) {
-                    if(shouldShowChooseAddressWidget) {
+                    if (shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
                     }
-                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
@@ -581,7 +636,7 @@ class DiscoveryFragment :
         }
     }
 
-    private fun hideGlobalError(){
+    private fun hideGlobalError() {
         globalError.hide()
     }
 
@@ -685,10 +740,10 @@ class DiscoveryFragment :
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                    if (this.componentPosition != null && this.componentPosition!! >= 0) {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                         discoveryBaseViewModel?.loggedInCallback()
-                    }else{
+                    } else {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     }
                 }
@@ -810,6 +865,10 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
+        if(lastVisibleComponent == null){
+            updateLastVisibleComponent()
+        }
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
     }
 
@@ -918,4 +977,60 @@ class DiscoveryFragment :
     private fun updateChooseAddressWidget() {
         chooseAddressWidget?.updateWidget()
     }
+
+    fun showCustomContent(view: View){
+        hideSystemUi()
+        coordinatorLayout.hide()
+        view.rotation = ROTATION
+        val width = Resources.getSystem().displayMetrics.widthPixels
+        val height = activity?.let {
+            val metrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getRealMetrics(metrics)
+            metrics.heightPixels
+        }?:Resources.getSystem().displayMetrics.heightPixels
+        val offset = width-height
+        view.translationX = offset.toFloat() / 2
+        view.translationY = -offset.toFloat() / 2
+
+        val layoutParams = FrameLayout.LayoutParams(height,width)
+        view.layoutParams = layoutParams
+
+        parentLayout.setBackgroundColor(Color.BLACK)
+        parentLayout.addView(view)
+        parentLayout.requestFocus()
+    }
+
+    fun hideCustomContent(){
+        showSystemUi()
+        parentLayout.setBackgroundColor(Color.WHITE)
+        coordinatorLayout.show()
+        if(parentLayout.childCount>1){
+            parentLayout.removeViewAt(1)
+        }
+    }
+
+    private fun hideSystemUi() {
+        activity?.window?.apply {
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val params: WindowManager.LayoutParams = attributes
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                attributes = params
+            }
+        }
+
+    }
+
+    private fun showSystemUi() {
+        activity?.window?.decorView?.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+    }
+
+
 }

@@ -140,6 +140,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.net.ConnectException
@@ -201,6 +202,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterRefresh: Boolean = false
 
     private var isUserEventTrackerDoneTrack = false
+    private var isUserEventTrackerDoneOnResume = false
 
     private lateinit var shareData: LinkerData
     private  lateinit var reportBottomSheet: ReportBottomSheet
@@ -328,6 +330,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         if (activity != null) GraphqlClient.init(requireActivity())
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
+        Embrace.getInstance().startEvent(FEED_TRACE, null, false)
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -956,6 +959,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        if(isUserEventTrackerDoneOnResume) {
+            isUserEventTrackerDoneOnResume = false
+            feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
+        }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         registerNewFeedReceiver()
@@ -965,6 +972,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        isUserEventTrackerDoneOnResume = true
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         unRegisterNewFeedReceiver()
@@ -1483,7 +1491,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sheet.onReport = {
                 feedAnalytics.eventClickThreeDotsOption(
                     postId.toString(),
-                    "report",
+                    "laporkan",
                     postType,
                     isFollowed,
                     authorId,
@@ -2536,6 +2544,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun stopTracePerformanceMon() {
         performanceMonitoring.stopTrace()
+        Embrace.getInstance().endEvent(FEED_TRACE)
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
@@ -2917,7 +2926,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (applink?.contains("shop") == true && position == 0) {
             eventAction = CLICK_CEK_SEKARANG
-            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+            val eventLabelcek = "${cpmData.cpm.cpmShop.id}"
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabelcek, userSession.userId)
         } else if (applink?.contains("shop") == true && position == 1) {
             eventAction = CLICK_SHOP_TOPADS
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)

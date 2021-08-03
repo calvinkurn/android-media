@@ -29,6 +29,9 @@ android {
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
                     pathSources + 'createreputation',
+                    pathSources + 'reading',
+                    pathSources + 'gallery',
+                    pathSources + 'common'
             ]
         }
     }
@@ -68,6 +71,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
