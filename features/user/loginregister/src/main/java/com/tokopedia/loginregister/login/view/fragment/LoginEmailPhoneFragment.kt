@@ -1064,7 +1064,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (GlobalConfig.isSellerApp()) {
                 setLoginSuccessSellerApp()
             } else {
-                it.setResult(Activity.RESULT_OK)
+
+                val bundle = Bundle()
+
+                if (isFromRegister) {
+                    bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
+                }
+
+                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                 it.finish()
             }
 
@@ -1200,7 +1207,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onErrorValidateRegister(throwable: Throwable) {
         dismissLoadingLogin()
-        val message = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().withErrorCode(false).build())
         analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message)
         partialRegisterInputView?.onErrorValidate(message)
     }
@@ -1635,8 +1642,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
-                ?: false
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
         analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
 
         if (enable2FA) {

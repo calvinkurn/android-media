@@ -39,8 +39,15 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
             val uri = it.pathSegments
             detailId = uri[uri.lastIndex]
         }
-        shopId = intent.getStringExtra(PARAM_SHOP_ID)
-        activityId = intent.getStringExtra(PARAM_ACTIVITY_ID)
+        shopId = if(intent.hasExtra(PARAM_SHOP_ID))
+            intent.getStringExtra(PARAM_SHOP_ID) ?: ""
+        else ""
+
+        activityId = if(intent.hasExtra(PARAM_ACTIVITY_ID))
+            intent.getStringExtra(PARAM_ACTIVITY_ID) ?: ""
+        else ""
+
+
 
     }
 
