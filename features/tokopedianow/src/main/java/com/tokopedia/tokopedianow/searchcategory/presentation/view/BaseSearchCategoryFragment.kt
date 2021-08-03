@@ -43,7 +43,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -271,8 +271,11 @@ abstract class BaseSearchCategoryFragment:
                 ) { }
             else this
 
-    protected open fun getNavToolbarHint() =
-            listOf(HintData("", ""))
+    protected open fun getNavToolbarHint(): List<HintData> {
+        val hint = getString(R.string.tokopedianow_search_bar_hint)
+
+        return listOf(HintData(hint, hint))
+    }
 
     protected open fun onSearchBarClick(hint: String = "") {
         val autoCompleteApplink = getAutoCompleteApplink()
@@ -694,7 +697,7 @@ abstract class BaseSearchCategoryFragment:
         val context = activity ?: return
         val view = view ?: return
 
-        NetworkErrorHelper.showEmptyState(context, view, getErrorMessage(context, throwable)) {
+        NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             getViewModel().onViewReloadPage()
         }
     }

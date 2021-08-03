@@ -22,5 +22,6 @@ annotation class HomeStaticLayoutId {
         const val EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE = "3"
         const val EMPTY_STATE_FAILED_TO_FETCH_DATA = "4"
         const val LOADING_STATE = "5"
+        const val PRODUCT_RECOM_OOC = "6"
     }
 }

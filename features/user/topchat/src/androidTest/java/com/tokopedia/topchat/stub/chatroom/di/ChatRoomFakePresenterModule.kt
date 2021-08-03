@@ -11,11 +11,11 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -45,7 +45,6 @@ class ChatRoomFakePresenterModule {
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
             replyChatUseCase: ReplyChatUseCase,
             getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-            deleteMessageListUseCase: DeleteMessageListUseCase,
             getShopFollowingUseCase: GetShopFollowingUseCase,
             toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
             addToCartUseCase: AddToCartUseCase,
@@ -62,6 +61,7 @@ class ChatRoomFakePresenterModule {
             chatBackgroundUseCase: ChatBackgroundUseCase,
             chatSrwUseCase: SmartReplyQuestionUseCase,
             tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+            moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
             sharedPref: SharedPreferences,
             dispatchers: CoroutineDispatchers,
             remoteConfig: RemoteConfig
@@ -76,7 +76,6 @@ class ChatRoomFakePresenterModule {
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
                 getExistingMessageIdUseCase,
-                deleteMessageListUseCase,
                 getShopFollowingUseCase,
                 toggleFavouriteShopUseCase,
                 addToCartUseCase,
@@ -93,6 +92,7 @@ class ChatRoomFakePresenterModule {
                 chatBackgroundUseCase,
                 chatSrwUseCase,
                 tokoNowWHUsecase,
+                moveChatToTrashUseCase,
                 sharedPref,
                 dispatchers,
                 remoteConfig
