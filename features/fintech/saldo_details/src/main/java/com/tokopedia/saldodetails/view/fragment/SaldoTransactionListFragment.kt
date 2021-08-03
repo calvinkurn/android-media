@@ -21,6 +21,7 @@ import com.tokopedia.saldodetails.view.activity.detail.SaldoWithdrawalDetailActi
 import com.tokopedia.saldodetails.view.fragment.new.*
 import com.tokopedia.saldodetails.view.viewmodel.TransactionHistoryViewModel
 import com.tokopedia.saldodetails.view.viewmodel.state.*
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
@@ -91,7 +92,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : DataEndLessScrollListener(transactionRecyclerView?.layoutManager, adapter) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                transactionHistoryViewModel?.loadMoreTransaction(page, transactionType)
+                transactionHistoryViewModel?.loadMoreTransaction(transactionType)
             }
         }
     }
@@ -105,7 +106,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
                     adapter.showInitialLoadingFailed(it.throwable)
                 }
                 is LoadMoreError -> {
-                    //todo try to show error...
+                    showLoadMoreRetryToast()
                 }
                 LoadingMoreState -> adapter.showLoadingInAdapter()
                 InitialLoadingState -> {
@@ -115,6 +116,17 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
                 }
                 is SaldoHistoryResponse -> onDataLoaded(it.historyList, it.hasMore)
             }
+        }
+    }
+
+    private fun showLoadMoreRetryToast() {
+        view?.let {
+            Toaster.build(
+                it, getString(R.string.saldo_failed_to_load_more_transaction),
+                Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR, getString(R.string.saldo_retry)
+            ) {
+                transactionHistoryViewModel?.loadMoreTransaction(transactionType)
+            }.show()
         }
     }
 

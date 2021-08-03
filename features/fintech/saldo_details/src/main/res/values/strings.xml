@@ -117,4 +117,7 @@
     <string name="saldo_retry">coba lagi</string>
     <string name="saldo_penjualan_coachmark_title">Lihat jumlah bersih yang diterima dari hasil jualanmu di sini</string>
     <string name="saldo_penjualan_coachmark_desc">Bisa juga cek pemotongan biaya Bebas Ongkir, Power Merchant, dll. pada halaman detailnya.</string>
+    <string name="saldo_failed_to_load_more_transaction">Gagal menampilkan transaksi</string>
+    <string name="saldo_balance_load_fail_title">Gagal menampilkan saldo</string>
+    <string name="saldo_balance_load_fail_desc">Klik untuk memuat ulang</string>
 </resources>

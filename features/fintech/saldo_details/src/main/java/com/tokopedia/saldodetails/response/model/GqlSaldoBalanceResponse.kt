@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GqlSaldoBalanceResponse(
         @SerializedName("balance")
-        var saldo: Saldo? = null
+        var saldo: Saldo
 )
 
 data class Saldo(
@@ -30,5 +30,8 @@ data class Saldo(
         var sellerUsable: Long = 0,
 
         @SerializedName("seller_usable_fmt")
-        var sellerUsableFmt: String? = null
+        var sellerUsableFmt: String? = null,
+
+        @SerializedName("have_error")
+        var isHaveError: Boolean = false
 )

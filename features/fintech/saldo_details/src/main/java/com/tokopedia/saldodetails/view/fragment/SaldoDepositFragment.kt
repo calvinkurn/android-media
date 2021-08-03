@@ -362,20 +362,24 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    it.data.saldo?.let { saldo ->
-                        onUserSaldoBalanceLoaded(saldo)
+                    if(it.data.saldo.isHaveError){
+                        onSaldoBalanceLoadingError()
+                    }else {
+                        onUserSaldoBalanceLoaded(it.data.saldo)
                     }
                 }
                 is ErrorMessage<*, *> -> {
-                    if (it.data is Int) {
+                    onSaldoBalanceLoadingError()
+                    /*if (it.data is Int) {
                         setRetry(getString(it.data))
                     } else {
                         setRetry()
-                    }
+                    }*/
                 }
+            /*
                 else -> {
                     setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
-                }
+                }*/
             }
         })
 
@@ -437,6 +441,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
+        cardWithdrawBalance.visible()
+        localLoadSaldoBalance.gone()
         setSellerSaldoBalance(
             saldo.sellerUsable,
             saldo.sellerUsableFmt!!
@@ -472,6 +478,26 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             hideWarning()
         }
 
+    }
+
+    private fun onSaldoBalanceLoadingError(){
+        cardWithdrawBalance.gone()
+        localLoadSaldoBalance.visible()
+        localLoadSaldoBalance.refreshBtn?.setOnClickListener {
+            cardWithdrawBalance.visible()
+            localLoadSaldoBalance.gone()
+            refresh()
+        }
+        localLoadSaldoBalance.localLoadTitle = getString(R.string.saldo_balance_load_fail_title)
+        localLoadSaldoBalance.localLoadDescription = getString(R.string.saldo_balance_load_fail_desc)
+    }
+
+
+    fun refresh() {
+        if (::saldoDetailViewModel.isInitialized) {
+            saldoDetailViewModel.getUserSaldoBalance()
+            saldoHistoryFragment?.onRefresh()
+        }
     }
 
     private fun initListeners() {
@@ -934,13 +960,13 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         holdBalanceLayout!!.hide()
     }
 
-    fun refresh() {
-        if (::saldoDetailViewModel.isInitialized)
-            saldoDetailViewModel.getUserSaldoBalance()
-        saldoHistoryFragment?.onRefresh()
-    }
 
-    private fun setRetry() {
+    override fun onDestroy() {
+        super.onDestroy()
+        performanceInterface.stopMonitoring()
+    }
+}
+/*   private fun setRetry() {
         view?.let { view ->
             Toaster.build(
                 view,
@@ -968,8 +994,4 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        performanceInterface.stopMonitoring()
-    }
-}
+*/

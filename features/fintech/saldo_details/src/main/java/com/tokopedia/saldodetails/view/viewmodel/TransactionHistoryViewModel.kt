@@ -31,10 +31,10 @@ class TransactionHistoryViewModel @Inject constructor(
     private var dateFrom: Date = Date()
     private var dateTo: Date = Date()
 
-    private val allTransactionList = arrayListOf<DepositHistoryList>()
-    private val refundTransactionList = arrayListOf<DepositHistoryList>()
-    private val incomeTransactionList = arrayListOf<DepositHistoryList>()
-    private val salesTransactionList = arrayListOf<SalesTransactionDetail>()
+    private val allTransactionList = TransactionList()
+    private val refundTransactionList = TransactionList()
+    private val incomeTransactionList = TransactionList()
+    private val salesTransactionList = TransactionList()
 
     private val allTransactionLiveData =
         MutableLiveData<SaldoResponse>() //for All saldo transaction
@@ -50,6 +50,15 @@ class TransactionHistoryViewModel @Inject constructor(
             RefundTransaction -> refundTransactionLiveData
             SalesTransaction -> salesTransactionLiveData
         }
+    }
+
+    private fun getNextPageByTransactionType(transactionType: TransactionType) :Int {
+        return when(transactionType) {
+            AllTransaction -> allTransactionList
+            IncomeTransaction -> incomeTransactionList
+            RefundTransaction -> refundTransactionList
+            SalesTransaction -> salesTransactionList
+        }.getNextPage()
     }
 
     fun refreshAllTabsData(dateFrom: Date, dateTo: Date) {
@@ -69,7 +78,6 @@ class TransactionHistoryViewModel @Inject constructor(
             }, dateFrom, dateTo
         )
         loadSaleTransaction(1)
-
     }
 
     fun retryAllTabLoading() {
@@ -104,7 +112,7 @@ class TransactionHistoryViewModel @Inject constructor(
                 salesTransactionList.addAll(it)
                 salesTransactionLiveData.postValue(
                     SaldoHistoryResponse(
-                        salesTransactionList,
+                        salesTransactionList.getTransactionList() ,
                         response.isHaveNextPage
                     )
                 )
@@ -129,7 +137,7 @@ class TransactionHistoryViewModel @Inject constructor(
                 allTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
                 allTransactionLiveData.postValue(
                     SaldoHistoryResponse(
-                        allTransactionList,
+                        allTransactionList.getTransactionList(),
                         it.isHaveNextPage
                     )
                 )
@@ -138,7 +146,7 @@ class TransactionHistoryViewModel @Inject constructor(
                 refundTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
                 refundTransactionLiveData.postValue(
                     SaldoHistoryResponse(
-                        refundTransactionList,
+                        refundTransactionList.getTransactionList(),
                         it.isHaveNextPage
                     )
                 )
@@ -147,7 +155,7 @@ class TransactionHistoryViewModel @Inject constructor(
                 incomeTransactionList.addAll(it.depositHistoryList ?: mutableListOf())
                 incomeTransactionLiveData.postValue(
                     SaldoHistoryResponse(
-                        incomeTransactionList,
+                        incomeTransactionList.getTransactionList(),
                         it.isHaveNextPage
                     )
                 )
@@ -164,16 +172,16 @@ class TransactionHistoryViewModel @Inject constructor(
             .postValue(InitialLoadingError(throwable))
     }
 
-    fun loadMoreTransaction(page: Int, transactionType: TransactionType) {
+    fun loadMoreTransaction(transactionType: TransactionType) {
         updateLoadMoreState(transactionType)
         if (transactionType == SalesTransaction) {
-            loadSaleTransaction(page)
+            loadSaleTransaction(getNextPageByTransactionType(transactionType))
         } else {
             getTypeTransactionsUseCase.loadTypeTransactions({
                 notifyAndAddLoadMoreTransaction(it, transactionType)
             }, {
                 notifyLoadMoreError(it, transactionType)
-            }, page, dateFrom, dateTo, transactionType)
+            },getNextPageByTransactionType(transactionType) , dateFrom, dateTo, transactionType)
         }
     }
 
@@ -204,7 +212,7 @@ class TransactionHistoryViewModel @Inject constructor(
                     )
                     allTransactionLiveData.postValue(
                         SaldoHistoryResponse(
-                            allTransactionList,
+                            allTransactionList.getTransactionList(),
                             it.allDepositHistory?.isHaveNextPage ?: false
                         )
                     )
@@ -216,7 +224,7 @@ class TransactionHistoryViewModel @Inject constructor(
                     )
                     refundTransactionLiveData.postValue(
                         SaldoHistoryResponse(
-                            refundTransactionList,
+                            refundTransactionList.getTransactionList(),
                             it.allDepositHistory?.isHaveNextPage ?: false
                         )
                     )
@@ -228,7 +236,7 @@ class TransactionHistoryViewModel @Inject constructor(
                     )
                     incomeTransactionLiveData.postValue(
                         SaldoHistoryResponse(
-                            incomeTransactionList,
+                            incomeTransactionList.getTransactionList(),
                             it.allDepositHistory?.isHaveNextPage ?: false
                         )
                     )
