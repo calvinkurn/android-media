@@ -7,10 +7,9 @@
     android:orientation="vertical"
     >
 
-    <com.tokopedia.unifycomponents.LoaderUnify
+    <include
         android:id="@+id/loader_sbm_nominal_bottom_sheet"
-        android:layout_width="@dimen/spacing_lvl6"
-        android:layout_height="@dimen/spacing_lvl6"
+        layout="@layout/view_smart_bills_bottom_sheet_nominal_shimmering"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

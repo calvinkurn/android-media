@@ -14,13 +14,14 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.smartbills.R
+import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.di.DaggerSmartBillsComponent
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsNominalAdapter
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsNominalBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     companion object{
         private val TAG = SmartBillsNominalBottomSheet::class.simpleName
 
-        private const val EMPTY_IMAGE_GLOBAL_ERROR : String = "https://images.tokopedia.net/img/add_bils_sbm_empty_nominal_3x.png"
+        private const val EMPTY_IMAGE_GLOBAL_ERROR : String = "https://images.tokopedia.net/img/add_bils_sbm_empty_nominal_4x.png"
 
         private const val PARAM_MENU_ID = "menu_id"
         private const val PARAM_CATEGORY_ID = "category_id"
@@ -64,9 +65,10 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     private var titleBottomSheet: String = ""
     private var emptyGlobalErrorTitle: String = ""
     private var emptyGlobalErrorDesc: String = ""
+    private var emptyGlobalErrorBtnTitle: String = ""
 
     private var recyclerView: RecyclerView? = null
-    private var loader: LoaderUnify? = null
+    private var loader: ViewGroup? = null
     private var globalError: GlobalError? = null
     private var errorViewGroup: ViewGroup? = null
 
@@ -112,13 +114,17 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
 
     private fun initView(inflater: LayoutInflater, container: ViewGroup?){
         val itemView = inflater.inflate(R.layout.bottomsheet_smart_bills_nominal, container)
+
         titleBottomSheet = itemView?.context?.getString(R.string.smart_bills_add_bills_product_nominal_bottom_sheet_title) ?: ""
         emptyGlobalErrorTitle = itemView?.context?.getString(R.string.smart_bills_add_bills_product_nominal_bottom_sheet_empty) ?: ""
         emptyGlobalErrorDesc = itemView?.context?.getString(R.string.smart_bills_add_bills_product_nominal_bottom_sheet_empty_desc) ?: ""
+        emptyGlobalErrorBtnTitle = itemView?.context?.getString(R.string.smart_bills_add_bills_product_nominal_bottom_sheet_empty_btn) ?: ""
+
         recyclerView = itemView.findViewById(R.id.rv_sbm_nominal)
         loader = itemView.findViewById(R.id.loader_sbm_nominal_bottom_sheet)
         errorViewGroup = itemView.findViewById(R.id.view_group_error)
         globalError = itemView.findViewById(R.id.global_error_sbm_nominal_telco)
+
         isFullpage = false
         clearContentPadding = true
         setTitle(titleBottomSheet)
@@ -135,11 +141,11 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         observe(viewModel.catalogProduct){
             when(it){
                 is Success -> {
-                    //if(it.data.multitabData.productInputs.isNullOrEmpty()){
+                    if(it.data.multitabData.productInputs.isNullOrEmpty()){
                         showGlobalError(true)
-//                    } else {
-//                        showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId)))
-//                    }
+                    } else {
+                        showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId)))
+                    }
                 }
 
                 is Fail -> {
@@ -188,6 +194,8 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
                 errorTitle.text = emptyGlobalErrorTitle
                 errorDescription.text = emptyGlobalErrorDesc
                 errorIllustration.loadImage(EMPTY_IMAGE_GLOBAL_ERROR)
+                errorIllustration.adjustViewBounds = true
+                errorAction.text = emptyGlobalErrorBtnTitle
                 setActionClickListener {
                     dismiss()
                 }

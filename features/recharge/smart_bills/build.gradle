@@ -40,6 +40,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.commonTopupBills)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
