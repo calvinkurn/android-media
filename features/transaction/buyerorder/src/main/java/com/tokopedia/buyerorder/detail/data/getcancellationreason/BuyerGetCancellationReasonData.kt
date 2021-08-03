@@ -116,46 +116,15 @@ data class BuyerGetCancellationReasonData(
 					val nonBundleList: List<Bundle.OrderDetail> = listOf()
 			) {
 				data class Bundle(
-						@SuppressLint("Invalid Data Type")
-						@SerializedName("bundle_id")
-						@Expose
-						val bundleId: Long = 0,
-
 						@SerializedName("bundle_name")
 						@Expose
 						val bundleName: String = "",
-
-						@SerializedName("bundle_price")
-						@Expose
-						val bundlePrice: Double = 0.0,
-
-						@SerializedName("bundle_quantity")
-						@Expose
-						val bundleQty: Int = 0,
-
-						@SerializedName("bundle_subtotal_price")
-						@Expose
-						val bundleSubtotalPrice: Double = 0.0,
 
 						@SerializedName("order_detail")
 						@Expose
 						val orderDetailList: List<OrderDetail> = listOf()
 				) {
 					data class OrderDetail(
-							@SuppressLint("Invalid Data Type")
-							@SerializedName("bundle_id")
-							@Expose
-							val bundleId: Long = 0,
-
-							@SuppressLint("Invalid Data Type")
-							@SerializedName("order_id")
-							@Expose
-							val orderId: Long = 0,
-
-							@SuppressLint("Invalid Data Type")
-							@SerializedName("order_dtl_id")
-							@Expose
-							val orderDetailId: Long = 0,
 
 							@SuppressLint("Invalid Data Type")
 							@SerializedName("product_id")
@@ -166,21 +135,9 @@ data class BuyerGetCancellationReasonData(
 							@Expose
 							val productName: String = "",
 
-							@SerializedName("quantity")
-							@Expose
-							val quantity: Int = 0,
-
 							@SerializedName("product_price")
 							@Expose
 							val productPrice: Double = 0.0,
-
-							@SerializedName("subtotal_price")
-							@Expose
-							val subtotalPrice: Double = 0.0,
-
-							@SerializedName("notes")
-							@Expose
-							val notes: String = "",
 
 							@SerializedName("thumbnail")
 							@Expose

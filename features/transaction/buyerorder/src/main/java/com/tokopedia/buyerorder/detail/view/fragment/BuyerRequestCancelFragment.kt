@@ -217,6 +217,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         label_shop_name?.text = shopName
         label_invoice?.text = invoiceNum
 
+        buyerCancellationViewModel.setHasNonBundleProducts(listProduct.isNotEmpty())
+
         if (listProduct.isNotEmpty()) {
             label_product_name?.text = listProduct.first().title
             label_price?.text = listProduct.first().price
@@ -231,22 +233,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
         }
 
-        when {
-            isCancelAlreadyRequested -> {
-                setLayoutCancelAlreadyRequested()
-            }
-            isWaitToCancel -> {
-                setLayoutWaitToCancel()
-            }
-            else -> {
-                setLayoutCancelIsAvailable()
-            }
-        }
-
-        if (listBuyerProductBundlingUiModel == null) {
-            observeBuyerProductBundling()
-            getProductBundling()
-        } else {
+        if (listBuyerProductBundlingUiModel != null) {
             setNormalProductList()
             label_see_all_products?.run {
                 val totalItems = listNormalProductBundlingUiModel?.count().orZero()
@@ -257,6 +244,22 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 } else {
                     gone()
                 }
+            }
+        }
+
+        if (listProduct.isEmpty() || listBuyerProductBundlingUiModel == null) {
+            observeBuyerNormalProducts()
+        }
+
+        when {
+            isCancelAlreadyRequested -> {
+                setLayoutCancelAlreadyRequested()
+            }
+            isWaitToCancel -> {
+                setLayoutWaitToCancel()
+            }
+            else -> {
+                setLayoutCancelIsAvailable()
             }
         }
 
@@ -664,10 +667,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         })
     }
 
-    private fun getProductBundling() {
-        buyerCancellationViewModel.getProductBundlingList(orderId)
-    }
-
     private fun observeBuyerRequestCancelReasonValidationResult() {
         buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.observe(viewLifecycleOwner, {
             tf_choose_sub_reason_editable?.setMessage(it.inputFieldMessage)
@@ -677,12 +676,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     @SuppressLint("SetTextI18n")
-    @ExperimentalCoroutinesApi
-    private fun observeBuyerProductBundling() {
-        buyerCancellationViewModel.buyerProductBundlingUiModelListLiveData.observe(viewLifecycleOwner) { bundleProductList ->
-            listBuyerProductBundlingUiModel = bundleProductList
-            bundleProductList?.let {
-                setNormalProductList()
+    private fun observeBuyerNormalProducts() {
+        buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.observe(viewLifecycleOwner) { normalProductList ->
+            normalProductList?.let {
+                setNormalProductList(it)
                 label_see_all_products?.run {
                     val totalItems = listNormalProductBundlingUiModel?.count().orZero()
                     if (totalItems > 1) {
@@ -846,8 +843,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
-    private fun setNormalProductList() {
-        val productItems = listProduct.mapToNormalProductItems() +
+    private fun setNormalProductList(normalProductList: List<BuyerNormalProductUiModel> = listOf()) {
+        val productItems = normalProductList + listProduct.mapToNormalProductItems() +
                 listBuyerProductBundlingUiModel?.mapBundlingToNormalProductItems().orEmpty()
         val filteredProductItems = productItems.filterSameIdAndPrice()
         listNormalProductBundlingUiModel = filteredProductItems
