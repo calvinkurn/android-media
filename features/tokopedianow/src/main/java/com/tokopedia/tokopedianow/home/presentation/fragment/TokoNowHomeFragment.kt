@@ -245,6 +245,11 @@ class TokoNowHomeFragment: Fragment(),
         super.onStop()
     }
 
+    override fun onDestroy() {
+        UniversalShareBottomSheet.clearScreenShotDetector()
+        super.onDestroy()
+    }
+
     override fun onTickerDismissed(id: String) {
         viewModelTokoNow.removeTickerWidget(id)
     }

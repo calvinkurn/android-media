@@ -119,8 +119,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         fun clearState(){
             screenshotDetector?.stop()
-            screenshotDetector = null
             clearData()
+        }
+
+        fun clearScreenShotDetector(){
+            screenshotDetector?.stop()
+            screenshotDetector = null
         }
     }
 
