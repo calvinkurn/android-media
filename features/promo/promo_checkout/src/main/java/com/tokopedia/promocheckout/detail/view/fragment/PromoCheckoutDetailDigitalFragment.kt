@@ -5,7 +5,8 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.promocheckout.R
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -15,14 +16,20 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
+import com.tokopedia.promocheckout.detail.view.viewmodel.PromoCheckoutDetailDigitalViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import javax.inject.Inject
 
 class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
+
     @Inject
-    lateinit var promoCheckoutDetailDigitalPresenter: PromoCheckoutDetailDigitalPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val promoCheckoutDetailDigitalViewModel: PromoCheckoutDetailDigitalViewModel by lazy { viewModelProvider.get(PromoCheckoutDetailDigitalViewModel::class.java) }
+
 
     lateinit var promoDigitalModel: PromoDigitalModel
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
@@ -38,10 +45,55 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        promoCheckoutDetailDigitalViewModel.showLoadingPromoDigital.observe(viewLifecycleOwner, {
+            if (it) {
+                showLoading()
+            } else {
+                hideLoading()
+            }
+        })
+
+        promoCheckoutDetailDigitalViewModel.showProgressLoadingPromoDigital.observe(viewLifecycleOwner, {
+            if (it) {
+                showProgressLoading()
+            } else {
+                hideProgressLoading()
+            }
+        })
+
+        promoCheckoutDetailDigitalViewModel.digitalCheckVoucherResult.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessCheckPromo(it.data)
+                }
+                is Fail ->{
+                    if (it.throwable is MessageErrorException){
+                        onErrorCheckPromo(it.throwable)
+                    }else{
+                        onErrorCheckPromoStacking(it.throwable)
+                    }
+                }
+            }
+        })
+
+        promoCheckoutDetailDigitalViewModel.promoCheckoutDetail.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessGetDetailPromo(it.data)
+                }
+                is Fail ->{
+                    onErroGetDetail(it.throwable)
+                }
+            }
+        })
+    }
+
     fun initView(){
         promoCheckoutDetailComponent = (activity as PromoCheckoutDetailDigitalActivity).getComponent()
         promoCheckoutDetailComponent.inject(this)
-        promoCheckoutDetailDigitalPresenter.attachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,12 +104,12 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailDigitalPresenter.getDetailPromo(codeCoupon)
+        promoCheckoutDetailDigitalViewModel.getDetailPromo(codeCoupon)
     }
 
     override fun onClickUse() {
         promoCheckoutAnalytics.clickUseDigitalMyPromo(codeCoupon, userSession.userId)
-        promoCheckoutDetailDigitalPresenter.checkVoucher(codeCoupon, promoDigitalModel)
+        promoCheckoutDetailDigitalViewModel.checkPromoCode(codeCoupon, promoDigitalModel)
     }
 
     override fun onClickCancel() {
@@ -90,16 +142,11 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         }
     }
 
-    override fun onDestroy() {
-        promoCheckoutDetailDigitalPresenter.detachView()
-        super.onDestroy()
-    }
-
     companion object {
-        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
-        val EXTRA_IS_USE = "EXTRA_IS_USE"
-        val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
-        val PAGE_TRACKING = "PAGE_TRACKING"
+        const val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
+        const val EXTRA_IS_USE = "EXTRA_IS_USE"
+        const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
+        const val PAGE_TRACKING = "PAGE_TRACKING"
 
         private val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
 
