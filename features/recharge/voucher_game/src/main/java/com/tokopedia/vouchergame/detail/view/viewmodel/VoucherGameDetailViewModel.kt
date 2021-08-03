@@ -3,6 +3,7 @@ package com.tokopedia.vouchergame.detail.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,6 +15,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchergame.common.util.VoucherGameDataMapper
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
@@ -25,6 +27,7 @@ import javax.inject.Inject
  * Created by resakemal on 16/08/19.
  */
 class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseCase: VoucherGameListUseCase,
+                                                     private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase,
                                                      private val graphqlRepository: GraphqlRepository,
                                                      private val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
@@ -53,29 +56,29 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
         }
     }
 
-    fun getVoucherGameProducts(rawQuery: String, mapParam: Map<String, Any>) {
-        launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameDetailData.Response::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * VG_CACHE_DURATION_IN_MINS).build())
-            }.getSuccessData<VoucherGameDetailData.Response>().response
-
-            // Add product initial position for tracking
-            var productCount = 0
-            data.product.dataCollections = data.product.dataCollections.map {
-                it.products = it.products.mapIndexed { index, item ->
-                    item.position = index + productCount
-                    return@mapIndexed item
+    fun getVoucherGameProducts(mapParam: Map<String, Any>) {
+        rechargeCatalogProductInputUseCase.execute(
+            mapParam,
+            { catalogData ->
+                // Add product initial position for tracking
+                val data = VoucherGameDataMapper
+                    .convertCatalogDataToVoucherGameDetailData(catalogData.response)
+                var productCount = 0
+                data.product.dataCollections = data.product.dataCollections.map {
+                    it.products = it.products.mapIndexed { index, item ->
+                        item.position = index + productCount
+                        return@mapIndexed item
+                    }
+                    productCount += it.products.size
+                    return@map it
                 }
-                productCount += it.products.size
-                return@map it
-            }
 
-            voucherGameProducts.value = Success(data)
-        }) {
-            voucherGameProducts.value = Fail(it)
-        }
+                voucherGameProducts.value = Success(data)
+            },
+            {
+                voucherGameProducts.value = Fail(it)
+            }
+        )
     }
 
     fun createParams(menuID: Int, operator: String): Map<String, Any> {

@@ -46,9 +46,9 @@ import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.model.dto.isScheduled
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
@@ -674,8 +674,6 @@ class PlayViewModel @Inject constructor(
         trackVisitChannel(channelData.id)
 
         checkLeaderboard(channelData.id)
-        //TODO("This is mock")
-//        checkInteractive(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {

@@ -88,7 +88,7 @@ class PlayBroadcastUiMapper(
     ) : FollowerDataUiModel {
         val totalRetrievedFollowers = response.shopFollowerList.data.size
         return FollowerDataUiModel(
-                followersList = List(3) {
+                followersList = List(TOTAL_FOLLOWERS) {
                     if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
                     else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
                 },
@@ -145,10 +145,10 @@ class PlayBroadcastUiMapper(
                 config.completeDraft
         )
 
-        val maxDuration = config.maxDuration * 1000
+        val maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration)
         val remainingTime = when(channelStatus.second) {
-            ChannelType.Active -> config.activeChannelRemainingDuration*1000
-            ChannelType.Pause -> config.pausedChannelRemainingDuration*1000
+            ChannelType.Active -> TimeUnit.SECONDS.toMillis(config.activeChannelRemainingDuration)
+            ChannelType.Pause -> TimeUnit.SECONDS.toMillis(config.pausedChannelRemainingDuration)
             else -> maxDuration
         }
 
@@ -160,7 +160,7 @@ class PlayBroadcastUiMapper(
                 durationConfig = DurationConfigUiModel(
                         duration = maxDuration,
                         maxDurationDesc = config.maxDurationDesc,
-                        pauseDuration = config.maxPauseDuration * 1000,
+                        pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
                         errorMessage = config.maxDurationDesc),
                 productTagConfig = ProductTagConfigUiModel(
                         maxProduct = config.maxTaggedProduct,
@@ -295,5 +295,7 @@ class PlayBroadcastUiMapper(
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
+
+        private const val TOTAL_FOLLOWERS = 3
     }
 }

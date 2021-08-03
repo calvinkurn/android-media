@@ -108,7 +108,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
     private UnifyButton resetOnBoarding;
-    private UnifyButton testOnBoarding;
     private UnifyButton vForceCrash;
     private TextFieldUnify remoteConfigPrefix;
     private UnifyButton remoteConfigStartButton;
@@ -271,7 +270,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         vForceCrash = findViewById(R.id.force_crash);
 
         resetOnBoarding = findViewById(R.id.reset_onboarding);
-        testOnBoarding = findViewById(R.id.test_onboarding);
 
         vGoToScreenRecorder = findViewById(R.id.goto_screen_recorder);
 
