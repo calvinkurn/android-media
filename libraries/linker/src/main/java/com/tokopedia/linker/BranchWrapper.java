@@ -176,7 +176,7 @@ public class BranchWrapper implements WrapperInterface {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
                 if (error == null) {
-                    if(!uriHaveCampaignData) {
+                    if(!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
                         sendUtmParameters(context, referringParams);
                     }else {
                         logNonBranchLinkData(context, referringParams);
@@ -350,7 +350,11 @@ public class BranchWrapper implements WrapperInterface {
                         removeHandlerTimeoutMessage();
                         if (error == null) {
                             if (shareCallback != null) {
-                                shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                if(!TextUtils.isEmpty(url)) {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                } else {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+                                }
                             }
                         } else {
                             if (shareCallback != null) {

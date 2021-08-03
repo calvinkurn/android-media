@@ -207,7 +207,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             bottomSheet?.context?.let { context ->
                 var message = ErrorHandler.getErrorMessage(context, throwable)
                 if (throwable is ResponseErrorException) {
-                    message = throwable.message
+                    message = throwable.message.toString()
                 }
                 viewBinding.bottomsheetContainer.let { view ->
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
@@ -314,7 +314,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             bottomSheet?.context?.let { context ->
                 var message = ErrorHandler.getErrorMessage(context, throwable)
                 if (throwable is ResponseErrorException) {
-                    message = throwable.message
+                    message = throwable.message.toString()
                 }
                 viewBinding.bottomsheetContainer.let { view ->
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)

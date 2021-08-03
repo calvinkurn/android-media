@@ -586,7 +586,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             getMenuDetail(it)
-            voucherGameViewModel.getVoucherGameProducts(VoucherGameGqlQuery.voucherGameProducts,
+            voucherGameViewModel.getVoucherGameProducts(
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }

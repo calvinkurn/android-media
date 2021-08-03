@@ -22,7 +22,8 @@ class HomeAdapterTypeFactory(
     private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
-    private val homeProductRecomListener: HomeProductRecomViewHolder.HomeProductRecomListener? = null
+    private val homeProductRecomListener: HomeProductRecomViewHolder.HomeProductRecomListener? = null,
+    private val homeProductCardListener: HomeProductCardViewHolder.HomeProductCardListener? = null
 ): BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -35,6 +36,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
+    override fun type(uiModel: HomeRecentPurchaseUiModel): Int = HomeRecentPurchaseViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -73,6 +75,7 @@ class HomeAdapterTypeFactory(
                 DynamicLegoBannerViewHolder(view, listener, null)
             }
             BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerComponentListener, null)
+            HomeRecentPurchaseViewHolder.LAYOUT -> HomeRecentPurchaseViewHolder(view, tokoNowListener, homeProductCardListener)
             // endregion
             else -> super.createViewHolder(view, type)
         }
