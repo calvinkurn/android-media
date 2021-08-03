@@ -13,6 +13,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
@@ -60,6 +61,7 @@ import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import com.tokopedia.play.extensions.combine
+import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.state.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -674,6 +676,13 @@ class PlayViewModel @Inject constructor(
         trackVisitChannel(channelData.id)
 
         checkLeaderboard(channelData.id)
+
+//        viewModelScope.launch {
+//            delay(3000)
+//            _uiEvent.emit(
+//                    ShowRealTimeNotificationEvent(RealTimeNotificationUiModel("", "eggy & 10 penonton lainnya follow toko ini", "#50BA47"))
+//            )
+//        }
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1190,6 +1199,16 @@ class PlayViewModel @Inject constructor(
                 val interactive = playSocketToModelMapper.mapInteractive(result)
                 handleInteractiveFromNetwork(interactive)
             }
+            is RealTimeNotification -> {
+                val notif = playSocketToModelMapper.mapRealTimeNotification(result)
+                showRealTimeNotification(notif)
+            }
+        }
+    }
+
+    private fun showRealTimeNotification(notification: RealTimeNotificationUiModel) {
+        viewModelScope.launch {
+            _uiEvent.emit(ShowRealTimeNotificationEvent(notification))
         }
     }
 

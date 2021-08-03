@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
+import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 
 /**
  * Created by jegul on 29/06/21
@@ -18,6 +19,7 @@ sealed class ShowToasterEvent : PlayViewerNewUiEvent() {
 }
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
+data class ShowRealTimeNotificationEvent(val notification: RealTimeNotificationUiModel) : PlayViewerNewUiEvent()
 
 
 //---------------------

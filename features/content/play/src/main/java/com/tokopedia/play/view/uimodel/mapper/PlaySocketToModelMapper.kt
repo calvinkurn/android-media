@@ -3,9 +3,11 @@ package com.tokopedia.play.view.uimodel.mapper
 import com.google.gson.JsonObject
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
@@ -68,6 +70,14 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
         return channelInteractiveMapper.mapInteractive(input)
+    }
+
+    fun mapRealTimeNotification(input: RealTimeNotification): RealTimeNotificationUiModel {
+        return RealTimeNotificationUiModel(
+                icon = input.icon,
+                text = input.copy,
+                bgColor = input.backgroundColor,
+        )
     }
 
     private fun parseSendMessage(message: String, channelId: String): String {

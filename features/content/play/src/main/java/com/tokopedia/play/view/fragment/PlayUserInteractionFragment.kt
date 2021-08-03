@@ -45,6 +45,7 @@ import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -844,6 +845,11 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     is ShowToasterEvent -> handleToasterEvent(event)
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
+                    is ShowRealTimeNotificationEvent -> {
+                        view?.findViewById<RealTimeNotificationBubbleView>(R.id.view_real_time_notification)?.apply {
+                            setNotification(event.notification)
+                        }
+                    }
                 }
             }
         }
