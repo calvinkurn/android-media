@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/iv_recharge_home_banner_empty"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/recharge_empty_banner_bg_height"
         android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg_banner_empty" />
