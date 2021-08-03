@@ -102,6 +102,9 @@ object ProductDetailCommonConstant {
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
 
+    const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+
     const val KEY_PRODUCT_DETAIL = "product detail"
 
     //shipping error code

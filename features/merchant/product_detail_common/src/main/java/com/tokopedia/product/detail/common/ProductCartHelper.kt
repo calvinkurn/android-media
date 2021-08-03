@@ -18,13 +18,13 @@ object ProductCartHelper {
     fun getBoTrackerString(boType: Int): String {
         return when (boType) {
             ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> {
-                "bebas ongkir extra"
+                ProductDetailCommonConstant.VALUE_BEBAS_ONGKIR_EXTRA
             }
             ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> {
-                "bebas ongkir"
+                ProductDetailCommonConstant.VALUE_BEBAS_ONGKIR
             }
             ProductDetailCommonConstant.BO_TOKONOW -> {
-                "tokonow"
+                ProductDetailCommonConstant.VALUE_TOKONOW
             }
             else -> "none/other"
         }
