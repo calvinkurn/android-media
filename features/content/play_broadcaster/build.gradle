@@ -105,7 +105,7 @@ dependencies {
 //    implementation rootProject.ext.tkpdInternalLibDependencies.livePusher
 
     implementation files('libs/libstream-release.aar')
-    implementation files('libs/libudpsender-release.aar')
+//    implementation files('libs/libudpsender-release.aar')
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
