@@ -79,6 +79,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
+import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
@@ -554,6 +555,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                                 handleWishlistAction(productCardOptionsModel)
                             }
                         })
+            }
+            MvcView.REQUEST_CODE -> {
+                if (resultCode == MvcView.RESULT_CODE_OK && doActivityResult) {
+                    onSwipeRefresh()
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
