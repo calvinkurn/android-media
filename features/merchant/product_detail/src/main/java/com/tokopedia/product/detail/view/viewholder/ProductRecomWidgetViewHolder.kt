@@ -37,11 +37,15 @@ class ProductRecomWidgetViewHolder (
         if ((element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) && element.pageName.isEmpty()) {
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
         } else if (element.pageName.isNotEmpty()) {
-            recomWidget.bind(
-                    pageName = element.name,
-                    tempHeaderName = itemView.context.getString(R.string.title_other_product),
-                    adapterPosition = adapterPosition,
-                    widgetListener = this)
+            if (element.forceRefresh) {
+                recomWidget.bind(
+                        pageName = element.name,
+                        tempHeaderName = itemView.context.getString(R.string.title_other_product),
+                        adapterPosition = adapterPosition,
+                        widgetListener = this,
+                        isForceRefresh = true)
+                listener.onRecomWidgetAlreadyInit(element.pageName)
+            }
         } else {
             element.recomWidgetData?.let {
                 recomWidget.bind(

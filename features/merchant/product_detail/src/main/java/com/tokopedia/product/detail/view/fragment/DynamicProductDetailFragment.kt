@@ -944,6 +944,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         updateUi()
     }
 
+    override fun onRecomWidgetAlreadyInit(pageName: String) {
+        pdpUiUpdater?.updateRecommendationDataPageName(pageName, false)
+        updateUi()
+    }
+
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
         viewModel.getRecommendation(recommendationDataModel, annotationChip, position, filterPosition)

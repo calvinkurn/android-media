@@ -112,6 +112,7 @@ interface DynamicProductDetailListener {
     fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int)
     fun onRecomAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int)
     fun onRecomWidgetFailedToLoad(pageName: String)
+    fun onRecomWidgetAlreadyInit(pageName: String)
 
     /**
      * ProductGeneralInfoViewHolder

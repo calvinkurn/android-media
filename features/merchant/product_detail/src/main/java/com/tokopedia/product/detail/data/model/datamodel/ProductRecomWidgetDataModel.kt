@@ -17,7 +17,8 @@ data class ProductRecomWidgetDataModel(
         var filterData: List<AnnotationChip>? = null,
         var cardModel: List<ProductCardModel>? = null,
         var position: Int = -1,
-        var pageName: String = ""
+        var pageName: String = "",
+        var forceRefresh: Boolean = false
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -32,12 +33,20 @@ data class ProductRecomWidgetDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductRecomWidgetDataModel) {
-            recomWidgetData?.title == newData.recomWidgetData?.title
-                    && recomWidgetData?.recommendationFilterChips == newData.recomWidgetData?.recommendationFilterChips
-                    && areRecomItemTheSame(newData.recomWidgetData)
+            isEqualsForRecomWidgetWithPageName(newData) && isEqualsForRecomWidgetNormal(newData)
         } else {
             false
         }
+    }
+
+    private fun isEqualsForRecomWidgetWithPageName(newData: ProductRecomWidgetDataModel): Boolean {
+        return (pageName == newData.pageName && forceRefresh == newData.forceRefresh)
+    }
+
+    private fun isEqualsForRecomWidgetNormal(newData: ProductRecomWidgetDataModel): Boolean {
+        return recomWidgetData?.title == newData.recomWidgetData?.title
+                && recomWidgetData?.recommendationFilterChips == newData.recomWidgetData?.recommendationFilterChips
+                && areRecomItemTheSame(newData.recomWidgetData)
     }
 
     override fun newInstance(): DynamicPdpDataModel {

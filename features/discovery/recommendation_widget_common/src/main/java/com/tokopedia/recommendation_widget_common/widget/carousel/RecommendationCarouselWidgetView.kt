@@ -21,8 +21,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
-import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationWidgetModule
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -64,10 +62,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private val itemContext: Context
     private var widgetListener: RecommendationCarouselWidgetListener? = null
     private var scrollToPosition: Int = 0
-    private lateinit var carouselData: RecommendationCarouselData
+    private var carouselData: RecommendationCarouselData? = null
     private lateinit var typeFactory: CommonRecomCarouselCardTypeFactory
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: RecommendationCarouselAdapter
+    private var adapter: RecommendationCarouselAdapter? = null
     private lateinit var layoutManager: LinearLayoutManager
     private var pageName: String = ""
     private var adapterPosition: Int = 0
@@ -129,7 +127,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             widgetListener: RecommendationCarouselWidgetListener?,
             scrollToPosition: Int = 0,
             pageName: String = "",
-            tempHeaderName: String = ""
+            tempHeaderName: String = "",
+            isForceRefresh: Boolean = false
     ) {
         try {
             this.adapterPosition = adapterPosition
@@ -139,16 +138,21 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             if (pageName.isEmpty()) bindWidgetWithData(carouselData)
             else {
                 bindTemporaryHeader(tempHeaderName)
-                bindWidgetWithPageName(pageName)
+                bindWidgetWithPageName(pageName, isForceRefresh)
             }
         } catch (e: Exception) {
             this.widgetListener?.onWidgetFail(pageName, e)
         }
     }
 
-    private fun bindWidgetWithPageName(pageName: String) {
-        itemView.loadingRecom.visible()
-        viewModel?.loadRecommendation(pageName = pageName)
+    private fun bindWidgetWithPageName(pageName: String, isForceRefresh: Boolean) {
+        if (carouselData == null || isForceRefresh) {
+            adapter?.clearAllElements()
+            itemView.loadingRecom.visible()
+            viewModel?.loadRecommendation(pageName = pageName)
+        } else {
+            itemView.loadingRecom.gone()
+        }
     }
 
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
@@ -178,37 +182,52 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     override fun onProductCardImpressed(data: RecommendationWidget, recomItem: RecommendationItem, position: Int) {
-        widgetListener?.onRecomProductCardImpressed(data = carouselData, recomItem = recomItem, itemPosition = position, adapterPosition = adapterPosition)
+        carouselData?.let {
+            widgetListener?.onRecomProductCardImpressed(data = it, recomItem = recomItem, itemPosition = position, adapterPosition = adapterPosition)
+        }
     }
 
     override fun onProductCardClicked(data: RecommendationWidget, recomItem: RecommendationItem, position: Int, applink: String) {
-        widgetListener?.onRecomProductCardClicked(data = carouselData, recomItem = recomItem, applink = applink, itemPosition = position, adapterPosition = adapterPosition)
+        carouselData?.let {
+            widgetListener?.onRecomProductCardClicked(data = it, recomItem = recomItem, applink = applink, itemPosition = position, adapterPosition = adapterPosition)
+        }
     }
 
     override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
-        widgetListener?.onRecomProductCardAddToCartNonVariant(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition, quantity = quantity)
+        carouselData?.let {
+            widgetListener?.onRecomProductCardAddToCartNonVariant(data = it, recomItem = recomItem, adapterPosition = adapterPosition, quantity = quantity)
+        }
     }
 
     override fun onRecomProductCardAddVariantClick(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int) {
-        widgetListener?.onRecomProductCardAddVariantClick(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition)
+        carouselData?.let {
+            widgetListener?.onRecomProductCardAddVariantClick(data = it, recomItem = recomItem, adapterPosition = adapterPosition)
+        }
     }
 
     override fun onSeeMoreCardClicked(data: RecommendationWidget, applink: String) {
-        widgetListener?.onSeeAllBannerClicked(data = carouselData, applink = applink)
+        carouselData?.let {
+            widgetListener?.onSeeAllBannerClicked(data = it, applink = applink)
+        }
     }
 
     override fun onBannerCardClicked(data: RecommendationWidget, applink: String) {
-        widgetListener?.onRecomBannerClicked(data = carouselData, applink = applink, adapterPosition = adapterPosition)
+        carouselData?.let {
+            widgetListener?.onRecomBannerClicked(data = it, applink = applink, adapterPosition = adapterPosition)
+        }
     }
 
     override fun onBannerCardImpressed(data: RecommendationWidget) {
-        widgetListener?.onRecomBannerImpressed(data = carouselData, adapterPosition = adapterPosition)
+        carouselData?.let {
+            widgetListener?.onRecomBannerImpressed(data = it, adapterPosition = adapterPosition)
+        }
     }
 
     private fun initVar() {
         if (isInitialized) return
-
-        typeFactory = CommonRecomCarouselCardTypeFactoryImpl(carouselData.recommendationData)
+        carouselData?.let {
+            typeFactory = CommonRecomCarouselCardTypeFactoryImpl(it.recommendationData)
+        }
         adapter = RecommendationCarouselAdapter(typeFactory)
         layoutManager = createLayoutManager()
 
@@ -265,7 +284,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
             }
 
-            adapter.submitList(cardList)
+            adapter?.submitList(cardList)
 
             launch {
                 try {
