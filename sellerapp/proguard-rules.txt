@@ -241,9 +241,8 @@
 
 
 #SELLERAPP ONLY:
-#from Apsara broadcaster 29/11/2019 document
--keep class com.alibaba.livecloud.** { *; }
--keep class com.alivc.** { *; }
+-dontwarn com.wmspanel.libstream.**
+-dontwarn com.wmspanel.libsrtsender.**
 
 #robust
 #https://github.com/Meituan-Dianping/Robust/blob/master/app/proguard-rules.pro
