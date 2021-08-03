@@ -28,7 +28,7 @@ class PromoCheckoutListEventViewModel @Inject constructor(private val dispatcher
         showLoadingPromoEvent.postValue(true)
         launchCatchError(block = {
             showLoadingPromoEvent.postValue(false)
-            _eventCheckVoucherResult.postValue(eventCheckVoucherUseCase.execute(book, eventVerifyBody))
+            _eventCheckVoucherResult.postValue(eventCheckVoucherUseCase.execute(eventCheckVoucherUseCase.createMapParam(book), eventCheckVoucherUseCase.setEventVerifyBody(eventVerifyBody)))
         }){
             showLoadingPromoEvent.postValue(false)
             _eventCheckVoucherResult.postValue(Fail(it))

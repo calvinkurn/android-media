@@ -36,7 +36,7 @@ class EventCheckVoucherUseCase @Inject constructor(val restRepository: RestRepos
         return restRepository.getResponses(restRequestList)
     }
 
-    suspend fun execute(book: Boolean, body: EventVerifyBody): Result<DataUiModel>{
+    suspend fun execute(book: HashMap<String, Boolean>, body: EventVerifyBody): Result<DataUiModel>{
         return try {
             val data = executeOnBackground()
             val values = data[EventVerifyResponse::class.java]
@@ -51,14 +51,14 @@ class EventCheckVoucherUseCase @Inject constructor(val restRepository: RestRepos
         }
     }
 
-    private fun createMapParam(book: Boolean): HashMap<String, Boolean> {
+    fun createMapParam(book: Boolean): HashMap<String, Boolean> {
         val mapParam = HashMap<String, Boolean>()
         mapParam[BOOK] = book
         this.book = mapParam
         return mapParam
     }
 
-    private fun setEventVerifyBody(body: EventVerifyBody) : EventVerifyBody{
+    fun setEventVerifyBody(body: EventVerifyBody) : EventVerifyBody{
         requestBody = body
         return requestBody
     }
