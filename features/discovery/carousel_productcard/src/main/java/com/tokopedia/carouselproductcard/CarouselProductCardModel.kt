@@ -19,19 +19,11 @@ internal data class CarouselProductCardModel(
     }
 
     override fun areItemsTheSame(newItem: BaseCarouselCardModel): Boolean {
-        return newItem is CarouselProductCardModel
-                && productCardModel.productName == newItem.productCardModel.productName
+        return newItem is CarouselProductCardModel && productCardModel.productName == newItem.productCardModel.productName
     }
 
     override fun areContentsTheSame(newItem: BaseCarouselCardModel): Boolean {
-        if (newItem !is CarouselProductCardModel) return false
-        val newProductCardModel = newItem.productCardModel
-
-        return productCardModel.productName == newProductCardModel.productName
-                && productCardModel.productImageUrl == newProductCardModel.productImageUrl
-                && productCardModel.formattedPrice == newProductCardModel.formattedPrice
-                && productCardModel.nonVariant?.quantity == newProductCardModel.nonVariant?.quantity
-                && productCardModel.variant?.quantity == newProductCardModel.variant?.quantity
+        return false
     }
 
 }

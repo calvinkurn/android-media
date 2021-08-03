@@ -61,7 +61,7 @@ class GetIsLikeUseCase @Inject constructor(
             """.trimIndent()
         }
 
-        fun createParam(contentId: Int, contentType: Int): HashMap<String, Any> {
+        fun createParam(contentId: Long, contentType: Int): HashMap<String, Any> {
             return hashMapOf(
                     CONTENT_ID to contentId,
                     CONTENT_TYPE to contentType
