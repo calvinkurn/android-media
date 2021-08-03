@@ -28,7 +28,7 @@ fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
 fun ImageView.loadImage(drawable: Drawable?) = this.setImageDrawable(drawable)
 
-fun ImageView.loadImage(resource: Int) = this.setImageDrawable(drawableFromId(this.context, resource))
+fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
