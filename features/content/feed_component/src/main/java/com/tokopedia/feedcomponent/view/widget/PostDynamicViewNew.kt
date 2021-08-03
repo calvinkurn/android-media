@@ -1142,6 +1142,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoPlayer?.pause()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    internal fun onStop(){
+        videoPlayer?.pause()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     internal fun onDestroy() {
         detach()
