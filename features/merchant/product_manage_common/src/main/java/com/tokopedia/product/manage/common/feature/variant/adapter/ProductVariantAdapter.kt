@@ -10,8 +10,8 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 class ProductVariantAdapter(
-    adapterFactory: BaseAdapterTypeFactory
-): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterFactory) {
+        adapterFactory: BaseAdapterTypeFactory
+) : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterFactory) {
 
     companion object {
         private const val TICKER_POSITION = 0
@@ -30,50 +30,56 @@ class ProductVariantAdapter(
     }
 
     fun showTicker(tickerList: List<TickerData>) {
-        val currentTicker = data.firstOrNull { it is ProductVariantTicker }
-        val variantTicker = ProductVariantTicker(tickerList)
+        recyclerView?.post {
+            val currentTicker = data.firstOrNull { it is ProductVariantTicker }
+            val variantTicker = ProductVariantTicker(tickerList)
 
-        if(currentTicker == null) {
-            data.add(TICKER_POSITION, variantTicker)
-            recyclerView?.post {
+            if (currentTicker == null) {
+                data.add(TICKER_POSITION, variantTicker)
                 notifyItemInserted(TICKER_POSITION)
+            } else {
+                updateItem<ProductVariantTicker> { variantTicker }
             }
-        } else {
-            updateItem<ProductVariantTicker> { variantTicker }
         }
     }
 
     fun hideTicker() {
-        removeItem<ProductVariantTicker>()
+        recyclerView?.post {
+            removeItem<ProductVariantTicker>()
+        }
     }
 
     fun updateVariantStatus(id: String, status: ProductStatus) {
-        updateVariant(id) { it.copy(status = status) }
+        recyclerView?.post {
+            updateVariant(id) { it.copy(status = status) }
+        }
     }
 
     fun updateVariantStock(id: String, stock: Int) {
-        updateVariant(id) { it.copy(stock = stock) }
+        recyclerView?.post {
+            updateVariant(id) { it.copy(stock = stock) }
+        }
     }
 
     fun showStockInfo() {
-        if(getVariantList().firstOrNull()?.isAllStockEmpty != false) {
-            getVariantList().forEach {
-                val index = data.indexOf(it)
-                data[index] = it.copy(isAllStockEmpty = false)
-            }
-            recyclerView?.post {
+        recyclerView?.post {
+            if (getVariantList().firstOrNull()?.isAllStockEmpty != false) {
+                getVariantList().forEach {
+                    val index = data.indexOf(it)
+                    data[index] = it.copy(isAllStockEmpty = false)
+                }
                 notifyDataSetChanged()
             }
         }
     }
 
     fun hideStockInfo() {
-        if(getVariantList().firstOrNull()?.isAllStockEmpty != true) {
-            getVariantList().forEach {
-                val index = data.indexOf(it)
-                data[index] = it.copy(isAllStockEmpty = true)
-            }
-            recyclerView?.post {
+        recyclerView?.post {
+            if (getVariantList().firstOrNull()?.isAllStockEmpty != true) {
+                getVariantList().forEach {
+                    val index = data.indexOf(it)
+                    data[index] = it.copy(isAllStockEmpty = true)
+                }
                 notifyDataSetChanged()
             }
         }
@@ -84,40 +90,34 @@ class ProductVariantAdapter(
     }
 
     private fun updateVariant(
-        variantId: String,
-        block: (ProductVariant) -> ProductVariant
+            variantId: String,
+            block: (ProductVariant) -> ProductVariant
     ) {
         getVariantList().firstOrNull { it.id == variantId }?.let {
             val index = data.indexOf(it)
             data[index] = block.invoke(it)
-            recyclerView?.post {
-                notifyItemChanged(index)
-            }
+            notifyItemChanged(index)
         }
     }
 
-    private inline fun <reified T: Visitable<*>> updateItem(
-        block: (Visitable<*>) -> Visitable<*>
+    private inline fun <reified T : Visitable<*>> updateItem(
+            block: (Visitable<*>) -> Visitable<*>
     ) {
         data.run {
             firstOrNull { it is T }?.let {
                 val index = indexOf(it)
                 data[index] = block(it)
-                recyclerView?.post {
-                    notifyItemChanged(index)
-                }
+                notifyItemChanged(index)
             }
         }
     }
 
-    private inline fun <reified T: Visitable<*>> removeItem() {
+    private inline fun <reified T : Visitable<*>> removeItem() {
         data.run {
             firstOrNull { it is T }?.let {
                 val index = indexOf(it)
                 data.removeAt(index)
-                recyclerView?.post {
-                    notifyItemRemoved(index)
-                }
+                notifyItemRemoved(index)
             }
         }
     }
