@@ -438,7 +438,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 HotelShare(this).shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
-                        this.applicationContext)
+                    requireContext())
             }
         }
     }

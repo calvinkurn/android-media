@@ -1856,6 +1856,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     it.finish()
                 }
             }
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+                    if (isSuccessRegister && getUserSession().isLoggedIn) {
+                        gotoNewUserZonePage()
+                    }
+                }
+            }
         }
     }
 
@@ -2915,5 +2923,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun getErrorString(e: Throwable) : String {
         return ErrorHandler.getErrorMessage(requireContext(), e)
+    }
+
+    private fun gotoNewUserZonePage() {
+        activity?.let {
+            val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            it.startActivities(arrayOf(intentHome, intentNewUser))
+            it.finish()
+        }
     }
 }

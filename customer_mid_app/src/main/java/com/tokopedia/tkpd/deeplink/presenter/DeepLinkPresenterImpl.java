@@ -89,6 +89,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_NEED_LOGIN = "need_login";
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
+    private static final String PARAM_BOOL_FALSE = "false";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -389,14 +390,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
-            }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase("false")){
+            }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)){
                 prepareOpenWebView(uri);
             } else{
                 String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
-        }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase("false")) {
+        }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE)) {
             prepareOpenWebView(uri);
         } else {
             String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
