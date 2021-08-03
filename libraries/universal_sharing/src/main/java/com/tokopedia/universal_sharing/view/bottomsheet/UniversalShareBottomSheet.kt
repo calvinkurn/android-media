@@ -380,10 +380,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
             socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
         })
-        socialMediaList.filterNot {
+        return socialMediaList.filterNot {
             (it.packageName!!.isNotEmpty() && it.appIntent != null && getResolvedActivity(context, it.appIntent) == null)
         }
-        return socialMediaList
     }
 
     private fun setFixedOptionsClickListeners(){
