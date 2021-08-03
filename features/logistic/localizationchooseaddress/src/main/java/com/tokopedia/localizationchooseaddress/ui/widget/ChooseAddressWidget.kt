@@ -202,7 +202,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
+        if (localData?.address_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }

@@ -67,7 +67,7 @@ class ChooseAddressMapper @Inject constructor() {
             longitude = data.longitude
             postalCode = data.postalCode
             tokonowModel = mapTokonow(response.tokonow)
-            errorCode = mapErrorChosenAddress(response.data.error)
+            errorCode = mapErrorChosenAddress(response.error)
         }
     }
 
