@@ -1613,6 +1613,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setOnSuggestedPriceSelected { suggestedPrice ->
                 productPriceField.setText(suggestedPrice)
                 if (viewModel.isAdding) {
+                    ProductAddMainTracking.clickPriceRecommendation()
                     displaySuggestedPriceSelected()
                 }
             }
