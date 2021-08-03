@@ -28,7 +28,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName."
     }
 
-    fun validatePaymentState(orderCart: OrderCart, orderProfile: OrderProfile, shipping: OrderShipment): Boolean {
+    private fun validatePaymentState(orderCart: OrderCart, orderProfile: OrderProfile, shipping: OrderShipment): Boolean {
         return shipping.isValid() && shipping.serviceErrorMessage.isNullOrEmpty() && !orderCart.shop.isError && orderCart.shop.overweight == 0.0 && orderCart.products.all { it.isError || it.orderQuantity > 0 } && orderProfile.isValidProfile
     }
 
@@ -42,7 +42,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (!isValidState) {
                 return@withContext payment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
             }
-            val (orderCost, newPayment, _) = calculateOrderCost(orderCart, shipping, validateUsePromoRevampUiModel, payment)
+            val (orderCost, newPayment) = calculateOrderCostWithPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, payment)
             val subtotal = orderCost.totalPrice
             payment = newPayment
             var currentState = OccButtonState.NORMAL
@@ -164,10 +164,27 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return if (currentState == OccButtonState.NORMAL) OccButtonState.DISABLE else currentState
     }
 
-    suspend fun calculateOrderCost(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Triple<OrderCost, OrderPayment, ArrayList<Int>> {
+    private suspend fun calculateOrderCostWithPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Pair<OrderCost, OrderPayment> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
+            val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel)
+            var subtotal = cost.totalPrice + cost.productDiscountAmount + cost.shippingDiscountAmount
             var payment = orderPayment
+            payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - cost.productDiscountAmount - cost.shippingDiscountAmount else 0.0, cost.productDiscountAmount + cost.shippingDiscountAmount)
+            val fee = payment.getRealFee()
+            subtotal += fee
+            subtotal -= cost.productDiscountAmount
+            subtotal -= cost.shippingDiscountAmount
+            val orderCost = OrderCost(subtotal, cost.totalItemPrice, cost.shippingFee, cost.insuranceFee, fee, cost.shippingDiscountAmount, cost.productDiscountAmount, cost.purchaseProtectionPrice, cost.cashbacks)
+            return@withContext orderCost to payment
+        }
+        OccIdlingResource.decrement()
+        return result
+    }
+
+    suspend fun calculateOrderCostWithoutPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<OrderCost, ArrayList<Int>> {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.default) {
             var totalProductPrice = 0.0
             var totalProductWholesalePrice = 0.0
             val mapParentWholesalePrice: HashMap<String, Double> = HashMap()
@@ -217,14 +234,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            var subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
-            payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
-            val fee = payment.getRealFee()
-            subtotal += fee
-            subtotal -= productDiscount
-            subtotal -= shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
-            return@withContext Triple(orderCost, payment, updatedProductIndex)
+            val subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice - productDiscount - shippingDiscount
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, 0.0, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
+            return@withContext orderCost to updatedProductIndex
         }
         OccIdlingResource.decrement()
         return result

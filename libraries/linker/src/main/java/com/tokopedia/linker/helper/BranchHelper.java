@@ -1,6 +1,7 @@
 package com.tokopedia.linker.helper;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,8 +48,17 @@ public class BranchHelper {
 
     public static void setCommonLinkProperties(LinkProperties linkProperties, LinkerData data) {
         linkProperties.setCampaign(data.getCampaignName());
-        linkProperties.setChannel(LinkerData.ARG_UTM_SOURCE);
-        linkProperties.setFeature(LinkerData.ARG_UTM_MEDIUM);
+        if(!TextUtils.isEmpty(data.getChannel())){
+            linkProperties.setChannel(data.getChannel());
+        }
+        else {
+            linkProperties.setChannel(LinkerData.ARG_UTM_SOURCE);
+        }
+        if(!TextUtils.isEmpty(data.getFeature())){
+            linkProperties.setFeature(data.getFeature());
+        }else{
+            linkProperties.setFeature(LinkerData.ARG_UTM_MEDIUM);
+        }
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_URL, data.getOgUrl());
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_TITLE, LinkerUtils.getOgTitle(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_IMAGE_URL, LinkerUtils.getOgImage(data));

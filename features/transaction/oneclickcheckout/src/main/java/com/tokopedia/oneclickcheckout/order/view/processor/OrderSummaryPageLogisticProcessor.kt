@@ -381,7 +381,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             // Recommendation Courier not available
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return Triple(
-                    OrderShipment(isLoading = false, serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
+                    OrderShipment(isDisabled = profileShipment.isDisableChangeCourier, isLoading = false, serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
                     null,
                     null)
         }
