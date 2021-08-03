@@ -31,10 +31,17 @@ class CryptographyUtils: Cryptography {
 
     override fun getCryptoObject(): FingerprintManagerCompat.CryptoObject? = _cryptoObject
 
-    private val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
-    private val PUBLIC_KEY_SUFFIX = "-----END PUBLIC KEY-----"
 
     private var signatureInitialized = false
+
+
+    companion object {
+        private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
+        private const val PUBLIC_KEY_SUFFIX = "-----END PUBLIC KEY-----"
+
+        private const val KEY_SIZE = 4096
+        private const val DATE_DIVIDER = 1000
+    }
 
     init {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -67,26 +74,33 @@ class CryptographyUtils: Cryptography {
                 return factory.generatePublic(spec) as RSAPublicKey
             } catch (e: Exception) {
                 log("GeneratePublicKey_Exception", data = "public_key=${publicKey.toNullStringIfNull()}#keystore=${keyStore.toNullStringIfNull()}", e)
-                e.printStackTrace()
             }
-            return publicKey
         }
         return null
     }
 
-    @Throws(KeyStoreException::class, NoSuchAlgorithmException::class, NoSuchProviderException::class, InvalidAlgorithmParameterException::class)
     override fun generateKeyPair(keyStore: KeyStore?) {
         //check if key is stored already, if null, create new key
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (keyStore?.getCertificate(BiometricConstant.FINGERPRINT) == null || keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey == null) {
-                val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
-                val builder = KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT,
-                        KeyProperties.PURPOSE_SIGN)
-                        .setKeySize(4096)
-                        .setDigests(KeyProperties.DIGEST_SHA256)
-                        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
-                keyPairGenerator.initialize(builder.build())
-                keyPairGenerator.generateKeyPair()
+            try {
+                if (keyStore?.getCertificate(BiometricConstant.FINGERPRINT) == null ||
+                        keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey == null) {
+                    val keyPairGenerator = KeyPairGenerator.getInstance(
+                        KeyProperties.KEY_ALGORITHM_RSA,
+                        BiometricConstant.ANDROID_KEY_STORE
+                    )
+                    val builder = KeyGenParameterSpec.Builder(
+                        BiometricConstant.FINGERPRINT,
+                        KeyProperties.PURPOSE_SIGN
+                    )
+                    .setKeySize(KEY_SIZE)
+                    .setDigests(KeyProperties.DIGEST_SHA256)
+                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+                    keyPairGenerator.initialize(builder.build())
+                    keyPairGenerator.generateKeyPair()
+                }
+            } catch (e: Exception) {
+                log("GenerateKeyPair_Exception", data = "keystore=${keyStore.toNullStringIfNull()}", e)
             }
         }
     }
@@ -98,7 +112,6 @@ class CryptographyUtils: Cryptography {
             generateKeyPair(keyStore)
         } catch (e: Exception) {
             log("InitKeystore_Exception", data = "keystore=${keyStore?.toNullStringIfNull()}", e)
-            e.printStackTrace()
         }
     }
 
@@ -111,7 +124,6 @@ class CryptographyUtils: Cryptography {
             true
         } catch (e: Exception) {
             log("InitSignature_Exception", data = "signature=${signature?.toNullStringIfNull()}#keystore=${keyStore.toNullStringIfNull()}", e)
-            e.printStackTrace()
             false
         }
     }
@@ -126,7 +138,7 @@ class CryptographyUtils: Cryptography {
     }
 
     override fun generateFingerprintSignature(uniqueId: String, deviceId: String): SignatureData {
-        val datetime = (System.currentTimeMillis()/1000).toString()
+        val datetime = (System.currentTimeMillis()/DATE_DIVIDER).toString()
         return SignatureData(signature = getSignature
             (uniqueId + datetime + deviceId,
                 BiometricConstant.SHA_256_WITH_RSA
@@ -147,7 +159,6 @@ class CryptographyUtils: Cryptography {
             } catch (e: Exception) {
                 log("GetSignature_Exception", data =
                 "text_to_encrypt=$textToEncrypt#keystore=${keyStore.toNullStringIfNull()}", e)
-                e.printStackTrace()
             }
             return signText
         }
