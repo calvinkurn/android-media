@@ -60,7 +60,7 @@ class PromoCheckoutDetailHotelViewModel @Inject constructor(private val dispatch
             _promoCheckoutDetail.postValue(getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon)))
         }){
             showLoadingPromoHotel.postValue( false)
-            _hotelCheckVoucherResult.postValue(Fail(it))
+            _promoCheckoutDetail.postValue(Fail(it))
         }
     }
 
@@ -71,7 +71,7 @@ class PromoCheckoutDetailHotelViewModel @Inject constructor(private val dispatch
             _cancelVoucher.postValue(travelCancelVoucherUseCase.execute())
         }){
             showLoadingPromoHotel.postValue( false)
-            _hotelCheckVoucherResult.postValue(Fail(it))
+            _cancelVoucher.postValue(Fail(it))
         }
     }
 }
