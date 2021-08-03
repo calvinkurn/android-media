@@ -9,6 +9,11 @@ import com.tokopedia.tokopedianow.home.domain.query.GetHomeLayoutData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+/**
+ * Dynamic Home Channel Query Docs:
+ * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/381550603/HPB+Home+-+Mojito+Channel
+ */
+
 class GetHomeLayoutDataUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) {

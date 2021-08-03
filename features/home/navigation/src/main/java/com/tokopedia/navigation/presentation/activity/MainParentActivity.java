@@ -53,6 +53,7 @@ import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment;
 import com.tokopedia.cart.view.CartFragment;
@@ -141,6 +142,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
+    public static final int REQUEST_CODE_LOGIN = 12137;
     public static final String FEED_PAGE = "FeedPlusContainerFragment";
     public static final int UOH_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
@@ -645,11 +647,10 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            FragmentManager manager = getSupportFragmentManager();
             int position = HOME_MENU;
             if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
-                for (int i = 0; i < manager.getFragments().size(); i++) {
-                    Fragment frag = manager.getFragments().get(i);
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment frag = fragmentList.get(i);
                     if (frag.getClass().getName().equalsIgnoreCase(currentFragment.getClass().getName())) {
                         position = i;
                         break;
@@ -671,6 +672,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
+        switch (requestCode) {
+            case REQUEST_CODE_LOGIN:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    boolean isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false);
+                    if (isSuccessRegister) {
+                        gotoNewUserZonePage();
+                    }
+                }
+                break;
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -1207,6 +1218,7 @@ public class MainParentActivity extends BaseActivity implements
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
                     pageName = "OS Homepage";
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
                     pageName = "Feed";
                 }
                 else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
@@ -1214,6 +1226,10 @@ public class MainParentActivity extends BaseActivity implements
                 }
                 globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
+
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed)))
+                    globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }
         }
@@ -1225,10 +1241,17 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if ((position == CART_MENU || position == ACCOUNT_MENU || position == UOH_MENU) && !presenter.get().isUserLogin()) {
+        if ((position == CART_MENU || position == UOH_MENU) && !presenter.get().isUserLogin()) {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
+            return false;
+        }
+
+        if (position == ACCOUNT_MENU && !presenter.get().isUserLogin()) {
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
             return false;
         }
 
@@ -1276,5 +1299,14 @@ public class MainParentActivity extends BaseActivity implements
         } catch (Exception e) {
             this.isNewNavigation = false;
         }
+    }
+
+    private void gotoNewUserZonePage() {
+        Intent intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER);
+        Intent intentHome = RouteManager.getIntent(this, ApplinkConst.HOME);
+        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivities(new Intent[]{intentHome, intentNewUser});
+        finish();
     }
 }
