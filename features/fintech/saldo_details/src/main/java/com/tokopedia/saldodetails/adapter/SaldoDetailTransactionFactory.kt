@@ -5,14 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.saldodetails.adapter.model.TransactionErrorModel
 import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
-import com.tokopedia.saldodetails.viewholder.SaldoListEmptyViewHolder
-import com.tokopedia.saldodetails.viewholder.SaldoTransactionViewHolder
-import com.tokopedia.saldodetails.viewholder.SalesSaldoTransactionViewHolder
-import com.tokopedia.saldodetails.viewholder.TransactionInitialLoadingFailedViewHolder
+import com.tokopedia.saldodetails.viewholder.*
 
 class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> Unit,
                                     private val retryLoading : () -> Unit,
@@ -30,8 +29,14 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
             SalesSaldoTransactionViewHolder.LAYOUT -> {
                 return SalesSaldoTransactionViewHolder(parent, onItemClick)
             }
-            TransactionInitialLoadingFailedViewHolder.LAYOUT -> {
-                return TransactionInitialLoadingFailedViewHolder(parent, retryLoading)
+            TransactionLoadingFailedViewHolder.LAYOUT -> {
+                return TransactionLoadingFailedViewHolder(parent, retryLoading)
+            }
+            TransactionLoadingViewHolder.LAYOUT -> {
+                return TransactionLoadingViewHolder(parent)
+            }
+            TransactionLoadMoreViewHolder.LAYOUT -> {
+                return TransactionLoadMoreViewHolder(parent)
             }
             else -> {
                 viewHolder = super.createViewHolder(parent, type)
@@ -48,8 +53,16 @@ class SaldoDetailTransactionFactory(private val onItemClick : (Visitable<*>) -> 
         return SaldoListEmptyViewHolder.LAYOUT
     }
 
-    fun type(vm: TransactionErrorModel): Int {
-        return TransactionInitialLoadingFailedViewHolder.LAYOUT
+    override fun type(vm: ErrorNetworkModel): Int {
+        return TransactionLoadingFailedViewHolder.LAYOUT
+    }
+
+    override fun type(vm: LoadingModel): Int {
+        return TransactionLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(vm: LoadingMoreModel): Int {
+        return TransactionLoadMoreViewHolder.LAYOUT
     }
 
     fun type(salesTransactionDetail: SalesTransactionDetail): Int {

@@ -8,7 +8,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.model.TransactionErrorModel
 
-class TransactionInitialLoadingFailedViewHolder(itemView: View, val retryLoading: () -> Unit) :
+class TransactionLoadingFailedViewHolder(itemView: View, val retryLoading: () -> Unit) :
     AbstractViewHolder<TransactionErrorModel>(itemView) {
 
     private val globalError: GlobalError = itemView.findViewById(R.id.globalErrorTransactionList)

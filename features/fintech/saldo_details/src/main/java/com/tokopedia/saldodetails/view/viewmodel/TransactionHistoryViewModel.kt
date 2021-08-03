@@ -72,7 +72,7 @@ class TransactionHistoryViewModel @Inject constructor(
 
     }
 
-    fun retryAllTabLoading(){
+    fun retryAllTabLoading() {
         refreshAllTabsData(dateFrom, dateTo)
     }
 
@@ -170,11 +170,10 @@ class TransactionHistoryViewModel @Inject constructor(
             loadSaleTransaction(page)
         } else {
             getTypeTransactionsUseCase.loadTypeTransactions({
-                    notifyAndAddLoadMoreTransaction(it, transactionType)
-                }, {
-                    notifyLoadMoreError(it, transactionType)
-                }
-            , page, dateFrom, dateTo, transactionType)
+                notifyAndAddLoadMoreTransaction(it, transactionType)
+            }, {
+                notifyLoadMoreError(it, transactionType)
+            }, page, dateFrom, dateTo, transactionType)
         }
     }
 

@@ -16,20 +16,18 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -46,6 +44,7 @@ import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
+import com.tokopedia.saldodetails.response.model.Saldo
 import com.tokopedia.saldodetails.utils.ErrorMessage
 import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
@@ -59,6 +58,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.android.synthetic.main.fragment_saldo_deposit.*
+import kotlinx.android.synthetic.main.saldo_deposit_header.*
 import javax.inject.Inject
 
 
@@ -67,6 +68,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     companion object {
         val REQUEST_WITHDRAW_CODE = 3333
         val KEY_CAN_SHOW_BALANCE_COACHMARK = "com.tokopedia.saldodetails.balance_coach_mark"
+        val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
         val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
         val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
         val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
@@ -176,7 +178,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         )
 
     private val coachMark by lazy {
-        CoachMarkBuilder().build()
+        CoachMark2(this.requireContext())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -216,53 +218,63 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun setCoachMark() {
-        if (isBalanceCoachMarkShown().not() && context != null) {
-            val list = buildCoachMark() ?: return
-            updateBalanceCoachMarkShown()
-            coachMark.show(activity, KEY_CAN_SHOW_BALANCE_COACHMARK, list)
+        context?.let {
+            if (isBalanceCoachMarkShown().not()) {
+                val list = buildCoachMark() ?: return
+                updateBalanceCoachMarkShown()
+                coachMark.setOnDismissListener {
+                    if (coachMark.currentIndex == 1) {
+                        showPenjualanCoachMark()
+                    }
+                }
+                coachMark.showCoachMark(list)
+            } else {
+                showPenjualanCoachMark()
+            }
         }
+    }
+
+    private fun showPenjualanCoachMark() {
+        val canShowPenjualanCoachMark: Boolean =
+            saldoHistoryFragment?.hasPenjualanCoachMarkShown() ?: true
+        if (canShowPenjualanCoachMark.not()) {
+            sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
+                .OnOffsetChangedListener { _, _ -> saldoHistoryFragment?.updatePenjualanCoachMark() })
+            saldoHistoryFragment?.showSaleTabCoachMark()
+        }
+    }
+
+    private fun buildCoachMark(): ArrayList<CoachMark2Item>? {
+        val list = ArrayList<CoachMark2Item>()
+        return if (isSellerEnabled && activity is SaldoDepositActivity && context != null) {
+            list.add(
+                CoachMark2Item(
+                    saldo_buyer_deposit_text,
+                    getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
+                    getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc)
+                )
+            )
+
+            list.add(
+                CoachMark2Item(
+                    saldo_seller_deposit_text,
+                    getString(R.string.saldo_total_balance_seller),
+                    getString(R.string.saldo_intro_description_seller)
+                )
+            )
+            list
+        } else null
     }
 
     private fun isBalanceCoachMarkShown(): Boolean {
         context?.let {
             return CoachMarkPreference.hasShown(it, KEY_CAN_SHOW_BALANCE_COACHMARK)
         } ?: run { return true }
+        return false
     }
 
     private fun updateBalanceCoachMarkShown() {
         context?.let { CoachMarkPreference.setShown(it, KEY_CAN_SHOW_BALANCE_COACHMARK, true) }
-    }
-
-    private fun buildCoachMark(): ArrayList<CoachMarkItem>? {
-        val list = ArrayList<CoachMarkItem>()
-        return if (isSellerEnabled && activity is SaldoDepositActivity && context != null) {
-            list.add(
-                CoachMarkItem(
-                    buyerSaldoBalanceRL,
-                    getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
-                    getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc),
-                    CoachMarkContentPosition.BOTTOM,
-                    ContextCompat.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                    )
-                )
-            )
-
-            list.add(
-                CoachMarkItem(
-                    sellerSaldoBalanceRL,
-                    getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller),
-                    getString(com.tokopedia.saldodetails.R.string.saldo_intro_description_seller),
-                    CoachMarkContentPosition.BOTTOM,
-                    ContextCompat.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                    )
-                )
-            )
-            list
-        } else null
     }
 
     @SuppressLint("Range")
@@ -347,118 +359,119 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun setViewModelObservers() {
 
-        saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(context as AppCompatActivity,
-            androidx.lifecycle.Observer {
-
-                when (it) {
-                    is Success -> {
-                        setSellerSaldoBalance(
-                            it.data.saldo!!.sellerUsable,
-                            it.data.saldo!!.sellerUsableFmt!!
-                        )
-                        showSellerSaldoRL()
-
-                        setBuyerSaldoBalance(
-                            it.data.saldo!!.buyerUsable,
-                            it.data.saldo!!.buyerUsableFmt!!
-                        )
-                        showBuyerSaldoRL()
-
-                        val totalBalance =
-                            it.data.saldo!!.buyerUsable + it.data.saldo!!.sellerUsable
-                        setBalance(
-                            CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                totalBalance,
-                                false
-                            )
-                        )
-                        setWithdrawButtonState(totalBalance != 0L)
-
-                        val holdBalance =
-                            (it.data.saldo!!.buyerHold + it.data.saldo!!.sellerHold).toFloat()
-                        if (holdBalance > 0) {
-                            showHoldWarning(
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    holdBalance.toDouble(),
-                                    false
-                                )
-                            )
-                        } else {
-                            hideWarning()
-                        }
-                    }
-                    is ErrorMessage<*, *> -> {
-                        if (it.data is Int) {
-                            setRetry(getString(it.data))
-                        } else {
-                            setRetry()
-                        }
-                    }
-                    else -> {
-                        setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
+        saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    it.data.saldo?.let { saldo ->
+                        onUserSaldoBalanceLoaded(saldo)
                     }
                 }
-            })
-
-        saldoDetailViewModel.gqlMerchantSaldoDetailLiveData.observe(context as AppCompatActivity,
-            androidx.lifecycle.Observer {
-                when (it) {
-                    is Success -> {
-                        performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                        performanceInterface.startRenderPerformanceMonitoring()
-                        showSaldoPrioritasFragment(it.data.data)
-                        performanceInterface.stopRenderPerformanceMonitoring()
-                    }
-                    else -> {
-                        performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                        hideSaldoPrioritasFragment()
+                is ErrorMessage<*, *> -> {
+                    if (it.data is Int) {
+                        setRetry(getString(it.data))
+                    } else {
+                        setRetry()
                     }
                 }
-            })
-
-        saldoDetailViewModel.gqlMerchantCreditDetailLiveData.observe(context as AppCompatActivity,
-            androidx.lifecycle.Observer {
-                when (it) {
-                    is Success -> {
-                        performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                        performanceInterface.startRenderPerformanceMonitoring()
-                        showMerchantCreditLineFragment(it.data.data)
-                        performanceInterface.stopRenderPerformanceMonitoring()
-                    }
-                    else -> {
-                        performanceInterface.stopNetworkRequestPerformanceMonitoring()
-                        hideMerchantCreditLineFragment()
-                    }
+                else -> {
+                    setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
                 }
-            })
+            }
+        })
 
-        saldoDetailViewModel.gqlLateCountResponseLiveData.observe(context as AppCompatActivity,
-            androidx.lifecycle.Observer {
-                when (it) {
-                    is Success -> {
-                        setLateCount(it.data.mclGetLatedetails!!.lateCount)
-                    }
-                    else -> {
-                        hideWithdrawTicker()
-                    }
+        saldoDetailViewModel.gqlMerchantSaldoDetailLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
+                    showSaldoPrioritasFragment(it.data.data)
+                    performanceInterface.stopRenderPerformanceMonitoring()
                 }
-            })
+                else -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    hideSaldoPrioritasFragment()
+                }
+            }
+        })
 
-        saldoDetailViewModel.gqlTickerWithdrawalLiveData.observe(context as AppCompatActivity,
-            androidx.lifecycle.Observer {
-                when (it) {
-                    is Success -> {
-                        if (!TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
-                            showTickerMessage(it.data.withdrawalTicker!!.tickerMessage!!)
-                        } else {
-                            hideTickerMessage()
-                        }
-                    }
-                    else -> {
+        saldoDetailViewModel.gqlMerchantCreditDetailLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
+                    showMerchantCreditLineFragment(it.data.data)
+                    performanceInterface.stopRenderPerformanceMonitoring()
+                }
+                else -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    hideMerchantCreditLineFragment()
+                }
+            }
+        })
+
+        saldoDetailViewModel.gqlLateCountResponseLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    setLateCount(it.data.mclGetLatedetails!!.lateCount)
+                }
+                else -> {
+                    hideWithdrawTicker()
+                }
+            }
+        })
+
+        saldoDetailViewModel.gqlTickerWithdrawalLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    if (!TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
+                        showTickerMessage(it.data.withdrawalTicker!!.tickerMessage!!)
+                    } else {
                         hideTickerMessage()
                     }
                 }
-            })
+                else -> {
+                    hideTickerMessage()
+                }
+            }
+        })
+    }
+
+    private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
+        setSellerSaldoBalance(
+            saldo.sellerUsable,
+            saldo.sellerUsableFmt!!
+        )
+        showSellerSaldoRL()
+
+        setBuyerSaldoBalance(
+            saldo.buyerUsable,
+            saldo.buyerUsableFmt!!
+        )
+        showBuyerSaldoRL()
+
+        val totalBalance =
+            saldo.buyerUsable + saldo.sellerUsable
+        setBalance(
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                totalBalance,
+                false
+            )
+        )
+        setWithdrawButtonState(totalBalance != 0L)
+
+        val holdBalance =
+            (saldo.buyerHold + saldo.sellerHold).toFloat()
+        if (holdBalance > 0) {
+            showHoldWarning(
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    holdBalance.toDouble(),
+                    false
+                )
+            )
+        } else {
+            hideWarning()
+        }
+
     }
 
     private fun initListeners() {
@@ -760,7 +773,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     @SuppressLint("Range")
     fun showErrorMessage(error: String) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, error)
+        view?.apply {
+            Toaster.build(this, error, Toaster.TYPE_NORMAL, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun showHoldWarning(warningText: String) {
