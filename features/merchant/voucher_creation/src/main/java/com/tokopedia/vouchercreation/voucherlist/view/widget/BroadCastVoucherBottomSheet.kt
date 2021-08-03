@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -43,6 +44,7 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
     private var voucherPeriodInfoView: Typography? = null
     private var broadCastButton: View? = null
     private var socialMediaShareButton: View? = null
+    private var freeTextView: Typography? = null
 
     private var onShareClickAction: (VoucherUiModel) -> Unit = {}
     private var onBroadCastClickAction: (VoucherUiModel) -> Unit = {}
@@ -96,6 +98,13 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
         broadCastButton = view.findViewById(R.id.broadcast_button)
         broadCastButton?.setOnClickListener {
             voucherUiModel?.run(onBroadCastClickAction)
+        }
+
+        // free text view setup
+        freeTextView = view.findViewById(R.id.tgp_free)
+        voucherUiModel?.run {
+            if (quota > 0) freeTextView?.show()
+            else freeTextView?.hide()
         }
 
         // social media button setup

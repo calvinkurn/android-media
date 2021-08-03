@@ -116,14 +116,14 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.FILLED
                     stringRes = R.string.mvc_share
                     clickAction = listener::onShareClickListener
-                    showNewBroadCastVoucherExperience(element.showNewBc)
+                    showNewBroadCastVoucherExperience(element.showNewBc, VoucherStatusConst.ONGOING)
                 }
                 VoucherStatusConst.NOT_STARTED -> {
                     buttonType = UnifyButton.Type.ALTERNATE
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_edit_quota
                     clickAction = listener::onEditQuotaClickListener
-                    showNewBroadCastVoucherExperience(false)
+                    showNewBroadCastVoucherExperience(false, VoucherStatusConst.NOT_STARTED)
                 }
                 else -> {
                     if (element.type != VoucherTypeConst.FREE_ONGKIR) {
@@ -217,12 +217,23 @@ class VoucherViewHolder(
         }
     }
 
-    private fun showNewBroadCastVoucherExperience(showNewBc: Boolean) {
+    private fun showNewBroadCastVoucherExperience(
+        showNewBc: Boolean,
+        @VoucherStatusConst voucherType: Int
+    ) {
         if (showNewBc) {
+            when (voucherType) {
+                VoucherStatusConst.ONGOING -> {
+                    shareButton?.visible()
+                    broadcastButton?.visible()
+                }
+                VoucherStatusConst.NOT_STARTED -> {
+                    shareButton?.gone()
+                    broadcastButton?.visible()
+                }
+            }
             ctaButton?.gone()
             btnMvcMore?.gone()
-            shareButton?.visible()
-            broadcastButton?.visible()
             moreButton?.visible()
         } else {
             ctaButton?.visible()

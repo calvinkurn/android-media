@@ -93,6 +93,7 @@
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgp_free"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
