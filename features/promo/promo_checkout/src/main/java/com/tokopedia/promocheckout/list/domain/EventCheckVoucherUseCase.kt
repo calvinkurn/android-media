@@ -38,8 +38,6 @@ class EventCheckVoucherUseCase @Inject constructor(val restRepository: RestRepos
 
     suspend fun execute(book: Boolean, body: EventVerifyBody): Result<DataUiModel>{
         return try {
-            createMapParam(book)
-            setEventVerifyBody(body)
             val data = executeOnBackground()
             val values = data[EventVerifyResponse::class.java]
             val convertedData = convertResponse(data)
@@ -70,7 +68,7 @@ class EventCheckVoucherUseCase @Inject constructor(val restRepository: RestRepos
         private const val SUCCESS_CODE = 200
 
         private fun convertResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventVerifyResponse {
-            return typeRestResponseMap[DataUiModel::class.java]?.getData() as EventVerifyResponse
+            return typeRestResponseMap[EventVerifyResponse::class.java]?.getData() as EventVerifyResponse
         }
     }
 }
