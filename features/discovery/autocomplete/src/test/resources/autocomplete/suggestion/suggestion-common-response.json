@@ -128,6 +128,100 @@
         "tracking": {
           "code": ""
         }
+      },
+      {
+        "template": "header",
+        "type": "",
+        "applink": "",
+        "url": "",
+        "title": "Mau belanja apa?",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        }
+      },
+      {
+        "template": "list_chips",
+        "type": "related_keywords",
+        "applink": "",
+        "url": "",
+        "title": "",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "child_items": [
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Daging&source=universe&st=product",
+            "url": "/search?q=Daging&source=universe&st=product",
+            "title": "Daging"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Telur&source=universe&st=product",
+            "url": "/search?q=Telur&source=universe&st=product",
+            "title": "Telur"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Susu&source=universe&st=product",
+            "url": "/search?q=Susu&source=universe&st=product",
+            "title": "Susu"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Bahan+Makanan+Kering&source=universe&st=product",
+            "url": "/search?q=Bahan+Makanan+Kering&source=universe&st=product",
+            "title": "Bahan Makanan Kering"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Makanan+Jadi&source=universe&st=product",
+            "url": "/search?q=Makanan+Jadi&source=universe&st=product",
+            "title": "Makanan Jadi"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Mie+Pasta&source=universe&st=product",
+            "url": "/search?q=Mie+Pasta&source=universe&st=product",
+            "title": "Mie Pasta"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Makanan+Ringan&source=universe&st=product",
+            "url": "/search?q=Makanan+Ringan&source=universe&st=product",
+            "title": "Makanan Ringan"
+          },
+          {
+            "template": "",
+            "type": "",
+            "applink": "tokopedia://search?q=Buah+Segar&source=universe&st=product",
+            "url": "/search?q=Buah+Segar&source=universe&st=product",
+            "title": "Buah Segar"
+          }
+        ]
       }
     ]
   },

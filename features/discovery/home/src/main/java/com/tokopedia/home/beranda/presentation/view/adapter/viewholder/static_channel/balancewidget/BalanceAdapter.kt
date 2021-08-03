@@ -34,9 +34,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home_component.util.invertIfDarkMode
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_balance_widget.view.*
 
 /**
@@ -45,38 +43,21 @@ import kotlinx.android.synthetic.main.item_balance_widget.view.*
 
 class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
 
+    var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
     fun setItemMap(itemMap: HomeBalanceModel) {
-        this.itemMap = HomeBalanceModel()
         this.itemMap = itemMap
         notifyDataSetChanged()
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.attachedRecyclerView = recyclerView
+    }
+
     fun getItemMap():  HomeBalanceModel {
         return itemMap
-    }
-
-    fun getTokopointsDataPosition(): Int {
-        getItemMap().let {
-            val keys =  it.balanceDrawerItemModels.filterValues { model -> model.drawerItemType == TYPE_TOKOPOINT }.keys
-            if (keys.isNotEmpty()) {
-                return keys.first()
-            }
-        }
-        return -1
-    }
-
-    fun getGopayDataPosition(): Int {
-        getItemMap().let {
-            val keys =  it.balanceDrawerItemModels.filterValues { model ->
-                model.drawerItemType == TYPE_WALLET_APP_LINKED || model.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-            }.keys
-            if (keys.isNotEmpty()) {
-                return keys.first()
-            }
-        }
-        return -1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -102,6 +83,9 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
             this.listener = listener
             renderTokoPoint(drawerItem)
+            this.itemView.tag = String.format(
+                itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
+            )
             this.isOvoAvailable = isOvoAvailable
         }
 
@@ -313,10 +297,27 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 }
             }
 
+
+            //error state using shimmering
             element?.defaultIconRes?.let {
-                itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                if (element.drawerItemType == TYPE_WALLET_OVO ||
+                    element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
+                    element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
+                    element.drawerItemType == TYPE_WALLET_OTHER
+                ) {
+                    itemView.home_iv_logo_balance.visible()
+                    itemView.home_iv_logo_shimmering.invisible()
+
+                    itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                } else {
+                    itemView.home_iv_logo_balance.invisible()
+                    itemView.home_iv_logo_shimmering.visible()
+                }
             }
             element?.iconImageUrl?.let {
+                itemView.home_iv_logo_balance.visible()
+                itemView.home_iv_logo_shimmering.invisible()
+
                 if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
             }
         }

@@ -234,7 +234,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException) {
-            message = e.message
+            message = e.message.toString()
         }
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }.showRetrySnackbar()
     }
@@ -247,7 +247,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         }
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-            message = e.message
+            message = e.message.toString()
         }
         if (message.equals(resources.getString(R.string.promo_phone_verification_message)) || message.equals(R.string.promo_phone_verification_message_v2)) {
             val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
