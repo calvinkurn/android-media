@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
@@ -31,7 +30,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
     override fun bind(element: VideoViewModel) {
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
             itemView.image.setOnClickListener {
-                if (!element.url.isBlank()) {
+                if (element.url.isNotBlank()) {
                     listener.onVideoPlayerClicked(
                         element.positionInFeed,
                         pagerPosition,
@@ -50,12 +49,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
             object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     val viewTreeObserver = itemView.image.viewTreeObserver
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    } else {
-                        @Suppress("DEPRECATION")
-                        viewTreeObserver.removeGlobalOnLayoutListener(this)
-                    }
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                     itemView.image.maxHeight = itemView.image.width
                     itemView.image.requestLayout()

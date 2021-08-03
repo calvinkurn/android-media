@@ -6,10 +6,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.TouchDelegate
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -38,6 +35,10 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Comp
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.showUnifyError
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -47,6 +48,7 @@ import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.vouchergame.common.util.VoucherGameGqlQuery
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
+import com.tokopedia.vouchergame.detail.data.OperatorNotFoundException
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
@@ -67,7 +69,7 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 16/08/19.
  */
-class VoucherGameDetailFragment: BaseTopupBillsFragment(),
+class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         BaseListAdapter.OnAdapterInteractionListener<Visitable<*>>,
         VoucherGameDetailAdapter.LoaderListener,
         VoucherGameProductViewHolder.OnClickListener,
@@ -121,7 +123,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
 
         arguments?.let {
-            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
+                    ?: VoucherGameExtraParam()
             // Initalize variables of base topup bills fragment
             menuId = voucherGameExtraParam.menuId.toIntOrNull() ?: 0
             categoryId = voucherGameExtraParam.categoryId.toIntOrNull() ?: 0
@@ -138,10 +141,22 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        voucherGameViewModel.voucherGameOperatorDetails.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    voucherGameOperatorData = it.data.attributes
+                    setupOperatorDetail()
+                }
+                is Fail -> {
+                    renderPageNotFoundError()
+                }
+            }
+        })
+
         voucherGameViewModel.voucherGameProducts.observe(viewLifecycleOwner, Observer {
             it.run {
                 input_field_container_shimmering.visibility = View.GONE
-                when(it) {
+                when (it) {
                     is Success -> {
                         adapter.hideLoading()
 
@@ -174,6 +189,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
+        if (voucherGameOperatorData.name.isEmpty()) {
+            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
+                    voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntOrZero()), false, voucherGameExtraParam.operatorId)
+        }
 
         adapter.showLoading()
         loadData()
@@ -244,6 +264,16 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     }
 
+    private fun renderPageNotFoundError() {
+        vg_detail_error_view.show()
+        vg_detail_error_view.showUnifyError(OperatorNotFoundException(), {
+            activity?.onBackPressed()
+        })
+        vg_detail_error_view.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
+            gravity = Gravity.CENTER
+        }
+    }
+
     override fun onEnquiryError(error: Throwable) {
         toggleEnquiryLoadingBar(false)
         isEnquired = false
@@ -294,8 +324,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             inputFieldCount = 0
             isEnquired = true
             input_field_container.visibility = View.GONE
-        }
-        else {
+        } else {
             enquiryData = data.enquiryFields
             // Chcek if input count is valid
             if (enquiryData.size in INPUT_COUNT_MIN..INPUT_COUNT_MAX) inputFieldCount = enquiryData.size
@@ -331,7 +360,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             }
 
             override fun onCustomInputClick() {
-                if (field.isCustomInput && dropdownData.isNotEmpty()) { showInputDropdown(field, dropdownData) }
+                if (field.isCustomInput && dropdownData.isNotEmpty()) {
+                    showInputDropdown(field, dropdownData)
+                }
             }
 
             override fun onTextChangeInput() {
@@ -402,7 +433,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 dropdownBottomSheet.dismiss()
             }
 
-            val dropdownView = TopupBillsInputDropdownWidget(context, listener = object : TopupBillsInputDropdownWidget.OnClickListener{
+            val dropdownView = TopupBillsInputDropdownWidget(context, listener = object : TopupBillsInputDropdownWidget.OnClickListener {
                 override fun onItemClicked(item: TopupBillsInputDropdownData) {
                     field.setInputText(item.label)
                 }
@@ -410,7 +441,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             dropdownView.setData(data)
             dropdownBottomSheet.setChild(dropdownView)
 
-            fragmentManager?.run { dropdownBottomSheet.show(this,"Enquiry input field dropdown bottom sheet") }
+            fragmentManager?.run { dropdownBottomSheet.show(this, "Enquiry input field dropdown bottom sheet") }
             // Open keyboard with delay so it opens when bottom sheet is fully visible
             Handler().postDelayed({
                 val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -462,7 +493,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     listData.add(categoryItem)
                 }
 
-                if (productList.products.isNotEmpty())  {
+                if (productList.products.isNotEmpty()) {
                     listData.addAll(productList.products)
                     trackingList.addAll(productList.products)
                     if (!hasMoreDetails && productList.products.filter { it.attributes.detail.isNotEmpty() }.isNotEmpty()) {
@@ -555,7 +586,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             getMenuDetail(it)
-            voucherGameViewModel.getVoucherGameProducts(VoucherGameGqlQuery.voucherGameProducts,
+            voucherGameViewModel.getVoucherGameProducts(
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }
