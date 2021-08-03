@@ -10,11 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
+import com.tokopedia.product_bundle.common.util.AtcVariantMapper.mapToProductVariant
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
@@ -45,6 +49,8 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
         setupTotalAmount(view)
 
         observeSingleProductBundleUiModel()
+
+        moveToVariantPage()
     }
 
     override fun getScreenName() = SingleProductBundleFragment::class.java.simpleName
@@ -99,6 +105,31 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
             amountView.text = price
             setTitleText("$discount%", slashPrice)
             setSubtitleText("Hemat", priceGap)
+        }
+    }
+
+    private fun moveToVariantPage() {
+        val productVariant = mapToProductVariant(viewModel.generateBundleItem())
+        val cartRedirections = viewModel.generateCartRedirection()
+        AtcVariantHelper.pdpToAtcVariant(
+            context = requireContext(),
+            productInfoP1 = DynamicProductInfoP1(),
+            warehouseId = "",
+            pdpSession = "",
+            isTokoNow = false,
+            isShopOwner = false,
+            productVariant = productVariant,
+            warehouseResponse = mapOf("" to WarehouseInfo()),
+            cartRedirection = cartRedirections,
+            miniCart = emptyMap(),
+            alternateCopy = emptyList(),
+            boData = emptyList()
+        ) { intent, resultCode ->
+            when (resultCode) {
+                AtcVariantHelper.ATC_VARIANT_RESULT_CODE -> {
+                    startActivityForResult(intent, resultCode)
+                }
+            }
         }
     }
 

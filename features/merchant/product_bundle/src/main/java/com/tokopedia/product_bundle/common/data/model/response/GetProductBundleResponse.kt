@@ -75,7 +75,7 @@ data class Selection(
         @SerializedName("Name")
         val name: String = "",
         @SerializedName("Identifier")
-        val Identifier: String = ""
+        val identifier: String = ""
 )
 
 data class VariantOption(
@@ -98,6 +98,8 @@ data class Child(
         val picURL: String = "",
         @SerializedName("MinOrder")
         val minOrder: Int = 0,
+        @SerializedName("BundlePrice")
+        val originalPrice: Long = 0L,
         @SerializedName("BundlePrice")
         val bundlePrice: Long = 0L,
         @SerializedName("Stock")
