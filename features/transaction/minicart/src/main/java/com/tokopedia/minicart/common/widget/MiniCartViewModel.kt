@@ -130,14 +130,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         return currentShopIds.value ?: emptyList()
     }
 
-    fun isOccFlow(): Boolean {
-        return isOCCFlow.value ?: true
-    }
-
-    fun setOccFlow(isOccFlow: Boolean) {
-        _isOCCFlow.value = isOccFlow
-    }
-
     private fun getMiniCartItems(): List<MiniCartItem> {
         return miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
     }
@@ -160,7 +152,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListSimplifiedUseCase.execute(
                 onSuccess = {
                     // Todo : setOccFlow value from mini cart response
-                    setOccFlow(true)
+                    _isOCCFlow.value = true
                     _miniCartSimplifiedData.value = it
                 },
                 onError = {
@@ -178,7 +170,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListUseCase.execute(
                 onSuccess = {
                     // Todo : setOccFlow value from mini cart response
-                    setOccFlow(true)
+                    _isOCCFlow.value = true
                     onSuccessGetCartList(it, isFirstLoad)
                 },
                 onError = {
@@ -347,7 +339,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun goToCheckout(observer: Int) {
-        if (isOccFlow()) {
+        if (isOCCFlow.value == true) {
             addToCartForCheckout(observer)
         } else {
             updateCartForCheckout(observer)
