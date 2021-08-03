@@ -22,6 +22,7 @@ import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
@@ -598,16 +599,9 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType?) {
-        shopType?.let { shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, it.shopTypeHeaderRes)) }
-        shopStatusHeaderIcon?.run {
-            if (shopType !is RegularMerchant) {
-                visibility = View.VISIBLE
-                shopType?.shopTypeHeaderIconRes?.let { iconRes ->
-                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
-                }
-            } else {
-                visibility = View.GONE
-            }
+        shopType?.let {
+            shopStatusHeader?.setImageResource(it.shopTypeHeaderRes)
+            shopStatusHeaderIcon?.loadImageWithoutPlaceholder(it.shopTypeHeaderIconUrl)
         }
     }
 
