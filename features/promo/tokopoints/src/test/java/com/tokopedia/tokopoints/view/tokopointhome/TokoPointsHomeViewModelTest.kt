@@ -11,8 +11,8 @@ import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
-import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerResponse
-import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardsTicker
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardsTickerList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
@@ -74,7 +74,7 @@ class TokoPointsHomeViewModelTest {
             every { isShowSavingPage } returns false
         }
         val dataSection = mockk<List<SectionContent>>()
-        val rewardTickerResponse = mockk<RewardsTicker>()
+        val rewardTickerResponse = mockk<RewardsTickerList>()
 
         coEvery { repository.getTokoPointDetailData() } returns mockk {
             every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
@@ -87,8 +87,8 @@ class TokoPointsHomeViewModelTest {
             }
         }
         coEvery { repository.getUserStatusMatchingData() } returns mockk {
-            every { getData<RewardTickerResponse>(RewardTickerResponse::class.java) } returns mockk {
-                every { rewardsTicker } returns rewardTickerResponse
+            every { getData<RewardTickerListResponse>(RewardTickerListResponse::class.java) } returns mockk {
+                every { rewardsTickerList } returns rewardTickerResponse
             }
         }
 
@@ -107,7 +107,7 @@ class TokoPointsHomeViewModelTest {
         val result = viewModel.tokopointDetailLiveData.value as Success
         assert(result.data.sectionList == dataSection)
         assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.topSectionResponse.rewardTickerResponse?.rewardsTicker == rewardTickerResponse)
+        assert(result.data.topSectionResponse.rewardTickerResponse?.rewardsTickerList == rewardTickerResponse)
         assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
@@ -122,7 +122,7 @@ class TokoPointsHomeViewModelTest {
         }
         val dataSection = mockk<List<SectionContent>>()
         val dataUserSavingResponse = mockk<TokopointsUserSaving>()
-        val rewardTickerResponse = mockk<RewardsTicker>()
+        val rewardTickerResponse = mockk<RewardsTickerList>()
 
         coEvery { repository.getTokoPointDetailData() } returns mockk {
             every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
@@ -140,8 +140,8 @@ class TokoPointsHomeViewModelTest {
             }
         }
         coEvery { repository.getUserStatusMatchingData() } returns mockk {
-            every { getData<RewardTickerResponse>(RewardTickerResponse::class.java) } returns mockk {
-                every { rewardsTicker } returns rewardTickerResponse
+            every { getData<RewardTickerListResponse>(RewardTickerListResponse::class.java) } returns mockk {
+                every { rewardsTickerList } returns rewardTickerResponse
             }
         }
 
@@ -159,7 +159,7 @@ class TokoPointsHomeViewModelTest {
         val result = viewModel.tokopointDetailLiveData.value as Success
         assert(result.data.sectionList == dataSection)
         assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.topSectionResponse.rewardTickerResponse?.rewardsTicker == rewardTickerResponse)
+        assert(result.data.topSectionResponse.rewardTickerResponse?.rewardsTickerList == rewardTickerResponse)
         assert(result.data.topSectionResponse.userSavingResponse == dataUserSavingResponse)
         assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
