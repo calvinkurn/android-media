@@ -7,7 +7,6 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
     fun type(data: ProductDiscussionMostHelpfulDataModel): Int
-    fun type(data: ProductInfoDataModel): Int
     fun type(data: ProductGeneralInfoDataModel): Int
     fun type(data: ProductMerchantVoucherDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
@@ -32,5 +31,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMiniShopWidgetDataModel): Int
     fun type(data: ProductRecomWidgetDataModel): Int
     fun type(data: OneLinersDataModel): Int
+    fun type(data: ProductCategoryCarouselDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

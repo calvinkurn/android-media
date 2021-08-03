@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
@@ -67,8 +68,12 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun providePlayBroadcastAnalytic(userSession: UserSessionInterface, contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic): PlayBroadcastAnalytic {
-        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic)
+    fun providePlayBroadcastAnalytic(
+        userSession: UserSessionInterface,
+        contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
+        interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
+    ): PlayBroadcastAnalytic {
+        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic)
     }
 
     @PlayBroadcastScope
@@ -92,5 +97,4 @@ class PlayBroadcastModule(private val mContext: Context) {
          */
 //        return PlayBroadcastMockMapper()
     }
-
 }

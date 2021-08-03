@@ -15,6 +15,7 @@ object ProductTrackingConstant {
     object Tracking {
         const val KEY_SHOP_ID_SELLER = "shopId"
         const val KEY_SHOP_TYPE = "shopType"
+        const val KEY_SHOP_NAME = "shopName"
         const val KEY_PAGE_TYPE = "pageType"
         const val KEY_PRODUCT_ID_ = "productId"
         const val KEY_EVENT = "event"
@@ -81,6 +82,7 @@ object ProductTrackingConstant {
         const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
+        const val SELECT_CONTENT = "select_content"
 
         //Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
@@ -98,6 +100,8 @@ object ProductTrackingConstant {
 
         const val CONTENT_TYPE = "product"
         const val BRANCH_QUANTITY ="1"
+
+
     }
     object Action {
         const val CLICK = "click"
@@ -197,11 +201,14 @@ object ProductTrackingConstant {
         const val VIEW_SHIPMENT_ERROR_BOTTOM_SHEET = "impression - bottomsheet on pdp"
         const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHAT = "click - chat penjual on bottomsheet error"
         const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHOOSE_ADDRESS = "click - ganti alamat on bottomsheet error"
-
+        const val CLICK_MODULAR_COMPONENT = "click - modular component"
         const val CLICK_VARIANT_BUY_BUTTON = "click - Beli Langsung on pdp - to global variant bottomsheet"
         const val CLICK_VARIANT_ATC_BUTTON = "click - tambah ke keranjang on pdp - to global variant bottomsheet"
 
         const val CLICK_VARIANT_QUANTITY_EDITOR = "click - quantity editor"
+
+        const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
+        const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
     }
 
 
@@ -220,7 +227,11 @@ object ProductTrackingConstant {
         const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
         const val EVENT_LABEL_CLICK_SHIPMENT_ERROR = "error message:%s;"
         const val VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET = "bottomsheet title:%s;"
-
+        const val EVENT_LABEL_CLICK_BEST_SELLER = "label:%s;category_id:%s;category_name:%s;"
+        const val EVENT_COMPONENT_CLICK_BEST_SELLER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
+        const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
+        const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
+        const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
     }
 
     object Report {
@@ -266,4 +277,26 @@ object ProductTrackingConstant {
         const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
+    object ImpulsiveBanner{
+        const val IMPRESSION_BANNER = "impression on pdp 7 widget banner"
+        const val CLICK_BANNER = "click on pdp 7 widget banner"
+        const val EVENT_COMPONENT_IMPRESSION_BANNER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
+        const val EVENT_LAYOUT_IMPRESSION_BANNER = "layout:%s;catName:%s;catId:%s;"
+        const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" //recomAlgo - keywordName
+        const val CREATIVE_NAME = "impulsive widget"
+    }
+
+    object RecomTokonow {
+
+        //recomatc
+        const val KEY_EVENT_ATC = "addToCart"
+        const val KEY_EVENT_PAGE_SOURCE = "pageSource"
+        const val KEY_EVENT_CATEGORY_ATC = "tokonow product detail page"
+        const val KEY_EVENT_ACTION_ATC = "click add to cart on tokonow product recommendation"
+        const val KEY_EVENT_LABEL_ATC = "%s, %s" //recom title, chips value
+
+        // example /tokonow - recomproduct - pdp_1 - rekomendasi untuk anda - {recommendation type}
+        const val PARAM_ATC_DIMENS_40 = "/tokonow - recomproduct - %s - rekomendasi untuk anda - %s"
+        const val PARAM_EVENT_PAGE_SOURCE = "%s.%s" //page source like PDP, recommendationType
+    }
 }

@@ -29,7 +29,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_image"
         app:typographyType="heading_6"
-        app:textColor="@color/Neutral_N700"
+        app:textColor="@color/Unify_N700"
         tools:text="Test Tab" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

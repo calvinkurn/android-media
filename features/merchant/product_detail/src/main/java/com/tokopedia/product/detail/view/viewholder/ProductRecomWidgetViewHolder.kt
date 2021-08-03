@@ -92,11 +92,27 @@ class ProductRecomWidgetViewHolder (
         }
     }
 
+    override fun onRecomProductCardAddToCartNonVariant(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+
+    }
+
+    override fun onRecomProductCardAddVariantClick(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int) {
+
+    }
+
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
+        listener.onRecommendationBannerImpressed(
+                data = data.recommendationData,
+                templateNameType = productRecom?.name ?: "",
+        )
     }
 
     override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
-        listener.goToApplink(applink)
+        listener.onRecommendationBannerClicked(
+                appLink = applink,
+                data = data.recommendationData,
+                templateNameType = productRecom?.name ?: "",
+        )
     }
 
     override fun onChannelWidgetEmpty() {
