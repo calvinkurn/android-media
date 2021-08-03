@@ -55,12 +55,12 @@
     <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="desc_content_pm_to_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya.</string>
 
-    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant Pro!</string>
+    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant PRO!</string>
     <string name="desc_potential_pm_pro">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
 
     <string name="title_benefit_pm_pro">Toko dengan Power Merchant PRO punya keuntungan eksklusif:</string>
-    <string name="title_item_benefit_1_pm_pro">Bebas Ongkir dengan biaya lebih rendah</string>
-    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant Pro untuk tingkatkan kepercayaan pembeli</string>
+    <string name="title_item_benefit_1_pm_pro">Bebas ongkir dengan biaya layanan lebih ringan</string>
+    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant PRO untuk tingkatkan kepercayaan pembeli</string>
     <string name="title_item_benefit_3_pm_pro">Nikmati layanan prioritas Tokopedia Care</string>
 
     <!-- Example Text for display preview -->
@@ -106,7 +106,7 @@
     <string name="update_calculation_shop_performance">Skor dihitung dari median Performa skor dalam 90 hari terakhir dan akan diperbarui setiap minggunya (Senin).</string>
     <string name="desc_calculation_success_order">Persentase jumlah pesanan berhasil dibanding total pesanan masuk.</string>
     <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.
-            &lt;br /&gt;&lt;br /&gt;Setting awal jam operasional Tokopedia adalah 09.00 - 18.00, namun jka toko sudah memiliki jam operasional, maka perhitungan chat dan diskusi akan mengikuti jam operasional toko. Untuk chat tetap memperhitungkan weekend, sementara diskusi akan exclude diskusi yang masuk di weekend.
+            &lt;br /&gt;&lt;br /&gt;Setting awal jam operasional Tokopedia adalah 09.00 - 18.00, namun jka toko sudah memiliki jam operasional, maka perhitungan chat dan diskusi akan mengikuti jam operasional toko. Untuk chat tetap memperhitungkan weekend, sementara diskusi yang masuk di weekend tidak diperhitungkan.
     </string>
     <string name="desc_calculation_level_reply_chat">Persentase jumlah chat dan diskusi yang dibalas oleh Seller dibandingkan total chat (50%) dan diskusi (50%) yang masuk.</string>
     <string name="desc_calculation_speed_process_order">Waktu yang diperlukan Seller untuk memproses pesanan, dari waktu pesanan masuk hingga resi terkonfirmasi.</string>
@@ -272,6 +272,12 @@
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
     <string name="desc_calculate_shop_performance_for_new_seller">Seller baru tidak akan mendapatkan perhitungan Shop Score sampai usia toko >90 hari. Namun Seller baru tetap dapat mendaftarkan diri sebagai Power Merchant dengan hanya melakukan KYC.</string>
+
+    <string name="title_calculate_shop_performance_not_available_parameter">Bagaimana Tokopedia menghitung nilai skor Performa Toko jika nilai parameter saya tidak ada? (Misalnya: tidak ada chat masuk)</string>
+    <string name="desc_calculate_shop_performance_not_available_parameter">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
+
+    <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
+    <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
 
     <string name="title_shop_performance_become_existing_seller">Performa Tokomu akan efektif berlaku setelah 90 hari bergabung, di %s</string>
 

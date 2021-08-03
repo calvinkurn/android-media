@@ -129,6 +129,12 @@ class ShopScoreMapper @Inject constructor(
 
         val isNewSellerProjection = shopAge in SHOP_AGE_SIXTY..NEW_SELLER_DAYS
 
+        val isOfficialStore = if (officialStoreResponse?.status.isNullOrBlank()) {
+            userSession.isShopOfficialStore
+        } else {
+            officialStoreResponse?.status == OSStatus.ACTIVE
+        }
+
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < NEW_SELLER_DAYS) {
                 val mapTimerNewSeller =
@@ -157,8 +163,8 @@ class ShopScoreMapper @Inject constructor(
             }
 
             when {
-                officialStoreResponse?.status == OSStatus.ACTIVE || shopAge < SHOP_AGE_SIXTY -> {
-                    add(SectionFaqUiModel(mapToItemFaqUiModel()))
+                isOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
+                    add(SectionFaqUiModel(mapToItemFaqUiModel(isOfficialStore)))
                 }
                 powerMerchantResponse?.pmTier == PMTier.PRO -> {
                     add(ItemStatusPMProUiModel())
@@ -196,7 +202,7 @@ class ShopScoreMapper @Inject constructor(
                             }
                         }
                         (powerMerchantResponse.status == PMStatusConst.ACTIVE || powerMerchantResponse.status == PMStatusConst.IDLE)
-                                && !userSession.isShopOfficialStore -> {
+                                && !isOfficialStore -> {
                             if (shopAge >= SHOP_AGE_SIXTY) {
                                 when (isEligiblePMPro) {
                                     true -> {
@@ -768,7 +774,7 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
-    private fun mapToItemFaqUiModel(): List<ItemFaqUiModel> {
+    private fun mapToItemFaqUiModel(isOfficialStore: Boolean): List<ItemFaqUiModel> {
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
@@ -795,7 +801,7 @@ class ShopScoreMapper @Inject constructor(
                     parameterFaqList = mapToItemParameterFaq()
                 )
             )
-            if (!userSession.isShopOfficialStore) {
+            if (!isOfficialStore) {
                 add(
                     ItemFaqUiModel(
                         title = context?.getString(R.string.title_changes_shop_score_during_transition)
@@ -821,6 +827,24 @@ class ShopScoreMapper @Inject constructor(
                         .orEmpty(),
                 )
             )
+            if (isOfficialStore) {
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_calculate_shop_performance_not_available_parameter)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_calculate_shop_performance_not_available_parameter)
+                            .orEmpty(),
+                    )
+                )
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_shop_score_affect_os)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_shop_score_affect_os)
+                            .orEmpty(),
+                    )
+                )
+            }
         }
     }
 
