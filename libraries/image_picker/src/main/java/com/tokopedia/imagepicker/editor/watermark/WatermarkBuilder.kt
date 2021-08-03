@@ -100,7 +100,6 @@ open class WatermarkBuilder {
         this.watermarkTextAndImage = TextAndImage().apply {
             this.image = bitmap
             this.text = text.takeAndEllipsizeOf()
-            this.types = types
         }
     }
 
