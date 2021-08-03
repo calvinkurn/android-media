@@ -1500,10 +1500,29 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 SEARCH_SCREEN_NAME)
 
         binding?.containerEmptyResultState?.visible()
-        binding?.containerEmptyResultState?.postDelayed({
-            bottomSheetBehavior.setPeekHeight(binding?.containerEmptyResultState?.measuredHeight ?: 0 +
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6), true)
-        }, DELAY_EMPTY_STATE)
+        binding?.containerEmptyResultState?.doOnNextLayout {
+            bottomSheetBehavior.peekHeight = binding?.containerEmptyResultState?.measuredHeight ?: 0 +
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
+        }
+    }
+
+    inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
+        addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                view: View,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
+                view.removeOnLayoutChangeListener(this)
+                action(view)
+            }
+        })
     }
 
     private fun hideErrorNoResult() {
