@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
@@ -693,13 +694,14 @@ class PlayUserInteractionFragment @Inject constructor(
             private var isFirstTime = true
 
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
+                Log.d("<LIKE>", it.toString())
                 val shotAmount: Long
                 if (isFirstTime) {
                     shotAmount = minOf(it.totalLike, spamLikeView.maxShot)
                     likeView.setEnabled(true)
                 }
                 else {
-                    shotAmount = minOf(it.previousLike - it.totalLike, spamLikeView.maxShot)
+                    shotAmount = minOf(it.totalLike - it.previousLike, spamLikeView.maxShot)
                 }
 
                 likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
