@@ -273,9 +273,6 @@
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
     <string name="desc_calculate_shop_performance_for_new_seller">Seller baru tidak akan mendapatkan perhitungan Shop Score sampai usia toko >90 hari. Namun Seller baru tetap dapat mendaftarkan diri sebagai Power Merchant dengan hanya melakukan KYC.</string>
 
-    <string name="title_calculate_shop_performance_not_available_parameter">Bagaimana Tokopedia menghitung nilai skor Performa Toko jika nilai parameter saya tidak ada? (Misalnya: tidak ada chat masuk)</string>
-    <string name="desc_calculate_shop_performance_not_available_parameter">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
-
     <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
     <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
 

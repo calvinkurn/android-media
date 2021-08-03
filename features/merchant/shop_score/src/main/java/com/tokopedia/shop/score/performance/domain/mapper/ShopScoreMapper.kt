@@ -830,14 +830,6 @@ class ShopScoreMapper @Inject constructor(
             if (isOfficialStore) {
                 add(
                     ItemFaqUiModel(
-                        title = context?.getString(R.string.title_calculate_shop_performance_not_available_parameter)
-                            .orEmpty(),
-                        desc_first = context?.getString(R.string.desc_calculate_shop_performance_not_available_parameter)
-                            .orEmpty(),
-                    )
-                )
-                add(
-                    ItemFaqUiModel(
                         title = context?.getString(R.string.title_shop_score_affect_os)
                             .orEmpty(),
                         desc_first = context?.getString(R.string.desc_shop_score_affect_os)
