@@ -76,6 +76,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var screenshotDetector: ScreenshotDetector? = null
 
         private const val DELAY_TIME_MILLISECOND = 500L
+        private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -451,7 +452,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImageUrl = screenShotImagePath
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
-            thumbNailTitle = context?.resources?.getString(R.string.screen_shot_thumbnail_title).toString()
+            thumbNailTitle = SCREENSHOT_TITLE
         }
         else {
             thumbNailTitle = tnTitle
