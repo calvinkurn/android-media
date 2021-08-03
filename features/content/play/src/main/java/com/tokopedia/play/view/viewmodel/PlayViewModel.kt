@@ -232,6 +232,9 @@ class PlayViewModel @Inject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
+    val isMultipleLikeAnimation: Boolean
+        get() = !videoPlayer.isYouTube && channelType.isLive
+
     private var mChannelData: PlayChannelData? = null
 
     val latestCompleteChannelData: PlayChannelData
