@@ -8,16 +8,13 @@ import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
 import com.tokopedia.mediauploader.util.UploaderManager.isSourceMediaNotFound
-import com.tokopedia.mediauploader.util.UploaderManager.mediaErrorMessage
 import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
 import okhttp3.internal.http2.ConnectionShutdownException
-import okhttp3.internal.http2.StreamResetException
 import java.io.File
 import java.io.InterruptedIOException
 import java.net.SocketException
-import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.mediauploader.data.consts.UrlBuilder.generate as urlBuilder
@@ -41,10 +38,6 @@ class UploaderUseCase @Inject constructor(
             uploadValidation(fileToUpload, sourceId) { sourcePolicy ->
                 postMediaToHost(fileToUpload, sourcePolicy, sourceId)
             }
-        } catch (e: SocketTimeoutException) {
-            setError(TIMEOUT_ERROR, sourceId, fileToUpload)
-        } catch (e: StreamResetException) {
-            setError(TIMEOUT_ERROR, sourceId, fileToUpload)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
                     e !is SocketException &&
@@ -55,9 +48,9 @@ class UploaderUseCase @Inject constructor(
             }
             // check whether media source is valid
             return if (isSourceMediaNotFound(e)) {
-                setError(SOURCE_NOT_FOUND, sourceId, fileToUpload)
+                setError(listOf(SOURCE_NOT_FOUND), sourceId, fileToUpload)
             } else {
-                setError(NETWORK_ERROR, sourceId, fileToUpload)
+                setError(listOf(NETWORK_ERROR), sourceId, fileToUpload)
             }
         }
     }
@@ -80,9 +73,9 @@ class UploaderUseCase @Inject constructor(
         return upload.data?.let {
             UploadResult.Success(it.uploadId)
         }?: setError(if (upload.header.messages.isNotEmpty()) {
-            upload.header.messages.first()
+            listOf(upload.header.messages.first())
         } else {
-            UNKNOWN_ERROR // error handling, when server returned empty error message
+            listOf(UNKNOWN_ERROR) // error handling, when server returned empty error message
         }, sourceId, fileToUpload)
     }
 
@@ -126,13 +119,9 @@ class UploaderUseCase @Inject constructor(
         return mapToSourcePolicy(policyData.dataPolicy)
     }
 
-    private fun setError(message: String, sourceId: String, fileToUpload: File): UploadResult {
-        // send purely the error state message with timber
+    private fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
         trackToTimber(fileToUpload, sourceId, message)
-
-        // set the readable error message to the state
-        val commonMessage = mediaErrorMessage(message)
-        return UploadResult.Error(commonMessage)
+        return UploadResult.Error(message.first())
     }
 
     fun createParams(sourceId: String, filePath: File): RequestParams {
@@ -153,7 +142,6 @@ class UploaderUseCase @Inject constructor(
         const val ERROR_SOURCE_NOT_FOUND = "Required: source (-1)"
 
         // const local error message
-        const val TIMEOUT_ERROR = "Request timeout, silakan coba kembali beberapa saat lagi"
         const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
         const val FILE_NOT_FOUND = "Oops, file tidak ditemukan."
         const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan."
