@@ -42,7 +42,7 @@ class VariantSheetViewComponent(
 
     private val clProductVariant: ConstraintLayout = findViewById(R.id.cl_product_variant)
     private val phProductVariant: ConstraintLayout = findViewById(R.id.ph_product_variant)
-    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val rvVariantList: RecyclerView = findViewById(R.id.rv_variant_list)
     private val btnAction: UnifyButton = findViewById(R.id.btn_action)
     private val phBtnAction: View = findViewById(R.id.ph_btn_action)
@@ -67,7 +67,7 @@ class VariantSheetViewComponent(
     private var variantSheetUiModel: VariantSheetUiModel? = null
 
     init {
-        findViewById<ImageView>(R.id.iv_sheet_close)
+        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
                 }

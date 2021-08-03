@@ -5,17 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
+import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
-import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import java.text.NumberFormat
@@ -183,7 +187,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun deleteSingleCartItem(product: MiniCartProductUiModel) {
-        deleteCartUseCase.setParams(listOf(product))
+        deleteCartUseCase.setParams(listOf(product.cartId))
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessDeleteSingleCartItem(product, it)
@@ -231,11 +235,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun bulkDeleteUnavailableCartItems() {
-        val unavailableCartItems = mutableListOf<MiniCartProductUiModel>()
+        val unavailableItemsCartId = mutableListOf<String>()
         val visitables = getVisitables()
         visitables.forEach {
             if (it is MiniCartProductUiModel && it.isProductDisabled) {
-                unavailableCartItems.add(it)
+                unavailableItemsCartId.add(it.cartId)
             }
         }
 
@@ -248,7 +252,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
         }
 
-        deleteCartUseCase.setParams(unavailableCartItems)
+        deleteCartUseCase.setParams(unavailableItemsCartId)
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessBulkDeleteUnavailableCartItems(it, isLastItem)
@@ -309,23 +313,35 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
 
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-            val miniCartItems = mutableListOf<MiniCartItem>()
+            val updateCartRequestList = mutableListOf<UpdateCartRequest>()
             val allMiniCartItem = getMiniCartItems()
-            allMiniCartItem.forEach {
-                if (!it.isError) {
-                    miniCartItems.add(it)
+            allMiniCartItem.forEach { miniCartItem ->
+                if (!miniCartItem.isError) {
+                    updateCartRequestList.add(
+                            UpdateCartRequest(
+                                    cartId = miniCartItem.cartId,
+                                    quantity = miniCartItem.quantity,
+                                    notes = miniCartItem.notes
+                            )
+                    )
                 }
             }
-            updateCartUseCase.setParams(miniCartItems, true, source)
+            updateCartUseCase.setParams(updateCartRequestList, source)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-            val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
+            val updateCartRequestList = mutableListOf<UpdateCartRequest>()
             val visitables = getVisitables()
-            visitables.forEach {
-                if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                    miniCartProductUiModels.add(it)
+            visitables.forEach { visitable ->
+                if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                    updateCartRequestList.add(
+                            UpdateCartRequest(
+                                    cartId = visitable.cartId,
+                                    quantity = visitable.productQty,
+                                    notes = visitable.productNotes
+                            )
+                    )
                 }
             }
-            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, source)
+            updateCartUseCase.setParams(updateCartRequestList, source)
         }
         updateCartUseCase.execute(
                 onSuccess = {

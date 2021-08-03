@@ -14,6 +14,7 @@ data class VariantQuantityDataModel(
         var quantity: Int = 0,
         var minOrder: Int = 0,
         var maxOrder: Int = DEFAULT_ATC_MAX_ORDER,
+        var shouldShowDeleteButton: Boolean = false,
         var shouldShowView: Boolean = false
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
@@ -21,9 +22,11 @@ data class VariantQuantityDataModel(
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
         return if (newData is VariantQuantityDataModel) {
             minOrder == newData.minOrder &&
+                    maxOrder == newData.maxOrder &&
                     shouldShowView == newData.shouldShowView &&
                     productId == newData.productId &&
-                    quantity == newData.quantity
+                    quantity == newData.quantity &&
+                    shouldShowDeleteButton == newData.shouldShowDeleteButton
         } else {
             false
         }

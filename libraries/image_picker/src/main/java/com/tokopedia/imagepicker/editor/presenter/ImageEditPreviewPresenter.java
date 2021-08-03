@@ -298,6 +298,8 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     }
 
     public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap) {
+        if (mainBitmap == null || mainBitmap.isRecycled()) return;
+
         Subscription subscription = Observable.just(
                 // tokopedia's logo
                 BitmapFactory.decodeResource(
