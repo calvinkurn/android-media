@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.feature.reputationhistory.domain.mapper.SellerReputationPenaltyMapper
-import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationAndPenaltyRewardUseCase
+import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationShopAndPenaltyRewardUseCase
 import com.tokopedia.review.feature.reputationhistory.domain.usecase.GetReputationPenaltyRewardUseCase
 import com.tokopedia.review.feature.reputationhistory.util.ReputationPenaltyDateUtils
 import com.tokopedia.review.feature.reputationhistory.view.model.SellerReputationPenaltyMergeUiModel
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class SellerReputationViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val getReputationAndPenaltyRewardUseCase: GetReputationAndPenaltyRewardUseCase,
+    private val getReputationShopAndPenaltyRewardUseCase: GetReputationShopAndPenaltyRewardUseCase,
     private val getReputationPenaltyRewardUseCase: GetReputationPenaltyRewardUseCase,
     private val sellerReputationPenaltyMapper: SellerReputationPenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
@@ -75,7 +75,7 @@ class SellerReputationViewModel @Inject constructor(
     fun getReputationPenaltyRewardMerge() {
         launch(block = {
             val getReputationPenaltyRewardMergeResponse = withContext(dispatchers.io) {
-                getReputationAndPenaltyRewardUseCase.execute(
+                getReputationShopAndPenaltyRewardUseCase.execute(
                     userSession.shopId.toLongOrZero(),
                     FIRST_PAGE,
                     startDate,

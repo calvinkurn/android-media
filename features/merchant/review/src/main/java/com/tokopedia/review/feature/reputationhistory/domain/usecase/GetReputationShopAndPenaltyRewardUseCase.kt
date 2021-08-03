@@ -12,7 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetReputationAndPenaltyRewardUseCase @Inject constructor(
+class GetReputationShopAndPenaltyRewardUseCase @Inject constructor(
     private val getReputationShopUseCase: GetReputationShopUseCase,
     private val getReputationPenaltyRewardUseCase: GetReputationPenaltyRewardUseCase,
     private val dispatcherProvider: CoroutineDispatchers,
