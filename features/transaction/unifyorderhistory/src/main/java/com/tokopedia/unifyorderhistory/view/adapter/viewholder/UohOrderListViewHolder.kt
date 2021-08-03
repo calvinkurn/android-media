@@ -2,18 +2,20 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
-import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_LABEL
+import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
 import kotlinx.android.synthetic.main.uoh_list_item.view.*
 
 /**
@@ -39,7 +41,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                     item.dataObject.metadata.tickers.forEach {
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                            desc += " ${itemView.context.getString(R.string.buyer_ticker_info_selengkapnya)
+                            desc += " ${itemView.context.getString(R.string.uoh_ticker_info_selengkapnya)
                                     .replace(TICKER_URL, it.action.appUrl)
                                     .replace(TICKER_LABEL, it.action.label)}"
                         }
@@ -66,7 +68,7 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                         itemView.ticker_info_inside_card?.tickerTitle = it.title
                         var desc = it.text
                         if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                            desc += " ${itemView.context.getString(R.string.buyer_ticker_info_selengkapnya)
+                            desc += " ${itemView.context.getString(R.string.uoh_ticker_info_selengkapnya)
                                     .replace(TICKER_URL, it.action.appUrl)
                                     .replace(TICKER_LABEL, it.action.label)}"
                         }

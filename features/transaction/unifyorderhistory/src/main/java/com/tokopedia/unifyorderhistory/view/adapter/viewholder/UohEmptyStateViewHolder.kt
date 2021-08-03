@@ -15,7 +15,7 @@ class UohEmptyStateViewHolder(itemView: View, private val actionListener: UohIte
     override fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohEmptyState) {
             itemView.uoh_empty_state?.apply {
-                setImageDrawable(item.dataObject.drawableSrc)
+                setImageUrl(item.dataObject.imgUrl)
                 setTitle(item.dataObject.title)
                 setDescription(item.dataObject.desc)
                 if (item.dataObject.isBtnShow) {

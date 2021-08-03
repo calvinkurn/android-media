@@ -17,6 +17,8 @@ import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
+import com.tokopedia.buyerorder.detail.data.finishorder.BuyerFinishOrder;
+import com.tokopedia.buyerorder.detail.data.finishorder.BuyerFinishOrderParam;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.list.data.Data;
@@ -32,8 +34,6 @@ import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleUiModel;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListUiModel;
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
@@ -699,16 +699,16 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     public void finishOrderGql(String orderId, String actionStatus) {
         if (getView() != null) {
-            UohFinishOrderParam uohFinishOrderParam = new UohFinishOrderParam();
-            uohFinishOrderParam.setOrderId(orderId);
-            uohFinishOrderParam.setAction(actionStatus);
-            uohFinishOrderParam.setUserId(userSessionInterface.getUserId());
+            BuyerFinishOrderParam finishOrderParam = new BuyerFinishOrderParam();
+            finishOrderParam.setOrderId(orderId);
+            finishOrderParam.setAction(actionStatus);
+            finishOrderParam.setUserId(userSessionInterface.getUserId());
 
             Map<String, Object> variables = new HashMap<>();
-            variables.put(BuyerConsts.PARAM_INPUT, uohFinishOrderParam);
+            variables.put(BuyerConsts.PARAM_INPUT, finishOrderParam);
             if (getView() != null && getView().getActivity() != null) {
                 finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
-                finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
+                finishOrderGqlUseCase.execute(new Subscriber<BuyerFinishOrder.Data>() {
                     @Override
                     public void onCompleted() {
 
@@ -725,7 +725,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     }
 
                     @Override
-                    public void onNext(UohFinishOrder.Data data) {
+                    public void onNext(BuyerFinishOrder.Data data) {
                         if (getView() != null) {
                             if (data.getFinishOrderBuyer().getSuccess() == 1) {
                                 if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {

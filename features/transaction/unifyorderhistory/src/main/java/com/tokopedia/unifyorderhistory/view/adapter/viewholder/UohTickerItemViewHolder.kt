@@ -1,9 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
-import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
@@ -13,6 +11,9 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_LABEL
+import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
 import kotlinx.android.synthetic.main.uoh_ticker_item.view.*
 import java.net.URLDecoder
 
@@ -29,7 +30,7 @@ class UohTickerItemViewHolder(itemView: View, private val actionListener: UohIte
                 item.dataObject.tickers.forEach {
                     var desc = it.text
                     if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                        desc += " ${itemView.resources.getString(R.string.buyer_ticker_info_selengkapnya)
+                        desc += " ${itemView.resources.getString(R.string.uoh_ticker_info_selengkapnya)
                                 .replace(TICKER_URL, it.action.appUrl)
                                 .replace(TICKER_LABEL, it.action.label)}"
                     }
@@ -56,7 +57,7 @@ class UohTickerItemViewHolder(itemView: View, private val actionListener: UohIte
                     itemView.ticker_info?.tickerTitle = it.title
                     var desc = it.text
                     if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
-                        desc += " ${itemView.resources.getString(R.string.buyer_ticker_info_selengkapnya)
+                        desc += " ${itemView.resources.getString(R.string.uoh_ticker_info_selengkapnya)
                                 .replace(TICKER_URL, URLDecoder.decode(it.action.appUrl, UohConsts.UTF_8))
                                 .replace(TICKER_LABEL, it.action.label)}"
                     }

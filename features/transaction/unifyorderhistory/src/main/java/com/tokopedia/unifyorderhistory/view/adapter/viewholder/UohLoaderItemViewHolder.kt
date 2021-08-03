@@ -1,6 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import kotlinx.android.synthetic.main.uoh_loader_item.view.*

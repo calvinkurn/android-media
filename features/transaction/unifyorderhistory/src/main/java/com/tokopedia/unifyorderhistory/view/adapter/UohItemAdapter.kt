@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.buyerorder.R
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ORDER_LIST
@@ -14,11 +13,11 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 
 /**

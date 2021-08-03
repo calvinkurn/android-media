@@ -145,4 +145,6 @@ object UohConsts {
     const val STATUS_TIBA_DI_TUJUAN = "tiba_di_tujuan"
 
     const val PARAM_INPUT = "input"
+    const val TICKER_URL = "#ticker_url"
+    const val TICKER_LABEL = "#ticker_label"
 }

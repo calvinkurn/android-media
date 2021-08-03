@@ -115,6 +115,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.CREATE_REVIEW_ERROR_MESSAGE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
@@ -927,7 +928,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
                         if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
                             BottomSheetUnify bottomSheetFinishOrder = new BottomSheetUnify();
-                            View bottomSheetView = View.inflate(getContext(), R.layout.bottomsheet_finish_order_uoh, null);
+                            View bottomSheetView = View.inflate(getContext(), R.layout.bottomsheet_finish_order, null);
 
                             IconUnify iconFinish1 = bottomSheetView.findViewById(R.id.ic_finish_detail_1);
                             iconFinish1.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_bound_icon));
@@ -1129,7 +1130,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 String errorMessage = data.getStringExtra(CREATE_REVIEW_ERROR_MESSAGE);
                 if(errorMessage == null) {
-                    onFailCreateReview(getString(R.string.uoh_review_create_invalid_to_review));
+                    onFailCreateReview(getString(R.string.review_create_invalid_to_review));
                 } else {
                     onFailCreateReview(errorMessage);
                 }
@@ -1380,14 +1381,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     private void onSuccessCreateReview() {
         if (getContext() != null && getView() != null) {
-            Toaster.build(getView(), getString(R.string.uoh_review_create_success_toaster, userSessionInterface.getName()), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke), v -> {}).show();
+            Toaster.build(getView(), getString(R.string.review_create_success_toaster, userSessionInterface.getName()), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.review_oke), v -> {}).show();
             refreshHandler.startRefresh();
         }
     }
 
     private void onFailCreateReview(String errorMessage) {
         if(getView() != null) {
-            Toaster.build(getView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke), v -> {}).show();
+            Toaster.build(getView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.review_oke), v -> {}).show();
         }
     }
 }

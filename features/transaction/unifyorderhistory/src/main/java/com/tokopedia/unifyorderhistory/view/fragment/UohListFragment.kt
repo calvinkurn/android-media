@@ -124,16 +124,16 @@ import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceImpressions
-import com.tokopedia.unifyorderhistory.di.UohListModule
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
-import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -144,10 +144,12 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.*
+import com.tokopedia.unifyorderhistory.di.UohListComponent
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.bottomsheet_finish_order_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
 import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.view.*
@@ -245,6 +247,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_REQUEST_CODE = 200
         const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
+        const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
+        const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1028,40 +1032,29 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
-                    emptyStatus = context?.let { context ->
-                        ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
-                            activity?.resources?.let { resource ->
-                                UohEmptyState(drawable,
-                                        resource.getString(R.string.uoh_search_empty),
-                                        resource.getString(R.string.uoh_search_empty_desc),
-                                        false, "")
-                            }
-
-                        }
+                    emptyStatus = activity?.resources?.let { resource ->
+                        UohEmptyState(
+                            URL_IMG_EMPTY_SEARCH_LIST,
+                            resource.getString(R.string.uoh_search_empty),
+                            resource.getString(R.string.uoh_search_empty_desc),
+                            false, "")
                     }
                 }
                 paramUohOrder.status.isNotEmpty() -> {
-                    emptyStatus = context?.let { context ->
-                        ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            activity?.resources?.let { resource ->
-                                UohEmptyState(drawable,
-                                        resource.getString(R.string.uoh_filter_empty),
-                                        resource.getString(R.string.uoh_filter_empty_desc),
-                                        true, resource.getString(R.string.uoh_filter_empty_btn))
-                            }
-                        }
+                    emptyStatus = activity?.resources?.let { resource ->
+                        UohEmptyState(URL_IMG_EMPTY_ORDER_LIST,
+                            resource.getString(R.string.uoh_filter_empty),
+                            resource.getString(R.string.uoh_filter_empty_desc),
+                            true, resource.getString(R.string.uoh_filter_empty_btn))
                     }
                 }
                 else -> {
-                    emptyStatus = context?.let { context ->
-                        ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            activity?.resources?.let { resource ->
-                                UohEmptyState(drawable,
-                                        resource.getString(R.string.uoh_no_order),
-                                        resource.getString(R.string.uoh_no_order_desc),
-                                        true, resource.getString(R.string.uoh_no_order_btn))
-                            }
-                        }
+                    emptyStatus = activity?.resources?.let { resource ->
+                        UohEmptyState(
+                            URL_IMG_EMPTY_ORDER_LIST,
+                            resource.getString(R.string.uoh_no_order),
+                            resource.getString(R.string.uoh_no_order_desc),
+                            true, resource.getString(R.string.uoh_no_order_btn))
                     }
                 }
             }
@@ -1083,13 +1076,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        activity?.let {
+        /*activity?.let {
             DaggerUohListComponent.builder()
                     .baseAppComponent(getBaseAppComponent())
                     .uohListModule(context?.let { UohListModule(it) })
                     .build()
                     .inject(this)
-        }
+        }*/
+        getComponent(UohListComponent::class.java).inject(this)
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
@@ -1135,7 +1129,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
                                 filter1?.title = dateOption
                             }
-                            labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
+                            labelTrackingDate = getString(R.string.filter_custom_date_title)
                         } else {
                             dateOption = currFilterDateLabel
 
