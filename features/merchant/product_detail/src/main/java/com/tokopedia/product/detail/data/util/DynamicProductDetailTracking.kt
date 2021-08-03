@@ -13,16 +13,14 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
-import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -66,7 +64,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE,
-                    "category_id:$categoryId ;\ncategory_name:$categoryName")
+                    String.format(ProductTrackingConstant.Label.EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL, categoryId, categoryName))
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
 
@@ -2004,6 +2002,64 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CHECK_DISCUSSION_BOTTOM_SHEET)
+        }
+    }
+
+    object ImpulsiveBanner {
+        fun impressImpulsiveBanner(widget: RecommendationWidget, userId: String, productId: String, templateNameType: String, basicData: ProductRecomLayoutBasicData) {
+            val mapEvent = DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Tracking.PROMO_VIEW,
+                    ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.ImpulsiveBanner.IMPRESSION_BANNER,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, ProductTrackingConstant.ImpulsiveBanner.EVENT_COMPONENT_IMPRESSION_BANNER.format(widget.pageName, templateNameType, ProductTrackingConstant.ImpulsiveBanner.IMPRESSION_BANNER, 1),
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_LAYOUT, ProductTrackingConstant.ImpulsiveBanner.EVENT_LAYOUT_IMPRESSION_BANNER.format(basicData.generalLayoutName, basicData.categoryName, basicData.categoryId),
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
+                    ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                        ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
+                                        ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID ?: "",
+                                        ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
+                                        ProductTrackingConstant.Tracking.POSITION, 1
+                                )
+                            )
+                        )
+                    )
+            )
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
+        }
+
+        fun clickImpulsiveBanner(widget: RecommendationWidget, userId: String, productId: String, templateNameType: String, basicData: ProductRecomLayoutBasicData) {
+            val mapEvent = DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.Tracking.PROMO_CLICK,
+                    ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.ImpulsiveBanner.CLICK_BANNER,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, ProductTrackingConstant.ImpulsiveBanner.EVENT_COMPONENT_IMPRESSION_BANNER.format(widget.pageName, templateNameType, ProductTrackingConstant.ImpulsiveBanner.CLICK_BANNER, 1),
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_LAYOUT, ProductTrackingConstant.ImpulsiveBanner.EVENT_LAYOUT_IMPRESSION_BANNER.format(basicData.generalLayoutName, basicData.categoryName, basicData.categoryId),
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
+                    ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                        ProductTrackingConstant.Tracking.PROMO_CLICK, DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
+                                        ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID ?: "",
+                                        ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
+                                        ProductTrackingConstant.Tracking.POSITION, 1
+                                )
+                            )
+                        )
+                    )
+            )
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }
     }
 

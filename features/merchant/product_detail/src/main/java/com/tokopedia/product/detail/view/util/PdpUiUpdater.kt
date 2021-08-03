@@ -689,37 +689,45 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
-                val recomWidget = recomData.copy()
-                if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                    val dataList = recomWidget.copyRecomItemList()
-                    dataList.forEach { recomItem ->
-                        //update data based on tokonow cart
-                        if (recomItem.isRecomProductShowVariantAndCart) {
-                            recomItem.updateItemCurrentStock(0)
-                            miniCart?.let { cartData ->
-                                if (recomItem.isProductHasParentID()) {
-                                    var variantTotalItems = 0
-                                    cartData.values.forEach { miniCartItem ->
-                                        if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                                            variantTotalItems+=miniCartItem.quantity
-                                        }
-                                    }
-                                    recomItem.updateItemCurrentStock(variantTotalItems)
-                                } else {
-                                    if (cartData.containsKey(recomItem.productId.toString())) {
-                                        recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity
-                                                ?: 0)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    updateData(key) {
-                        updateRecomDataByKey(key, dataList)
-                    }
+                if (recomData.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                    updateRecomWidgetQtyDataFromMiniCart(recomData.copy(), miniCart, key)
                 }
             }
         }
+    }
+
+    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem>?, key: String) {
+        val dataList = recomWidget.copyRecomItemList()
+        dataList.forEach { recomItem ->
+            //update data based on tokonow cart
+            if (recomItem.isRecomProductShowVariantAndCart) {
+                recomItem.setDefaultCurrentStock()
+                miniCart?.let { cartData ->
+                    recomItem.updateItemCurrentStock(when {
+                        recomItem.isProductHasParentID() -> {
+                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
+                        }
+                        cartData.containsKey(recomItem.productId.toString()) -> {
+                            cartData[recomItem.productId.toString()]?.quantity ?: 0
+                        }
+                        else -> 0
+                    })
+                }
+            }
+        }
+        updateData(key) {
+            updateRecomDataByKey(key, dataList)
+        }
+    }
+
+    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
+        var variantTotalItems = 0
+        miniCart.values.forEach { miniCartItem ->
+            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+                variantTotalItems+=miniCartItem.quantity
+            }
+        }
+        return variantTotalItems
     }
 
     fun updateCurrentQuantityRecomItem(recommendationItem: RecommendationItem) {

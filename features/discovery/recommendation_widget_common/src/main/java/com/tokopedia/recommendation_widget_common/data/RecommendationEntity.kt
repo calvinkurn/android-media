@@ -88,7 +88,7 @@ data class RecommendationEntity (
         @SerializedName("specificationLabels")
         val specificationsLabels: List<SpecificationsLabels> = listOf()
         @SerializedName("parentID")
-        val parentID: Long = 0
+        val parentID: Long = 0L
 
         class SpecificationsLabels {
             @SerializedName("key")
@@ -173,6 +173,8 @@ data class RecommendationEntity (
         val assets: Assets? = Assets()
         @SerializedName("foreignTitle")
         val foreignTitle: String = ""
+        @SerializedName("thematicID")
+        val thematicID: Long = 0L
 
         class Assets {
             @SerializedName("banner")

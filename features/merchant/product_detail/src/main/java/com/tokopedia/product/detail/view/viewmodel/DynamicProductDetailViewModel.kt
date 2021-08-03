@@ -127,6 +127,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
+        private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
         private const val WISHLIST_ERROR_TYPE = "error_wishlist"
         private const val WISHLIST_STATUS_KEY = "wishlist_status"
@@ -812,8 +813,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
                                 recomWidget.recommendationItemList.forEach { item ->
                                     _p2Data.value?.miniCart?.let {
-                                        item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
-                                                ?: 0)
+                                        if (item.isProductHasParentID()) {
+                                            var variantTotalItems = 0
+                                            it.values.forEach { miniCartItem ->
+                                                if (miniCartItem.productParentId == item.parentID.toString()) {
+                                                    variantTotalItems += miniCartItem.quantity
+                                                }
+                                            }
+                                            item.updateItemCurrentStock(variantTotalItems)
+                                        } else {
+                                            item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
+                                                    ?: 0)
+                                        }
                                     }
                                 }
                             }
@@ -1047,7 +1058,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
                 val result = deleteCartUseCase.get().executeOnBackground()
-                val isFailed = result.data.success == 0 || result.status.equals("ERROR", true)
+                val isFailed = result.data.success == 0 || result.status.equals(TEXT_ERROR, true)
                 if (isFailed) {
                     val error = result.errorMessage.firstOrNull() ?: result.data.message.firstOrNull()
                     onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
@@ -1109,7 +1120,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         if (isAtc) {
             _atcRecomTokonowSendTracker.value = recomItem.asSuccess()
         }
-        getMiniCart(recomItem.shopId.toString())
+        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
     }
 
     private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {

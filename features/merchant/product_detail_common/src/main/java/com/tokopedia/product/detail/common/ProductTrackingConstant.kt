@@ -231,6 +231,7 @@ object ProductTrackingConstant {
         const val EVENT_COMPONENT_CLICK_BEST_SELLER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
+        const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
     }
 
     object Report {
@@ -276,6 +277,14 @@ object ProductTrackingConstant {
         const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
+    object ImpulsiveBanner{
+        const val IMPRESSION_BANNER = "impression on pdp 7 widget banner"
+        const val CLICK_BANNER = "click on pdp 7 widget banner"
+        const val EVENT_COMPONENT_IMPRESSION_BANNER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
+        const val EVENT_LAYOUT_IMPRESSION_BANNER = "layout:%s;catName:%s;catId:%s;"
+        const val CREATIVE_BUILDER = "/product - pdp_7 - %s - %s" //recomAlgo - keywordName
+        const val CREATIVE_NAME = "impulsive widget"
+    }
 
     object RecomTokonow {
 

@@ -24,16 +24,16 @@ object ProductDetailBottomSheetBuilderCommon {
         bottomSheetUnify.apply {
             setTitle(data.title)
             setChild(view)
-            val btn_error = view.findViewById<UnifyButton>(R.id.shipping_error_btn)
+            val btnError = view.findViewById<UnifyButton>(R.id.shipping_error_btn)
             val imgError = view.findViewById<ImageView>(R.id.shipping_error_img)
             val txtError = view.findViewById<Typography>(R.id.shipping_error_desc)
             val textHome = view.findViewById<Typography>(R.id.text_home)
 
             imgError.loadImage(data.iconURL)
-            btn_error.text = data.buttonCopy
+            btnError.text = data.buttonCopy
             txtError.text = HtmlLinkHelper(context, data.subtitle).spannedString
 
-            btn_error.setOnClickListener {
+            btnError.setOnClickListener {
                 dismiss()
                 onButtonClicked.invoke(errorCode)
             }

@@ -24,6 +24,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"
         const val CD_LIST_EXTRA = "cdListName"
+        private const val KEY_BS_VARIANT = "atc variant bs"
     }
 
     private val sharedViewModel by lazy {
@@ -82,7 +83,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
         observeData()
 
         sharedViewModel.setAtcBottomSheetParams(paramsData)
-        AtcVariantBottomSheet().show(supportFragmentManager, "atc variant bs")
+        AtcVariantBottomSheet().show(supportFragmentManager, KEY_BS_VARIANT)
     }
 
     private fun observeData() {

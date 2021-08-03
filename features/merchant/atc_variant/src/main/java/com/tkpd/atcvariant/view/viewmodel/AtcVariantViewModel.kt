@@ -360,6 +360,9 @@ class AtcVariantViewModel @Inject constructor(
 
             updateMiniCartAndButtonAfterDelete(productId)
             updateQuantityEditorDeleteButtonAfterAtc(isTokoNow = true, value = false)
+            val minOrder = getVariantData()?.getChildByProductId(productId)?.getFinalMinOrder() ?: 0
+            updateQuantity(minOrder, productId)
+
             _deleteCartLiveData.postValue((data.data.message.firstOrNull() ?: "").asSuccess())
         }) {
             _deleteCartLiveData.postValue(it.asFail())
