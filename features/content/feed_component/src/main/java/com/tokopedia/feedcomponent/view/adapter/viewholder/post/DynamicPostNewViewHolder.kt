@@ -29,6 +29,9 @@ open class DynamicPostNewViewHolder(
         const val PAYLOAD_ANIMATE_LIKE = 47
         const val PAYLOAD_ANIMATE_FOLLOW = 7
         const val PAYLOAD_COMMENT = 99
+        const val PAYLOAD_FRAGMENT_VISIBLE = 44
+        const val PAYLOAD_FRAGMENT_GONE = 42
+
 
         @LayoutRes
         val LAYOUT = R.layout.item_dynamic_post_new
@@ -44,6 +47,8 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
             PAYLOAD_PLAY_VIDEO -> postDynamicView.playVideo(element.feedXCard)
             PAYLOAD_COMMENT -> postDynamicView.setCommentCount(element.feedXCard.comments)
+            PAYLOAD_FRAGMENT_VISIBLE -> postDynamicView.setVideo(true)
+            PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
         }
     }
 

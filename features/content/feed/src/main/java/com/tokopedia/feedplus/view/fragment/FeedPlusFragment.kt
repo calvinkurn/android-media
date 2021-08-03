@@ -205,7 +205,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isUserEventTrackerDoneOnResume = false
 
     private lateinit var shareData: LinkerData
-    private  lateinit var reportBottomSheet: ReportBottomSheet
+    private lateinit var reportBottomSheet: ReportBottomSheet
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -713,22 +713,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if (hasFeed()) {
                         when (newState) {
                             RecyclerView.SCROLL_STATE_IDLE -> {
-                                var position = 0
-                                when {
-                                    itemIsFullScreen() -> {
-                                        position = layoutManager?.findLastVisibleItemPosition() ?: 0
-                                    }
-                                    layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findFirstCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
-                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findLastCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
-                                }
+                                var position = getCurrentPosition()
                                 FeedScrollListenerNew.onFeedScrolled(
                                     recyclerView,
                                     adapter.getList()
@@ -959,7 +944,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
-        if(isUserEventTrackerDoneOnResume) {
+        if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
             feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
         }
@@ -1020,6 +1005,36 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
             isUserVisibleHint = isVisibleToUser
         )
+        if (isVisibleToUser)
+            adapter.notifyItemChanged(
+                getCurrentPosition(),
+                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
+            )
+        else
+            adapter.notifyItemChanged(
+                getCurrentPosition(),
+                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
+            )
+    }
+
+    private fun getCurrentPosition(): Int {
+        var position = 0
+        when {
+            itemIsFullScreen() -> {
+                position = layoutManager?.findLastVisibleItemPosition() ?: 0
+            }
+            layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
+                position =
+                    layoutManager?.findFirstCompletelyVisibleItemPosition()
+                        ?: 0
+            }
+            layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
+                position =
+                    layoutManager?.findLastCompletelyVisibleItemPosition()
+                        ?: 0
+            }
+        }
+        return position
     }
 
     override fun onSearchShopButtonClicked() {
@@ -1515,7 +1530,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                     )
                                 }
                             })
-                        reportBottomSheet.show((context as FragmentActivity).supportFragmentManager, "")
+                        reportBottomSheet.show(
+                            (context as FragmentActivity).supportFragmentManager,
+                            ""
+                        )
                     }
                 } else {
                     onGoToLogin()
@@ -2550,6 +2568,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
 
     }
+
     private fun onGoToLinkASGCProductDetail(link: String, shopId: String, activityId: String) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {

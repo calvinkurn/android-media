@@ -1143,7 +1143,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStop(){
+    internal fun onStop() {
         videoPlayer?.pause()
     }
 
@@ -1185,5 +1185,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun isVideo(media: FeedXMedia?): Boolean {
         return media?.type != TYPE_IMAGE
+    }
+
+    fun setVideo(isFragmentVisible: Boolean) {
+        if (isFragmentVisible)
+            videoPlayer?.resume()
+        else
+            videoPlayer?.pause()
     }
 }
