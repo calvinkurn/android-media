@@ -48,6 +48,7 @@ object ProductTrackingConstant {
         const val POSITION = "position"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_PRICE = "productPrice"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"

@@ -1648,17 +1648,17 @@ object DynamicProductDetailTracking {
             trackingQueue?.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
         }
 
-        fun eventPurchaseProtectionAvailable(userId: String, productInfo: DynamicProductInfoP1?, insuranceBrandUrl: String) {
+        fun eventPurchaseProtectionAvailable(userId: String, productInfo: DynamicProductInfoP1?, insuranceBrand: String) {
             val categoryIdLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.id ?: ""
 
             val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.Action.PRODUCT_VIEW,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.ACTION_PP_INSURANCE,
-                "${productInfo?.basic?.productID ?: ""} - $categoryIdLevel3 - $insuranceBrandUrl"
+                "${productInfo?.basic?.productID ?: ""} - $categoryIdLevel3 - $insuranceBrand"
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
-            mapEvent["productPrice"] = productInfo?.data?.price?.value ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.PRODUCT_PRICE] = productInfo?.data?.price?.value ?: ""
 
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
