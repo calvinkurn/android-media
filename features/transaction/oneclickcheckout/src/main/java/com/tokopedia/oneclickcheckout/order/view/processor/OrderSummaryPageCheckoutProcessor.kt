@@ -8,7 +8,6 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.checkout.*
-import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart.Companion.FEATURE_TYPE_TOKONOW
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -89,7 +88,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     promos = shopPromos
                             )
                     )
-            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1, featureType = FEATURE_TYPE_TOKONOW))
+            )), promos = checkoutPromos, mode = if (orderTotal.isButtonPay) 0 else 1))
 
             try {
                 val checkoutOccData = checkoutOccUseCase.executeSuspend(param)
