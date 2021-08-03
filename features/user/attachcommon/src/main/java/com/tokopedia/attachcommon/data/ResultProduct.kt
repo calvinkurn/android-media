@@ -11,10 +11,14 @@ class ResultProduct constructor(
     val productUrl: String = "",
     val productImageThumbnail: String = "",
     val price: String = "",
-    val name: String = ""
+    val name: String = "",
+    val priceBefore: String = "",
+    val dropPercentage: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -28,6 +32,8 @@ class ResultProduct constructor(
         parcel.writeString(productImageThumbnail)
         parcel.writeString(price)
         parcel.writeString(name)
+        parcel.writeString(priceBefore)
+        parcel.writeString(dropPercentage)
     }
 
     override fun describeContents(): Int {
