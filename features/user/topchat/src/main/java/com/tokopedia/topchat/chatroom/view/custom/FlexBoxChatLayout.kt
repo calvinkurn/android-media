@@ -195,6 +195,10 @@ class FlexBoxChatLayout : ViewGroup {
     private fun renderCtaHeader(attachment: HeaderCtaMessageAttachment) {
         bindHeaderTitle(attachment)
         bindHeaderBody(attachment)
+        bindHeaderCta(attachment)
+    }
+
+    private fun bindHeaderCta(attachment: HeaderCtaMessageAttachment) {
         if (attachment.hasVisibleCta()) {
             headerCta?.show()
             bindHeaderCtaTitle(attachment)
