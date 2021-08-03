@@ -49,14 +49,8 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
     override fun initInjector() = getComponent(SaldoDetailsComponent::class.java).inject(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(
-            R.layout.saldo_fragment_sales_detail,
-            container, false
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.saldo_fragment_sales_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,22 +68,8 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun copyToClipboard(copiedContent: String) {
-        context?.let {
-            try {
-                val extraSpaceRegexStr = "\\s+".toRegex()
-                val clipboard = it.getSystemService(Activity.CLIPBOARD_SERVICE)
-                        as ClipboardManager
-                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
-                    copiedContent.replace(extraSpaceRegexStr, ""))
-                clipboard.setPrimaryClip(clip)
-                Toaster.build(icCopy, it.getString(R.string.saldo_sales_invoice_copied_toast), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-            }catch (e : Exception){}
-        }
-    }
-
-
     private fun loadSalesDetailInvoiceData() {
+        salesProgress.visible()
         viewModel?.getInvoiceDetail(summaryId.toString())
     }
 
@@ -104,6 +84,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
 
     private fun onSuccessSalesDetailLoaded(data: DepositHistoryData) {
         dataGroup.visible()
+        salesProgress.gone()
         tvWithdrawalAmount.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.totalAmount, false)
         tvInvoiceNumber.text = data.invoiceNumber
@@ -112,6 +93,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onError(throwable: Throwable) {
+        salesProgress.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
@@ -139,6 +121,20 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
        val invoiceUrl = viewModel?.getInvoiceDetailUrl()
         if (invoiceUrl?.isNotEmpty() == true)
             RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, invoiceUrl)
+    }
+
+    private fun copyToClipboard(copiedContent: String) {
+        context?.let {
+            try {
+                val extraSpaceRegexStr = "\\s+".toRegex()
+                val clipboard = it.getSystemService(Activity.CLIPBOARD_SERVICE)
+                        as ClipboardManager
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
+                    copiedContent.replace(extraSpaceRegexStr, ""))
+                clipboard.setPrimaryClip(clip)
+                Toaster.build(icCopy, it.getString(R.string.saldo_sales_invoice_copied_toast), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            }catch (e : Exception){}
+        }
     }
 
     companion object {

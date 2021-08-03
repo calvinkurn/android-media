@@ -47,14 +47,8 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
     override fun initInjector() = getComponent(SaldoDetailsComponent::class.java).inject(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(
-            R.layout.saldo_fragment_withdrawl_detail,
-            container, false
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.saldo_fragment_withdrawl_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +59,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun loadWithdrawalDetail() {
+        withdrawalProgress.visible()
         viewModel?.getWithdrawalInfo(withdrawalId.toString())
     }
 
@@ -85,7 +80,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorLoading(throwable: Throwable) {
-        // hide Loading
+        withdrawalProgress.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
@@ -103,7 +98,6 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
             loadWithdrawalDetail()
         }
     }
-
 
     private fun onSuccessWithdrawalDetailLoaded(data: WithdrawalInfoData) {
         setDataViewVisibility()
@@ -134,7 +128,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setDataViewVisibility() {
-        // hide Loading
+        withdrawalProgress.gone()
         dataGroup.visible()
     }
 
