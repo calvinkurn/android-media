@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -162,10 +163,10 @@ class TokoNowHomeViewModel @Inject constructor(
      * Content data requested lazily for each component.
      * @see getLayoutData for loading content data.
      */
-    fun getHomeLayout() {
+    fun getHomeLayout(localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
             homeLayoutItemList.clear()
-            val homeLayoutResponse = getHomeLayoutListUseCase.execute()
+            val homeLayoutResponse = getHomeLayoutListUseCase.execute(localCacheModel)
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved)
             val data = HomeLayoutListUiModel(
                 items = homeLayoutItemList,
@@ -187,7 +188,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param firstVisibleItemIndex first item index visible on user screen
      * @param lastVisibleItemIndex last item index visible on user screen
      */
-    fun getLayoutData(index: Int?, warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+    fun getLayoutData(index: Int?, warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int, localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
             if(index != null) {
                 val item = homeLayoutItemList.getOrNull(index)
@@ -198,7 +199,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 if (item != null && isLayoutVisible && shouldLoadLayout(item)) {
                     val layout = item.layout
                     setItemStateToLoading(item)
-                    getLayoutComponentData(layout, warehouseId)
+                    getLayoutComponentData(layout, warehouseId, localCacheModel)
                 }
 
                 val nextItemIndex = homeLayoutItemList.findNextIndex()
@@ -226,7 +227,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param firstVisibleItemIndex first item index visible on user screen
      * @param lastVisibleItemIndex last item index visible on user screen
      */
-    fun getMoreLayoutData(warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+    fun getMoreLayoutData(warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int, localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
             for (i in firstVisibleItemIndex..lastVisibleItemIndex) {
                 val index = homeLayoutItemList.findNextIndex() ?: i
@@ -235,7 +236,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 if (item != null && shouldLoadLayout(item)) {
                     val layout = item.layout
                     setItemStateToLoading(item)
-                    getLayoutComponentData(layout, warehouseId)
+                    getLayoutComponentData(layout, warehouseId, localCacheModel)
 
                     val data = HomeLayoutListUiModel(
                         items = homeLayoutItemList,
@@ -386,10 +387,10 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param item layout visitable item
      * @param warehouseId Id obtained from choose address widget
      */
-    private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String) {
+    private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String, localCacheModel: LocalCacheModel?) {
         when (item) {
-            is HomeComponentVisitable -> getGlobalHomeComponent(item) // Tokopedia Home Common Component
-            is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
+            is HomeComponentVisitable -> getGlobalHomeComponent(item, localCacheModel) // Tokopedia Home Common Component
+            is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId, localCacheModel) // TokoNow Home Component
             is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
         }
     }
@@ -401,10 +402,10 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param item TokopediaNOW Home component item
      */
-    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String) {
+    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String, localCacheModel: LocalCacheModel?) {
         when (item) {
             is HomeTickerUiModel -> getTickerData(item)
-            is HomeProductRecomUiModel -> getHomeLayoutData(item)
+            is HomeProductRecomUiModel -> getHomeLayoutData(item, localCacheModel)
             is HomeRecentPurchaseUiModel -> getRecentPurchaseData(item, warehouseId)
         }
     }
@@ -430,10 +431,10 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param item Tokopedia Home component item
      */
-    private suspend fun getGlobalHomeComponent(item: HomeComponentVisitable) {
+    private suspend fun getGlobalHomeComponent(item: HomeComponentVisitable, localCacheModel: LocalCacheModel?) {
         asyncCatchError(block = {
             val channelId = item.visitableId()
-            val response = getHomeLayoutDataUseCase.execute(channelId)
+            val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
         }) {
             val id = item.visitableId().orEmpty()
@@ -441,10 +442,10 @@ class TokoNowHomeViewModel @Inject constructor(
         }.await()
     }
 
-    private suspend fun getHomeLayoutData(item: HomeLayoutUiModel) {
+    private suspend fun getHomeLayoutData(item: HomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
         asyncCatchError(block = {
             val channelId = item.visitableId
-            val response = getHomeLayoutDataUseCase.execute(channelId)
+            val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
         }) {
             val id = item.visitableId
