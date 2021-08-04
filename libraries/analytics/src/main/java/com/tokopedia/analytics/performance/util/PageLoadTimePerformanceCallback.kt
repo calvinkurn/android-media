@@ -62,11 +62,15 @@ open class PageLoadTimePerformanceCallback(
 
         performanceMonitoring?.let {
             performanceMonitoring?.stopTrace()
-            Embrace.getInstance().endEvent(traceName)
+            stopEmbraceMonitoringOnly()
             overallDuration = System.currentTimeMillis() - overallDuration
             stopMethodTracing(traceName)
         }
         invalidate()
+    }
+
+    override fun stopEmbraceMonitoringOnly() {
+        Embrace.getInstance().endEvent(traceName)
     }
 
     override fun startPreparePagePerformanceMonitoring() {

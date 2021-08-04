@@ -85,6 +85,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     @Inject
     lateinit var typeFactory: KolCommentTypeFactory
 
+    private lateinit var reportBottomSheet: ReportBottomSheet
 
     override fun getScreenName(): String {
         return KolCommentNewFragment::class.java.name
@@ -202,6 +203,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         reasonType: String,
         reasonDesc: String
     ) {
+        if (::reportBottomSheet.isInitialized)
+            reportBottomSheet.setFinalView()
+
         presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
         feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost, isFollowed, postType)
     }
@@ -219,7 +223,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
-                ReportBottomSheet.newInstance(
+                reportBottomSheet = ReportBottomSheet.newInstance(
                     id.toInt(),
                     context = object : ReportBottomSheet.OnReportOptionsClick {
                         override fun onReportAction(reasonType: String, reasonDesc: String) {
@@ -229,7 +233,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                                 reasonDesc
                             )
                         }
-                    }).show((context as FragmentActivity).supportFragmentManager, "")
+                    })
+                reportBottomSheet.show((context as FragmentActivity).supportFragmentManager, "")
             } else {
                 goToLogin()
             }

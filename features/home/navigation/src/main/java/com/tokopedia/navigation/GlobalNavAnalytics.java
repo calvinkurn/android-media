@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.analytics.container.GTMAnalytics.OPEN_SCREEN;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.BOTTOM;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOMEPAGE;
@@ -65,6 +66,19 @@ public class GlobalNavAnalytics {
         map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
         map.put(EVENT_BUSINESSUNIT, EVENT_BUSINESSUNIT_VALUE);
         map.put(EVENT_USERID, userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+    }
+    /**
+     * Analytics when user visits feed
+     */
+    public void userVisitsFeed(String isLoggedInStatus, String userID) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, OPEN_SCREEN);
+        map.put("isLoggedInStatus", isLoggedInStatus);
+        map.put(EVENT_BUSINESSUNIT, "content");
+        map.put(SCREEN_NAME, "/feed");
+        map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
+        map.put(EVENT_USERID, userID);
         TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 

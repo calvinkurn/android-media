@@ -64,10 +64,10 @@
             app:typographyType="body_3"
             tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
 
+        <include
+            android:id="@+id/container_error"
+            layout="@layout/item_network_error_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
     </LinearLayout>
-    <include
-        android:id="@+id/container_error"
-        layout="@layout/item_network_error_view"
-        android:visibility="gone"
-        tools:visibility="visible" />
 </ScrollView>

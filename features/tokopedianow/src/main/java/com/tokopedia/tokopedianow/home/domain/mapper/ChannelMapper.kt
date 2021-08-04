@@ -66,6 +66,7 @@ object ChannelMapper {
                     id = it.id,
                     warehouseId = it.warehouseId,
                     parentProductId = it.parentProductId,
+                    recommendationType = it.recommendationType,
                     minOrder = it.minOrder,
                     stock = it.stock,
                     price = it.price,
