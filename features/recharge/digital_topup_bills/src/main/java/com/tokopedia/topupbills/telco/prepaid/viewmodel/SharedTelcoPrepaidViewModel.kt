@@ -99,23 +99,21 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _selectedFilter.postValue(filter)
     }
 
-    // cache in 10 minutes
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
-                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0) {
+                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0, clientNumber: String) {
         launchCatchError(block = {
             _loadingProductList.postValue(true)
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
+            mapParam[KEY_CLIENT_NUMBER] = arrayListOf(clientNumber)
             if (filterData != null && filterData.size > 0) {
                 mapParam[KEY_FILTER_DATA] = filterData
             }
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
             _loadingProductList.postValue(false)
@@ -142,6 +140,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         const val KEY_MENU_ID = "menuID"
         const val KEY_OPERATOR_ID = "operatorID"
         const val KEY_FILTER_DATA = "filterData"
+        const val KEY_CLIENT_NUMBER = "clientNumber"
 
         const val EXP_TIME = 10
         const val DELAY_TIME: Long = 100

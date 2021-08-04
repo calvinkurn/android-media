@@ -9,7 +9,7 @@ import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -224,8 +224,8 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
 
     private fun getReputationApplink(): String {
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX
         return if (useNewInbox) {
             Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
                 appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)

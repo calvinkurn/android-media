@@ -2,9 +2,13 @@ package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -63,6 +67,12 @@ interface PlayBroadcastMapper {
     fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
+
+    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+
+    fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
+                              title: String,
+                              durationInMs: Long): InteractiveSessionUiModel
 
     fun mapLiveInfo(connection: PlayLivePusherConnection, config: PlayLivePusherConfig): PlayLiveInfoUiModel
 }

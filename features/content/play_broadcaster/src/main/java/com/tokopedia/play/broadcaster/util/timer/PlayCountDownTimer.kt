@@ -4,7 +4,6 @@ import android.os.CountDownTimer
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import javax.inject.Inject
-import kotlin.math.max
 
 
 /**
@@ -14,8 +13,8 @@ class PlayCountDownTimer @Inject constructor(
     private val cacheHandler: LocalCacheHandler
     ) {
 
-    val timeElapsed: String
-        get() = getTimeElapsedInMillis().convertMillisToMinuteSecond()
+    val remainingDurationInMs: Long
+        get() = mRemainingMillis
 
     private var mCountDownTimer: CountDownTimer? = null
     private var mMaxDuration: Long = 0L
@@ -101,8 +100,6 @@ class PlayCountDownTimer @Inject constructor(
             }
         }
     }
-
-    private fun getTimeElapsedInMillis(): Long = max(0, mMaxDuration - mRemainingMillis)
 
     private fun defaultCountDownTimeoutConfig() = arrayListOf(
             CountDownTimeout(2),

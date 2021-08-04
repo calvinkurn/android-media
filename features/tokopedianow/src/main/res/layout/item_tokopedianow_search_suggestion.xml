@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/tokoNowSearchSuggestionText"
+    android:background="@color/Unify_Background"
+    android:textColor="@color/Unify_N700_96"
+    app:typographyType="body_2"
+    android:paddingTop="@dimen/dp_6"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_8"
+    tools:text="Menampilkan hasil untuk “samsungkl”. \nApakah yang Anda maksud “smasungkl” ?/>">
+
+</com.tokopedia.unifyprinciples.Typography>

@@ -22,7 +22,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     }
 
     open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int) {}
-    open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int) {}
+    open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {}
+    open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID : String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int) {}
     open fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {}
     open fun trackPlayWidgetImpression(componentsItem : ComponentsItem, userID: String?, channelId: String, shopId: String, widgetPosition: Int, channelPositionInList: Int, isAutoPlay: Boolean) {}
@@ -89,4 +90,5 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {}
     open fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
     open fun onTopAdsProductItemListener(position: Int, product: Product, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
+    open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {}
 }

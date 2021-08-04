@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget
 
+import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -13,6 +14,8 @@ object ProductRecommendationTracking: BaseTrackerConst() {
     const val EVENT_ACTION_CLICK_SEE_MORE_COMPARISON = "click - see more comparison%s"
     const val EVENT_LABEL_PRODUCT = "%s - %s"
     const val EVENT_LIST_PRODUCT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
+    const val SELECT_CONTENT = "select_content"
+    const val PRODUCT_CLICK = Event.PRODUCT_CLICK
 
     fun getImpressionProductTracking(
             recommendationItems: List<RecommendationItem>,
@@ -61,15 +64,14 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             recommendationType: String,
             isTopads: Boolean,
             widgetType: String,
-            productId: String,
             position: Int,
             isLoggedIn: Boolean,
             anchorProductId: String
-    ): HashMap<String, Any> {
+    ): Bundle {
         val trackingBuilder =
                 BaseTrackerBuilder()
-                        .constructBasicProductClick(
-                                event = Event.PRODUCT_CLICK,
+                        .constructBasicProductClickBundle(
+                                event = SELECT_CONTENT,
                                 eventCategory = androidPageName,
                                 eventAction = String.format(
                                         EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
@@ -85,9 +87,9 @@ object ProductRecommendationTracking: BaseTrackerConst() {
                                     mapRecommendationItemToProductTracking(it, position)
                                 }
                         )
-                        .appendBusinessUnit(BusinessUnit.DEFAULT)
-                        .appendCurrentSite(CurrentSite.DEFAULT)
-        return trackingBuilder.build() as HashMap<String, Any>
+                        .appendBusinessUnitBundle(BusinessUnit.DEFAULT)
+                        .appendCurrentSiteBundle(CurrentSite.DEFAULT)
+        return trackingBuilder.buildBundle()
     }
 
     fun getClickSpecDetailTracking(

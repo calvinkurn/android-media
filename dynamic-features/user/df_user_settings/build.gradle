@@ -50,9 +50,9 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.profileCompletion)
+    implementation projectOrAar(rootProject.ext.features.profileCompletion)
 
-    implementation project(rootProject.ext.features.settingbank)
-    implementation project(rootProject.ext.features.saldodetails)
-    implementation project(rootProject.ext.features.additional_check)
+    implementation projectOrAar(rootProject.ext.features.settingbank)
+    implementation projectOrAar(rootProject.ext.features.saldodetails)
+    implementation projectOrAar(rootProject.ext.features.additional_check)
 }

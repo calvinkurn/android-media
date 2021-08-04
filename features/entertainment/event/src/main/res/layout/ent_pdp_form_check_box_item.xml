@@ -28,7 +28,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toBottomOf="@+id/cb_form_event"
+        app:layout_constraintTop_toBottomOf="@+id/tg_cb_form_event"
         app:layout_constraintLeft_toLeftOf="parent"
         android:id="@+id/tg_cb_form_event_error"
         android:layout_width="wrap_content"
