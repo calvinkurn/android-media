@@ -67,7 +67,7 @@ object GratificationAnalytics {
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
         map[KEY_EVENT_CATEGORY] = GratifCategory.BOTTOM_SHEET_GRATIFICATION
         map[KEY_EVENT_ACTION] = GratifActions.CLICK_DISMISS_POP_UP
-        map[KEY_EVENT_LABEL] = "$entryPoint - $popupType - $baseCode - $eventId - ${GratificationAnalyticsHelper.md5(screenName)}"
+        map[KEY_EVENT_LABEL] = "$entryPoint - $popupType - $baseCode - $eventId"
         map[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_SCREEN_NAME] = screenName
         map[KEY_USER_ID] = userId
@@ -82,7 +82,7 @@ object GratificationAnalytics {
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
         map[KEY_EVENT_CATEGORY] = GratifCategory.BOTTOM_SHEET_GRATIFICATION
         map[KEY_EVENT_ACTION] = GratifActions.CLICK_CEK_KUPON_SAYA
-        map[KEY_EVENT_LABEL] = "$entryPoint - $popupType - $baseCode - $eventId - ${GratificationAnalyticsHelper.md5(screenName)}"
+        map[KEY_EVENT_LABEL] = "$entryPoint - $popupType - $baseCode - $eventId"
         map[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_SCREEN_NAME] = screenName
         map[KEY_USER_ID] = userId
