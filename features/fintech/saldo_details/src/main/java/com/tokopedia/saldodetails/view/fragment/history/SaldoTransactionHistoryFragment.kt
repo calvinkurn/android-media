@@ -18,8 +18,6 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
-import com.tokopedia.saldodetails.view.fragment.history.DateRangePickerBottomSheet
-import com.tokopedia.saldodetails.view.fragment.history.OnDateRangeSelectListener
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
 import com.tokopedia.saldodetails.view.fragment.new.TransactionTitle
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
@@ -238,7 +236,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     fun isSalesTabEnabled(): Boolean {
-        return false
+        return true
     }
 
 
