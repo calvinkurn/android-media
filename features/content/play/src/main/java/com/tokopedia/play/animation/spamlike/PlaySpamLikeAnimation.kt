@@ -222,7 +222,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                     DrawableCompat.setTint(it, dotColorList[(0 until dotColorList.size).random()])
 
                     val image = ImageView(context)
-                    image.setImageDrawable(dot)
+                    image.setImageBitmap(Bitmap.createScaledBitmap(it.toBitmap(), 20, 20, true))
 
                     val positionIdx = (0 until positionList.size).random()
                     val position = positionList[positionIdx]
@@ -273,7 +273,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
      * 4. Setup Initial X Direction
      * 5. Animate
      */
-    private fun startAnimate(image: ImageView) {
+    private fun startAnimate(image: ImageView, isDot: Boolean = false) {
         val start = image.y
         val end = image.y - 500
 
