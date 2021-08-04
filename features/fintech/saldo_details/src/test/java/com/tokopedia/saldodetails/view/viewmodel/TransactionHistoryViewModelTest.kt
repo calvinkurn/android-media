@@ -3,6 +3,7 @@ package com.tokopedia.saldodetails.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.saldodetails.domain.GetWithdrawalInfoUseCase
 import com.tokopedia.saldodetails.domain.model.GQLSalesTransactionListResponse
+import com.tokopedia.saldodetails.domain.model.SalesTransactionListResponse
 import com.tokopedia.saldodetails.domain.usecase.GetAllTypeTransactionUseCase
 import com.tokopedia.saldodetails.domain.usecase.GetSalesTransactionListUseCase
 import com.tokopedia.saldodetails.domain.usecase.GetTypeTransactionsUseCase
@@ -98,67 +99,73 @@ class TransactionHistoryViewModelTest {
     }
 
     @Test
-    fun `Execute loadMoreTransaction type -SalesTransaction`() {
+    fun `Execute loadMoreTransaction type - SalesTransaction expect InitialLoadingError`() {
         coEvery { getSalesTransactionListUseCase.loadSalesTransactions(any(), any(), any(), any(), any()) } coAnswers {
             secondArg<(Throwable) ->Unit>().invoke(mockThrowable)
         }
-
-        viewModel.loadMoreTransaction(1, SalesTransaction)
+        viewModel.loadMoreTransaction(SalesTransaction)
         assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is InitialLoadingError)
-        viewModel.loadMoreTransaction(2, SalesTransaction)
-        assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is LoadMoreError)
-
     }
 
     @Test
-    fun `Execute loadMoreTransaction type - SalesTransaction messageStatus {Fail}`() {
-        val data = mockk<GQLSalesTransactionListResponse>()
-        val errorMessage = "Public message"
-        every { data.salesTransactionListResponse.messageStatus } returns "Fail"
-        every { data.salesTransactionListResponse.publicMessageTitle } returns errorMessage
-
-        coEvery { getSalesTransactionListUseCase.loadSalesTransactions(any(), any(), any(), any(), any()) } coAnswers {
-            firstArg<(GQLSalesTransactionListResponse) ->Unit>().invoke(data)
-        }
-
-        viewModel.loadMoreTransaction(1, SalesTransaction)
+    fun `Execute loadMoreTransaction {type - SalesTransaction} Initial Load{Fail}`() {
+        getSalesFailData()
         assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is InitialLoadingError)
-        viewModel.loadMoreTransaction(2, SalesTransaction)
+    }
+
+    @Test
+    fun `Execute loadMoreTransaction type - SalesTransaction messageStatus {Fail} load more`() {
+        // page1 hit
+        getSalesSuccessData()
+        assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is SaldoHistoryResponse)
+
+        // page 2 load more hit
+        getSalesFailData()
         assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is LoadMoreError)
-        Assertions.assertThat((viewModel.getLiveDataByTransactionType(SalesTransaction).value as LoadMoreError).throwable.message)
-            .isEqualTo(errorMessage)
     }
 
     @Test
     fun `Execute loadMoreTransaction type - SalesTransaction messageStatus {Success}`() {
+        getSalesSuccessData()
+        assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is SaldoHistoryResponse)
+    }
+
+    private fun getSalesSuccessData() {
         val data = mockk<GQLSalesTransactionListResponse>()
-        every { data.salesTransactionListResponse.messageStatus } returns "Success"
-        every { data.salesTransactionListResponse.transactionList } returns listOf()
-        every { data.salesTransactionListResponse.isHaveNextPage } returns false
+        val res = SalesTransactionListResponse("Success", "", "", 1, true, listOf())
+        every { data.salesTransactionListResponse } returns res
 
         coEvery { getSalesTransactionListUseCase.loadSalesTransactions(any(), any(), any(), any(), any()) } coAnswers {
             firstArg<(GQLSalesTransactionListResponse) ->Unit>().invoke(data)
         }
-
-        viewModel.loadMoreTransaction(1, SalesTransaction)
-        assert(viewModel.getLiveDataByTransactionType(SalesTransaction).value is SaldoHistoryResponse)
-
+        viewModel.loadMoreTransaction(SalesTransaction)
     }
+
+    private fun getSalesFailData() {
+        val data = mockk<GQLSalesTransactionListResponse>()
+        val res = SalesTransactionListResponse("Fail", "desc", "errorTitle", 1, false, listOf())
+        every { data.salesTransactionListResponse } returns res
+
+        coEvery { getSalesTransactionListUseCase.loadSalesTransactions(any(), any(), any(), any(), any()) } coAnswers {
+            firstArg<(GQLSalesTransactionListResponse) ->Unit>().invoke(data)
+        }
+        viewModel.loadMoreTransaction(SalesTransaction)
+    }
+
 
     @Test
     fun `Execute loadMoreTransaction load more error`() {
-
         coEvery { getTypeTransactionsUseCase.loadTypeTransactions(any(), any(), any(), any(), any(), any()) } coAnswers {
             secondArg<(Throwable) ->Unit>().invoke(mockThrowable)
         }
 
-        viewModel.loadMoreTransaction(2, AllTransaction)
+        viewModel.loadMoreTransaction(AllTransaction)
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is LoadMoreError)
 
-        viewModel.loadMoreTransaction(2, RefundTransaction)
+        viewModel.loadMoreTransaction(RefundTransaction)
         assert(viewModel.getLiveDataByTransactionType(RefundTransaction).value is LoadMoreError)
 
-        viewModel.loadMoreTransaction(2, IncomeTransaction)
+        viewModel.loadMoreTransaction(IncomeTransaction)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is LoadMoreError)
 
     }
@@ -173,13 +180,13 @@ class TransactionHistoryViewModelTest {
             firstArg<(GqlCompleteTransactionResponse) ->Unit>().invoke(data)
         }
 
-        viewModel.loadMoreTransaction(2, AllTransaction)
+        viewModel.loadMoreTransaction(AllTransaction)
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is LoadMoreError)
 
-        viewModel.loadMoreTransaction(2, RefundTransaction)
+        viewModel.loadMoreTransaction( RefundTransaction)
         assert(viewModel.getLiveDataByTransactionType(RefundTransaction).value is LoadMoreError)
 
-        viewModel.loadMoreTransaction(2, IncomeTransaction)
+        viewModel.loadMoreTransaction(IncomeTransaction)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is LoadMoreError)
 
     }
@@ -195,13 +202,13 @@ class TransactionHistoryViewModelTest {
             firstArg<(GqlCompleteTransactionResponse) ->Unit>().invoke(data)
         }
 
-        viewModel.loadMoreTransaction(2, AllTransaction)
+        viewModel.loadMoreTransaction(AllTransaction)
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is SaldoHistoryResponse)
 
-        viewModel.loadMoreTransaction(2, RefundTransaction)
+        viewModel.loadMoreTransaction(RefundTransaction)
         assert(viewModel.getLiveDataByTransactionType(RefundTransaction).value is SaldoHistoryResponse)
 
-        viewModel.loadMoreTransaction(2, IncomeTransaction)
+        viewModel.loadMoreTransaction(IncomeTransaction)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is SaldoHistoryResponse)
 
     }
