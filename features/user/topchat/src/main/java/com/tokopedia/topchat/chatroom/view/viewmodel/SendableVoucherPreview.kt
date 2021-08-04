@@ -6,6 +6,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTA
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
@@ -62,7 +63,7 @@ class SendableVoucherPreview(
                 voucherPreview.isPublic
         )
         val data = WebsocketAttachmentData(
-                messageId.toLong(),
+                messageId.toLongOrZero(),
                 getMessageFormat(),
                 "inbox",
                 TYPE_VOUCHER_ATTACHMENT,

@@ -200,6 +200,18 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         text
                       }
                     }
+                    ... on pdpDataCategoryCarousel {
+                        titleCarousel
+                        linkText
+                        applink
+                        list {
+                          categoryID
+                          icon
+                          title
+                          isApplink
+                          applink
+                        }
+                    }
                      ... on pdpDataCustomInfo {
                        icon
                        title

@@ -173,7 +173,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
-        analytics.eventClickBuy(pageName, products)
+        val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+        analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
     private fun initializeGlobalEventObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
@@ -207,7 +208,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             bottomSheet?.context?.let { context ->
                 var message = ErrorHandler.getErrorMessage(context, throwable)
                 if (throwable is ResponseErrorException) {
-                    message = throwable.message
+                    message = throwable.message.toString()
                 }
                 viewBinding.bottomsheetContainer.let { view ->
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
@@ -314,7 +315,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             bottomSheet?.context?.let { context ->
                 var message = ErrorHandler.getErrorMessage(context, throwable)
                 if (throwable is ResponseErrorException) {
-                    message = throwable.message
+                    message = throwable.message.toString()
                 }
                 viewBinding.bottomsheetContainer.let { view ->
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
@@ -420,29 +421,44 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             if (miniCartWidgetData.totalProductCount == 0) {
                 setAmount("-")
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
+                if (viewModel?.isOCCFlow?.value == true) {
+                    setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
+                } else {
+                    setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
+                }
                 amountCtaView.isEnabled = false
                 enableAmountChevron(false)
             } else {
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartWidgetData.totalProductCount))
+                if (viewModel?.isOCCFlow?.value == true) {
+                    setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartWidgetData.totalProductCount))
+                } else {
+                    setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                }
                 amountCtaView.isEnabled = true
                 enableAmountChevron(true)
             }
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
-            post {
-                val ellipsis = amountCtaView.layout?.getEllipsisCount(0) ?: 0
+            validateAmountCtaLabel(viewBinding, miniCartWidgetData)
+        }
+        setTotalAmountLoading(viewBinding, false)
+    }
+
+    private fun validateAmountCtaLabel(viewBinding: LayoutBottomsheetMiniCartListBinding, miniCartWidgetData: MiniCartWidgetData) {
+        if (viewModel?.isOCCFlow?.value == true) {
+            viewBinding.totalAmount.post {
+                val ellipsis = viewBinding.totalAmount.amountCtaView.layout?.getEllipsisCount(0)
+                        ?: 0
                 if (ellipsis > 0) {
                     if (miniCartWidgetData.totalProductCount == 0) {
-                        setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_empty)))
+                        viewBinding.totalAmount.setCtaText(String.format(viewBinding.totalAmount.context.getString(R.string.mini_cart_widget_label_buy_empty)))
                     } else {
-                        setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                        viewBinding.totalAmount.setCtaText(String.format(viewBinding.totalAmount.context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
                     }
                 }
             }
         }
-        setTotalAmountLoading(viewBinding, false)
     }
 
     private fun showLoading() {

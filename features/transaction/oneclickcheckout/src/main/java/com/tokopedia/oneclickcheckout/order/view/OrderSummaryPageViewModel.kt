@@ -256,7 +256,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            val (orderCost, _, updatedProductIndex) = calculator.calculateOrderCost(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
+            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel)
             updateOrderProducts.value = updatedProductIndex
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
@@ -483,10 +483,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
-        launch(executorDispatchers.immediate) {
-            cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment, orderPayment.value)
-        }
+    private suspend fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
+        cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment, orderPayment.value)
     }
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
