@@ -90,8 +90,20 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
-        if (!productCardModel.canShowQuantityEditor()) return
+        if (!productCardModel.canShowQuantityEditor())
+            removeQuantityEditorComponents()
+        else
+            showQuantityEditorComponent(productCardModel)
+    }
 
+    private fun removeQuantityEditorComponents() {
+        clear()
+
+        quantityEditorNonVariant?.gone()
+        buttonDeleteCart?.gone()
+    }
+
+    private fun showQuantityEditorComponent(productCardModel: ProductCardModel) {
         val shouldShowCartEditorComponent = productCardModel.shouldShowCartEditorComponent()
 
         configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
@@ -181,12 +193,12 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
+
         val quantity = nonVariant.quantity
         if (quantity > 0)
             this.setValue(quantity)
-
-        this.maxValue = nonVariant.maxQuantity
-        this.minValue = nonVariant.minQuantity
     }
 
     private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
