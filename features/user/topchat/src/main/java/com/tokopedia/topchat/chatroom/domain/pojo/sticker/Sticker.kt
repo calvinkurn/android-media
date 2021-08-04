@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
@@ -31,7 +32,7 @@ data class Sticker(
                 groupUUID, stickerUUID, imageUrl, intention
         )
         val data = WebsocketAttachmentData(
-                message_id = messageId.toLong(),
+                message_id = messageId.toLongOrZero(),
                 message = intention,
                 source = "inbox",
                 attachment_type = TYPE_STICKER,

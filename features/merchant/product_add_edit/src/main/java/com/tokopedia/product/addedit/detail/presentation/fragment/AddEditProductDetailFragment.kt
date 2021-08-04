@@ -131,6 +131,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         AddEditProductPerformanceMonitoringListener {
 
     companion object {
+        const val AMOUNT_CATEGORY_RECOM_DEFAULT = 3
         private fun getDurationUnit(type: Int) =
                 when (type) {
                     UNIT_DAY -> com.tokopedia.product.addedit.R.string.label_day
@@ -1613,6 +1614,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setOnSuggestedPriceSelected { suggestedPrice ->
                 productPriceField.setText(suggestedPrice)
                 if (viewModel.isAdding) {
+                    ProductAddMainTracking.clickPriceRecommendation()
                     displaySuggestedPriceSelected()
                 }
             }
@@ -1910,7 +1912,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         hasCategoryFromPicker = false
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
-        val items = ArrayList(result.data.take(3))
+        val items = ArrayList(result.data.take(AMOUNT_CATEGORY_RECOM_DEFAULT))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)
