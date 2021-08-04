@@ -454,23 +454,25 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
                                 ?: 0
                         val tickerHeight = binding.llWarningAndError.tickerWarning.height
-                        calculateScrollOffset(productIndex, position, tickerHeight + paddingOffset)
+                        val totalOffset = calculateScrollOffset(productIndex, position, tickerHeight + paddingOffset)
+                        actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
                     }
                 } else {
-                    calculateScrollOffset(productIndex, position, 0)
+                    val totalOffset = calculateScrollOffset(productIndex, position, 0)
+                    actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
                 }
             }
         }
     }
 
-    private fun calculateScrollOffset(productIndex: Int, position: Int, tickerHeight: Int) {
+    private fun calculateScrollOffset(productIndex: Int, position: Int, tickerHeight: Int): Int {
         val child: View? = binding.rvCartItem.getChildAt(0)
         val productHeight = child?.height ?: 0
         val offset = productIndex * productHeight
         val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
                 ?: 0
         val totalOffset = offset + paddingOffset + tickerHeight
-        actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
+        return totalOffset
     }
 
     companion object {
