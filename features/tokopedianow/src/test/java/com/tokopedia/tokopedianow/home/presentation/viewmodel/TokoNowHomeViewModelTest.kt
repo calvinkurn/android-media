@@ -13,8 +13,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -29,7 +27,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout()
 
         val expectedResponse = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
@@ -379,7 +377,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
@@ -425,7 +423,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
@@ -463,7 +461,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.removeTickerWidget("1")
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -500,7 +498,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(1, "1", 0, 1)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
                     "34923",
@@ -537,7 +535,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutData(2, "1", 0, 2)
 
         val expectedResult = HomeLayoutListUiModel(
-            result = listOf(
+            items = listOf(
                 HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
                 HomeLayoutItemUiModel(createHomeTickerDataModel(tickers = emptyList()), HomeLayoutItemState.NOT_LOADED),
                 HomeLayoutItemUiModel(createCategoryGridDataModel(
