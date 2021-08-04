@@ -10,7 +10,7 @@ import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver
 import javax.inject.Inject
 
-class SmsVerificationFragment : VerificationFragment() {
+open class SmsVerificationFragment : VerificationFragment() {
 
     @Inject
     lateinit var smsBroadcastReceiver: SmsBroadcastReceiver

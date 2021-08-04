@@ -31,6 +31,7 @@ import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.controls.Facing;
 import com.otaliastudios.cameraview.controls.Flash;
 import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.size.Size;
@@ -123,6 +124,20 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         previewLayout = view.findViewById(R.id.layout_preview);
         View useImageLayout = view.findViewById(R.id.layout_use);
         View recaptureLayout = view.findViewById(R.id.layout_recapture);
+
+        /*
+        * some of device cannot get the camera info by
+        * Camera.getCameraInfo(i, cameraInfo) properly,
+        * sometimes getting the RuntimeException for
+        * this case.
+        *
+        * by removing the app:cameraFacing attributes
+        * on the image picker camera layout to make
+        * a lazy value setter with try-catch.
+        * */
+        try {
+            cameraView.setFacing(Facing.BACK);
+        } catch (RuntimeException ignored) { }
 
         //initialize of cameraView mode
         cameraView.setMode(Mode.PICTURE);

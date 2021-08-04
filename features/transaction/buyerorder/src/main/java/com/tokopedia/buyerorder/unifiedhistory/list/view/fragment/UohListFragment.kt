@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -224,8 +225,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
-    private val REQUEST_CODE_LOGIN = 288
-    private val MIN_KEYWORD_CHARACTER_COUNT = 3
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -245,8 +244,16 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
 
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
-        const val CREATE_REVIEW_REQUEST_CODE = 200
         const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
+        const val CREATE_REVIEW_REQUEST_CODE = 200
+        const val REQUEST_CODE_LOGIN = 288
+        const val MIN_KEYWORD_CHARACTER_COUNT = 3
+        const val LABEL_0 = 0
+        const val LABEL_1 = 1
+        const val LABEL_2 = 2
+        const val LABEL_3 = 3
+        const val STATUS_600 = 600
+        const val STATUS_200 = 200
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -323,7 +330,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     PARAM_MARKETPLACE -> {
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
                         status = DALAM_PROSES
@@ -446,15 +452,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             search_bar?.searchBarTextField?.text?.clear()
+            resetFocusEditText()
             triggerSearch()
         }
 
         search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 UohUtils.hideKeyBoard(search_bar.context, view)
-                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
+                val inputLength = search_bar?.searchBarTextField?.text?.length ?: 0
+                if (inputLength in 1 until MIN_KEYWORD_CHARACTER_COUNT) {
                     showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                 } else {
+                    resetFocusEditText()
                     triggerSearch()
                 }
                 true
@@ -464,11 +473,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         addEndlessScrollListener()
     }
 
+    private fun resetFocusEditText() {
+        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
+    }
+
     private fun getLimitDate(): GregorianCalendar {
         var returnDate = GregorianCalendar()
         val defDate = orderList.dateLimit
         val splitDefDate = defDate.split("-")
-        if (splitDefDate.isNotEmpty() && splitDefDate.size == 3) {
+        if (splitDefDate.isNotEmpty() && splitDefDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
             returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
         }
         return returnDate
@@ -638,7 +651,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
-                    if (responseLsPrintFinishOrder.status == 200) {
+                    if (responseLsPrintFinishOrder.status == STATUS_200) {
                         if (responseLsPrintFinishOrder.data.message.isNotEmpty()) {
                             showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_NORMAL)
                         }
@@ -781,8 +794,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         filter2?.let { chips.add(it) }
 
         // category
-        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
+        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
                 filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true) ||
                 filterStatus.equals(PARAM_UOH_PROCESSED, true) ||
                 filterStatus.equals(PARAM_UOH_SENT, true) ||
@@ -806,12 +818,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         filter3?.listener = {
             onClickFilterCategory()
         }
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
+        if (filterStatus.equals(PARAM_MARKETPLACE, true)
+            || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
                 || filterStatus.equals(PARAM_UOH_ONGOING, true) && !isReset) {
             filter3?.title = ALL_PRODUCTS
 
-        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
-                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+        } else if ((filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
@@ -819,17 +831,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filter3?.title = orderList.categories.firstOrNull()?.label.toString()
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
-            filter3?.title = orderList.categories[1].label
+            filter3?.title = orderList.categories[LABEL_1].label
 
         } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
                         || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
                         || filterStatus.equals(PARAM_TRAIN, true)
                         || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
-            filter3?.title = orderList.categories[2].label
+            filter3?.title = orderList.categories[LABEL_2].label
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
                         filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
-            filter3?.title = orderList.categories[3].label
+            filter3?.title = orderList.categories[LABEL_3].label
         }
         filter3?.let { chips.add(it) }
 
@@ -927,8 +939,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
-        if ((filterStatus.equals(PARAM_MARKETPLACE, true)
-                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
+        if ((filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
@@ -1125,7 +1136,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             }
                             val splitStartDate = paramUohOrder.createTimeStart.split('-')
                             val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                            if (splitStartDate.isNotEmpty() && splitStartDate.size == 3 && splitEndDate.isNotEmpty() && splitEndDate.size == 3) {
+                            if (splitStartDate.isNotEmpty() && splitStartDate.size == MIN_KEYWORD_CHARACTER_COUNT && splitEndDate.isNotEmpty() && splitEndDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
                                 dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
                                 filter1?.title = dateOption
                             }
@@ -1225,7 +1236,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 uohItemAdapter.showLoaderAtIndex(index)
 
                 var actionStatus = ""
-                if (status.isNotEmpty() && status.toIntOrZero() < 600) actionStatus = ACTION_FINISH_ORDER
+                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
 
                 val paramFinishOrder = userSession.userId?.let { it1 ->
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
@@ -1343,7 +1354,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 tempFilterDateLabel = value
                 if (label.isNotEmpty()) {
                     when {
-                        label.toInt() == 0 -> {
+                        label.toInt() == LABEL_0 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1351,7 +1362,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = ""
 
                         }
-                        label.toInt() == 1 -> {
+                        label.toInt() == LABEL_1 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1361,7 +1372,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = endDate
 
                         }
-                        label.toInt() == 2 -> {
+                        label.toInt() == LABEL_2 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1371,7 +1382,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             tempEndDate = endDate
 
                         }
-                        label.toInt() == 3 -> {
+                        label.toInt() == LABEL_3 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.visible()
                                 tempStartDate = chosenStartDate?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
@@ -1422,7 +1433,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
         val split = stringParam.split("-")
-        return if (split.isNotEmpty() && split.size == 3) {
+        return if (split.isNotEmpty() && split.size == LABEL_3) {
             GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
         } else GregorianCalendar()
     }

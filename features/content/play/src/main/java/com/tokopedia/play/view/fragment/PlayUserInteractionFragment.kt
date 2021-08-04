@@ -12,6 +12,7 @@ import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -31,19 +32,19 @@ import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -53,13 +54,18 @@ import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideo
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
-import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewcomponent.interactive.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -75,6 +81,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -100,12 +108,11 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
-        PinnedVoucherViewComponent.Listener
+        PinnedVoucherViewComponent.Listener,
+        InteractiveViewComponent.Listener,
+        InteractiveWinnerBadgeViewComponent.Listener
 {
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(dispatchers.main + job)
-
-    private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
+    private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
@@ -124,6 +131,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
 
+    /**
+     * Interactive
+     */
+    private val interactiveView by viewComponentOrNull { InteractiveViewComponent(it, this) }
+    private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it, this) }
+
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
     private lateinit var playViewModel: PlayViewModel
@@ -134,8 +147,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val container: View
         get() = requireView()
 
-    private val productSheetMaxHeight: Int
-        get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
+    private val bottomSheetMaxHeight: Int
+        get() = (requireView().height * PERCENT_BOTTOMSHEET_HEIGHT).toInt()
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -210,7 +223,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        spaceSize.rootView.requestApplyInsetsWhenAttached()
+        viewSize.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onPause() {
@@ -238,7 +251,12 @@ class PlayUserInteractionFragment @Inject constructor(
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
-        } else super.onActivityResult(requestCode, resultCode, data)
+        } else {
+            playViewModel.submitAction(
+                    OpenPageResultAction(isSuccess = resultCode == Activity.RESULT_OK, requestCode = requestCode)
+            )
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onResume() {
@@ -260,7 +278,6 @@ class PlayUserInteractionFragment @Inject constructor(
         cancelAllAnimations()
 
         super.onDestroyView()
-        job.cancelChildren()
     }
 
     //region ComponentListener
@@ -275,12 +292,12 @@ class PlayUserInteractionFragment @Inject constructor(
         showMoreActionBottomSheet()
     }
 
-    override fun onFollowButtonClicked(view: ToolbarViewComponent, partnerId: Long, action: PartnerFollowAction) {
-        doClickFollow(partnerId, action)
+    override fun onFollowButtonClicked(view: ToolbarViewComponent) {
+        playViewModel.submitAction(ClickFollowAction)
     }
 
-    override fun onPartnerNameClicked(view: ToolbarViewComponent, partnerId: Long, type: PartnerType) {
-        openPartnerPage(partnerId, type)
+    override fun onPartnerNameClicked(view: ToolbarViewComponent) {
+        playViewModel.submitAction(ClickPartnerNameAction)
     }
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
@@ -412,12 +429,47 @@ class PlayUserInteractionFragment @Inject constructor(
         doShowToaster(message = getString(R.string.play_voucher_code_copied), actionText = getString(R.string.play_action_ok))
         analytic.clickHighlightedVoucher(voucher)
     }
+
+    /**
+     * Interactive View Component Listener
+     */
+    override fun onFollowButtonClicked(view: InteractiveViewComponent) {
+        playViewModel.submitAction(ClickFollowInteractiveAction)
+    }
+
+    override fun onTapTapClicked(view: InteractiveViewComponent) {
+        playViewModel.submitAction(InteractiveTapTapAction)
+    }
+
+    override fun onRetryButtonClicked(view: InteractiveViewComponent) {
+        playViewModel.submitAction(ClickRetryInteractiveAction)
+    }
+
+    override fun onTapAnimationLoaded(view: InteractiveViewComponent) {
+        /**
+         * Connect to different anchor because Lottie increase the height of interactive view in a significant way
+         * and because of that, the distance between interactive view and winner badge increase significantly
+         */
+        val winnerBadgeView = interactiveWinnerBadgeView?.rootView
+        if (winnerBadgeView != null) {
+            this.view?.changeConstraint {
+                connect(winnerBadgeView.id, ConstraintSet.BOTTOM, R.id.v_winner_badge_bottom, ConstraintSet.TOP)
+            }
+        }
+    }
+
+    /**
+     * InteractiveWinnerBadge View Component Listener
+     */
+    override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
+        playViewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetMaxHeight))
+    }
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
         mMaxTopChatMode = maxTopPosition
         if (!playViewModel.bottomInsets.isKeyboardShown) return
-        scope.launch(dispatchers.immediate) {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
              invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }
     }
@@ -431,12 +483,12 @@ class PlayUserInteractionFragment @Inject constructor(
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
-        if (isHidingInsets) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
         view?.show()
         /**
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
-        if (isHidingInsets) scope.launch { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) { invalidateChatListBounds() }
     }
 
     private fun initAnalytic() {
@@ -478,7 +530,7 @@ class PlayUserInteractionFragment @Inject constructor(
          */
         val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
+                val layoutParams = viewSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
                 val initialBottomMargin = layoutParams.bottomMargin
                 val rootInsets = activity?.window?.decorView?.rootWindowInsets
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
@@ -490,7 +542,7 @@ class PlayUserInteractionFragment @Inject constructor(
             } catch (e: Throwable) { 0 }
         } else 0
 
-        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
+        viewSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val skipTop = !isOpened && insets.systemWindowInsetTop == 0
             val skipBottom = !isOpened && insets.systemWindowInsetBottom == 0
 
@@ -536,7 +588,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoProperty()
         observeChannelInfo()
         observeQuickReply()
-        observeToolbarInfo()
         observeLikeStatus()
         observeTotalViews()
         observeNewChat()
@@ -548,6 +599,9 @@ class PlayUserInteractionFragment @Inject constructor(
         observeStatusInfo()
         observeShareInfo()
         observeProductContent()
+
+        observeUiState()
+        observeUiEvent()
 
         observeLoggedInInteractionEvent()
     }
@@ -562,7 +616,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun handleVideoHorizontalTopBounds() {
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             val toolbarMeasure = asyncCatchError(block = {
                 measureWithTimeout { toolbarView.rootView.awaitMeasured() }
              }, onError = {})
@@ -584,7 +638,7 @@ class PlayUserInteractionFragment @Inject constructor(
             changeLayoutBasedOnVideoOrientation(meta.videoStream.orientation)
             triggerImmersive(false)
 
-            scope.launch(dispatchers.immediate) {
+            viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
                 playFragment.setCurrentVideoTopBounds(meta.videoStream.orientation, getVideoTopBounds(meta.videoStream.orientation))
                 if (playViewModel.channelType.isLive) invalidateChatListBounds(videoOrientation = meta.videoStream.orientation, videoPlayer = meta.videoPlayer)
             }
@@ -630,12 +684,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeQuickReply() {
         playViewModel.observableQuickReply.observe(viewLifecycleOwner, DistinctObserver {
             quickReplyView?.setQuickReply(it)
-        })
-    }
-
-    private fun observeToolbarInfo() {
-        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
-            toolbarView.setPartnerInfo(it)
         })
     }
 
@@ -794,6 +842,43 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         })
     }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
+                renderWinnerBadgeView(state.showWinnerBadge)
+                renderToolbarView(state.followStatus, state.partnerName)
+            }
+        }
+    }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowWinningDialogEvent -> {
+                        if (container.alpha != VISIBLE_ALPHA) return@collect
+                        getInteractiveWinningDialog().apply {
+                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
+                        }.show(childFragmentManager)
+                    }
+                    is ShowCoachMarkWinnerEvent -> {
+                        if (interactiveWinnerBadgeView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
+                        interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
+                    }
+                    HideCoachMarkWinnerEvent -> {
+                        interactiveWinnerBadgeView?.hideCoachMark()
+                    }
+                    is OpenPageEvent -> {
+                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                    }
+                    is ShowToasterEvent -> handleToasterEvent(event)
+                }
+            }
+        }
+    }
     //endregion
 
     private fun triggerImmersive(shouldImmersive: Boolean) {
@@ -823,7 +908,10 @@ class PlayUserInteractionFragment @Inject constructor(
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
-                if (shouldImmersive) playFullscreenManager.onEnterFullscreen()
+                if (shouldImmersive) {
+                    interactiveWinnerBadgeView?.hideCoachMark()
+                    playFullscreenManager.onEnterFullscreen()
+                }
                 else playFullscreenManager.onExitFullscreen()
                 triggerFullImmersive(shouldImmersive, false)
             }
@@ -872,13 +960,6 @@ class PlayUserInteractionFragment @Inject constructor(
         playNavigation.onBackPressed(isSystemBack = false)
     }
 
-    private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
-        analytic.clickFollowShop(partnerId.toString(), action.value)
-        viewModel.doFollow(partnerId, action)
-
-        toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
-    }
-
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
@@ -901,30 +982,12 @@ class PlayUserInteractionFragment @Inject constructor(
         getBottomSheetInstance().show(childFragmentManager)
     }
 
-    private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
-        if (partnerType == PartnerType.Shop) openShopPage(partnerId)
-        else if (partnerType == PartnerType.Buyer) openProfilePage(partnerId)
-    }
-
-    private fun openShopPage(partnerId: Long) {
-        analytic.clickShop(partnerId.toString())
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
-    }
-
-    private fun openProfilePage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString(), pipMode = true)
-    }
-
     private fun doClickChatBox() {
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
     private fun doClickLike(shouldLike: Boolean) {
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
-    }
-
-    private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
-        viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
     }
 
     private fun shouldOpenCartPage() {
@@ -949,7 +1012,6 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
-            is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }
     }
 
@@ -1012,13 +1074,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
-        playViewModel.onShowProductSheet(productSheetMaxHeight)
+        playViewModel.onShowProductSheet(bottomSheetMaxHeight)
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
         val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
 
-        scope.launch(dispatchers.immediate) {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
             playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
         }
     }
@@ -1112,7 +1174,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun doAutoSwipe() {
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
         }
@@ -1188,7 +1250,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         changePinnedMessageConstraint()
 
-        if (shouldTriggerChatHeightCalculation) scope.launch(dispatchers.immediate) { invalidateChatListBounds(shouldForceInvalidate = true) }
+        if (shouldTriggerChatHeightCalculation) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds(shouldForceInvalidate = true) }
 
         changeQuickReplyConstraint()
     }
@@ -1220,7 +1282,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         changePinnedMessageConstraint()
 
-        if (shouldTriggerChatHeightCalculation) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        if (shouldTriggerChatHeightCalculation) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
     }
 
     private fun gradientBackgroundViewOnStateChanged(
@@ -1315,7 +1377,93 @@ class PlayUserInteractionFragment @Inject constructor(
         if (!bottomInsets.isAnyShown) pipView?.show()
         else pipView?.hide()
     }
+
+    private fun renderInteractiveView(
+            isStateChanged: Boolean,
+            state: PlayInteractiveUiState,
+            followStatus: PlayPartnerFollowStatus,
+            visibility: ViewVisibility,
+    ) {
+        if (isStateChanged) {
+            when (state) {
+                PlayInteractiveUiState.Loading -> {
+                    interactiveView?.setLoading()
+                }
+                PlayInteractiveUiState.Error -> {
+                    interactiveView?.setError()
+                }
+                is PlayInteractiveUiState.PreStart -> {
+                    interactiveView?.setPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
+                        playViewModel.submitAction(InteractivePreStartFinishedAction)
+                    }
+                }
+                is PlayInteractiveUiState.Ongoing -> {
+                    interactiveView?.setTapTap(durationInMs = state.timeRemainingInMs) {
+                        playViewModel.submitAction(InteractiveOngoingFinishedAction)
+                    }
+                }
+                is PlayInteractiveUiState.Finished -> {
+                    interactiveView?.setFinish(info = getString(state.info))
+                }
+                else -> {}
+            }
+
+            /**
+             * Connect to different anchor because Lottie increase the height of interactive view in a significant way
+             * and because of that, the distance between interactive view and winner badge increase significantly
+             */
+            val winnerBadgeView = interactiveWinnerBadgeView?.rootView
+            if (winnerBadgeView != null && state !is PlayInteractiveUiState.Ongoing) {
+                view?.changeConstraint {
+                    val bottomAnchor = interactiveView?.id ?: return@changeConstraint
+                    connect(winnerBadgeView.id, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.TOP)
+                }
+            }
+
+        }
+
+        interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)
+
+        when (visibility) {
+            ViewVisibility.Visible -> interactiveView?.show()
+            ViewVisibility.Invisible -> interactiveView?.invisible()
+            ViewVisibility.Gone -> interactiveView?.hide()
+        }
+    }
+
+    private fun renderWinnerBadgeView(
+            shouldShow: Boolean
+    ) {
+        if (shouldShow) interactiveWinnerBadgeView?.show()
+        else interactiveWinnerBadgeView?.hide()
+    }
+
+    private fun renderToolbarView(
+            followStatus: PlayPartnerFollowStatus,
+            partnerName: String
+    ) {
+        toolbarView.setFollowStatus(followStatus)
+        toolbarView.setPartnerName(partnerName)
+    }
     //endregion
+
+    private fun handleToasterEvent(event: ShowToasterEvent) {
+        val text = getTextFromUiString(event.message)
+        doShowToaster(
+                toasterType = when (event) {
+                    is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
+                    is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
+                },
+                message = text
+        )
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
+    }
 
     /**
      * Change constraint
@@ -1353,7 +1501,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val quickReplyViewId = quickReplyView?.id ?: return
         val topmostLikeView = this.topmostLikeView ?: return
         if (videoPlayer.isYouTube && channelType.isVod) {
-            scope.launch {
+            viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
                 val pinnedView = this@PlayUserInteractionFragment.pinnedView
                 val anchorId = if (pinnedView == null) topmostLikeView.id
                 else {
@@ -1381,12 +1529,20 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    /**
+     * Dialog
+     */
+    private fun getInteractiveWinningDialog(): InteractiveWinningDialogFragment {
+        val existing = InteractiveWinningDialogFragment.get(childFragmentManager)
+        return existing ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, InteractiveWinningDialogFragment::class.java.name) as InteractiveWinningDialogFragment
+    }
+
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 
         private const val REQUEST_CODE_LOGIN = 192
 
-        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
+        private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
 
         private const val VISIBLE_ALPHA = 1f
 

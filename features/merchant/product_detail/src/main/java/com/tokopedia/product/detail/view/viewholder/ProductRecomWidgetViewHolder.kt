@@ -28,17 +28,15 @@ class ProductRecomWidgetViewHolder (
     }
     private var productRecom: ProductRecomWidgetDataModel? = null
 
-    private lateinit var componentTrackDataModel: ComponentTrackDataModel
+    private val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
 
     override fun bind(element: ProductRecomWidgetDataModel) {
         productRecom = element
-        val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
         itemView.visible()
         if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
         } else {
             element.recomWidgetData?.let {
-                componentTrackDataModel = getComponentTrackData(element = element)
                 recomWidget.bind(
                         carouselData = RecommendationCarouselData(it, RecommendationCarouselData.STATE_READY),
                         adapterPosition = adapterPosition,
@@ -51,6 +49,7 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
+        listener.onSeeAllRecomClicked(data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
         listener.goToApplink(applink)
     }
 
@@ -69,7 +68,7 @@ class ProductRecomWidgetViewHolder (
                 itemPosition,
                 data.recommendationData.pageName,
                 data.recommendationData.title,
-                componentTrackDataModel)
+                getComponentTrackData(productRecom))
     }
 
     override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
@@ -84,7 +83,7 @@ class ProductRecomWidgetViewHolder (
                 itemPosition,
                 data.recommendationData.pageName,
                 data.recommendationData.title,
-                componentTrackDataModel)
+                getComponentTrackData(productRecom))
 
         view.context?.run {
             RouteManager.route(this,
@@ -93,11 +92,27 @@ class ProductRecomWidgetViewHolder (
         }
     }
 
+    override fun onRecomProductCardAddToCartNonVariant(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+
+    }
+
+    override fun onRecomProductCardAddVariantClick(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int) {
+
+    }
+
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
+        listener.onRecommendationBannerImpressed(
+                data = data.recommendationData,
+                templateNameType = productRecom?.name ?: "",
+        )
     }
 
     override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
-        listener.goToApplink(applink)
+        listener.onRecommendationBannerClicked(
+                appLink = applink,
+                data = data.recommendationData,
+                templateNameType = productRecom?.name ?: "",
+        )
     }
 
     override fun onChannelWidgetEmpty() {

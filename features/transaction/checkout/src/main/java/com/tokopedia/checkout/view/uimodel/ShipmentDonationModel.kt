@@ -7,5 +7,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ShipmentDonationModel(
         var donation: Donation = Donation(),
-        var isChecked: Boolean = false
+        var isChecked: Boolean = false,
+        var isEnabled: Boolean = true
 ) : Parcelable

@@ -41,5 +41,14 @@ data class Address(
         @SerializedName("state_detail")
         val stateDetail: String = "",
         @SerializedName("status")
-        val status: Int = 0
+        val status: Int = 0,
+        @SerializedName("tokonow")
+        val tokoNow: AddressTokoNow = AddressTokoNow()
+)
+
+data class AddressTokoNow(
+        @SerializedName("shop_id")
+        val shopId: String = "",
+        @SerializedName("warehouse_id")
+        val warehouseId: String = ""
 )

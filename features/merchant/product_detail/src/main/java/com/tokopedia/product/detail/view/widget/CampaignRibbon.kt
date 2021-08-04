@@ -43,7 +43,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         const val THEMATIC_CAMPAIGN = 5
 
         // time unit
-        private const val ONE_SECOND = 1000L
+        private const val ONE_THOUSAND = 1000L
     }
 
     // upcoming components - structure type 1
@@ -253,7 +253,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun renderUpComingNplCountDownTimer(startDateData: String, timerView: TimerUnifySingle?) {
         try {
             val now = System.currentTimeMillis()
-            val startTime = startDateData.toLongOrZero() * ONE_SECOND
+            val startTime = startDateData.toLongOrZero() * ONE_THOUSAND
             val startDate = Date(startTime)
             val calendar = Calendar.getInstance()
             calendar.time = startDate
@@ -367,25 +367,28 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
         try {
-            val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val now = System.currentTimeMillis()
-            val endDate = dateFormat.parse(campaign.endDate)
-            val calendar = Calendar.getInstance()
-            calendar.time = endDate
-            timerView?.targetDate = calendar
-            timerView?.isShowClockIcon = false
+            val endDateLong = campaign.endDateUnix.toLongOrNull()
+            endDateLong?.run {
+                val endDateMillis = this * ONE_THOUSAND
+                val endDate = Date(endDateMillis)
+                val calendar = Calendar.getInstance()
+                calendar.time = endDate
+                timerView?.targetDate = calendar
+                timerView?.isShowClockIcon = false
 
-            // less then 24 hours campaign period
-            if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                timerView?.onFinish = {
-                    callback?.onOnGoingCampaignEnded(campaign)
-                    listener?.showAlertCampaignEnded()
+                // less then 24 hours campaign period
+                if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
+                    timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                    timerView?.onFinish = {
+                        callback?.onOnGoingCampaignEnded(campaign)
+                        listener?.showAlertCampaignEnded()
+                    }
+                } else {
+                    timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
                 }
-            } else {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerView?.show()
             }
-            timerView?.show()
         } catch (ex: Exception) {
             this.hide()
         }
