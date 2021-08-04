@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCa
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import rx.Subscriber
 
+/**Deprecated*/
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                           private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
                                           val digitalCheckVoucherMapper: DigitalCheckVoucherMapper,

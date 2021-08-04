@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
+/**Deprecated*/
 class HotelCheckVoucherUseCase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) {
 
     val PARAMNAME_CART_ID = "cartID"

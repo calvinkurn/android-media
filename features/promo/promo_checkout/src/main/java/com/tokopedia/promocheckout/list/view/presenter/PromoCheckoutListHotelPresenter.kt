@@ -8,6 +8,7 @@ import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.HotelCheckVoucher
 import rx.Subscriber
 
+/**Deprecated*/
 class PromoCheckoutListHotelPresenter(private val checkVoucherUseCase: HotelCheckVoucherUseCase,
                                       val checkVoucherMapper: HotelCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
 

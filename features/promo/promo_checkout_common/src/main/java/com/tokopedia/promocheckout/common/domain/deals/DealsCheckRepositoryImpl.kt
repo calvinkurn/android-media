@@ -5,6 +5,7 @@ import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import rx.Observable
 import javax.inject.Inject
 
+/**Deprecated*/
 class DealsCheckRepositoryImpl @Inject constructor(private val dealsCheckoutApi: DealsCheckoutApi) : PromoCheckoutDealsRepository {
 
     override fun postVerify(book: Boolean, requestBody: JsonObject): Observable<DealsVerifyResponse> {

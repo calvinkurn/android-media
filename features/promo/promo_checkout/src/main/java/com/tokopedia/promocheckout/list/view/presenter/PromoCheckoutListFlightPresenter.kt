@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
 import rx.Subscriber
 
+/**Deprecated*/
 class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCheckVoucherUseCase,
                                        val checkVoucherMapper: FlightCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
 

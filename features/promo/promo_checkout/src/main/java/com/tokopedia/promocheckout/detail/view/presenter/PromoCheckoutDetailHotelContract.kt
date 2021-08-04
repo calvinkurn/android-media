@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.detail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
+/**Deprecated*/
 interface PromoCheckoutDetailHotelContract {
     interface Presenter : CustomerPresenter<PromoCheckoutDetailContract.View>{
         fun getDetailPromo(codeCoupon: String)
