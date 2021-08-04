@@ -151,7 +151,6 @@
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="GIFT"
-            app:srcCompat="@drawable/ic_play_eye_white"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible"
             />
