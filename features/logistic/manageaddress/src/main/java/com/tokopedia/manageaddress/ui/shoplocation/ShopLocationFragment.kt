@@ -244,6 +244,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             if (data.status == STATE_WAREHOUSE_ACTIVE) {
                 openBottomSheetAddressConfirmation(data)
             } else {
+                warehouseStatus = data.status
                 bottomSheetAddressType?.dismiss()
                 viewModel.setShopLocationState(data.warehouseId, 1)
             }
