@@ -162,7 +162,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetHomeLayoutUseCaseCalled() {
-        coVerify { getHomeLayoutListUseCase.execute() }
+        coVerify { getHomeLayoutListUseCase.execute(any()) }
     }
 
     protected fun verifyGetHomeLayoutDataUseCaseCalled() {
@@ -206,7 +206,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetHomeLayout_thenReturn(layoutResponse: List<HomeLayoutResponse>) {
-        coEvery { getHomeLayoutListUseCase.execute() } returns layoutResponse
+        coEvery { getHomeLayoutListUseCase.execute(any()) } returns layoutResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(layoutResponse: HomeLayoutResponse) {
@@ -234,7 +234,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetHomeLayout_thenReturn(errorThrowable: Throwable) {
-        coEvery { getHomeLayoutListUseCase.execute() } throws errorThrowable
+        coEvery { getHomeLayoutListUseCase.execute(any()) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {

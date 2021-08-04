@@ -5,6 +5,7 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -13,8 +14,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -26,7 +25,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetTicker_thenReturn(createTicker())
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         val expectedResponse = HomeLayoutListUiModel(
             result = listOf(
@@ -61,7 +60,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayout_thenReturn(createHomeLayoutListForBannerOnly())
         onGetHomeLayoutData_thenReturn(createHomeLayoutData())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         viewModel.getLayoutData(2, "1", 0, 2)
 
@@ -132,7 +131,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting homeLayout should throw ticker's exception and get the failed result`() {
         onGetTicker_thenReturn(Exception())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -141,7 +140,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting homeLayout should throw homeLayout's exception and get the failed result`() {
         onGetHomeLayout_thenReturn(Exception())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -212,7 +211,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
         //fetch homeLayout
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         //fetch widget one by one
         viewModel.getLayoutData(1, "1", 0, 1)
@@ -261,7 +260,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
         //fetch homeLayout
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         //fetch widget one by one
         viewModel.getLayoutData(1, "1", 0, 1)
@@ -304,7 +303,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
         //fetch homeLayout
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
 
         viewModel.getMoreLayoutData("1", 1, 4)
 
@@ -357,7 +356,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         // verify all get layout data use case not called
@@ -375,7 +374,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         val expectedResult = HomeLayoutListUiModel(
@@ -421,7 +420,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayout_thenReturn(createHomeLayoutList())
         onGetTicker_thenReturn(createTicker())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(index, warehouseId, firstVisibleItemIndex , lastVisibleItemIndex)
 
         val expectedResult = HomeLayoutListUiModel(
@@ -459,7 +458,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when removeTickerWidget should remove ticker from home layout list`() {
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
         viewModel.removeTickerWidget("1")
 
         val expectedResult = HomeLayoutListUiModel(
@@ -496,7 +495,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayout_thenReturn(createHomeLayoutList())
         onGetTicker_thenReturn(NullPointerException())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(1, "1", 0, 1)
 
         val expectedResult = HomeLayoutListUiModel(
@@ -533,7 +532,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayout_thenReturn(createHomeLayoutList())
         onGetHomeLayoutData_thenReturn(NullPointerException())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(LocalCacheModel())
         viewModel.getLayoutData(2, "1", 0, 2)
 
         val expectedResult = HomeLayoutListUiModel(
