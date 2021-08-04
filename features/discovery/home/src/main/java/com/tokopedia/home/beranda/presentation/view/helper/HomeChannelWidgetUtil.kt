@@ -16,11 +16,11 @@ object HomeChannelWidgetUtil {
         when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
                 dividerTop?.invisible()
