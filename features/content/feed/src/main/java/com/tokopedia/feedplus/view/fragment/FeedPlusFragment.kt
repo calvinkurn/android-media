@@ -654,11 +654,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (layoutManager != null && adapter.getlist().isNotEmpty()) {
                             startVideoPlayer()
                             isCleared = false
-
                         }
                     } else if (intent.action == BROADCAST_VISIBLITY) {
                         if (layoutManager != null && adapter.getlist().isNotEmpty() && !isCleared) {
-                          stopVideoPlayer()
+                            stopVideoPlayer()
                             isCleared = true
                         }
                     }
@@ -1037,34 +1036,34 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val it = item.feedXCard.media.filter { it.type != TYPE_IMAGE }
             if (it.isNotEmpty())
                 return getCurrentPosition()
-        } else {
-            for (pos in getFirstVisible()..getLastVisible()) {
-                val item1: Visitable<*> = adapter.getlist()[pos]
-                if (item1 is DynamicPostUiModel && item1.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-                    val it = item1.feedXCard.media.filter { it.type != TYPE_IMAGE }
-                    if (it.isNotEmpty()) {
-                        return pos
-                    }
+        }
+        for (pos in getFirstVisible()..getLastVisible()) {
+            val item1: Visitable<*> = adapter.getlist()[pos]
+            if (item1 is DynamicPostUiModel && item1.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
+                val it = item1.feedXCard.media.filter { it.type != TYPE_IMAGE }
+                if (it.isNotEmpty()) {
+                    return pos
                 }
             }
         }
+
         return DEFAULT_VALUE
     }
 
     fun stopVideoPlayer() {
-        if(videoPostPosition()!= DEFAULT_VALUE)
-        adapter.notifyItemChanged(
-            videoPostPosition(),
-            DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
-        )
+        if (videoPostPosition() != DEFAULT_VALUE)
+            adapter.notifyItemChanged(
+                videoPostPosition(),
+                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
+            )
     }
 
     fun startVideoPlayer() {
-        if(videoPostPosition()!= DEFAULT_VALUE)
-        adapter.notifyItemChanged(
-            videoPostPosition(),
-            DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
-        )
+        if (videoPostPosition() != DEFAULT_VALUE)
+            adapter.notifyItemChanged(
+                videoPostPosition(),
+                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
+            )
     }
 
     private fun getCurrentPosition(): Int {
@@ -1083,8 +1082,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     layoutManager?.findLastCompletelyVisibleItemPosition()
                         ?: 0
             }
-            else ->{
-                position = layoutManager?.findLastVisibleItemPosition()?:0
+            else -> {
+                position = layoutManager?.findLastVisibleItemPosition() ?: 0
             }
         }
         return position
@@ -2504,7 +2503,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)).show()
+                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+            ).show()
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
