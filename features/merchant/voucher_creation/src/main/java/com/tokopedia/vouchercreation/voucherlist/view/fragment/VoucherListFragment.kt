@@ -199,12 +199,6 @@ class VoucherListFragment :
             }
         } else mViewModel.setShowBroadCastChatTicker(false)
 
-        if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
-            showSuccessCreateBottomSheet(successVoucherId)
-        } else if (isNeedToShowSuccessUpdateDialog) {
-            showSuccessUpdateToaster()
-        }
-
         VoucherCreationTracking.sendOpenScreenTracking(
             if (isActiveVoucher) {
                 VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
@@ -1189,6 +1183,7 @@ class VoucherListFragment :
                     result.data.let { uiModel ->
                         val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
                         if (showNewBroadCastExperience) {
+                            uiModel.isFreeIconVisible = mViewModel.isFreeBroadCastIconVisible()
                             showBroadCastVoucherBottomSheet(uiModel)
                         } else {
                             if (uiModel.isPublic) {
@@ -1250,6 +1245,10 @@ class VoucherListFragment :
             shareVoucherBottomSheet = when (result) {
                 is Success -> {
                     val broadCastMetaData = result.data
+
+                    // determine the free broadcast icon on success bottom sheet
+                    mViewModel.setIsFreeBroadCastIconVisible(broadCastMetaData.quota)
+
                     setupShareBottomSheet(
                         status = broadCastMetaData.status,
                         quota = broadCastMetaData.quota
@@ -1258,6 +1257,12 @@ class VoucherListFragment :
                 is Fail -> {
                     setupShareBottomSheet()
                 }
+            }
+
+            if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
+                showSuccessCreateBottomSheet(successVoucherId)
+            } else if (isNeedToShowSuccessUpdateDialog) {
+                showSuccessUpdateToaster()
             }
         })
     }

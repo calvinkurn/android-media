@@ -123,7 +123,7 @@ class VoucherViewHolder(
                     buttonVariant = UnifyButton.Variant.GHOST
                     stringRes = R.string.mvc_edit_quota
                     clickAction = listener::onEditQuotaClickListener
-                    showNewBroadCastVoucherExperience(false, VoucherStatusConst.NOT_STARTED)
+                    showNewBroadCastVoucherExperience(element.showNewBc, VoucherStatusConst.NOT_STARTED)
                 }
                 else -> {
                     if (element.type != VoucherTypeConst.FREE_ONGKIR) {

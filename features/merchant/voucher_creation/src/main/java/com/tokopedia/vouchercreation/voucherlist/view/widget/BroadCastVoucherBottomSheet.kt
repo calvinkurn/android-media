@@ -103,7 +103,7 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
         // free text view setup
         freeTextView = view.findViewById(R.id.tgp_free)
         voucherUiModel?.run {
-            if (quota > 0) freeTextView?.show()
+            if (isFreeIconVisible) freeTextView?.show()
             else freeTextView?.hide()
         }
 
