@@ -91,5 +91,15 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         assertMsgHeaderContainer(0, not(isDisplayed()))
     }
 
-    // TODO: should hide msg header divider if rendered as seller
+    @Test
+    fun should_show_msg_header_divider_if_i_am_buyer() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
+        launchChatRoomActivity()
+
+        // Then
+        assertDividerHeaderContainer(0, isDisplayed())
+    }
+
+    // TODO: should hide msg header divider if i am seller
 }
