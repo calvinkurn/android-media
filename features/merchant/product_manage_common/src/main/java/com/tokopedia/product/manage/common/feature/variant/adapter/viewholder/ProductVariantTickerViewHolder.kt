@@ -54,8 +54,4 @@ class ProductVariantTickerViewHolder(itemView: View) : AbstractViewHolder<Produc
             block.invoke()
         }
     }
-
-    interface Listener {
-        fun onAddPagerView()
-    }
 }
