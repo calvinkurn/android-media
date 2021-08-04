@@ -234,8 +234,8 @@ class PlayViewModel @Inject constructor(
 
     val isAllowMultipleLike: Boolean
         // Testing on Youtube
-        get() = videoPlayer.isYouTube
-//        get() = !videoPlayer.isYouTube && channelType.isLive
+//        get() = videoPlayer.isYouTube
+        get() = !videoPlayer.isYouTube && channelType.isLive
 
     private var mChannelData: PlayChannelData? = null
 
