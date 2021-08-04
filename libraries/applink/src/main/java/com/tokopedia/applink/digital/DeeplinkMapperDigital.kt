@@ -121,6 +121,10 @@ object DeeplinkMapperDigital {
                 TEMPLATE_POSTPAID_TELCO -> {
                     UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_POSTPAID_TELCO)
                 }
+                TEMPLATE_ID_GENERAL -> {
+                    ApplinkConsInternalDigital.GENERAL_TEMPLATE
+                }
+
                 else -> deeplink
             }
         } ?: deeplink

@@ -98,6 +98,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     var rechargeProductFromSlice: String = ""
 
+    private var isAddSBM: Boolean = false
+
     private var operatorId: Int = 0
     set(value) {
         field = value
@@ -166,6 +168,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             productId = it.getInt(EXTRA_PARAM_PRODUCT_ID, 0)
             hasInputData = operatorId > 0
             rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
+            isAddSBM = it.getBoolean(EXTRA_PARAM_IS_ADD_BILLS, false)
         }
     }
 
@@ -318,7 +321,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         outState.putInt(EXTRA_PARAM_MENU_ID, menuId)
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
         outState.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
-        outState.putSerializable(EXTRA_PARAM_INPUT_DATA, inputData)
+        outState.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
+        outState.putBoolean(EXTRA_PARAM_IS_ADD_BILLS, isAddSBM)
         if (inputDataKeys.isNotEmpty()) {
             outState.putStringArrayList(EXTRA_PARAM_INPUT_DATA_KEYS, ArrayList(inputDataKeys))
         }
@@ -835,11 +839,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun toggleEnquiryButton() {
         recharge_general_enquiry_button.isEnabled = validateEnquiry()
-        if (enquiryLabel.isNotEmpty()) recharge_general_enquiry_button.text = enquiryLabel
+        if (enquiryLabel.isNotEmpty() && !isAddSBM) recharge_general_enquiry_button.text = enquiryLabel
     }
 
     private fun setEnquiryButtonLabel(label: String) {
-        if (label.isNotEmpty()) {
+        if (label.isNotEmpty() && !isAddSBM) {
             enquiryLabel = label
             recharge_general_enquiry_button.text = enquiryLabel
         }
@@ -875,7 +879,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
         with (data.catalog) {
-            (activity as? BaseSimpleActivity)?.updateTitle(label)
+            // if using isAddSBM then we use title from sbm
+            (activity as? BaseSimpleActivity)?.updateTitle(
+                    if(isAddSBM) getString(R.string.add_bills_title) else label)
             rechargeAnalytics.eventOpenScreen(
                     userSession.userId,
                     categoryName,
@@ -886,7 +892,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])
         }
-        renderFooter(data)
+
+        // Hide footer if this is Add SBM
+        if(!isAddSBM) {
+            renderFooter(data)
+        }
     }
 
     override fun onLoadingMenuDetail(showLoading: Boolean) {
@@ -1118,6 +1128,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_INPUT_DATA = "EXTRA_PARAM_INPUT_DATA"
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
+        const val EXTRA_PARAM_IS_ADD_BILLS = "EXTRA_PARAM_IS_ADD_BILLS"
 
         const val OPERATOR_TYPE_VISIBLE = "select_dropdown"
         const val OPERATOR_TYPE_HIDDEN = "hidden"
@@ -1139,13 +1150,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         menuId: Int,
                         operatorId: Int = 0,
                         productId: Int = 0,
-                        rechargeProductFromSlice: String = ""): RechargeGeneralFragment {
+                        rechargeProductFromSlice: String = "",
+                        isAddSBM: Boolean = false
+        ): RechargeGeneralFragment {
             val fragment = RechargeGeneralFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             bundle.putInt(EXTRA_PARAM_MENU_ID, menuId)
             bundle.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             bundle.putInt(EXTRA_PARAM_PRODUCT_ID, productId)
+            bundle.putBoolean(EXTRA_PARAM_IS_ADD_BILLS, isAddSBM)
             bundle.putString(RECHARGE_PRODUCT_EXTRA, rechargeProductFromSlice)
             fragment.arguments = bundle
             return fragment
