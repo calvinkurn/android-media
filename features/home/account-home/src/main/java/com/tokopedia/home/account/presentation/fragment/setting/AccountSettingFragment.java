@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -358,6 +359,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private boolean rolloutFingerprint() {
+        if (Build.VERSION.SDK_INT == 30) {
+            return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT_11).isEmpty();
+        }
         return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_SETTING_FINGERPRINT).isEmpty();
     }
 
