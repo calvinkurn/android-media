@@ -2276,7 +2276,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     it.data.variant.isVariant,
                     it.basic.getShopId(),
                     viewModel.getBebasOngkirDataByProductId().imageURL,
-                    cartId
+                    cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
             )
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
