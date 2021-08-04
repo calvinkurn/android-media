@@ -12,8 +12,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import java.lang.Exception
 
@@ -72,7 +75,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                 }
             }
         }catch (exception:Exception){
-
+            logError(exception.localizedMessage)
         }
     }
 
@@ -112,7 +115,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                 }
             }
         }catch (exception:Exception){
-
+            logError(exception.localizedMessage)
         }
     }
 
@@ -168,8 +171,25 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
         }
     }
 
+    private fun logError(exceptionMessage:String?){
+        exceptionMessage?.let {
+            if(!TextUtils.isEmpty(exceptionMessage)) {
+                val messageMap: Map<String, String> =
+                    mapOf(
+                        LABEL_TYPE to LABEL_ERROR,
+                        LABEL_REASON to exceptionMessage
+                    )
+                ServerLogger.log(Priority.P2, TAG_SS_ERR, messageMap)
+            }
+        }
+    }
+
     companion object {
         //permission request code
         const val READ_EXTERNAL_STORAGE_REQUEST = 500
+        const val TAG_SS_ERR = "SCREENSHOT_ERROR"
+        const val LABEL_TYPE = "type"
+        const val LABEL_ERROR = "error"
+        const val LABEL_REASON = "reason"
     }
 }
