@@ -24,7 +24,7 @@ class PromoCheckoutListEventViewModel @Inject constructor(private val dispatcher
 
     val showLoadingPromoEvent = MutableLiveData<Boolean>()
 
-    fun checkPromoCode(promoCode: String, book: Boolean, eventVerifyBody: EventVerifyBody){
+    fun checkPromoCode(book: Boolean, eventVerifyBody: EventVerifyBody){
         showLoadingPromoEvent.postValue(true)
         launchCatchError(block = {
             showLoadingPromoEvent.postValue(false)

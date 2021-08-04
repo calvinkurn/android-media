@@ -80,7 +80,7 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(){
     override fun onPromoCodeUse(promoCode: String) {
         if (promoCode.isNotEmpty()) {
             eventVerifyBody.promocode = promoCode
-            promoCheckoutListEventViewModel.checkPromoCode(promoCode, false, eventVerifyBody)
+            promoCheckoutListEventViewModel.checkPromoCode( false, eventVerifyBody)
         }
     }
 
