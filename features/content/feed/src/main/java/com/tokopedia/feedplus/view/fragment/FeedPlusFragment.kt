@@ -44,7 +44,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -642,13 +641,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         newFeedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
-                if (intent != null && intent.action != null) {
-                    if (intent.action == BROADCAST_FEED) {
-                        val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
-                        if (isHaveNewFeed) {
-                            newFeed.visible()
-                            triggerNewFeedNotification()
-                        }
+                if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
+                    val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
+                    if (isHaveNewFeed) {
+                        newFeed.visible()
+                        triggerNewFeedNotification()
                     }
                 }
             }
@@ -736,14 +733,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun itemIsFullScreen(): Boolean {
         return layoutManager?.findLastVisibleItemPosition() == layoutManager?.findFirstVisibleItemPosition()
-    }
-
-    private fun getLastVisible(): Int {
-        return layoutManager?.findLastVisibleItemPosition() ?: 0
-    }
-
-    private fun getFirstVisible(): Int {
-        return layoutManager?.findFirstVisibleItemPosition() ?: 0
     }
 
     override fun onRefresh() {
@@ -980,6 +969,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
+
             LocalBroadcastManager
                 .getInstance(requireActivity().applicationContext)
                 .registerReceiver(newFeedReceiver, intentFilter)

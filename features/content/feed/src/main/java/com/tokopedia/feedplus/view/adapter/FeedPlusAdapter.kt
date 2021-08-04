@@ -59,8 +59,9 @@ class FeedPlusAdapter(
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
         if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
-            (holder as DynamicPostNewViewHolder).onItemDetach(holder.itemView.context
-                    ,list[holder.adapterPosition])
+            (holder as DynamicPostNewViewHolder).onItemDetach(
+                holder.itemView.context, list[holder.adapterPosition]
+            )
         }
     }
 

@@ -89,7 +89,7 @@ open class DynamicPostNewViewHolder(
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent?.action == BROADCAST_VISIBLITY)
                     postDynamicView?.setVideo(false)
-                else if (intent?.action == BROADCAST_VISIBLITY) {
+                else if (intent?.action == BROADCAST_FEED) {
                     postDynamicView?.setVideo(true)
                 }
             }
