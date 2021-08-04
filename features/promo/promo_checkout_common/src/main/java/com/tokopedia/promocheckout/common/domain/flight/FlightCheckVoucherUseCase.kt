@@ -8,7 +8,7 @@ import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class FlightCheckVoucherUseCase(private val graphqlUseCase: GraphqlUseCase) {
 
     val CART_ID = "cartID"

@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class DigitalCheckVoucherUseCase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) {
 
     val INPUT_CODE = "code"

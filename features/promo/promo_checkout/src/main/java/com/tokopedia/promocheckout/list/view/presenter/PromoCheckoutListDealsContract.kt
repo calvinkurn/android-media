@@ -4,7 +4,7 @@ import android.content.res.Resources
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 interface PromoCheckoutListDealsContract {
 
     interface Presenter : CustomerPresenter<PromoCheckoutListContract.View> {

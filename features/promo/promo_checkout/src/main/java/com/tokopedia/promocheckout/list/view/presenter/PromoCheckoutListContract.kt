@@ -8,7 +8,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 
 interface PromoCheckoutListContract {
 

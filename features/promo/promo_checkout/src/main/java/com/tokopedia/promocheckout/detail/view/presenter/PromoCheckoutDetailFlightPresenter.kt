@@ -13,7 +13,7 @@ import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCa
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import rx.Subscriber
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                          private val checkVoucherUseCase: FlightCheckVoucherUseCase,
                                          val checkVoucherMapper: FlightCheckVoucherMapper,

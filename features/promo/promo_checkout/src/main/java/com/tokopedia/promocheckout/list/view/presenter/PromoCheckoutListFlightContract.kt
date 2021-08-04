@@ -2,7 +2,7 @@ package com.tokopedia.promocheckout.list.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 interface PromoCheckoutListFlightContract {
 
     interface Presenter : CustomerPresenter<PromoCheckoutListContract.View>{

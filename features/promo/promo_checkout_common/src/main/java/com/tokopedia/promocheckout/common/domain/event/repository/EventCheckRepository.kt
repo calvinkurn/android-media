@@ -5,7 +5,7 @@ import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import rx.Observable
 import rx.Subscriber
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 interface EventCheckRepository {
     fun postVerify(book: Boolean, eventVerifyBody: EventVerifyBody): Observable<EventVerifyResponse>
 }

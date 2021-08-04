@@ -26,7 +26,7 @@ import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class PromoCheckoutListDealsPresenter(
         private val repository: PromoCheckoutDealsRepository,
         private val compositeSubscription: CompositeSubscription,

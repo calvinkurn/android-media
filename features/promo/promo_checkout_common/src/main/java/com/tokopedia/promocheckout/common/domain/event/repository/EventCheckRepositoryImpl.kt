@@ -6,7 +6,7 @@ import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import rx.Observable
 import javax.inject.Inject
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class EventCheckRepositoryImpl @Inject constructor(private val eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
 
     override fun postVerify(book : Boolean, eventVerifyBody: EventVerifyBody) : Observable<EventVerifyResponse> {

@@ -16,7 +16,7 @@ import rx.Subscriber
 import java.util.*
 import kotlin.collections.ArrayList
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
                                  private val lastSeenPromoUseCase: GraphqlUseCase) :
         BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {

@@ -12,7 +12,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 class GetDetailCouponMarketplaceUseCase(val resources: Resources)
     : GraphqlUseCase() {
 

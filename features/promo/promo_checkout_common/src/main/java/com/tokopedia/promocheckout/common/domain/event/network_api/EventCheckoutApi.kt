@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.QueryMap
 import rx.Observable
 
-/**Deprecated*/
+@Deprecated("Not needed anymore.")
 interface EventCheckoutApi {
 
     @POST(EVENT_POST_VERIFY_PATH)
