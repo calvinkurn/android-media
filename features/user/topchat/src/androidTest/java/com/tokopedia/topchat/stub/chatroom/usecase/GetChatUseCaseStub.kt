@@ -69,6 +69,23 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    val srwChangeAddressSeller: GetExistingChatPojo
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            // swap interlocutor between seller and buyer
+            val contacts = response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(contacts)
+            val buyer = contacts.get(0)
+            val seller = contacts.get(1)
+            buyer.asJsonObject.addProperty(interlocutor, true)
+            seller.asJsonObject.addProperty(interlocutor, false)
+            // change isOpposite to false
+            response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies).get(0).asJsonObject
+                .addProperty(isOpposite, false)
+        }
+
     val nullAttachment: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
             response.getAsJsonObject(chatReplies)
@@ -88,6 +105,10 @@ class GetChatUseCaseStub @Inject constructor(
     private val text_url = "text_url"
     private val body = "body"
     private val type = "type"
+    private val contacts = "contacts"
+    private val interlocutor = "interlocutor"
+    private val name = "name"
+    private val isOpposite = "isOpposite"
 
     private fun alterAttachmentAttributesAt(
         listPosition: Int,
