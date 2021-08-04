@@ -14,6 +14,7 @@ object WidgetType {
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
     const val PERSONALIZATION = "perso"
+    const val SHOWCASE = "etalase"
 }
 
 object WidgetName {
@@ -30,4 +31,7 @@ object WidgetName {
     const val REMINDER = "reminder"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
     const val VOUCHER_STATIC = "voucher_static"
+
+    // showcase widget name list
+    const val SHOWCASE_SLIDER_MEDIUM = "etalase_persegi_sedang_slider"
 }

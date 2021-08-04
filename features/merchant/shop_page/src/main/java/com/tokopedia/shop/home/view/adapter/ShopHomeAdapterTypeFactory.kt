@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_MEDIUM
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -43,6 +44,7 @@ class ShopHomeAdapterTypeFactory(
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
+    private var showcaseSliderViewType: String = ""
     private var previousViewHolder: AbstractViewHolder<*>? = null
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -56,6 +58,7 @@ class ShopHomeAdapterTypeFactory(
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
+            SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListSliderMediumViewHolder.LAYOUT
             else -> return HideViewHolder.LAYOUT
         }
     }
@@ -144,6 +147,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
+            ShopHomeShowcaseListSliderMediumViewHolder.LAYOUT -> ShopHomeShowcaseListSliderMediumViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder

@@ -9,6 +9,7 @@ import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
+import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
@@ -232,6 +233,7 @@ object ShopPageHomeMapper {
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
+            SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
             else -> {
                 null
             }
@@ -248,6 +250,17 @@ object ShopPageHomeMapper {
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
             productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct)
+    )
+
+    private fun mapToShowcaseListUiModel(
+            widgetResponse: ShopLayoutWidget.Widget
+    ) = ShopHomeShowcaseListSliderUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = mapToHeaderModel(widgetResponse.header),
+            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data)
     )
 
     private fun mapToNewProductLaunchCampaignUiModel(
@@ -425,6 +438,18 @@ object ShopPageHomeMapper {
                 recommendationType = it.recommendationType
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder ?: 1
+            }
+        }
+    }
+
+    private fun mapToShowcaseListItemUiModel(
+            data: List<ShopLayoutWidget.Widget.Data>,
+    ) : List<ShopHomeShowcaseListItemUiModel> {
+        return data.map {
+            ShopHomeShowcaseListItemUiModel().apply {
+                imageUrl = it.imageUrl
+                appLink = it.appLink
+                name = it.showcaseName
             }
         }
     }
