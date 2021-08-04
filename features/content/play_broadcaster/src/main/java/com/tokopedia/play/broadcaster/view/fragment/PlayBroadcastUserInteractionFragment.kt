@@ -68,7 +68,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val countdownTimer: PlayTimerCountDown by detachableView(R.id.countdown_timer)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
-    private val debugView: View by detachableView(R.id.live_debug_view)
+    private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {

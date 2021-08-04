@@ -181,7 +181,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 is PlayLivePusherViewState.Paused -> countDownTimer.pause()
                 is PlayLivePusherViewState.Error -> if (viewState.error.type.isNetworkTrouble) livePusherMediator.reconnect()
                 // TODO("find the best way to trigger engagement tools")
-                is PlayLivePusherState.Recovered -> updateCurrentInteractiveStatus()
+                is PlayLivePusherViewState.Recovered -> updateCurrentInteractiveStatus()
             }
 
             sendLivePusherState(viewState)

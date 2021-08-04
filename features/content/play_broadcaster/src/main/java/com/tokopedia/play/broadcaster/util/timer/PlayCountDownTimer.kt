@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.util.timer
 
 import android.os.CountDownTimer
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import javax.inject.Inject
 
 
