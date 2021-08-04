@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -23,6 +25,7 @@ import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
@@ -36,7 +39,7 @@ import javax.inject.Inject
 class ReviewGalleryFragment :
     BaseListFragment<ReviewGalleryUiModel, ReviewGalleryAdapterTypeFactory>(),
     HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
-    ReadReviewHeaderListener {
+    ReadReviewHeaderListener, ReviewGalleryHeaderListener {
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
@@ -164,6 +167,10 @@ class ReviewGalleryFragment :
         }
     }
 
+    override fun onSeeAllClicked() {
+        goToReadingPage()
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -195,6 +202,7 @@ class ReviewGalleryFragment :
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReviewGalleryFragment)
             getRecyclerView(view)?.show()
+            setSeeAll(this@ReviewGalleryFragment)
             show()
         }
     }
@@ -243,5 +251,9 @@ class ReviewGalleryFragment :
 
     private fun getSatisfactionRate(): String {
         return (viewModel.rating.value as? Success)?.data?.rating?.satisfactionRate ?: ""
+    }
+
+    private fun goToReadingPage() {
+        RouteManager.route(context, ApplinkConst.PRODUCT_REVIEW, viewModel.getProductId())
     }
 }

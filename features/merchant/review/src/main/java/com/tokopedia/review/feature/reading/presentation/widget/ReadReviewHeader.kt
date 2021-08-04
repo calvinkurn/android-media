@@ -8,7 +8,9 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.reading.data.AvailableFilters
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductTopic
@@ -48,6 +50,7 @@ class ReadReviewHeader : BaseCustomView {
     private var ratingAndReviewCount: Typography? = null
     private var chevron: IconUnify? = null
     private var sortFilter: SortFilter? = null
+    private var seeAll: Typography? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_read_review_header, this)
@@ -60,6 +63,7 @@ class ReadReviewHeader : BaseCustomView {
         ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
         chevron = findViewById(R.id.read_review_header_chevron_right)
         sortFilter = findViewById(R.id.read_review_sort_filter)
+        seeAll = findViewById(R.id.read_review_see_all)
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
@@ -206,6 +210,15 @@ class ReadReviewHeader : BaseCustomView {
             } else {
                 title = selectedSort
                 type = ChipsUnify.TYPE_SELECTED
+            }
+        }
+    }
+
+    fun setSeeAll(listener: ReviewGalleryHeaderListener) {
+        seeAll?.apply {
+            show()
+            setOnClickListener {
+                listener.onSeeAllClicked()
             }
         }
     }

@@ -392,5 +392,6 @@
 
     <!-- Gallery    -->
     <string name="review_gallery_image_count">%d/%d</string>
+    <string name="review_gallery_header_see_all">Lihat Semua</string>
 
 </resources>
