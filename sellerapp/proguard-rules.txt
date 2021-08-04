@@ -240,10 +240,6 @@
 -dontwarn com.tokopedia.sortfilter.SortFilter*
 
 
-#SELLERAPP ONLY:
--dontwarn com.wmspanel.libstream.**
--dontwarn com.wmspanel.libsrtsender.**
-
 #robust
 #https://github.com/Meituan-Dianping/Robust/blob/master/app/proguard-rules.pro
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic

@@ -28,6 +28,18 @@ android {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
+    buildTypes {
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
     androidExtensions {
         experimental = true
     }
