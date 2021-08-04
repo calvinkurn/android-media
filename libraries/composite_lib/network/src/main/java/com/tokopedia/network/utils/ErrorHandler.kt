@@ -134,8 +134,8 @@ open class ErrorHandler {
     }
 
     class Builder {
-        var sendToScalyr = true
-        var errorCode = false
+        var sendToScalyr = false
+        var errorCode = true
         var className = ""
 
         fun sendToScalyr(value: Boolean): Builder {
