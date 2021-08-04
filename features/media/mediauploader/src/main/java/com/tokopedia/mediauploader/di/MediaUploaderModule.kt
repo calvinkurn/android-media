@@ -25,11 +25,6 @@ class MediaUploaderModule {
     }
 
     @Provides
-    fun provideMediaRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    @Provides
     @MediaUploaderQualifier
     fun provideDataPolicyUseCase(
             repository: GraphqlRepository
