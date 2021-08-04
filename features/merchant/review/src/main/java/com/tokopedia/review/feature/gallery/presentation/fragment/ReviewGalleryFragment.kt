@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -21,6 +22,7 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
+import com.tokopedia.review.feature.gallery.data.ReviewDetail
 import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
@@ -34,6 +36,7 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.review_layout.*
 import javax.inject.Inject
 
 class ReviewGalleryFragment :
@@ -144,12 +147,12 @@ class ReviewGalleryFragment :
         return R.id.review_gallery_recyclerview
     }
 
-    override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.review_gallery_swipe_refresh
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view?.findViewById(R.id.review_gallery_swipe_refresh)
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(context, REVIEW_GALLERY_SPAN_COUNT)
+        return GridLayoutManager(context, REVIEW_GALLERY_SPAN_COUNT, RecyclerView.VERTICAL, false)
     }
 
     override fun openStatisticsBottomSheet() {
@@ -201,7 +204,6 @@ class ReviewGalleryFragment :
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReviewGalleryFragment)
-            getRecyclerView(view)?.show()
             setSeeAll(this@ReviewGalleryFragment)
             show()
         }
@@ -212,7 +214,8 @@ class ReviewGalleryFragment :
     }
 
     private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
-        renderList(mapToUiModel(productrevGetReviewImage))
+        swipeToRefresh.isRefreshing = false
+        renderList(mapToUiModel(productrevGetReviewImage), productrevGetReviewImage.hasNext)
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
@@ -233,16 +236,24 @@ class ReviewGalleryFragment :
 
     private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
         val reviewImages = mutableListOf<ReviewGalleryUiModel>()
-        productrevGetReviewImage.detail.reviewDetail.forEachIndexed { index, reviewDetail ->
+        productrevGetReviewImage.detail.images.forEachIndexed { index, images ->
+            val ratingAndVariant = getRatingAndVariantBasedOnFeedbackID(productrevGetReviewImage.detail.reviewDetail, images.feedbackId)
             reviewImages.add(
                 ReviewGalleryUiModel(
-                    productrevGetReviewImage.detail.images[index].thumbnailURL,
-                    reviewDetail.rating,
-                    reviewDetail.variantName
+                    images.thumbnailURL,
+                    ratingAndVariant?.first ?: 0,
+                    ratingAndVariant?.second ?: ""
                 )
             )
         }
         return reviewImages
+    }
+
+    private fun getRatingAndVariantBasedOnFeedbackID(reviews: List<ReviewDetail>, feedbackId: String): Pair<Int, String>? {
+        reviews.firstOrNull { it.feedbackId == feedbackId }?.apply {
+            return Pair(rating, variantName)
+        }
+        return null
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {

@@ -10,7 +10,7 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewG
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewGridGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryUiModel>(view) {
+class ReviewGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_review_gallery
@@ -47,7 +47,7 @@ class ReviewGridGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryU
 
     private fun setVariantName(variant: String) {
         variantName?.shouldShowWithAction(variant.isNotBlank()) {
-            variantName?.text = variant
+            variantName?.text = getString(R.string.review_gallery_variant, variant)
         }
     }
 }

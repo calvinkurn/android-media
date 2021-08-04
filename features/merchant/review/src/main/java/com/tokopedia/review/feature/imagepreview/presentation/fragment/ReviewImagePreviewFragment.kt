@@ -174,10 +174,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun bindViews(view: View) {
-        closeButton = view.findViewById(R.id.review_gallery_close_button)
-        menuButton = view.findViewById(R.id.review_gallery_menu_button)
-        imagesRecyclerView = view.findViewById(R.id.review_gallery_recyclerview)
-        reviewImagePreviewDetail = view.findViewById(R.id.review_gallery_review_detail)
+        closeButton = view.findViewById(R.id.review_image_preview_close_button)
+        menuButton = view.findViewById(R.id.review_image_preview_menu_button)
+        imagesRecyclerView = view.findViewById(R.id.review_image_preview_recyclerview)
+        reviewImagePreviewDetail = view.findViewById(R.id.review_image_preview_review_detail)
         coordinatorLayout = view.findViewById(R.id.review_gallery_coordinator_layout)
     }
 

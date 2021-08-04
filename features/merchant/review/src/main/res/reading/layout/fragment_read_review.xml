@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        app:elevation="@dimen/layout_lvl0"
-        app:layout_constraintTop_toTopOf="parent">
+        app:elevation="@dimen/layout_lvl0">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/read_review_collapsing_toolbar"

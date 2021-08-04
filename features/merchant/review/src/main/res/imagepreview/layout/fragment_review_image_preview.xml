@@ -11,7 +11,7 @@
         android:background="@color/Unify_Static_Black">
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/review_gallery_close_button"
+            android:id="@+id/review_image_preview_close_button"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/dp_12"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/review_gallery_menu_button"
+            android:id="@+id/review_image_preview_menu_button"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/dp_10"
@@ -35,16 +35,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/review_gallery_recyclerview"
+            android:id="@+id/review_image_preview_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginTop="@dimen/layout_lvl6"
             android:paddingBottom="@dimen/layout_lvl8"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_gallery_close_button" />
+            app:layout_constraintTop_toBottomOf="@id/review_image_preview_close_button" />
 
         <com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewDetailWidget
-            android:id="@+id/review_gallery_review_detail"
+            android:id="@+id/review_image_preview_review_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/layout_lvl2"
