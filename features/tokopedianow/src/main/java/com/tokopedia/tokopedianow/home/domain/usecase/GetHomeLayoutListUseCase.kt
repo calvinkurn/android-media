@@ -17,6 +17,7 @@ class GetHomeLayoutListUseCase @Inject constructor(
     companion object {
         const val TYPE = "type"
         const val LOCATION = "location"
+        const val TOKONOW = "tokonow"
     }
 
     init {
@@ -26,7 +27,7 @@ class GetHomeLayoutListUseCase @Inject constructor(
 
     suspend fun execute(localCacheModel: LocalCacheModel?): List<HomeLayoutResponse> {
         setRequestParams(RequestParams.create().apply {
-            putString(TYPE, "tokonow")
+            putString(TYPE, TOKONOW)
             putString(LOCATION, mapLocation(localCacheModel))
         }.parameters)
 
