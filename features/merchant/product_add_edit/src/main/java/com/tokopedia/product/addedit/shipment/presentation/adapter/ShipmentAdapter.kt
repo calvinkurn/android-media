@@ -11,7 +11,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.text.StringBuilder
 
-class ShipmentAdapter: RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>() {
+class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>() {
 
     private val shipmentCPLitem = mutableListOf<ShipperCPLModel>()
 
@@ -33,7 +33,7 @@ class ShipmentAdapter: RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>(
         notifyDataSetChanged()
     }
 
-    inner class ShipmentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ShipmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
         private val shipmentItemName = itemView.findViewById<Typography>(R.id.shipment_name)
@@ -42,16 +42,20 @@ class ShipmentAdapter: RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>(
         fun bindData(data: ShipperCPLModel) {
             val shipperProduct = data.shipperProduct
             val stringBuilder = StringBuilder()
-            shipmentItemImage?.let {
-                ImageHandler.loadImageFitCenter(itemView.context, it, data.logo)
-            }
-            shipmentItemName.text = data.shipperName
+
             for (x in shipperProduct.indices) {
-                if (shipperProduct[x].uiHidden) {
+                if (!shipperProduct[x].uiHidden) {
                     stringBuilder.append(shipperProduct[x].shipperProductName).append(", ")
                 }
             }
-            shipmentItemCategory.text = stringBuilder.substring(0, stringBuilder.length - 2)
+
+            if (stringBuilder.isNotEmpty()) {
+                shipmentItemImage?.let {
+                    ImageHandler.loadImageFitCenter(itemView.context, it, data.logo)
+                }
+                shipmentItemName.text = data.shipperName
+                shipmentItemCategory.text = stringBuilder.substring(0, stringBuilder.length - 2)
+            }
 
         }
     }
