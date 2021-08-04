@@ -275,4 +275,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
         return SCROLL_DEPTH * (offset + extent) / range
     }
+
+    fun getShareUTM(data:PageInfo) : String{
+        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if(data.campaignCode != null && data.campaignCode.length > 11){
+            campaignCode = data.campaignCode.substring(0,11)
+        }
+        return "${data.identifier}-${campaignCode}"
+    }
 }

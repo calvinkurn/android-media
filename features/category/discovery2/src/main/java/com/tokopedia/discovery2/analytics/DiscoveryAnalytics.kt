@@ -1229,4 +1229,20 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 PAGE_TYPE to pageType)
         getTracker().sendGeneralEvent(map)
     }
+
+    override fun trackUnifyShare(event : String, eventAction : String, userID: String?,
+                                 eventLabel : String,) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+            KEY_EVENT to event,
+            KEY_EVENT_CATEGORY to eventDiscoveryCategory,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            USER_ID to (userID ?: ""),
+            BUSINESS_UNIT to SHARING_EXPERIENCE,
+            PAGE_TYPE to pageType,
+            PAGE_PATH to removedDashPageIdentifier
+        )
+        getTracker().sendGeneralEvent(map)
+    }
 }
