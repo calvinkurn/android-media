@@ -2,14 +2,14 @@ package com.tokopedia.review.feature.reputationhistory.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardResponse
+import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyAndRewardResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetReputationPenaltyRewardUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository
-): UseCase<ReputationPenaltyRewardResponse>() {
+): UseCase<ReputationPenaltyAndRewardResponse.Data>() {
 
     private var params = mapOf<String, Any>()
 
@@ -23,17 +23,17 @@ class GetReputationPenaltyRewardUseCase @Inject constructor(
         }.parameters
     }
 
-    override suspend fun executeOnBackground(): ReputationPenaltyRewardResponse {
+    override suspend fun executeOnBackground(): ReputationPenaltyAndRewardResponse.Data {
         val gqlRequest = GraphqlRequest(
             REPUTATION_PENALTY_REWARD_QUERY,
-            ReputationPenaltyRewardResponse::class.java,
+            ReputationPenaltyAndRewardResponse.Data::class.java,
             params
         )
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-        val errors = gqlResponse.getError(ReputationPenaltyRewardResponse::class.java)
+        val errors = gqlResponse.getError(ReputationPenaltyAndRewardResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
-            return gqlResponse.getData(ReputationPenaltyRewardResponse::class.java)
+            return gqlResponse.getData(ReputationPenaltyAndRewardResponse.Data::class.java)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })
         }

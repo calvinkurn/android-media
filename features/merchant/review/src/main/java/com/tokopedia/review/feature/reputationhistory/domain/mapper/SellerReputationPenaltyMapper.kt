@@ -1,6 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.domain.mapper
 
-import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardResponse
+import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyAndRewardResponse
 import com.tokopedia.review.feature.reputationhistory.data.model.response.ReputationPenaltyRewardWrapper
 import com.tokopedia.review.feature.reputationhistory.util.ReputationPenaltyDateUtils.convertDateTextToTimeStamp
 import com.tokopedia.review.feature.reputationhistory.view.model.*
@@ -24,9 +24,9 @@ class SellerReputationPenaltyMapper @Inject constructor() {
                     startDate = startDate.convertDateTextToTimeStamp(SellerReputationViewModel.PATTERN_PENALTY_DATE_PARAM),
                     endDate = endDate.convertDateTextToTimeStamp(SellerReputationViewModel.PATTERN_PENALTY_DATE_PARAM)
                 ))
-                if (reputationPenaltyAndReward?.penaltyList?.isNotEmpty() == true) {
+                if (reputationPenaltyAndReward?.list?.isNotEmpty() == true) {
                     addAll(
-                        reputationPenaltyAndReward.penaltyList.map {
+                        reputationPenaltyAndReward.list.map {
                             ReputationPenaltyUiModel(
                                 date = it.timeFmt,
                                 invoice = it.invoiceRefNum,
@@ -40,12 +40,12 @@ class SellerReputationPenaltyMapper @Inject constructor() {
         )
     }
 
-    fun mapToPenaltyReputationList(reputationPenaltyRewardResponse: ReputationPenaltyRewardResponse): SellerReputationPenaltyUiModel {
+    fun mapToPenaltyReputationList(reputationPenaltyRewardResponse: ReputationPenaltyAndRewardResponse.Data): SellerReputationPenaltyUiModel {
         return SellerReputationPenaltyUiModel(
             reputationPenaltyList = mutableListOf<ReputationPenaltyUiModel>().apply {
-                if (reputationPenaltyRewardResponse.reputationPenaltyAndReward?.penaltyList?.isNotEmpty() == true) {
+                if (reputationPenaltyRewardResponse.reputationPenaltyAndReward.list.isNotEmpty()) {
                     addAll(
-                        reputationPenaltyRewardResponse.reputationPenaltyAndReward.penaltyList.map {
+                        reputationPenaltyRewardResponse.reputationPenaltyAndReward.list.map {
                             ReputationPenaltyUiModel(
                                 date = it.timeFmt,
                                 invoice = it.invoiceRefNum,
@@ -56,8 +56,8 @@ class SellerReputationPenaltyMapper @Inject constructor() {
                     )
                 }
             },
-            hasNext = reputationPenaltyRewardResponse.reputationPenaltyAndReward?.page?.next,
-            hasPrev = reputationPenaltyRewardResponse.reputationPenaltyAndReward?.page?.prev
+            hasNext = reputationPenaltyRewardResponse.reputationPenaltyAndReward.page.next,
+            hasPrev = reputationPenaltyRewardResponse.reputationPenaltyAndReward.page.prev
         )
     }
 }
