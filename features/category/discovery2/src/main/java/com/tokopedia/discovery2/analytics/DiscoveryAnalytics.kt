@@ -1225,7 +1225,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 KEY_EVENT_LABEL to "$screenScrollPercentage%  - ${lastVisibleComponent?.name ?: ""} - ${lastVisibleComponent?.creativeName ?: ""}",
                 BUSINESS_UNIT to HOME_BROWSE,
                 CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
-                PAGE_PATH to pagePath,
+                PAGE_PATH to removedDashPageIdentifier,
                 PAGE_TYPE to pageType)
         getTracker().sendGeneralEvent(map)
     }
