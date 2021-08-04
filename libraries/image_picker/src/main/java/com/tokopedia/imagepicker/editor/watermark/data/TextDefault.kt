@@ -16,6 +16,6 @@ open class TextDefault(
     override var textShadowXOffset: Float = 0f,
     override var textShadowYOffset: Float = 0f,
     override var textAlpha: Int = 50,
-    override var textSize: Int = 24,
+    override var textSize: Int = 20,
     override var text: String = "",
 ) : TextUIModel, PositionDefault()

@@ -8,8 +8,7 @@
             android:name=".list.presentation.activities.SomListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/SomListTheme"
-            android:windowSoftInputMode="adjustPan">
+            android:theme="@style/SomListTheme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

@@ -9,6 +9,8 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifyprinciples.Typography
 
@@ -81,7 +83,16 @@ class OrderStatusInfoViewHolder(
     }
 
     private fun setupInvoice(invoice: String) {
-        tvBuyerOrderDetailInvoice?.text = invoice
+        if (invoice.isBlank()) {
+            tvBuyerOrderDetailSeeInvoice?.gone()
+            tvBuyerOrderDetailInvoice?.gone()
+            icBuyerOrderDetailCopyInvoice?.gone()
+        } else {
+            tvBuyerOrderDetailInvoice?.text = invoice
+            tvBuyerOrderDetailInvoice?.show()
+            tvBuyerOrderDetailSeeInvoice?.show()
+            icBuyerOrderDetailCopyInvoice?.show()
+        }
     }
 
     private fun setupPurchaseDate(purchaseDate: String) {

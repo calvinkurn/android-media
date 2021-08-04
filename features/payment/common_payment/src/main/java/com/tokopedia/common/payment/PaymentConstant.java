@@ -7,6 +7,7 @@ package com.tokopedia.common.payment;
 public class PaymentConstant {
 
     public static String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+    public static String EXTRA_PAGE_TIME_OUT = "EXTRA_PAGE_TIME_OUT";
     public static String EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE = "EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE";
     public static String EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT = "EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT";
 

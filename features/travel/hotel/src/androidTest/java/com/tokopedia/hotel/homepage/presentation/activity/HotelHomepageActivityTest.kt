@@ -39,6 +39,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -174,8 +175,7 @@ class HotelHomepageActivityTest {
 
         Thread.sleep(3000)
         val cal = Calendar.getInstance()
-        cal.time = DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time,
-                Calendar.DATE, 2)
+        cal.time = DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2)
         val tomorrowDate = cal[Calendar.DATE]
         try {
             onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
