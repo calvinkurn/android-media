@@ -19,14 +19,14 @@ object MacroIntent {
 
         fun getHomeIntent(): Intent {
             val intent = Intent()
-            intent.setData(Uri.parse("tokopedia-android-internal://home/navigation"))
+            intent.data = Uri.parse("tokopedia-android-internal://home/navigation")
             return intent
         }
 
         fun getHomeMacroSetupIntent(): Intent {
             val intent = Intent()
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.setData(Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark"))
+            intent.data = Uri.parse("tokopedia-android-internal://home-setting/opt/macrobenchmark")
             return intent
         }
     }
