@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.view.fragment
+package com.tokopedia.saldodetails.view.fragment.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -166,7 +166,12 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     }
 
     private fun retryInitialLoading() {
-        transactionHistoryViewModel?.retryAllTabLoading()
+        val isPenjualanTabActive: Boolean = when (parentFragment) {
+            is SaldoTransactionHistoryFragment ->
+                (parentFragment as SaldoTransactionHistoryFragment).isSalesTabEnabled()
+            else -> false
+        }
+        transactionHistoryViewModel?.retryAllTabLoading(isPenjualanTabActive)
     }
 
 

@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.view.fragment
+package com.tokopedia.saldodetails.view.fragment.history
 
 import android.os.Bundle
 import android.view.LayoutInflater

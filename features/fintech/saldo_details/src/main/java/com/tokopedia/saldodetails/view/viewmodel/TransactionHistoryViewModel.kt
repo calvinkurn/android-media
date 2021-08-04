@@ -61,15 +61,15 @@ class TransactionHistoryViewModel @Inject constructor(
         }.getNextPage()
     }
 
-    fun refreshAllTabsData(dateFrom: Date, dateTo: Date) {
+    fun refreshAllTabsData(dateFrom: Date, dateTo: Date, isPenjualanTabActive : Boolean) {
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         clearPrevData()
         cancelTransactionLoading()
         allTransactionLiveData.postValue(InitialLoadingState)
         refundTransactionLiveData.postValue(InitialLoadingState)
-        salesTransactionLiveData.postValue(InitialLoadingState)
         incomeTransactionLiveData.postValue(InitialLoadingState)
+        salesTransactionLiveData.postValue(InitialLoadingState)
         getAllTypeTransactionUseCase.loadAllTypeTransactions(
             {
                 onAllTabDataLoaded(it)
@@ -77,11 +77,13 @@ class TransactionHistoryViewModel @Inject constructor(
                 onAllTabsDataError(it)
             }, dateFrom, dateTo
         )
-        loadSaleTransaction(1)
+        if(isPenjualanTabActive) {
+            loadSaleTransaction(1)
+        }
     }
 
-    fun retryAllTabLoading() {
-        refreshAllTabsData(dateFrom, dateTo)
+    fun retryAllTabLoading(isPenjualanTabActive : Boolean) {
+        refreshAllTabsData(dateFrom, dateTo, isPenjualanTabActive)
     }
 
     private fun clearPrevData() {

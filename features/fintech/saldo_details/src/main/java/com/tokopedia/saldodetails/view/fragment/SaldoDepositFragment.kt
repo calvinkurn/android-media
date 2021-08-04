@@ -49,6 +49,7 @@ import com.tokopedia.saldodetails.utils.ErrorMessage
 import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
+import com.tokopedia.saldodetails.view.fragment.history.SaldoTransactionHistoryFragment
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
