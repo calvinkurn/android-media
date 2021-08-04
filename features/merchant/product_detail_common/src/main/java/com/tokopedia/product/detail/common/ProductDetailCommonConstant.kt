@@ -104,6 +104,7 @@ object ProductDetailCommonConstant {
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+    const val VALUE_NONE_OTHER= "none/other"
 
     const val KEY_PRODUCT_DETAIL = "product detail"
 

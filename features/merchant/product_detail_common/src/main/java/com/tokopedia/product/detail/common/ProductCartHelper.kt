@@ -26,7 +26,7 @@ object ProductCartHelper {
             ProductDetailCommonConstant.BO_TOKONOW -> {
                 ProductDetailCommonConstant.VALUE_TOKONOW
             }
-            else -> "none/other"
+            else -> ProductDetailCommonConstant.VALUE_NONE_OTHER
         }
     }
 
