@@ -49,10 +49,18 @@ class FeedPlusAdapter(
         }
     }
 
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context)
+        }
+    }
+
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
         if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
-            (holder as DynamicPostNewViewHolder).onItemDetach(list[holder.adapterPosition])
+            (holder as DynamicPostNewViewHolder).onItemDetach(holder.itemView.context
+                    ,list[holder.adapterPosition])
         }
     }
 

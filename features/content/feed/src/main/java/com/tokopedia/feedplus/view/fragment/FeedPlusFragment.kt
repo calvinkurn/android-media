@@ -230,7 +230,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     @Inject
     internal lateinit var userSession: UserSessionInterface
     private lateinit var productTagBS: ProductItemInfoBottomSheet
-    private var isCleared = false
     private val userIdInt: Int
         get() {
             return userSession.userId.toIntOrZero()
@@ -259,7 +258,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val TRUE = "true"
         private const val FEED_DETAIL = "feedcommunicationdetail"
         private const val BROADCAST_FEED = "BROADCAST_FEED"
-        private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
@@ -651,15 +649,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             newFeed.visible()
                             triggerNewFeedNotification()
                         }
-                        if (layoutManager != null && adapter.getlist().isNotEmpty()) {
-                            startVideoPlayer()
-                            isCleared = false
-                        }
-                    } else if (intent.action == BROADCAST_VISIBLITY) {
-                        if (layoutManager != null && adapter.getlist().isNotEmpty() && !isCleared) {
-                            stopVideoPlayer()
-                            isCleared = true
-                        }
                     }
                 }
             }
@@ -991,8 +980,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
-            intentFilter.addAction(BROADCAST_VISIBLITY)
-
             LocalBroadcastManager
                 .getInstance(requireActivity().applicationContext)
                 .registerReceiver(newFeedReceiver, intentFilter)
@@ -1028,42 +1015,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
             isUserVisibleHint = isVisibleToUser
         )
-    }
-
-    private fun videoPostPosition(): Int {
-        val item = adapter.getlist()[getCurrentPosition()]
-        if (item is DynamicPostUiModel && item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-            val it = item.feedXCard.media.filter { it.type != TYPE_IMAGE }
-            if (it.isNotEmpty())
-                return getCurrentPosition()
-        }
-        for (pos in getFirstVisible()..getLastVisible()) {
-            val item1: Visitable<*> = adapter.getlist()[pos]
-            if (item1 is DynamicPostUiModel && item1.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-                val it = item1.feedXCard.media.filter { it.type != TYPE_IMAGE }
-                if (it.isNotEmpty()) {
-                    return pos
-                }
-            }
-        }
-
-        return DEFAULT_VALUE
-    }
-
-    fun stopVideoPlayer() {
-        if (videoPostPosition() != DEFAULT_VALUE)
-            adapter.notifyItemChanged(
-                videoPostPosition(),
-                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
-            )
-    }
-
-    fun startVideoPlayer() {
-        if (videoPostPosition() != DEFAULT_VALUE)
-            adapter.notifyItemChanged(
-                videoPostPosition(),
-                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
-            )
     }
 
     private fun getCurrentPosition(): Int {

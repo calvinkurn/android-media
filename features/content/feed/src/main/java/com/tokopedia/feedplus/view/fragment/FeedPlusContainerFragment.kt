@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -74,6 +75,7 @@ import javax.inject.Inject
  */
 
 private const val FEED_PAGE = "feed"
+private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
@@ -372,21 +374,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             }
 
             override fun onPageSelected(position: Int) {
-                try {
-                    val fragment = pagerAdapter.getRegisteredFragment(0)
-                    if (position == 0) {
-                        if (fragment is FeedPlusFragment) {
-                            fragment.startVideoPlayer()
-                        }
-                    } else {
-                        if (fragment is FeedPlusFragment) {
-                            fragment.stopVideoPlayer()
+                    if (position == 1) {
+                        context?.let {
+                            val intent = Intent(BROADCAST_VISIBLITY)
+                            LocalBroadcastManager.getInstance(it.applicationContext)
+                                .sendBroadcast(intent)
                         }
                     }
-                } catch (e: IllegalStateException) {
-                    //no op
                 }
-            }
 
             override fun onPageScrollStateChanged(state: Int) {
             }
