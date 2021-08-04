@@ -32,6 +32,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/read_review_variant_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/read_review_basic_info" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_item_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +52,7 @@
         android:ellipsize="end"
         android:maxLines="3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_review_basic_info"
+        app:layout_constraintTop_toBottomOf="@id/read_review_variant_name"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />
