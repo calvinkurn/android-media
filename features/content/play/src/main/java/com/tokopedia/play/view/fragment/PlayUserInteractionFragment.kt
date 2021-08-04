@@ -694,6 +694,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
                 val shotAmount: Long
+                val isAnimate: Boolean
                 if (isFirstTime) {
                     shotAmount = minOf(it.totalLike, spamLikeView.maxShot)
                     likeView.setEnabled(true)
@@ -702,10 +703,17 @@ class PlayUserInteractionFragment @Inject constructor(
                     shotAmount = minOf(it.totalLike - it.previousLike, spamLikeView.maxShot)
                 }
 
-                likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
+                if(playViewModel.isAllowMultipleLike) {
+                    isAnimate = false
+                    spamLikeView.shot(shotAmount.toInt())
+                }
+                else {
+                    isAnimate = it.source == LikeSource.UserAction && !isFirstTime
+                }
+
+                likeView.playLikeAnimation(it.isLiked, isAnimate)
                 isFirstTime = false
 
-                spamLikeView.shot(shotAmount.toInt())
                 likeView.setTotalLikes(it)
             }
         })
@@ -1029,15 +1037,17 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun doLikeUnlike(shouldLike: Boolean) {
+        val isLike = if(playViewModel.isAllowMultipleLike) true else shouldLike
+
         //Used to show mock like when user click like
-        playViewModel.changeLikeCount(shouldLike)
+        playViewModel.changeLikeCount(isLike)
 
         viewModel.doLikeUnlike(
                 likeParamInfo = playViewModel.likeParamInfo,
-                shouldLike = shouldLike
+                shouldLike = isLike
         )
 
-        analytic.clickLike(shouldLike)
+        analytic.clickLike(isLike)
     }
 
     private fun openLoginPage() {
