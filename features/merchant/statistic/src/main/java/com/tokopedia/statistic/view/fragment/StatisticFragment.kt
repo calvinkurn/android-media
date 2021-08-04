@@ -262,8 +262,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendCardImpressionEvent(model, position)
     }
 
-    override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
-        StatisticTracker.sendClickLineGraphEvent(dataKey, chartValue)
+    override fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {
+        StatisticTracker.sendClickLineGraphEvent(model.dataKey, model.data?.header.orEmpty())
     }
 
     override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
@@ -289,8 +289,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
-    override fun sendPosListItemClickEvent(dataKey: String, title: String) {
-        StatisticTracker.sendClickPostItemEvent(dataKey, title)
+    override fun sendPosListItemClickEvent(element: PostListWidgetUiModel, post: PostItemUiModel) {
+        StatisticTracker.sendClickPostItemEvent(element.dataKey, post.title)
     }
 
     override fun sendPostListCtaClickEvent(element: PostListWidgetUiModel) {
@@ -309,12 +309,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendDescriptionCtaClickEvent(descriptionTitle: String) {
-        StatisticTracker.sendClickDescriptionEvent(descriptionTitle)
+    override fun sendDescriptionCtaClickEvent(model: DescriptionWidgetUiModel) {
+        StatisticTracker.sendClickDescriptionEvent(model.title)
     }
 
-    override fun sendDescriptionImpressionEvent(descriptionTitle: String) {
-        StatisticTracker.sendImpressionDescriptionEvent(descriptionTitle)
+    override fun sendDescriptionImpressionEvent(model: DescriptionWidgetUiModel) {
+        StatisticTracker.sendImpressionDescriptionEvent(model.title)
     }
 
     override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {
@@ -339,8 +339,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendBarChartImpressionEvent(model, position)
     }
 
-    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
-        StatisticTracker.sendBarChartEmptyStateCtaClickEvent(element)
+    override fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {
+        StatisticTracker.sendBarChartEmptyStateCtaClickEvent(model)
     }
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {

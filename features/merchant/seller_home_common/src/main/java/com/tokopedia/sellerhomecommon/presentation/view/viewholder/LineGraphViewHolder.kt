@@ -65,9 +65,9 @@ class LineGraphViewHolder(
         setupTooltip(element)
     }
 
-    private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            listener.sendLineGraphCtaClickEvent(dataKey, value)
+    private fun openAppLink(element: LineGraphWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.appLink)) {
+            listener.sendLineGraphCtaClickEvent(element)
         }
     }
 
@@ -138,10 +138,10 @@ class LineGraphViewHolder(
 
         if (isCtaVisible) {
             btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
+                openAppLink(element)
             }
             btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
+                openAppLink(element)
             }
         }
 
@@ -299,7 +299,7 @@ class LineGraphViewHolder(
 
         fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {}
 
-        fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
+        fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {}
 
         fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {}
     }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -167,13 +168,19 @@ class TableViewHolder(
             if (isCtaVisible) {
                 btnTableCta.text = element.ctaText
                 btnTableCta.setOnClickListener {
-                    openAppLink(element.appLink, element.dataKey)
+                    onSeeMoreClicked(element)
                 }
                 icTableCta.setOnClickListener {
-                    openAppLink(element.appLink, element.dataKey)
+                    onSeeMoreClicked(element)
                 }
             }
         }
+    }
+
+    private fun onSeeMoreClicked(element: TableWidgetUiModel) {
+        val isEmpty = element.data?.dataSet?.isEmpty().orFalse()
+        listener.sendTableSeeMoreClickEvent(element, isEmpty)
+        openAppLink(element)
     }
 
     private fun setupTableFilter(element: TableWidgetUiModel) {
@@ -203,8 +210,8 @@ class TableViewHolder(
         }
     }
 
-    private fun openAppLink(appLink: String, dataKey: String) {
-        RouteManager.route(itemView.context, appLink)
+    private fun openAppLink(element: TableWidgetUiModel) {
+        RouteManager.route(itemView.context, element.appLink)
     }
 
     private fun setupTooltip(element: TableWidgetUiModel) = with(itemView) {
@@ -222,12 +229,12 @@ class TableViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {}
+        fun sendTableImpressionEvent(model: TableWidgetUiModel, slidePosition: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {}
         fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
         fun sendTableFilterClick(element: TableWidgetUiModel) {}
         fun sendTableFilterImpression(element: TableWidgetUiModel) {}
-
+        fun sendTableSeeMoreClickEvent(element: TableWidgetUiModel, isEmpty: Boolean) {}
     }
 }

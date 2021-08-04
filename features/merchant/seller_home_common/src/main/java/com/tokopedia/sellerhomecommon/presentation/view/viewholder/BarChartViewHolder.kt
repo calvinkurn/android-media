@@ -171,7 +171,7 @@ class BarChartViewHolder(
                 }
     }
 
-    private fun openAppLink(appLink: String, dataKey: String, value: String) {
+    private fun openAppLink(appLink: String) {
         RouteManager.route(itemView.context, appLink)
     }
 
@@ -235,6 +235,16 @@ class BarChartViewHolder(
             barChartShc.setData(getBarChartData(data?.chartData))
             barChartShc.invalidateChart()
 
+            setupSeeMoreCta(element)
+
+            addOnImpressionListener(element.impressHolder) {
+                listener.sendBarChartImpressionEvent(element)
+            }
+        }
+    }
+
+    private fun setupSeeMoreCta(element: BarChartWidgetUiModel) {
+        with(itemView) {
             val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcBarChartMore.visibility = ctaVisibility
@@ -243,17 +253,18 @@ class BarChartViewHolder(
 
             if (isCtaVisible) {
                 btnShcBarChartMore.setOnClickListener {
-                    openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
+                    onSeeMoreClicked(element)
                 }
                 btnShcBarChartNext.setOnClickListener {
-                    openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
+                    onSeeMoreClicked(element)
                 }
             }
-
-            addOnImpressionListener(element.impressHolder) {
-                listener.sendBarChartImpressionEvent(element)
-            }
         }
+    }
+
+    private fun onSeeMoreClicked(element: BarChartWidgetUiModel) {
+        listener.sendBarChartSeeMoreClickEvent(element)
+        openAppLink(element.appLink)
     }
 
     private fun showEmpty(element: BarChartWidgetUiModel): Boolean {
@@ -339,7 +350,7 @@ class BarChartViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {}
-        fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {}
-
+        fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {}
+        fun sendBarChartSeeMoreClickEvent(model: BarChartWidgetUiModel) {}
     }
 }
