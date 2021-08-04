@@ -192,7 +192,8 @@ class MiniCartWidget @JvmOverloads constructor(
                     viewModel?.goToCheckout(globalEvent.observer)
                 }
             })
-            analytics.eventClickBuyThenGetBottomSheetError(miniCartCheckoutData.outOfService.description)
+            val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+            analytics.eventClickBuyThenGetBottomSheetError(miniCartCheckoutData.outOfService.description, isOCCFlow)
         } else {
             // Reload data
             if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
@@ -217,7 +218,8 @@ class MiniCartWidget @JvmOverloads constructor(
             } else {
                 showToaster(view, errorMessage, Toaster.TYPE_ERROR, isShowCta = false)
             }
-            analytics.eventClickBuyThenGetToasterError(errorMessage)
+            val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+            analytics.eventClickBuyThenGetToasterError(errorMessage, isOCCFlow)
         }
     }
 
@@ -236,7 +238,8 @@ class MiniCartWidget @JvmOverloads constructor(
                             viewModel?.goToCheckout(globalEvent.observer)
                         }
                     })
-                    analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
+                    val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+                    analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle), isOCCFlow)
                 }
                 is SocketTimeoutException -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
@@ -244,7 +247,8 @@ class MiniCartWidget @JvmOverloads constructor(
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
                         analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
-                    analytics.eventClickBuyThenGetToasterError(message)
+                    val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+                    analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
                 }
                 else -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
@@ -252,7 +256,8 @@ class MiniCartWidget @JvmOverloads constructor(
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
                         analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
-                    analytics.eventClickBuyThenGetToasterError(message)
+                    val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+                    analytics.eventClickBuyThenGetToasterError(message, isOCCFlow)
                 }
             }
         }
@@ -334,7 +339,8 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun sendEventClickBuy() {
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
-        analytics.eventClickBuy(pageName, products)
+        val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+        analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
     private fun initializeProgressDialog(context: Context?) {
