@@ -89,3 +89,23 @@ task installGitHooks {
 }
 clean.dependsOn installGitHooks
 
+task("runJacoco")
+task("runUnitTest")
+subprojects {
+    project.afterEvaluate {
+        def isLibrary = project.plugins.hasPlugin("com.android.library")
+        def isApp = project.plugins.hasPlugin("com.android.application")
+        def isDF = project.plugins.hasPlugin("com.android.dynamic-feature")
+        if (project.tasks.findByName("jacocoTestReport")!= null) {
+            def task = project.path + ":jacocoTestReport"
+            rootProject.tasks.runJacoco.dependsOn(task)
+            if (isApp) {
+                task = project.path + ":testLiveProdDebugUnitTest"
+                rootProject.tasks.runUnitTest.dependsOn(task)
+            } else if (isLibrary && !isDF ){
+                task = project.path + ":testDebugUnitTest"
+                rootProject.tasks.runUnitTest.dependsOn(task)
+            }
+        }
+    }
+}
