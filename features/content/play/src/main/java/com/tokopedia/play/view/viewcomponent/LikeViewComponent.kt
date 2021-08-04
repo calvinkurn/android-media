@@ -61,7 +61,12 @@ class LikeViewComponent(
     }
 
     fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
-        tvTotalLikes.text = totalLikes.totalLikeFormatted
+        /**
+         * TODO: backend is not yet setup for multiplelike, so spamming like right now will counted 1 like
+         * to prevent unconsistency view, we take the largest likes
+         */
+        tvTotalLikes.text = if(totalLikes.totalLike > totalLikes.previousLike) totalLikes.totalLikeFormatted
+                            else totalLikes.previousLikeFormatted
     }
 
     fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
