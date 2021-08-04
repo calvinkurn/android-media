@@ -5,8 +5,6 @@ import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
 import com.tokopedia.promotionstarget.data.notification.NotificationStatusType
 import com.tokopedia.promotionstarget.data.notification.PopupType
-import java.security.MessageDigest
-import kotlin.experimental.and
 
 object GratificationAnalyticsHelper {
 
@@ -22,8 +20,7 @@ object GratificationAnalyticsHelper {
                 getPopupType(gratifNotification, couponDetailResponse),
                 gratifNotification.promoCode,
                 gratifNotification.eventID,
-                autoApplyStatusCode,
-                screenName)
+                autoApplyStatusCode)
 
         GratificationAnalytics.userClickMainCtaPush(userId,
                 screenName,
@@ -92,31 +89,13 @@ object GratificationAnalyticsHelper {
                             popupType: Int,
                             baseCode: String?,
                             eventId: String?,
-                            autoApplyStatus: String?,
-                            screenName: String
+                            autoApplyStatus: String?
     ): String {
-        val screenNameMD5 = md5(screenName)
         if (autoApplyStatus.isNullOrEmpty()) {
-            return "$entryPoint - $popupType - $baseCode - $eventId - $screenNameMD5"
+            return "$entryPoint - $popupType - $baseCode - $eventId"
         } else {
-            return "$entryPoint - $popupType - $baseCode - $eventId - $autoApplyStatus - $screenNameMD5"
+            return "$entryPoint - $popupType - $baseCode - $eventId - $autoApplyStatus"
         }
 
-    }
-
-    fun md5(screenName: String): String? {
-        return try {
-            val digest = MessageDigest.getInstance("MD5")
-            digest.update(screenName.toByteArray())
-            val messageDigest = digest.digest()
-            val hexString = StringBuilder()
-            for (b in messageDigest) {
-                hexString.append(String.format("%02x", b and 0xff.toByte()))
-            }
-            hexString.toString()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            ""
-        }
     }
 }
