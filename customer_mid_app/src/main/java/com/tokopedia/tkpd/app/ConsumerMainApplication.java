@@ -23,6 +23,7 @@ import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
+import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -335,6 +336,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
     }
 
 
