@@ -2,11 +2,12 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
 data class DynamicProductInfoP1(
-        val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData(),
-        val bestSellerContent: Map<String, BestSellerInfoContent>? = mapOf(),
-        val layoutName: String = "",
-        val pdpSession: String = ""
+    val basic: BasicInfo = BasicInfo(),
+    val data: ComponentData = ComponentData(),
+    val bestSellerContent: Map<String, OneLinersContent>? = mapOf(),
+    val stockAssuranceContent: Map<String, OneLinersContent>? = mapOf(),
+    val layoutName: String = "",
+    val pdpSession: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
@@ -26,6 +27,9 @@ data class DynamicProductInfoP1(
                 "reguler"
         }
 
+    val isProductParent: Boolean
+        get() = data.variant.isVariant && basic.productID == data.variant.parentID
+
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toLongOrNull() ?: 0L > 0L) {
@@ -37,7 +41,7 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
-    val finalPrice: Int
+    val finalPrice: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.discountedPrice
@@ -46,12 +50,12 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val priceBeforeInt: Int
+    val priceBeforeDouble: Double
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.originalPrice
             } else {
-                0
+                0.0
             }
         }
 

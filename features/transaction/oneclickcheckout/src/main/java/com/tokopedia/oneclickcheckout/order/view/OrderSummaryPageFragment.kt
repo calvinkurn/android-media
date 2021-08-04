@@ -881,7 +881,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         } else if (addressState.errorCode == AddressState.ERROR_CODE_OPEN_ANA) {
             showLayoutNoAddress()
-        } else {
+        } else if (addressState.address.addressId > 0) {
             updateLocalCacheAddressData(addressState.address)
         }
     }

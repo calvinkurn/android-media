@@ -37,7 +37,6 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -48,7 +47,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -59,8 +57,10 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
@@ -76,6 +76,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
@@ -98,7 +99,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-    private var deleteMessageListUseCase: DeleteMessageListUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
@@ -115,6 +115,7 @@ open class TopChatRoomPresenter @Inject constructor(
     private val chatBackgroundUseCase: ChatBackgroundUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -725,10 +726,21 @@ open class TopChatRoomPresenter @Inject constructor(
         onError: (Throwable) -> Unit,
         onSuccessDeleteConversation: () -> Unit
     ) {
-        deleteMessageListUseCase.execute(
-            DeleteMessageListUseCase.generateParam(messageId),
-            DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation)
-        )
+        launch {
+            try {
+                val result = moveChatToTrashUseCase.execute(messageId)
+                if(result.chatMoveToTrash.list.isNotEmpty()) {
+                    val deletedChat = result.chatMoveToTrash.list.first()
+                    if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                        onSuccessDeleteConversation()
+                    } else {
+                        onError(Throwable(deletedChat.detailResponse))
+                    }
+                }
+            } catch (throwable: Throwable) {
+                onError(throwable)
+            }
+        }
     }
 
     override fun getShopFollowingStatus(
@@ -744,7 +756,6 @@ open class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        deleteMessageListUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()

@@ -1,12 +1,12 @@
 package com.tokopedia.troubleshooter.notification.data.service.fcm
 
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.installations.FirebaseInstallations
 
 class FirebaseInstanceManagerImpl: FirebaseInstanceManager {
 
     override fun getNewToken(token: (String) -> Unit, error: (Throwable) -> Unit) {
         try {
-            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+            FirebaseInstallations.getInstance().getToken(true).addOnCompleteListener { task ->
                 if (!task.isSuccessful || task.result?.token == null) {
                     error(Throwable("get a new token isn't successful"))
                     return@addOnCompleteListener

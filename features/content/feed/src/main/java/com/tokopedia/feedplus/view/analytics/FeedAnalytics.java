@@ -708,6 +708,7 @@ public class FeedAnalytics {
         productItem.put("name", "/feed - topads - card");
         productItem.put("id", adId);
         productItem.put("position", position);
+        productItem.put("creative_name", "");
         productList.add(productItem);
         return productList;
     }
