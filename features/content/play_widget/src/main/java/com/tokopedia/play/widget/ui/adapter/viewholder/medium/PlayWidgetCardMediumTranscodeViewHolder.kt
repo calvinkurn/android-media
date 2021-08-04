@@ -96,7 +96,7 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         llLoadingContainer.visibility = View.VISIBLE
         llError.visibility = View.GONE
 
-        ivGiveaway.visibility = if(model.hasGiveaway) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = View.GONE
     }
 
     private fun setFailedTranscodingModel(model: PlayWidgetMediumChannelUiModel) {
