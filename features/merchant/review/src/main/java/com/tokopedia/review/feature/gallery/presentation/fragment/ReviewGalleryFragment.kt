@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -23,14 +24,19 @@ import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
+import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewGalleryFragment :
     BaseListFragment<ReviewGalleryUiModel, ReviewGalleryAdapterTypeFactory>(),
-    HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract {
+    HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
+    ReadReviewHeaderListener {
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
@@ -46,6 +52,8 @@ class ReviewGalleryFragment :
     @Inject
     lateinit var viewModel: ReviewGalleryViewModel
 
+    private var reviewHeader: ReadReviewHeader? = null
+    private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,8 +93,10 @@ class ReviewGalleryFragment :
         }
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
         observeReviewImages()
         observeRatingAndTopics()
     }
@@ -96,7 +106,7 @@ class ReviewGalleryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_grid_gallery, container, false)
+        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
     }
 
     override fun getComponent(): ReviewGalleryComponent? {
@@ -139,8 +149,27 @@ class ReviewGalleryFragment :
         return GridLayoutManager(context, REVIEW_GALLERY_SPAN_COUNT)
     }
 
+    override fun openStatisticsBottomSheet() {
+        if (statisticsBottomSheet == null) {
+            statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(
+                getReviewStatistics(),
+                getSatisfactionRate()
+            )
+        }
+        activity?.supportFragmentManager?.let {
+            statisticsBottomSheet?.show(
+                it,
+                ReadReviewStatisticsBottomSheet.READ_REVIEW_STATISTICS_BOTTOM_SHEET_TAG
+            )
+        }
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
+    }
+
+    private fun bindViews(view: View) {
+        reviewHeader = view.findViewById(R.id.review_gallery_header)
     }
 
     private fun observeRatingAndTopics() {
@@ -162,7 +191,12 @@ class ReviewGalleryFragment :
     }
 
     private fun onSuccessGetRating(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
-
+        reviewHeader?.apply {
+            setRatingData(ratingAndTopics.rating)
+            setListener(this@ReviewGalleryFragment)
+            getRecyclerView(view)?.show()
+            show()
+        }
     }
 
     private fun onFailGetRating(throwable: Throwable) {
@@ -201,5 +235,13 @@ class ReviewGalleryFragment :
             )
         }
         return reviewImages
+    }
+
+    private fun getReviewStatistics(): List<ProductReviewDetail> {
+        return (viewModel.rating.value as? Success)?.data?.rating?.detail ?: listOf()
+    }
+
+    private fun getSatisfactionRate(): String {
+        return (viewModel.rating.value as? Success)?.data?.rating?.satisfactionRate ?: ""
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
@@ -12,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ReviewGridGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_review_grid_gallery
+        val LAYOUT = R.layout.item_review_gallery
     }
 
     private var image: ImageUnify? = null
@@ -30,9 +31,9 @@ class ReviewGridGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryU
 
     private fun bindViews() {
         with(itemView) {
-            image = findViewById(R.id.review_grid_gallery_image)
-            rating = findViewById(R.id.review_grid_rating)
-            variantName = findViewById(R.id.review_grid_product_variant_name)
+            image = findViewById(R.id.review_gallery_image)
+            rating = findViewById(R.id.review_gallery_rating)
+            variantName = findViewById(R.id.review_gallery_product_variant_name)
         }
     }
 
@@ -45,6 +46,8 @@ class ReviewGridGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryU
     }
 
     private fun setVariantName(variant: String) {
-        variantName?.text = variant
+        variantName?.shouldShowWithAction(variant.isNotBlank()) {
+            variantName?.text = variant
+        }
     }
 }

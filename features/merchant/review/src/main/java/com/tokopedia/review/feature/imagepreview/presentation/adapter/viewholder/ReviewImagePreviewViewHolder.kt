@@ -21,7 +21,7 @@ class ReviewImagePreviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var background: ConstraintLayout? = null
 
     init {
-        image = view.findViewById(R.id.review_gallery_image)
+        image = view.findViewById(R.id.review_gallery_image_preview)
         background = view.findViewById(R.id.review_gallery_image_background)
     }
 
