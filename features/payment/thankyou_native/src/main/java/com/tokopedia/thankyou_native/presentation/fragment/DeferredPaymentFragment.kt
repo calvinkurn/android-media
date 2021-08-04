@@ -27,14 +27,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
-import kotlinx.android.synthetic.main.thank_fragment_deferred.btnShopAgain
-import kotlinx.android.synthetic.main.thank_fragment_deferred.featureListingContainer
-import kotlinx.android.synthetic.main.thank_fragment_deferred.loadingLayout
-import kotlinx.android.synthetic.main.thank_fragment_deferred.recommendationContainer
-import kotlinx.android.synthetic.main.thank_fragment_deferred.topAdsView
-import kotlinx.android.synthetic.main.thank_fragment_deferred.topTicker
-import kotlinx.android.synthetic.main.thank_fragment_deferred.tvTotalAmount
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
 class DeferredPaymentFragment : ThankYouBaseFragment(),
     ThankYouPageTimerView.ThankTimerViewListener {

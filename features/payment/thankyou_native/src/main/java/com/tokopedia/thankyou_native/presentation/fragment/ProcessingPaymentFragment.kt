@@ -16,14 +16,6 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
-import kotlinx.android.synthetic.main.thank_fragment_processing.btnShopAgain
-import kotlinx.android.synthetic.main.thank_fragment_processing.featureListingContainer
-import kotlinx.android.synthetic.main.thank_fragment_processing.loadingLayout
-import kotlinx.android.synthetic.main.thank_fragment_processing.recommendationContainer
-import kotlinx.android.synthetic.main.thank_fragment_processing.topAdsView
-import kotlinx.android.synthetic.main.thank_fragment_processing.topTicker
-import kotlinx.android.synthetic.main.thank_fragment_processing.tvTotalAmount
-import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
