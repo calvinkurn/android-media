@@ -167,11 +167,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> {
-                    val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-                        requireContext(), it.throwable, ErrorHandler.Builder().build())
-                    closeViewWithMessageAlert("$errMsg", errCode)
-                }
+                is Fail -> closeViewWithMessageAlert(it.throwable)
             }
         })
 
@@ -181,9 +177,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         })
 
         viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
-            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-                requireContext(), it.throwable, ErrorHandler.Builder().build())
-            closeViewWithMessageAlert("$errMsg", errCode)
+            closeViewWithMessageAlert(it.throwable)
         })
 
         viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
@@ -328,28 +322,30 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
-    private fun showError(message: String, errorCode: String) {
+    private fun showError(error: Throwable) {
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+            requireContext(), error, ErrorHandler.Builder().build())
         if (viewEmptyState != null) {
             viewEmptyState.setPrimaryCTAClickListener {
                 viewEmptyState.visibility = View.GONE
                 loadData()
             }
 
-            if (message == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL || message == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
-                    || message == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT) {
+            if (errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL || errMsg == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    || errMsg == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
                 viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection))
                 viewEmptyState.setDescription(
-                    "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errorCode)")
-            } else if (message == ErrorNetMessage.MESSAGE_ERROR_SERVER || message == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
+                    "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errCode)")
+            } else if (errMsg == ErrorNetMessage.MESSAGE_ERROR_SERVER || errMsg == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title))
                 viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500))
                 viewEmptyState.setDescription(
-                    "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errorCode)")
+                    "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errCode)")
             } else {
                 viewEmptyState.setTitle(getString(R.string.digital_checkout_empty_state_title))
                 viewEmptyState.setImageUrl(getString(R.string.digital_cart_default_error_img_url))
-                viewEmptyState.setDescription("${message}. Kode Error: ($errorCode)")
+                viewEmptyState.setDescription("${errMsg}. Kode Error: ($errCode)")
             }
 
             viewEmptyState.setPrimaryCTAText(getString(R.string.digital_checkout_empty_state_btn))
@@ -383,16 +379,17 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 getString(com.tokopedia.abstraction.R.string.close), View.OnClickListener { /** do nothing **/ }).show()
     }
 
-    private fun closeViewWithMessageAlert(message: String, errorCode: String) {
+    private fun closeViewWithMessageAlert(error: Throwable) {
         loaderCheckout.visibility = View.GONE
 
         if (cartPassData?.isFromPDP == true) {
+            val message = ErrorHandler.getErrorMessage(context, error)
             val intent = Intent()
             intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         } else {
-            showError(message, errorCode)
+            showError(error)
         }
     }
 
