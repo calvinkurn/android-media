@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -353,7 +354,44 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
-        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
+        setViewPager()
+        onNotificationChanged(
+            badgeNumberNotification,
+            badgeNumberInbox,
+            badgeNumberCart
+        ) // notify badge after toolbar created
+    }
+
+    private fun setViewPager() {
+        view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                try {
+                    val fragment = pagerAdapter.getRegisteredFragment(0)
+                    if (position == 0) {
+                        if (fragment is FeedPlusFragment) {
+                            fragment.startVideoPlayer()
+                        }
+                    } else {
+                        if (fragment is FeedPlusFragment) {
+                            fragment.stopVideoPlayer()
+                        }
+                    }
+                } catch (e: IllegalStateException) {
+                    //no op
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+        })
     }
 
     private fun requestFeedTab() {

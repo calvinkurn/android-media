@@ -652,21 +652,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             triggerNewFeedNotification()
                         }
                         if (layoutManager != null && adapter.getlist().isNotEmpty()) {
+                            startVideoPlayer()
                             isCleared = false
-                            adapter.notifyItemChanged(
-                                videoPostPosition(),
-                                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
-                            )
+
                         }
                     } else if (intent.action == BROADCAST_VISIBLITY) {
                         if (layoutManager != null && adapter.getlist().isNotEmpty() && !isCleared) {
-                            adapter.notifyItemChanged(
-                                videoPostPosition(),
-                                DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
-                            )
+                          stopVideoPlayer()
                             isCleared = true
                         }
-
                     }
                 }
             }
@@ -1038,17 +1032,39 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun videoPostPosition(): Int {
-        for (pos in getFirstVisible()..getLastVisible()) {
-            val item: Visitable<*> = adapter.getlist()[pos]
-            if (item is DynamicPostUiModel && item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-                val it = item.feedXCard.media.filter { it.type != TYPE_IMAGE }
-                if (it.isNotEmpty()) {
-                    return pos
+        val item = adapter.getlist()[getCurrentPosition()]
+        if (item is DynamicPostUiModel && item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
+            val it = item.feedXCard.media.filter { it.type != TYPE_IMAGE }
+            if (it.isNotEmpty())
+                return getCurrentPosition()
+        } else {
+            for (pos in getFirstVisible()..getLastVisible()) {
+                val item1: Visitable<*> = adapter.getlist()[pos]
+                if (item1 is DynamicPostUiModel && item1.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
+                    val it = item1.feedXCard.media.filter { it.type != TYPE_IMAGE }
+                    if (it.isNotEmpty()) {
+                        return pos
+                    }
                 }
             }
         }
+        return DEFAULT_VALUE
+    }
 
-        return getCurrentPosition()
+    fun stopVideoPlayer() {
+        if(videoPostPosition()!= DEFAULT_VALUE)
+        adapter.notifyItemChanged(
+            videoPostPosition(),
+            DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_GONE
+        )
+    }
+
+    fun startVideoPlayer() {
+        if(videoPostPosition()!= DEFAULT_VALUE)
+        adapter.notifyItemChanged(
+            videoPostPosition(),
+            DynamicPostNewViewHolder.PAYLOAD_FRAGMENT_VISIBLE
+        )
     }
 
     private fun getCurrentPosition(): Int {
@@ -2482,16 +2498,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessDeletePost(rowNumber: Int) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemRemoved(rowNumber)
             Toaster.build(
                 requireView(),
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok),
-                View.OnClickListener {
-                    Toaster.snackBar.dismiss()
-                }).show()
+                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)).show()
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
