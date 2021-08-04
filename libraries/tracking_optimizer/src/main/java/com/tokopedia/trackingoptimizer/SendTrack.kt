@@ -12,8 +12,7 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.repository.NewTrackingRepository
-import com.tokopedia.trackingoptimizer.repository.TrackingRepository
+import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,37 +30,7 @@ fun decreaseCounter() {
     }
 }
 
-fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingRepository,
-              onFinished: (() -> Unit)) {
-    atomicInteger.getAndIncrement()
-    coroutineScope.launch {
-        val eeFullModelList = trackingRepository.getAllEEFull()
-        val deleteEEFullJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
-            trackingRepository.deleteEEFull()
-        }
-        eeFullModelList?.run {
-            map {
-                sendTrack(it)
-            }
-        }
-        val eeModelList = trackingRepository.getAllEE()
-        val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
-            trackingRepository.deleteEE()
-        }
-        eeModelList?.run {
-            map {
-                sendTrack(it)
-            }
-        }
-
-        deleteEEFullJob.join()
-        deleteEEJob.join()
-        decreaseCounter()
-        onFinished.invoke()
-    }
-}
-
-fun sendTrack(it: TrackingDbModel) {
+private fun sendTrack(it: TrackingDbModel) {
     var hasSent = false
     val map = mutableMapOf<String, Any?>()
     val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
@@ -93,7 +62,7 @@ fun sendTrack(it: TrackingDbModel) {
     }
 }
 
-fun sendTrackNew(coroutineScope: CoroutineScope, trackingRepository: NewTrackingRepository,
+fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackRepository,
               onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {

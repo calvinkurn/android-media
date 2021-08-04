@@ -1,9 +1,9 @@
 package com.tokopedia.flight.filter.presentation
 
-import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
-import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
 
 /**
  * @author by jessica on 2020-02-20

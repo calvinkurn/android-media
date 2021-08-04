@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.view_flight_order_detail_status_header.view.*
 
 /**
@@ -82,9 +82,9 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
     }
 
     private fun renderTransactionDate() {
-        tgFlightOrderCreateTime.text = TravelDateUtil.formatDate(
-                TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                TravelDateUtil.DEFAULT_VIEW_TIME_FORMAT,
+        tgFlightOrderCreateTime.text = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.DEFAULT_VIEW_TIME_FORMAT,
                 transactionDate)
     }
 

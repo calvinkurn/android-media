@@ -176,13 +176,17 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
-        if (userSession.isLoggedIn()) {
+        if (isLogin()) {
             getView().goToGeneralSetting();
         } else {
             getView().makeInvisibleShakeShakeDisableView();
             getView().setSnackBarErrorMessage();
         }
 
+    }
+
+    public boolean isLogin(){
+        return userSession.isLoggedIn();
     }
 
     public void vibrate() {

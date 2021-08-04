@@ -46,7 +46,7 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         enquiryResult = view.findViewById(R.id.telco_enquiry_result)
 
         btnEnquiry.setOnClickListener {
-            if (btnEnquiry.isEnabled) {
+            if (btnEnquiry.isClickable) {
                 postpaidListener.enquiryNumber()
             }
         }
@@ -57,7 +57,6 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         btnEnquiry.show()
         titleEnquiryResult.gone()
         enquiryResult.gone()
-        setButtonEnquiry(false)
     }
 
     fun resetEnquiryResult() {
@@ -67,7 +66,7 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun setButtonEnquiry(enable: Boolean) {
-        btnEnquiry.isEnabled = enable
+        btnEnquiry.isClickable = enable
     }
 
     fun setLoadingButtonEnquiry(loading: Boolean) {

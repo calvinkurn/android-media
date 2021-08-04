@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.activity
 
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -17,10 +16,7 @@ import com.tokopedia.topchat.stub.chatlist.activity.ChatListActivityStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.topchat.stub.common.UserSessionStub
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -33,9 +29,6 @@ class ChatListActivityTest {
 
     @get:Rule
     var mActivityTestRule = ActivityTestRule(ChatListActivityStub::class.java)
-
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var chatListUseCase: GetChatListMessageUseCaseStub
     private lateinit var chatNotificationUseCase: GetChatNotificationUseCaseStub
@@ -55,7 +48,6 @@ class ChatListActivityTest {
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
         chatListUseCase = GetChatListMessageUseCaseStub()
         chatNotificationUseCase = GetChatNotificationUseCaseStub()
         userSession = mActivityTestRule.activity.userSessionInterface

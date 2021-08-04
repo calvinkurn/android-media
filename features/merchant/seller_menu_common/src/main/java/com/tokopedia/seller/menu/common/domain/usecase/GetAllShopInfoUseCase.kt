@@ -16,8 +16,7 @@ class GetAllShopInfoUseCase constructor(
         private val balanceInfoUseCase: BalanceInfoUseCase,
         private val getShopBadgeUseCase: GetShopBadgeUseCase,
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
-        private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
-        private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
+        private val getUserShopInfoUseCase: GetUserShopInfoUseCase,
         private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>() {
@@ -33,11 +32,11 @@ class GetAllShopInfoUseCase constructor(
 
     private suspend fun getPartialShopInfoData(shopId: Int): PartialSettingResponse {
         return try {
-            shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
             getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
             getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
+            getUserShopInfoUseCase.params = GetUserShopInfoUseCase.createRequestParams(shopId)
             PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                    shopStatusTypeUseCase.executeOnBackground(),
+                    getUserShopInfoUseCase.executeOnBackground(),
                     getShopTotalFollowersUseCase.executeOnBackground(),
                     getShopBadgeUseCase.executeOnBackground()
             )
@@ -50,11 +49,9 @@ class GetAllShopInfoUseCase constructor(
     private suspend fun getPartialTopAdsData(shopId: String): PartialSettingResponse {
         return try {
             topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
-            topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
             PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
                     balanceInfoUseCase.executeOnBackground(),
-                    topAdsDashboardDepositUseCase.executeOnBackground(),
-                    topAdsAutoTopupUseCase.executeOnBackground())
+                    topAdsDashboardDepositUseCase.executeOnBackground())
         } catch (exception: Exception) {
             getPartialFailResponse(exception)
         }

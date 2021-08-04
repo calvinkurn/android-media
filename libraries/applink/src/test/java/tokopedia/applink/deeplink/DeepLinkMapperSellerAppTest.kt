@@ -207,7 +207,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
 
     @Test
     fun `check seller history appLink then should return seller home seller history in sellerapp with search param`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product&search=product"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
         assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_HISTORY}?search=product", expectedDeepLink)
     }
 
@@ -234,7 +234,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
                 .build()
                 .toString()
 
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review?${tabParam}=${tabInboxReview}&${tabParam}=${tabInboxReview}"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review?${tabParam}=${tabInboxReview}"
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
         assertEqualsDeeplinkParameters(appLink, tabParam to tabInboxReview)
@@ -251,7 +251,7 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
                 .build()
                 .toString()
 
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/inbox-talk?${filterParam}=${filterUnread}&${filterParam}=${filterUnread}"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/inbox-talk?${filterParam}=${filterUnread}"
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
         assertEqualsDeeplinkParameters(appLink, filterParam to filterUnread)

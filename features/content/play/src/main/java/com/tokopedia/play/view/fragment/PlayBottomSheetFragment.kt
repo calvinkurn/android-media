@@ -9,8 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
@@ -21,8 +21,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
@@ -31,7 +33,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -40,9 +42,13 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -56,7 +62,9 @@ class PlayBottomSheetFragment @Inject constructor(
 ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
-        VariantSheetViewComponent.Listener {
+        VariantSheetViewComponent.Listener,
+        PlayInteractiveLeaderboardViewComponent.Listener
+{
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -66,6 +74,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
+    private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -172,6 +181,16 @@ class PlayBottomSheetFragment @Inject constructor(
         trackImpressedVoucher(vouchers)
     }
 
+    override fun onProductCountChanged(view: ProductSheetViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) return
+
+        doShowToaster(
+                bottomSheetType = BottomInsetsType.ProductSheet,
+                toasterType = Toaster.TYPE_NORMAL,
+                message = getString(R.string.play_product_updated)
+        )
+    }
+
     /**
      * VariantSheet View Component Listener
      */
@@ -188,11 +207,19 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     /**
+     * LeaderboardSheet View Component Listener
+     */
+    override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+        playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
+    }
+
+    /**
      * Private methods
      */
     private fun setupView(view: View) {
         productSheetView.hide()
         variantSheetView.hide()
+        leaderboardSheetView.hide()
     }
 
     private fun setupObserve() {
@@ -203,6 +230,8 @@ class PlayBottomSheetFragment @Inject constructor(
         observeBottomInsetsState()
         observeBuyEvent()
         observeStatusInfo()
+
+        observeUiState()
     }
 
     private fun initAnalytic() {
@@ -349,8 +378,8 @@ class PlayBottomSheetFragment @Inject constructor(
      * Observe
      */
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
-            if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
+            if (it.productTags is PlayProductTagsUiModel.Complete) {
                 if (it.productTags.productList.isNotEmpty()) {
                     productSheetView.setProductSheet(it.productTags)
 
@@ -360,7 +389,7 @@ class PlayBottomSheetFragment @Inject constructor(
                     productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
                 }
             }
-        })
+        }
     }
 
     private fun observeProductSheetContent() {
@@ -391,11 +420,17 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             val productSheetState = it[BottomInsetsType.ProductSheet]
+            val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
 
             if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                 when (productSheetState) {
                     is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                     is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
+                }
+            } else if (leaderboardSheetState != null && !leaderboardSheetState.isPreviousStateSame) {
+                when (leaderboardSheetState) {
+                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(leaderboardSheetState.estimatedInsetsHeight)
                 }
             }
 
@@ -407,6 +442,11 @@ class PlayBottomSheetFragment @Inject constructor(
             it[BottomInsetsType.VariantSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) variantSheetView.showWithHeight(state.estimatedInsetsHeight)
                 else variantSheetView.hide()
+            }
+
+            it[BottomInsetsType.LeaderboardSheet]?.let { state ->
+                if (state is BottomInsetsState.Shown) leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
+                else leaderboardSheetView.hide()
             }
         })
     }
@@ -464,6 +504,14 @@ class PlayBottomSheetFragment @Inject constructor(
         })
     }
 
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+                renderLeaderboardView(state.leaderboards)
+            }
+        }
+    }
+
     private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
     }
@@ -472,4 +520,10 @@ class PlayBottomSheetFragment @Inject constructor(
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 
+    /**
+     * View
+     */
+    private fun renderLeaderboardView(winnerLeaderboards: List<PlayLeaderboardUiModel>) {
+        leaderboardSheetView.setData(winnerLeaderboards)
+    }
 }

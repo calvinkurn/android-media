@@ -12,7 +12,7 @@ import javax.inject.Inject
  * @created on 20/02/2020
  */
 
-class DynamicBannerUseCase @Inject constructor(
+open class DynamicBannerUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : BaseDynamicBannerUseCase<DynamicBannerDataModel>() {
 

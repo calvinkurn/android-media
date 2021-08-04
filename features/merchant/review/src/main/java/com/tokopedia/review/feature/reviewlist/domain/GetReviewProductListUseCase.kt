@@ -24,7 +24,7 @@ class GetReviewProductListUseCase @Inject constructor(
             	productrevShopRatingAggregate(sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
                 data {
                     product {
-                        productID
+                        productIDStr
                         productName
                         productImageURL
                     }

@@ -102,4 +102,9 @@
     <string name="search_result_global_search_text">Belum nemu barang yang cocok?</string>
     <string name="search_result_global_search_button_text">Cari di Tokopedia</string>
     <string name="search_result_local_search_other_products">Barang lainnya di %s</string>
+
+    <string name="search_power_merchant_pro_title">Yuk, kenalan sama Power Merchant PRO!</string>
+    <string name="search_power_merchant_pro_desc">Belanja dengan layanan memuaskan dari penjual terbaik.\n\n
+        Ada Ongkir Spesial buat pengiriman\nSame Day &amp; Instan untuk Power Merchant PRO, lho!</string>
+    <string name="search_power_merchant_pro_button_text">Oke, Lanjut Belanja</string>
 </resources>

@@ -71,16 +71,16 @@
                     android:paddingBottom="@dimen/dp_3"
                     tools:text="ehlelrlelrlerle"
                     android:textColor="@color/Unify_R400"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:visibility="gone"
                     app:typographyType="small"
                     app:typographyWeight="bold"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_disabled_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
                     android:textColor="@color/Unify_Y500"
                     android:visibility="gone"
                     app:typographyType="small"
@@ -93,7 +93,6 @@
                 android:id="@+id/container_quotatransaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"
@@ -102,18 +101,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/quota_container">
 
-                <LinearLayout
-                    android:id="@+id/parent_timer_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/timer_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
                         android:visibility="visible">
 
                         <androidx.appcompat.widget.AppCompatImageView
@@ -173,7 +165,6 @@
                                 tools:text="16 Aug 2019" />
                         </ViewFlipper>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/container_transaksi"
@@ -228,7 +219,7 @@
                 android:id="@+id/top_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_6"
                 android:background="@color/Unify_N50"
                 app:layout_constraintLeft_toLeftOf="@+id/text_description"
                 app:layout_constraintRight_toRightOf="@+id/text_description"
@@ -248,17 +239,21 @@
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.webview.TkpdWebView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tnc_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:scrollbars="none"
+                android:layout_marginStart="@dimen/dp_16"
+                app:typographyType="body_2"
+                android:clickable="true"
+                android:autoLink="all"
+                android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="@+id/tnc"
                 app:layout_constraintRight_toRightOf="@+id/tnc"
-                app:layout_constraintTop_toBottomOf="@+id/tnc" />
+                app:layout_constraintTop_toBottomOf="@+id/tnc"
+                android:focusable="true" />
 
             <View
                 android:id="@+id/tp_mid_separator"
@@ -285,14 +280,20 @@
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.webview.TkpdWebView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/how_to_use_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:scrollbars="none"
-                app:layout_constraintLeft_toLeftOf="@+id/how_to_use"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:textColor="@color/Unify_N700"
+                app:typographyType="body_2"
+                android:clickable="true"
+                android:focusable="true"
+                android:autoLink="all"
+                app:layout_constraintStart_toStartOf="@id/how_to_use"
                 app:layout_constraintRight_toRightOf="@+id/how_to_use"
                 app:layout_constraintTop_toBottomOf="@+id/how_to_use" />
 

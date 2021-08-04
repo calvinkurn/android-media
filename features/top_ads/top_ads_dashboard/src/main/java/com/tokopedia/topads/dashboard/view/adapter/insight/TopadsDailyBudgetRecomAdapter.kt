@@ -1,20 +1,26 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.InsightDailyBudgetModel
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.RECOMMENDATION_DAILY_MAX_BUDGET
 import com.tokopedia.topads.dashboard.data.model.DataBudget
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_item.view.*
 
-class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> Unit)) : RecyclerView.Adapter<TopadsDailyBudgetRecomAdapter.ViewHolder>() {
+class TopadsDailyBudgetRecomAdapter(private val userSession: UserSessionInterface, private val onBudgetClicked: ((pos: Int) -> Unit)) : RecyclerView.Adapter<TopadsDailyBudgetRecomAdapter.ViewHolder>() {
     var items: MutableList<DataBudget> = mutableListOf()
+    private var dailyRecommendationModel = mutableListOf<InsightDailyBudgetModel>()
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -55,11 +61,24 @@ class TopadsDailyBudgetRecomAdapter(private val onBudgetClicked: ((pos: Int) -> 
                 holder.view.buttonSubmitEdit.isLoading = true
                 onBudgetClicked(holder.adapterPosition)
             }
+            setPotensiKlik = calculatePotentialClick(holder).toLong()
+            holder.view.addOnImpressionListener(impressHolder) {
+                dailyRecommendationModel.clear()
+                    var dailyBudgetModel = InsightDailyBudgetModel().apply {
+                        id = groupId
+                        name = groupName
+                        dailySuggestedPrice = suggestedPriceDaily
+                        potentialClick = calculatePotentialClick(holder).toLong()
+                    }
+                    dailyRecommendationModel.add(dailyBudgetModel)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, holder.adapterPosition, userSession.userId)
+            }
             holder.view.editBudget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(holder.view.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     items[holder.adapterPosition].setCurrentBid = number
                     holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
+                    setPotensiKlik = calculatePotentialClick(holder).toLong()
                     when {
                         number < items[holder.adapterPosition].suggestedPriceDaily && number > items[holder.adapterPosition].priceDaily -> {
                             holder.view.buttonSubmitEdit.isEnabled = true

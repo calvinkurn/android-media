@@ -10,7 +10,6 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import timber.log.Timber
 
 object InAppReviewHelper {
     const val CACHE_IN_APP_REVIEW = "CACHE_IN_APP_REVIEW"

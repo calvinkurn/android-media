@@ -39,6 +39,7 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.Card
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.model.ScrollToBottomState
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
@@ -56,6 +57,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
@@ -70,10 +72,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
+open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
         NotificationEndlessRecyclerViewScrollListener.Listener,
-        NotificationAdapter.Listener {
+        NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,6 +101,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
+    private val scrollState = ScrollToBottomState()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -123,7 +126,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 viewModel.loadNotifOrderList(containerListener?.role)
             }
             viewModel.loadFirstPageNotification(
-                    containerListener?.role
+                containerListener?.role
             )
         }
     }
@@ -147,6 +150,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             triggerMarkAsSeenTracker(containerListener?.role)
+            trackIfUserScrollToBottom()
         }
     }
 
@@ -159,7 +163,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         context?.let {
             trackingQueue = TrackingQueue(it)
             recommendationLifeCycleAware = RecommendationLifeCycleAware(
-                    topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
+                topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
@@ -170,12 +174,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-                R.layout.fragment_notifcenter_notification, container, false
+            R.layout.fragment_notifcenter_notification, container, false
         )?.also {
             initView(it)
             setupObserver()
@@ -239,6 +243,23 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackIfUserScrollToBottom()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        trackIfUserScrollToBottom()
+    }
+
+    private fun trackIfUserScrollToBottom() {
+        if (scrollState.hasScrolledDown()) {
+            analytic.trackScrollToBottom(scrollState.lastSeenItem.toString())
+            scrollState.updateOffset()
+        }
+    }
+
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -276,15 +297,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
         viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
             updateReminderState(
-                    resource = it,
-                    isBumpReminder = true
+                resource = it,
+                isBumpReminder = true
             )
         })
 
         viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
             updateReminderState(
-                    resource = it,
-                    isBumpReminder = false
+                resource = it,
+                isBumpReminder = false
             )
         })
 
@@ -314,8 +335,8 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     private fun updateReminderState(
-            resource: Resource<Any>,
-            isBumpReminder: Boolean
+        resource: Resource<Any>,
+        isBumpReminder: Boolean
     ) {
         val viewHolderState: ViewHolderState? = viewHolderLoading[resource.referer]
         val bottomSheet = getProductBottomSheet()
@@ -352,9 +373,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun getProductBottomSheet(): NotificationProductLongerContentBottomSheet? {
         return childFragmentManager
-                .findFragmentByTag(
-                        NotificationProductLongerContentBottomSheet::class.java.simpleName
-                ) as? NotificationProductLongerContentBottomSheet
+            .findFragmentByTag(
+                NotificationProductLongerContentBottomSheet::class.java.simpleName
+            ) as? NotificationProductLongerContentBottomSheet
     }
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
@@ -387,19 +408,36 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rv?.setHasFixedSize(true)
         rv?.addItemDecoration(NotificationItemDecoration(context))
         rv?.addItemDecoration(RecommendationItemDecoration())
+        rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val currentLastItem = getLastVisibleItemPosition() ?: return
+                    if (currentLastItem > scrollState.lastSeenItem) {
+                        scrollState.lastSeenItem = currentLastItem
+                    }
+                }
+            }
+        })
+    }
+
+    private fun getLastVisibleItemPosition(): Int? {
+        val layoutManager = rv?.layoutManager as? StaggeredGridLayoutManager
+        return layoutManager
+            ?.findLastVisibleItemPositions(null)
+            ?.getOrNull(1)
     }
 
     private fun setupFilter() {
         filter?.setFilterListener(
-                object : NotificationFilterView.FilterListener {
-                    override fun onFilterChanged(filterType: Long, filterName: String) {
-                        viewModel.filter = filterType
-                        loadInitialData()
-                        analytic.trackFilterClick(
-                                filterType, filterName, containerListener?.role
-                        )
-                    }
+            object : NotificationFilterView.FilterListener {
+                override fun onFilterChanged(filterType: Long, filterName: String) {
+                    viewModel.filter = filterType
+                    loadInitialData()
+                    analytic.trackFilterClick(
+                        filterType, filterName, containerListener?.role
+                    )
                 }
+            }
         )
     }
 
@@ -413,30 +451,30 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackLoadMoreNew()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
-                {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-                },
-                {
-                    rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                    showErrorMessage(it)
-                }
+            {
+                rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
+            },
+            {
+                rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
+                showErrorMessage(it)
+            }
         )
     }
 
     override fun loadMoreEarlier(
-            lastKnownPosition: Int,
-            element: LoadMoreUiModel
+        lastKnownPosition: Int,
+        element: LoadMoreUiModel
     ) {
         analytic.trackLoadMoreEarlier()
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
-                {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
-                },
-                {
-                    rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
-                    showErrorMessage(it)
-                }
+            {
+                rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
+            },
+            {
+                rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
+                showErrorMessage(it)
+            }
         )
     }
 
@@ -450,7 +488,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                    .show()
+                .show()
         }
     }
 
@@ -496,12 +534,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun initInjector() {
-        DaggerNotificationComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .commonModule(context?.let { CommonModule(it) })
-                .build()
-                .inject(this)
+        generateDaggerComponent().inject(this)
     }
+
+    protected open fun generateDaggerComponent() = DaggerNotificationComponent.builder()
+        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+        .commonModule(context?.let { CommonModule(it) })
+        .build()
 
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)
@@ -514,7 +553,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
         doBuyAndAtc(notification, product) {
             analytic.trackSuccessDoBuyAndAtc(
-                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
+                notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
             )
             RouteManager.route(context, ApplinkConst.CART)
         }
@@ -523,28 +562,28 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
         doBuyAndAtc(notification, product) {
             analytic.trackSuccessDoBuyAndAtc(
-                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
+                notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
             )
             val msg = it.message.getOrNull(0) ?: ""
             view?.let { view ->
                 Toaster.build(
-                        view,
-                        msg,
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        view.context.getString(R.string.title_notifcenter_see_cart),
-                        View.OnClickListener {
-                            RouteManager.route(context, ApplinkConst.CART)
-                        }
+                    view,
+                    msg,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    view.context.getString(R.string.title_notifcenter_see_cart),
+                    View.OnClickListener {
+                        RouteManager.route(context, ApplinkConst.CART)
+                    }
                 ).show()
             }
         }
     }
 
     private fun doBuyAndAtc(
-            notification: NotificationUiModel,
-            product: ProductData,
-            onSuccess: (response: DataModel) -> Unit = {}
+        notification: NotificationUiModel,
+        product: ProductData,
+        onSuccess: (response: DataModel) -> Unit = {}
     ) {
         val buyParam = getAtcBuyParam(product)
         viewModel.addProductToCart(buyParam, {
@@ -556,15 +595,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun getAtcBuyParam(product: ProductData): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
-                productId = product.productId.toLongOrZero(),
-                shopId = product.shop.id.toInt(),
-                quantity = product.minOrder,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_NOTIFCENTER
+            productId = product.productId.toLongOrZero(),
+            shopId = product.shop.id.toInt(),
+            quantity = product.minOrder,
+            atcFromExternalSource = AddToCartRequestParams.ATC_FROM_NOTIFCENTER
         )
         return RequestParams.create().apply {
             putObject(
-                    AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-                    addToCartRequestParams
+                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                addToCartRequestParams
             )
         }
     }
@@ -574,35 +613,35 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun bumpReminder(
-            product: ProductData,
-            notification: NotificationUiModel,
-            adapterPosition: Int
+        product: ProductData,
+        notification: NotificationUiModel,
+        adapterPosition: Int
     ) {
         createViewHolderState(notification, adapterPosition, product)
         viewModel.bumpReminder(product, notification)
     }
 
     override fun deleteReminder(
-            product: ProductData,
-            notification: NotificationUiModel,
-            adapterPosition: Int
+        product: ProductData,
+        notification: NotificationUiModel,
+        adapterPosition: Int
     ) {
         createViewHolderState(notification, adapterPosition, product)
         viewModel.deleteReminder(product, notification)
     }
 
     override fun trackProductImpression(
-            notification: NotificationUiModel,
-            product: ProductData,
-            position: Int
+        notification: NotificationUiModel,
+        product: ProductData,
+        position: Int
     ) {
         analytic.trackProductImpression(notification, product, position)
     }
 
     override fun trackProductClick(
-            notification: NotificationUiModel,
-            product: ProductData,
-            position: Int
+        notification: NotificationUiModel,
+        product: ProductData,
+        position: Int
     ) {
         analytic.trackProductClick(notification, product, position)
     }
@@ -639,14 +678,18 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackClickOrderListItem(containerListener?.role, order)
     }
 
+    override fun getNotifAnalytic(): NotificationAnalytic {
+        return analytic
+    }
+
     override fun hasFilter(): Boolean {
         return viewModel.hasFilter()
     }
 
     private fun createViewHolderState(
-            notification: NotificationUiModel,
-            adapterPosition: Int,
-            product: ProductData
+        notification: NotificationUiModel,
+        adapterPosition: Int,
+        product: ProductData
     ) {
         val loadingState = ViewHolderState(notification, adapterPosition, product)
         viewHolderLoading[product.productId] = loadingState
@@ -666,12 +709,12 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 ?: return
         view?.let {
             Toaster.build(
-                    it,
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.notifcenter_title_view),
-                    onClickSeeButtonOnAtcSuccessToaster()
+                it,
+                message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.notifcenter_title_view),
+                onClickSeeButtonOnAtcSuccessToaster()
             ).show()
         }
     }

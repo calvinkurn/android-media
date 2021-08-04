@@ -2,7 +2,7 @@ package com.tokopedia.talk.feature.sellersettings.template.presentation.adapter
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
+import com.tokopedia.talk.feature.sellersettings.template.presentation.util.ItemTouchHelperAdapter
 
 class TalkTemplateListItemTouchHelperCallback(private val itemTouchHelperAdapter: ItemTouchHelperAdapter?) : ItemTouchHelper.Callback() {
 

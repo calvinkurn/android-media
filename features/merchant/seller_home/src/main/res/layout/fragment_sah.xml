@@ -16,14 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker" />
 
-    <com.tokopedia.sellerhome.view.viewhelper.KetupatLottieView
-        android:id="@+id/lottie_seller_home_ketupat"
-        android:layout_width="@dimen/sah_thematic_width"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_sah_home_thematic"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/sah_thematic_height"
-        android:translationY="@dimen/sah_thematic_translation_y"
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:layout_constraintTop_toBottomOf="@id/relTicker"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@tools:sample/avatars"/>
 
     <RelativeLayout
         android:id="@+id/relTicker"
@@ -120,7 +120,6 @@
                 android:paddingEnd="@dimen/spacing_lvl2"
                 android:paddingRight="@dimen/spacing_lvl2"
                 android:visibility="gone"
-                android:layoutAnimation="@anim/seller_home_rv_layout_animation"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

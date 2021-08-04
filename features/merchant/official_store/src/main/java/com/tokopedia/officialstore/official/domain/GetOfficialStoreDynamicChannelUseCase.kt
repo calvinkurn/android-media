@@ -49,6 +49,7 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
     fun setupParams(channelType: String, location: String) {
         if (channelType.isNotEmpty()) {
             requestParams[paramChannelType] = channelType
+            requestParams[paramChannelLocation] = location
         }
     }
 

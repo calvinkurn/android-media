@@ -60,6 +60,7 @@ const val TOP_ADS_GET_GROUP_LIST_QUERY: String = """query GetTopadsDashboardGrou
       stat_total_sold
       stat_avg_click
       stat_total_income
+      strategies
     }
   }
 }

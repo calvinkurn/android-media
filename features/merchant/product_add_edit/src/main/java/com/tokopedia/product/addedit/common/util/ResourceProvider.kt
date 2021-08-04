@@ -198,6 +198,20 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.message_edit_product_stock_only_main_location)
     }
 
+    // Title validation properties
+
+    fun getTitleValidationErrorTypo(): String {
+        return getString(R.string.error_product_title_validation_typo).orEmpty()
+    }
+
+    fun getTitleValidationErrorNegative(): String {
+        return getString(R.string.error_product_title_validation_negative).orEmpty()
+    }
+
+    fun getTitleValidationErrorBlacklisted(): String {
+        return getString(R.string.error_product_title_validation_blacklisted).orEmpty()
+    }
+
     // Network errors
 
     fun getGqlErrorMessage(): String? {

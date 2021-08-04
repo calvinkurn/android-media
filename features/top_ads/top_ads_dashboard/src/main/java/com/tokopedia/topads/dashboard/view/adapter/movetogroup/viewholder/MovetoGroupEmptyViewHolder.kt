@@ -19,7 +19,7 @@ class MovetoGroupEmptyViewHolder(val view: View) : MovetoGroupViewHolder<MovetoG
     }
 
     override fun bind(item: MovetoGroupEmptyModel, lastSelected: Int, countList: MutableList<CountDataItem>) {
-        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
     }
 
 }

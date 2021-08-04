@@ -172,12 +172,14 @@ class RechargeHomepageViewModel @Inject constructor(
     }
 
     fun getDynamicIconsSectionIds(): ArrayList<String> {
-        return if (rechargeHomepageSectionSkeleton.value is Success) {
-            val dynamicIconSectionsIds = arrayListOf<String>()
-            (rechargeHomepageSectionSkeleton.value as Success).data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
-                    .forEach { dynamicIconSectionsIds.add(it.id) }
-            dynamicIconSectionsIds
-        } else arrayListOf()
+        rechargeHomepageSectionSkeleton.value.let {
+            return if (it is Success){
+                val dynamicIconSectionsIds = arrayListOf<String>()
+                it.data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
+                        .forEach { dynamicIconSectionsIds.add(it.id) }
+                dynamicIconSectionsIds
+            } else arrayListOf()
+        }
     }
 
     fun getSearchBarPlaceholder(): String {
@@ -210,6 +212,7 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_DUAL_BANNERS = "DUAL_BANNERS"
         const val SECTION_LEGO_BANNERS = "LEGO_BANNERS"
         const val SECTION_PRODUCT_CARD_ROW = "PRODUCT_CARD_ROW"
+        const val SECTION_PRODUCT_CARD_ROW_1X1 = "PRODUCT_CARD_ROW_1X1"
         const val SECTION_COUNTDOWN_PRODUCT_BANNER = "COUNTDOWN_PRODUCT_BANNER"
         const val SECTION_PRODUCT_CARD_CUSTOM_BANNER = "PRODUCT_CARD_CUSTOM_BANNER"
         const val SECTION_MINI_CAROUSELL = "MINI_CAROUSELL"

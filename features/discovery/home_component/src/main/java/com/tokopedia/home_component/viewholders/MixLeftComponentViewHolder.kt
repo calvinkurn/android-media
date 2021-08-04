@@ -83,6 +83,7 @@ class MixLeftComponentViewHolder (itemView: View,
         setupList(element.channelModel)
         setSnapEffect()
         setHeaderComponent(element)
+        setChannelDivider(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
             if (!isCacheData)
@@ -111,6 +112,14 @@ class MixLeftComponentViewHolder (itemView: View,
         mixLeftComponentListener?.onEmptyCardClicked(channel, applink, parentPos)
     }
 
+    private fun setChannelDivider(element: MixLeftDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
+    }
+
     private fun initVar() {
         recyclerView = itemView.findViewById(R.id.rv_product)
         image = itemView.findViewById(R.id.parallax_image)
@@ -128,6 +137,11 @@ class MixLeftComponentViewHolder (itemView: View,
             //becomes stretched.
             //https://github.com/bumptech/glide/issues/1591
             image.layout(0,0,0,0)
+
+            //reset image state
+            image.translationX = 0f
+            image.alpha = 1f
+
             image.addOnImpressionListener(channel){
                 if (!isCacheData)
                     mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)

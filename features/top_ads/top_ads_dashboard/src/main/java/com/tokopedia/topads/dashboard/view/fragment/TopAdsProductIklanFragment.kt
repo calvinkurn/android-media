@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.graphql.data.GraphqlClient
@@ -253,7 +254,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if (checkInProgress()) {
             showProgressLayout()
         } else {
-            manualAds()
+            setNoAdsView()
         }
     }
 
@@ -284,6 +285,19 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoads_layout?.gone()
         app_bar_layout_2?.gone()
         empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
+        empty_view?.visible()
+        mulai_beriklan.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        }
+    }
+
+
+    private fun setNoAdsView() {
+        view_pager_frag?.gone()
+        autoads_layout?.gone()
+        app_bar_layout_2?.gone()
+        empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_no_ads))
+        empty_view?.text_desc?.text = getString(R.string.topads_dashboard_empty_ads_desc)
         empty_view?.visible()
         mulai_beriklan.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)

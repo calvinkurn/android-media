@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/Neutral_N0"
+  android:background="@color/Unify_N0"
   android:scrollbars="none"
   tools:ignore="MissingDefaultResource">
   
@@ -23,7 +23,8 @@
       app:srcCompat="@drawable/ic_sample_selfie"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"/>
+      app:layout_constraintRight_toRightOf="parent"
+      android:contentDescription="@null"/>
   
     <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/txtTitle"
@@ -49,7 +50,7 @@
       android:layout_marginEnd="@dimen/spacing_lvl4"
       android:textAlignment="center"
       android:text="@string/text_onboarding_selfie_description"
-      android:textColor="@color/dark_N200"
+      android:textColor="@color/Unify_N400"
       app:typographyType="body_2"
       app:layout_constraintTop_toBottomOf="@+id/txtTitle"
       app:layout_constraintLeft_toLeftOf="parent"
@@ -73,13 +74,14 @@
         android:layout_height="@dimen/spacing_lvl4"
         app:srcCompat="@drawable/ic_shield_inactive_phone"
         app:layout_constraintTop_toBottomOf="@+id/textDescription"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:contentDescription="@null"/>
     
       <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_onboarding_protected"
-        android:textColor="@color/dark_N200"
+        android:textColor="@color/Unify_N400"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:textSize="@dimen/fontSize_lvl2"
         app:typographyType="body_3"

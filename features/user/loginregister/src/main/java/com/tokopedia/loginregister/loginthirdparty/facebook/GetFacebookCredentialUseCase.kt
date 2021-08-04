@@ -20,9 +20,9 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/11/17.
  */
-class GetFacebookCredentialUseCase @Inject constructor() {
+open class GetFacebookCredentialUseCase @Inject constructor() {
 
-    fun execute(requestParams: RequestParams, subscriber: GetFacebookCredentialSubscriber) {
+    open fun execute(requestParams: RequestParams, subscriber: GetFacebookCredentialSubscriber) {
         val fragment = requestParams.getObject(PARAM_FRAGMENT) as Fragment
         val callbackManager = requestParams.getObject(PARAM_CALLBACK_MANAGER) as CallbackManager
         promptFacebookLogin(fragment, callbackManager, subscriber)

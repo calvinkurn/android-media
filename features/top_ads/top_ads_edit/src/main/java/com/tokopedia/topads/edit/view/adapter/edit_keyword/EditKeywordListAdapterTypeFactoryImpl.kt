@@ -12,8 +12,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
  */
 
 class EditKeywordListAdapterTypeFactoryImpl(var actionAdd: (() -> Unit)?,
-                                            var actionClick: ((pos:Int) -> Unit)?
-                                          ) : EditKeywordListAdapterTypeFactory {
+                                            var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : EditKeywordListAdapterTypeFactory {
 
     override fun type(model: EditKeywordEmptyViewModel): Int = EditKeywordEmptyViewHolder.LAYOUT
 
@@ -21,7 +20,7 @@ class EditKeywordListAdapterTypeFactoryImpl(var actionAdd: (() -> Unit)?,
 
     override fun holder(type: Int, view: View): EditKeywordViewHolder<*> {
         return when (type) {
-            EditKeywordItemViewHolder.LAYOUT -> EditKeywordItemViewHolder(view,  actionClick)
+            EditKeywordItemViewHolder.LAYOUT -> EditKeywordItemViewHolder(view,actionDelete,editBudget,editType)
             EditKeywordEmptyViewHolder.LAYOUT -> EditKeywordEmptyViewHolder(view, actionAdd)
             else -> throw RuntimeException("Illegal view type")
         }

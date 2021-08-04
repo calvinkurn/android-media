@@ -23,6 +23,9 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,7 +70,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
         private const val PROGRESS_ATTR_TAG = "progress"
         private const val PROGRESS_DURATION = 200L
 
-        private const val ERROR_MESSAGE = "Error get voucher initial data"
+        private const val GET_INITIAL_VOUCHER_ERROR = "Get initial voucher error"
 
         const val DUPLICATE_VOUCHER = "duplicate_voucher"
         const val IS_DUPLICATE = "is_duplicate"
@@ -427,9 +430,14 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                     createMerchantVoucherViewPager?.setOnLayoutListenerReady()
                 }
                 is Fail -> {
-                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                    // send crash report to firebase crashlytics
+                    MvcErrorHandler.logToCrashlytics(result.throwable, GET_INITIAL_VOUCHER_ERROR)
+                    // log error type to scalyr
+                    val errorMessage = ErrorHandler.getErrorMessage(applicationContext, result.throwable)
+                    ServerLogger.log(Priority.P2, "MVC_GET_INITIAL_VOUCHER_ERROR", mapOf("type" to errorMessage))
+                    // set activity result
                     val returnIntent = Intent().apply {
-                        putExtra(ERROR_INITIATE, result.throwable.message)
+                        putExtra(ERROR_INITIATE, errorMessage)
                     }
                     setResult(Activity.RESULT_CANCELED, returnIntent)
                     finish()

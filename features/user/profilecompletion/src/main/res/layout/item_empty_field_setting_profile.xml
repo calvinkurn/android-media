@@ -33,7 +33,7 @@
       android:cursorVisible="false"
       android:focusable="false"
       android:textColor="@color/Unify_N700_96"
-      android:textColorHint="@color/Unify_N75"
+      android:textColorHint="@color/Unify_N700_20"
       android:textSize="@dimen/fontSize_lvl4"
       android:visibility="gone" />
     

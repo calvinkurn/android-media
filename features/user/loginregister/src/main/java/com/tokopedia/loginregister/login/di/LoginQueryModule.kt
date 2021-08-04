@@ -20,23 +20,9 @@ class LoginQueryModule {
     @LoginScope
     @Provides
     @IntoMap
-    @StringKey(LoginQueryConstant.QUERY_STATUS_PIN)
-    fun provideRawQueryStatusPin(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_status_pin)
-
-    @LoginScope
-    @Provides
-    @IntoMap
     @StringKey(LoginQueryConstant.MUTATION_REGISTER_CHECK)
     fun provideRawMutationRegisterCheck(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_check)
-
-    @LoginScope
-    @Provides
-    @IntoMap
-    @StringKey(LoginQueryConstant.QUERY_VERIFY_FINGERPRINT)
-    fun provideRawQueryVerifyFingerprint(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_verify_fingerprint)
 
     @LoginScope
     @Provides

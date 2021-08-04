@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -26,7 +27,8 @@ object DeepLinkHandler {
             //Seller Order Management (som)
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL) -> {
                 val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()
-                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, searchKeyword))
+                val orderId = intent.data?.getQueryParameter(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
+                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, searchKeyword, orderId = orderId))
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER) -> {
                 val searchKeyword = intent.data?.getQueryParameter(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH).orEmpty()

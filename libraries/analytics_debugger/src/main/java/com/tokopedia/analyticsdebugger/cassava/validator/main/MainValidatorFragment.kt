@@ -65,20 +65,18 @@ class MainValidatorFragment : Fragment() {
             adapter = mAdapter
         }
 
-        viewModel.testCases.observe(viewLifecycleOwner, Observer<List<Validator>> {
-            Timber.d("Validator got ${it.size}")
+        viewModel.testCases.observe(viewLifecycleOwner) {
             mAdapter.setData(it)
-        })
+        }
 
-        viewModel.cassavaQuery.observe(viewLifecycleOwner, Observer {
+        viewModel.cassavaQuery.observe(viewLifecycleOwner) {
             if (it.readme != null) {
                 view.findViewById<View>(R.id.cv_readme).visibility = View.VISIBLE
                 view.findViewById<TextView>(R.id.tv_readme).text = it.readme
             } else {
                 view.findViewById<View>(R.id.cv_readme).visibility = View.GONE
             }
-            viewModel.run(it.query, it.mode.value)
-        })
+        }
     }
 
     fun setCallback(callback: Listener) {

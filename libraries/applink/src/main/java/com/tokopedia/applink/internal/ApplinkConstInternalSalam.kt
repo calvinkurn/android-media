@@ -10,65 +10,53 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 
 object ApplinkConstInternalSalam{
-    @JvmField
-    val PARAM_UMROH = "umroh"
+    const val PARAM_UMROH = "umroh"
     /**
      * Host Salam
      */
-    @JvmField
-    val HOST_SALAM = "s"
+    const val HOST_SALAM = "s"
 
-    @JvmField
-    val HOST_SALAM_ORDER_DETAIL = "order-details"
+    const val HOST_SALAM_ORDER_DETAIL = "order-details"
 
     /**
      * Host Salam from Discovery
      */
 
-    @JvmField
-    val HOST_SALAM_FROM_DISCOVERY = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://discovery/salam"
+    const val HOST_SALAM_FROM_DISCOVERY = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://discovery/salam"
 
     /**
      * INTERNAL PATH Salam
      */
-    @JvmField
-    val INTERNAL_SALAM_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SALAM_ORDER_DETAIL}"
+    const val INTERNAL_SALAM_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SALAM_ORDER_DETAIL}"
 
-    @JvmField
-    val INTERNAL_SALAM = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SALAM}"
+    const val INTERNAL_SALAM = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SALAM}"
 
     /**
      * PATH Salam
      */
     // UmrahOrderDetailActivity
     // tokopedia-android-internal://order-details/umroh/\
-    @JvmField
-    val SALAM_ORDER_DETAIL = "$INTERNAL_SALAM_ORDER_DETAIL/$PARAM_UMROH"
+    const val SALAM_ORDER_DETAIL = "$INTERNAL_SALAM_ORDER_DETAIL/$PARAM_UMROH"
 
     // UmrahHomepageActivity
     // tokopedia-android-internal://s/umroh
-    @JvmField
-    val SALAM_UMRAH_HOME_PAGE = "$INTERNAL_SALAM/$PARAM_UMROH"
+    const val SALAM_UMRAH_HOME_PAGE = "$INTERNAL_SALAM/$PARAM_UMROH"
 
     // UmrahSearchActivity
     // tokopedia-android-internal://s/umroh/search
-    @JvmField
-    val SALAM_UMRAH_SEARCH = "$INTERNAL_SALAM/$PARAM_UMROH/search"
+    const val SALAM_UMRAH_SEARCH = "$INTERNAL_SALAM/$PARAM_UMROH/search"
 
     // UmrahSearchActivity
     // tokopedia-android-internal://s/umroh/paket/.*\
-    @JvmField
-    val SALAM_UMRAH_PACKET = "$INTERNAL_SALAM/$PARAM_UMROH/paket/.*\\"
+    const val SALAM_UMRAH_PACKET = "$INTERNAL_SALAM/$PARAM_UMROH/paket/.*\\"
 
     // UmrahPDPActivity
     // tokopedia-android-internal://s/umroh/produk/.*\
-    @JvmField
-    val SALAM_UMRAH_PRODUCT = "$INTERNAL_SALAM/$PARAM_UMROH/produk/.*\\"
+    const val SALAM_UMRAH_PRODUCT = "$INTERNAL_SALAM/$PARAM_UMROH/produk/.*\\"
 
     // UmrahCheckoutActivity
     // tokopedia-android-internal://s/umroh/checkout
-    @JvmField
-    val SALAM_UMRAH_CHECKOUT = "$INTERNAL_SALAM/$PARAM_UMROH/checkout"
+    const val SALAM_UMRAH_CHECKOUT = "$INTERNAL_SALAM/$PARAM_UMROH/checkout"
 
 
 }

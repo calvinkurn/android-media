@@ -2,9 +2,12 @@ package com.tokopedia.notifications.worker
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 import androidx.work.*
-import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.PushController
+import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.CMNotificationCacheHandler
+import com.tokopedia.notifications.common.CMRemoteConfigUtils
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.image.downloaderFactory.PARENT_DIR
 import com.tokopedia.notifications.model.NotificationStatus
@@ -14,6 +17,8 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 const val PERIODIC_TIME_INTERVAL_MINUTE = 15L
+const val NOTIFICATION_TIME_INTERVAL_DELETION_HOURS = 48L
+const val HOURS_IN_MILLIS: Long = 60 * 60 * 1000L
 const val PUSH_WORKER_UNIQUE_NAME = "PUSH_WORKER"
 
 class PushWorker(private val appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
@@ -29,6 +34,7 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                 deleteAllPrevCompleted()
                 clearNotificationMediaForExpiredNotification()
             } catch (e: Throwable) {
+                Log.d(TAG, e.stackTraceToString())
             }
             Result.success()
         }
@@ -62,8 +68,19 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
     }
 
     private suspend fun deleteAllPrevCompleted() {
-        PushRepository.getInstance(appContext).pushDataStore
-                .deleteNotification(System.currentTimeMillis(), NotificationStatus.COMPLETED)
+        val notificationDeletionInterval = CMRemoteConfigUtils(appContext).getLongRemoteConfig(
+                CMConstant.RemoteKeys.NOTIFICATION_DELETION_INTERVAL_KEY, NOTIFICATION_TIME_INTERVAL_DELETION_HOURS)
+        val nextPushDeleteTime = CMNotificationCacheHandler(appContext).getLongValue(CMConstant.NEXT_PUSH_DELETE_TIME_CACHE_KEY)
+        if (nextPushDeleteTime == 0L) {
+            CMNotificationCacheHandler(appContext).saveLongValue(CMConstant.NEXT_PUSH_DELETE_TIME_CACHE_KEY,
+                    System.currentTimeMillis() + notificationDeletionInterval * HOURS_IN_MILLIS)
+            return
+        } else if (nextPushDeleteTime <= System.currentTimeMillis()) {
+            CMNotificationCacheHandler(appContext).saveLongValue(CMConstant.NEXT_PUSH_DELETE_TIME_CACHE_KEY,
+                    System.currentTimeMillis() + notificationDeletionInterval * HOURS_IN_MILLIS)
+            PushRepository.getInstance(appContext).pushDataStore
+                    .deleteNotification(System.currentTimeMillis(), NotificationStatus.COMPLETED)
+        }
     }
 
     private suspend fun deleteNotificationByStatus(status: NotificationStatus) {

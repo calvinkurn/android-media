@@ -106,7 +106,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun initObserver() {
-        addStartValidateObserver()
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
         addLatestStatusObserver()
@@ -150,12 +149,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
                     }
                 }
             }
-        }
-    })
-
-    private fun addStartValidateObserver() = viewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let {
-            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
         }
     })
 

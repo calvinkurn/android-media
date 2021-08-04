@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/Unify_NN0"
+        android:id="@+id/fragment_fingerprint_setting_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ContainerUnify
+            android:background="@color/Unify_N50"
+            app:container_color="GREY"
+            android:id="@+id/fragment_fingerprint_setting_container_switch"
+            android:padding="@dimen/loginfingerprint_20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+                android:id="@+id/fragment_fingerprint_setting_switch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_setting_fingerprint_switch" />
+
+        </com.tokopedia.unifycomponents.ContainerUnify>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/unify_space_24"
+            android:text="@string/description_fingerprint_setting"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/fragment_fingerprint_setting_loader"
+        android:layout_width="@dimen/unify_space_40"
+        android:layout_height="@dimen/unify_space_40"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>

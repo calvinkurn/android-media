@@ -17,7 +17,10 @@ class AddAddressUseCase
         val param = AddAddressParam(
                 model.addressName, model.receiverName, model.address1, model.address2,
                 model.postalCode, model.phone, model.provinceId.toString(), model.cityId.toString(),
-                model.districtId.toString(), model.latitude, model.longitude, formType
+                model.districtId.toString(), model.latitude, model.longitude, formType,
+                apply_name_as_new_user_fullname = model.applyNameAsNewUserFullname,
+                set_as_primary_address = model.setAsPrimaryAddresss
+
         )
         val gqlParam = mapOf("input" to param.toMap())
         val gqlRequest = GraphqlRequest(kero_add_address_query,
@@ -47,6 +50,24 @@ mutation Autofill(${'$'}input: KeroAgentAddressInput!) {
     data {
       addr_id
       is_success
+      is_state_chosen_address_changed
+      chosen_address { 
+        addr_id
+        receiver_name
+        addr_name
+        district
+        city
+        city_name
+        district_name
+        status
+        latitude
+        longitude
+        postal_code
+        }
+      tokonow {
+        shop_id
+        warehouse_id
+        }
     }
     status
     config

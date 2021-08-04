@@ -15,7 +15,7 @@ import javax.inject.Inject
 /**
  * @author by ade on 8/5/2019
  */
-class TickerInfoUseCase @Inject constructor(
+open class TickerInfoUseCase @Inject constructor(
         val resources: Resources,
         val graphqlUseCase: GraphqlUseCase
 ): UseCase<List<TickerInfoPojo>>(){

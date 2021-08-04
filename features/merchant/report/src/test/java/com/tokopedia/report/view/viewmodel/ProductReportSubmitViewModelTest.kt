@@ -1,9 +1,7 @@
 package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.mediauploader.data.state.UploadResult
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
@@ -74,6 +72,17 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
 
         testSubscriber.assertError(expectedReturn)
         testSubscriber.assertCompleted()
+    }
+
+    @Test
+    fun onCleared() {
+        every { submitReportUseCase.unsubscribe() } just runs
+
+        val method = viewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        verify { submitReportUseCase.unsubscribe() }
     }
 
     private fun onUploadImage_thenReturn(uploadId: String) {

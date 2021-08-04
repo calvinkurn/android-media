@@ -94,6 +94,18 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
     }
 
     @Test
+    fun `getHasSpecification should return boolean when product having specification`() = runBlocking {
+        val specificationInputModel = listOf(SpecificationInputModel("1", "Indomie"))
+        val specificationInputModelEmpty = listOf(SpecificationInputModel("", "Indomie"))
+
+        val result = viewModel.getHasSpecification(specificationInputModel)
+        val resultEmpty = viewModel.getHasSpecification(specificationInputModelEmpty)
+
+        assert(result)
+        assert(!resultEmpty)
+    }
+
+    @Test
     fun `updateProductInputModelSpecifications should return filtered list`() = runBlocking {
         val specificationInputModel = listOf(
                 SpecificationInputModel("1", "Indomie"),
@@ -109,6 +121,15 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
 
         val spec = viewModel.productInputModel.getOrAwaitValue().detailInputModel.specifications.orEmpty()
         assertEquals(1, spec.size)
+    }
+
+    @Test
+    fun `removeSpecification should clear specification`() = runBlocking {
+        setProductInputModel(emptyList())
+        viewModel.removeSpecification()
+
+        val spec = viewModel.productInputModel.getOrAwaitValue().detailInputModel.specifications.orEmpty()
+        assert(spec.isEmpty())
     }
 
     private fun setProductInputModel(specificationInputModel: List<SpecificationInputModel>?) {

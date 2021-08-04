@@ -48,7 +48,6 @@ object ConstantKey {
     }
 
     object ABtestValue {
-        const val VALUE_NEW_REVIEW_FLOW = "New Review Flow"
         const val AUTO_TRANSITION_VARIANT = "auto_transition"
     }
 

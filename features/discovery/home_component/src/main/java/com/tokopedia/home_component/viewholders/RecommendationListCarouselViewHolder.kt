@@ -17,6 +17,7 @@ import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecor
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -27,7 +28,9 @@ import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_header
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -60,6 +63,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val channelConfig = channel.channelConfig
 
         setViewportImpression(element)
+        setChannelDivider(element)
 
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
@@ -148,6 +152,14 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             }
         }
+    }
+
+    private fun setChannelDivider(element: RecommendationListCarouselDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{

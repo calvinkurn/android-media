@@ -168,7 +168,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                 mvcSummaryUseCase.getResponse(any())
             } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "200", listOf("success"), null, null), null, true, null, null, null))
 
-            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123", context)
 
             verifyGetMerchantVoucerUseCaseCalled()
 
@@ -184,7 +184,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                 mvcSummaryUseCase.getResponse(any())
             } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "123", listOf("not success"), null, null), null, false, null, null, null))
 
-            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123", context)
 
             verifyGetMerchantVoucerUseCaseCalled()
 
@@ -194,7 +194,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                 mvcSummaryUseCase.getResponse(any())
             } returns TokopointsCatalogMVCSummaryResponse(null)
 
-            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123", context)
 
             verifyGetMerchantVoucerUseCaseCalled()
 
@@ -204,7 +204,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                 mvcSummaryUseCase.getResponse(any())
             } throws Exception()
 
-            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
+            viewModelShopPageProductListViewModel.getNewMerchantVoucher("123", context)
 
             verifyGetMerchantVoucerUseCaseCalled()
 
@@ -264,7 +264,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -426,7 +427,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -485,7 +487,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -543,7 +546,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -599,7 +603,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -657,7 +662,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -716,7 +722,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -774,7 +781,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                             etalaseRules = listOf()
                     )),
                     isShowNewShopHomeTab = false,
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    context
             )
 
             verifyGetMemberShipUseCaseCalled()

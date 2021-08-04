@@ -33,7 +33,6 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instrumentation.test.R;
@@ -295,11 +294,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        return null;
-    }
-
-    @Override
     public void onAppsFlyerInit() {
 
     }
@@ -350,6 +344,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public void logInvalidGrant(Response response) {
+
+    }
+
+    @Override
+    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
 
     }
 

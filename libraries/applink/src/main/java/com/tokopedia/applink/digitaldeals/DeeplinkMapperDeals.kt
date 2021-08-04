@@ -6,13 +6,11 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeeplinkMapperDeals {
 
     fun getRegisteredNavigationDeals(context: Context, deeplink: String) : String {
         val uri = Uri.parse(deeplink)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
         return when {
             // tokopedia://deals
             uri.pathSegments.size == 0 ->

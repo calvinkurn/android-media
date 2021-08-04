@@ -27,11 +27,15 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     private var handle = Handler()
     private var listener: AnimatedReputationListener? = null
     private var shouldShowDesc = false
+    private var starHeight = -1
+    private var starWidth = -1
 
     init {
         val styleable = context.obtainStyledAttributes(attrs, R.styleable.AnimatedRatingPickerCreateReviewView, 0, 0)
         try {
             shouldShowDesc = styleable.getBoolean(R.styleable.AnimatedRatingPickerCreateReviewView_show_description, false)
+            starHeight = styleable.getDimensionPixelSize(R.styleable.AnimatedRatingPickerCreateReviewView_star_height, -1)
+            starWidth = styleable.getDimensionPixelSize(R.styleable.AnimatedRatingPickerCreateReviewView_star_width, -1)
         } finally {
             styleable.recycle()
         }
@@ -65,6 +69,25 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
             txt_desc_status.visibility = View.VISIBLE
         } else {
             txt_desc_status.visibility = View.GONE
+        }
+
+        setStarHeight()
+        setStarWidth()
+    }
+
+    private fun setStarHeight() {
+        if (starHeight != -1) {
+            arrayOf(anim_1_create_review, anim_2_create_review, anim_3_create_review, anim_4_create_review, anim_5_create_review).forEach {
+                it.layoutParams.height = starHeight
+            }
+        }
+    }
+
+    private fun setStarWidth() {
+        if (starWidth != -1) {
+            arrayOf(anim_1_create_review, anim_2_create_review, anim_3_create_review, anim_4_create_review, anim_5_create_review).forEach {
+                it.layoutParams.width = starWidth
+            }
         }
     }
 

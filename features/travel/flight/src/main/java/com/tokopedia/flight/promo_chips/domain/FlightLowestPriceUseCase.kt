@@ -2,7 +2,7 @@ package com.tokopedia.flight.promo_chips.domain
 
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPriceArgs
-import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.coroutines.Fail

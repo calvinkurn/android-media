@@ -35,7 +35,7 @@ class InsertTemplateReviewReplyUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(shopID: Int, title: String, message: String): Map<String, Any> =
+        fun createParams(shopID: Long, title: String, message: String): Map<String, Any> =
                 mapOf(SHOP_ID to shopID, TITLE to title, MESSAGE to message)
     }
 

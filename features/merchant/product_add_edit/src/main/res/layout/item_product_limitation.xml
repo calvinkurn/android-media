@@ -48,7 +48,7 @@
                 android:id="@+id/tv_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/selectable_white_background"
                 android:gravity="center_vertical"
                 android:padding="@dimen/spacing_lvl3"
                 android:paddingStart="@dimen/spacing_lvl4"

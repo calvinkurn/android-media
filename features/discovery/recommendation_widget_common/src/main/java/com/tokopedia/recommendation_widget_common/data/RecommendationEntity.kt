@@ -87,6 +87,8 @@ data class RecommendationEntity (
         val minOrder: Int = 0
         @SerializedName("specificationLabels")
         val specificationsLabels: List<SpecificationsLabels> = listOf()
+        @SerializedName("parentID")
+        val parentID: Long = 0L
 
         class SpecificationsLabels {
             @SerializedName("key")
@@ -157,6 +159,32 @@ data class RecommendationEntity (
             @SerializedName("pagination")
             val pagination: Pagination = Pagination(),
             @SerializedName("recommendation")
-            val recommendation: List<Recommendation> = listOf()
+            val recommendation: List<Recommendation> = listOf(),
+            @SerializedName("campaign")
+            val campaign: RecommendationCampaign = RecommendationCampaign()
     )
+
+    class RecommendationCampaign {
+        @SerializedName("appLandingPageLink")
+        val appLandingPageLink: String = ""
+        @SerializedName("landingPageLink")
+        val landingPageLink: String = ""
+        @SerializedName("assets")
+        val assets: Assets? = Assets()
+        @SerializedName("foreignTitle")
+        val foreignTitle: String = ""
+        @SerializedName("thematicID")
+        val thematicID: Long = 0L
+
+        class Assets {
+            @SerializedName("banner")
+            val banner: Banner? = Banner()
+        }
+
+        class Banner {
+            @SerializedName("apps")
+            val apps: String = ""
+        }
+
+    }
 }

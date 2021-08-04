@@ -42,7 +42,7 @@ class SearchProductFirstPageGqlUseCase(
         get() = coroutineDispatchers.main + masterJob
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
@@ -69,11 +69,11 @@ class SearchProductFirstPageGqlUseCase(
         return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
     }
 
-    private fun getQueryFromParameters(parameters: Map<String, Any>): String {
+    private fun getQueryFromParameters(parameters: Map<String?, Any?>): String {
         return parameters[SearchApiConst.Q]?.toString() ?: ""
     }
 
-    private fun createHeadlineParams(parameters: Map<String, Any>): String {
+    private fun createHeadlineParams(parameters: Map<String?, Any?>): String {
         val headlineParams = HashMap(parameters)
 
         headlineParams[TopAdsParams.KEY_EP] = HEADLINE
@@ -95,7 +95,7 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
 
-    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String, Any>) {
+    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String?, Any?>) {
         if (!requestParams.isSkipHeadlineAds()) {
             val headlineParams = createHeadlineParams(searchProductParams)
             add(createHeadlineAdsRequest(headlineParams = headlineParams))
@@ -180,7 +180,7 @@ class SearchProductFirstPageGqlUseCase(
             getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
-        val timeoutMs : Long = 2_000
+        val timeoutMs : Long = TDN_TIMEOUT
 
         return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
             searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
@@ -207,6 +207,7 @@ class SearchProductFirstPageGqlUseCase(
 
     companion object {
         private const val HEADLINE_PRODUCT_COUNT = 3
+        private const val TDN_TIMEOUT: Long = 2_000
 
         private const val QUICK_FILTER_QUERY = """
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
@@ -280,6 +281,7 @@ class SearchProductFirstPageGqlUseCase(
                                 gold_shop
                                 gold_shop_badge
                                 shop_is_official
+                                pm_pro_shop
                                 merchant_vouchers
                                 product {
                                     id
@@ -295,6 +297,11 @@ class SearchProductFirstPageGqlUseCase(
                                         title
                                         type
                                         position
+                                        url
+                                    }
+                                    free_ongkir {
+                                        is_active
+                                        img_url
                                     }
                                     image_product{
                                         product_id
@@ -379,6 +386,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_link_url
                             banner_applink_url
                             identifier
+                            meta
                             product {
                                 id
                                 name
@@ -399,6 +407,25 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                              	badges {
+                                    title
+                                    image_url
+                                    show
+                                }
+                              	shop {
+                                    name
+                                    city
+                                }
+                                freeOngkir {
+                                    isActive
+                                    image_url
+                                }
+                                ads {
+                                    id
+                                    productClickUrl
+                                    productWishlistUrl
+                                    productViewUrl
+                                }
                             }
                         }
                     }

@@ -6,7 +6,9 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class ChannelGrid(
         val id: String = "",
         val warehouseId: String = "",
+        val parentProductId: String = "",
         val minOrder: Int = 0,
+        val stock: Int = 0,
         val price: String = "0",
         val imageUrl: String = "",
         val name: String = "",
@@ -38,5 +40,6 @@ data class ChannelGrid(
         val recommendationType: String = "",
         val shop: ChannelShop = ChannelShop(),
         val campaignCode: String = "",
-        val badges: List<ChannelGridBadges> = listOf()
+        val badges: List<ChannelGridBadges> = listOf(),
+        val productImageUrl: String = "" //used for image featured brand, otherwise please use imageUrl
 ): ImpressHolder()

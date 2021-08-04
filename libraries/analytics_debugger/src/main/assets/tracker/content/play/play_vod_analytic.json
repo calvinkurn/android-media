@@ -11,7 +11,8 @@
       "shopId": ".*",
       "screenName": "/group-chat-room/\\d+/(vod|live)",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "theme": ".*"
     },
     {
       "eventAction": "leave room",

@@ -2,11 +2,10 @@ package com.tokopedia.sellerorder.list.presentation.dialogs
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -22,6 +21,9 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
     fun init() {
         childViews = View.inflate(context, com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog, null)
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+            if (DeviceScreenInfo.isTablet(context)) {
+                dialogMaxWidth = getScreenWidth() / 2
+            }
             dialogPrimaryCTA.gone()
             dialogSecondaryCTA.gone()
             setOverlayClose(false)
@@ -30,6 +32,8 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
             setChild(childViews)
         }
     }
+
+    fun getDialogUnify() = dialogUnify
 
     fun setTitle(title: String) {
         childViews?.findViewById<Typography>(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogTitle)?.text = title
@@ -50,7 +54,7 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
         childViews?.apply {
             findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.gone()
             findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.apply {
-                loadImageDrawable(com.tokopedia.sellerorder.R.drawable.ic_som_list_success_bulk_accept)
+                loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_success)
                 show()
             }
         }
@@ -60,7 +64,7 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
         childViews?.apply {
             findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.gone()
             findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.apply {
-                loadImageDrawable(com.tokopedia.sellerorder.R.drawable.ic_som_list_failed_bulk_accept)
+                loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_fail)
                 show()
             }
         }

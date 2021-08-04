@@ -133,7 +133,7 @@ internal class FilterViewHolder(
 
         private fun ChipsUnify.showIconRating() {
             chip_image_icon.visibility = View.VISIBLE
-            chip_image_icon.setImageResource(com.tokopedia.design.R.drawable.ic_app_rating_filled)
+            chip_image_icon.setImageResource(R.drawable.ic_app_rating_filled)
         }
 
         private fun ChipsUnify.showIconFromUrl(optionViewModel: OptionViewModel) {

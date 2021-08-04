@@ -42,6 +42,8 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var analytics: NotificationUpdateAnalytics
 
     private lateinit var viewModel: NotificationTransactionViewModel
 
@@ -230,7 +232,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         /* Trackers from Update Notification:
          * for tracking atc to pdp,
          * tracking impression of product recommendation */
-        return NotificationUpdateAnalytics()
+        return analytics
     }
 
     override fun initInjector() {

@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
 
@@ -10,6 +12,7 @@ import com.tokopedia.track.TrackApp
 /**
  * Seller Home Revamp Tracker
  * Data Layer : https://docs.google.com/spreadsheets/d/13WEeOReKimxp9ugeVMew6T-ma9gNQHaWJxYN6DK-1x0/edit?ts=5e395338#gid=389108416
+ * Data Tracker for Recommendation Widget : https://mynakama.tokopedia.com/datatracker/requestdetail/781
  * */
 
 object SellerHomeTracking {
@@ -34,13 +37,19 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendImpressionLineGraphEvent(dataKey: String, cardValue: String) {
+    fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel) {
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dataKey = model.dataKey
+        val cardValue = model.data?.header.orEmpty()
+
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
+                TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
-                cardValue
+                "$emptyStatus - $cardValue"
         )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
         TrackingHelper.sendGeneralEvent(map)
     }
 
@@ -51,6 +60,23 @@ object SellerHomeTracking {
                 arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 cardValue
         )
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun sendClickEmptyCtaLineGraphEvent(model: LineGraphWidgetUiModel) {
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dataKey = model.dataKey
+        val cardValue = model.data?.header.orEmpty()
+
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_HOMEPAGE,
+                "${TrackingConstant.SELLER_APP} - ${TrackingConstant.HOME}",
+                "${TrackingConstant.CLICK_WIDGET_LINE_GRAPH} - $dataKey",
+                "$emptyStatus - $cardValue"
+        )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
         TrackingHelper.sendGeneralEvent(map)
     }
 
@@ -95,14 +121,14 @@ object SellerHomeTracking {
     }
 
     fun sendImpressionPostEvent(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
                 TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_POST, model.dataKey).joinToString(" - "),
-                "${if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
+                "${if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
         )
         map[TrackingConstant.USER_ID] = userId
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -112,14 +138,14 @@ object SellerHomeTracking {
     }
 
     fun sendClickPostSeeMoreEvent(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_HOMEPAGE,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, model.dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
-                "${if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
+                "${if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
         )
         map[TrackingConstant.USER_ID] = userId
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -139,12 +165,12 @@ object SellerHomeTracking {
     }
 
     fun sendPostListFilterClick(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, model.dataKey, TrackingConstant.FILTER).joinToString(" - "),
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         map[TrackingConstant.USER_ID] = userId
 
@@ -152,13 +178,13 @@ object SellerHomeTracking {
     }
 
     fun sendPostEmptyStateCtaClick(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
+        val isEmpty = model.data?.isEmptyPost().orFalse()
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = "${arrayOf(TrackingConstant.CLICK_WIDGET_POST, model.dataKey).joinToString(" - ")} ${TrackingConstant.EMPTY_STATE}",
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         eventMap[TrackingConstant.USER_ID] = userId
         eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -242,13 +268,11 @@ object SellerHomeTracking {
     }
 
     fun sendTableEmptyStateCtaClick(model: TableWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.dataSet.isNullOrEmpty()
-
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = "${arrayOf(TrackingConstant.CLICK_WIDGET_SIMPLE_TABLE, model.dataKey).joinToString(" - ")} ${TrackingConstant.EMPTY_STATE}",
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         eventMap[TrackingConstant.USER_ID] = userId
         eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -257,29 +281,59 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendTableFilterClick(model: TableWidgetUiModel, userId: String) {
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_SIMPLE_TABLE, model.dataKey, TrackingConstant.FILTER).joinToString(" - "),
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        )
+        map[TrackingConstant.USER_ID] = userId
+
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
-                label = value
+                label = "$state - $value"
         )
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_PIE_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
-    fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
-        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
-        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+    fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        val value = model.data?.data?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.CLICK_HOMEPAGE,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
@@ -287,8 +341,27 @@ object SellerHomeTracking {
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_BAR_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendBarChartEmptyStateCtaClickEvent(model: BarChartWidgetUiModel) {
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_HOMEPAGE,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
     }
 
     fun sendAnnouncementImpressionEvent(model: AnnouncementWidgetUiModel, userId: String) {
@@ -370,8 +443,95 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {
+        val scoreLevel = element.data?.progressLevel?.bar?.value.orZero()
+        val numOfNegativeRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE)
+        val numOfPositiveRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE)
+        val numOfNoDataRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA)
+        val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
+        val tickerLabel = "ticker $tickerStatus"
+        val eventLabel = arrayOf(scoreLevel, numOfNegativeRecommendation, numOfPositiveRecommendation,
+                numOfNoDataRecommendation, tickerLabel).joinToString(" - ")
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SELLER_DASHBOARD,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_RECOMMENDATION_WIDGET, element.dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
+                label = eventLabel
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {
+        val scoreLevel = element.data?.progressLevel?.bar?.value.orZero()
+        val numOfNegativeRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE)
+        val numOfPositiveRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE)
+        val numOfNoDataRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA)
+        val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
+        val tickerLabel = "ticker $tickerStatus"
+        val eventLabel = arrayOf(scoreLevel, numOfNegativeRecommendation, numOfPositiveRecommendation,
+                numOfNoDataRecommendation, tickerLabel).joinToString(" - ")
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_SELLER_DASHBOARD,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_RECOMMENDATION_WIDGET, element.dataKey).joinToString(" - "),
+                label = eventLabel
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendRecommendationItemClickEvent(dataKey: String, item: RecommendationItemUiModel) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SELLER_DASHBOARD,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_RECOMMENDATION_WIDGET, dataKey, TrackingConstant.CLICK_RECOMMENDATION).joinToString(" - "),
+                label = arrayOf(item.type, item.text).joinToString(" - ")
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendHomeTickerCtaClickEvent(shopType: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SHOP_SCORE,
+                category = TrackingConstant.ACTION_CLICK_LEARN_MORE,
+                action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
+                label = shopType
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendHomeTickerImpressionEvent(shopType: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_SHOP_SCORE_IRIS,
+                category = TrackingConstant.IMPRESS_LEARN_MORE,
+                action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
+                label = shopType
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    private fun getNumberOfRecommendationByType(recommendations: List<RecommendationItemUiModel>?, type: String): Int {
+        return recommendations?.filter { it.type == type }?.size.orZero()
     }
 
     private fun getBannerPromotions(items: List<CarouselItemUiModel>, position: Int): List<Map<String, String>> {

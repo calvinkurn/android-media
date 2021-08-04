@@ -52,15 +52,19 @@ class ShopScorePMWidget : FrameLayout {
 
     fun setProgressColor(state: State) {
         val colors = when (state) {
-            State.GOOD -> {
+            is State.Good -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
             }
-            State.WARNING -> {
+            is State.Warning -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                 intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
             }
-            State.DANGER -> {
+            is State.Custom -> {
+                tv_current_progress.setTextColor(ContextCompat.getColor(context, state.valueTextColorResId))
+                intArrayOf(ContextCompat.getColor(context, state.barStartColorResId), ContextCompat.getColor(context, state.barEndColorResId))
+            }
+            else -> {
                 tv_current_progress.setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_R500))
                 intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
             }
@@ -68,9 +72,17 @@ class ShopScorePMWidget : FrameLayout {
         progress_bar_current.setProgressColor(colors)
     }
 
-    enum class State {
-        GOOD,
-        WARNING,
-        DANGER
+    sealed class State {
+        object Good : State()
+
+        object Warning : State()
+
+        object Danger : State()
+
+        data class Custom(
+                val valueTextColorResId: Int,
+                val barStartColorResId: Int,
+                val barEndColorResId: Int
+        ) : State()
     }
 }

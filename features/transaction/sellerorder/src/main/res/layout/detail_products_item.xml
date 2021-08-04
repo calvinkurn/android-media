@@ -21,7 +21,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/topads_title"
+        android:id="@+id/ads_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,26 +35,26 @@
         android:text="@string/sale_from_top_ads"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ic_topads_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_ads_detail"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl2"
-        app:layout_constraintEnd_toStartOf="@id/topads_title"
+        app:icon_name="SPEAKER"
+        app:layout_constraintEnd_toStartOf="@id/ads_title"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/products_title"
-        app:srcCompat="@drawable/ic_som_topads"/>
+        app:layout_constraintBottom_toBottomOf="@id/products_title"/>
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_top_ads"
+        android:id="@+id/group_ads"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
-        app:constraint_referenced_ids="topads_title, ic_topads_detail"/>
+        app:constraint_referenced_ids="ads_title, ic_ads_detail"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_products"

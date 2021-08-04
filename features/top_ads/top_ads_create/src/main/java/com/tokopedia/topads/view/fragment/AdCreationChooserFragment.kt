@@ -107,12 +107,12 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             view.top_corner_bg2.setImageDrawable(AppCompatResources.getDrawable(it, R.drawable.topads_create_bg_top_corner))
         }
 
-        view.top_corner_icon1.setImageResource(R.drawable.icon_otomatis_onboarding)
+        view.top_corner_icon1.setImageResource(R.drawable.ic_iklan_otomatis)
         view.icon2.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon3.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon4.setImageResource(R.drawable.topads_create_ic_checklist_blue)
 
-        view.top_corner_icon2.setImageResource(R.drawable.icon_manual_onboarding)
+        view.top_corner_icon2.setImageResource(R.drawable.ic_iklan_manual)
         view.icon6.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon7.setImageResource(R.drawable.topads_create_ic_checklist_blue)
         view.icon8.setImageResource(R.drawable.topads_create_ic_checklist_blue)

@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import com.tokopedia.imagepicker.common.PhotoMetadataUtils.getPath
+import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 
 
@@ -43,8 +43,10 @@ class MediaItem(val id: Long,
     private fun getWidthAndHeight(context: Context): Pair<Int, Int> {
         var widthHeight = ImageProcessingUtil.getWidthAndHeight(contentUri.path.toString())
         if (widthHeight.first == 0 || widthHeight.second == 0) {
-            val imagePath = getPath(context.contentResolver, contentUri)
-            widthHeight = ImageProcessingUtil.getWidthAndHeight(imagePath)
+            val imagePath = FileUtil.getPath(context.contentResolver, contentUri)
+            if (imagePath!= null) {
+                widthHeight = ImageProcessingUtil.getWidthAndHeight(imagePath)
+            }
         }
         return widthHeight
     }

@@ -64,7 +64,7 @@ object ShippingDurationPresenterTest : Spek({
 
             Then("view shows positive data") {
                 verify {
-                    view.showData(any(), any())
+                    view.showData(any(), any(), any())
                 }
             }
 

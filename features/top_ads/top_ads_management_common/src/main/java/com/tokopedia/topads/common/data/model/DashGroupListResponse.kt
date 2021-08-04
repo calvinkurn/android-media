@@ -34,6 +34,9 @@ data class GroupListDataItem(
         @field:SerializedName("group_name")
         val groupName: String = "",
 
+        @field:SerializedName("strategies")
+        val strategies: List<String> = listOf(),
+
         var isSelected: Boolean = false
 )
 

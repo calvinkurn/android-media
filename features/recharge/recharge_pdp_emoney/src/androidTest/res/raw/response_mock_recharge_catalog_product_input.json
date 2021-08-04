@@ -1,0 +1,288 @@
+[
+  {
+    "data": {
+      "rechargeCatalogProductInput": {
+        "needEnquiry": true,
+        "isShowingProduct": true,
+        "enquiryFields": [
+          {
+            "id": 11,
+            "param_name": "",
+            "name": "client_number",
+            "style": "input_numeric",
+            "text": "Nomor Kartu",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [],
+            "validations": [
+              {
+                "rule": "^[0-9]*$",
+                "title": "Numeric"
+              }
+            ]
+          },
+          {
+            "id": 17,
+            "param_name": "enquiry",
+            "name": "enquiry_result",
+            "style": "enquiry",
+            "text": "Cek Saldo",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [],
+            "validations": []
+          }
+        ],
+        "product": {
+          "name": "product_id",
+          "text": "Nominal",
+          "dataCollections": [
+            {
+              "name": "",
+              "products": [
+                {
+                  "id": "1939",
+                  "attributes": {
+                    "desc": "Rp 10.000",
+                    "price": "",
+                    "price_plain": 10000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "",
+                    "detail_url_text": ""
+                  }
+                },
+                {
+                  "id": "2069",
+                  "attributes": {
+                    "desc": "Rp 20.000",
+                    "price": "",
+                    "price_plain": 20000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "2070",
+                  "attributes": {
+                    "desc": "Rp 50.000",
+                    "price": "",
+                    "price_plain": 50000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "2071",
+                  "attributes": {
+                    "desc": "Rp 100.000",
+                    "price": "",
+                    "price_plain": 100000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "2072",
+                  "attributes": {
+                    "desc": "Rp 200.000",
+                    "price": "",
+                    "price_plain": 200000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "2073",
+                  "attributes": {
+                    "desc": "Rp 300.000",
+                    "price": "",
+                    "price_plain": 300000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "2074",
+                  "attributes": {
+                    "desc": "Rp 400.000",
+                    "price": "",
+                    "price_plain": 400000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "2075",
+                  "attributes": {
+                    "desc": "Rp 500.000",
+                    "price": "",
+                    "price_plain": 500000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "4717",
+                  "attributes": {
+                    "desc": "Tol Dalam Kota JKT (Rp 10.000)",
+                    "price": "",
+                    "price_plain": 10000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e2. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e3. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e4. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Tol Dalam Kota Jakarta",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5047",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Subang (Rp 58.000)",
+                    "price": "",
+                    "price_plain": 58000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Subang.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintu Tol Subang",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5042",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Bandung (Rp 65.000)",
+                    "price": "",
+                    "price_plain": 65000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Pasteur.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintu Tol Pasteur",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5048",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Cirebon (Rp 132.500)",
+                    "price": "",
+                    "price_plain": 132500,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Ciperna Barat.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintu Tol Ciperna Barat",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5044",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Semarang (Rp 321.500)",
+                    "price": "",
+                    "price_plain": 321500,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Jatingaleh 1.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintu Tol Jatingaleh",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5043",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Surabaya (Rp 647.500)",
+                    "price": "",
+                    "price_plain": 647500,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Waru 1.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintu Tol Waru 1",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5045",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Probolinggo (Rp 726.000)",
+                    "price": "",
+                    "price_plain": 726000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Probolinggo.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintu Tol Probolinggo",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5046",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Merak (Rp 64.500)",
+                    "price": "",
+                    "price_plain": 64500,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Tomang.\u003cbr\u003e2. Pintu keluar Pintu Tol Merak.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Tomang - Pintu Tol Merak",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                },
+                {
+                  "id": "5109",
+                  "attributes": {
+                    "desc": "Tol Jakarta - Tegal (Rp 174.000)",
+                    "price": "",
+                    "price_plain": 174000,
+                    "promo": null,
+                    "product_labels": [],
+                    "detail": "1. Pintu masuk Pintu Tol Halim 2.\u003cbr\u003e2. Pintu keluar Pintu Tol Brebes Timur.\u003cbr\u003e3. Tarif untuk Kendaraan Gol 1.\u003cbr\u003e4. Maksimal saldo tersimpan di kartu adalah Rp 2 juta.\u003cbr\u003e5. Setelah melakukan Top-up, harap update saldo kartu Anda di Aplikasi Tokopedia / ATM dan channel bank Mandiri / gerai retail terdekat.\u003cbr\u003e6. Biaya Admin untuk setiap transaksi Top-up adalah Rp 1500.\u003cbr\u003e7. Ovo Points tidak bisa digunakan untuk transaksi Top-up\u003cbr\u003e ",
+                    "detail_compact": "Pintu Tol Halim 2 - Pintul Tol Brebes Timur",
+                    "detail_url": "https://www.tokopedia.com/help/article/bagaimana-cara-update-saldo-mandiri-emoney-melalui-tokopedia?refid\u003dt-0096",
+                    "detail_url_text": "Klik disini untuk cara update kartu Mandiri e-money Anda"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

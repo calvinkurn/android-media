@@ -22,7 +22,7 @@ class UpdateSpecificTemplateUseCase @Inject constructor(graphqlRepository: Graph
         """
     }
 
-    private val requestParams = RequestParams.EMPTY
+    private val requestParams = RequestParams.create()
 
     init {
         setupUseCase()

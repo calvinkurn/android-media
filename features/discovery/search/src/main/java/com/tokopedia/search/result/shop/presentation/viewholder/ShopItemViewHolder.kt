@@ -49,7 +49,8 @@ internal class ShopItemViewHolder(
                         reputationScore = shopDataViewItem.reputationScore,
                         isOfficial = shopDataViewItem.isOfficial,
                         gaKey = shopDataViewItem.gaKey,
-                        isRecommendation = shopDataViewItem.isRecommendation
+                        isRecommendation = shopDataViewItem.isRecommendation,
+                        isPMPro = shopDataViewItem.isPMPro,
                 ),
                 object : ShopCardListener {
                     override fun onItemImpressed() { }

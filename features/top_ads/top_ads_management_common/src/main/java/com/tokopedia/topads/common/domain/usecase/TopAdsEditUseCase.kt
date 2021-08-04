@@ -65,12 +65,12 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
 
     private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManageGroupAdsInput {
         val priceBidGroup = dataGroup?.get(PARAM_PRICE_BID) as? Int
-        val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Int
-        val groupId = dataGroup?.get(PARAM_GROUP_Id) as? Int
+        val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Double
+        val groupId = dataGroup?.get(PARAM_GROUP_Id) as String
         return TopadsManageGroupAdsInput().apply {
             shopID = userSession.shopId
             keywordOperation = null
-            groupID = groupId.toString()
+            groupID = groupId
             source = PARAM_RECOM_EDIT_SOURCE
             groupInput = GroupEditInput(
                     action = PARAM_EDIT_OPTION,
@@ -78,7 +78,7 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
                             adOperations = dataProduct,
                             name = null,
                             type = PRODUCT,
-                            dailyBudget = dailyBudgetGroup?.toDouble(),
+                            dailyBudget = dailyBudgetGroup,
                             priceBid = priceBidGroup?.toDouble()
                     )
             )

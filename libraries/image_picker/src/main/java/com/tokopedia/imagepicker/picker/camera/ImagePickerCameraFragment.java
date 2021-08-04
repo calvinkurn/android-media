@@ -31,6 +31,7 @@ import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.controls.Facing;
 import com.otaliastudios.cameraview.controls.Flash;
 import com.otaliastudios.cameraview.controls.Mode;
 import com.otaliastudios.cameraview.size.Size;
@@ -123,6 +124,20 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         previewLayout = view.findViewById(R.id.layout_preview);
         View useImageLayout = view.findViewById(R.id.layout_use);
         View recaptureLayout = view.findViewById(R.id.layout_recapture);
+
+        /*
+        * some of device cannot get the camera info by
+        * Camera.getCameraInfo(i, cameraInfo) properly,
+        * sometimes getting the RuntimeException for
+        * this case.
+        *
+        * by removing the app:cameraFacing attributes
+        * on the image picker camera layout to make
+        * a lazy value setter with try-catch.
+        * */
+        try {
+            cameraView.setFacing(Facing.BACK);
+        } catch (RuntimeException ignored) { }
 
         //initialize of cameraView mode
         cameraView.setMode(Mode.PICTURE);
@@ -280,15 +295,18 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     private void setUIFlashCamera(int flashEnum) {
-        if (getContext() != null) {
-            int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
-            if (flashEnum == Flash.AUTO.ordinal() && getActivity() != null) {
-                flashImageButton.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
-            } else if (flashEnum == Flash.ON.ordinal()) {
-                flashImageButton.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
-            } else if (flashEnum == Flash.OFF.ordinal()) {
-                flashImageButton.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
+        try {
+            if (getContext() != null) {
+                int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
+                if (flashEnum == Flash.AUTO.ordinal() && getActivity() != null) {
+                    flashImageButton.setImageResource(com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash);
+                } else if (flashEnum == Flash.ON.ordinal()) {
+                    flashImageButton.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
+                } else if (flashEnum == Flash.OFF.ordinal()) {
+                    flashImageButton.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
+                }
             }
+        } catch (Exception ignored) {
         }
     }
 
@@ -309,7 +327,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
                         imageByte,
                         mCaptureNativeSize.getWidth(),
                         mCaptureNativeSize.getHeight(), bitmap -> {
-                            if (bitmap!= null) {
+                            if (bitmap != null) {
                                 File cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG);
                                 onSuccessImageTakenFromCamera(cameraResultFile);
                             }
@@ -339,7 +357,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     }
 
-    private void initCropPresenter(){
+    private void initCropPresenter() {
         if (imageRatioCropPresenter == null) {
             imageRatioCropPresenter = new ImageRatioCropPresenter();
             imageRatioCropPresenter.attachView(this);
@@ -361,7 +379,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
             try {
                 File file = new File(imagePath);
                 if (file.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    Bitmap myBitmap = ImageProcessingUtil.getBitmapFromPath(file.getAbsolutePath());
                     previewImageView.setImageBitmap(myBitmap);
                 }
                 showPreviewView();
@@ -375,7 +393,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         reset();
     }
 
-    public void onVisible(){
+    public void onVisible() {
         // This is to prevent bug in cameraview library
         // https://github.com/natario1/CameraView/issues/154
         if (onImagePickerCameraFragmentListener.isFinishEditting()) {
@@ -395,7 +413,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     }
 
-    public void onInvisible(){
+    public void onInvisible() {
         try {
             hideLoading();
         } catch (Throwable e) {
@@ -403,13 +421,13 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         }
     }
 
-    private void showLoading(){
+    private void showLoading() {
         if (isAdded()) {
             progressDialog.show();
         }
     }
 
-    private void hideLoading(){
+    private void hideLoading() {
         if (isAdded()) {
             progressDialog.dismiss();
         }

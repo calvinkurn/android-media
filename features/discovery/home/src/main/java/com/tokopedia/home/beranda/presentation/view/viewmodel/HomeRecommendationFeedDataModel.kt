@@ -11,13 +11,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  */
 
 data class HomeRecommendationFeedDataModel(
-        var homeChooseAddressData: HomeChooseAddressData? = null
+        var homeChooseAddressData: HomeChooseAddressData? = null,
+        var recommendationTabDataModel: List<RecommendationTabDataModel>? = null
 ) : HomeVisitable {
+    var isNewData = true
 
     //keep this section if exist, because this viewholder is heavy to render
     override fun equalsWith(b: Any?): Boolean {
-        (b as? HomeRecommendationFeedDataModel)?.homeChooseAddressData?.let {
-            return it == homeChooseAddressData
+        (b as? HomeRecommendationFeedDataModel)?.let { newRecomDataModel ->
+            return newRecomDataModel == this
         }
         return true
     }
@@ -53,10 +55,6 @@ data class HomeRecommendationFeedDataModel(
     override fun visitableId(): String {
         return "recommendationSection"
     }
-
-    var recommendationTabDataModel: List<RecommendationTabDataModel>? = null
-
-    var isNewData = true
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

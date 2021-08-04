@@ -22,7 +22,9 @@ class RechargeUploadImageUseCase @Inject constructor(private val uploadImageUseC
                 uploadImageUseCase.createObservable(createUploadParams(fileLocation))
                         .toBlocking().first().dataResultImageUpload
             } catch (throwable: Throwable) {
-                throw Throwable(throwable)
+                if (throwable is RuntimeException && throwable.cause != null) {
+                    throw throwable.cause ?: throwable
+                } else throw throwable
             }
         }
     }

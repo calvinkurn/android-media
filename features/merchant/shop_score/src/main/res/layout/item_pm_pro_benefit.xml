@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginStart="@dimen/spacing_lvl3"
+    android:layout_marginEnd="@dimen/spacing_lvl3"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_potential_pm_pro_benefit"
+        android:layout_width="@dimen/width_img_benefit_pm_pro"
+        android:layout_height="@dimen/height_img_benefit_pm_pro"
+        app:layout_constraintTop_toTopOf="@id/tv_potential_pm_pro_benefit"
+        app:layout_constraintBottom_toBottomOf="@id/tv_potential_pm_pro_benefit"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_potential_pm_pro_benefit"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        android:layout_marginStart="@dimen/dp_12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_potential_pm_pro_benefit"
+        app:layout_constraintStart_toEndOf="@id/iv_potential_pm_pro_benefit"
+        tools:text="@string/title_item_benefit_1_pm_pro"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

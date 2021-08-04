@@ -71,5 +71,7 @@
 
     <dimen name="home_background_no_choose_address">130dp</dimen>
     <dimen name="home_background_with_choose_address">160dp</dimen>
+    <dimen name="category_item_height">105dp</dimen>
+    <dimen name="category_item_width">124dp</dimen>
 
 </resources>

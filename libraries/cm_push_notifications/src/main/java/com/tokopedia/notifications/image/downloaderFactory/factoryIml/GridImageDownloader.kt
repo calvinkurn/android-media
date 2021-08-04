@@ -28,7 +28,7 @@ class GridImageDownloader(baseNotificationModel: BaseNotificationModel) : Notifi
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.gridList.forEach { grid ->
             grid.img?.let { imgUrl ->
-                val filePath = downloadAndStore(context, imgUrl, ImageSizeAndTimeout.BIG_IMAGE)
+                val filePath = downloadAndStore(context, imgUrl, ImageSizeAndTimeout.BIG_IMAGE_GRID)
                 filePath?.let {
                     grid.img = it
                 }

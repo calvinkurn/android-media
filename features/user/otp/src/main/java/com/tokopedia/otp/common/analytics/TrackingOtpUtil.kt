@@ -2,11 +2,20 @@ package com.tokopedia.otp.common.analytics
 
 import android.os.Build
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.CurrentSite.TOKOPEDIA_MARKETPLACE_SITE
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_BUSINESS_UNIT
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_CURRENT_SITE
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
+import com.tokopedia.otp.verification.data.OtpData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,7 +24,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class TrackingOtpUtil @Inject constructor() {
+class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -25,9 +34,9 @@ class TrackingOtpUtil @Inject constructor() {
     fun trackClickMethodOtpButton(otpType: Int, modeName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_CHOOSE_OTP_PAGE,
-                Action.ACTION_CLICK_ON_OTP_METHOD,
-                String.format("%s - %s", otpType.toString(), modeName)))
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_METHOD_OTP,
+                String.format("click - %s - %s", otpType.toString(), modeName)))
     }
 
     fun trackClickInactivePhoneNumber(otpType: String) {
@@ -101,21 +110,13 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    fun trackClickUseOtherMethod(otpType: Int) {
+    fun trackClickUseOtherMethod(otpData: OtpData, modeListData: ModeListData) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_INPUT_OTP_PAGE,
+                Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_ON_GUNAKAN_METODE_LAIN,
-                otpType.toString()
+                "${otpData.otpType} - ${modeListData.modeText}"
         ))
-    }
-
-    fun trackClickResendOtpButton(otpType: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_INPUT_OTP_PAGE,
-                Action.ACTION_CLICK_ON_KIRIM_ULANG,
-                otpType.toString()))
     }
 
     fun trackClickResendRegisterPhoneOtpButton() {
@@ -181,12 +182,13 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    fun trackClickBackOtpPage(otpType: Int) {
+    fun trackClickBackOtpPage(otpData: OtpData, modeListData: ModeListData) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.EVENT_CLICK_BACK,
-                Category.CATEGORY_INPUT_OTP_PAGE,
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_BACK_BUTTON,
-                otpType.toString()))
+                "${otpData.otpType} - ${modeListData.modeText}"
+        ))
     }
 
     fun trackClickBackRegisterPhoneOtp() {
@@ -432,14 +434,213 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    /* INACTIVE PHONE */
-
     fun trackClickInactivePhoneLink() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_CHOOSE_OTP_PAGE,
                 Action.ACTION_CLICK_ON_INACTIVE_PHONE,
                 Label.LABEL_EMPTY
+        ))
+    }
+
+    fun trackViewApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_LOGIN_IRIS,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_SUCCESSFULLY_SCANNING_QR_CODE,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickApprovedApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_CLICK_ON_BUTTON_APPROVED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickRejectedApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_CLICK_ON_BUTTON_REJECTED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickBackApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackViewApprovalApprovedPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_LOGIN_IRIS,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_APPROVED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickTutupApprovalApprovedPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_SUCCESS_CLICK_ON_BUTTON_TUTUP,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickCloseApprovalApprovedPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_SUCCESS_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackViewApprovalExpiredPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_LOGIN_IRIS,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_EXPIRED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickScanApprovalExpiredPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_EXPIRED_CLICK_ON_BUTTON_SCAN_KEMBALI,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickCloseApprovalExpiredPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_EXPIRED_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    /* GOOGLE AUTH */
+    fun trackViewVerificationGoogleAuth(otpType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_VIEW_CHOOSE_OTP_PAGE,
+                otpType
+        ))
+    }
+
+    fun trackAutoSubmitVerificationGoogleAuth(otpType: String, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_VIEW_CHOOSE_OTP_PAGE,
+                "$otpType - " + if (isSuccess) "success" else "fail - $message"
+        ))
+    }
+
+    /* Generate Otp */
+    fun trackGenerateOtp(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_METHOD_OTP,
+                if (isSuccess) {
+                    "success"
+                } else {
+                    "fail - $message"
+                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+        ))
+    }
+
+    fun trackResendOtp(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_RESEND_OTP,
+                if (isSuccess) {
+                    "success"
+                } else {
+                    "fail - $message"
+                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+        ))
+    }
+
+
+    /* Auto Submit Tracker */
+    fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_AUTO_SUBMIT_OTP,
+                if (isSuccess) {
+                    "success"
+                } else {
+                    "fail - $message"
+                } + " - ${otpData.otpType} - ${modeListData.modeText}"
         ))
     }
 }

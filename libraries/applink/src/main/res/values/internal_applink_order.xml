@@ -22,6 +22,7 @@
     <string name="path_delivered" translatable="false">/delivered</string>
     <string name="path_history" translatable="false">/history</string>
     <string name="path_order" translatable="false">/order</string>
+    <string name="path_buyer_order_detail" translatable="false">/buyer-order-detail</string>
     <string name="path_orderlist" translatable="false">/orderlist</string>
     <string name="path_track" translatable="false">/track</string>
     <string name="path_cancellation_request" translatable="false">/cancellationrequest</string>
@@ -38,6 +39,7 @@
     <string name="path_seller_migration" translatable="false">/seller-migration</string>
 
     <string name="path_order_unified" translatable="false">/unified</string>
+    <string name="path_order_request_cancel" translatable="false">/request-cancel</string>
 
     <string name="path_order_confirmed" translatable="false">/confirmed</string>
     <string name="path_order_list_buyer" translatable="false">/order_list</string>
@@ -50,6 +52,7 @@
     <string name="path_any" translatable="false">/.*\\/</string>
 
     <string name="path_order_snapshot" translatable="false">/snapshot</string>
+    <string name="path_order_buyer_cancellation_request_page" translatable="false">/cancellationrequest</string>
 
 
 </resources>

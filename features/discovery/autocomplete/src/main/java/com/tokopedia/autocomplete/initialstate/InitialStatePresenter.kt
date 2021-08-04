@@ -2,6 +2,9 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetDataView
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetTitleDataView
+import com.tokopedia.autocomplete.initialstate.chips.convertToInitialStateChipWidgetDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.convertToCuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
@@ -13,11 +16,14 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataVi
 import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshInitialStateUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
+import com.tokopedia.autocomplete.initialstate.productline.convertToListInitialStateProductListDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.Dimension90Utils
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -57,12 +63,18 @@ class InitialStatePresenter @Inject constructor(
         return if (userSession.isLoggedIn) userSession.userId else "0"
     }
 
+    private fun isTokoNow(): Boolean {
+        return UrlParamUtils.isTokoNow(searchParameter)
+    }
+
     override fun getInitialStateData() {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getInitialStateSubscriber()
         )
@@ -168,32 +180,33 @@ class InitialStatePresenter @Inject constructor(
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
                     onRecentViewImpressed(initialStateData.items)
                     data.addAll(
-                            initialStateData.convertRecentViewSearchToVisitableList().insertTitle(initialStateData.header)
+                            initialStateData.convertRecentViewSearchToVisitableList(getDimension90()).insertTitle(initialStateData.header)
                     )
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     onPopularSearchImpressed(initialStateData)
                     data.addAll(
-                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(
+                            initialStateData.convertPopularSearchToVisitableList(getDimension90()).insertTitleWithRefresh(
                                     initialStateData.featureId,
                                     initialStateData.header,
                                     initialStateData.labelAction
                             )
                     )
                 }
-                /*
-                    Backend not ready, will be implemented after the new field is already in production.
-                    Estimated release on 3.124
-                */
-//                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
-//                    data.addAll(
-//                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
-//                    )
-//                }
+                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
+                    data.addAll(
+                            initialStateData.convertToListInitialStateProductListDataView(getDimension90()).insertProductListTitle(initialStateData.header)
+                    )
+                }
+                InitialStateData.INITIAL_STATE_LIST_CHIPS -> {
+                    data.addAll(
+                            initialStateData.convertToInitialStateChipWidgetDataView(getDimension90()).insertChipWidgetTitle(initialStateData.header)
+                    )
+                }
                 else -> {
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(
-                            initialStateData.convertDynamicInitialStateSearchToVisitableList().insertDynamicTitle(
+                            initialStateData.convertDynamicInitialStateSearchToVisitableList(getDimension90()).insertDynamicTitle(
                                     initialStateData.featureId,
                                     initialStateData.header,
                                     initialStateData.labelAction
@@ -230,7 +243,7 @@ class InitialStatePresenter @Inject constructor(
     private fun addRecentSearchDataWithoutSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
         onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
 
-        listVisitable.add(listInitialStateItem.convertToRecentSearchDataView())
+        listVisitable.add(listInitialStateItem.convertToRecentSearchDataView(getDimension90()))
         recentSearchPosition = listVisitable.lastIndex
     }
 
@@ -240,12 +253,17 @@ class InitialStatePresenter @Inject constructor(
         val recentSearchToBeShown = listInitialStateItem.take(RECENT_SEARCH_SEE_MORE_LIMIT)
         onRecentSearchImpressed(getDataLayerForPromo(recentSearchToBeShown))
 
-        listVisitable.add(recentSearchToBeShown.convertToRecentSearchDataView())
+        listVisitable.add(recentSearchToBeShown.convertToRecentSearchDataView(getDimension90()))
         recentSearchPosition = listVisitable.lastIndex
 
         listVisitable.add(createRecentSearchSeeMoreButton())
         seeMoreButtonPosition = listVisitable.lastIndex
         onImpressSeeMoreRecentSearch()
+    }
+
+    //dimension90 = pageSource
+    private fun getDimension90(): String {
+        return Dimension90Utils.getDimension90(searchParameter)
     }
 
     private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
@@ -280,17 +298,29 @@ class InitialStatePresenter @Inject constructor(
         return this
     }
 
+    private fun MutableList<Visitable<*>>.insertChipWidgetTitle(title: String): List<Visitable<*>> {
+        val titleSearch = InitialStateChipWidgetTitleDataView(title)
+        this.add(0, titleSearch)
+        return this
+    }
+
     private fun createRecentSearchSeeMoreButton(): RecentSearchSeeMoreDataView {
         return RecentSearchSeeMoreDataView()
     }
 
     override fun refreshPopularSearch(featureId: String) {
+        if (isTokoNow()) view?.onRefreshTokoNowPopularSearch()
+        else view?.onRefreshPopularSearch()
+
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+
         refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getPopularSearchSubscriber(featureId)
         )
@@ -331,12 +361,15 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshDynamicSection(featureId: String) {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+
         refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getRefreshDynamicSectionSubscriber(featureId)
         )
@@ -411,7 +444,7 @@ class InitialStatePresenter @Inject constructor(
         val deleted = recentSearchList.find { item -> item.title == keyword }
         recentSearchList.remove(deleted)
 
-        val recentSearchDataView = recentSearchList.convertToRecentSearchDataView()
+        val recentSearchDataView = recentSearchList.convertToRecentSearchDataView(getDimension90())
         if (recentSearchDataView.list.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
             recentSearchDataVisitable.list = recentSearchDataView.list
             removeSeeMoreRecentSearch()
@@ -469,17 +502,17 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        trackEventItemClicked(item, adapterPosition)
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
+        trackEventItemClicked(item)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
     }
 
-    private fun trackEventItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+    private fun trackEventItemClicked(item: BaseItemInitialStateSearch) {
         when(item.type) {
-            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId())
-            else -> view?.trackEventClickRecentSearch(getItemEventLabelForTracking(item, adapterPosition))
+            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId(), item.dimension90)
+            else -> view?.trackEventClickRecentSearch(getItemEventLabelForTracking(item), item.dimension90)
         }
     }
 
@@ -487,8 +520,8 @@ class InitialStatePresenter @Inject constructor(
         return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
     }
 
-    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
-        return "value: ${item.title} - po: ${adapterPosition +1} - applink: ${item.applink}"
+    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch): String {
+        return "value: ${item.title} - po: ${item.position} - applink: ${item.applink}"
     }
 
     override fun detachView() {
@@ -509,7 +542,7 @@ class InitialStatePresenter @Inject constructor(
             val recentSearchToImpress = getDataLayerForPromo(recentSearchList)
             onRecentSearchImpressed(recentSearchToImpress.takeLast(recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT))
 
-            val recentSearchDataView = recentSearchList.convertToRecentSearchDataView()
+            val recentSearchDataView = recentSearchList.convertToRecentSearchDataView(getDimension90())
 
             val recentSearchDataVisitable: RecentSearchDataView = listVisitable.find { it is RecentSearchDataView } as RecentSearchDataView
             recentSearchDataVisitable.list = recentSearchDataView.list
@@ -522,12 +555,22 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        val label = "value: ${item.title} - title: ${item.header} - po: ${adapterPosition + 1}"
-        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId)
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
+        if (isTokoNow()) trackEventClickTokoNowDynamicSectionItem(item)
+        else trackEventClickDynamicSectionItem(item)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
+    }
+
+    private fun trackEventClickTokoNowDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - po: ${item.position} - page: ${item.applink}"
+        view?.trackEventClickTokoNowDynamicSectionItem(label)
+    }
+
+    private fun trackEventClickDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId, item.dimension90)
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
@@ -535,6 +578,30 @@ class InitialStatePresenter @Inject constructor(
         view?.trackEventClickCuratedCampaignCard(getUserId(), label, curatedCampaignDataView.type)
 
         view?.route(curatedCampaignDataView.applink, searchParameter)
+        view?.finish()
+    }
+
+    override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
+        val label = "po: ${item.position} - applink: ${item.applink}"
+        view?.trackEventClickRecentView(item, label)
+
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
+        val label = "po: ${item.position} - applink: ${item.applink}"
+        view?.trackEventClickProductLine(item, getUserId(), label)
+
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    override fun onChipClicked(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickChip(getUserId(), label, item.featureId, item.dimension90)
+
+        view?.route(item.applink, searchParameter)
         view?.finish()
     }
 }

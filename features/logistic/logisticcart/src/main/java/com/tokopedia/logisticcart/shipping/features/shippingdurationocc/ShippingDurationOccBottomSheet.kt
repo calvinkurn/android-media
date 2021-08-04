@@ -18,26 +18,22 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
 
     private lateinit var bottomSheetUnify: BottomSheetUnify
     private lateinit var listener: ShippingDurationOccBottomSheetListener
-    private var isOccNewFlow = false
 
-    fun showBottomSheet(fragment: Fragment, isOccNewFlow: Boolean, list: List<RatesViewModelType>, listener: ShippingDurationOccBottomSheetListener) {
-        this.isOccNewFlow = isOccNewFlow
+    fun showBottomSheet(fragment: Fragment, list: List<RatesViewModelType>, listener: ShippingDurationOccBottomSheetListener) {
         fragment.context?.let { context ->
-            fragment.fragmentManager?.let { fm ->
-                this.listener = listener
-                bottomSheetUnify = BottomSheetUnify().apply {
-                    isDragable = true
-                    isHideable = true
-                    clearContentPadding = true
-                    setTitle(context.getString(R.string.title_bottomsheet_shipment))
-                    val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
-                    setupChild(child, list)
-                    fragment.view?.height?.div(2)?.let { height ->
-                        customPeekHeight = height
-                    }
-                    setChild(child)
-                    show(fm, null)
+            this.listener = listener
+            bottomSheetUnify = BottomSheetUnify().apply {
+                isDragable = true
+                isHideable = true
+                clearContentPadding = true
+                setTitle(context.getString(R.string.title_bottomsheet_shipment))
+                val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
+                setupChild(child, list)
+                fragment.view?.height?.div(2)?.let { height ->
+                    customPeekHeight = height
                 }
+                setChild(child)
+                show(fragment.parentFragmentManager, null)
             }
         }
     }
@@ -48,7 +44,7 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         mutableList.add(0, NotifierModel())
 
         rvShipping.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
-        rvShipping.adapter = ShippingDurationOccAdapter(isOccNewFlow, mutableList, this)
+        rvShipping.adapter = ShippingDurationOccAdapter(mutableList, this)
     }
 
     override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {

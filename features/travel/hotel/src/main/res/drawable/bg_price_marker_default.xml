@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:bottom="@dimen/hotel_14dp">
+    <item android:bottom="@dimen/layout_lvl2">
         <shape android:shape="rectangle">
             <solid android:color="@color/Unify_N0"/>
-            <size android:height="@dimen/hotel_26dp"/>
+            <size android:height="@dimen/hotel_28dp"/>
             <padding android:left="@dimen/layout_lvl1" android:right="@dimen/layout_lvl1" android:top="@dimen/spacing_lvl2" android:bottom="@dimen/spacing_lvl2"/>
             <corners android:radius="@dimen/layout_lvl5" />
         </shape>

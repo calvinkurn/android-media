@@ -73,7 +73,7 @@
         tools:targetApi="p" />
 
     <com.tokopedia.iconunify.IconUnify
-        app:icon_color_night_enable="@color/home_account_icon_dark"
+        app:icon_color_night_enable="@color/home_account_dms_icon_dark"
         app:icon_name="EDIT"
         android:id="@+id/account_user_item_profile_edit"
         android:layout_marginEnd="@dimen/home_account_dp_6"

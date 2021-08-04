@@ -22,6 +22,9 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,7 +49,7 @@ import javax.inject.Inject
 class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val ERROR_MESSAGE = "Error validate voucher type"
+        private const val GET_BASIC_SHOP_INFO_ERROR = "Get basic shop info error"
 
         @JvmStatic
         fun createInstance(onNext: (VoucherImageType, Int, Int) -> Unit,
@@ -185,9 +188,13 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                             drawInitialVoucherPreview()
                         }
                         is Fail -> {
-                            val error = result.throwable.message.toBlankOrString()
-                            view?.showErrorToaster(error)
-                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                            // show user friendly error message to user
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            view?.showErrorToaster(errorMessage)
+                            // send crash report to firebase crashlytics
+                            MvcErrorHandler.logToCrashlytics(result.throwable, GET_BASIC_SHOP_INFO_ERROR)
+                            // log error type to scalyr
+                            ServerLogger.log(Priority.P2, "MVC_GET_BASIC_SHOP_INFO_ERROR", mapOf("type" to errorMessage))
                         }
                     }
                     isWaitingForShopInfo = false

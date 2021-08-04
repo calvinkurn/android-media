@@ -184,6 +184,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         topAdsViewUrl shouldBe otherRelatedProduct.ads.productViewUrl
         this.topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickUrl
         topAdsWishlistUrl shouldBe otherRelatedProduct.ads.productWishlistUrl
+
+        carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
+        carouselProductType.hasThreeDots shouldBe true
     }
 
     @Test

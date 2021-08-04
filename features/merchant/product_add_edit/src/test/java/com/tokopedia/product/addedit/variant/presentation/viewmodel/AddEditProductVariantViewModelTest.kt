@@ -21,6 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.util.*
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFixture() {
@@ -125,6 +126,10 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
         val isVariantSizechartVisible = spiedViewModel.isVariantSizechartVisible.value
         assert(isVariantSizechartVisible == true)
+
+        //test if reversed
+        spiedViewModel.updateSizechartFieldVisibility(variantDetailsTest.reversed())
+        assert(spiedViewModel.isVariantSizechartVisible.value == true)
     }
 
     @Test
@@ -154,6 +159,10 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
         val isVariantSizechartVisible = spiedViewModel.isVariantSizechartVisible.value
         assert(isVariantSizechartVisible == true)
+
+        // change sizechart based on selectedVariantDetails
+        spiedViewModel.updateSizechartFieldVisibility(mutableListOf(variantDetailTest2))
+        assert(spiedViewModel.isVariantSizechartVisible.value == true)
     }
 
     @Test
@@ -257,6 +266,10 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.removeSelectedVariantUnitValue(0, variantDetailTest1.units[0].unitValues[3])
         assert(viewModel.isVariantUnitValuesEmpty(0))
 
+        // validate removing unidentified layout pos
+        viewModel.removeSelectedVariantUnitValue(1000, variantDetailTest1.units[0].unitValues[2])
+        assert(viewModel.isVariantUnitValuesEmpty(0))
+
         // validate removing all variant
         viewModel.clearProductVariant()
         val selection = viewModel.productInputModel.value?.variantInputModel?.selections
@@ -300,6 +313,7 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         // removing
         viewModel.removeVariantValueLayoutMapEntry(0)
         assert(viewModel.isVariantUnitValuesLayoutEmpty())
+        assert(viewModel.getRenderedLayoutAdapterPosition() == 0)
     }
 
     @Test
@@ -412,6 +426,16 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
+    fun `getCategoryVariantCombination function should not execute getCategoryVariantCombinationUseCase if categoryId 0`() = runBlocking {
+        viewModel.getVariantCategoryCombination(0, listOf())
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify (exactly = 0) {
+            getVariantCategoryCombinationUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
     fun `custom should be added to respective variant unit inside selected variant data`() {
         val customVuv = UnitValue()
         val variantUnitId = 1
@@ -461,11 +485,20 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
+    fun `view model should return default value when position is not defined`() {
+        val adapterPosition = 999
+        viewModel.updateVariantValuesLayoutMap(0, 0)
+        val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
+        assert(layoutPosition == VARIANT_VALUE_LEVEL_ONE_POSITION)
+    }
+
+    @Test
     fun `view model should return expected variant data from the map`() {
         val layoutPosition = VARIANT_VALUE_LEVEL_TWO_POSITION
         val expectedVariantData = VariantDetail()
         viewModel.updateVariantDataMap(layoutPosition, expectedVariantData)
         assert(viewModel.getVariantData(layoutPosition) == expectedVariantData)
+        assert(viewModel.getVariantData(9999).variantID == 0)
     }
 
     @Test
@@ -480,6 +513,16 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         val selectedVariantDetail = VariantDetail(variantID = COLOUR_VARIANT_TYPE_ID)
         viewModel.hideProductVariantPhotos(selectedVariantDetail)
         assert(viewModel.isVariantPhotosVisible.value == false)
+    }
+
+    @Test
+    fun `product variant photos should ignore set value when the variant type is not color`() {
+        val selectedVariantDetail = VariantDetail(variantID = 9999999)
+        viewModel.showProductVariantPhotos(selectedVariantDetail)
+        assert(viewModel.isVariantPhotosVisible.value == null)
+
+        viewModel.hideProductVariantPhotos(selectedVariantDetail)
+        assert(viewModel.isVariantPhotosVisible.value == null)
     }
 
     @Test
@@ -686,12 +729,12 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
     @Test
     fun `mapProductVariant should return ProductVariantInputModel`() {
-        viewModel.productInputModel.value = ProductInputModel(
+        viewModel.productInputModel = MutableLiveData(ProductInputModel(
                 variantInputModel = VariantInputModel(
                         products = listOf(
                                 ProductVariantInputModel(combination = listOf(1))
                         )
-                ))
+                )))
         viewModel.callPrivateFunc("mapProductVariant",
                 emptyList<PictureVariantInputModel>(),
                 listOf(1)) as ProductVariantInputModel
@@ -706,5 +749,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     fun `isVariantUnitValuesEmpty should return valid output`() {
         val isEmpty = viewModel.isVariantUnitValuesEmpty(99)
         assertEquals(true, isEmpty)
+    }
+
+    @Test
+    fun `mapVariantPhoto should return emptylist if input is null or empty`() {
+        val result1 = viewModel.callPrivateFunc("mapVariantPhoto", null) as List<*>
+        assert(result1.isEmpty())
+
+        val result2 = viewModel.callPrivateFunc("mapVariantPhoto", VariantPhoto("", "")) as List<*>
+        assert(result2.isEmpty())
     }
 }

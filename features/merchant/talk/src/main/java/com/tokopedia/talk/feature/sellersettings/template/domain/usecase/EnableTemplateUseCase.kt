@@ -21,7 +21,7 @@ class EnableTemplateUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         """
     }
 
-    private val requestParams = RequestParams.EMPTY
+    private val requestParams = RequestParams.create()
 
     init {
         setupUseCase()

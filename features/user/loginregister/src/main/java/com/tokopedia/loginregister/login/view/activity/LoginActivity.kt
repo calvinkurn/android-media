@@ -14,14 +14,17 @@ import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.login.di.DaggerLoginComponent
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 
 /**
  * @author by nisie on 10/1/18.
  */
-open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent> {
+open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
+
+    private var loginComponent: LoginComponent? = null
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -33,8 +36,20 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterCompo
         return LoginEmailPhoneFragment.createInstance(bundle)
     }
 
-    override fun getComponent(): LoginRegisterComponent {
-        return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): LoginComponent {
+        return loginComponent ?: initializeLoginComponent()
+    }
+
+    protected open fun initializeLoginComponent(): LoginComponent {
+        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+        return DaggerLoginComponent
+                .builder()
+                .loginRegisterComponent(loginRegisterComponent)
+                .build().also {
+                    loginComponent = it
+                }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

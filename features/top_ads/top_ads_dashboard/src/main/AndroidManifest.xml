@@ -103,7 +103,6 @@
         <activity
             android:name=".view.activity.TopAdsGroupDetailViewActivity"
             android:label="@string/topads_group_detail"
-            android:exported="true"
             android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
         <activity

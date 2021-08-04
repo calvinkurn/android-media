@@ -1,62 +1,75 @@
 package com.tokopedia.saldodetails.design
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.text.Html
-import android.widget.TextView
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifyprinciples.Typography
 
-import com.tokopedia.design.bottomsheet.BottomSheetView
+class UserStatusInfoBottomSheet : BottomSheetUnify() {
 
-class UserStatusInfoBottomSheet(context: Context) : BottomSheetView(context) {
+    private var sheetTitle: CharSequence? = null
+    private var bodyText: CharSequence? = null
+    private var buttonText: CharSequence? = null
+    private var bodyTV: Typography? = null
+    private var actionButtonTV: UnifyButton? = null
+    private val childLayoutRes = com.tokopedia.saldodetails.R.layout.user_info_bottom_sheet
 
-    private var titleTV: TextView? = null
-    private var bodyTV: TextView? = null
-    private var actionButtonTV: TextView? = null
-
-    override fun getLayout(): Int {
-        return com.tokopedia.saldodetails.R.layout.user_info_bottom_sheet
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getArgumentData()
+        setDefaultParams()
+        initBottomSheet()
     }
 
-    override fun init(context: Context) {
-        if (context is Activity)
-            layoutInflater = context.layoutInflater
-        else
-            layoutInflater = ((context as ContextWrapper)
-                    .baseContext as Activity).layoutInflater
-
-        bottomSheetView = layoutInflater.inflate(layout, null)
-        setContentView(bottomSheetView)
-
-
-        titleTV = bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.title_text_view)
-        bodyTV = bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.body_text_view)
-        actionButtonTV = bottomSheetView.findViewById(com.tokopedia.saldodetails.R.id.action_button_text_view)
-
-        bottomSheetView.findViewById<TextView>(com.tokopedia.saldodetails.R.id.action_button_text_view).
-                setOnClickListener{ dismiss() }
-    }
-
-    fun setTitle(title: String) {
-        if (titleTV == null) {
-            return
+    private fun getArgumentData() {
+        arguments?.let {
+            sheetTitle = it.getString(TITLE_TEXT)?.parseAsHtml() ?: ""
+            bodyText = it.getString(BODY_TEXT)?.parseAsHtml() ?: ""
+            buttonText = it.getString(BUTTON_TEXT)?.parseAsHtml() ?: ""
         }
-        titleTV!!.text = Html.fromHtml(title)
     }
 
-    fun setBody(body: String) {
-        if (bodyTV == null) {
-            return
+    private fun initBottomSheet() {
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
+        setChild(childView)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        bodyTV = view.findViewById(com.tokopedia.saldodetails.R.id.body_text_view) as Typography
+        actionButtonTV =
+            view.findViewById(com.tokopedia.saldodetails.R.id.action_button_text_view) as UnifyButton
+        bodyTV?.text = bodyText
+        actionButtonTV?.text = buttonText
+    }
+
+    private fun setDefaultParams() {
+        isDragable = true
+        isHideable = true
+        showCloseIcon = true
+        showHeader = true
+        customPeekHeight = (getScreenHeight() / 2).toDp()
+        setTitle(sheetTitle.toString())
+    }
+
+    companion object {
+        const val TAG = "UserStatusBottomSheet"
+        const val BODY_TEXT = "bodyText"
+        const val TITLE_TEXT = "titleText"
+        const val BUTTON_TEXT = "buttonText"
+        fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
+            val sheet = UserStatusInfoBottomSheet()
+            sheet.arguments = bundle
+            sheet.show(childFragmentManager, TAG)
         }
-
-        bodyTV!!.text = Html.fromHtml(body)
     }
 
-    fun setButtonText(text: String) {
-        if (actionButtonTV == null) {
-            return
-        }
-
-        actionButtonTV!!.text = Html.fromHtml(text)
-    }
 }

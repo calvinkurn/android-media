@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.view.listener
 
 import androidx.fragment.app.Fragment
 
-internal interface ChooseAddressListener {
+interface ChooseAddressListener {
 
     fun onLocalizingAddressSelected()
 

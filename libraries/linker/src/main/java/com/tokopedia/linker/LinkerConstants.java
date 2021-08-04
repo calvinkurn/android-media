@@ -60,6 +60,12 @@ public interface LinkerConstants {
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
     String KEY_DESKTOP_URL = "$desktop_url";
     String KEY_PAYMENT = "paymentID";
+    String KEY_ORDERID = "order_id";
+    String KEY_CURRENCY = "currency";
+    String KEY_SHIPPING_PRICE = "shipping_price";
+    String KEY_REVENUE = "revenue";
+    String KEY_EVENT = "event";
+    String EVENT_FB_FIRST_TXN = "marketplace_first_txn";
     String KEY_PRODUCTTYPE = "productType";
     String KEY_USERID = "userId";
     String KEY_OG_URL = "$og_url";
@@ -114,6 +120,7 @@ public interface LinkerConstants {
     String UTM_SOURCE = "utm_source";
     String UTM_MEDIUM = "utm_medium";
     String UTM_CAMPAIGN = "utm_campaign";
+    String CLICK_TIME = "+click_timestamp";
     String UTM_TERM = "utm_term";
     String SCREEN_NAME_KEY = "screenName";
     String SCREEN_NAME_VALUE = "Deeplink Page";
@@ -128,5 +135,7 @@ public interface LinkerConstants {
     String LEVEL3_ID = "level3_id";
     String SKU = "sku";
     String CONTENT_ID = "content_id";
-    String BRANCH_LINK_DOMAIN="tokopedia.link/";
+    String BRANCH_LINK_DOMAIN_1="tokopedia.link";
+    String BRANCH_LINK_DOMAIN_2="tokopedia-alternate.app.link";
+    String BRANCH_LINK_DOMAIN_3="tokopedia.app.link";
 }

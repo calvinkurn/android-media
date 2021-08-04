@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.analytics
 
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -18,7 +19,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - anonim on ulasan produk",
-                "${if(isEditReview) feedbackId else orderId} - $productId"
+                "${if (isEditReview) feedbackId else orderId} - $productId"
         ))
     }
 
@@ -49,7 +50,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
-                "order_id : " + if(isEditReview) feedbackId else orderId +
+                "order_id : " + if (isEditReview) feedbackId else orderId +
                         " - product_id : " + productId +
                         " - star : " + ratingValue +
                         " - ulasan : " + messageState +
@@ -71,7 +72,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - ulasan product description",
-                "${if(isEditReview) feedbackId else orderId} - $productId - $messageState"
+                "${if (isEditReview) feedbackId else orderId} - $productId - $messageState"
         ))
     }
 
@@ -79,7 +80,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                CreateReviewTrackingConstants.VIEW_SMILEY,
+                CreateReviewTrackingConstants.EVENT_ACTION_VIEW_SMILEY,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
@@ -106,7 +107,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - upload gambar produk",
-                "${if(isEditReview) orderId else feedbackId} - $productId - $successState - $imageNum"
+                "${if (isEditReview) orderId else feedbackId} - $productId - $successState - $imageNum"
         ))
     }
 
@@ -123,7 +124,7 @@ object CreateReviewTracking {
                 "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - $ratingValue",
-                "${if(isEditReview) feedbackId else orderId} - $productId - $successState"
+                "${if (isEditReview) feedbackId else orderId} - $productId - $successState"
         ))
     }
 
@@ -131,7 +132,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                CreateReviewTrackingConstants.CLICK_EXPAND_TEXTBOX,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_EXPAND_TEXTBOX,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
@@ -140,7 +141,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                CreateReviewTrackingConstants.CLICK_COLLAPSE_TEXT_BOX,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_COLLAPSE_TEXT_BOX,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
@@ -158,7 +159,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_VIEW_DIALOG, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -167,7 +168,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_CONTINUE_IN_DIALOG, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_CONTINUE_IN_DIALOG, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -176,17 +177,8 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_LEAVE_PAGE, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_LEAVE_PAGE, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
-        ))
-    }
-
-    fun eventViewThankYouBottomSheet(bottomSheetTitle: String, hasPendingIncentive: Boolean) {
-        tracker.sendGeneralEvent(createEventMap(
-                ReviewTrackingConstant.VIEW_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, bottomSheetTitle),
-                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
 
@@ -194,7 +186,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_SEND_ANOTHER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_ANOTHER, title),
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
@@ -203,7 +195,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_LATER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_LATER, title),
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
@@ -212,7 +204,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_OK, title),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_OK, title),
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
@@ -221,7 +213,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -230,13 +222,138 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_SEND_NOW, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_NOW, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
 
     fun openScreen(screenName: String) {
         tracker.sendScreenAuthenticated(screenName)
+    }
+
+    fun openScreenWithCustomDimens(screenName: String, productId: String) {
+        tracker.sendScreenAuthenticated(screenName, getOpenScreenEventMap(productId))
+    }
+
+    fun eventViewIncentivesTicker(message: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                ReviewTrackingConstant.VIEW_OVO_INCENTIVES_TICKER,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_INCENTIVES_TICKER, message, reputationId, orderId, productId),
+                productId,
+                userId)
+        )
+    }
+
+    fun eventClickIncentivesTicker(message: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_INCENTIVES_TICKER,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_INCENTIVES_TICKER, message, reputationId, orderId, productId),
+                productId,
+                userId)
+        )
+    }
+
+    fun eventViewDialog(dialogType: CreateReviewDialogType, title: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                mapDialogTypeToViewDialogEventAction(dialogType),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_DIALOG, title, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventClickDialogOption(dialogType: CreateReviewDialogType, title: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                mapDialogTypeToClickDialogEventAction(dialogType),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_DIALOG, title, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventClickReviewTemplate(templateText: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_TEMPLATE,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_TEMPLATE, templateText, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventViewReviewTemplate(templateCount: Int, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_VIEW_TEMPLATE,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_TEMPLATE, templateCount),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventClickSubmitForm(rating: Int, textLength: Int, numberOfPicture: Int, isAnonymous: Boolean, isEligible: Boolean, isTemplateAvailable: Boolean, templateSelectedCount: Int, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SUBMIT,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventDismissForm(rating: Int, textLength: Int, numberOfPicture: Int, isAnonymous: Boolean, isEligible: Boolean, isTemplateAvailable: Boolean, templateSelectedCount: Int, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_DISMISS_FORM,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventViewThankYouBottomSheet(title: String, reputationId: String, orderId: String, feedbackId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET, title, reputationId, orderId, productId, feedbackId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventDismissTncBottomSheet(message: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                ReviewTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_TICKER,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_DISMISS_TNC, message, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventClickContinueTncBottomSheet(title: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                ReviewTrackingConstant.CLICK_CONTINUE_SEND_REVIEW_0N_OVO_INCENTIVES,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_CONTINUE_TNC, title, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
     }
 
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
@@ -248,7 +365,42 @@ object CreateReviewTracking {
         return eventMap
     }
 
+    private fun createEventMap(event: String, category: String, action: String, label: String, productId: String, userId: String): HashMap<String, Any>? {
+        val eventMap = HashMap<String, Any>()
+        eventMap[ReviewTrackingConstant.EVENT] = event
+        eventMap[ReviewTrackingConstant.EVENT_CATEGORY] = category
+        eventMap[ReviewTrackingConstant.EVENT_ACTION] = action
+        eventMap[ReviewTrackingConstant.EVENT_LABEL] = label
+        eventMap[ReviewTrackingConstant.KEY_USER_ID] = userId
+        eventMap[CreateReviewTrackingConstants.KEY_BUSINESS_UNIT] = CreateReviewTrackingConstants.BUSINESS_UNIT
+        eventMap[CreateReviewTrackingConstants.KEY_CURRENT_SITE] = CreateReviewTrackingConstants.CURRENT_SITE
+        eventMap[CreateReviewTrackingConstants.KEY_PRODUCT_ID] = productId
+        return eventMap
+    }
+
     private fun getEditMarker(isEditReview: Boolean): String? {
         return if (isEditReview) " - edit" else ""
+    }
+
+    private fun mapDialogTypeToViewDialogEventAction(dialogType: CreateReviewDialogType): String {
+        return when (dialogType) {
+            CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_VIEW_SEND_RATING_DIALOG
+            CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_VIEW_UNSAVED_DIALOG
+        }
+    }
+
+    private fun mapDialogTypeToClickDialogEventAction(dialogType: CreateReviewDialogType): String {
+        return when (dialogType) {
+            CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_RATING_OPTION
+            CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_STAY_OPTION
+        }
+    }
+
+    private fun getOpenScreenEventMap(productId: String): Map<String, String> {
+        return mapOf(
+                CreateReviewTrackingConstants.KEY_BUSINESS_UNIT to CreateReviewTrackingConstants.BUSINESS_UNIT,
+                CreateReviewTrackingConstants.KEY_CURRENT_SITE to CreateReviewTrackingConstants.CURRENT_SITE,
+                CreateReviewTrackingConstants.KEY_PRODUCT_ID to productId
+        )
     }
 }

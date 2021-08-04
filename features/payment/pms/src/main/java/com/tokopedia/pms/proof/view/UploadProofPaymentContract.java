@@ -1,7 +1,5 @@
 package com.tokopedia.pms.proof.view;
 
-import android.content.res.Resources;
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.pms.proof.model.PaymentProofResponse;

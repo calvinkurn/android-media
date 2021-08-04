@@ -8,14 +8,18 @@ open abstract class NfcCheckBalanceActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = getString(R.string.emoney_toolbar_title_etoll_check_balance)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
-    override fun getCloseButton(): Int {
-        return com.tokopedia.resources.common.R.drawable.ic_system_close_default
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_nfc_common
     }
 
-    override fun isShowCloseButton(): Boolean {
-        return true
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.nfc_checkout_toolbar
     }
 }

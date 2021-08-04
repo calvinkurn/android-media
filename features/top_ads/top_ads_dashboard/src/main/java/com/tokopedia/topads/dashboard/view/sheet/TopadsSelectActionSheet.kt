@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -61,7 +63,7 @@ class TopadsSelectActionSheet : BottomSheetUnify() {
     private fun initView() {
         context?.let {
             img_active.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_green_dot))
-            edit_img.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon))
+            edit_img.setImageDrawable(view?.context?.let { it1 -> getIconUnifyDrawable(it1, IconUnify.EDIT) })
             img_delete.setImageDrawable(it.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_delete))
             action_edit.show()
             action_edit.setOnClickListener {

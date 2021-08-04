@@ -30,8 +30,8 @@ class SliderBannerItemViewHolder(itemView: View) : CircularViewHolder(itemView) 
         constraintLayout.removeAllViews()
         createImageViewConstrains(item)
         bannerImageView.loadImage(item.url) {
-            setPlaceHolder(R.color.grey_1100)
-            setErrorDrawable(R.color.grey_1100)
+            setPlaceHolder(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+            setErrorDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
         }
         constraintSet.applyTo(constraintLayout)
         bannerImageView.setOnClickListener {

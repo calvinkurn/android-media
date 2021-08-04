@@ -3,7 +3,7 @@ package com.tokopedia.shop.info.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
-import com.tokopedia.shop.info.domain.usecase.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.common.domain.GetShopNoteUseCase
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -20,7 +20,7 @@ abstract class ShopInfoViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getShopNotesUseCase: GetShopNotesByShopIdUseCase
+    lateinit var getShopNotesUseCase: GetShopNoteUseCase
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
     @RelaxedMockK

@@ -1,8 +1,8 @@
 package com.tokopedia.saldodetails.commom.analytics
 
-import javax.inject.Inject
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
 class SaldoDetailsAnalytics @Inject
 constructor() {

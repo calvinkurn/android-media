@@ -173,52 +173,29 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/text_input_layout_shipper_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_8"
-            android:hint="@string/label_hint_cart_item_dropshipper_name"
-            app:hintTextAppearance="@style/transactionTextInputLayout">
+            app:text_field_input_type="text"
+            app:text_field_label="@string/label_hint_cart_item_dropshipper_name"
+            app:text_field_label_static="false"
+            app:text_field_placeholder="@string/label_hint_cart_item_dropshipper_name" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_shipper_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="-4dp"
-                android:imeOptions="actionNext"
-                android:inputType="textCapWords"
-                android:textSize="@dimen/sp_14"
-                android:theme="@style/TransactionEditText"
-                app:backgroundTint="@color/Unify_N100" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/text_input_layout_shipper_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_8"
-            android:hint="@string/label_hint_cart_item_dropshipper_phone_number"
-            app:hintTextAppearance="@style/transactionTextInputLayout">
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_shipper_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="-4dp"
-                android:imeOptions="actionDone"
-                android:inputType="phone"
-                android:textSize="@dimen/sp_14"
-                android:theme="@style/TransactionEditText"
-                app:backgroundTint="@color/Unify_N100" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <EditText
-            style="@style/TextMid"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:imeOptions="actionDone"
-            android:inputType="phone" />
+            app:text_field_input_type="phone"
+            app:text_field_label="@string/label_hint_cart_item_dropshipper_phone_number"
+            app:text_field_label_static="false"
+            app:text_field_placeholder="@string/label_hint_cart_item_dropshipper_phone_number" />
 
     </LinearLayout>
 

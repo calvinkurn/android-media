@@ -11,8 +11,8 @@ import java.lang.annotation.RetentionPolicy;
         NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface NfcCardErrorTypeDef {
-    String CARD_NOT_FOUND = "Kartu tidak didukung";
-    String FAILED_READ_CARD = "Gagal membaca kartu";
+    String CARD_NOT_FOUND = "Hmm, kartu ini belum didukung";
+    String FAILED_READ_CARD = "Maaf, cek saldo belum berhasil";
     String FAILED_UPDATE_BALANCE = "Pembaruan informasi saldo Gagal, silakan tempelkan ulang kartu Anda.";
     String FAILED_REFRESH_TOKEN = "Terjadi kesalahan, silakan coba beberapa saat lagi";
 }

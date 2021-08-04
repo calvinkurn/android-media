@@ -15,9 +15,9 @@ class CartActivity : BaseCheckoutActivity() {
     private var cartId: String? = null
     private var productId: Long = 0L
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_cart
-    }
+    override fun getLayoutRes() = R.layout.activity_cart
+
+    override fun getParentViewResourceID() = R.id.parent_view
 
     override fun setupBundlePass(extras: Bundle?) {
         val productIdStr = intent?.data?.getQueryParameter(APPLINK_PARAM_PRODUCT_ID) ?: ""
@@ -46,6 +46,7 @@ class CartActivity : BaseCheckoutActivity() {
         val bundle = Bundle()
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
+        bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
         fragment = CartFragment.newInstance(bundle, "")
 
         return fragment
@@ -57,6 +58,7 @@ class CartActivity : BaseCheckoutActivity() {
 
         const val INVALID_PRODUCT_ID = -1L
         const val APPLINK_PARAM_PRODUCT_ID = "product_id"
+        const val EXTRA_IS_FROM_CART_ACTIVITY = "EXTRA_IS_FROM_CART_ACTIVITY"
     }
 
 }

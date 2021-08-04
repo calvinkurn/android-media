@@ -19,15 +19,16 @@ import androidx.core.app.ActivityCompat
 import com.example.screenshot_observer.R
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
-open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetListener) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
+open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
+                      protected open val toasterSellerListener: ToasterSellerListener? = null) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
     private val mContentObserver: ContentObserver
-    private val mListener: BottomSheetListener
     private var currentActivity: Activity? = null
     private var savedUri: Uri? = null
     private var className: String = ""
@@ -38,7 +39,6 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
         mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
-        mListener = listener
     }
 
     fun register() {
@@ -59,10 +59,14 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     }
 
     fun openBottomSheetFeedback(activity: Activity?, uri: Uri?, className: String) {
+        if (activity == null) {
+            return
+        }
+
         val bottomSheetFeedback = BottomSheetUnify()
         val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
             btn_add_feedback.setOnClickListener {
-                mListener.onFeedbackClicked(uri, className, true)
+                listener?.onFeedbackClicked(uri, className, true)
                 bottomSheetFeedback.dismiss()
             }
             btn_dismiss.setOnClickListener {
@@ -86,11 +90,13 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean)
     }
 
+    interface ToasterSellerListener {
+        fun showToaster(uri: Uri?, currentActivity: Activity?)
+    }
+
     override fun onActivityPaused(activity: Activity) {
-        if (!GlobalConfig.isSellerApp()) {
-            unregister()
-            currentActivity = null
-        }
+        unregister()
+        currentActivity = null
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -109,20 +115,21 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (!GlobalConfig.isSellerApp()) {
-            register()
-            currentActivity = activity
-            className = activity.localClassName
-
-        }
+        register()
+        currentActivity = activity
+        className = activity.localClassName
     }
 
     override fun onScreenShotTaken(uri: Uri) {
         savedUri = uri
         currentActivity?.let {
             if (!allPermissionsGranted(it) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ScreenshotAnalytics.eventUseScreenshot()
-                openBottomSheetFeedback(it, uri, className)
+                if (GlobalConfig.isSellerApp()) {
+                    toasterSellerListener?.showToaster(uri, it)
+                } else {
+                    openBottomSheetFeedback(it, uri, className)
+                    ScreenshotAnalytics.eventUseScreenshot()
+                }
             } else {
                 handleItem(uri)
             }
@@ -139,9 +146,13 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
             cursor = mContentResolver.query(uri, PROJECTION, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
                 val Name = generateScreenshotDataFromCursor(cursor)
-                if (Name != null) {
-                    ScreenshotAnalytics.eventUseScreenshot()
-                    openBottomSheetFeedback(currentActivity, uri, className)
+                if (Name != null && currentActivity != null) {
+                    if (GlobalConfig.isSellerApp()) {
+                        toasterSellerListener?.showToaster(uri, currentActivity)
+                    } else {
+                        openBottomSheetFeedback(currentActivity, uri, className)
+                        ScreenshotAnalytics.eventUseScreenshot()
+                    }
                 }
             }
         } finally {

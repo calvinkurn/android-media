@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventGlobalError.errorEventHandlerGlobalError
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
@@ -33,6 +34,11 @@ import com.tokopedia.entertainment.home.utils.NavigationEventController
 import com.tokopedia.entertainment.home.viewmodel.EventHomeViewModel
 import com.tokopedia.entertainment.home.widget.MenuSheet
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.showUnifyError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -86,6 +92,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        analytics.openHomeEvent()
         requestData()
         renderToolbar()
     }
@@ -101,7 +108,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
                 }
 
                 is Fail -> {
-                    onErrorGetData()
+                    onErrorGetData(it.throwable)
                 }
             }
         })
@@ -128,22 +135,21 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem>) {
-        analytics.openHomeEvent()
+        global_error_home_event.hide()
+        container_event_home.show()
         renderList(data)
         performanceMonitoring.stopTrace()
         swipe_refresh_layout_home?.isRefreshing = false
         startShowCase()
     }
 
-    private fun onErrorGetData() {
+    private fun onErrorGetData(throwable: Throwable) {
+        container_event_home.hide()
         swipe_refresh_layout_home?.isRefreshing = false
         performanceMonitoring.stopTrace()
-        errorHandler()
-    }
-
-    private fun errorHandler(){
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
-            loadAllData()
+        context?.let {
+            errorEventHandlerGlobalError(it, throwable, container_error_home,
+                    global_error_home_event, { loadAllData() })
         }
     }
 
@@ -204,11 +210,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun onMenuTransactionListClick() {
-        if (userSession.isLoggedIn) {
-            RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_TRANSACTION)
-        }
+        RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
     }
 
     override fun getAdapterTypeFactory(): HomeTypeFactoryImpl =
@@ -224,11 +226,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        analytics.clickBanner(item, position)
+        analytics.clickBanner(item, position, userSession.userId)
     }
 
     override fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        analytics.impressionBanner(item, position)
+        analytics.impressionBanner(item, position, userSession.userId)
     }
 
     override fun clickCategoryIcon(item: CategoryEventViewHolder.CategoryItemModel, position: Int) {
@@ -236,11 +238,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        analytics.clickLocationEvent(item, listItems, position)
+        analytics.clickLocationEvent(item, listItems, position, userSession.userId)
     }
 
     override fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
-        analytics.clickSectionEventProduct(item, listItems, title, position)
+        analytics.clickSectionEventProduct(item, listItems, title, position, userSession.userId)
     }
 
     override fun clickSeeAllCuratedEventProduct(title: String, position: Int) {
@@ -252,19 +254,19 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
-        analytics.clickTopEventProduct(item, listItems, position)
+        analytics.clickTopEventProduct(item, listItems, position, userSession.userId)
     }
 
     override fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        analytics.impressionLocationEvent(item, listItems, position)
+        analytics.impressionLocationEvent(item, listItems, position, userSession.userId)
     }
 
     override fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
-        analytics.impressionSectionEventProduct(item, listItems, title, position)
+        analytics.impressionSectionEventProduct(item, listItems, title, position, userSession.userId)
     }
 
     override fun impressionTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
-        analytics.impressionTopEventProduct(item, listItems, position)
+        analytics.impressionTopEventProduct(item, listItems, position, userSession.userId)
     }
 
     override fun redirectToPDPEvent(applink: String) {

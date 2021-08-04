@@ -31,7 +31,7 @@ class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingCha
 
     override fun bind(element: TypingChatModel) {
         bindBackground()
-        ImageHandler.loadGif(logo, com.tokopedia.resources.common.R.drawable.typing_dots, com.tokopedia.resources.common.R.drawable.typing_dots)
+        ImageHandler.loadGif(logo, R.drawable.typing_dots, R.drawable.typing_dots)
     }
 
     private fun bindBackground() {

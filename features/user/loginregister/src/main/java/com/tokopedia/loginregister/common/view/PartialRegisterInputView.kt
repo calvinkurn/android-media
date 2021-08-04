@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -30,6 +31,7 @@ import com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by alvinatin on 11/06/18.
@@ -37,13 +39,13 @@ import com.tokopedia.unifycomponents.UnifyButton
 class PartialRegisterInputView : BaseCustomView {
     var wrapperEmailPhone: TkpdHintTextInputLayout? = null
     var etInputEmailPhone: AutoCompleteTextView? = null
-    var tvMessage: TextView? = null
-    var tvError: TextView? = null
+    var tvMessage: Typography? = null
+    var tvError: Typography? = null
     var btnAction: UnifyButton? = null
     var emailExtension: EmailExtension? = null
     var wrapperPassword: TextFieldUnify? = null
-    var btnForgotPassword: TextView? = null
-    var btnChange: TextView? = null
+    var btnForgotPassword: Typography? = null
+    var btnChange: Typography? = null
     var registerAnalytics = RegisterAnalytics()
     private var isExtensionSelected = false
     private var listener: PartialRegisterInputViewListener? = null
@@ -208,13 +210,21 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     private fun validateValue(value: String) {
-        when (getType(value)) {
-            PartialRegisterInputUtils.PHONE_TYPE -> {
-                if (isValidPhone(value)) onValidValue() else if (!value.isEmpty()) onInvalidValue()
+        if(value.isNotEmpty()) {
+            when (getType(value)) {
+                PartialRegisterInputUtils.PHONE_TYPE -> {
+                    if (isValidPhone(value)) {
+                        onValidValue()
+                    } else { onInvalidValue() }
+                }
+                PartialRegisterInputUtils.EMAIL_TYPE -> {
+                    if (isValidEmail(value)) {
+                        onValidValue()
+                    } else { onInvalidValue() }
+                }
             }
-            PartialRegisterInputUtils.EMAIL_TYPE -> {
-                if (isValidEmail(value)) onValidValue() else if (!value.isEmpty()) onInvalidValue()
-            }
+        }else {
+            onInvalidValue()
         }
     }
 

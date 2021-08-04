@@ -46,6 +46,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -59,6 +63,8 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
         exclude 'META-INF/**'
     }
     lintOptions {
@@ -69,6 +75,8 @@ android {
 }
 
 dependencies {
+
+    implementation platform(rootProject.ext.firebase.bom)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4

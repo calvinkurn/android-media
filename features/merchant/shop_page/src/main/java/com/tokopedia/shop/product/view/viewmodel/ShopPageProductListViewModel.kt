@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -24,12 +25,14 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.review.shop.data.network.ErrorMessageException
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -54,7 +57,7 @@ class ShopPageProductListViewModel @Inject constructor(
         private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
         private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
         private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-        private val shopProductSortMapper: ShopProductSortMapper
+        private val shopProductSortMapper: ShopProductSortMapper,
 ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
@@ -89,7 +92,8 @@ class ShopPageProductListViewModel @Inject constructor(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
             isShowNewShopHomeTab: Boolean,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            context: Context?
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -102,7 +106,7 @@ class ShopPageProductListViewModel @Inject constructor(
                 }
                 val shopMerchantVoucherDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
-                    else getMerchantVoucherCoupon(shopId)
+                    else getMerchantVoucherCoupon(shopId, context)
                 }
                 val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
@@ -188,14 +192,15 @@ class ShopPageProductListViewModel @Inject constructor(
         return MembershipStampProgressUiModel(ShopPageProductListMapper.mapTopMembershipViewModel(memberShipResponse))
     }
 
-    private suspend fun getMerchantVoucherCoupon(shopId: String): ShopMerchantVoucherUiModel? {
+    private suspend fun getMerchantVoucherCoupon(shopId: String, context: Context?): ShopMerchantVoucherUiModel? {
         return try {
             val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
             val code = response.data?.resultStatus?.code
             if (code != ShopHomeViewModel.CODE_STATUS_SUCCESS) {
+                val errorMessage = ErrorHandler.getErrorMessage(context, ErrorMessageException(response.data?.resultStatus?.message.toString()))
                 ShopPageExceptionHandler.logExceptionToCrashlytics(
                         ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
-                        Throwable(response.data?.resultStatus?.message.toString())
+                        Throwable(errorMessage)
                 )
             }
             if (response.data?.isShown == true){
@@ -335,10 +340,10 @@ class ShopPageProductListViewModel @Inject constructor(
         }
     }
 
-    fun getNewMerchantVoucher(shopId: String) {
+    fun getNewMerchantVoucher(shopId: String, context: Context?) {
         launchCatchError(block = {
             val merchantVoucherData = withContext(dispatcherProvider.io) {
-                getMerchantVoucherCoupon(shopId)
+                getMerchantVoucherCoupon(shopId, context)
             }
             merchantVoucherData?.let {
                 newMerchantVoucherData.postValue(Success(it))

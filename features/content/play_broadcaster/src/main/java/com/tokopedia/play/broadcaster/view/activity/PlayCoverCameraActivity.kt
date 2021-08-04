@@ -282,7 +282,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun requestRequiredPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
                 requestCode = REQUEST_CODE_PERMISSION,
                 permissionResultListener = object : PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
@@ -299,7 +299,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
     )
 
     companion object {

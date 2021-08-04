@@ -20,11 +20,10 @@ import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
-import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK
-import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.common.constant.FlightUrl
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
@@ -34,8 +33,8 @@ import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
-import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -46,6 +45,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_flight_homepage.*
 import java.util.*
 import javax.inject.Inject
@@ -181,7 +182,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
 
         if (::flightHomepageViewModel.isInitialized)
-            flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalytics.Screen.HOMEPAGE)
+            flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalyticsScreenName.HOMEPAGE)
     }
 
     override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
@@ -232,9 +233,9 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             )
         } else {
             val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
-                    FlightDateUtil.dateToString(minMaxDate.first, FlightDateUtil.DEFAULT_FORMAT),
-                    FlightDateUtil.dateToString(minMaxDate.second, FlightDateUtil.DEFAULT_FORMAT),
-                    FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_FORMAT),
+                    minMaxDate.first.toString(DateUtil.YYYY_MM_DD),
+                    minMaxDate.second.toString(DateUtil.YYYY_MM_DD),
+                    departureDate.toString(DateUtil.YYYY_MM_DD),
                     departureAirport,
                     arrivalAirport,
                     flightClassId
@@ -424,7 +425,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun onAllBannerClicked() {
-        RouteManager.route(context, FLIGHT_PROMO_APPLINK)
+        RouteManager.route(context, FlightUrl.FLIGHT_PROMO_APPLINK)
     }
 
     private fun renderSearchForm(homepageData: FlightHomepageModel) {
@@ -445,10 +446,10 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String,
                                       departureCode: String, arrivalCode: String,
                                       classFlight: Int) {
-        val minDateStr = FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_FORMAT)
-        val maxDateStr = FlightDateUtil.dateToString(maxDate, FlightDateUtil.DEFAULT_FORMAT)
+        val minDateStr = minDate.toString(DateUtil.YYYY_MM_DD)
+        val maxDateStr = maxDate.toString(DateUtil.YYYY_MM_DD)
 
-        val selectedDateStr = if (selectedDate != null) FlightDateUtil.dateToString(selectedDate, FlightDateUtil.DEFAULT_FORMAT) else null
+        val selectedDateStr = selectedDate?.toString(DateUtil.YYYY_MM_DD)
 
         val flightCalendarDialog = FlightCalendarRoundTripWidget.getInstance(
                 minDateStr, selectedDateStr,

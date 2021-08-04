@@ -203,9 +203,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -235,9 +235,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -267,9 +267,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -291,19 +291,19 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
-                firstShop.isAllSelected = true
+                firstShop.setAllItemSelected(true)
 
                 firstItemSecond.isSelected = true
                 secondItemSecond.isSelected = true
-                secondShop.isAllSelected = true
+                secondShop.setAllItemSelected(true)
             }
 
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -325,11 +325,11 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
-                firstShop.isAllSelected = true
+                firstShop.setAllItemSelected(true)
 
                 firstItemSecond.isSelected = true
                 secondItemSecond.isSelected = true
-                secondShop.isAllSelected = true
+                secondShop.setAllItemSelected(true)
             }
 
             Given("wholesale price") {
@@ -344,9 +344,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -368,11 +368,11 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
-                firstShop.isAllSelected = true
+                firstShop.setAllItemSelected(true)
 
                 firstItemSecond.isSelected = true
                 secondItemSecond.isSelected = true
-                secondShop.isAllSelected = true
+                secondShop.setAllItemSelected(true)
             }
 
             Given("wholesale price") {
@@ -386,9 +386,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -410,11 +410,11 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
-                firstShop.isAllSelected = true
+                firstShop.setAllItemSelected(true)
 
                 firstItemSecond.isSelected = true
                 secondItemSecond.isSelected = true
-                secondShop.isAllSelected = true
+                secondShop.setAllItemSelected(true)
             }
 
             Given("product variant") {
@@ -427,9 +427,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -451,11 +451,11 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("check all items") {
                 firstItemFirst.isSelected = true
                 secondItemFirst.isSelected = true
-                firstShop.isAllSelected = true
+                firstShop.setAllItemSelected(true)
 
                 firstItemSecond.isSelected = true
                 secondItemSecond.isSelected = true
-                secondShop.isAllSelected = true
+                secondShop.setAllItemSelected(true)
             }
 
             Given("product variant with same price") {
@@ -469,9 +469,9 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             Given("cart data list") {
                 every { view.getAllAvailableCartDataList() } answers {
                     cartShops.flatMap {
-                        it.shopGroupAvailableData.cartItemDataList ?: mutableListOf()
+                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }

@@ -1,17 +1,15 @@
 package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.seller.menu.common.utils.FastingPeriodUtil
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.user.session.UserSessionInterface
 
 data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,
                              private val partialTopAdsInfo: PartialSettingResponse,
-                             private val userSession: UserSessionInterface): SettingSuccess() {
+                             private val userSession: UserSessionInterface) {
 
     val partialResponseStatus by lazy {
         Pair(
@@ -32,11 +30,7 @@ data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingRes
     }
     val shopStatusUiModel by lazy {
         (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
-            if (GlobalConfig.isSellerApp()) {
-                ShopStatusUiModel(it.shopStatusType, userSession, FastingPeriodUtil.getThematicIllustrationUrl(it.shopStatusType))
-            } else {
-                ShopStatusUiModel(it.shopStatusType, userSession)
-            }
+            ShopStatusUiModel(it.userShopInfoWrapper, userSession)
         }
     }
 
@@ -48,7 +42,7 @@ data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingRes
 
     val topadsBalanceUiModel by lazy {
         (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
-            TopadsBalanceUiModel(it.isTopAdsAutoTopup, it.topAdsBalance.getCurrencyFormatted())
+            TopadsBalanceUiModel(it.topAdsBalance.getCurrencyFormatted())
         }
     }
 }

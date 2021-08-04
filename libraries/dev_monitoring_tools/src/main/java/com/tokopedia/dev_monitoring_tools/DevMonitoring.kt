@@ -4,15 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.github.anrwatchdog.ANRWatchDog
-import com.github.moduth.blockcanary.BlockCanary
-import com.github.moduth.blockcanary.BlockCanaryContext
 import com.gu.toolargetool.TooLargeTool
 import com.tokopedia.dev_monitoring_tools.anr.ANRListener
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsConfig
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsRemoteConfig
-import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolFormatter
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
@@ -44,7 +42,7 @@ class DevMonitoring(private var context: Context) {
         TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
     }
 
-    fun initBlockCanary() {
-        BlockCanary.install(context, BlockCanaryContext()).start()
+    fun initLeakCanary(enable: Boolean = true) {
+        DevMonitoringExtension.initLeakCanary(enable)
     }
 }

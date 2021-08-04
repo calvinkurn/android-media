@@ -18,9 +18,10 @@ open class ProductPreview constructor(
         val productFsIsActive: Boolean = false,
         val productFsImageUrl: String = "",
         val priceBefore: String = "",
-        val priceBeforeInt: Int = 0,
+        val priceBeforeInt: Double = 0.0,
         val dropPercentage: String = "",
-        val isActive: Boolean = true
+        val isActive: Boolean = true,
+        val remainingStock: Int = 1
 ) {
 
     val status: Int get() = if (isActive) 1 else 0

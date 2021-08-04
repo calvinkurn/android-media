@@ -69,6 +69,8 @@ android {
 
 dependencies {
 
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7

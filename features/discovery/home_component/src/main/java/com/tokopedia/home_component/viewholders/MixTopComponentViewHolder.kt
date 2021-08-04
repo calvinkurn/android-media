@@ -27,6 +27,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselPr
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
@@ -38,7 +39,9 @@ import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.*
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_divider_header
+import kotlinx.android.synthetic.main.global_dc_mix_left.view.home_component_header_view
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -81,6 +84,7 @@ class MixTopComponentViewHolder(
         isCacheData = element.isCache
         mappingView(element.channelModel)
         setHeaderComponent(element = element)
+        setChannelDivider(element = element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
                 mixTopComponentListener?.onMixTopImpressed(element.channelModel, adapterPosition)
@@ -107,6 +111,14 @@ class MixTopComponentViewHolder(
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
 
+    }
+
+    private fun setChannelDivider(element: MixTopDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun mappingView(channel: ChannelModel) {

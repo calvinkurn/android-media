@@ -1,5 +1,6 @@
 package com.tokopedia.notifcenter.presentation.fragment.bottomsheet
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.Ratio
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
@@ -33,6 +35,16 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     protected open var contentContainer: LinearLayout? = null
     protected open var coordinatorContainer: CoordinatorLayout? = null
     protected open var banner: BroadcastBannerNotificationImageView? = null
+    private var listener: Listener? = null
+
+    interface Listener {
+        fun getNotifAnalytic(): NotificationAnalytic
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        assignListener(context)
+    }
 
     fun showMessage(@StringRes stringRes: Int) {
         val msg = getString(stringRes)
@@ -46,6 +58,14 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         coordinatorContainer?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                     .show()
+        }
+    }
+
+    private fun assignListener(context: Context) {
+        if (context is Listener) {
+            listener = context
+        } else if (parentFragment is Listener) {
+            listener = parentFragment as Listener
         }
     }
 
@@ -94,7 +114,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     }
 
     protected open fun initContentDesc() {
-        contentDesc?.text = notification?.shortDescription
+        contentDesc?.text = notification?.shortDescHtml
     }
 
     protected open fun initCtaButton() {
@@ -103,6 +123,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         }
         notification?.dataNotification?.appLink?.let { applink ->
             cta?.setOnClickListener {
+                listener?.getNotifAnalytic()?.trackClickLongerContentCta(notification)
                 RouteManager.route(it.context, applink)
                 dismiss()
             }

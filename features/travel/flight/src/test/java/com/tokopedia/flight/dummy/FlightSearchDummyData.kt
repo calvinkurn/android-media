@@ -4,15 +4,15 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.flight.promo_chips.data.model.DataPromoChips
 import com.tokopedia.flight.promo_chips.data.model.FlightLowestPrice
-import com.tokopedia.flight.searchV4.data.cloud.single.Route
-import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchMetaModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.searchV4.presentation.model.statistics.*
+import com.tokopedia.flight.search.data.cloud.single.Route
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.statistics.*
 
 /**
  * @author by furqan on 13/05/2020

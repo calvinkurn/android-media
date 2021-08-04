@@ -1,6 +1,7 @@
 package com.tokopedia.topads.common.analytics
 
-import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.topads.common.data.model.InsightDailyBudgetModel
+import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.track.TrackApp
@@ -24,7 +25,7 @@ private const val KEY_TOP_ADS_OBAORDING_SCREEN_NAME = "/autoads - onboarding"
 private const val KEY_EVENT_LOGGED_IN_STATUS = "isLoggedInStatus"
 private const val KEY_EVENT_USER_ID = "userId"
 private const val KEY_EVENT_INSIGHT_RECOMMENDATION = "clickShopInsight"
-private const val KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION = "insight center"
+private const val KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION = "Insight center"
 private const val KEY_EVENT_PDP_BOTTOMSHEET = "clickTopAds"
 private const val KEY_EVENT_CATEGORY_PDP_BOTTOMSHEET = "bottomsheet"
 private const val KEY_EVENT_EDIT_FORM = "clickTopAdsEditForm"
@@ -43,6 +44,8 @@ private const val KEY_ECOMMERCE_EVENT = "ecommerce"
 private const val KEY_PROMO_CLICK = "promoClick"
 private const val KEY_PROMO_VIEW = "promoView"
 private const val KEY_PROMOTIONS = "promotions"
+private const val KEY_CREATIVE_RECOMMENDATION_PRODUK = "jumlah pencarian - potensi tampil - rekomendasi biaya"
+private const val KEY_CREATIVE_DAILY_RECOMMENDATION_PRODUK = "rekomendasi anggaran - potensi klik"
 
 
 class TopAdsCreateAnalytics {
@@ -300,6 +303,77 @@ class TopAdsCreateAnalytics {
                     "name" to it.keyword,
                     "creative" to it.bidSuggest + " - " + it.competition,
                     "position" to index + 1))
+        }
+        return list
+    }
+
+    fun sendInsightShopEvent(eventAction: String, eventLabel: String, userId: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_EVENT_INSIGHT_RECOMMENDATION,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
+                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
+                KEY_EVENT_USER_ID to userId)
+
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendInsightSightProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightProductRecommendationModel>, position: Int, userId: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
+                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_ECOMMERCE_EVENT to mapOf(
+                        KEY_PROMO_VIEW to mapOf(
+                                KEY_PROMOTIONS to getInsightProductList(data, position)
+                        )),
+                KEY_EVENT_USER_ID to userId)
+
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    fun sendInsightSightDailyProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightDailyBudgetModel>, position: Int, userId: String) {
+        val map = mapOf(
+                KEY_EVENT to KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
+                KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
+                KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_ECOMMERCE_EVENT to mapOf(
+                        KEY_PROMO_VIEW to mapOf(
+                                KEY_PROMOTIONS to getInsightDailyBidgetList(data, position)
+                        )),
+                KEY_EVENT_USER_ID to userId)
+
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getInsightDailyBidgetList(data: List<InsightDailyBudgetModel>, position: Int): Any? {
+        var list = arrayListOf<Any>()
+        data.forEachIndexed { index, it ->
+            list.add(mapOf(
+                    "id" to it.id,
+                    "name" to it.name,
+                    "creative" to "${it.dailySuggestedPrice} - ${it.potentialClick}",
+                    "position" to position+1))
+        }
+        return list
+    }
+
+    private fun getInsightProductList(data: List<InsightProductRecommendationModel>, position: Int): Any? {
+        var list = arrayListOf<Any>()
+        data.forEachIndexed { index, it ->
+            list.add(mapOf(
+                    "id" to it.id,
+                    "name" to it.name,
+                    "creative" to "${it.searchNumber} - ${it.searchPercent} - ${it.recommendedBid}",
+                    "position" to position+1))
         }
         return list
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.shop.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
@@ -181,10 +182,15 @@ internal data class SearchShopModel(
 
                 @SerializedName("ga_key")
                 @Expose
-                val gaKey: String = ""
+                val gaKey: String = "",
+
+                @SerializedName("is_pm_pro")
+                @Expose
+                val isPMPro: Boolean = false,
         ) {
 
             data class ShopItemProduct(
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("id")
                     @Expose
                     val id: Int = 0,
@@ -201,6 +207,7 @@ internal data class SearchShopModel(
                     @Expose
                     val applink: String = "",
 
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("price")
                     @Expose
                     val price: Int = 0,

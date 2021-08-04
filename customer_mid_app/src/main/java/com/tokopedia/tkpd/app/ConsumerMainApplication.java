@@ -13,7 +13,6 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,22 +43,22 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.notifications.common.CMConstant;
-import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.ToasterActivityLifecycle;
-import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -73,7 +72,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -96,7 +94,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
+import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
+import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
@@ -126,7 +126,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
+    private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -149,12 +154,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         super.onCreate();
         createAndCallPostSeq();
         initializeAbTestVariant();
+        createAndCallFetchAbTest();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
         checkAppSignatureAsync();
 
         Loader.init(this);
+        if (getUserSession().isLoggedIn()) {
+            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
+        }
     }
 
     private void checkAppSignatureAsync() {
@@ -185,9 +194,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     protected abstract String getOriginalPackageApp();
+    protected abstract void loadSignatureLibrary();
 
     private boolean checkAppSignature() {
         try {
+            loadSignatureLibrary();
             PackageInfo info;
             boolean signatureValid;
             byte[] rawCertJava = null;
@@ -223,9 +234,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Throwable e) {
             Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "PackageManager.NameNotFoundException");
+            if (e instanceof PackageManager.NameNotFoundException) {
+                messageMap.put("type", "PackageManager.NameNotFoundException");
+            } else {
+                messageMap.put("type", e.getClass().getName());
+            }
             ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             return false;
         }
@@ -308,7 +323,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -325,7 +339,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
 
     private void createAndCallPreSeq() {
-
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
@@ -419,12 +432,23 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initBlockCanary();
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
+
+        DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
+            @Override
+            public Unit invoke(String s) {
+                FingerprintModelGenerator.INSTANCE.expireFingerprint();
+                return Unit.INSTANCE;
+            }
+        });
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
-        getAmplificationPushData();
         return true;
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
     private void initLogManager() {
@@ -509,32 +533,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
-        });
-    }
 
-    private void getAmplificationPushData() {
-        /*
-         * Amplification of push notification.
-         * fetch all of cm_push_notification's
-         * push notification data that aren't rendered yet.
-         * then, put all of push_data into local storage.
-         * */
-        if (getAmplificationRemoteConfig()) {
-            try {
-                AmplificationDataSource.invoke(ConsumerMainApplication.this);
-            } catch (Exception e) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+            @NotNull
+            @Override
+            public String getEmbraceConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
-        }
-    }
-
-    private Boolean getAmplificationRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
+        });
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {
@@ -609,10 +614,26 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     private void initializeAbTestVariant() {
-        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
-        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
-        Long current = new Date().getTime();
+    }
+
+    private void createAndCallFetchAbTest(){
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                fetchAbTestVariant();
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context);
+    }
+
+    private void fetchAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        long current = new Date().getTime();
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -675,17 +696,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
-    }
-
-    public int getCurrentVersion(Context context) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public Class<?> getDeeplinkClass() {

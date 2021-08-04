@@ -43,7 +43,7 @@
       "eventCategory": "digital - flight",
       "screenName": "/flight/booking",
       "userId": ".*",
-      "eventAction": "click next on customer page",
+      "eventAction": "click next on summary page",
       "sessionIris": ".*",
       "eventLabel": "flight - .*-.*",
       "checkout_step": "1",
@@ -72,7 +72,7 @@
           "item_variant": "\\d* - \\d* - \\d*"
         }
       ],
-      "checkout_option": "click next on customer page"
+      "checkout_option": "click next on summary page"
     }
   ]
 }

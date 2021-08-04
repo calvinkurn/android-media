@@ -16,6 +16,8 @@ query dynamicHomeChannel($type: String, $location: String) {
                 expiredTime
                 backColor
                 backImage
+                subtitle
+                textColor
             }
             hero {
                 id
@@ -58,6 +60,12 @@ query dynamicHomeChannel($type: String, $location: String) {
                     title
                     type
                     url
+                }
+                back_color
+                productImageUrl
+                benefit{
+                    type
+                    value
                 }
             }
             banner {

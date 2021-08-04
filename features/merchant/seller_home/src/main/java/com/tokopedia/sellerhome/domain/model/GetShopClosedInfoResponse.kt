@@ -36,14 +36,17 @@ data class ShopClosedInfoDetailResponse(
     val startDate: String,
     @Expose
     @SerializedName("endDate")
-    val endDate: String
+    val endDate: String,
+    @Expose
+    @SerializedName("status")
+    val status: Int
 ) {
     companion object {
-        private const val START_DATE_SHOP_OPEN = "0"
+        private const val SHOP_STATUS_CLOSED = 2
     }
 
-    fun isOpen() = startDate == START_DATE_SHOP_OPEN
-    fun isClosed() = startDate != START_DATE_SHOP_OPEN
+    fun isOpen() = status != SHOP_STATUS_CLOSED
+    fun isClosed() = status == SHOP_STATUS_CLOSED
 }
 
 data class GetShopClosedInfoError(

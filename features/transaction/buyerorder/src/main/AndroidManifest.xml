@@ -152,7 +152,19 @@
             android:name=".detail.view.activity.BuyerRequestCancelActivity"
             android:label="@string/title_buyer_request_cancel"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_buyer"
+                    android:path="@string/path_order_buyer_cancellation_request_page"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".unifiedhistory.list.view.activity.UohListActivity"
             android:label="@string/title_uoh_list"

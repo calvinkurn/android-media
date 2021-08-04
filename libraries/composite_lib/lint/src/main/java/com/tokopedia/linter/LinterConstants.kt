@@ -26,7 +26,6 @@ sealed class LinterConstants {
         const val BOTTOM_SHEET_DIALOG = "com.google.android.material.bottomsheet.BottomSheetDialog"
         const val DIALOG_CLASS_NAME = "android.app.Dialog"
         const val DATE_PICKER = "android.widget.DatePicker"
-        const val FLOATING_BUTTON = "com.tokopedia.design.component.FloatingButton"
         const val FLOATING_ACTION_BUTTON = "com.google.android.material.floatingactionbutton.FloatingActionButton"
         const val SEARCH_BAR_VIEW = "com.tokopedia.autocomplete.searchbar.SearchBarView"
         const val SNACK_BAR = "com.google.android.material.snackbar.Snackbar"

@@ -1,10 +1,7 @@
 package com.tokopedia.topchat.matchers
 
-import android.content.Context
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.transition.Slide
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -35,13 +32,4 @@ fun withLinearLayoutGravity(@Slide.GravityFlag gravity: Int): Matcher<View> {
             description?.appendText("Expected gravity: $gravity")
         }
     }
-}
-
-fun isKeyboardShown(): Boolean {
-    val inputMethodManager = InstrumentationRegistry.getInstrumentation()
-            .targetContext
-            .getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-            ) as InputMethodManager
-    return inputMethodManager.isAcceptingText
 }

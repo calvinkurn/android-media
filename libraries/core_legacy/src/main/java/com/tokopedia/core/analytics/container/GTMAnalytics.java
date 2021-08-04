@@ -2,8 +2,10 @@ package com.tokopedia.core.analytics.container;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
@@ -29,6 +32,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -85,11 +89,13 @@ public class GTMAnalytics extends ContextAnalytics {
     private TetraDebugger tetraDebugger;
     private String clientIdString = "";
     private final UserSessionInterface userSession;
+    private final SharedPreferences sharedPreferences;
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
 
@@ -101,6 +107,7 @@ public class GTMAnalytics extends ContextAnalytics {
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         userSession = new UserSession(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public static String bruteForceCastToString(Object object) {
@@ -802,6 +809,7 @@ public class GTMAnalytics extends ContextAnalytics {
         } else {
             bundle.putString("shopId", "");
         }
+        putDarkModeValue(bundle);
         putNetworkSpeed(bundle);
 
         if (customDimension != null) {
@@ -814,6 +822,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
         pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
         iris.saveEvent(bundleToMap(bundle));
+    }
+
+    private void putDarkModeValue(Bundle bundle) {
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        if(isDarkMode) {
+            bundle.putString("theme", "dark");
+        } else {
+            bundle.putString("theme", "light");
+        }
     }
 
     public void putNetworkSpeed(Bundle bundle) {
@@ -871,6 +888,7 @@ public class GTMAnalytics extends ContextAnalytics {
             if (isGtmV5) name += " (v5)";
             GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
             logEventSize(eventName, values);
+            logEventForVerification(eventName, values);
             if (tetraDebugger != null) {
                 tetraDebugger.send(values);
             }
@@ -927,6 +945,22 @@ public class GTMAnalytics extends ContextAnalytics {
         messageMap.put("name", eventName);
         messageMap.put("size", String.valueOf(size));
         ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+    }
+
+    private void logEventForVerification(String eventName, Map<String, Object> values){
+        if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
+            if(!TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "event_verification");
+                messageMap.put("name", eventName);
+                messageMap.put("click_time", String.valueOf((System.currentTimeMillis() / 1000L)));
+                messageMap.put("clientId", TrackApp.getInstance().getGTM().getClientIDString());
+                messageMap.put("utm_source", values.get(AppEventTracking.GTM.UTM_SOURCE).toString());
+                messageMap.put("utm_medium", values.get(AppEventTracking.GTM.UTM_MEDIUM).toString());
+                messageMap.put("campaign", values.get(AppEventTracking.GTM.UTM_CAMPAIGN).toString());
+                ServerLogger.log(Priority.P1, "GA_EVENT_VERIFICATION", messageMap);
+            }
+        }
     }
 
     public void sendScreenAuthenticated(String screenName) {

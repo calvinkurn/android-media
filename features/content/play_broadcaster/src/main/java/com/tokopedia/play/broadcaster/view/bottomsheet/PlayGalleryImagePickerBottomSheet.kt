@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.view.bottomsheet
 
-import android.Manifest
 import android.app.Dialog
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
@@ -12,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -94,13 +91,10 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            showLoading()
-            hideMediaLayout()
-            hideAlbumLayout()
-            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this)
-        }
+        showLoading()
+        hideMediaLayout()
+        hideAlbumLayout()
+        LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this)
     }
 
     override fun onDestroy() {
@@ -140,15 +134,10 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        return if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            when (id) {
-                ALBUM_LOADER_ID -> AlbumLoader.newInstance(requireContext(), GalleryType.IMAGE_ONLY)
-                MEDIA_LOADER_ID -> AlbumMediaLoader.newInstance(requireContext(), selectedAlbumItem?.intoAlbum(), GalleryType.IMAGE_ONLY)
-                else -> Loader<Cursor>(requireContext())
-            }
-        } else {
-            Loader(requireContext())
+        return when (id) {
+            ALBUM_LOADER_ID -> AlbumLoader.newInstance(requireContext(), GalleryType.IMAGE_ONLY)
+            MEDIA_LOADER_ID -> AlbumMediaLoader.newInstance(requireContext(), selectedAlbumItem?.intoAlbum(), GalleryType.IMAGE_ONLY)
+            else -> Loader<Cursor>(requireContext())
         }
     }
 

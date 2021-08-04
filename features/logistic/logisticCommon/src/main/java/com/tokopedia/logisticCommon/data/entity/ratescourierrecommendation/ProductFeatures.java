@@ -14,6 +14,9 @@ public class ProductFeatures implements Parcelable {
     @SerializedName("mvc")
     @Expose
     private MerchantVoucherProductData merchantVoucherProductData;
+    @SerializedName("dynamic_price")
+    @Expose
+    private DynamicPriceData dynamicPriceData;
 
     public OntimeDeliveryGuarantee getOntimeDeliveryGuarantee() {
         return ontimeDeliveryGuarantee;
@@ -58,5 +61,13 @@ public class ProductFeatures implements Parcelable {
 
     public void setMerchantVoucherProductData(MerchantVoucherProductData merchantVoucherProductData) {
         this.merchantVoucherProductData = merchantVoucherProductData;
+    }
+
+    public DynamicPriceData getDynamicPriceData() {
+        return dynamicPriceData;
+    }
+
+    public void setDynamicPriceData(DynamicPriceData dynamicPriceData) {
+        this.dynamicPriceData = dynamicPriceData;
     }
 }

@@ -92,6 +92,9 @@ public class SellerReputationFragment extends BaseDaggerFragment
 
     SellerReputationFragmentPresenter presenter;
 
+    @Inject
+    UserSessionInterface userSession;
+
     private SnackbarRetry snackbarRetry;
     private View rootView;
     private ReputationViewHelper reputationViewHelper;
@@ -137,6 +140,7 @@ public class SellerReputationFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        inject();
         setRetainInstance(isRetainInstance());
         Log.d(TAG, "ON CREATE");
         if (getArguments() != null) {
@@ -197,18 +201,22 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        if (getActivity() != null) {
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        }
         initialVar();
         setViewListener();
         setActionVar();
     }
 
+
     protected void initView(View view) {
         this.rootView = view;
-        listViewBalance = (RecyclerView) view.findViewById(R.id.balance_list);
+        listViewBalance = view.findViewById(R.id.balance_list);
         mainView = view.findViewById(R.id.main_view);
-        topSlideOffBar = (RelativeLayout) view.findViewById(R.id.seller_reputation_header);
-        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        appBarLayout = (AppBarLayout) view.findViewById(R.id.seller_reputation_app_bar_layout);
+        topSlideOffBar = view.findViewById(R.id.seller_reputation_header);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        appBarLayout = view.findViewById(R.id.seller_reputation_app_bar_layout);
         appBarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -229,7 +237,6 @@ public class SellerReputationFragment extends BaseDaggerFragment
     public void onResume() {
         super.onResume();
         if (isFirstTime) {
-            inject();
             UserSessionInterface userSession = new UserSession(getActivity());
             presenter.setUserSession(userSession);
             presenter.setReviewReputationUseCase(reviewReputationUseCase);

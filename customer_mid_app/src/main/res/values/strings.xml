@@ -183,6 +183,7 @@
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="title_activity_atc_variant">Varian Barang</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="label_product_installment">Cicilan</string>
@@ -192,6 +193,9 @@
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+    <string name="title_shop_performance">Performa Toko</string>
+    <string name="title_penalty_shop_score">Penalti</string>
+    <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
 
     <string name="title_notif_purchase_confirmed">Pembayaran sudah terverifikasi</string>
     <string name="title_notif_purchase_accepted">Pesanan kamu sedang diproses </string>

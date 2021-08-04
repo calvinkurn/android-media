@@ -1,0 +1,26 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 190378585,
+    "from": "Meraih mimpi",
+    "from_uid": 39467501,
+    "from_user_name": "Meraih mimpi",
+    "from_role": "Shop Owner",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/3987128/shop_xs_thumbnail/desktop",
+    "is_opposite": true,
+    "to_uid": 19016250,
+    "message": {
+      "censored_reply": " dfe jggg ",
+      "original_reply": " dfe jggg ",
+      "timestamp": "2020-07-28T10:57:35.242073408+07:00",
+      "timestamp_fmt": "28 July 2020, 10:57 WIB",
+      "timestamp_unix": 1595908655242,
+      "timestamp_unix_nano": 1595908655242073000
+    },
+    "start_time": "2020-07-28T03:57:33.537Z",
+    "show_rating": false,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": "inbox"
+  }
+}

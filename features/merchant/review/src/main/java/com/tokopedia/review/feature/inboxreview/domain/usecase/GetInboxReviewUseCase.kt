@@ -23,14 +23,14 @@ class GetInboxReviewUseCase @Inject constructor(
             query productrevGetInboxReviewByShop(${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}filterBy: String!) {
               productrevGetInboxReviewByShop(page: ${'$'}page, limit: ${'$'}limit, filterBy: ${'$'}filterBy) {
                 list {
-                    feedbackID
+                    feedbackIDStr
                     rating
                     user {
-                        userID
+                        userIDStr
                         userName
                     }
                     product {
-                        productID
+                        productIDStr
                         productName
                         productImageURL
                         productVariant {

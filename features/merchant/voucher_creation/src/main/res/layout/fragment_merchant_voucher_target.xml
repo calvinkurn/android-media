@@ -14,6 +14,7 @@
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:tag="voucher_target_recycler_view"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,6 +54,7 @@
             app:layout_constraintBottom_toTopOf="@id/voucherTargetNextButton"/>
 
         <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
+            android:tag="voucher_target_next_step_button"
             android:id="@+id/voucherTargetNextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

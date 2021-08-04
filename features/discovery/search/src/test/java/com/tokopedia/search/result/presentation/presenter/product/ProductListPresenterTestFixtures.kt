@@ -63,13 +63,13 @@ internal open class ProductListPresenterTestFixtures {
                 recommendationUseCase,
                 userSession,
                 searchCoachMarkLocalCache,
-                dagger.Lazy { getDynamicFilterUseCase },
-                dagger.Lazy { getProductCountUseCase },
-                dagger.Lazy { getLocalSearchRecommendationUseCase },
-                dagger.Lazy { getInspirationCarouselChipsProductsUseCase },
+                { getDynamicFilterUseCase },
+                { getProductCountUseCase },
+                { getLocalSearchRecommendationUseCase },
+                { getInspirationCarouselChipsProductsUseCase },
                 topAdsUrlHitter,
                 testSchedulersProvider,
-                dagger.Lazy { remoteConfig }
+                { remoteConfig }
         )
         productListPresenter.attachView(productListView)
 

@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
+import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
@@ -95,6 +96,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (error != null && !error.isJsonNull) {
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
                 ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
                         mapOf("type" to "json",
@@ -154,6 +156,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
             }
+            LoggingUtils.logGqlParseSuccess("kt", requests.toString())
         } catch (jse: JsonSyntaxException) {
             ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
                     mapOf("type" to "json",

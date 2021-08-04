@@ -76,6 +76,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
     var campaignId: Long = 0
     var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
+    var parentId: String = "0"
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
@@ -107,6 +108,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
                 setupVariantsField()
             }
             this.isLoading = false
+            parentId = attribute.productProfile.parentId
         }
     }
 
@@ -438,5 +440,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         const val statusDeleted = 0
         const val statusActive = 1
         const val statusWarehouse = 3
+
+        const val NO_PRODUCT_ID = "0"
     }
 }

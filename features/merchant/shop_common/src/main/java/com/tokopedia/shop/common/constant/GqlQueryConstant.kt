@@ -138,14 +138,30 @@ object GqlQueryConstant {
             "                        avatar\n" +
             "                        cover\n" +
             "                    }\n" +
+            "                    goldOS {\n" +
+            "                       badge\n" +
+            "                       isGold\n" +
+            "                       isGoldBadge\n" +
+            "                       isOfficial\n" +
+            "                    }\n" +
             "                    shopLastActive\n" +
             "                    location\n" +
             "                    isAllowManage\n" +
             "                    shopSnippetURL\n" +
+            "                    branchLinkDomain\n" +
             "                    statusInfo {\n" +
             "                        shopStatus\n" +
             "                        statusMessage\n" +
             "                        statusTitle\n" +
+            "                    }\n" +
+            "                }"
+
+    const val SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING = "result {\n" +
+            "                    goldOS {\n" +
+            "                       badge\n" +
+            "                       isGold\n" +
+            "                       isGoldBadge\n" +
+            "                       isOfficial\n" +
             "                    }\n" +
             "                }"
 

@@ -48,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 /**
@@ -80,6 +81,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var kycBenefitButton: UnifyButton? = null
     private var kycBenefitCloseButton: ImageButton? = null
     private var defaultStatusBarColor = 0
+    private var allowedSelfie = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -155,6 +157,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    allowedSelfie = it.data.kycProjectInfo.isSelfie
                     if(it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
                             it.data.kycProjectInfo.statusName != null && it.data.kycProjectInfo.statusName == "") {
                         onUserBlacklist()
@@ -406,6 +409,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private fun goToFormActivity() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
+            intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }
     }
@@ -439,6 +443,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
+        const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
         fun createInstance(isSourceSeller: Boolean, projectid: Int, callback: String?): UserIdentificationInfoFragment {
             val fragment = UserIdentificationInfoFragment()
             val args = Bundle()

@@ -7,7 +7,7 @@
     </style>
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/Green_G600</item>
+        <item name="colorAccent">@color/Unify_G600</item>
         <item name="android:textColorPrimary">@color/Unify_N600</item>
         <item name="android:background">@color/Unify_N0</item>
     </style>

@@ -264,8 +264,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun getLatestBid() {
 
-        val selectedProductIds: List<Long>? = stepperModel?.selectedProductIds?.map {
-            it.toLong()
+        val selectedProductIds: List<String>? = stepperModel?.selectedProductIds?.map {
+            it
         }
         val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)

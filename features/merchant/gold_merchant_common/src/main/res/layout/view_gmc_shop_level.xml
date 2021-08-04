@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGmcPmShopLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Level 3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgGmcPmShopLevel"
+        android:layout_width="@dimen/gmc_dimen_80dp"
+        android:layout_height="@dimen/gmc_dimen_18dp"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:contentDescription="@null"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvGmcPmShopLevel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+</androidx.constraintlayout.widget.ConstraintLayout>

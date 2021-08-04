@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
@@ -26,13 +27,13 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                                                     private val submitCCUseCase: RechargeSubmitCcUseCase)
     : BaseViewModel(dispatcher) {
 
-    private val _errorSubmitCreditCard = MutableLiveData<String>()
+    private val _errorSubmitCreditCard = MutableLiveData<Throwable>()
     private val _redirectUrl = MutableLiveData<CCRedirectUrl>()
-    private val _errorSignature = MutableLiveData<String>()
+    private val _errorSignature = MutableLiveData<Throwable>()
 
-    val errorSubmitCreditCard: LiveData<String> = _errorSubmitCreditCard
+    val errorSubmitCreditCard: LiveData<Throwable> = _errorSubmitCreditCard
     val redirectUrl: LiveData<CCRedirectUrl> = _redirectUrl
-    val errorSignature: LiveData<String> = _errorSignature
+    val errorSignature: LiveData<Throwable> = _errorSignature
 
     fun postCreditCard(rawQuery: String, categoryId: String, paramSubmitCC: HashMap<String, String>) {
         launchCatchError(block = {
@@ -48,45 +49,31 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                 paramSubmitCC[PARAM_PCIDSS] = data.rechargeSignature.signature
                 submitCreditCard(paramSubmitCC)
             } else {
-                _errorSignature.postValue(data.rechargeSignature.messageError)
+                _errorSignature.postValue(MessageErrorException(data.rechargeSignature.messageError))
             }
         }) {
-            if (it is UnknownHostException ||
-                    it is SocketException ||
-                    it is InterruptedIOException ||
-                    it is ConnectionShutdownException) {
-                _errorSignature.postValue(ERROR_DEFAULT)
-            } else {
-                _errorSignature.postValue(it.message)
-            }
+            _errorSignature.postValue(it)
         }
     }
 
-    private fun submitCreditCard(mapParam: HashMap<String, String>) {
+    fun submitCreditCard(mapParam: HashMap<String, String>) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 submitCCUseCase.setMapParam(mapParam)
                 convertCCResponse(submitCCUseCase.executeOnBackground())
             }
 
-            val ccRedirectUrl = data.data
+            val ccRedirectUrl = data?.data ?: CCRedirectUrl()
             if (ccRedirectUrl.redirectUrl != "") {
                 ccRedirectUrl.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
                 ccRedirectUrl.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
                 ccRedirectUrl.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
                 _redirectUrl.postValue(ccRedirectUrl)
             } else {
-                _errorSubmitCreditCard.postValue(ccRedirectUrl.messageError)
+                _errorSubmitCreditCard.postValue(MessageErrorException(ccRedirectUrl.messageError))
             }
         }) {
-            if (it is UnknownHostException ||
-                    it is SocketException ||
-                    it is InterruptedIOException ||
-                    it is ConnectionShutdownException) {
-                _errorSubmitCreditCard.postValue(ERROR_DEFAULT)
-            } else {
-                _errorSubmitCreditCard.postValue(it.message)
-            }
+            _errorSubmitCreditCard.postValue(it)
         }
     }
 
@@ -101,6 +88,19 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         return mapParam
     }
 
+    fun createPcidssParamFromApplink(clientNumber: String, operatorId: String,
+                                     productId: String, userId: String, signature: String, token: String): HashMap<String, String> {
+        val mapParam = HashMap<String, String>()
+        mapParam[PARAM_ACTION] = VALUE_ACTION
+        mapParam[PARAM_MASKED_NUMBER] = clientNumber
+        mapParam[PARAM_OPERATOR_ID] = operatorId
+        mapParam[PARAM_PRODUCT_ID] = productId
+        mapParam[PARAM_USER_ID] = userId
+        mapParam[PARAM_PCIDSS] = signature
+        mapParam[PARAM_TOKEN] = token
+        return mapParam
+    }
+
     companion object {
         private const val CATEGORY_ID = "categoryId"
         const val PARAM_CLIENT_NUMBER = "client_number"
@@ -110,11 +110,11 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         const val PARAM_ACTION = "action"
         const val VALUE_ACTION = "init_data"
         const val PARAM_PCIDSS = "pcidss_signature"
+        const val PARAM_TOKEN = "token"
+        const val PARAM_MASKED_NUMBER = "masked_number"
 
-        const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
-
-        fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse {
-            return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse
+        fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse? {
+            return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse?
         }
     }
 }

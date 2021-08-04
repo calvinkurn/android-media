@@ -6,16 +6,16 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail;
 
 public class ReviewItemDomain {
     private ProductDataDomain productData;
-    private int reviewInboxId;
-    private int reviewId;
+    private long reviewInboxId;
+    private long reviewId;
     private boolean reviewHasReviewed;
     private boolean reviewIsSkippable;
     private boolean reviewIsSkipped;
     private boolean reviewIsEditable;
     private ReviewDataDomain reviewData;
 
-    public ReviewItemDomain(ProductDataDomain productData, int reviewInboxId,
-                            int reviewId, boolean reviewHasReviewed,
+    public ReviewItemDomain(ProductDataDomain productData, long reviewInboxId,
+                            long reviewId, boolean reviewHasReviewed,
                             boolean reviewIsSkippable, boolean reviewIsSkipped,
                             boolean reviewIsEditable, ReviewDataDomain reviewData) {
         this.productData = productData;
@@ -32,11 +32,11 @@ public class ReviewItemDomain {
         return productData;
     }
 
-    public int getReviewInboxId() {
+    public long getReviewInboxId() {
         return reviewInboxId;
     }
 
-    public int getReviewId() {
+    public long getReviewId() {
         return reviewId;
     }
 

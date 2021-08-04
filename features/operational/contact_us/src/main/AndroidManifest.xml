@@ -83,5 +83,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+       <activity
+        android:name=".inboxticket2.view.activity.ClearCacheActivity"
+        android:exported="true"
+        android:label="@string/contact_us_title_clear_cache"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.White" >
+        <intent-filter>
+            <action android:name="com.tokopedia.internal.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+                android:scheme="@string/tokopedia_scheme"
+                android:host="@string/host_contactus"
+                android:pathPattern="@string/path_clear_cache"/>
+        </intent-filter>
+    </activity>
+
     </application>
 </manifest>

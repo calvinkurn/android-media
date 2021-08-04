@@ -12,6 +12,7 @@ data class BroadMatchItemDataView(
         val applink: String = "",
         val priceString: String = "",
         val shopLocation: String = "",
+        val shopName: String = "",
         val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
         val freeOngkirDataView: FreeOngkirDataView = FreeOngkirDataView(),
         var isWishlisted: Boolean = false,
@@ -22,7 +23,9 @@ data class BroadMatchItemDataView(
         val topAdsClickUrl: String = "",
         val topAdsWishlistUrl: String = "",
         val ratingAverage: String = "",
-        val labelGroupDataList: List<LabelGroupDataView> = listOf()
+        val labelGroupDataList: List<LabelGroupDataView> = listOf(),
+        val carouselProductType: CarouselProductType,
+        val dimension90: String = "",
 ): ImpressHolder() {
 
     fun asImpressionObjectDataLayer(): Any {
@@ -33,13 +36,10 @@ data class BroadMatchItemDataView(
                 "brand", "none / other",
                 "category", "none / other",
                 "variant", "none / other",
-                "list", getDataLayerList(),
-                "position", position
+                "list", carouselProductType.getDataLayerList(isOrganicAds),
+                "position", position,
+                "dimension90", dimension90,
         )
-    }
-
-    private fun getDataLayerList(): String {
-        return "/search - broad match - ${if (isOrganicAds) "organic ads" else "organic"}"
     }
 
     fun asClickObjectDataLayer(): Any {
@@ -50,9 +50,10 @@ data class BroadMatchItemDataView(
                 "brand", "none / other",
                 "category", "none / other",
                 "variant", "none / other",
-                "list", getDataLayerList(),
+                "list", carouselProductType.getDataLayerList(isOrganicAds),
                 "position", position,
-                "attribution", "none / other"
+                "attribution", "none / other",
+                "dimension90", dimension90,
         )
     }
 }

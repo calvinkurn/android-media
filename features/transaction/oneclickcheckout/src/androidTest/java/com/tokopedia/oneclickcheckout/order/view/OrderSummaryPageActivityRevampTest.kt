@@ -13,7 +13,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -32,10 +32,8 @@ class OrderSummaryPageActivityRevampTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
     private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
     private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -70,12 +68,6 @@ class OrderSummaryPageActivityRevampTest {
                     isFreeShipping = true,
                     productQty = 1
             )
-
-        //    Deprecated Test (will delete in next iteration)
-//            assertProfileRevampWording("Template Beli Langsung")
-//            assertProfileRevampUtama(true)
-//
-//            assertProfileRevampActionWording("Tambah template")
 
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
@@ -222,8 +214,8 @@ class OrderSummaryPageActivityRevampTest {
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, "payment2")
-            putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, "metadata")
+            putExtra(PaymentListingActivity.EXTRA_RESULT_GATEWAY, "payment2")
+            putExtra(PaymentListingActivity.EXTRA_RESULT_METADATA, "metadata")
         }))
 
         orderSummaryPage {
@@ -459,6 +451,18 @@ class OrderSummaryPageActivityRevampTest {
                     queryString = "transaction_id=123",
                     method = "POST"
             )
+        }
+    }
+
+    @Test
+    fun happyFlow_ShopBadge() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopBadge(shopTypeName = "power merchant pro")
         }
     }
 

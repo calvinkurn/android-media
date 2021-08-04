@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.asUpperCase
@@ -30,6 +31,7 @@ class SectionViewHolder(
 
     override fun bind(element: SectionWidgetUiModel) {
         with(itemView) {
+            toggleSectionWidgetHeight(element.shouldShow)
             tvSectionTitle.text = element.title
             tvSectionSubTitle.visibility = if (element.subtitle.isNotBlank()) View.VISIBLE else View.GONE
             tvSectionSubTitle.text = element.subtitle.parseDateTemplate().toString().parseAsHtml()
@@ -70,6 +72,16 @@ class SectionViewHolder(
         return pattern.replace(this) {
             regex[it.value]?.invoke() ?: it.value
         }
+    }
+
+    private fun View.toggleSectionWidgetHeight(isShown: Boolean) {
+        layoutParams.height =
+                if (isShown) {
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+                } else {
+                    0
+                }
+        requestLayout()
     }
 
     interface Listener : BaseViewHolderListener {

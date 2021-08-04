@@ -66,7 +66,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                     OccButtonType.PAY -> {
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                val drawable = getIconUnifyDrawable(context, IconUnify.PROTECTION_CHECK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                                val drawable = getIconUnifyDrawable(context, IconUnify.PROTECTION_CHECK, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                                 drawable?.setBounds(ICON_BUTTON_LEFT_BOUND.toPx(), ICON_BUTTON_TOP_BOUND, ICON_BUTTON_RIGHT_BOUND.toPx(), ICON_BUTTON_BOTTOM_BOUND.toPx())
                                 setCompoundDrawables(drawable, null, null, null)
                                 compoundDrawablePadding = ICON_BUTTON_PADDING.toPx()

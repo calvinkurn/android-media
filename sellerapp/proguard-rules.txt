@@ -136,7 +136,6 @@
     public *;
 }
 
--keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 
 -dontwarn android.net.http.**
@@ -217,8 +216,6 @@
 
 
 # Keep Class com.tokopedia
--keep public class com.tokopedia.design.component.BottomNavigation { *; }
-#-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 #discovery
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
@@ -268,3 +265,15 @@
 -keep class com.newrelic.** { *; }
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
+
+# Embrace
+-keep class io.embrace.android.** { *; }
+-dontwarn com.jsoniter.extra.JacksonCompatibility*
+-dontwarn com.jsoniter.output.DynamicCodegen
+-dontwarn com.jsoniter.DynamicCodegen
+
+# View Binding
+-keep class * implements androidx.viewbinding.ViewBinding {
+    public static *** bind(android.view.View);
+    public static *** inflate(...);
+}

@@ -81,7 +81,7 @@ class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : Rec
                 holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
             }
 
-            items[holder.adapterPosition].competition ?: "".isBlank() -> {
+            items[holder.adapterPosition].competition -> {
                 holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
                 holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
             }
@@ -95,6 +95,5 @@ class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : Rec
                 it.onChecked = true
             }
         }
-    //    notifyDataSetChanged()
     }
 }

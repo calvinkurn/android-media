@@ -9,13 +9,14 @@ import com.tokopedia.devicefingerprint.appauth.usecase.AppAuthUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,16 +34,19 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
 
     override suspend fun doWork(): Result {
         if (isRunning) {
+            sendLog("isRunning")
             return Result.failure()
         }
         isRunning = true
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
+            sendLog("runAttemptCount")
             return Result.failure()
         }
         return withContext(Dispatchers.IO) {
             val result = try {
                 val userSession = getUserSession(appContext)
                 if (userSession.userId.isEmpty()) {
+                    sendLog("userIdEmpty")
                     Result.success()
                 } else {
                     val encd = Base64.GetDecoder(appContext).trim()
@@ -56,11 +60,12 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                         setAlreadySuccessSend(appContext, 1)
                         Result.success()
                     } else {
+                        sendLogMessage("gqlFailure", objResult.mutationSignDvc.errorMessage)
                         Result.retry()
                     }
                 }
             } catch (e: Exception) {
-                Timber.w(e.toString())
+                sendLog("doWork", e)
                 Result.retry()
             }
             isRunning = false
@@ -72,6 +77,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         const val WORKER_NAME = "APP_AUTH_WORKER"
         const val MAX_RUN_ATTEMPT = 3
         const val LIMIT_PER_THRES = 3
+        const val LOG_TAG = "ERROR_RISK_AUTH"
         val THRES_TS = TimeUnit.DAYS.toMillis(1)
 
         var hasSuccessSendInt = 0 // 1 assumed it already running, means this feature is disabled.
@@ -82,6 +88,16 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
 
         var isRunning = false
         var userSession: UserSessionInterface? = null
+
+        private fun sendLog(type: String = "", throwable: Throwable? = null) {
+            sendLogMessage(type, (throwable?.stackTraceToString() ?: ""))
+        }
+
+        private fun sendLogMessage(type: String = "", errorMessage: String?) {
+            ServerLogger.log(
+                Priority.P1, LOG_TAG,
+                mapOf("type" to type, "err" to (errorMessage?: "")))
+        }
 
         private fun alreadySuccessSend(context: Context): Boolean {
             if (hasSuccessSendInt == 0) {
@@ -160,7 +176,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                                             .build())
                                     .build())
                 } catch (ex: Exception) {
-                    Timber.w(ex.toString())
+                    sendLog("Schedule", ex)
                 }
             }
         }

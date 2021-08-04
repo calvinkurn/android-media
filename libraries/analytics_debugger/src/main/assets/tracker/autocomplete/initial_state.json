@@ -4,14 +4,15 @@
   "query" : [
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - /",
+      "eventCategory": "top nav",
       "eventAction": "click - shop - recent search",
       "eventLabel": ".* - keyword: .*",
       "screenName": "/",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*"
     },
     {
       "event": "clickTopNav",
@@ -28,7 +29,10 @@
       "eventCategory": "top nav",
       "eventAction": "click - recent search",
       "eventLabel": "value: .* - po: .* - applink: .*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     },
     {
       "event": "select_content",
@@ -46,7 +50,8 @@
           "item_name": ".*",
           "item_brand": "none / other",
           "item_variant": "none / other",
-          "item_category": "none / other"
+          "item_category": "none / other",
+          "dimension90": ".*"
         }
       ]
     },
@@ -59,24 +64,14 @@
     },
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - /",
-      "eventAction": "click - shop - recent search",
-      "eventLabel": ".* - keyword: .*",
-      "screenName": "/",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".+",
-      "businessUnit": "search",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav - /",
+      "eventCategory": "top nav",
       "eventAction": "click - popular search - .*",
       "eventLabel": "value: .* - title: .* - po: .*",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*"
     },
     {
       "event": "clickTopNav",
@@ -87,6 +82,30 @@
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product initial state campaign",
+      "eventCategory": "top nav",
+      "eventLabel": "po: .+ - applink: .+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/search - product initial state campaign",
+      "items": [
+        {
+          "index": "\\d*.\\d*",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": "none / other",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": "/search - product initial state campaign"
+        }
+      ],
+      "pageSource": ".*",
+      "userId": ".+",
+      "sessionIris": ".+"
     }
   ]
 }

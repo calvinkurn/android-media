@@ -1,6 +1,8 @@
 package com.tokopedia.webview
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -27,10 +29,10 @@ object WebViewHelper {
 
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
-        return if(isSeamless(url)){
+        return if (isSeamless(url)) {
             val urlSeamless = getUrlSeamless(url)
-            if(!urlSeamless.isNullOrEmpty()) isUrlValid(urlSeamless) else false
-        }else{
+            if (!urlSeamless.isNullOrEmpty()) isUrlValid(urlSeamless) else false
+        } else {
             val domain = getDomainName(url)
             (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN)
         }
@@ -38,14 +40,14 @@ object WebViewHelper {
 
     private fun getDomainName(url: String): String {
         val domain = Uri.parse(url).host
-        return if(domain != null)
+        return if (domain != null)
             if (domain.startsWith(PREFIX_PATTERN)) domain.substring(4) else domain
         else ""
     }
 
     private fun isSeamless(url: String): Boolean = getDomainName(url) == JS_DOMAIN_PATTERN
 
-    private fun getUrlSeamless(url: String): String?{
+    private fun getUrlSeamless(url: String): String? {
         val uri = Uri.parse(url)
         return uri.getQueryParameter(KEY_PARAM_URL)
     }
@@ -58,7 +60,7 @@ object WebViewHelper {
      * @param context
      * @return
      */
-     @JvmStatic
+    @JvmStatic
     fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
         Timber.d("WebviewHelper before $url")
         var returnURl = url
@@ -73,21 +75,26 @@ object WebViewHelper {
 
 
                 //logic to append GA clientID in web URL to track app to web sessions
-                if (uri != null  && !url.contains(PARAM_APPCLIENT_ID)) {
+                if (uri != null && !url.contains(PARAM_APPCLIENT_ID)) {
                     val clientID = TrackApp.getInstance().getGTM().getCachedClientIDString();
 
                     if (clientID != null && url.contains("js.tokopedia.com")) {
                         var tokopediaEncodedUrl = uri!!.getQueryParameter("url")
 
                         if (tokopediaEncodedUrl != null) {
-                            var tokopediaDecodedUrl = URLDecoder.decode(tokopediaEncodedUrl!!, "UTF-8")
+                            var tokopediaDecodedUrl =
+                                URLDecoder.decode(tokopediaEncodedUrl!!, "UTF-8")
                             val tokopediaUri = Uri.parse(tokopediaDecodedUrl)
-                            tokopediaDecodedUrl = tokopediaUri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
+                            tokopediaDecodedUrl = tokopediaUri.buildUpon()
+                                .appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build()
+                                .toString()
 
                             returnURl = replaceUriParameter(uri!!, "url", tokopediaDecodedUrl)
                         }
                     } else if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
-                        returnURl = uri!!.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
+                        returnURl =
+                            uri!!.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID)
+                                .build().toString()
                     }
                 }
             } catch (ex: Exception) {
@@ -111,8 +118,10 @@ object WebViewHelper {
         val params = uri.getQueryParameterNames()
         val newUri = uri.buildUpon().clearQuery()
         for (param in params) {
-            newUri.appendQueryParameter(param,
-                    if (param == key) newValue else uri.getQueryParameter(param))
+            newUri.appendQueryParameter(
+                param,
+                if (param == key) newValue else uri.getQueryParameter(param)
+            )
         }
 
         return newUri.build().toString()
@@ -153,7 +162,8 @@ object WebViewHelper {
             url
         } else {
             val url2BeforeAnd = url2.substringBefore("&")
-            val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").normalizeDoubleSymbol())
+            val uriFromUrl =
+                Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").normalizeDoubleSymbol())
             uriFromUrl.buildUpon()
                 .appendQueryParameter(KEY_URL, url2.encodeOnce())
                 .build().toString()
@@ -231,4 +241,15 @@ object WebViewHelper {
         }
         return url
     }
+
+    @JvmStatic
+    fun actionViewIntent(context: Context, uri: Uri): Intent? {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        val resolveInfos: List<ResolveInfo> = context.packageManager
+            .queryIntentActivities(intent, 0)
+        return if (resolveInfos.isNotEmpty()) {
+            intent
+        } else null
+    }
+
 }

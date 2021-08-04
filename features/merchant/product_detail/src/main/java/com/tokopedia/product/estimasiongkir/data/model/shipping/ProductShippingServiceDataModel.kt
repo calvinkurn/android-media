@@ -27,5 +27,6 @@ data class ProductServiceDetailDataModel(
         val serviceProductEstimation: String = "",
         val serviceProductPrice: String = "",
         val isCod: Boolean = false,
-        val codText: String = ""
+        val codText: String = "",
+        val dynamicPricingText: String = ""
 )

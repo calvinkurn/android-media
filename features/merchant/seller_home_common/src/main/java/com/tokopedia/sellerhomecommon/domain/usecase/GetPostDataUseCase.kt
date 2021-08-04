@@ -1,12 +1,12 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -38,7 +38,7 @@ class GetPostDataUseCase(
             val data = gqlResponse.getData<GetPostDataResponse>()
             return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -71,6 +71,8 @@ class GetPostDataUseCase(
                     applink
                     subtitle
                     featuredMediaURL
+                    stateMediaURL
+                    stateText
                   }
                   cta{
                     text
@@ -79,6 +81,7 @@ class GetPostDataUseCase(
                   error
                   errorMsg
                   showWidget
+                  emphasizeType
                 }
               }
             }

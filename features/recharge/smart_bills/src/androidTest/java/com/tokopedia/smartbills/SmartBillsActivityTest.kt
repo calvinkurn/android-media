@@ -75,7 +75,9 @@ class SmartBillsActivityTest {
         validate_onboarding()
         validate_bill_selection()
         validate_bill_detail()
+        validate_click_bayar()
         validate_tooltip()
+        validate_refresh_action()
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, SMART_BILLS_VALIDATOR_QUERY), hasAllSuccess())
     }
@@ -133,6 +135,24 @@ class SmartBillsActivityTest {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
+    private fun validate_click_bayar() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(2000)
+        val billCheckbox = onView(AllOf.allOf(
+                withId(R.id.cb_smart_bills_item),
+                ViewMatchers.hasSibling(ViewMatchers.withChild(ViewMatchers.withText("Air PDAM - ATB BATAM")))
+        ))
+        billCheckbox.perform(click())
+        Thread.sleep(2000)
+        onView(withId(R.id.btn_recharge_checkout_next)).perform(click())
+    }
+
+    private fun validate_refresh_action() {
+        onView(withId(R.id.accordion_header)).perform(click())
+        onView(withId(R.id.accordion_header)).perform(click())
+        onView(withId(R.id.refreshID)).perform(click())
+    }
+
     @After
     fun cleanUp() {
         Intents.release()
@@ -141,7 +161,7 @@ class SmartBillsActivityTest {
 
     companion object {
         private const val KEY_STATEMENT_MONTHS = "rechargeStatementMonths"
-        private const val KEY_STATEMENT_BILLS = "rechargeStatementBills"
+        private const val KEY_STATEMENT_BILLS = "rechargeSBMList"
 
         private const val PATH_STATEMENT_MONTHS = "statement_months.json"
         private const val PATH_STATEMENT_BILLS = "statement_bills.json"

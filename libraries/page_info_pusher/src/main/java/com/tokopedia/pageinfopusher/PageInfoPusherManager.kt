@@ -9,6 +9,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.UserSession
@@ -90,9 +92,13 @@ class PageInfoPusherManager(val activity: Activity) {
             showPopUp(message = message, title = title, buttonText = buttonText, actionApplink =  actionApplink)
 
             if (isHitTimber) {
-                Timber.w("P1#DISPLAY_GENERAL_INFO#'" + className
-                        + "';id='" + id
-                        + "';dev='" + GlobalConfig.isAllowDebuggingTools() + "'")
+                ServerLogger.log(Priority.P2, "DISPLAY_GENERAL_INFO",
+                        mapOf(
+                                "type" to (className ?: ""),
+                                "id" to (id ?: ""),
+                                "dev" to GlobalConfig.isAllowDebuggingTools().toString()
+                        )
+                )
             }
 
             if (isHitGa) {

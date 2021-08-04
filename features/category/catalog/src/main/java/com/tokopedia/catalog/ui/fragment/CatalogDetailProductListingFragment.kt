@@ -29,6 +29,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.model.util.CatalogSearchApiConst
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
@@ -38,7 +39,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
@@ -87,8 +87,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
-    private var pagingRowCount = 20
-
     private lateinit var catalogTypeFactory: CatalogTypeFactory
 
     private lateinit var userSession: UserSession
@@ -101,6 +99,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+        private const val PAGING_ROW_COUNT = 20
+        private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
 
         @JvmStatic
         fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
@@ -381,10 +381,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         val param = RequestParams.create()
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.apply {
-            putString(CategoryNavConstants.START, (start * pagingRowCount).toString())
+            putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
             putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-            putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
+            putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
@@ -427,7 +427,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
-            startActivityForResult(intent, 1002)
+            startActivityForResult(intent, REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE)
             CatalogDetailAnalytics.trackProductCardClick(catalogId,viewModel.catalogUrl,userSession.userId,
                     item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
@@ -495,7 +495,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
-            val filter = getSelectedFilter()
+            val filter = getAllFilterParameters()
             filter[option.key] = option.value
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
@@ -507,12 +507,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId)
         } else {
-            val filter = getSelectedFilter()
+            val filter = getAllFilterParameters()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
         }
+    }
+
+    private fun getAllFilterParameters(): HashMap<String, String> {
+        return if (filterController == null) HashMap() else HashMap(filterController.getParameter())
     }
 
     override fun isQuickFilterSelected(option: Option): Boolean {
@@ -626,8 +630,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun addDefaultSelectedSort() {
-        if (searchParameter.get(SearchApiConst.OB).isEmpty()) {
-            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        if (searchParameter.get(CatalogSearchApiConst.OB).isEmpty()) {
+            searchParameter.set(CatalogSearchApiConst.OB, CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
         }
         viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }

@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
@@ -21,10 +20,12 @@ class SomDetailProductsViewHolder(itemView: View, actionListener: SomDetailAdapt
     override fun bind(item: SomDetailData, position: Int) {
         with(itemView) {
             if (item.dataObject is SomDetailProducts) {
-                if (item.dataObject.isTopAds) {
-                    group_top_ads.show()
+                if (item.dataObject.isTopAds || item.dataObject.isBroadcastChat) {
+                    ads_title.text = if (item.dataObject.isTopAds) context.getString(R.string.sale_from_top_ads)
+                    else context.getString(R.string.sale_from_broadcast_chat)
+                    group_ads.show()
                 } else {
-                    group_top_ads.hide()
+                    group_ads.hide()
                 }
                 if (item.dataObject.listProducts.isNotEmpty()) {
                     rv_products?.visibility = View.VISIBLE

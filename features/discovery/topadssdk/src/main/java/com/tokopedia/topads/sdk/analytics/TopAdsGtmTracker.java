@@ -90,13 +90,16 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId, String userId) {
         if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "search result",
                     "eventAction", "impression - product - topads",
                     "eventLabel", keyword,
+                    "userId", userId,
+                    "businessUnit", "Ads Solution",
+                    "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
                             "impressions", DataLayer.listOf(
                                     dataLayerList.toArray(new Object[dataLayerList.size()])
@@ -109,7 +112,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public void addSearchResultProductViewImpressions(Product item, int position) {
+    public void addSearchResultProductViewImpressions(Product item, int position, String dimension90) {
         this.dataLayerList.add(DataLayer.mapOf("name", item.getName(),
                 "id", item.getId(),
                 "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -118,7 +121,8 @@ public class TopAdsGtmTracker {
                 "category", getCategoryBreadcrumb(item),
                 "list", "/searchproduct - topads productlist",
                 "position", position,
-                "dimension83", setFreeOngkirDataLayer(item)));
+                "dimension83", setFreeOngkirDataLayer(item),
+                "dimension90", dimension90));
 
         //GTMv5
         Bundle product = new Bundle();
@@ -284,7 +288,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String screenName) {
+    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String userId, String dimension90) {
         Analytics tracker = getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -292,6 +296,9 @@ public class TopAdsGtmTracker {
                     "eventCategory", "search result",
                     "eventAction", "click - product - topads",
                     "eventLabel", keyword,
+                    "userId", userId,
+                    "businessUnit", "Ads Solution",
+                    "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
                                     "products", DataLayer.listOf(DataLayer.mapOf(
@@ -302,7 +309,11 @@ public class TopAdsGtmTracker {
                                             "category", getCategoryBreadcrumb(item),
                                             "variant", "none/other",
                                             "position", position,
-                                            "dimension83", setFreeOngkirDataLayer(item)))))
+                                            "dimension83", setFreeOngkirDataLayer(item),
+                                            "dimension90", dimension90)
+                                    )
+                            )
+                    )
             );
             IrisSession irisSession = new IrisSession(context);
             if(!TextUtils.isEmpty(irisSession.getSessionId()))

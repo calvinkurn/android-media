@@ -1,0 +1,71 @@
+[
+  {
+    "data": {
+      "rechargeCatalogDynamicInput": {
+        "needEnquiry": true,
+        "isShowingProduct": false,
+        "dynamicFields": [
+          {
+            "param_name": "product",
+            "name": "product_id",
+            "text": "",
+            "style": "hidden",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "407",
+                    "attributes": {
+                      "price": "",
+                      "price_plain": 1000,
+                      "promo": null,
+                      "desc": "RADANA",
+                      "detail": "Pembayaran tagihan Radana Finance tidak dapat dilakukan pada akhir bulan pukul 20.00-06.00 sesuai dengan ketentuan dari pihak biller.",
+                      "detail_compact": "Pembayaran tagihan Radana Finance tidak dapat dilakukan pada akhir bulan pukul 20.00-06.00 sesuai dengan ketentuan dari pihak biller.",
+                      "info": "",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "category_id": 7,
+                      "product_labels": [],
+                      "product_descriptions": [],
+                      "hide_from_subscription": false
+                    }
+                  }
+                ]
+              }
+            ],
+            "validations": []
+          },
+          {
+            "param_name": "",
+            "name": "client_number",
+            "text": "Nomor Kontrak",
+            "style": "input_numeric",
+            "placeholder": "",
+            "help": "Nomor Kontrak adalah nomor Anda",
+            "data_collections": [],
+            "validations": [
+              {
+                "rule": "^[0-9]*$",
+                "title": "Numeric"
+              }
+            ]
+          },
+          {
+            "param_name": "enquiry",
+            "name": "enquiry_result",
+            "text": "Cek Tagihan",
+            "style": "enquiry",
+            "placeholder": "",
+            "help": "",
+            "data_collections": [],
+            "validations": []
+          }
+        ]
+      }
+    }
+  }
+]

@@ -9,7 +9,7 @@
 
         <activity
             android:name="com.tokopedia.brizzi.activity.BrizziCheckBalanceActivity"
-            android:label="@string/emoney_toolbar_title_etoll_check_balance"
+            android:label="@string/emoney_nfc_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden">

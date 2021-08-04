@@ -94,14 +94,14 @@
         app:typographyWeight="reguler"
         tools:text="INV/20161025/XVI/X/55069657" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/header_invoice_copy"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/dp_5"
+        app:icon_name="COPY"
         app:layout_constraintStart_toEndOf="@+id/header_invoice"
-        app:layout_constraintTop_toTopOf="@+id/header_invoice"
-        app:srcCompat="@drawable/ic_copy" />
+        app:layout_constraintTop_toTopOf="@+id/header_invoice" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/header_see_invoice"

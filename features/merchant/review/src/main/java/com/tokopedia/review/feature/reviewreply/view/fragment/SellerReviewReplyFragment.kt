@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.reviewreply.view.fragment
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -16,7 +15,10 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
@@ -40,7 +42,6 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_reply.*
 import kotlinx.android.synthetic.main.widget_reply_feedback_item.*
 import kotlinx.android.synthetic.main.widget_reply_textbox.*
@@ -83,7 +84,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         ReviewTemplateListAdapter(this)
     }
 
-    private var shopId = 0
+    private var shopId = ""
     private var isEmptyReply = false
 
     private var replyTemplateList: List<ReplyTemplateUiModel>? = null
@@ -131,9 +132,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_option_product_detail -> {
-                tracking.eventClickThreeDotsMenu(shopId.toString(),
-                        productReplyUiModel?.productID.orZero().toString(),
-                        feedbackUiModel?.feedbackID.orZero().toString())
+                tracking.eventClickThreeDotsMenu(shopId,
+                        productReplyUiModel?.productID ?: "",
+                        feedbackUiModel?.feedbackID ?: "")
                 initBottomSheetReplyReview()
             }
         }
@@ -181,7 +182,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
 
     private fun getReviewTemplate() {
         hideData()
-        viewModelReviewReply?.getTemplateListReply(shopId)
+        viewModelReviewReply?.getTemplateListReply(shopId.toLongOrZero())
     }
 
     private fun observeLiveData() {
@@ -198,9 +199,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                     view?.let { it1 ->
                         Toaster.build(it1, context?.getString(R.string.error_message_load_more_review_product).orEmpty(), type = Toaster.TYPE_ERROR,
                                 actionText = context?.getString(R.string.action_retry_toaster_review_product).orEmpty(),
-                                clickListener = {
+                                clickListener = View.OnClickListener {
                                     getReviewTemplate()
-                                })
+                                }).show()
                     }
                 }
             }
@@ -214,7 +215,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR).show()
                     }
                 }
             }
@@ -227,7 +228,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR).show()
                     }
                 }
             }
@@ -243,7 +244,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 }
                 is Fail -> {
                     view?.let { it1 ->
-                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
+                        Toaster.build(it1, it.throwable.message.orEmpty(), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG).show()
                     }
                 }
             }
@@ -257,20 +258,20 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         replySendButton?.setOnClickListener {
             if (replyEditText.text?.isNotEmpty() == true) {
                 tracking.eventClickSendReviewReply(
-                        shopId.toString(),
-                        productReplyUiModel?.productID.orZero().toString(),
-                        feedbackUiModel?.feedbackID.orZero().toString(),
+                        shopId,
+                        productReplyUiModel?.productID ?: "",
+                        feedbackUiModel?.feedbackID ?: "",
                         replyEditText?.text.toString(),
                         (!isEmptyReply).toString()
                 )
                 if (isEmptyReply) {
                     viewModelReviewReply?.insertReviewReply(
-                            feedbackUiModel?.feedbackID.orZero(),
-                            productReplyUiModel?.productID.orZero(),
+                            feedbackUiModel?.feedbackID ?: "",
+                            productReplyUiModel?.productID ?: "",
                             shopId,
                             replyEditText?.text.toString())
                 } else {
-                    viewModelReviewReply?.updateReviewReply(feedbackUiModel?.feedbackID.orZero(),
+                    viewModelReviewReply?.updateReviewReply(feedbackUiModel?.feedbackID ?: "",
                             replyEditText?.text.toString())
                 }
             }
@@ -328,7 +329,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     private fun initData(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
-                shopId = getStringExtra(EXTRA_SHOP_ID).toIntOrZero()
+                shopId = getStringExtra(EXTRA_SHOP_ID) ?: ""
                 isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
                 val objectId = getStringExtra(CACHE_OBJECT_ID)
                 val manager = if (savedInstanceState == null) {
@@ -364,23 +365,22 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             reviewReplyTextBoxWidget?.hide()
         }
         tvReplyEdit?.setOnClickListener {
-            tracking.eventClickEditReviewResponse(shopId.toString(),
-                    productReplyUiModel?.productID.orZero().toString(),
-                    feedbackUiModel?.feedbackID.orZero().toString()
+            tracking.eventClickEditReviewResponse(shopId,
+                    productReplyUiModel?.productID ?: "",
+                    feedbackUiModel?.feedbackID ?: ""
             )
             reviewReplyTextBoxWidget?.show()
             showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
         }
         replyEditText?.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) tracking.eventClickResponseReview(
-                    shopId.toString(),
-                    productReplyUiModel?.productID.orZero().toString(),
-                    feedbackUiModel?.feedbackID.orZero().toString())
+            if (hasFocus) tracking.eventClickResponseReview(shopId,
+                    productReplyUiModel?.productID ?: "",
+                    feedbackUiModel?.feedbackID ?: "")
         }
         reviewReplyTextBoxWidget?.clickAddTemplate {
-            tracking.eventClickAddTemplateReview(shopId.toString(),
-                    productReplyUiModel?.productID.orZero().toString(),
-                    feedbackUiModel?.feedbackID.orZero().toString())
+            tracking.eventClickAddTemplateReview(shopId,
+                    productReplyUiModel?.productID ?: "",
+                    feedbackUiModel?.feedbackID ?: "")
             initBottomSheetAddTemplate()
         }
     }
@@ -419,7 +419,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     }
 
     private fun submitTemplateReply(title: String, message: String) {
-        viewModelReviewReply?.insertTemplateReviewReply(shopId, title, message)
+        viewModelReviewReply?.insertTemplateReviewReply(shopId.toLongOrZero(), title, message)
     }
 
     private fun initBottomSheetReplyReview() {
@@ -439,12 +439,12 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
                         0 -> {
-                            tracking.eventClickItemReportOnBottomSheet(shopId.toString(),
-                                    productReplyUiModel?.productID.orZero().toString(),
-                                    feedbackUiModel?.feedbackID?.orZero().toString())
+                            tracking.eventClickItemReportOnBottomSheet(shopId,
+                                    productReplyUiModel?.productID ?: "",
+                                    feedbackUiModel?.feedbackID ?: "")
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID.toString())
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toString())
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID ?: "")
                             startActivity(intent)
                             bottomSheetReplyReview?.dismiss()
                         }
@@ -490,9 +490,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
 
     override fun onItemReviewTemplateClicked(view: View, title: String) {
         val message = replyTemplateList?.firstOrNull { it.title == title }?.message
-        tracking.eventClickItemReviewTemplate(shopId.toString(),
-                productReplyUiModel?.productID.orZero().toString(),
-                feedbackUiModel?.feedbackID?.orZero().toString(),
+        tracking.eventClickItemReviewTemplate(shopId,
+                productReplyUiModel?.productID ?: "",
+                feedbackUiModel?.feedbackID ?: "",
                 message.orEmpty())
         val replyText = StringBuilder().append(replyEditText?.text.toString()).append(message.orEmpty()).toString()
         showTextReplyEditText(replyText)

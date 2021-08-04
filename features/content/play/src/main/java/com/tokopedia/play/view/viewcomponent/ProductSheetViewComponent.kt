@@ -42,7 +42,7 @@ class ProductSheetViewComponent(
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
-    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val rvVoucherList: RecyclerView = findViewById(R.id.rv_voucher_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
@@ -109,7 +109,7 @@ class ProductSheetViewComponent(
     private var isProductSheetsInitialized = false
 
     init {
-        findViewById<ImageView>(R.id.iv_sheet_close)
+        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
                 }
@@ -163,7 +163,7 @@ class ProductSheetViewComponent(
     fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
         showContent(true)
 
-        if (isProductDecreased(model.productList.size)) showToasterProductUpdated()
+        if (isProductCountChanged(model.productList.size)) listener.onProductCountChanged(this)
 
         tvSheetTitle.text = model.basicInfo.bottomSheetTitle
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
@@ -225,18 +225,10 @@ class ProductSheetViewComponent(
             productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }
     )
 
-    private fun isProductDecreased(productSize: Int): Boolean {
+    private fun isProductCountChanged(productSize: Int): Boolean {
         return productLineAdapter.getItems().isNotEmpty() &&
                 productLineAdapter.getItems().first() is PlayProductUiModel.Product &&
-                productLineAdapter.itemCount > productSize
-    }
-
-    private fun showToasterProductUpdated() {
-        Toaster.build(
-                rootView,
-                getString(R.string.play_product_updated),
-                type = Toaster.TYPE_NORMAL
-        ).show()
+                productLineAdapter.itemCount != productSize
     }
 
     private fun sendImpression() {
@@ -307,5 +299,6 @@ class ProductSheetViewComponent(
         fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel)
         fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
+        fun onProductCountChanged(view: ProductSheetViewComponent)
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.smartbills.data.RechargeBills
 
 class SmartBillsAdapter(adapterFactory: SmartBillsAdapterFactory,
-                        checkableListener: OnCheckableAdapterListener<RechargeBills>):
+                        checkableListener: OnCheckableAdapterListener<RechargeBills>) :
         BaseListCheckableAdapter<RechargeBills, SmartBillsAdapterFactory>(adapterFactory, checkableListener) {
 
     fun renderEmptyState() {
@@ -13,18 +13,24 @@ class SmartBillsAdapter(adapterFactory: SmartBillsAdapterFactory,
         addElement(EmptyModel())
     }
 
-    fun toggleAllItems(value: Boolean) {
+    fun toggleAllItems(value: Boolean, bills: List<RechargeBills>) {
+        val allCheckedSet = HashSet<Int>()
         if (value) {
             // Check all items
-            if (totalChecked < dataSize) {
-                val allCheckedSet = HashSet<Int>()
-                for (i in 0 until data.size) allCheckedSet.add(i)
-                setCheckedPositionList(allCheckedSet)
-                notifyDataSetChanged()
+            if (totalChecked < bills.size && bills.size > 0) {
+                for (i in 0 until bills.size) {
+                    allCheckedSet.add(i)
+                    setCheckedPositionList(allCheckedSet)
+                    notifyItemChanged(i)
+                }
             }
         } else {
-            resetCheckedItemSet()
+            if (bills.size > 0) {
+                for (i in 0 until bills.size) {
+                    setCheckedPositionList(allCheckedSet)
+                    notifyItemChanged(i)
+                }
+            }
         }
     }
-
 }

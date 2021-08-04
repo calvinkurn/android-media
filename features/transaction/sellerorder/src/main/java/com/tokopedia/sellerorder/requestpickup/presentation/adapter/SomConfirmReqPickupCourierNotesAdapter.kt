@@ -24,7 +24,7 @@ class SomConfirmReqPickupCourierNotesAdapter : RecyclerView.Adapter<SomConfirmRe
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.label_index.text = "${position + 1}"
+        holder.itemView.label_index.text = "${position + 1}."
         holder.itemView.label_notes.text = listCourierNotes[position]
     }
 

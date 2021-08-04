@@ -92,7 +92,15 @@ data class ShopInfo(
 
         @SerializedName("badgeURL")
         @Expose
-        val shopTierBadgeUrl: String = ""
+        val shopTierBadgeUrl: String = "",
+
+        @SerializedName("shopTier")
+        @Expose
+        val shopTier: Int = 0,
+
+        @SerializedName("branchLinkDomain")
+        @Expose
+        val branchLinkDomain: String = "",
 
 ) {
     fun isShopInfoNotEmpty():Boolean {
@@ -185,7 +193,11 @@ data class ShopInfo(
 
         @SerializedName("isOfficial")
         @Expose
-        val isOfficial: Int = 0
+        val isOfficial: Int = 0,
+
+        @SerializedName("badge")
+        @Expose
+        val badge: String = ""
     ) {
         //for tracking purpose
         val shopTypeString: String
@@ -222,7 +234,11 @@ data class ShopInfo(
     data class CloseDetail(
             @SerializedName("openDate")
             @Expose
-            val openDateUnix: String = ""
+            val openDateUnix: String = "",
+
+            @SerializedName("openDateUTC")
+            @Expose
+            val openDateUnixUtc: String = ""
     )
 
     data class CreatedInfo(

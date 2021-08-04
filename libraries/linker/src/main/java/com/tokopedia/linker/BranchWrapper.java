@@ -3,6 +3,7 @@ package com.tokopedia.linker;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.tokopedia.config.GlobalConfig;
@@ -50,6 +51,9 @@ public class BranchWrapper implements WrapperInterface {
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
+    private final String APP_BRANCH_CALLBACK_TIMEOUT_KEY = "android_branch_callback_timeout_key";
+    private final String APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING = "android_enable_branch_valid_campaign_logging";
+    private android.os.Handler handler;
     private String KEY_BRANCH_IO_PREF_FILE_NAME = "branch_io_pref";
     private String KEY_APP_FIRST_OPEN = "app_first_open";
     private LocalCacheHandler localCacheHandler;
@@ -102,7 +106,7 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
-        checkBranchLinkUTMParams(linkerDeeplinkRequest);
+        checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -167,6 +171,41 @@ public class BranchWrapper implements WrapperInterface {
         };
     }
 
+    private Branch.BranchReferralInitListener getBranchCallbackForUtmParams(Context context, boolean uriHaveCampaignData) {
+        return new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    if(!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
+                        sendUtmParameters(context, referringParams);
+                    }else {
+                        logNonBranchLinkData(context, referringParams);
+                    }
+                }
+            }
+        };
+    }
+
+    private void sendUtmParameters(Context context, JSONObject referringParams){
+        String utmSource;
+        String utmCampaign;
+        String utmMedium;
+        String utmTerm = null;
+        String clickTime;
+        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
+        if (!TextUtils.isEmpty(utmSource)) {
+            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
+            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
+        } else {
+            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
+            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
+        }
+        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
+        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
+    }
+
     private void fetchLastAttributeTouchData() {
         Branch.getInstance().getLastAttributedTouchData(
                 new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
@@ -188,6 +227,14 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void initSession() {
         Branch.getInstance().initSession();
+    }
+
+    @Override
+    public void initSession(Activity activity, boolean uriHaveCampaignData){
+        checkBranchLinkUTMParams(activity);
+        Branch.sessionBuilder(activity)
+                .withCallback(getBranchCallbackForUtmParams(activity, uriHaveCampaignData))
+                .init();
     }
 
     @Override
@@ -296,12 +343,18 @@ public class BranchWrapper implements WrapperInterface {
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
                 LinkProperties linkProperties = createLinkProperties(data, data.getSource(), context, userData);
+                setBranchCallbackTimeOutFunction(shareCallback, data, getRemoteConfigTimeOutValue(context, APP_BRANCH_CALLBACK_TIMEOUT_KEY));
                 branchUniversalObject.generateShortUrl(context, linkProperties, new Branch.BranchLinkCreateListener() {
                     @Override
                     public void onLinkCreate(String url, BranchError error) {
+                        removeHandlerTimeoutMessage();
                         if (error == null) {
                             if (shareCallback != null) {
-                                shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                if(!TextUtils.isEmpty(url)) {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                } else {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+                                }
                             }
                         } else {
                             if (shareCallback != null) {
@@ -475,25 +528,10 @@ public class BranchWrapper implements WrapperInterface {
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
         if (context == null) return;
         if (isSkipUtmEvent(context)) return;
-
-        String utmSource;
-        String utmCampaign;
-        String utmMedium;
-        String utmTerm = null;
-        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
-        if (!TextUtils.isEmpty(utmSource)) {
-            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
-            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
-        } else {
-            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
-            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
-        }
-        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm);
+        sendUtmParameters(context, referringParams);
     }
 
-    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
+    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
             param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
@@ -505,6 +543,7 @@ public class BranchWrapper implements WrapperInterface {
             }
 
             sendCampaignToTrackApp(context, param);
+            logValidCampaignUtmParams(context, utmSource, utmMedium, utmCampaign, clickTime);
         }
     }
 
@@ -514,11 +553,15 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+    private void checkBranchLinkUTMParams(Activity activity) {
         APP_OPEN_FROM_BRANCH_LINK = false;
-        Activity activity = ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
-        if (activity != null && activity.getIntent().getData() != null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)) {
-            APP_OPEN_FROM_BRANCH_LINK = true;
+        if (activity != null && activity.getIntent().getData() != null){
+            String intentDataStr = activity.getIntent().getData().toString();
+            if(intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_1) ||
+                    intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_2) ||
+                    intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_3)) {
+                APP_OPEN_FROM_BRANCH_LINK = true;
+            }
         }
     }
 
@@ -539,6 +582,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private boolean isSkipUtmEvent(Context context) {
+        if(isFirstOpen(context)) return false;
         if (isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK) {
             return true;
         }
@@ -550,6 +594,12 @@ public class BranchWrapper implements WrapperInterface {
             new BranchHelperValidation().logSkipDeeplinkNonBranchLink(referringParams, isFirstOpen(context));
         }
 
+    }
+
+    private void logValidCampaignUtmParams(Context context, String utmSource, String utmMedium, String utmCampaign, String clickTime) {
+        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING)) {
+            new BranchHelperValidation().logValidCampaignData(utmSource, utmMedium, utmCampaign, clickTime, isFirstOpen(context), APP_OPEN_FROM_BRANCH_LINK);
+        }
     }
 
     private void updateFirstOpenCache(Context context) {
@@ -573,4 +623,33 @@ public class BranchWrapper implements WrapperInterface {
         return localCacheHandler;
     }
 
+    private long getRemoteConfigTimeOutValue(Context context, String key){
+        return getRemoteConfig(context).getLong(key);
+    }
+
+    private RemoteConfig getRemoteConfig(Context context){
+        if(remoteConfig == null){
+            remoteConfig = new FirebaseRemoteConfigImpl(context);
+        }
+        return remoteConfig;
+    }
+
+    private void setBranchCallbackTimeOutFunction(ShareCallback shareCallback, LinkerData data, long timeoutDuration){
+        handler =  new android.os.Handler(Looper.getMainLooper());
+        handler.postDelayed(
+                new Runnable() {
+                    public void run() {
+                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                        Timber.w("P2#BRANCH_LINK_TIMEOUT#error;linkdata='%s'", data.getId());
+                    }
+                },
+                timeoutDuration);
+    }
+
+    //Remove all the pending runnable calls
+    private void removeHandlerTimeoutMessage(){
+        if(handler != null){
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
 }

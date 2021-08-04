@@ -41,11 +41,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         view.setOnClickListener {
-            if (element.name == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
-                listener.goToApplink(element.applink)
-            } else {
-                listener.onInfoClicked(element.name, getComponentTrackData(element))
-            }
+            listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
         }
         renderIcon(element)
     }

@@ -13,6 +13,7 @@ public class GraphqlResponse {
     private Map<Type, List<GraphqlError>> mErrors;
     private final boolean mIsCached;
     private List<GraphqlRequest> mRefreshRequests;
+    private int httpStatusCode = 0;
 
     public GraphqlResponse(Map<Type, Object> results, Map<Type, List<GraphqlError>> errors, boolean isCached) {
         this.mResults = results;
@@ -62,5 +63,13 @@ public class GraphqlResponse {
 
     public void setRefreshRequests(List<GraphqlRequest> mRefreshRequests) {
         this.mRefreshRequests = mRefreshRequests;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
     }
 }

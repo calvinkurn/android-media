@@ -26,6 +26,7 @@ public class CpmShop implements Parcelable {
     private static final String KEY_PRODUCT = "product";
     private static final String KEY_IMAGE_SHOP = "image_shop";
     private static final String KEY_IS_OFFICIAL_STORE = "shop_is_official";
+    private static final String KEY_IS_PM_PRO = "pm_pro_shop";
     private static final String KEY_IS_POWER_MERCHANT = "gold_shop";
     private static final String KEY_MERCHANT_VOUCHERS = "merchant_vouchers";
     private static final String KEY_IS_FOLLOWED = "is_followed";
@@ -46,6 +47,8 @@ public class CpmShop implements Parcelable {
     private ImageShop imageShop;
     @SerializedName(KEY_IS_OFFICIAL_STORE)
     private boolean isOfficial;
+    @SerializedName(KEY_IS_PM_PRO)
+    private boolean isPMPro;
     @SerializedName(KEY_IS_POWER_MERCHANT)
     private boolean isPowerMerchant;
     @SerializedName(KEY_IS_FOLLOWED)
@@ -84,6 +87,9 @@ public class CpmShop implements Parcelable {
         if(!object.isNull(KEY_IS_OFFICIAL_STORE)){
             setOfficial(object.getBoolean(KEY_IS_OFFICIAL_STORE));
         }
+        if(!object.isNull(KEY_IS_PM_PRO)){
+            setOfficial(object.getBoolean(KEY_IS_PM_PRO));
+        }
         if(!object.isNull(KEY_IS_POWER_MERCHANT)){
             setPowerMerchant(object.getBoolean(KEY_IS_POWER_MERCHANT));
         }
@@ -105,6 +111,7 @@ public class CpmShop implements Parcelable {
         products = in.createTypedArrayList(Product.CREATOR);
         imageShop = in.readParcelable(ImageShop.class.getClassLoader());
         isOfficial = in.readByte() != 0;
+        isPMPro = in.readByte() != 0;
         isPowerMerchant = in.readByte() != 0;
         in.readStringList(merchantVouchers);
     }
@@ -119,6 +126,7 @@ public class CpmShop implements Parcelable {
         dest.writeTypedList(products);
         dest.writeParcelable(imageShop, flags);
         dest.writeByte((byte) (isOfficial ? 1 : 0));
+        dest.writeByte((byte) (isPMPro ? 1 : 0));
         dest.writeByte((byte) (isPowerMerchant ? 1 : 0));
         dest.writeStringList(merchantVouchers);
     }
@@ -146,6 +154,14 @@ public class CpmShop implements Parcelable {
 
     public void setPowerMerchant(boolean powerMerchant) {
         isPowerMerchant = powerMerchant;
+    }
+
+    public boolean isPMPro() {
+        return isPMPro;
+    }
+
+    public void setPMPro(boolean pmPro) {
+        isPMPro = pmPro;
     }
 
     public boolean isOfficial() {

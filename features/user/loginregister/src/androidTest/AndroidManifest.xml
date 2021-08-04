@@ -15,11 +15,35 @@
             android:value="true" />
 
         <activity
-            android:name="com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub"
+            android:name=".login.behaviour.activity.LoginActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name=".registerinitial.stub.RegisterInitialActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".login.behaviour.activity.ChooseAccountActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".login.behaviour.activity.VerificationActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".login.behaviour.activity.ChooseAccountActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".login.behaviour.activity.ChangeNameActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".login.behaviour.activity.RegisterInitialActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".login.behaviour.activity.RegisterEmailActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data

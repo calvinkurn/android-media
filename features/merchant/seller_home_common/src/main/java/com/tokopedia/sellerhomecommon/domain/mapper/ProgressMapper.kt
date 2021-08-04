@@ -38,10 +38,10 @@ class ProgressMapper @Inject constructor(): BaseResponseMapper<GetProgressDataRe
 
     private fun mapState(state: String?) : ShopScorePMWidget.State {
         return when(state) {
-            GOOD -> ShopScorePMWidget.State.GOOD
-            WARNING -> ShopScorePMWidget.State.WARNING
-            DANGER -> ShopScorePMWidget.State.DANGER
-            else -> ShopScorePMWidget.State.GOOD
+            GOOD -> ShopScorePMWidget.State.Good
+            WARNING -> ShopScorePMWidget.State.Warning
+            DANGER -> ShopScorePMWidget.State.Danger
+            else -> ShopScorePMWidget.State.Good
         }
     }
 }

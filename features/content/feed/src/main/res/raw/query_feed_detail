@@ -17,6 +17,7 @@ query FeedDetail($userID: Int!, $detailID: String!, $pageDetail: Int!, $limitDet
           avatar
           isOfficial
           isGold
+          badge
           url
           shopLink
           shareLinkDescription

@@ -33,12 +33,15 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
       isShown
       type
       content
+      contentDetails
       iconURL
       membershipHowTo {
         imageURL
         description
       }
       membershipCardID
+      membershipMinimumTransaction
+      membershipMinimumTransactionLabel
     }
     shopName
     catalogList {
@@ -46,6 +49,8 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
       slug
       baseCode
       promoID
+      catalogType
+      promoType
       title
       maximumBenefitAmount
       minimumUsageAmount

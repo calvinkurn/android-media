@@ -85,11 +85,10 @@ class GetOccCartMapper @Inject constructor() {
             shopId = shop.shopId
             userId = shop.userId
             shopName = shop.shopName
-            shopBadge = when {
-                shop.isOfficial == 1 -> shop.officialStore.osLogoUrl
-                shop.isGoldBadge -> shop.goldMerchant.goldMerchantLogoUrl
-                else -> ""
-            }
+            shopBadge = shop.shopType.badge
+            shopTier = shop.shopType.shopTier
+            shopTypeName = shop.shopType.title
+            shopType = shop.shopType.titleFmt
             isGold = shop.isGold
             isOfficial = shop.isOfficial
             postalCode = shop.postalCode
@@ -115,6 +114,7 @@ class GetOccCartMapper @Inject constructor() {
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productPriceOriginalFmt
             weight = product.productWeight
+            weightActual = product.productWeightActual
             isFreeOngkirExtra = product.freeShippingExtra.eligible
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = when {
@@ -208,7 +208,8 @@ class GetOccCartMapper @Inject constructor() {
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
-                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data), null,
+                null, payment.bid, payment.specificGatewayCampaignOnlyType, mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -265,8 +266,21 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
+    private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData, callbackUrl: String): OrderPaymentWalletAdditionalData {
+        return OrderPaymentWalletAdditionalData(
+            walletAdditionalData.walletType, walletAdditionalData.enableWalletAmountValidation, callbackUrl,
+            activation = mapPaymentWalletActionData(walletAdditionalData.activation),
+            topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
+            phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered)
+        )
+    }
+
     private fun mapPaymentOvoActionData(ovoActionData: OvoActionData): OrderPaymentOvoActionData {
         return OrderPaymentOvoActionData(ovoActionData.isRequired, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker, ovoActionData.isHideDigital)
+    }
+
+    private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
+        return OrderPaymentWalletActionData(walletData.isRequired, walletData.buttonTitle, walletData.successToaster, walletData.errorToaster, walletData.errorMessage, walletData.isHideDigital, walletData.headerTitle, walletData.urlLink)
     }
 
     private fun mapPaymentOvoCustomerData(data: CustomerData): OrderPaymentOvoCustomerData {
@@ -276,7 +290,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
-                address.latitude, address.postalCode, address.state, address.stateDetail, address.status)
+                address.latitude, address.postalCode, address.state, address.stateDetail, address.status, address.tokoNow.shopId, address.tokoNow.warehouseId)
     }
 
     private fun mapTicker(tickers: List<Ticker>): TickerData? {

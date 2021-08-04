@@ -22,11 +22,15 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.home_popular_keyword.view.*
+import kotlinx.android.synthetic.main.home_popular_keyword.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_popular_keyword.view.home_component_divider_header
 
 /**
  * @author by yoasfs on 2020-02-18
@@ -63,14 +67,24 @@ class PopularKeywordViewHolder (val view: View,
 
     override fun bind(element: PopularKeywordListDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
+        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
 
         initStub(element)
         initAdapter(element)
+        setChannelDivider(element)
     }
 
     override fun bind(element: PopularKeywordListDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun setChannelDivider(element: PopularKeywordListDataModel) {
+        HomeChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun initAdapter(element: PopularKeywordListDataModel) {
@@ -84,6 +98,7 @@ class PopularKeywordViewHolder (val view: View,
         else recyclerView.visible()
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
+        Embrace.getInstance().endEvent(performanceTraceName)
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {
@@ -170,7 +185,6 @@ class PopularKeywordViewHolder (val view: View,
             if(!element.isErrorLoad) {
                 errorPopularKeyword?.hide()
                 channelTitle?.show()
-                channelSubtitle?.show()
                 ivReload?.show()
                 tvReload?.show()
             } else {

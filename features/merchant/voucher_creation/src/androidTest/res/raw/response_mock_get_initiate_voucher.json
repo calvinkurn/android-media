@@ -1,0 +1,30 @@
+[
+  {
+    "data": {
+      "getInitiateVoucherPage": {
+        "header": {
+          "process_time": 49.109803,
+          "messages": [
+            "Akses diterima"
+          ],
+          "reason": "",
+          "error_code": ""
+        },
+        "data": {
+          "shop_id": 10132885,
+          "token": "5d9f8ebbc0d5685bff821a39e66ceb8b",
+          "user_id": 128068031,
+          "access_token": "",
+          "upload_app_url": "https://u12.tokopedia.net/upload/attachment",
+          "img_banner_base": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg",
+          "img_banner_ig_post": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg",
+          "img_banner_ig_story": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_story.jpg",
+          "img_banner_label_gratis_ongkir": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png",
+          "img_banner_label_cashback": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png",
+          "img_banner_label_cashback_hingga": "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png",
+          "prefix_voucher_code": "YDPS"
+        }
+      }
+    }
+  }
+]

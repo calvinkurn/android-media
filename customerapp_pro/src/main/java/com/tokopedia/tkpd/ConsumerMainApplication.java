@@ -27,11 +27,6 @@ import kotlin.Pair;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("native-lib");
-    }
-
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -118,6 +113,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         }) + new String(new char[]{
                 105, 110, 116, 108
         });
+    }
+
+    @Override
+    protected void loadSignatureLibrary() {
+        System.loadLibrary("native-lib");
     }
 
     protected void setVersionCode() {

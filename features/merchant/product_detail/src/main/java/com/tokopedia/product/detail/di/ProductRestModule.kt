@@ -4,19 +4,16 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.coroutines.repository.RestRepositoryImpl
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.product.detail.di.ProductDetailScope
-import com.tokopedia.product.detail.di.ProductDetailUserModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
-@Module(includes = [ProductDetailUserModule::class])
+@Module
 class ProductRestModule {
     @ProductDetailScope
     @Provides
