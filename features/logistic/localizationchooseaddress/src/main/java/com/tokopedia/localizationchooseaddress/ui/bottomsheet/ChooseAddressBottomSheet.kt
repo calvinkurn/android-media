@@ -42,6 +42,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -455,10 +456,19 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
         buttonAddAddress?.setOnClickListener {
             ChooseAddressTracking.onClickButtonTambahAlamatBottomSheet(userSession.userId)
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                putExtra(EXTRA_IS_FULL_FLOW, true)
-                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-            }, REQUEST_CODE_ADD_ADDRESS)
+            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                    putExtra(EXTRA_IS_FULL_FLOW, true)
+                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                }, REQUEST_CODE_ADD_ADDRESS)
+            } else {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                    putExtra(EXTRA_IS_FULL_FLOW, true)
+                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                }, REQUEST_CODE_ADD_ADDRESS)
+            }
         }
 
         buttonSnippet?.setOnClickListener {
@@ -502,6 +512,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     }
 
     companion object {
+        const val EXTRA_REF = "EXTRA_REF"
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
         const val EXTRA_IS_LOCALIZATION = "EXTRA_IS_LOCALIZATION"
@@ -512,6 +523,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+
+        const val SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER = "/user/address/create/chooseaddressnew"
 
         const val DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address"
         const val LATITUDE = "latitude"
