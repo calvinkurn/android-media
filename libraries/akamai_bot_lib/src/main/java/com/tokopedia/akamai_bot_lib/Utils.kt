@@ -52,7 +52,7 @@ val registeredGqlFunctions = mapOf(
         "hachikoRedeem" to "claimcoupon",
         "registerCheck" to "rgsc",
         "rechargeCheckVoucher" to "rcv",
-        "playInteractiveUserTapSession" to "PlayTap"
+        "playInteractiveUserTapSession" to "PlayTap",
 )
 
 fun isAkamai(query: String): Boolean {
