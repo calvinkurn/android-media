@@ -1104,7 +1104,7 @@ abstract class BaseSearchCategoryViewModel(
             recommendationCarouselDataView: RecommendationCarouselDataView
     ) = GetRecommendationRequestParam(
             pageName = recommendationCarouselDataView.pageName,
-            categoryIds = getRecomCategoryId(),
+            categoryIds = getRecomCategoryId(recommendationCarouselDataView),
             xSource = RECOM_WIDGET,
             isTokonow = true,
             pageNumber = PAGE_NUMBER_RECOM_WIDGET,
@@ -1112,7 +1112,9 @@ abstract class BaseSearchCategoryViewModel(
             xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
     )
 
-    protected open fun getRecomCategoryId() = listOf<String>()
+    protected open fun getRecomCategoryId(
+            recommendationCarouselDataView: RecommendationCarouselDataView
+    ) = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
 

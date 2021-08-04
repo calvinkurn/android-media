@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -268,7 +269,11 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     }
 
-    override fun getRecomCategoryId(): List<String> {
+    override fun getRecomCategoryId(
+            recommendationCarouselDataView: RecommendationCarouselDataView
+    ): List<String> {
+        if (recommendationCarouselDataView.pageName == TOKONOW_NO_RESULT) return listOf()
+
         val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
         val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
 

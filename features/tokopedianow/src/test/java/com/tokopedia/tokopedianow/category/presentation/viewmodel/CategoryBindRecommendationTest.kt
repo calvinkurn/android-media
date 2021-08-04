@@ -24,7 +24,7 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
         ) {
             `Then assert get recommendation request`(
                     getRecommendationRequestParam,
-                    defaultCategoryL1,
+                    listOf(defaultCategoryL1),
             )
         }
     }
@@ -36,11 +36,11 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
 
     private fun `Then assert get recommendation request`(
             getRecommendationRequestParam: GetRecommendationRequestParam,
-            expectedCategoryId: String
+            expectedCategoryIds: List<String>
     ) {
         assertThat(
                 getRecommendationRequestParam.categoryIds,
-                shouldBe(listOf(expectedCategoryId))
+                shouldBe(expectedCategoryIds)
         )
     }
 
@@ -89,7 +89,7 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
                     ) {
                         `Then assert get recommendation request`(
                                 getRecommendationRequestParam,
-                                categoryL2Id,
+                                listOf(categoryL2Id),
                         )
                     }
                 },
@@ -119,13 +119,42 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
                     ) {
                         `Then assert get recommendation request`(
                                 getRecommendationRequestParam,
-                                categoryL3Id,
+                                listOf(categoryL3Id),
                         )
                     }
                 },
         )
 
         testHelper.`bind recommendation success`()
+    }
+
+    @Test
+    fun `load category recommendation without category id for no result`() {
+        `Given category view model`()
+
+        val callback = object : Callback {
+            override fun `Given view will show recommendation carousel`() {
+                `Given category first page will show empty result with recommendation carousel`()
+            }
+
+            override fun `Then assert get recommendation request`(
+                    getRecommendationRequestParam: GetRecommendationRequestParam
+            ) {
+                `Then assert get recommendation request`(
+                        getRecommendationRequestParam,
+                        listOf(),
+                )
+            }
+        }
+
+        val testHelper = createTestHelper(callback)
+        testHelper.`bind recommendation success`()
+    }
+
+    private fun `Given category first page will show empty result with recommendation carousel`() {
+        val categoryModel = "category/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
+        `Given get category first page use case will be successful`(categoryModel)
+        `Given view already created`()
     }
 
     @Test
