@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -22,10 +24,27 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
-class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
+class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) : ShareBottomsheetListener {
+
+    companion object {
+        private const val DEFAULT_IMAGE_WIDTH = 2048
+        private const val DEFAULT_IMAGE_HEIGHT = 2048
+
+        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
+
+        const val MODE_TEXT = 0
+        const val MODE_IMAGE = 1
+
+        const val log_tag = "BRANCH_GENERATE"
+        const val TIMEOUT_LOG = 5_000L // seconds
+    }
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
     private var cancelShare: Boolean = false
@@ -213,19 +232,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         return linkerShareData
     }
 
-
-    companion object {
-        private const val DEFAULT_IMAGE_WIDTH = 2048
-        private const val DEFAULT_IMAGE_HEIGHT = 2048
-
-        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
-
-        const val MODE_TEXT = 0
-        const val MODE_IMAGE = 1
-
-        const val log_tag = "BRANCH_GENERATE"
-        const val TIMEOUT_LOG = 5_000L // seconds
-    }
+    //region universal sharing
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         if (isBranchUrlActive()) {
@@ -238,7 +245,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 campaign = shareModel.campaign
                 ogTitle = generateOgTitle(productData)
                 ogDescription = generateOgDescription(productData)
-                if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                     ogImageUrl = shareModel.ogImgUrl
                 }
             }
@@ -248,7 +255,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     override fun urlCreated(linkerShareData: LinkerShareResult) {
                         val branchEnd = System.currentTimeMillis()
                         branchTime = (branchEnd - branchStart)
-                        postBuildImage?.invoke()
+                        postBuildImage.invoke()
                         var shareString = productData.getShareContent(linkerShareData.url)
                         shareModel.subjectName = productData.productName ?: ""
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
@@ -281,25 +288,24 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     private fun generateOgDescription(productData: ProductData): String {
-        return "${productData.shopName} - ${productData.productShareDescription}"
+            return "${productData.shopName} - ${productData.productShareDescription}"
     }
 
     override fun onCloseOptionClicked() {
         universalShareBottomSheet?.dismiss()
     }
 
-
-    fun showUniversalShareBottomSheet(fragmentManager:FragmentManager?,
-                                      data: ProductData, preBuildImg: () -> Unit,
-                                      postBuildImg: () -> Unit,
+    fun showUniversalShareBottomSheet(fragmentManager: FragmentManager?,
+                                      data: ProductData,
                                       isLog: Boolean = false,
                                       view: View? = null,
-                                      productImgList:ArrayList<String>? = null) {
+                                      productImgList:ArrayList<String>? = null,
+                                      preBuildImg: () -> Unit,
+                                      postBuildImg: () -> Unit,) {
         cancelShare = false
         resetLog()
         this.isLog = isLog
         timeStartShare = System.currentTimeMillis()
-
         productData = data
         postBuildImage = postBuildImg
         preBuildImage = preBuildImg
@@ -309,16 +315,14 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@ProductShare)
-            //Example Integration
-            //Please replace userId and productId with actual values
             setUtmCampaignData("PDP", productData.userId, productData.productId, "Share")
-            //example integration
             setMetaData(productData.productName ?: "",
                             productData.productImageUrl ?: "",
                             "", productImgList)
         }
         universalShareBottomSheet?.show(fragmentManager)
     }
+    //endregion
 }
 
 class ProductShareException(e: Throwable) : Throwable(e)

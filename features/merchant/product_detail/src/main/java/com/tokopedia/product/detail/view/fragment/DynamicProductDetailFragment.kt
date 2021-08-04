@@ -163,6 +163,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
@@ -2418,32 +2419,42 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun executeProductShare(productData: ProductData) {
+        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+            executeUniversalShare(productData)
+        } else {
+            executeNativeShare(productData)
+        }
+    }
+
+    private fun executeNativeShare(productData: ProductData) {
+        shareProductInstance?.share(productData, {
+            showProgressDialog {
+                shareProductInstance?.cancelShare(true)
+            }
+        }, {
+            hideProgressDialog()
+        }, true)
+    }
+
+    private fun executeUniversalShare(productData: ProductData) {
         activity?.let {
-            if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
-                val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
+            val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                     ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
                     ?.map { it.urlOriginal } ?: emptyList()
-                shareProductInstance?.showUniversalShareBottomSheet(
-                    fragmentManager,
-                    productData,
-                    {
+
+            shareProductInstance?.showUniversalShareBottomSheet(
+                    fragmentManager = it.supportFragmentManager,
+                    data = productData,
+                    isLog = true,
+                    view = view,
+                    productImgList = ArrayList(imageUrls),
+                    preBuildImg = {
                         showProgressDialog {
                             shareProductInstance?.cancelShare(true)
                         }
-                    }, {
-                        hideProgressDialog()
-                    }, true,
-                    view, ArrayList(imageUrls))
-
-            }else {
-                shareProductInstance?.share(productData, {
-                    showProgressDialog {
-                        shareProductInstance?.cancelShare(true)
-                    }
-                }, {
-                    hideProgressDialog()
-                }, true)
-            }
+                    },
+                    postBuildImg = { hideProgressDialog() }
+            )
         }
     }
 
