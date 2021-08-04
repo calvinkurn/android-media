@@ -85,7 +85,8 @@
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_price_1"
         app:layout_constraintRight_toLeftOf="@id/product_bundling_slash_1"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_price_1"
-        tools:text="10%" />
+        tools:text="10%"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_slash_1"
@@ -101,7 +102,8 @@
         app:layout_constraintRight_toRightOf="@id/product_bundling_price_1"
         app:layout_constraintTop_toTopOf="@id/product_bundling_discount_1"
         app:typographyType="small"
-        tools:text="Rp8.100.000" />
+        tools:text="Rp8.100.000"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_price_2"
@@ -127,7 +129,8 @@
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_price_2"
         app:layout_constraintRight_toLeftOf="@id/product_bundling_slash_2"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_price_2"
-        tools:text="15%" />
+        tools:text="15%"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_slash_2"
@@ -143,7 +146,8 @@
         app:layout_constraintRight_toRightOf="@id/product_bundling_price_2"
         app:layout_constraintTop_toTopOf="@id/product_bundling_discount_2"
         app:typographyType="small"
-        tools:text="Rp.150.000" />
+        tools:text="Rp.150.000"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_price_3"
@@ -169,7 +173,8 @@
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_price_3"
         app:layout_constraintRight_toLeftOf="@id/product_bundling_slash_3"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_price_3"
-        tools:text="15%" />
+        tools:text="15%"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_bundling_slash_3"
@@ -185,7 +190,8 @@
         app:layout_constraintRight_toRightOf="@id/product_bundling_price_3"
         app:layout_constraintTop_toTopOf="@id/product_bundling_discount_3"
         app:typographyType="small"
-        tools:text="Rp250.000" />
+        tools:text="Rp250.000"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/product_bundling_group_1"
@@ -209,6 +215,30 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         app:constraint_referenced_ids="product_bundling_image_3, product_bundling_price_3, product_bundling_discount_3, product_bundling_slash_3, product_bundling_icon_add_2"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/product_bundling_group_discount_slash_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="product_bundling_discount_1, product_bundling_slash_1"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/product_bundling_group_discount_slash_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="product_bundling_discount_2, product_bundling_slash_2"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/product_bundling_group_discount_slash_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="product_bundling_discount_3, product_bundling_slash_3"
         tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

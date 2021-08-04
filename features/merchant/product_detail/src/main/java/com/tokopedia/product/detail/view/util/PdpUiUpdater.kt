@@ -426,10 +426,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
                 productBundlingData?.run {
-                    // TODO vindo - get with the same product id
-                    it.bundleInfo.getOrNull(0)?.let{bundleInfo->
-                        this.bundleInfo = bundleInfo
-                    }
+                    val bundleInfo = it.bundleInfo.find { bundleInfo -> bundleInfo.productId == productId }
+                    this.bundleInfo = bundleInfo
                 }
             }
         }
@@ -797,6 +795,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
             shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+        }
+    }
+
+    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
+        if (p2Data == null || productId == null) return
+        val bundleInfo = p2Data.bundleInfo.find { it.productId == productId }
+        updateData(ProductDetailConstant.PRODUCT_BUNDLING){
+            productBundlingData?.bundleInfo = bundleInfo
         }
     }
 
