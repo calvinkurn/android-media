@@ -3,8 +3,7 @@ package com.tokopedia.mediauploader.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.mediauploader.MediaRepository
-import com.tokopedia.mediauploader.MediaRepositoryImpl
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.data.UploaderServices
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
@@ -26,14 +25,14 @@ class MediaUploaderModule {
     }
 
     @Provides
-    fun provideMediaRepository(): MediaRepository {
-        return MediaRepositoryImpl(GraphqlInteractor.getInstance().graphqlRepository)
+    fun provideMediaRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideDataPolicyUseCase(
-            repository: MediaRepository
+            repository: GraphqlRepository
     ): DataPolicyUseCase {
         return DataPolicyUseCase(repository)
     }

@@ -41,7 +41,7 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             When("create param") {
-                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath, "60")
+                requestParams = useCase.createParams(uploadUrl, filePath, "60")
             }
             Then("it should return upload url correctly") {
                 assert(requestParams.getString("url", "") == uploadUrl)
@@ -63,7 +63,7 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             Given("set param with upload url and file path") {
-                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath, "60")
+                requestParams = useCase.createParams(uploadUrl, filePath, "60")
             }
 
             Given("upload network services") {

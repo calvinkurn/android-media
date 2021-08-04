@@ -1,42 +1,48 @@
 package com.tokopedia.mediauploader.domain
 
 import android.util.Log
-import com.tokopedia.mediauploader.base.BaseUseCase
-import com.tokopedia.mediauploader.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper.mapToSourcePolicy
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.util.UploadValidatorUtil.getFileExtension
-import com.tokopedia.mediauploader.util.UploaderManager.isSourceMediaNotFound
 import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.internal.http2.ConnectionShutdownException
 import java.io.File
 import java.io.InterruptedIOException
 import java.net.SocketException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.mediauploader.data.consts.UrlBuilder.generate as urlBuilder
-import com.tokopedia.mediauploader.domain.DataPolicyUseCase.Companion.createParams as policyParam
-import com.tokopedia.mediauploader.domain.MediaUploaderUseCase.Companion.createParams as mediaUploaderParams
 
 class UploaderUseCase @Inject constructor(
         private val dataPolicyUseCase: DataPolicyUseCase,
-        private val mediaUploaderUseCase: MediaUploaderUseCase
-) : BaseUseCase<RequestParams, UploadResult>() {
+        private val mediaUploaderUseCase: MediaUploaderUseCase,
+        coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) : CoroutineUseCase<RequestParams, UploadResult>(coroutineDispatcher) {
+
+    private val uploaderManager by lazy {
+        UploaderManager(dataPolicyUseCase, mediaUploaderUseCase)
+    }
 
     private var progressCallback: ProgressCallback? = null
 
-    override suspend fun execute(params: RequestParams): UploadResult {
-        if (params.parameters.isEmpty()) throw Exception("Not param found")
+    // this domain isn't using graphql service
+    override fun graphqlQuery() = ""
 
+    override suspend fun execute(params: RequestParams): UploadResult {
         val sourceId = params.getString(PARAM_SOURCE_ID, "")
         val fileToUpload = params.getObject(PARAM_FILE_PATH) as File
 
         return try {
-            uploadValidation(fileToUpload, sourceId) { sourcePolicy ->
-                postMediaToHost(fileToUpload, sourcePolicy, sourceId)
+            uploaderManager.validate(fileToUpload, sourceId) { sourcePolicy ->
+                // track progress bar
+                mediaUploaderUseCase.progressCallback = progressCallback
+
+                // upload file
+                uploaderManager.post(fileToUpload, sourceId, sourcePolicy)
             }
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
@@ -47,81 +53,16 @@ class UploaderUseCase @Inject constructor(
                 trackToTimber(sourceId, Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim())
             }
             // check whether media source is valid
-            return if (isSourceMediaNotFound(e)) {
-                setError(listOf(SOURCE_NOT_FOUND), sourceId, fileToUpload)
-            } else {
-                setError(listOf(NETWORK_ERROR), sourceId, fileToUpload)
-            }
+            return uploaderManager.setError(listOf(NETWORK_ERROR), sourceId, fileToUpload)
         }
     }
 
-    private suspend fun postMediaToHost(
-            fileToUpload: File,
-            policy: SourcePolicy,
-            sourceId: String
-    ): UploadResult {
-        // progress of uploader
-        mediaUploaderUseCase.progressCallback = progressCallback
-
-        // media uploader
-        val upload = mediaUploaderUseCase(mediaUploaderParams(
-                uploadUrl = urlBuilder(policy.host, sourceId),
-                filePath = fileToUpload.path,
-                timeOut = policy.timeOut.toString()
-        ))
-
-        return upload.data?.let {
-            UploadResult.Success(it.uploadId)
-        }?: setError(if (upload.header.messages.isNotEmpty()) {
-            listOf(upload.header.messages.first())
-        } else {
-            listOf(UNKNOWN_ERROR) // error handling, when server returned empty error message
-        }, sourceId, fileToUpload)
-    }
-
-    private suspend inline fun uploadValidation(
-            fileToUpload: File,
-            sourceId: String,
-            onUpload: (sourcePolicy: SourcePolicy) -> UploadResult
-    ): UploadResult {
-        // sourceId empty validation
-        if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
-
-        val sourcePolicy = mediaPolicy(sourceId)
-        val filePath = fileToUpload.path // file full path
-        val extensions = sourcePolicy.imagePolicy
-                .extension
-                .split(",")
-
-        return when {
-            !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
-            !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
-                    "Format file: ${sourcePolicy.imagePolicy.extension}"
-            )
-            else -> onUpload(sourcePolicy)
-        }
-    }
-
-    /**
-     * track progress of uploader
-     */
     fun trackProgress(progress: (percentage: Int) -> Unit) {
         this.progressCallback = object : ProgressCallback {
             override fun onProgress(percentage: Int) {
                 progress(percentage)
             }
         }
-    }
-
-    private suspend fun mediaPolicy(sourceId: String): SourcePolicy {
-        val dataPolicyParams = policyParam(sourceId)
-        val policyData = dataPolicyUseCase(dataPolicyParams)
-        return mapToSourcePolicy(policyData.dataPolicy)
-    }
-
-    private fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
-        trackToTimber(fileToUpload, sourceId, message)
-        return UploadResult.Error(message.first())
     }
 
     fun createParams(sourceId: String, filePath: File): RequestParams {
@@ -138,13 +79,7 @@ class UploaderUseCase @Inject constructor(
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
 
-        // const error validation
-        const val ERROR_SOURCE_NOT_FOUND = "Required: source (-1)"
-
         // const local error message
         const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
-        const val FILE_NOT_FOUND = "Oops, file tidak ditemukan."
-        const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan."
-        const val UNKNOWN_ERROR = "Upload gagal, silakan coba kembali beberapa saat lagi"
     }
 }
