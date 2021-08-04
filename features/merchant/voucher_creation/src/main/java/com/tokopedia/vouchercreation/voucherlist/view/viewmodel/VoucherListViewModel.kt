@@ -222,8 +222,8 @@ class VoucherListViewModel @Inject constructor(
         return showBroadCastChatTicker
     }
 
-    fun setIsFreeBroadCastIconVisible(broadCastQuota: Int): Boolean {
-        return (broadCastQuota > 0)
+    fun setIsFreeBroadCastIconVisible(broadCastQuota: Int) {
+        this.isFreeBroadCastIconVisible = (broadCastQuota > 0)
     }
 
     fun isFreeBroadCastIconVisible(): Boolean {
