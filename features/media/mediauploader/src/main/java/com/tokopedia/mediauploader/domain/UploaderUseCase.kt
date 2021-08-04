@@ -10,9 +10,11 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import okhttp3.internal.http2.ConnectionShutdownException
+import okhttp3.internal.http2.StreamResetException
 import java.io.File
 import java.io.InterruptedIOException
 import java.net.SocketException
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -42,6 +44,10 @@ class UploaderUseCase @Inject constructor(
                 // upload file
                 uploaderManager.post(fileToUpload, sourceId, sourcePolicy)
             }
+        } catch (e: SocketTimeoutException) {
+            uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, fileToUpload)
+        } catch (e: StreamResetException) {
+            uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, fileToUpload)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
                     e !is SocketException &&
@@ -78,5 +84,6 @@ class UploaderUseCase @Inject constructor(
 
         // const local error message
         const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
+        const val TIMEOUT_ERROR = "Oops, upload gambar perlu waktu lebih lama dari biasanya. Coba upload lagi, yuk!"
     }
 }
