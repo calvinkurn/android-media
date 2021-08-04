@@ -39,8 +39,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -255,6 +253,18 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
+    fun provideDigitalCheckVoucherMapper(): DigitalCheckVoucherMapper = DigitalCheckVoucherMapper()
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideFlightCheckVoucherMapper(): FlightCheckVoucherMapper = FlightCheckVoucherMapper()
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideHotelCheckVoucherMapper(): HotelCheckVoucherMapper = HotelCheckVoucherMapper()
+
+    @Provides
+    @PromoCheckoutDetailScope
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
@@ -268,10 +278,17 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
-    fun provideDealsInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor,fingerprintInterceptor: FingerprintInterceptor): ArrayList<Interceptor> {
+    fun provideDealsInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor,
+                                fingerprintInterceptor: FingerprintInterceptor,
+                                httpLoggingInterceptor: HttpLoggingInterceptor,
+                                chuckerInterceptor: ChuckerInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(tkpdAuthInterceptor)
         listInterceptor.add(fingerprintInterceptor)
+        if (GlobalConfig.isAllowDebuggingTools()){
+            listInterceptor.add(httpLoggingInterceptor)
+            listInterceptor.add(chuckerInterceptor)
+        }
         return listInterceptor
     }
 }

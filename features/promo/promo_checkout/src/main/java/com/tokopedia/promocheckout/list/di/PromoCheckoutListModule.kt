@@ -4,7 +4,6 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.config.GlobalConfig
@@ -18,7 +17,6 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
@@ -33,14 +31,11 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCas
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.*
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
-import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailScope
 import com.tokopedia.promocheckout.list.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -250,6 +245,18 @@ class PromoCheckoutListModule {
 
     @Provides
     @PromoCheckoutListScope
+    fun provideDigitalCheckVoucherMapper(): DigitalCheckVoucherMapper = DigitalCheckVoucherMapper()
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideFlightCheckVoucherMapper(): FlightCheckVoucherMapper = FlightCheckVoucherMapper()
+
+    @Provides
+    @PromoCheckoutListScope
+    fun provideHotelCheckVoucherMapper(): HotelCheckVoucherMapper = HotelCheckVoucherMapper()
+
+    @Provides
+    @PromoCheckoutListScope
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
@@ -263,10 +270,17 @@ class PromoCheckoutListModule {
 
     @Provides
     @PromoCheckoutListScope
-    fun provideDealsInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor, fingerprintInterceptor: FingerprintInterceptor): ArrayList<Interceptor> {
+    fun provideDealsInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor,
+                                fingerprintInterceptor: FingerprintInterceptor,
+                                httpLoggingInterceptor: HttpLoggingInterceptor,
+                                chuckerInterceptor: ChuckerInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(tkpdAuthInterceptor)
         listInterceptor.add(fingerprintInterceptor)
+        if (GlobalConfig.isAllowDebuggingTools()){
+            listInterceptor.add(httpLoggingInterceptor)
+            listInterceptor.add(chuckerInterceptor)
+        }
         return listInterceptor
     }
 }
