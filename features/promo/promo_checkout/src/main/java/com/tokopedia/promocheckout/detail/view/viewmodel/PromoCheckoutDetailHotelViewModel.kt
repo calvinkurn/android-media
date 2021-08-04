@@ -40,7 +40,7 @@ class PromoCheckoutDetailHotelViewModel @Inject constructor(private val dispatch
 
     val showProgressLoadingPromoHotel = MutableLiveData<Boolean>()
 
-    fun checkPromoCode(cartID: String, promoCode: String, hexColor: String){
+    fun checkPromoCode(promoCode: String, cartID: String, hexColor: String){
         showProgressLoadingPromoHotel.postValue(true)
         launchCatchError(block = {
             showProgressLoadingPromoHotel.postValue( false)
