@@ -8,6 +8,8 @@ import com.tokopedia.saldodetails.view.activity.detail.SaldoWithdrawalDetailActi
 import com.tokopedia.saldodetails.view.fragment.*
 import com.tokopedia.saldodetails.view.fragment.detail.SaldoSalesDetailFragment
 import com.tokopedia.saldodetails.view.fragment.detail.SaldoWithdrawalDetailFragment
+import com.tokopedia.saldodetails.view.fragment.history.SaldoTransactionHistoryFragment
+import com.tokopedia.saldodetails.view.fragment.history.SaldoTransactionListFragment
 import dagger.Component
 
 @SaldoDetailsScope

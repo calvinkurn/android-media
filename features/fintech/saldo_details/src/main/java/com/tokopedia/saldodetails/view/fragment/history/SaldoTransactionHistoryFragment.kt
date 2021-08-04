@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.view.fragment
+package com.tokopedia.saldodetails.view.fragment.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +18,9 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
+import com.tokopedia.saldodetails.view.fragment.history.DateRangePickerBottomSheet
+import com.tokopedia.saldodetails.view.fragment.history.OnDateRangeSelectListener
+import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
 import com.tokopedia.saldodetails.view.fragment.new.TransactionTitle
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.view.viewmodel.TransactionHistoryViewModel
@@ -80,7 +83,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         val startDateStr = dateFormat.format(selectedDateFrom)
         val endDateStr = dateFormat.format(endDate)
         tvSelectedDateRange.text = "$startDateStr - $endDateStr"
-        transactionHistoryViewModel.refreshAllTabsData(selectedDateFrom, selectedDateTo)
+        transactionHistoryViewModel.refreshAllTabsData(
+            selectedDateFrom,
+            selectedDateTo,
+            isSalesTabEnabled()
+        )
     }
 
     override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
@@ -105,10 +112,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         })
 
         //penjualan tab
-        saldoTabItems.add(SaldoHistoryTabItem().apply {
-            title = TransactionTitle.SALDO_SALES
-            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
-        })
+        if (isSalesTabEnabled())
+            saldoTabItems.add(SaldoHistoryTabItem().apply {
+                title = TransactionTitle.SALDO_SALES
+                fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
+            })
 
         //Saldo Refund
         saldoTabItems.add(SaldoHistoryTabItem().apply {
@@ -117,6 +125,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         })
 
         //Saldo Penghasilan tab
+
         saldoTabItems.add(SaldoHistoryTabItem().apply {
             title = TransactionTitle.SALDO_INCOME
             fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_INCOME)
@@ -150,7 +159,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     fun onRefresh() {
-        transactionHistoryViewModel.refreshAllTabsData(selectedDateFrom, selectedDateTo)
+        transactionHistoryViewModel.refreshAllTabsData(
+            selectedDateFrom,
+            selectedDateTo,
+            isSalesTabEnabled()
+        )
     }
 
     var coachMark2: CoachMark2? = null
@@ -222,6 +235,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
                 SaldoDepositFragment.KEY_CAN_SHOW_PENJUALAN_COACHMARK, true
             )
         }
+    }
+
+    fun isSalesTabEnabled(): Boolean {
+        return false
     }
 
 
