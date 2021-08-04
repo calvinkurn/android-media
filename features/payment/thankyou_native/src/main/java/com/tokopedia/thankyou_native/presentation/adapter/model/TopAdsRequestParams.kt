@@ -1,7 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 
 data class TopAdsRequestParams(
     @SerializedName("type")
@@ -19,5 +19,5 @@ data class TopAdsRequestParams(
     @SerializedName("dimen_id_mobile")
     var dimen: String,
     @SerializedName("data")
-    var topAdsImageViewModel: ArrayList<TopAdsImageViewModel>?,
+    var topAdsUIModelList: List<TopAdsUIModel>?,
 )

@@ -76,7 +76,7 @@ class ThanksPageDataViewModel @Inject constructor(
     ) {
         thankYouTopAdsViewModelUseCase.getAppLinkPaymentInfo(topAdsRequestParams, thanksPageData, {
             if(it.isNotEmpty()){
-                topAdsRequestParams.topAdsImageViewModel = it
+                topAdsRequestParams.topAdsUIModelList = it
                 topAdsDataLiveData.postValue(topAdsRequestParams)
             }else {
                 postGyroRecommendation(gyroResponseLiveData.value)
