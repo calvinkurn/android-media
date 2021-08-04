@@ -74,7 +74,7 @@ class GetHomeLayoutListUseCase @Inject constructor(
             if (stringBuilder.isNotBlank()) {
                 stringBuilder.append("&")
             }
-            stringBuilder.append("warehouse_ids=${localCacheModel.address_id}")
+            stringBuilder.append("warehouse_ids=${localCacheModel.warehouse_id}")
         }
         return stringBuilder.toString()
     }
