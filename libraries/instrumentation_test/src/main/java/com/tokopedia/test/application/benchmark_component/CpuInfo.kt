@@ -94,7 +94,7 @@ internal object CpuInfo {
             return false
         }
 
-        if (onlineCores.any { it.availableFreqs.minOrNull()() == it.currentMinFreq }) {
+        if (onlineCores.any { it.availableFreqs.minOrNull() == it.currentMinFreq }) {
             Log.d(TAG, "Clocks not locked: online cores with min freq == min avail freq")
             return false
         }
