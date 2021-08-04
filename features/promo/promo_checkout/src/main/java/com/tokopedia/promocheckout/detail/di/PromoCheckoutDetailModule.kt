@@ -272,9 +272,10 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
-    fun provideDigitalInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor): ArrayList<Interceptor> {
+    fun provideDealsInterceptor(tkpdAuthInterceptor: TkpdAuthInterceptor,fingerprintInterceptor: FingerprintInterceptor): ArrayList<Interceptor> {
         val listInterceptor = arrayListOf<Interceptor>()
         listInterceptor.add(tkpdAuthInterceptor)
+        listInterceptor.add(fingerprintInterceptor)
         return listInterceptor
     }
 }
