@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -31,7 +34,7 @@ class TitleViewHolder(
         element ?: return
 
         titleText?.text = getTitle(element)
-        seeAllCategory?.shouldShowWithAction(element.title.isNotEmpty()) {
+        seeAllCategory?.shouldShowWithAction(element.hasSeeAllCategoryButton) {
             seeAllCategory?.setOnClickListener {
                 titleListener.onSeeAllCategoryClicked()
             }
@@ -39,6 +42,9 @@ class TitleViewHolder(
     }
 
     private fun getTitle(element: TitleDataView) =
-            if (element.title.isNotEmpty()) element.title
-            else getString(R.string.tokopedianow_search_title)
+            when(val titleType = element.titleType) {
+                is CategoryTitle -> titleType.categoryName
+                is SearchTitle -> getString(R.string.tokopedianow_search_title)
+                is AllProductTitle -> getString(R.string.tokopedianow_all_products)
+            }
 }
