@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader
 
-import com.tokopedia.mediauploader.data.consts.UrlBuilder
+import com.tokopedia.mediauploader.data.consts.*
 import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.data.state.UploadResult
@@ -79,21 +79,6 @@ class UploaderManager constructor(
         val dataPolicyParams = dataPolicyUseCase.createParams(sourceId)
         val policyData = dataPolicyUseCase(dataPolicyParams)
         return ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
-    }
-
-
-    companion object {
-        // these is pre-validation error messages
-        const val FILE_NOT_FOUND = "Oops, file tidak ditemukan."
-        const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan."
-
-        fun formatNotAllowedMessage(allowedFormat: String): String {
-            val errorMessage = "Yah, formatnya belum sesuai. Pastikan format gambar kamu dalam "
-            return "$errorMessage $allowedFormat"
-        }
-
-        // this error message appear if the BE error response didn't return error message on `header:{}`
-        const val UNKNOWN_ERROR = "Upload gagal, silakan coba kembali beberapa saat lagi."
     }
 
 }

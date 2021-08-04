@@ -3,8 +3,11 @@ package com.tokopedia.mediauploader.domain
 import android.util.Log
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.UploaderManager
+import com.tokopedia.mediauploader.data.consts.NETWORK_ERROR
+import com.tokopedia.mediauploader.data.consts.TIMEOUT_ERROR
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.util.ERROR_MAX_LENGTH
 import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
@@ -76,14 +79,8 @@ class UploaderUseCase @Inject constructor(
     }
 
     companion object {
-        const val ERROR_MAX_LENGTH = 1500
-
         // key of params
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
-
-        // const local error message
-        const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
-        const val TIMEOUT_ERROR = "Oops, upload gambar perlu waktu lebih lama dari biasanya. Coba upload lagi, yuk!"
     }
 }

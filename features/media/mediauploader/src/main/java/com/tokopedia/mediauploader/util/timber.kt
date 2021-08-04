@@ -5,6 +5,8 @@ import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 import java.io.File
 
+const val ERROR_MAX_LENGTH = 1500
+
 fun trackToTimber(filePath: File? = null, sourceId: String, message: List<String>) {
     if (filePath != null && filePath.path.isNotEmpty()) {
         trackToTimber(sourceId, "Error upload image %s because %s".format(filePath.path, message.toString()))

@@ -1,9 +1,9 @@
 package com.tokopedia.mediauploader.data.mapper
 
-import com.tokopedia.mediauploader.UploaderManager.Companion.FILE_NOT_FOUND
-import com.tokopedia.mediauploader.UploaderManager.Companion.SOURCE_NOT_FOUND
-import com.tokopedia.mediauploader.domain.UploaderUseCase.Companion.NETWORK_ERROR
-import com.tokopedia.mediauploader.domain.UploaderUseCase.Companion.TIMEOUT_ERROR
+import com.tokopedia.mediauploader.data.consts.FILE_NOT_FOUND
+import com.tokopedia.mediauploader.data.consts.SOURCE_NOT_FOUND
+import com.tokopedia.mediauploader.data.consts.NETWORK_ERROR
+import com.tokopedia.mediauploader.data.consts.TIMEOUT_ERROR
 
 /*
 * This is class didn't used for local mediauploader,
