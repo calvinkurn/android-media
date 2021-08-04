@@ -172,8 +172,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     override fun createVisitableListWithEmptyProduct() {
         super.createVisitableListWithEmptyProduct()
 
-        if (filterController.isFilterActive()) return
-
         val categoryGridIndex = minOf(visitableList.size, 2)
         val categoryGridUIModel = TokoNowCategoryGridUiModel(
                 id = "",

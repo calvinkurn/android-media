@@ -388,9 +388,7 @@ abstract class BaseSearchCategoryViewModel(
 
         visitableList.add(chooseAddressDataView)
         visitableList.add(EmptyProductDataView(activeFilterList))
-
-        if (activeFilterList.isEmpty())
-            visitableList.add(RecommendationCarouselDataView(TOKONOW_NO_RESULT))
+        visitableList.add(RecommendationCarouselDataView(TOKONOW_NO_RESULT))
     }
 
     private fun createVisitableListWithProduct(

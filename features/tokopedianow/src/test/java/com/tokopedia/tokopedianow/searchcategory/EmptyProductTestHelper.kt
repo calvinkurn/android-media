@@ -66,7 +66,7 @@ class EmptyProductTestHelper(
 
         val newVisitableList = baseViewModel.visitableListLiveData.value!!
 
-        `Then assert empty result with filter visitable list`(newVisitableList)
+        `Then assert empty result visitable list`()
         `Then assert chosen quick filter is in empty state data view`(
                 newVisitableList,
                 listOf(chosenQuickFilter.firstOption),
@@ -79,13 +79,6 @@ class EmptyProductTestHelper(
 
     private fun `When view apply quick filter`(chosenQuickFilter: SortFilterItemDataView) {
         chosenQuickFilter.sortFilterItem.listener.invoke()
-    }
-
-    private fun `Then assert empty result with filter visitable list`(
-            visitableList: List<Visitable<*>>
-    ) {
-        visitableList.first().assertChooseAddressDataView()
-        visitableList.last().assertEmptyProductDataView()
     }
 
     private fun `Then assert chosen quick filter is in empty state data view`(
