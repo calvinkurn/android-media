@@ -213,10 +213,10 @@ class VoucherListFragment :
         observeLiveData()
     }
 
-    private fun setupShareBottomSheet(status: Int = 0, quota: Int = 0): ShareVoucherBottomSheet {
+    private fun setupShareBottomSheet(status: Int = 0, promo: Int = 0): ShareVoucherBottomSheet {
         val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
         shareVoucherBottomSheet.setBroadCastChatStatus(status)
-        shareVoucherBottomSheet.setBroadCastChatQuota(quota)
+        shareVoucherBottomSheet.setBroadCastChatPromo(promo)
         return shareVoucherBottomSheet
     }
 
@@ -1181,7 +1181,8 @@ class VoucherListFragment :
             when (result) {
                 is Success -> {
                     result.data.let { uiModel ->
-                        val showNewBroadCastExperience = RollenceUtil.getBroadCastVoucherRollenceValue()
+                        val showNewBroadCastExperience =
+                            RollenceUtil.getBroadCastVoucherRollenceValue()
                         if (showNewBroadCastExperience) {
                             uiModel.isFreeIconVisible = mViewModel.isFreeBroadCastIconVisible()
                             showBroadCastVoucherBottomSheet(uiModel)
@@ -1189,7 +1190,8 @@ class VoucherListFragment :
                             if (uiModel.isPublic) {
                                 view?.run {
                                     Toaster.make(this,
-                                        context?.getString(R.string.mvc_success_toaster).toBlankOrString(),
+                                        context?.getString(R.string.mvc_success_toaster)
+                                            .toBlankOrString(),
                                         Toaster.LENGTH_LONG,
                                         Toaster.TYPE_NORMAL,
                                         context?.getString(R.string.mvc_oke).toBlankOrString(),
@@ -1245,13 +1247,11 @@ class VoucherListFragment :
             shareVoucherBottomSheet = when (result) {
                 is Success -> {
                     val broadCastMetaData = result.data
-
                     // determine the free broadcast icon on success bottom sheet
-                    mViewModel.setIsFreeBroadCastIconVisible(broadCastMetaData.quota)
-
+                    mViewModel.setIsFreeBroadCastIconVisible(broadCastMetaData.promo)
                     setupShareBottomSheet(
                         status = broadCastMetaData.status,
-                        quota = broadCastMetaData.quota
+                        promo = broadCastMetaData.promo
                     )
                 }
                 is Fail -> {
