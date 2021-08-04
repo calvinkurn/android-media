@@ -313,7 +313,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
         launch(executorDispatchers.immediate) {
-            updateCartWithCustomShipment(shipping)
+            cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, shipping, orderPayment.value)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
@@ -366,7 +366,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
             if (it.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
-                updateCart()
             } else {
                 calculateTotal()
             }
@@ -402,7 +401,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearBboIfExist()
             orderShipment.value = it
             validateUsePromo()
-            updateCart()
         }
     }
 
@@ -481,10 +479,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.immediate) {
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
         }
-    }
-
-    private suspend fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
-        cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment, orderPayment.value)
     }
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
@@ -590,6 +584,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.immediate) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
+            cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
             val (error, resultValidateUse, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
             when {
                 error != null && isAkamaiError -> {
@@ -613,6 +608,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     calculateTotal()
                 }
             }
+            updateCart()
         }
     }
 
@@ -639,7 +635,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.immediate) {
             calculator.total.collect { (newOrderPayment, newOrderTotal) ->
                 orderPayment.value = newOrderPayment
-                orderTotal.value = newOrderTotal
+                orderTotal.value = if (orderShipment.value.isLoading || orderPromo.value.state == OccButtonState.LOADING) {
+                    newOrderTotal.copy(buttonState = OccButtonState.LOADING)
+                } else {
+                    newOrderTotal
+                }
             }
         }
     }
@@ -661,7 +661,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
-        if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
+        if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
             globalEvent.value = OccGlobalEvent.Loading
             val shop = orderShop.value
             if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
