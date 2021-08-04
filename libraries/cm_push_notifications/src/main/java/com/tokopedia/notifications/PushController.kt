@@ -1,12 +1,17 @@
 package com.tokopedia.notifications
 
+import android.app.KeyguardManager
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.GsonBuilder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.google.gson.*
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
@@ -19,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
+
 class PushController(val context: Context) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -28,6 +34,9 @@ class PushController(val context: Context) : CoroutineScope {
 
     private val isOfflinePushEnabled
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
+
+    private val isAutoRedirect
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(AUTO_REDIRECTION_REMOTE_CONFIG_KEY, false)
 
     fun handleNotificationBundle(bundle: Bundle) {
         try {
@@ -170,7 +179,9 @@ class PushController(val context: Context) : CoroutineScope {
         try {
             val baseNotification = CMNotificationFactory
                     .getNotification(context.applicationContext, baseNotificationModel)
-            if (null != baseNotification) {
+            if (checkOtpPushNotif(baseNotificationModel.appLink)) {
+                goToOtpPushNotifReceiver(baseNotificationModel.appLink)
+            } else if (null != baseNotification) {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
@@ -183,4 +194,27 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
+    private fun checkOtpPushNotif(applink: String?): Boolean {
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        return if (Build.VERSION.SDK_INT < ANDROID_12_SDK_VERSION &&
+                !keyguardManager.isKeyguardLocked &&
+            isAutoRedirect
+        ) {
+            applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
+        } else {
+            false
+        }
+    }
+
+    private fun goToOtpPushNotifReceiver(applink: String?) {
+        val intentHome = RouteManager.getIntent(context, ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(context, applink)
+        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivities(arrayOf(intentHome, intent))
+    }
+
+    companion object {
+        const val ANDROID_12_SDK_VERSION = 31
+        const val AUTO_REDIRECTION_REMOTE_CONFIG_KEY = "android_user_otp_push_notif_auto_redirection"
+    }
 }
