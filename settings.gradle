@@ -49,7 +49,7 @@ ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
     local {
-        enabled = !isCiServer
+        enabled = false //temp hardcode
     }
     remote(HttpBuildCache) {
         url = "${ci_url}"
