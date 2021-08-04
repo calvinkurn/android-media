@@ -166,11 +166,11 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetHomeLayoutDataUseCaseCalled() {
-        coVerify { getHomeLayoutDataUseCase.execute(any()) }
+        coVerify { getHomeLayoutDataUseCase.execute(anyString(), any()) }
     }
 
     protected fun verifyGetHomeLayoutDataUseCaseNotCalled() {
-        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(any()) }
+        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(anyString(), any()) }
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
@@ -210,11 +210,11 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetHomeLayoutData_thenReturn(layoutResponse: HomeLayoutResponse) {
-        coEvery { getHomeLayoutDataUseCase.execute(any()) } returns layoutResponse
+        coEvery { getHomeLayoutDataUseCase.execute(anyString(), any()) } returns layoutResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(error: Throwable) {
-        coEvery { getHomeLayoutDataUseCase.execute(any()) } throws error
+        coEvery { getHomeLayoutDataUseCase.execute(anyString(), any()) } throws error
     }
 
     protected fun onGetKeywordSearch_thenReturn(keywordSearchResponse: KeywordSearchData) {

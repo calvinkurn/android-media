@@ -15,9 +15,9 @@ class GetHomeLayoutListUseCase @Inject constructor(
 ): GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) {
 
     companion object {
-        const val TYPE = "type"
-        const val LOCATION = "location"
-        const val TOKONOW = "tokonow"
+        private const val TYPE = "type"
+        private const val LOCATION = "location"
+        private const val TOKONOW = "tokonow"
     }
 
     init {
