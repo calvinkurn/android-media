@@ -165,9 +165,9 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                 is ShopLocationState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     if (warehouseStatus == STATE_WAREHOUSE_ACTIVE) {
-                        view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
-                    } else {
                         view?.let { view -> Toaster.build(view, getString(R.string.text_activate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
+                    } else {
+                        view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     }
                     viewModel.getShopLocationList(userSession.shopId.toLong())
                 }
