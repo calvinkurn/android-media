@@ -84,6 +84,7 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -110,7 +111,7 @@ class DiscoveryFragment :
     View.OnClickListener,
     LihatSemuaViewHolder.OnLihatSemuaClickListener,
     TabLayout.OnTabSelectedListener,
-    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener{
+    ChooseAddressWidget.ChooseAddressWidgetListener, ShareBottomsheetListener, ScreenShotListener{
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -948,6 +949,9 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
+        //Todo Zishan You will need to initialize the content observer
+        //Uncomment the line below
+        //context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -967,6 +971,9 @@ class DiscoveryFragment :
         }
         getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
+        //Todo Zishan this method will unregister the content resolver observer
+        //Uncomment the line below
+        //UniversalShareBottomSheet.clearState()
     }
 
     override fun onDestroy() {
@@ -1127,5 +1134,13 @@ class DiscoveryFragment :
         activity?.window?.decorView?.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
+    }
+
+    override fun screenShotTaken() {
+        //Todo Zishan this method is triggered once the screenshot is detected by the content resolver
+        //make data as a class variable
+        //Uncomment the lines below
+        //var data:PageInfo? = null
+        //showUniversalShareBottomSheet(data)
     }
 }
