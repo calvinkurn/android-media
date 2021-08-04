@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -480,6 +481,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun applyNotification() {
         viewModel?.applyNotification()
+    }
+
+    fun hideKeyboard() {
+        navSearchBarController.etSearch?.clearFocus()
+        val `in` = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
+    }
+
+    fun getCurrentSearchbarText(): String {
+        return navSearchBarController.etSearch?.text?.toString()?:""
     }
 
     private fun applyStatusBarPadding() {

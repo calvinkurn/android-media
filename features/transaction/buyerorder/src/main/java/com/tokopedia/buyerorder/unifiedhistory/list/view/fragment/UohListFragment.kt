@@ -481,14 +481,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             )
-            val icons = IconBuilder(
-                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH)
-            )
+            var pageSource = ""
             if(activityOrderHistory != PARAM_HOME)
             {
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE
+            } else {
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
             }
+            val icons = IconBuilder(
+                IconBuilderFlag(pageSource = pageSource)
+            )
             icons.apply {
                 addIcon(IconList.ID_NAV_GLOBAL) {}
             }

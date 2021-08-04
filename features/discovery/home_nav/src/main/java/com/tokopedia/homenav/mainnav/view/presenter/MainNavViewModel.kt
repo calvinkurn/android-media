@@ -134,11 +134,16 @@ class MainNavViewModel @Inject constructor(
 
     fun setPageSource(pageSource: String = pageSourceDefault) {
         this.pageSource = pageSource
-        if (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME || 
-                    pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH) {
+        if (isLaunchedFromHome()) {
                         removeHomeBackButtonMenu()
         }
         else { addHomeBackButtonMenu() }
+    }
+
+    private fun isLaunchedFromHome(): Boolean {
+        return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
     }
 
     fun getPageSource(): String {

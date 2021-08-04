@@ -724,7 +724,10 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
-            fragmentList.add(WishlistFragment.Companion.newInstance());
+            Bundle bundleWishlist = new Bundle();
+            bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
+            fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+
             Bundle bundle = new Bundle();
             bundle.putString("source_filter", "");
             bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);

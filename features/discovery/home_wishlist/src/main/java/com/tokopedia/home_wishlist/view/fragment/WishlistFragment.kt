@@ -1,19 +1,14 @@
 package com.tokopedia.home_wishlist.view.fragment
 
-import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -35,9 +30,7 @@ import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.common.EndlessRecyclerViewScrollListener
 import com.tokopedia.home_wishlist.common.ToolbarElevationOffsetListener
-import com.tokopedia.home_wishlist.component.HasComponent
 import com.tokopedia.home_wishlist.di.DaggerWishlistComponent
-import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.util.GravitySnapHelper
@@ -65,12 +58,11 @@ import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -105,6 +97,7 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsListener {
 
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -131,9 +124,11 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+    private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
 
     private var additionalParamRequest: WishlistAdditionalParamRequest? = null
     private var useNewInbox = false
+    private var launchSourceWishlist: String = ""
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -148,7 +143,14 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         private const val CACHE_CART = "CART"
         private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
         private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
-        fun newInstance() = WishlistFragment()
+        const val PARAM_LAUNCH_WISHLIST = "launch_source_wishlist"
+        const val PARAM_HOME = "home"
+        @JvmStatic
+        fun newInstance(bundle: Bundle = Bundle()): WishlistFragment {
+            return WishlistFragment().apply {
+                arguments = bundle
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -210,6 +212,8 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") as String
+
         initView()
         initCartLocalCacheHandler()
         hideSearchView()
@@ -295,37 +299,39 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         initDeleteBulkButton()
         initRecyclerView()
 
+        //add divider if necessary
+//        appBarLayout?.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation)
+
         activity?.let {
             navToolbar?.setupToolbarWithStatusBar(it)
             appBarLayout?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it), 0 , 0)
         }
         navToolbar?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
-//            homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
-//                navToolbar = it,
-//                startTransitionPixel = homeMainToolbarHeight,
-//                toolbarTransitionRangePixel = searchBarTransitionRange,
-//                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-//                    override fun onAlphaChanged(offsetAlpha: Float) {
-//
-//                    }
-//
-//                    override fun onSwitchToDarkToolbar() {
-//                        navToolbar?.hideShadow()
-//                        requestStatusBarLight()
-//                    }
-//
-//                    override fun onSwitchToLightToolbar() {
-//                        requestStatusBarDark()
-//                    }
-//
-//                    override fun onYposChanged(yOffset: Int) {
-//                        backgroundViewImage.y = -(yOffset.toFloat())
-//                    }
-//                }
-//            ))
+            it.setupSearchbar(
+                searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE,
+                hints = listOf(HintData(getString(R.string.hint_wishlist))),
+                editorActionCallback = { query ->
+                    when {
+                        query.isBlank() -> {
+                            view?.let { context?.let { it1 -> navToolbar?.hideKeyboard() } }
+                            viewModel.getWishlistData(query ?: "", generateWishlistAdditionalParamRequest())
+                        }
+                        else -> {
+                            viewModel.getWishlistData(query ?: "", generateWishlistAdditionalParamRequest())
+                        }
+                    }
+                }
+            )
+            var pageSource = ""
+            if(launchSourceWishlist != PARAM_HOME)
+            {
+                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            } else {
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+            }
             val icons = IconBuilder(
-                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+                IconBuilderFlag(pageSource = pageSource)
             ).addIcon(getInboxIcon()) {}
             if (!useNewInbox) {
                 icons.addIcon(IconList.ID_NOTIFICATION) {}
@@ -350,30 +356,20 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         swipeToRefresh?.setOnRefreshListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
-//            viewModel.getWishlistData(searchView?.getSearchText() ?: "", generateWishlistAdditionalParamRequest())
+            viewModel.getWishlistData(navToolbar?.getCurrentSearchbarText() ?: "", generateWishlistAdditionalParamRequest())
         }
     }
 
     private fun initSearchView() {
-//        searchView?.setDelayTextChanged(250)
-//        searchView?.setListener(object : CustomSearchView.Listener {
-//            override fun onSearchSubmitted(text: String?) {
-//                searchView?.hideKeyboard()
-//            }
-//
-//            override fun onSearchTextChanged(text: String?) {
-//                updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
-//                viewModel.getWishlistData(text ?: "", generateWishlistAdditionalParamRequest())
-//            }
-//
-//            override fun onManageDeleteWishlistClicked() {
-//                manageDeleteWishlist()
-//            }
-//
-//            override fun onCancelDeleteWishlistClicked() {
-//                cancelDeleteWishlist()
-//            }
-//        })
+        searchView?.setListener(object : CustomSearchView.Listener {
+            override fun onManageDeleteWishlistClicked() {
+                manageDeleteWishlist()
+            }
+
+            override fun onCancelDeleteWishlistClicked() {
+                cancelDeleteWishlist()
+            }
+        })
     }
 
     private fun initDeleteBulkButton() {
@@ -403,7 +399,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-//                searchView?.hideKeyboard()
+                navToolbar?.hideKeyboard()
             }
         })
     }
@@ -452,11 +448,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
             swipeToRefresh?.isRefreshing = false
         })
         viewModel.wishlistCountLiveData.observe(viewLifecycleOwner, {
-            if (it > 0) {
-                wishlist_tv_count.text = String.format(
-                    getString(R.string.label_wishlist_count, it.toString())
-                )
-            }
+            searchView?.setWishlistCount(it)
         })
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
             updateScrollListenerState(

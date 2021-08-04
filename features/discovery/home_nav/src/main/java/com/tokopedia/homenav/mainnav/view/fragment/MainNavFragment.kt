@@ -253,12 +253,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        if (homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH) {
+        if (validateTargetMenu(homeNavMenuDataModel)) {
             activity?.onBackPressed()
             return true
         }
         return false
     }
+
+    private fun validateTargetMenu(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
+        return validateHomeUohPage(homeNavMenuDataModel) || validateHomeWishlistPage(homeNavMenuDataModel)
+    }
+
+    private fun validateHomeUohPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
+        homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+
+    private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
+        homeNavMenuDataModel.id == ID_WISHLIST_MENU && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
         when(homeNavMenuDataModel.id) {
