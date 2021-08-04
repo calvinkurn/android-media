@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -67,6 +68,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         }
     }
 
+    @OptIn(InternalCoroutinesApi::class)
     private fun createLocalChatRoomIntent(): Intent {
         val intent = Intent(this, TopChatRoomActivity::class.java)
         intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)

@@ -7,4 +7,5 @@ object Constant {
     const val NET_WRITE_TIMEOUT = 60
     const val NET_CONNECT_TIMEOUT = 60
     const val NET_RETRY = 1
+    const val CHAT_USER_ROLE_KEY = "ChatUserRole"
 }

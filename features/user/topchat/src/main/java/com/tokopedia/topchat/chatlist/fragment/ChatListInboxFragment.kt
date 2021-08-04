@@ -61,8 +61,11 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
+import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
@@ -73,6 +76,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Inject
 
 /**
@@ -115,11 +119,13 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private var emptyUiModel: Visitable<*>? = null
     private var broadCastButton: FloatingActionButton? = null
     private var containerListener: InboxFragmentContainer? = null
+    var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "chatlist"
 
+    @OptIn(InternalCoroutinesApi::class)
     override fun onAttachActivity(context: Context?) {
         if (context is InboxFragmentContainer) {
             containerListener = context
@@ -170,7 +176,14 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     private fun initRole() {
-        assignRole(containerListener?.role)
+        if(arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) != NO_INT_ARGUMENT) {
+            //From ChatRoom with Flex Foldables
+            role = arguments?.getInt(Constant.CHAT_USER_ROLE_KEY)?: RoleType.BUYER
+            assignRole(role)
+        } else {
+            //From Inbox
+            assignRole(containerListener?.role)
+        }
     }
 
     private fun initWebSocket() {
@@ -594,6 +607,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         viewModel.getChatListMessage(page, role)
     }
 
+    @OptIn(InternalCoroutinesApi::class)
     override fun chatItemClicked(element: ItemChatListPojo, itemPosition: Int) {
         activity?.let {
             with(chatListAnalytics) {
@@ -602,12 +616,20 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                         else ChatListActivity.BUYER_ANALYTICS_LABEL)
             }
             webSocket.activeRoom = element.msgId
-            RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            }.let { intent ->
-                startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
+            if(context is InboxFragmentContainer) {
+                RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                }.let { intent ->
+
+                    intent.putExtra(Constant.CHAT_USER_ROLE_KEY, role)
+                    startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
+                }
+                it.overridePendingTransition(0, 0)
+
+                //Handle if activity is ChatRoom & flex mode
+            } else if(activity is TopChatRoomActivity) {
+                chatRoomFlexModeListener?.onClickAnotherChat(element.msgId)
             }
-            it.overridePendingTransition(0, 0)
         }
     }
 
@@ -823,9 +845,13 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
+        private const val NO_INT_ARGUMENT = 0
 
-        fun createFragment(): ChatListInboxFragment {
+        fun createFragment(@RoleType role: Int? = null): ChatListInboxFragment {
             val bundle = Bundle()
+            if (role != null) {
+                bundle.putInt(Constant.CHAT_USER_ROLE_KEY, role)
+            }
             val fragment = ChatListInboxFragment()
             fragment.arguments = bundle
             return fragment
