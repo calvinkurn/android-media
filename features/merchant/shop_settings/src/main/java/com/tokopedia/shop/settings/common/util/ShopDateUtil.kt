@@ -13,7 +13,7 @@ val DEFAULT_LOCALE = Locale("in", "ID")
 const val FORMAT_DAY_DATE = "EEE, dd MMM yyyy"
 const val FORMAT_DATE = "dd MMM yyyy"
 const val FORMAT_DATE_TIME = "dd MMM yyyy, 'pukul' HH:mm"
-const val OS_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssXXX"
+const val OS_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssZ"
 
 val currentCalendar: Calendar
     get() = Calendar.getInstance()
