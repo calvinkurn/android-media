@@ -9,6 +9,9 @@ apply from: "buildconfig/aar/local-aar.gradle"
 
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
+    ext {
+        kotlin_version = '1.5.21'
+    }
 
     repositories {
         maven {
