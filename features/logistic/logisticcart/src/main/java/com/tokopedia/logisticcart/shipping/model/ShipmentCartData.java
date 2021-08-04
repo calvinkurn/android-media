@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata;
+
 import java.util.List;
 
 /**
@@ -24,6 +26,7 @@ public class ShipmentCartData implements Parcelable {
     private String destinationLongitude;
     private String destinationAddress;
     private double weight;
+    private double weightActual;
     private String token;
     private String ut;
     private int insurance;
@@ -33,6 +36,7 @@ public class ShipmentCartData implements Parcelable {
     private int preOrderDuration;
     private boolean isFulfillment;
     private int shopTier;
+    private BoMetadata boMetadata;
 
     public ShipmentCartData() {
     }
@@ -197,6 +201,14 @@ public class ShipmentCartData implements Parcelable {
         this.categoryIds = categoryIds;
     }
 
+    public double getWeightActual() {
+        return weightActual;
+    }
+
+    public void setWeightActual(double weightActual) {
+        this.weightActual = weightActual;
+    }
+
     public int getPreOrderDuration() {
         return preOrderDuration;
     }
@@ -221,6 +233,14 @@ public class ShipmentCartData implements Parcelable {
         this.shopTier = shopTier;
     }
 
+    public BoMetadata getBoMetadata() {
+        return boMetadata;
+    }
+
+    public void setBoMetadata(BoMetadata boMetadata) {
+        this.boMetadata = boMetadata;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -242,6 +262,7 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(this.destinationLongitude);
         dest.writeString(this.destinationAddress);
         dest.writeDouble(this.weight);
+        dest.writeDouble(this.weightActual);
         dest.writeString(this.token);
         dest.writeString(this.ut);
         dest.writeInt(this.insurance);
@@ -251,6 +272,7 @@ public class ShipmentCartData implements Parcelable {
         dest.writeInt(this.preOrderDuration);
         dest.writeByte((byte) (isFulfillment? 1 : 0));
         dest.writeInt(shopTier);
+        dest.writeParcelable(boMetadata, flags);
     }
 
     protected ShipmentCartData(Parcel in) {
@@ -268,6 +290,7 @@ public class ShipmentCartData implements Parcelable {
         this.destinationLongitude = in.readString();
         this.destinationAddress = in.readString();
         this.weight = in.readDouble();
+        this.weightActual = in.readDouble();
         this.token = in.readString();
         this.ut = in.readString();
         this.insurance = in.readInt();
@@ -277,6 +300,7 @@ public class ShipmentCartData implements Parcelable {
         this.preOrderDuration = in.readInt();
         this.isFulfillment = in.readByte() != 0;
         this.shopTier = in.readInt();
+        this.boMetadata = in.readParcelable(BoMetadata.class.getClassLoader());
     }
 
     public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {

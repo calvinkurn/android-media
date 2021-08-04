@@ -29,6 +29,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var mvcContainer: View
 
     lateinit var mvcAnimationHandler: MvcAnimationHandler
+    private var startActivityForResultFunction: (() -> Unit)? =null
 
     var shopId: String = ""
 
@@ -52,35 +53,25 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            if (context is AppCompatActivity){
-                (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+            if(startActivityForResultFunction!=null){
+                startActivityForResultFunction?.invoke()
             }else{
-                (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+                if (context is AppCompatActivity){
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+                }else{
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+                }
             }
+
             Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source)
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int) {
+    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int, startActivityForResultFunction:(() -> Unit)? = null) {
         this.source = source
         this.shopId = shopId
-        val iconUrl = mvcData.animatedInfoList?.get(0)?.iconURL
-        val arrayList = arrayListOf<AnimatedInfos>()
-        val animatedInfos1 = AnimatedInfos("First title","First subtitle","$iconUrl")
-        val animatedInfos2 = AnimatedInfos("Second title","Second subtitle","$iconUrl")
-        val animatedInfos3 = AnimatedInfos("Third title","Third subtitle","$iconUrl")
-        val animatedInfos4 = AnimatedInfos("Fourth title","Fourth subtitle","$iconUrl")
-        val animatedInfos5 = AnimatedInfos("Fifth title","Fifth subtitle","$iconUrl")
-        val animatedInfos6 = AnimatedInfos("Sixth title","Sixth subtitle","$iconUrl")
-        arrayList.add(animatedInfos1)
-        arrayList.add(animatedInfos2)
-        arrayList.add(animatedInfos3)
-        arrayList.add(animatedInfos4)
-        arrayList.add(animatedInfos5)
-        arrayList.add(animatedInfos6)
-        setMVCData(arrayList)
-//        setMVCData(mvcData.animatedInfoList)
-//        setMVCData(mvcData.animatedInfoList)
+        this.startActivityForResultFunction = startActivityForResultFunction
+        setMVCData(mvcData.animatedInfoList)
     }
 
     private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {

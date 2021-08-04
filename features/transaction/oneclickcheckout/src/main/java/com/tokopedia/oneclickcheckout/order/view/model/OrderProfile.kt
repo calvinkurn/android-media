@@ -34,7 +34,9 @@ data class OrderProfileAddress(
         val postalCode: String = "",
         val state: Int = 0,
         val stateDetail: String = "",
-        val status: Int = 0
+        val status: Int = 0,
+        val tokoNowShopId: String = "",
+        val tokoNowWarehouseId: String = ""
 ) {
     internal val isMainAddress: Boolean
         get() = status == STATUS_MAIN_ADDRESS

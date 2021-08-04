@@ -1,7 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -40,11 +39,7 @@ class BannerTimerViewModel(val application: Application, val components: Compone
 
     fun getTimerData() = mutableTimeDiffModel
 
-    fun onBannerClicked(context: Context) {
-        bannerTimeData.value?.data?.firstOrNull()?.let {
-            navigate(context, it.applinks)
-        }
-    }
+    fun getApplink() = components.data?.firstOrNull()?.applinks
 
     fun getComponent() = components
 

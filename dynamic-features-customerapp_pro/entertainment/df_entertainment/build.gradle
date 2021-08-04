@@ -49,8 +49,8 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
-    implementation project(rootProject.ext.features.event)
-    implementation project(rootProject.ext.features.deals)
-    implementation project(rootProject.ext.features.digitalDeals)
+    implementation projectOrAar(rootProject.ext.features.event)
+    implementation projectOrAar(rootProject.ext.features.deals)
+    implementation projectOrAar(rootProject.ext.features.digitalDeals)
 
 }

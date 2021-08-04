@@ -16,6 +16,8 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.utils.permission.SlicePermission;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
+import io.embrace.android.embracesdk.Embrace;
+
 import static com.tokopedia.utils.permission.SlicePermission.RECHARGE_SLICE_AUTHORITY;
 import static com.tokopedia.utils.permission.SlicePermission.TRAVEL_SLICE_AUTHORITY;
 
@@ -99,6 +101,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         setupAppScreenMode();
+        Embrace.getInstance().start(this);
         super.onCreate();
         setGrantPermissionSlice();
     }

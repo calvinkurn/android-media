@@ -243,6 +243,7 @@ class ShipmentPresenterValidateUseFinalTest {
     @Test
     fun `WHEN validate use success with ticker data and current ticker not exist THEN should update promo button and update ticker`() {
         // Given
+        presenter.tickerAnnouncementHolderData = null
         val tickerMessage = "ticker message"
         val tickerStatusCode = "1"
         val promoUiModel = PromoUiModel(
@@ -332,6 +333,41 @@ class ShipmentPresenterValidateUseFinalTest {
         verify {
             view.prepareReloadRates(lastSelectedCourierOrderIndex, false)
             view.updateButtonPromoCheckout(promoUiModel, false)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use success and has mvc data but uniqueId not matched THEN should not reload rates`() {
+        // Given
+        val lastSelectedCourierOrderIndex = 1
+        val cartString = "123-abc"
+        val promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+                ),
+                additionalInfoUiModel = AdditionalInfoUiModel(
+                        promoSpIds = ArrayList<PromoSpIdUiModel>().apply {
+                            add(
+                                    PromoSpIdUiModel(
+                                            uniqueId = "other cartString"
+                                    )
+                            )
+                        }
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), lastSelectedCourierOrderIndex, cartString)
+
+        // Then
+        verify(inverse = true) {
+            view.prepareReloadRates(lastSelectedCourierOrderIndex, false)
         }
     }
 
