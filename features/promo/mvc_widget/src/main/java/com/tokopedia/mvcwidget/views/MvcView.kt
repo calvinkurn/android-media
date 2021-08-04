@@ -29,6 +29,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var mvcContainer: View
 
     lateinit var mvcAnimationHandler: MvcAnimationHandler
+    private var startActivityForResultFunction: (() -> Unit)? =null
 
     var shopId: String = ""
 
@@ -52,18 +53,24 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            if (context is AppCompatActivity){
-                (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+            if(startActivityForResultFunction!=null){
+                startActivityForResultFunction?.invoke()
             }else{
-                (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+                if (context is AppCompatActivity){
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+                }else{
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+                }
             }
+
             Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source)
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int) {
+    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int, startActivityForResultFunction:(() -> Unit)? = null) {
         this.source = source
         this.shopId = shopId
+        this.startActivityForResultFunction = startActivityForResultFunction
         setMVCData(mvcData.animatedInfoList)
     }
 
