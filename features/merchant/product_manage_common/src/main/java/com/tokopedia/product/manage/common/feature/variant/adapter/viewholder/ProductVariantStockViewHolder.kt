@@ -158,13 +158,17 @@ class ProductVariantStockViewHolder(
         return object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val input = s?.toString().orEmpty()
-                val stock = if (input.isNotEmpty()) {
-                    itemView.quantityEditorStock.getValue()
+                val stock: Int
+                if (input.isNotEmpty()) {
+                    stock = itemView.quantityEditorStock.getValue()
+                    toggleQuantityEditorBtn(stock)
+                    listener.onStockChanged(variant.id, stock)
                 } else {
-                    MINIMUM_STOCK
+                    stock = MINIMUM_STOCK
+                    itemView.quantityEditorStock?.editText?.setText(stock.getNumberFormatted())
+                    toggleQuantityEditorBtn(stock)
                 }
-                toggleQuantityEditorBtn(stock)
-                listener.onStockChanged(variant.id, stock)
+                listener.onStockBtnClicked()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
