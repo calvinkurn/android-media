@@ -64,23 +64,40 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
 
         type.recycle()
 
+        setDefaultLoveList()
+        setDefaultPositionList(view)
+        setDefaultSizeList()
+        setDefaultDotList()
+        setDefaultDotColorList()
+    }
+
+    private fun setDefaultLoveList() {
         loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_shipping_voucher))
         loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_special_voucher))
+    }
 
+    private fun setDefaultPositionList(view: View) {
         positionList.add(view.findViewById(R.id.position1))
-//        positionList.add(view.findViewById(R.id.position2))
-//        positionList.add(view.findViewById(R.id.position3))
-//        positionList.add(view.findViewById(R.id.position4))
+        positionList.add(view.findViewById(R.id.position2))
+        positionList.add(view.findViewById(R.id.position3))
+        positionList.add(view.findViewById(R.id.position4))
+    }
 
+    private fun setDefaultSizeList() {
         sizeList.add(Pair(50, 50))
-        sizeMultiplyList.add(1.0f)
 
+        sizeMultiplyList.add(1.0f)
+    }
+
+    private fun setDefaultDotList() {
+        dot = ContextCompat.getDrawable(context, R.drawable.shape_play_cart_dots)
+    }
+
+    private fun setDefaultDotColorList() {
         dotColorList.add(Color.BLUE)
         dotColorList.add(Color.RED)
         dotColorList.add(Color.GREEN)
         dotColorList.add(Color.CYAN)
-
-        dot = ContextCompat.getDrawable(context, R.drawable.shape_play_cart_dots)
     }
 
     /**
@@ -189,14 +206,14 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
 
                     val showOrNot = (0..10).random() % 2 == 0
                     if(showOrNot) {
-                        shotAdditional(positionIdx)
+                        shotAdditional()
                     }
                 }
             }
         }
     }
 
-    private fun shotAdditional(positionIdx: Int) {
+    private fun shotAdditional() {
         CoroutineScope(Dispatchers.IO + job).launch {
             delay((50..200).random().toLong())
 
@@ -207,6 +224,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                     val image = ImageView(context)
                     image.setImageDrawable(dot)
 
+                    val positionIdx = (0 until positionList.size).random()
                     val position = positionList[positionIdx]
 
                     val coordinate = getImageCoordinate(position)
