@@ -21,7 +21,6 @@ class PhotoImporter {
         val photosOnPhone = SparseArray<JSONObject>()
         val data = iteratePhotoCursor(photoCursor, photosOnPhone,photoNames)
 
-        Log.d("Photos","${photosOnPhone.size()}")
         return data
     }
 
@@ -36,8 +35,6 @@ class PhotoImporter {
             try {
                 if (cur.moveToFirst()) {
                     val date = cur.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)
-                    val lat = cur.getColumnIndex(MediaStore.Images.Media.LATITUDE)
-                    val lng = cur.getColumnIndex(MediaStore.Images.Media.LONGITUDE)
                     val path = cur.getColumnIndex(MediaStore.Images.Media.DATA)
                     val id = cur.getColumnIndex(MediaStore.Images.Media._ID)
                     val bytes = cur.getColumnIndex(MediaStore.Images.Media.SIZE)
@@ -63,14 +60,6 @@ class PhotoImporter {
                                     }
                                 }
                                 if (dateLong != 0L) {
-                                    val latitude = cur.getDouble(lat)
-                                    val longitude = cur.getDouble(lng)
-//                                    if (locationValid(latitude, longitude)) {
-//                                        val location = JSONArray()
-//                                        location.put(longitude)
-//                                        location.put(latitude)
-//                                        item.put("loc", location)
-//                                    }
                                     val index = cur.getInt(id)
 //                                    item.put("sa", TimeUtil.getISODate(dateLong))
                                     item.put("i", cur.getInt(id))
@@ -122,7 +111,9 @@ class PhotoImporter {
                 cur.close()
             }
         }
-        return PhotosImporterData(folders.toList(),photosList)
+        val tempFoldersList = ArrayList(folders)
+        tempFoldersList.add(0, ALL)
+        return PhotosImporterData(tempFoldersList,photosList,null)
     }
 
     protected fun locationValid(latitude: Double, longitude: Double): Boolean? {

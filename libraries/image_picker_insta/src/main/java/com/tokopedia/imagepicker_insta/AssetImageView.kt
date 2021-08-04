@@ -16,4 +16,8 @@ class AssetImageView @JvmOverloads constructor(
             .load(path)
             .into(this)
     }
+
+    fun removeAsset(){
+        setImageDrawable(null)
+    }
 }

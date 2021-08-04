@@ -8,16 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.views.ToggleViewGroup
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ImageAdapter(val dataList: List<Asset>, val contentHeight:Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ImageAdapter(val dataList: List<Asset>, val contentHeight:Int, var onCameraIconClick: Function0<Unit>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var itemSelectCallback:Function2<Asset,Boolean,Unit>?=null
     val selectedPositions = mutableSetOf<Int>()
+    
 
     private val TYPE_CAMERA = 0
     private val TYPE_ASSET = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if(viewType == TYPE_CAMERA){
-            return CameraViewHolder.getInstance(parent,contentHeight)
+            return CameraViewHolder.getInstance(parent,contentHeight,onCameraIconClick)
         }else{
             return PhotosViewHolder.getInstance(parent, contentHeight)
         }
@@ -38,10 +41,12 @@ class ImageAdapter(val dataList: List<Asset>, val contentHeight:Int) : RecyclerV
                     //un select
                     selectedPositions.remove(position)
                     holder.setChecked(false)
+                    itemSelectCallback?.invoke(dataList[position],false)
                 }else{
                     //select
                     selectedPositions.add(position)
                     holder.setChecked(true)
+                    itemSelectCallback?.invoke(dataList[position],true)
                 }
 
             }
@@ -54,20 +59,23 @@ class ImageAdapter(val dataList: List<Asset>, val contentHeight:Int) : RecyclerV
 }
 
 
-class CameraViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
+class CameraViewHolder(val listItemView: View,val onCameraIconClick:Function0<Unit>) : RecyclerView.ViewHolder(listItemView) {
+
     companion object {
-        fun getInstance(parent: ViewGroup,contentHeight: Int): CameraViewHolder {
+        fun getInstance(parent: ViewGroup,contentHeight: Int,onCameraIconClick:Function0<Unit>): CameraViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.imagepicker_insta_item_view_camera, parent, false)
             v.layoutParams.apply {
                 height = contentHeight
             }
-            return CameraViewHolder(v)
+            return CameraViewHolder(v,onCameraIconClick)
         }
     }
 
     val imageImage = itemView.findViewById<AppCompatImageView>(R.id.item_view_image_camera)
     fun setData() {
-
+        listItemView.setOnClickListener {
+            onCameraIconClick.invoke()
+        }
     }
 }
 

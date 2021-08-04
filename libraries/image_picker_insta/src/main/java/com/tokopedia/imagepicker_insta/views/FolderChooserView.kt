@@ -28,6 +28,10 @@ class FolderChooserView @JvmOverloads constructor(
         rv.adapter = adapter
     }
 
+    fun itemOnClick(onClick:Function1<String?,Unit>){
+        adapter.onClick = onClick
+    }
+
     fun setData(list:List<String>){
         dataList.clear()
         dataList.addAll(list)
