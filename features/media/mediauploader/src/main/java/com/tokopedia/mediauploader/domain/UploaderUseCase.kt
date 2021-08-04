@@ -8,7 +8,6 @@ import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.internal.http2.ConnectionShutdownException
 import java.io.File
@@ -19,9 +18,8 @@ import javax.inject.Inject
 
 class UploaderUseCase @Inject constructor(
         private val dataPolicyUseCase: DataPolicyUseCase,
-        private val mediaUploaderUseCase: MediaUploaderUseCase,
-        coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : CoroutineUseCase<RequestParams, UploadResult>(coroutineDispatcher) {
+        private val mediaUploaderUseCase: MediaUploaderUseCase
+) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private val uploaderManager by lazy {
         UploaderManager(dataPolicyUseCase, mediaUploaderUseCase)
@@ -52,7 +50,6 @@ class UploaderUseCase @Inject constructor(
                     e !is CancellationException) {
                 trackToTimber(sourceId, Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim())
             }
-            // check whether media source is valid
             return uploaderManager.setError(listOf(NETWORK_ERROR), sourceId, fileToUpload)
         }
     }
