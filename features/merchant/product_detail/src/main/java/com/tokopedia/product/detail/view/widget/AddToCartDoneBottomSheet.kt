@@ -359,7 +359,7 @@ open class AddToCartDoneBottomSheet :
             addedProductDataModel?.let {
                 intent.putExtra(EXTRA_CART_ID, it.cartId)
             }
-            startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+            startActivity(intent)
             dismissAllowingStateLoss()
         }
     }
