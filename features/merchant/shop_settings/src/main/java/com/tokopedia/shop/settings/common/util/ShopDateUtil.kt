@@ -14,6 +14,7 @@ const val FORMAT_DAY_DATE = "EEE, dd MMM yyyy"
 const val FORMAT_DATE = "dd MMM yyyy"
 const val FORMAT_DATE_TIME = "dd MMM yyyy, 'pukul' HH:mm"
 const val OS_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ssZ"
+const val DEFAULT_TIME = 1000L
 
 val currentCalendar: Calendar
     get() = Calendar.getInstance()
@@ -50,7 +51,7 @@ fun toReadableString(format: String, unixTimeSecondsUTC: String): String {
 
 fun toReadableString(format: String, unixTimeSecondsUTC: Long): String {
     try {
-        return toReadableString(format, Date(unixTimeSecondsUTC * 1000L))
+        return toReadableString(format, Date(unixTimeSecondsUTC * DEFAULT_TIME))
     } catch (e: Exception) {
         return unixTimeSecondsUTC.toString()
     }
