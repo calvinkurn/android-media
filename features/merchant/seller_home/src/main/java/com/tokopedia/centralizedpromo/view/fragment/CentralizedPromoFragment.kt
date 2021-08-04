@@ -17,7 +17,6 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFa
 import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoCreationView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoOnGoingPromoView
-import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoPostView
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoViewModel
 import com.tokopedia.coachmark.CoachMark
@@ -30,10 +29,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
-import java.util.*
 import javax.inject.Inject
 
 class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener {
@@ -129,12 +126,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             adapterTypeFactory = adapterTypeFactory,
             coachMarkListener = this,
             showCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true))
-
-    private fun createPromoPostView() = PartialCentralizedPromoPostView(
-            view = layoutCentralizedPromoPostList,
-            adapterTypeFactory = adapterTypeFactory,
-            coachMarkListener = this,
-            showCoachMark = false)
 
     private fun setupView() {
         swipeRefreshLayout.setOnRefreshListener {

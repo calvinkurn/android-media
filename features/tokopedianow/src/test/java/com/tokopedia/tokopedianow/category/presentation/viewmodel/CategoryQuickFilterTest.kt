@@ -48,6 +48,27 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
     }
 
     @Test
+    fun `quick filter with same option as category filter should always have type normal`() {
+        val quickFilterWithCategoryOptionJSON =
+                "category/quickfilter/quick-filter-contains-category-filter.json"
+        val categoryModel = quickFilterWithCategoryOptionJSON.jsonToObject<CategoryModel>()
+
+        `Given category view model`(defaultCategoryL1, "1333")
+        `Given get category first page use case will be successful`(categoryModel)
+
+        `When view created`()
+
+        `Then assert chips unify type is normal`()
+    }
+
+    private fun `Then assert chips unify type is normal`() {
+        val quickFilterVisitable = tokoNowCategoryViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val quickFilterItem = quickFilterVisitable.quickFilterItemList[0]
+
+        assertThat(quickFilterItem.sortFilterItem.type, shouldBe(ChipsUnify.TYPE_NORMAL))
+    }
+
+    @Test
     fun `when view created, quick filter type selected should be based on query params`() {
         val selectedFilterOption = categoryModel.quickFilter.filter[2].options[0]
         val queryParamWithFilter = mapOf(

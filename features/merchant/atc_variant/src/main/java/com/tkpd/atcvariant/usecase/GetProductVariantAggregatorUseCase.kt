@@ -46,10 +46,15 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                           }
                     }
                     bebasOngkir {
-                      products {
-                        productID
-                        boType
-                      }
+                          products{
+                            productID
+                            boType
+                          }
+                          images{
+                            boType
+                            imageURL
+                            tokoCabangImageURL
+                          }
                     }
                     shopInfo {
                         shopType
@@ -157,6 +162,32 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     geolocation
                   }
                 }
+                ratesEstimate {
+                  warehouseID
+                  products
+                  data {
+                    totalService
+                    isSupportInstantCourier
+                    destination
+                    icon
+                    title
+                    subtitle
+                    eTAText
+                    errors {
+                      Code
+                      Message
+                      DevMessage
+                    }
+                    courierLabel
+                    cheapestShippingPrice
+                  }
+                  bottomsheet {
+                    title
+                    iconURL
+                    subtitle
+                    buttonCopy
+                  }
+               }
                 callsError{
                   cartRedirection{
                     Code
@@ -224,7 +255,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 alternateCopy = data.cardRedirection.alternateCopy,
                 simpleBasicInfo = data.basicInfo,
                 shopType = data.shopInfo.shopType,
-                boData = data.bebasOngkir.boProduct
+                boData = data.bebasOngkir,
+                rates = data.ratesEstimate
         )
     }
 }

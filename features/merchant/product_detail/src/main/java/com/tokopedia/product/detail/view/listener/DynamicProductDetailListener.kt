@@ -7,7 +7,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -106,6 +105,10 @@ interface DynamicProductDetailListener {
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
+    fun onRecommendationBannerImpressed(data: RecommendationWidget, templateNameType: String)
+    fun onRecommendationBannerClicked(appLink: String, data: RecommendationWidget, templateNameType: String)
+    fun onRecomAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int)
+    fun onRecomAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int)
 
     /**
      * ProductGeneralInfoViewHolder
@@ -168,4 +171,10 @@ interface DynamicProductDetailListener {
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType: Boolean)
+
+    /**
+     * ProductCategoryCarouselViewHolder
+     */
+    fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
 }
