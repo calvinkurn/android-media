@@ -483,10 +483,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
-        launch(executorDispatchers.immediate) {
-            cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment, orderPayment.value)
-        }
+    private suspend fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
+        cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment, orderPayment.value)
     }
 
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
