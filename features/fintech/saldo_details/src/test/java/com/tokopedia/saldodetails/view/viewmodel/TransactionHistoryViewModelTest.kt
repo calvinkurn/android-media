@@ -17,15 +17,10 @@ import com.tokopedia.saldodetails.view.fragment.new.SalesTransaction
 import com.tokopedia.saldodetails.view.viewmodel.state.InitialLoadingError
 import com.tokopedia.saldodetails.view.viewmodel.state.LoadMoreError
 import com.tokopedia.saldodetails.view.viewmodel.state.SaldoHistoryResponse
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.assertj.core.api.Assertions
 import org.junit.Before
-
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import java.util.*
@@ -54,12 +49,11 @@ class TransactionHistoryViewModelTest {
         coEvery { getAllTypeTransactionUseCase.loadAllTypeTransactions(any(), any(), any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.refreshAllTabsData(Date(), Date())
+        viewModel.refreshAllTabsData(Date(), Date(), true)
 
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is InitialLoadingError)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is InitialLoadingError)
         assert(viewModel.getLiveDataByTransactionType(RefundTransaction).value is InitialLoadingError)
-
     }
 
     @Test
@@ -71,7 +65,7 @@ class TransactionHistoryViewModelTest {
         coEvery { getAllTypeTransactionUseCase.loadAllTypeTransactions(any(), any(), any(), any()) } coAnswers {
             firstArg<(GqlAllDepositSummaryResponse) -> Unit>().invoke(data)
         }
-        viewModel.refreshAllTabsData(Date(), Date())
+        viewModel.refreshAllTabsData(Date(), Date(), true)
 
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is InitialLoadingError)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is InitialLoadingError)
@@ -90,7 +84,7 @@ class TransactionHistoryViewModelTest {
         coEvery { getAllTypeTransactionUseCase.loadAllTypeTransactions(any(), any(), any(), any()) } coAnswers {
             firstArg<(GqlAllDepositSummaryResponse) -> Unit>().invoke(data)
         }
-        viewModel.refreshAllTabsData(Date(), Date())
+        viewModel.refreshAllTabsData(Date(), Date(), true)
 
         assert(viewModel.getLiveDataByTransactionType(AllTransaction).value is SaldoHistoryResponse)
         assert(viewModel.getLiveDataByTransactionType(IncomeTransaction).value is SaldoHistoryResponse)
