@@ -259,10 +259,6 @@ class PromoCheckoutDetailModule {
 
     @Provides
     @PromoCheckoutDetailScope
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    @PromoCheckoutDetailScope
     fun provideRestRepository(interceptors: ArrayList<Interceptor>,
                               @ApplicationContext context: Context): RestRepository {
         return RestRequestInteractor.getInstance().restRepository.apply {
