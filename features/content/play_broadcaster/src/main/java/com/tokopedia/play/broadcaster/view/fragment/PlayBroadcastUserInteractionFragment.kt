@@ -11,7 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
@@ -27,14 +30,17 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
-import com.tokopedia.play.broadcaster.view.custom.*
+import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
+import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
 import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
-import com.tokopedia.play.broadcaster.view.state.PlayLivePusherViewState
-import com.tokopedia.play.broadcaster.view.state.PlayTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
@@ -189,22 +195,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
-
-        //TODO("Mock")
-//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-//            interactiveView.show()
-//
-//            interactiveView.setInit(true)
-//            delay(5000)
-//            interactiveView.setSchedule("Giveaway Tesla", 10000) {
-//                interactiveView.setLive(15000) {
-//                    interactiveView.setLoading()
-//                    view?.postDelayed({
-//                        interactiveView.setFinish()
-//                    }, 3000)
-//                }
-//            }
-//        }
     }
 
     private fun setupInsets() {
@@ -280,7 +270,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onFinish() {
                 countdownTimer.gone()
-                parentViewModel.startLivePusherTimer()
+                parentViewModel.startLiveCountDownTimer()
             }
         })
     }
@@ -299,11 +289,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * render to ui
      */
     private fun showCounterDuration(remainingInMs: Long) {
-        viewTimer.showCounterDuration(remainingInMs)
-    }
-
-    private fun showTimeRemaining(remainingInMinutes: Long) {
-        viewTimer.showTimeRemaining(remainingInMinutes)
+        viewTimer.showCounter(remainingInMs)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -434,25 +420,25 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         analytic.openReportScreen(parentViewModel.channelId)
     }
 
-    private fun handleLivePushInfo(state: PlayLivePusherViewState) {
+    private fun handleLivePushInfo(state: PlayLiveViewState) {
         if (!isVisible) return
         errorLiveNetworkLossView.hide()
         when (state) {
-            is PlayLivePusherViewState.Connecting -> showLoading(true)
-            is PlayLivePusherViewState.Started -> showLoading(false)
-            is PlayLivePusherViewState.Stopped -> {
+            is PlayLiveViewState.Connecting -> showLoading(true)
+            is PlayLiveViewState.Started -> showLoading(false)
+            is PlayLiveViewState.Stopped -> {
                 showLoading(false)
                  if (state.shouldNavigate) navigateToSummary()
             }
-            is PlayLivePusherViewState.Error -> {
+            is PlayLiveViewState.Error -> {
                 showLoading(false)
                 handleLivePushError(state)
             }
-            is PlayLivePusherViewState.Resume -> {
+            is PlayLiveViewState.Resume -> {
                 showLoading(false)
                 if (!state.isResumed) showDialogContinueLiveStreaming()
             }
-            is PlayLivePusherViewState.Recovered -> {
+            is PlayLiveViewState.Recovered -> {
                 showLoading(false)
                 showToaster(
                         message = getString(R.string.play_live_broadcast_network_recover),
@@ -463,7 +449,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         debugView.updateState(state)
     }
 
-    private fun handleLivePushError(state: PlayLivePusherViewState.Error) {
+    private fun handleLivePushError(state: PlayLiveViewState.Error) {
         when(state.error.type) {
             PlayLivePusherErrorType.NetworkPoor -> showToaster(
                 message = getString(R.string.play_live_broadcast_network_poor),
@@ -499,7 +485,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * Observe
      */
     private fun observeLiveState() {
-        parentViewModel.observableLivePusherState.observe(viewLifecycleOwner, Observer(::handleLivePushInfo))
+        parentViewModel.observableLiveViewState.observe(viewLifecycleOwner, Observer(::handleLivePushInfo))
     }
 
     private fun observeTotalViews() {
@@ -511,11 +497,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner, Observer {
             when(it)  {
-                is PlayTimerState.Active -> showCounterDuration(it.remainingInMs)
-                is PlayTimerState.AlmostFinish -> showTimeRemaining(it.remainingInMinutes)
-                is PlayTimerState.Finish -> {
+                is PlayLiveCountDownTimerState.Active -> showCounterDuration(it.remainingInMs)
+                is PlayLiveCountDownTimerState.Finish -> {
                     analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }

@@ -1,6 +1,11 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerImpl
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerListener
+import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
+import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 
 
@@ -10,17 +15,29 @@ import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 class PlayLivePusherMediator(
     private val livePusher: PlayLivePusher,
     private val cacheHandler: LocalCacheHandler
-) : PlayLivePusher by livePusher {
+): PlayLivePusher by livePusher {
 
-    private var pauseDuration = 0L
+    val remainingDurationInMillis: Long
+        get() = mCountDownTimer.remainingDurationInMillis
 
+    private val mCountDownTimer: PlayLivePusherCountDownTimer = PlayLivePusherCountDownTimerImpl(cacheHandler)
     private val mListeners = mutableListOf<PlayLivePusherMediatorListener>()
+
+    private var mPauseDuration = 0L
 
     private val livePusherListener = object : PlayLivePusherListener {
         override fun onNewLivePusherState(pusherState: PlayLivePusherState) {
-            broadcastStateChanged(pusherState)
+            val pusherMediatorState = parseState(pusherState)
+            broadcastStateChanged(pusherMediatorState)
 
-            if (pusherState.isStopped) removeLastPauseMillis()
+            when {
+                pusherState.isPaused -> mCountDownTimer.pause()
+                pusherState.isResumed -> mCountDownTimer.resume()
+                pusherState.isStopped -> removeLastPauseMillis()
+                pusherMediatorState is PlayLivePusherMediatorState.Error -> {
+                    if (pusherMediatorState.error.type.isNetworkTrouble) doAutoReconnect()
+                }
+            }
         }
 
         override fun onUpdateLivePusherStatistic(pusherStatistic: PlayLivePusherStatistic) {
@@ -28,8 +45,50 @@ class PlayLivePusherMediator(
         }
     }
 
+    private val countDownTimerListener = object : PlayLivePusherCountDownTimerListener {
+        override fun onCountDownTimerActive(timeInMillis: Long) {
+            broadcastCountDownTimerActive(timeInMillis)
+        }
+
+        override fun onCountDownTimerFinish() {
+            broadcastCountDownTimerFinish()
+        }
+    }
+
     init {
         livePusher.setListener(livePusherListener)
+        mCountDownTimer.setListener(countDownTimerListener)
+    }
+
+    fun setLiveStreamingDuration(durationInMillis: Long) {
+        mCountDownTimer.setDuration(durationInMillis)
+    }
+
+    fun setLiveStreamingPauseDuration(durationInMillis: Long) {
+        mPauseDuration = durationInMillis
+    }
+
+    fun startLiveStreaming(ingestUrl: String, withTimer: Boolean = true) {
+        livePusher.prepare()
+        livePusher.start(ingestUrl)
+        if (withTimer) startLiveCountDownTimer()
+    }
+
+    fun stopLiveStreaming() {
+        mCountDownTimer.stop()
+        livePusher.stop()
+    }
+
+    fun startLiveCountDownTimer() {
+        mCountDownTimer.start()
+    }
+
+    fun restartLiveCountDownTimer(duration: Long) {
+        mCountDownTimer.restart(duration)
+    }
+
+    fun destroy() {
+        mCountDownTimer.destroy()
     }
 
     fun addListener(listener: PlayLivePusherMediatorListener) {
@@ -46,7 +105,7 @@ class PlayLivePusherMediator(
         livePusher.startPreview(surfaceView)
         if (livePusher.state.isPaused) {
             if (isReachMaxPauseDuration()) broadcastReachMaxPauseDuration()
-            else broadcastShouldContinueLiveStreaming()
+            else broadcastStateChanged(PlayLivePusherMediatorState.Resume(false))
         }
     }
 
@@ -58,7 +117,25 @@ class PlayLivePusherMediator(
         livePusher.stopPreview()
     }
 
-    private fun broadcastStateChanged(state: PlayLivePusherState) {
+    /**
+     * Private methods
+     */
+    private fun parseState(pusherState: PlayLivePusherState): PlayLivePusherMediatorState {
+        return when (pusherState) {
+            PlayLivePusherState.Connecting -> PlayLivePusherMediatorState.Connecting
+            is PlayLivePusherState.Error -> PlayLivePusherMediatorState.Error(
+                PlayLivePusherException(pusherState.reason)
+            )
+            PlayLivePusherState.Paused -> PlayLivePusherMediatorState.Paused
+            PlayLivePusherState.Recovered -> PlayLivePusherMediatorState.Recovered
+            PlayLivePusherState.Resumed -> PlayLivePusherMediatorState.Resume(true)
+            PlayLivePusherState.Started -> PlayLivePusherMediatorState.Started
+            PlayLivePusherState.Idle,
+            PlayLivePusherState.Stopped -> PlayLivePusherMediatorState.Stopped
+        }
+    }
+
+    private fun broadcastStateChanged(state: PlayLivePusherMediatorState) {
         mListeners.forEach { it.onLivePusherStateChanged(state) }
     }
 
@@ -66,16 +143,16 @@ class PlayLivePusherMediator(
         mListeners.forEach { it.onLivePusherStatsUpdated(stats) }
     }
 
+    private fun broadcastCountDownTimerActive(timeInMillis: Long) {
+        mListeners.forEach { it.onLiveCountDownTimerActive(timeInMillis) }
+    }
+
+    private fun broadcastCountDownTimerFinish() {
+        mListeners.forEach { it.onLiveCountDownTimerFinish() }
+    }
+
     private fun broadcastReachMaxPauseDuration() {
-        mListeners.forEach { it.onReachMaxPauseDuration() }
-    }
-
-    private fun broadcastShouldContinueLiveStreaming() {
-        mListeners.forEach { it.onShouldContinueLiveStreaming() }
-    }
-
-    fun setPauseDuration(duration: Long) {
-        this.pauseDuration = duration
+        mListeners.forEach { it.onReachMaximumPausePeriod() }
     }
 
     private fun setLastPauseMillis() {
@@ -83,10 +160,14 @@ class PlayLivePusherMediator(
         cacheHandler.applyEditor()
     }
 
+    private fun doAutoReconnect() {
+        livePusher.reconnect()
+    }
+
     private fun isReachMaxPauseDuration(): Boolean {
         val lastPauseMillis = cacheHandler.getLong(KEY_PAUSE_TIME, 0L)
         val currentMillis = System.currentTimeMillis()
-        if (lastPauseMillis > 0 && ((currentMillis - lastPauseMillis) > pauseDuration)) {
+        if (lastPauseMillis > 0 && ((currentMillis - lastPauseMillis) > mPauseDuration)) {
             cacheHandler.remove(KEY_PAUSE_TIME)
             return true
         }
@@ -98,7 +179,6 @@ class PlayLivePusherMediator(
     }
 
     companion object {
-
         const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
     }
 }

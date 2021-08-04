@@ -123,7 +123,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         Handler().postDelayed({
             streamer?.startVideoCapture()
             streamer?.startAudioCapture()
-        }, 500)
+        }, SAFE_OPEN_CAMERA_DELAY)
     }
 
     override fun stopPreview() {
@@ -170,16 +170,16 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     override fun pause() {
         stopStream()
-        broadcastState(PlayLivePusherState.Pause)
+        broadcastState(PlayLivePusherState.Paused)
     }
 
     override fun reconnect() {
-        createConnection() // TODO: handling max retry & reconnectDelay
+        createConnection()
     }
 
     override fun stop() {
         stopStream()
-        broadcastState(PlayLivePusherState.Stop)
+        broadcastState(PlayLivePusherState.Stopped)
         streamer?.release()
     }
 
@@ -218,7 +218,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
                 configureMirrorFrontCamera()
             }
             Streamer.CONNECTION_STATE.DISCONNECTED -> {
-                if (lastState is PlayLivePusherState.Pause) return // ignore and just call resume()
+                if (lastState is PlayLivePusherState.Paused) return // ignore and just call resume()
                 if (status == null) {
                     broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
                     return
@@ -317,5 +317,9 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         try {
             statisticUpdateTimer?.cancel()
         } catch (ignored: Exception) { }
+    }
+
+    companion object {
+        private const val SAFE_OPEN_CAMERA_DELAY = 500L
     }
 }

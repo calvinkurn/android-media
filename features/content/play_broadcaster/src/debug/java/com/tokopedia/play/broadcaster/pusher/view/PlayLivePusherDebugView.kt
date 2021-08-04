@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
-import com.tokopedia.play.broadcaster.view.state.PlayLivePusherViewState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 
 
 /**
@@ -58,15 +58,15 @@ class PlayLivePusherDebugView : ScrollView {
         tvPushUpdatedInfo.text = info.toString()
     }
 
-    fun updateState(state: PlayLivePusherViewState) {
+    fun updateState(state: PlayLiveViewState) {
         val status = when(state) {
-            PlayLivePusherViewState.Connecting -> "CONNECTING"
-            is PlayLivePusherViewState.Error -> "ERROR: \ntype:${state.error.type}\nreason:${state.error.reason}"
-            PlayLivePusherViewState.Paused -> "PAUSED"
-            PlayLivePusherViewState.Recovered -> "RECOVERED"
-            is PlayLivePusherViewState.Resume -> if (state.isResumed) "RESUMED" else "RESUME"
-            PlayLivePusherViewState.Started -> "STARTED"
-            is PlayLivePusherViewState.Stopped -> "STOPPED"
+            PlayLiveViewState.Connecting -> "CONNECTING"
+            is PlayLiveViewState.Error -> "ERROR: \ntype:${state.error.type}\nreason:${state.error.reason}"
+            PlayLiveViewState.Paused -> "PAUSED"
+            PlayLiveViewState.Recovered -> "RECOVERED"
+            is PlayLiveViewState.Resume -> if (state.isResumed) "RESUMED" else "RESUME"
+            PlayLiveViewState.Started -> "STARTED"
+            is PlayLiveViewState.Stopped -> "STOPPED"
         }
         tvStatus.text = status
         tvFullLog.append("\n$status")

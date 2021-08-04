@@ -6,11 +6,13 @@ package com.tokopedia.play.broadcaster.pusher
  */
 interface PlayLivePusherMediatorListener {
 
-    fun onLivePusherStateChanged(state: PlayLivePusherState) { }
+    fun onLivePusherStateChanged(state: PlayLivePusherMediatorState) { }
 
     fun onLivePusherStatsUpdated(statistic: PlayLivePusherStatistic) { }
 
-    fun onReachMaxPauseDuration() { }
+    fun onLiveCountDownTimerActive(timeInMillis: Long) { }
 
-    fun onShouldContinueLiveStreaming() { }
+    fun onLiveCountDownTimerFinish() { }
+
+    fun onReachMaximumPausePeriod() { }
 }

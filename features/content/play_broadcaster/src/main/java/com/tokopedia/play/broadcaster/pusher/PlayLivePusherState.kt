@@ -10,8 +10,8 @@ sealed class PlayLivePusherState {
     object Started: PlayLivePusherState()
     object Resumed: PlayLivePusherState()
     object Recovered: PlayLivePusherState()
-    object Pause: PlayLivePusherState()
-    object Stop: PlayLivePusherState()
+    object Paused: PlayLivePusherState()
+    object Stopped: PlayLivePusherState()
     data class Error(val reason: String): PlayLivePusherState()
 }
 
@@ -20,11 +20,14 @@ val PlayLivePusherState.isPushing: Boolean
             || this == PlayLivePusherState.Resumed
             || this == PlayLivePusherState.Recovered
 
+val PlayLivePusherState.isResumed: Boolean
+    get() = this == PlayLivePusherState.Resumed
+
 val PlayLivePusherState.isPaused: Boolean
-    get() = this == PlayLivePusherState.Pause
+    get() = this == PlayLivePusherState.Paused
 
 val PlayLivePusherState.isStopped: Boolean
-    get() = this == PlayLivePusherState.Stop
+    get() = this == PlayLivePusherState.Stopped
 
 val PlayLivePusherState.isError: Boolean
 get() = this is PlayLivePusherState.Error

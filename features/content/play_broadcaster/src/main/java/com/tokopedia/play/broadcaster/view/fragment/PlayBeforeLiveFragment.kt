@@ -36,7 +36,7 @@ import com.tokopedia.play.broadcaster.view.fragment.edit.TitleAndTagsEditBottomS
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.PlayLivePusherViewState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -293,7 +293,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLivePusherState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
+        parentViewModel.observableLiveViewState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
     }
 
     private fun observeBroadcastSchedule() {
@@ -355,22 +355,22 @@ class PlayBeforeLiveFragment @Inject constructor(
         setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 
-    private fun handleLiveInfoState(state: PlayLivePusherViewState) {
+    private fun handleLiveInfoState(state: PlayLiveViewState) {
         if (!isVisible) return
         when (state) {
-            is PlayLivePusherViewState.Started -> {
+            is PlayLiveViewState.Started -> {
                 openBroadcastLivePage()
                 btnStartLive.setLoading(false)
                 parentViewModel.setFirstTimeLiveStreaming()
             }
-            is PlayLivePusherViewState.Error -> {
+            is PlayLiveViewState.Error -> {
                 btnStartLive.setLoading(false)
                 handleLivePushError(state)
             }
         }
     }
 
-    private fun handleLivePushError(state: PlayLivePusherViewState.Error) {
+    private fun handleLivePushError(state: PlayLiveViewState.Error) {
         when(state.error.type) {
             PlayLivePusherErrorType.ConnectFailed -> showToaster(
                 message = getString(R.string.play_live_broadcast_connect_fail),
