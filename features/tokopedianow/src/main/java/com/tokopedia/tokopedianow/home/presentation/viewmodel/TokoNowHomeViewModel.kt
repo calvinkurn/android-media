@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -99,6 +100,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartRemove
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
+    val productAddToCartQuantity: LiveData<Result<HomeLayoutListUiModel>>
+        get() = _productAddToCartQuantity
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -108,6 +111,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
+    private val _productAddToCartQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
@@ -117,7 +121,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.LOADING,
                 isInitialLoad = true
         )
@@ -128,7 +132,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.HIDE
         )
         _homeLayoutList.postValue(Success(data))
@@ -146,7 +150,7 @@ class TokoNowHomeViewModel @Inject constructor(
             if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
                 homeLayoutItemList.addProductRecomOoc(recommendationWidgets.first())
                 val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.HIDE
                 )
                 _homeLayoutList.postValue(Success(data))
@@ -159,13 +163,13 @@ class TokoNowHomeViewModel @Inject constructor(
      * Content data requested lazily for each component.
      * @see getLayoutData for loading content data.
      */
-    fun getHomeLayout() {
+    fun getHomeLayout(localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
             homeLayoutItemList.clear()
-            val homeLayoutResponse = getHomeLayoutListUseCase.execute()
+            val homeLayoutResponse = getHomeLayoutListUseCase.execute(localCacheModel)
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse, hasTickerBeenRemoved)
             val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
+                items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW,
                 isInitialLoad = true
             )
@@ -184,7 +188,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param firstVisibleItemIndex first item index visible on user screen
      * @param lastVisibleItemIndex last item index visible on user screen
      */
-    fun getLayoutData(index: Int?, warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+    fun getLayoutData(index: Int?, warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int, localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
             if(index != null) {
                 val item = homeLayoutItemList.getOrNull(index)
@@ -195,14 +199,14 @@ class TokoNowHomeViewModel @Inject constructor(
                 if (item != null && isLayoutVisible && shouldLoadLayout(item)) {
                     val layout = item.layout
                     setItemStateToLoading(item)
-                    getLayoutComponentData(layout, warehouseId)
+                    getLayoutComponentData(layout, warehouseId, localCacheModel)
                 }
 
                 val nextItemIndex = homeLayoutItemList.findNextIndex()
                 val isLoadDataFinished = lastItemLoaded || !isLayoutVisible || allItemLoaded()
 
                 val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.SHOW,
                     nextItemIndex = nextItemIndex,
                     isInitialLoad = index == 0,
@@ -223,7 +227,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param firstVisibleItemIndex first item index visible on user screen
      * @param lastVisibleItemIndex last item index visible on user screen
      */
-    fun getMoreLayoutData(warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) {
+    fun getMoreLayoutData(warehouseId: String, firstVisibleItemIndex: Int, lastVisibleItemIndex: Int, localCacheModel: LocalCacheModel?) {
         launchCatchError(block = {
             for (i in firstVisibleItemIndex..lastVisibleItemIndex) {
                 val index = homeLayoutItemList.findNextIndex() ?: i
@@ -232,10 +236,10 @@ class TokoNowHomeViewModel @Inject constructor(
                 if (item != null && shouldLoadLayout(item)) {
                     val layout = item.layout
                     setItemStateToLoading(item)
-                    getLayoutComponentData(layout, warehouseId)
+                    getLayoutComponentData(layout, warehouseId, localCacheModel)
 
                     val data = HomeLayoutListUiModel(
-                        result = homeLayoutItemList,
+                        items = homeLayoutItemList,
                         state = TokoNowLayoutState.LOAD_MORE
                     )
 
@@ -259,7 +263,14 @@ class TokoNowHomeViewModel @Inject constructor(
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
-                    setMiniCartSimplifiedData(it)
+                    val isInitialLoad = _homeLayoutList.value == null
+
+                    if(isInitialLoad) {
+                        setMiniCartAndProductQuantity(it)
+                    } else {
+                        setProductAddToCartQuantity(it)
+                    }
+
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -283,14 +294,14 @@ class TokoNowHomeViewModel @Inject constructor(
             val response = getCategoryList(warehouseId)
             homeLayoutItemList.mapHomeCategoryGridData(item, response)
             val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, null)
             val data = HomeLayoutListUiModel(
-                    result = homeLayoutItemList,
+                    items = homeLayoutItemList,
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
@@ -312,9 +323,170 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Get product add to cart quantity based on mini cart data.
+     * The quantity will be shown in product list quantity editor.
+     *
+     * @param shopId id obtained from choose address widget
+     * @param warehouseId id obtained from choose address widget
+     */
+    fun getProductAddToCartQuantity(shopId: List<String>, warehouseId: String?) {
+        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.execute({
+                    setProductAddToCartQuantity(it)
+                }, {
+                    _productAddToCartQuantity.postValue(Fail(it))
+                })
+            }) {
+                _productAddToCartQuantity.postValue(Fail(it))
+            }
+        }
+    }
+
     fun getMiniCartItem(productId: String): MiniCartItem? {
         return miniCartSimplifiedData?.miniCartItems
             ?.firstOrNull { it.productId == productId }
+    }
+
+    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
+        launchCatchError(block = {
+            setMiniCartAndProductQuantity(miniCart)
+            val data = HomeLayoutListUiModel(
+                items = homeLayoutItemList,
+                state = TokoNowLayoutState.SHOW
+            )
+            _productAddToCartQuantity.postValue(Success(data))
+        }) {}
+    }
+
+    fun removeTickerWidget(id: String) {
+        launchCatchError(block = {
+            hasTickerBeenRemoved = true
+            homeLayoutItemList.removeItem(id)
+
+            val data = HomeLayoutListUiModel(
+                items = homeLayoutItemList,
+                state = TokoNowLayoutState.SHOW
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {}
+    }
+
+    fun getRecentPurchaseProducts(): List<HomeProductCardUiModel> {
+        val item = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
+        val recentPurchase = item?.layout as? HomeRecentPurchaseUiModel
+        return recentPurchase?.productList.orEmpty()
+    }
+
+    /**
+     * Add home component mapping here.
+     *
+     * @param item layout visitable item
+     * @param warehouseId Id obtained from choose address widget
+     */
+    private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String, localCacheModel: LocalCacheModel?) {
+        when (item) {
+            is HomeComponentVisitable -> getGlobalHomeComponent(item, localCacheModel) // Tokopedia Home Common Component
+            is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId, localCacheModel) // TokoNow Home Component
+            is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+        }
+    }
+
+    /**
+     * Get data from additional query for TokopediaNOW Home Component.
+     * Add use case and data mapping for TokopediaNOW Home Component here.
+     * Example: Category Grid get its data from getCategoryListUseCase.
+     *
+     * @param item TokopediaNOW Home component item
+     */
+    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String, localCacheModel: LocalCacheModel?) {
+        when (item) {
+            is HomeTickerUiModel -> getTickerData(item)
+            is HomeProductRecomUiModel -> getHomeLayoutData(item, localCacheModel)
+            is HomeRecentPurchaseUiModel -> getRecentPurchaseData(item, warehouseId)
+        }
+    }
+
+    /**
+     * Get data from additional query for TokopediaNOW Common Component.
+     * Add use case and data mapping for TokopediaNOW Common Component here.
+     * Example: Category Grid get its data from getCategoryListUseCase.
+     *
+     * @param item TokopediaNOW component item
+     * @param warehouseId Id obtained from choose address widget
+     */
+    private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
+        when (item) {
+            is TokoNowCategoryGridUiModel -> getCategoryGridData(item, warehouseId)
+        }
+    }
+
+    /**
+     * Get data from dynamic home channel query for Tokopedia Home Common Component.
+     * Add mapping to HomeLayoutMapper.mapGlobalHomeLayoutData -> mapToHomeUiModel
+     * for each global home components.
+     *
+     * @param item Tokopedia Home component item
+     */
+    private suspend fun getGlobalHomeComponent(item: HomeComponentVisitable, localCacheModel: LocalCacheModel?) {
+        asyncCatchError(block = {
+            val channelId = item.visitableId()
+            val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
+            homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
+        }) {
+            val id = item.visitableId().orEmpty()
+            homeLayoutItemList.removeItem(id)
+        }.await()
+    }
+
+    private suspend fun getHomeLayoutData(item: HomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
+        asyncCatchError(block = {
+            val channelId = item.visitableId
+            val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
+            homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
+        }) {
+            val id = item.visitableId
+            homeLayoutItemList.removeItem(id)
+        }.await()
+    }
+
+    private suspend fun getRecentPurchaseData(item: HomeRecentPurchaseUiModel, warehouseId: String) {
+        asyncCatchError(block = {
+            val response = getRecentPurchaseUseCase.execute(warehouseId)
+            if(response.products.isNotEmpty()) {
+                homeLayoutItemList.mapProductPurchaseData(item, response)
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }.await()
+    }
+
+    private suspend fun getCategoryGridData(item: TokoNowCategoryGridUiModel, warehouseId: String) {
+        asyncCatchError(block = {
+            val response = getCategoryList(warehouseId)
+            homeLayoutItemList.mapHomeCategoryGridData(item, response)
+        }) {
+            homeLayoutItemList.mapHomeCategoryGridData(item, emptyList())
+        }.await()
+    }
+
+    private suspend fun getTickerData(item: HomeTickerUiModel) {
+        asyncCatchError(block = {
+            val tickerList = getTickerUseCase.execute().ticker.tickerList
+            val tickerData = TickerMapper.mapTickerData(tickerList)
+            homeLayoutItemList.mapTickerData(item, tickerData)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }.await()
+    }
+
+    private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
+        return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
     }
 
     private fun addItemToCart(
@@ -374,152 +546,18 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    fun updateProductCard(item: MiniCartSimplifiedData, needToObserve: Boolean) {
-        homeLayoutItemList.updateRecentPurchaseQuantity(item)
-        homeLayoutItemList.updateProductRecomQuantity(item)
-
-        if (needToObserve) {
-            val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
-                state = TokoNowLayoutState.SHOW
-            )
-            _homeLayoutList.postValue(Success(data))
-        }
+    private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
+        setMiniCartSimplifiedData(miniCart)
+        updateProductQuantity(miniCart)
     }
 
-    fun setMiniCartSimplifiedData(data: MiniCartSimplifiedData) {
-        miniCartSimplifiedData = data
+    private fun updateProductQuantity(miniCart: MiniCartSimplifiedData) {
+        homeLayoutItemList.updateRecentPurchaseQuantity(miniCart)
+        homeLayoutItemList.updateProductRecomQuantity(miniCart)
     }
 
-    fun removeTickerWidget(id: String) {
-        launchCatchError(block = {
-            hasTickerBeenRemoved = true
-            homeLayoutItemList.removeItem(id)
-
-            val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
-                state = TokoNowLayoutState.SHOW
-            )
-
-            _homeLayoutList.postValue(Success(data))
-        }) {}
-    }
-
-    fun getRecentPurchaseProducts(): List<HomeProductCardUiModel> {
-        val item = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
-        val recentPurchase = item?.layout as? HomeRecentPurchaseUiModel
-        return recentPurchase?.productList.orEmpty()
-    }
-
-    /**
-     * Add home component mapping here.
-     *
-     * @param item layout visitable item
-     * @param warehouseId Id obtained from choose address widget
-     */
-    private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String) {
-        when (item) {
-            is HomeComponentVisitable -> getGlobalHomeComponent(item) // Tokopedia Home Common Component
-            is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-            is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
-        }
-    }
-
-    /**
-     * Get data from additional query for TokopediaNOW Home Component.
-     * Add use case and data mapping for TokopediaNOW Home Component here.
-     * Example: Category Grid get its data from getCategoryListUseCase.
-     *
-     * @param item TokopediaNOW Home component item
-     */
-    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String) {
-        when (item) {
-            is HomeTickerUiModel -> getTickerData(item)
-            is HomeProductRecomUiModel -> getHomeLayoutData(item)
-            is HomeRecentPurchaseUiModel -> getRecentPurchaseData(item, warehouseId)
-        }
-    }
-
-    /**
-     * Get data from additional query for TokopediaNOW Common Component.
-     * Add use case and data mapping for TokopediaNOW Common Component here.
-     * Example: Category Grid get its data from getCategoryListUseCase.
-     *
-     * @param item TokopediaNOW component item
-     * @param warehouseId Id obtained from choose address widget
-     */
-    private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
-        when (item) {
-            is TokoNowCategoryGridUiModel -> getCategoryGridData(item, warehouseId)
-        }
-    }
-
-    /**
-     * Get data from dynamic home channel query for Tokopedia Home Common Component.
-     * Add mapping to HomeLayoutMapper.mapGlobalHomeLayoutData -> mapToHomeUiModel
-     * for each global home components.
-     *
-     * @param item Tokopedia Home component item
-     */
-    private suspend fun getGlobalHomeComponent(item: HomeComponentVisitable) {
-        asyncCatchError(block = {
-            val channelId = item.visitableId()
-            val response = getHomeLayoutDataUseCase.execute(channelId)
-            homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
-        }) {
-            val id = item.visitableId().orEmpty()
-            homeLayoutItemList.removeItem(id)
-        }.await()
-    }
-
-    private suspend fun getHomeLayoutData(item: HomeLayoutUiModel) {
-        asyncCatchError(block = {
-            val channelId = item.visitableId
-            val response = getHomeLayoutDataUseCase.execute(channelId)
-            homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
-            miniCartSimplifiedData?.let {
-                updateProductCard(it, false)
-            }
-        }) {
-            val id = item.visitableId
-            homeLayoutItemList.removeItem(id)
-        }.await()
-    }
-
-    private suspend fun getRecentPurchaseData(item: HomeRecentPurchaseUiModel, warehouseId: String) {
-        asyncCatchError(block = {
-            val response = getRecentPurchaseUseCase.execute(warehouseId)
-            if(response.products.isNotEmpty()) {
-                homeLayoutItemList.mapProductPurchaseData(item, response)
-            } else {
-                homeLayoutItemList.removeItem(item.id)
-            }
-        }) {
-            homeLayoutItemList.removeItem(item.id)
-        }.await()
-    }
-
-    private suspend fun getCategoryGridData(item: TokoNowCategoryGridUiModel, warehouseId: String) {
-        asyncCatchError(block = {
-            val response = getCategoryList(warehouseId)
-            homeLayoutItemList.mapHomeCategoryGridData(item, response)
-        }) {
-            homeLayoutItemList.mapHomeCategoryGridData(item, emptyList())
-        }.await()
-    }
-
-    private suspend fun getTickerData(item: HomeTickerUiModel) {
-        asyncCatchError(block = {
-            val tickerList = getTickerUseCase.execute().ticker.tickerList
-            val tickerData = TickerMapper.mapTickerData(tickerList)
-            homeLayoutItemList.mapTickerData(item, tickerData)
-        }) {
-            homeLayoutItemList.removeItem(item.id)
-        }.await()
-    }
-
-    private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
-        return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
+    private fun setMiniCartSimplifiedData(miniCart: MiniCartSimplifiedData) {
+        miniCartSimplifiedData = miniCart
     }
 
     private fun trackProductAddToCart(productId: String, quantity: Int, type: String) {

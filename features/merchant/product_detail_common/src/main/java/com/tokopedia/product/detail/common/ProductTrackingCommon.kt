@@ -145,7 +145,7 @@ object ProductTrackingCommon {
             productName: String, productPrice: Double, quantity: Int,
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
-            categoryName: String = "", categoryId: String = "", isFreeOngkir: Boolean = false, pageSource: String = "",
+            categoryName: String = "", categoryId: String = "", bebasOngkirType: String = "", pageSource: String = "",
             cdListName: String = ""
     ) {
         val generateButtonActionString = when (buttonAction) {
@@ -189,7 +189,7 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_40, cdListName, //cd listname --> /tokonow - searchproduct - {organic/organic ads/topads productlist}
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_54, multiOrigin,
-                        ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (isFreeOngkir) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirType,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_38, pageSource
                 ))))))
     }
