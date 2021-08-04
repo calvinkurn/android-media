@@ -1,7 +1,9 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import android.content.Context
 import android.os.Handler
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
+import kotlin.jvm.Throws
 
 
 /**
@@ -13,9 +15,10 @@ interface PlayLivePusher {
 
     val config: PlayLivePusherConfig
 
-    val connection: PlayLivePusherConnection
+    val ingestUrl: String
 
-    fun init(handler: Handler)
+    @Throws(IllegalAccessException::class)
+    fun init(context: Context, handler: Handler)
 
     fun prepare(config: PlayLivePusherConfig? = null)
 

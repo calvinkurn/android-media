@@ -146,10 +146,10 @@ class PlayBroadcastConfigurableMapper(
     }
 
     override fun mapLiveInfo(
-        connection: PlayLivePusherConnection,
+        activeIngestUrl: String,
         config: PlayLivePusherConfig
     ): PlayLiveInfoUiModel {
-        return if (!isMock) uiMapper.mapLiveInfo(connection, config)
-        else mockMapper.mapLiveInfo(connection, config)
+        return if (!isMock) uiMapper.mapLiveInfo(activeIngestUrl, config)
+        else mockMapper.mapLiveInfo(activeIngestUrl, config)
     }
 }

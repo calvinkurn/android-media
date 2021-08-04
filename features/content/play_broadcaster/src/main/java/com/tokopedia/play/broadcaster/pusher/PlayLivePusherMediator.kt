@@ -69,7 +69,6 @@ class PlayLivePusherMediator(
     }
 
     fun startLiveStreaming(ingestUrl: String, withTimer: Boolean = true) {
-        livePusher.prepare()
         livePusher.start(ingestUrl)
         if (withTimer) startLiveCountDownTimer()
     }

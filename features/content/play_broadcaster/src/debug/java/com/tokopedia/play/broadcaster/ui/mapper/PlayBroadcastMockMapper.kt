@@ -256,7 +256,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     }
 
     override fun mapLiveInfo(
-        connection: PlayLivePusherConnection,
+        activeIngestUrl: String,
         config: PlayLivePusherConfig
     ): PlayLiveInfoUiModel {
         return PlayLiveInfoUiModel(

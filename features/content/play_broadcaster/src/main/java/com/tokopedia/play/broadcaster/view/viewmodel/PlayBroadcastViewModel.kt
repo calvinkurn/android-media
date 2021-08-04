@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.content.Context
 import android.os.Handler
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -31,8 +32,8 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveCountDownTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
-import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.state.isRecovered
 import com.tokopedia.play.broadcaster.view.state.isStarted
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -355,8 +356,9 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    fun createStreamer(handler: Handler) {
-        livePusherMediator.init(handler)
+    @Throws(IllegalAccessException::class)
+    fun createStreamer(context: Context, handler: Handler) {
+        livePusherMediator.init(context, handler)
     }
 
     fun switchCamera() {
@@ -377,8 +379,12 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun startLiveStream(withTimer: Boolean = true) {
         livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
+        if (withTimer) {
+            // TODO("find the best way to trigger engagement tools")
+            getInteractiveConfig()
+        }
         isLiveStarted = true
-        _observableLivePusherInfo.value = playBroadcastMapper.mapLiveInfo(livePusherMediator.connection, livePusherMediator.config)
+        _observableLivePusherInfo.value = playBroadcastMapper.mapLiveInfo(livePusherMediator.ingestUrl, livePusherMediator.config)
     }
 
     fun reconnectLiveStream() {

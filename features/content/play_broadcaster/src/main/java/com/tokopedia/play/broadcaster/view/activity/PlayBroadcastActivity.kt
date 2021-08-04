@@ -31,7 +31,6 @@ import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -114,12 +113,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             requestPermission()
         }
 
-        if (!DeviceInfoUtil.isDeviceSupported()) {
-            showDialogWhenUnSupportedDevices()
-            return
-        }
-
-        setupContent()
+        initStreamer()
         initView()
         setupView()
 
@@ -203,8 +197,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
-    private fun setupContent() {
-        viewModel.createStreamer(Handler(Looper.getMainLooper()))
+    private fun initStreamer() {
+        try {
+            viewModel.createStreamer(this, Handler(Looper.getMainLooper()))
+        } catch (exception: IllegalAccessException) {
+            showDialogWhenUnSupportedDevices()
+            return
+        }
     }
 
     private fun initView() {

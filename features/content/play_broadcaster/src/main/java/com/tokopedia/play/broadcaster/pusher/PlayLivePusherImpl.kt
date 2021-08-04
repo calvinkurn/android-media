@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -8,6 +9,7 @@ import com.tokopedia.play.broadcaster.pusher.bitrate.BitrateAdapter
 import com.tokopedia.play.broadcaster.pusher.camera.CameraInfo
 import com.tokopedia.play.broadcaster.pusher.camera.CameraManager
 import com.tokopedia.play.broadcaster.pusher.camera.CameraType
+import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.wmspanel.libstream.*
 import org.json.JSONObject
@@ -21,79 +23,22 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     private var streamer: StreamerGL? = null
 
-    private var mListener: PlayLivePusherListener? = null
-    private var mState: PlayLivePusherState = PlayLivePusherState.Idle
     private var mConfig = PlayLivePusherConfig()
+
+    private var mState: PlayLivePusherState = PlayLivePusherState.Idle
+    private var mListener: PlayLivePusherListener? = null
     private var mHandler: Handler? = null
     private var mBitrateAdapter: BitrateAdapter? = null
+
     private val mConnection = PlayLivePusherConnection()
     private val mStatistic = PlayLivePusherStatistic()
+    private val mAvailableCameras = mutableListOf<CameraInfo>()
 
     private var isPushStarted = false
-    private var canSwitchCamera = false
-
-    private var mAvailableCameras = emptyList<CameraInfo>()
-
     private var statisticUpdateTimer: Timer? = null
 
-    private fun createStreamer(surfaceView: SurfaceAspectRatioView) {
-        val context = surfaceView.context
-        val builder = StreamerGLBuilder()
-
-        builder.setContext(context)
-        builder.setListener(this)
-
-        // default config: 44.1kHz, Mono, CAMCORDER input
-        builder.setAudioConfig(AudioConfig()) // TODO: edit default audio config
-
-        builder.setCamera2(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-
-        // preview surface
-        builder.setSurface(surfaceView.surfaceHolder.surface)
-        builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
-
-        mAvailableCameras = CameraManager.getAvailableCameras(context)
-        if (mAvailableCameras.isEmpty()) {
-            broadcastState(PlayLivePusherState.Error("system: unable to live stream as no camera available"))
-            return
-        } else {
-            canSwitchCamera = mAvailableCameras.size > 1
-        }
-
-        val activeCamera = mAvailableCameras.firstOrNull { it.lensFacing == CameraType.Front } ?: mAvailableCameras.first()
-        builder.setCameraId(activeCamera.cameraId)
-
-        val videoSize = CameraManager.getVideoSize(activeCamera) ?: mConfig.getVideoSize()
-
-        // default config: h264, 2 sec. keyframe interval
-        val videoConfig = VideoConfig()
-        videoConfig.bitRate = mConfig.videoBitrate
-        videoConfig.videoSize = CameraManager.verifyResolution(
-            type = videoConfig.type,
-            videoSize = Streamer.Size(videoSize.height, videoSize.width),
-            defaultVideoSize = mConfig.getVideoSize()
-        )
-        videoConfig.fps = mConfig.fps
-        builder.setVideoConfig(videoConfig)
-
-        mAvailableCameras.forEach {
-            val cameraConfig = CameraConfig()
-            cameraConfig.cameraId = it.cameraId
-            cameraConfig.videoSize = videoSize
-            builder.addCamera(cameraConfig)
-        }
-
-        builder.setVideoOrientation(StreamerGL.ORIENTATIONS.PORTRAIT)
-        builder.setDisplayRotation(0)
-        builder.setFullView(true)
-
-        mBitrateAdapter = BitrateAdapter.newInstance(context, videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
-
-        streamer = builder.build()
-    }
-
-    override val connection: PlayLivePusherConnection
-        get() = mConnection
+    override val ingestUrl: String
+        get() = mConnection.uri
 
     override val config: PlayLivePusherConfig
         get() = mConfig
@@ -101,12 +46,16 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     override val state: PlayLivePusherState
         get() = mState
 
-    override fun init(handler: Handler) {
+
+    override fun init(context: Context, handler: Handler) {
         this.mHandler = handler
+
+        if (!DeviceInfoUtil.isDeviceSupported()) throw IllegalAccessException("please use device with armeabi-v7a or arm64-v8a")
+        if (!isDeviceHaveCameraAvailable(context)) throw IllegalAccessException("unable to live stream as no camera available")
     }
 
     override fun prepare(config: PlayLivePusherConfig?) {
-        mConfig = config ?: PlayLivePusherConfig()
+        if (config != null) mConfig = config
         configureStreamer(mConfig)
     }
 
@@ -119,26 +68,17 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         safeStartPreview()
     }
 
-    private fun safeStartPreview() {
-        Handler().postDelayed({
-            streamer?.startVideoCapture()
-            streamer?.startAudioCapture()
-        }, SAFE_OPEN_CAMERA_DELAY)
-    }
-
     override fun stopPreview() {
         streamer?.stopAudioCapture()
         streamer?.stopVideoCapture()
     }
 
     override fun switchCamera() {
-        if (!canSwitchCamera) return
-        mBitrateAdapter?.pause()
+        if (!isSwitchCameraSupported()) return
+        pauseCalculateAdaptiveBitrate()
         streamer?.flip()
 
-        val activeCamera = mAvailableCameras.firstOrNull { it.cameraId == streamer?.activeCameraId }
-        activeCamera?.let { mBitrateAdapter?.setFpsRanges(it.fpsRanges) }
-        if (isPushStarted) mBitrateAdapter?.resume()
+        resumeCalculateAdaptiveBitrate()
     }
 
     override fun start(url: String) {
@@ -150,22 +90,6 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     override fun resume() {
         broadcastState(PlayLivePusherState.Connecting)
         startStream()
-    }
-
-    private fun startStream() {
-        createConnection()
-        streamer?.let { mBitrateAdapter?.start(it, mConnection.connectionId.orZero()) }
-        startStatsJob()
-    }
-
-    private fun createConnection() {
-        mConnection.connectionId = streamer?.createConnection(mConnection)
-    }
-
-    private fun stopStream() {
-        mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
-        mBitrateAdapter?.stop()
-        cancelStatsJob()
     }
 
     override fun pause() {
@@ -285,18 +209,115 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         // ignored
     }
 
-    private fun configureStreamer(config: PlayLivePusherConfig) {
-        // TODO: change audio, video configuration
-        // errorMessage: Error preparing stream, This device cant do it
+    /**
+     * Private methods
+     */
+    private fun isDeviceHaveCameraAvailable(context: Context): Boolean {
+        this.mAvailableCameras.clear()
+        this.mAvailableCameras.addAll(CameraManager.getAvailableCameras(context))
+        return mAvailableCameras.isNotEmpty()
     }
+
+    private fun isSwitchCameraSupported() = mAvailableCameras.size > 1
+
+    private fun createStreamer(surfaceView: SurfaceAspectRatioView) {
+        val context = surfaceView.context
+        val builder = StreamerGLBuilder()
+
+        builder.setContext(context)
+        builder.setListener(this)
+
+        // configure audio
+        builder.setAudioConfig(PlayLivePusherUtil.getAudioConfig(mConfig))
+
+        // configure camera
+        builder.setCamera2(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        builder.setSurface(surfaceView.surfaceHolder.surface)
+        builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
+
+        val activeCamera = mAvailableCameras.firstOrNull { it.lensFacing == CameraType.Front } ?: mAvailableCameras.first()
+        builder.setCameraId(activeCamera.cameraId)
+
+        val cameraSize = CameraManager.getVideoSize(activeCamera) ?: mConfig.getVideoSize()
+
+        // configure video
+        val videoConfig = PlayLivePusherUtil.getVideoConfig(mConfig, cameraSize)
+        builder.setVideoConfig(videoConfig)
+
+        mAvailableCameras.forEach {
+            builder.addCamera(getCameraConfig(it, cameraSize))
+        }
+
+        builder.setVideoOrientation(StreamerGL.ORIENTATIONS.PORTRAIT)
+        builder.setDisplayRotation(0)
+        builder.setFullView(true)
+
+        mBitrateAdapter = BitrateAdapter.newInstance(context, videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
+
+        streamer = builder.build()
+    }
+
+    private fun configureStreamer(config: PlayLivePusherConfig) {
+        streamer?.changeAudioConfig(PlayLivePusherUtil.getAudioConfig(config))
+        streamer?.changeVideoConfig(PlayLivePusherUtil.getVideoConfig(config))
+    }
+
+    private fun getCameraConfig(cameraInfo: CameraInfo, cameraSize: Streamer.Size): CameraConfig {
+        return CameraConfig().apply {
+            cameraId = cameraInfo.cameraId
+            videoSize = cameraSize
+        }
+    }
+
+    private fun getActiveCamera(): CameraInfo? = mAvailableCameras.firstOrNull { it.cameraId == streamer?.activeCameraId }
 
     private fun configureMirrorFrontCamera() {
         streamer?.setFrontMirror(false, false)
     }
 
+    private fun safeStartPreview() {
+        Handler().postDelayed({
+            streamer?.startVideoCapture()
+            streamer?.startAudioCapture()
+        }, SAFE_OPEN_CAMERA_DELAY)
+    }
+
+    private fun startStream() {
+        createConnection()
+        startCalculateAdaptiveBitrate()
+        startStatsJob()
+    }
+
+    private fun createConnection() {
+        mConnection.connectionId = streamer?.createConnection(mConnection)
+    }
+
+    private fun stopStream() {
+        mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
+        stopCalculateAdaptiveBitrate()
+        cancelStatsJob()
+    }
+
     private fun broadcastState(state: PlayLivePusherState) {
         mState = state
         mListener?.onNewLivePusherState(state)
+    }
+
+    private fun startCalculateAdaptiveBitrate() {
+        streamer?.let { mBitrateAdapter?.start(it, mConnection.connectionId.orZero()) }
+    }
+
+    private fun pauseCalculateAdaptiveBitrate() {
+        mBitrateAdapter?.pause()
+    }
+
+    private fun resumeCalculateAdaptiveBitrate() {
+        getActiveCamera()?.let { mBitrateAdapter?.setFpsRanges(it.fpsRanges) }
+        if (isPushStarted) mBitrateAdapter?.resume()
+    }
+
+    private fun stopCalculateAdaptiveBitrate() {
+        mBitrateAdapter?.stop()
     }
 
     private fun startStatsJob() {
@@ -310,7 +331,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
                 }
             }
 
-        }, 1000, 1000)
+        }, STATISTIC_JOB_DELAY, STATISTIC_JOB_PERIOD)
     }
 
     private fun cancelStatsJob() {
@@ -321,5 +342,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     companion object {
         private const val SAFE_OPEN_CAMERA_DELAY = 500L
+        private const val STATISTIC_JOB_DELAY = 1000L
+        private const val STATISTIC_JOB_PERIOD = 1000L
     }
 }

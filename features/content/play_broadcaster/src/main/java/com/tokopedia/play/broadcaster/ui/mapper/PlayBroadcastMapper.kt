@@ -78,7 +78,7 @@ interface PlayBroadcastMapper {
                               durationInMs: Long): InteractiveSessionUiModel
 
     fun mapLiveInfo(
-        connection: PlayLivePusherConnection,
+        activeIngestUrl: String,
         config: PlayLivePusherConfig
     ): PlayLiveInfoUiModel
 }

@@ -297,11 +297,11 @@ class PlayBroadcastUiMapper(
     }
 
     override fun mapLiveInfo(
-        connection: PlayLivePusherConnection,
+        activeIngestUrl: String,
         config: PlayLivePusherConfig
     ): PlayLiveInfoUiModel {
         return PlayLiveInfoUiModel(
-            connection.uri,
+            activeIngestUrl,
             config.videoWidth,
             config.videoHeight,
             config.fps,
