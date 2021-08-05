@@ -512,13 +512,13 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun sortItemDetailPerformanceFormatted(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail> {
         val identifierFilter = hashMapOf(
-                ORDER_SUCCESS_RATE_KEY to 0,
-                CHAT_DISCUSSION_REPLY_SPEED_KEY to 1,
-                SPEED_SENDING_ORDERS_KEY to 2,
-                CHAT_DISCUSSION_SPEED_KEY to 3,
-                PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to 4,
-                TOTAL_BUYER_KEY to 5,
-                OPEN_TOKOPEDIA_SELLER_KEY to 6
+                ORDER_SUCCESS_RATE_KEY to ORDER_SUCCESS_RATE_INDEX,
+                CHAT_DISCUSSION_REPLY_SPEED_KEY to CHAT_DISCUSSION_REPLY_SPEED_INDEX,
+                SPEED_SENDING_ORDERS_KEY to SPEED_SENDING_ORDERS_INDEX,
+                CHAT_DISCUSSION_SPEED_KEY to CHAT_DISCUSSION_SPEED_INDEX,
+                PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to PRODUCT_REVIEW_WITH_FOUR_STARS_INDEX,
+                TOTAL_BUYER_KEY to TOTAL_BUYER_INDEX,
+                OPEN_TOKOPEDIA_SELLER_KEY to OPEN_TOKOPEDIA_SELLER_INDEX
         )
 
         val compareIdentifier = Comparator { item1: ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail,
@@ -731,5 +731,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         } catch (e: IndexOutOfBoundsException) {
             String.format("%.1f", valueResponse)
         }
+    }
+
+    companion object {
+        const val ORDER_SUCCESS_RATE_INDEX = 0
+        const val CHAT_DISCUSSION_REPLY_SPEED_INDEX = 1
+        const val SPEED_SENDING_ORDERS_INDEX = 2
+        const val CHAT_DISCUSSION_SPEED_INDEX = 3
+        const val PRODUCT_REVIEW_WITH_FOUR_STARS_INDEX = 4
+        const val TOTAL_BUYER_INDEX = 5
+        const val OPEN_TOKOPEDIA_SELLER_INDEX = 6
     }
 }
