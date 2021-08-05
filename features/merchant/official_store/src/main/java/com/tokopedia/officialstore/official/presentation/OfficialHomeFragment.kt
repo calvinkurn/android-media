@@ -181,6 +181,7 @@ class OfficialHomeFragment :
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
+                OSFeaturedShopDCCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -643,6 +644,8 @@ class OfficialHomeFragment :
         )
         RouteManager.route(context, shopData.url)
     }
+
+
 
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.slug.orEmpty()
