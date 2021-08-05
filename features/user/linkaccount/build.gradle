@@ -6,8 +6,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         google()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -15,9 +15,8 @@ buildscript {
 }
 
 android {
-    defaultConfig {
-        multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -27,8 +26,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
 
     //Libraries
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     //Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
@@ -40,16 +41,17 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //Misc Dependencies
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.dagger
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     //Debug Tools
     implementation rootProject.ext.debugToolsDependencies.chuck

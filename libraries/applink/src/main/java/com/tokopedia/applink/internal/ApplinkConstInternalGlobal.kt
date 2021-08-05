@@ -260,6 +260,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-password
     const val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
 
+    // LinkAccountActivity
+    // tokopedia-android-internal://global/link-account
+    const val LINK_ACCOUNT = "$INTERNAL_GLOBAL/link-account"
+
     // HasPasswordActivity
     // tokopedia-android-internal://global/has-password
     const val HAS_PASSWORD = "$INTERNAL_GLOBAL/has-password"
