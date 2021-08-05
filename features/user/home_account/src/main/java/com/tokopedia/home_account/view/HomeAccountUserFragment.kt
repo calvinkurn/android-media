@@ -80,12 +80,15 @@ import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linkaccount.view.LinkAccountFragment
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -133,6 +136,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
     private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
@@ -162,6 +167,16 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun initInjector() {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
+    }
+
+    private fun enableLinkingAccountRollout(): Boolean = true
+//        getAbTestPlatform().getString(LINK_STATUS_ROLLOUT).isNotEmpty()
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -435,7 +450,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             if (getItem(0) is ProfileDataView) {
                 removeItemAt(0)
             }
-            addItem(0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(0, mapper.mapToProfileDataView(buyerAccount, enableLinkingAccountRollout()))
             notifyDataSetChanged()
         }
         hideLoading()
@@ -1142,7 +1157,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     override fun onLinkingAccountClicked() {
-        showBottomSheetLinkAccount()
+        Toaster.build(requireView(), LinkAccountFragment.getLinkAccountUrl(
+            requireActivity(),
+            ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+        ) ?: "", Toaster.LENGTH_LONG).show()
+//        showBottomSheetLinkAccount()
     }
 
     override fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int) {
@@ -1357,6 +1376,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val OVO_ASSET_TYPE = "ovo"
         private const val TOKOPOINT_ASSET_TYPE = "tokopoint"
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS = "android_user_home_account_tokopoints"
+
+        private const val LINK_STATUS_ROLLOUT = "goto_linking"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {

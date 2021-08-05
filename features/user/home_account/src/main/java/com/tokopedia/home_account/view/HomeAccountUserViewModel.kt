@@ -8,6 +8,7 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -37,6 +38,7 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
         private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
         private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
+        private val getLinkStatusUseCase: GetLinkStatusUseCase,
         private val walletPref: WalletPref,
         private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -121,6 +123,8 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
+//            val linkStatus = getLinkStatusUseCase.execute(RequestParams.EMPTY)
+
             withContext(dispatcher) {
                 internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)

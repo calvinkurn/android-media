@@ -2,9 +2,8 @@ package com.tokopedia.home_account.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.ArrayList
+import com.tokopedia.linkaccount.data.LinkStatusResponse
 import com.tokopedia.navigation_common.model.*
-import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo
 
 /**
  * Created by Yoris Prayogo on 20/10/20.
@@ -29,5 +28,7 @@ data class UserAccountDataModel(
         @Expose
         var isAffiliate: Boolean = false,
 
-        var shortcutResponse: ShortcutResponse = ShortcutResponse()
+        var shortcutResponse: ShortcutResponse = ShortcutResponse(),
+
+        var linkStatus: LinkStatusResponse = LinkStatusResponse()
 )
