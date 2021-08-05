@@ -606,7 +606,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
         product?.let { item ->
             val position = productRecom.recomWidget.recommendationItemList.indexOf(item)
-            val data = HomeAddToCartTracker(position, quantity, cartId, item)
+            val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
         }
     }
