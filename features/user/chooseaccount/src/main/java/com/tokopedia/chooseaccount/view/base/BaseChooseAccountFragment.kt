@@ -19,12 +19,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.chooseaccount.R
 import com.tokopedia.chooseaccount.view.adapter.AccountAdapter
 import com.tokopedia.chooseaccount.view.listener.ChooseAccountListener
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -136,7 +136,8 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
     //Impossible Flow
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
         onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
-        logUnknownError(Throwable("Login Phone Number Login Token go to activation"))
+        val logException = Throwable("LoginPN activation", messageErrorException)
+        logUnknownError(logException)
     }
 
     protected fun onGoToSecurityQuestion() {

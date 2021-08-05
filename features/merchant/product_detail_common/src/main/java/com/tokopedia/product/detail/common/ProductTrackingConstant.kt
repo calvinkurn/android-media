@@ -49,6 +49,7 @@ object ProductTrackingConstant {
         const val POSITION = "position"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_PRICE = "productPrice"
 
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
@@ -160,6 +161,7 @@ object ProductTrackingConstant {
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
+        const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 
