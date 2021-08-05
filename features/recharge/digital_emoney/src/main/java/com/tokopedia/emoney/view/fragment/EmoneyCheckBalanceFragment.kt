@@ -141,7 +141,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
         emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {  throwable ->
             context?.let {
-                val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                var errorThrowable = throwable
+                if ((throwable.message ?: "").contains(getString(com.tokopedia.common_digital.R.string.digital_common_grpc_error_msg), true)) {
+                    errorThrowable = MessageErrorException(getString(com.tokopedia.common_digital.R.string.digital_common_grpc_full_page_title))
+                }
+                val errorMessage = ErrorHandler.getErrorMessage(it, errorThrowable)
                 if((throwable is SocketTimeoutException)){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),

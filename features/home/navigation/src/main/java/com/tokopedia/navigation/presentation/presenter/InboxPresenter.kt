@@ -9,6 +9,7 @@ import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.model.RecomTitle
 import com.tokopedia.navigation.domain.model.Recommendation
+import com.tokopedia.navigation.domain.model.TopadsHeadlineUiModel
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber
 import com.tokopedia.navigation.presentation.view.InboxView
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -80,6 +81,7 @@ class InboxPresenter @Inject constructor(
                         val visitables = ArrayList<Visitable<*>>()
                         val recommendationWidget = recommendationWidgets[0]
                         visitables.add(RecomTitle(recommendationWidget.title))
+                        visitables.add(TopadsHeadlineUiModel())
                         visitables.addAll(getRecommendationVisitables(recommendationWidget))
                         inboxView?.hideLoadMoreLoading()
                         inboxView?.onRenderRecomInbox(visitables)

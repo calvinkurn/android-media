@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -31,7 +30,6 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
-import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,6 +43,7 @@ import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
+import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListAdapterFactory
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListDecorator
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
@@ -89,7 +88,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                     ?: VoucherGameExtraParam()
             rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA,"")
         }
-    }
+     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -140,6 +139,12 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (voucherGameExtraParam.operatorId.isNotEmpty()) {
+            navigateToProductList(CatalogOperatorAttributes())
+            activity?.finish()
+            return
+        }
 
         if(rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
@@ -252,12 +257,16 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             clearAllData()
             renderList(data.operators)
 
-            recycler_view.post {
-                val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
-                    voucherGameAnalytics.impressionOperatorCard(
-                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+            try {
+                recycler_view.post {
+                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                    if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
+                        voucherGameAnalytics.impressionOperatorCard(
+                                data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+                    }
                 }
+            } catch (t: Throwable){
+                t.printStackTrace()
             }
         }
     }
@@ -400,7 +409,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+        val layoutManager = GridLayoutManager(context, VG_LIST_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(p0: Int): Int {
                 return when (adapter.getItemViewType(p0)) {
@@ -445,6 +454,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3
+        const val VG_LIST_SPAN_COUNT = 3
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
