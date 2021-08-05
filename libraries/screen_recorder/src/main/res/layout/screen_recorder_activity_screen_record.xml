@@ -9,7 +9,7 @@
     android:background="@color/Unify_N0"
     tools:context=".ScreenRecorderActivity">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/screen_recorder_default_padding"

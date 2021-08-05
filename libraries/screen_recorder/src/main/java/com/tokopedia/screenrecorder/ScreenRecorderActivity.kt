@@ -85,7 +85,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
         }
     }
 
-    @TargetApi(21)
+    @TargetApi(ANDROID_LOLLIPOP)
     private fun requestProjectScreen() {
         val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION)
