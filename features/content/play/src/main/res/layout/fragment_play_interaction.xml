@@ -79,9 +79,9 @@
     <include
         android:id="@+id/view_spam_like"
         layout="@layout/view_spam_like"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_200"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl9"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/layout_lvl7"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
         app:layout_constraintEnd_toEndOf="@id/view_size"
