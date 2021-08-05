@@ -16,6 +16,7 @@ import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_BUSINE
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_CURRENT_SITE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.CUSTOM_SHARE_SHEET
 
 /**
  * Created by Yehezkiel on 05/08/21
@@ -23,7 +24,7 @@ import com.tokopedia.track.TrackAppUtils
 object ProductShareTracking {
 
     fun onClickChannelWidgetClicked(type: Int, channel: String, userId: String, productId: String) {
-        if (type == 1) {
+        if (type == CUSTOM_SHARE_SHEET) {
             onClickNormalShareChannel(userId, productId, channel)
         } else {
             onClickScreenshotShareChannel(userId, productId, channel)
@@ -31,7 +32,7 @@ object ProductShareTracking {
     }
 
     fun onCloseShareWidgetClicked(type: Int, userId: String, productId: String) {
-        if (type == 1) {
+        if (type == CUSTOM_SHARE_SHEET) {
             onCloseNormalShareClicked(userId, productId)
         } else {
             onCloseScreenshotShareClicked(userId, productId)

@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
@@ -191,22 +190,6 @@ object DynamicProductDetailTracking {
                     ?: ""
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_FULLSCREEN_VIDEO)
-        }
-
-        fun eventClickShareNavToolbar(productInfo: DynamicProductInfoP1?, userId: String) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT,
-                    "")
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString
-                    ?: ""
-            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
-                    ?: ""
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT)
         }
 
         fun eventClickReportFromComponent(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?) {
@@ -529,24 +512,24 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
                     ProductTrackingConstant.RecomTokonow.KEY_EVENT_PAGE_SOURCE, String.format(ProductTrackingConstant.RecomTokonow.PARAM_EVENT_PAGE_SOURCE, "PDP", recomItem.recommendationType),
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                            ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
-                            ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
-                                ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
-                                DataLayer.mapOf(
-                                        ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
-                                        ProductTrackingConstant.Tracking.CATEGORY, "",
-                                        ProductTrackingConstant.Tracking.KEY_CATEGORY_ID, "",
-                                        ProductTrackingConstant.Tracking.KEY_DIMENSION_40, String.format(ProductTrackingConstant.RecomTokonow.PARAM_ATC_DIMENS_40, recomItem.pageName, recomItem.recommendationType),
-                                        ProductTrackingConstant.Tracking.KEY_DIMENSION_45, recomItem.cartId,
-                                        ProductTrackingConstant.Tracking.ID, recomItem.productId,
-                                        ProductTrackingConstant.Tracking.NAME, recomItem.name,
-                                        ProductTrackingConstant.Tracking.PRICE, recomItem.priceInt,
-                                        ProductTrackingConstant.Tracking.QUANTITY, quantity,
-                                        ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, recomItem.shopId,
-                                        ProductTrackingConstant.Tracking.KEY_SHOP_NAME, recomItem.shopName,
-                                        ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, recomItem.shopType,
-                                        ProductTrackingConstant.Tracking.VARIANT, ""
-                                ))))
+                    ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
+                    ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
+                    DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.CATEGORY, "",
+                            ProductTrackingConstant.Tracking.KEY_CATEGORY_ID, "",
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, String.format(ProductTrackingConstant.RecomTokonow.PARAM_ATC_DIMENS_40, recomItem.pageName, recomItem.recommendationType),
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_45, recomItem.cartId,
+                            ProductTrackingConstant.Tracking.ID, recomItem.productId,
+                            ProductTrackingConstant.Tracking.NAME, recomItem.name,
+                            ProductTrackingConstant.Tracking.PRICE, recomItem.priceInt,
+                            ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                            ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, recomItem.shopId,
+                            ProductTrackingConstant.Tracking.KEY_SHOP_NAME, recomItem.shopName,
+                            ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, recomItem.shopType,
+                            ProductTrackingConstant.Tracking.VARIANT, ""
+                    ))))
 
             )
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapData)
@@ -640,7 +623,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_READ_MORE)
         }
 
-        fun eventClickPdpShare(productInfo: DynamicProductInfoP1?) {
+        fun eventClickPdpShare(productId: String, userId: String) {
 
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
@@ -648,8 +631,11 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_SHARE_PDP,
                     ""
             )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_SHARE_PDP)
-
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.VALUE_BUSINESS_UNIT_SHARING
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
         fun eventClickTradeInRibbon(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1218,7 +1204,7 @@ object DynamicProductDetailTracking {
 
             }
 
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK,itemBundle)
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductTrackingConstant.Tracking.PROMO_CLICK, itemBundle)
         }
     }
 
@@ -1951,17 +1937,18 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                        ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
-                            ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
-                                DataLayer.mapOf(
-                                        ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
-                                        ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID ?: "",
-                                        ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
-                                        ProductTrackingConstant.Tracking.POSITION, 1
-                                )
-                            )
-                        )
+                    ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                    DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
+                            ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID
+                            ?: "",
+                            ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
+                            ProductTrackingConstant.Tracking.POSITION, 1
                     )
+            )
+            )
+            )
             )
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }
@@ -1979,17 +1966,18 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
-                        ProductTrackingConstant.Tracking.PROMO_CLICK, DataLayer.mapOf(
-                            ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
-                                DataLayer.mapOf(
-                                        ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
-                                        ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID ?: "",
-                                        ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
-                                        ProductTrackingConstant.Tracking.POSITION, 1
-                                )
-                            )
-                        )
+                    ProductTrackingConstant.Tracking.PROMO_CLICK, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                    DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.CREATIVE, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_NAME,
+                            ProductTrackingConstant.Tracking.ID, widget.recommendationBanner?.thematicID
+                            ?: "",
+                            ProductTrackingConstant.Tracking.NAME, ProductTrackingConstant.ImpulsiveBanner.CREATIVE_BUILDER.format(widget.layoutType, widget.title),
+                            ProductTrackingConstant.Tracking.POSITION, 1
                     )
+            )
+            )
+            )
             )
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(mapEvent)
         }

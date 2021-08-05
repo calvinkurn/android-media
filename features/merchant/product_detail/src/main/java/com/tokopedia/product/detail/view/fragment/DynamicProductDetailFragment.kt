@@ -2336,18 +2336,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun shareProductFromNavToolbar() {
-        // new navbar
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            DynamicProductDetailTracking.Click.eventClickShareNavToolbar(productInfo, viewModel.userId)
-            shareProduct()
-        }
-    }
-
     private fun shareProduct() {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                DynamicProductDetailTracking.Click.eventClickShare(productInfo.basic.productID, viewModel.userId)
+                DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo.basic.productID, viewModel.userId)
 
                 val productData = ProductData(
                         viewModel.userId,
@@ -2412,6 +2404,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun executeProductShare(productData: ProductData) {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+            productData.productShareDescription = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
+                    ?: "" + "..."
             executeUniversalShare(productData)
         } else {
             executeNativeShare(productData)
@@ -2714,7 +2708,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
-                                shareProductFromNavToolbar()
+                                shareProduct()
                             }
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}

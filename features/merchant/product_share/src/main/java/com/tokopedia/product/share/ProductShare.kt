@@ -22,6 +22,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
+import com.tokopedia.product.share.tracker.ProductShareTracking.onClickChannelWidgetClicked
+import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidgetClicked
 import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -239,6 +241,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         if (isBranchUrlActive()) {
             val branchStart = System.currentTimeMillis()
 
+            onClickChannelWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), shareModel.channel
+                    ?: "", productData.userId, productData.productId)
+
             var linkerShareData = productData.let { productDataToLinkerDataMapper(it) }
             linkerShareData.linkerData?.apply {
                 feature = shareModel.feature
@@ -293,6 +298,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     override fun onCloseOptionClicked() {
+        onCloseShareWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
         universalShareBottomSheet?.dismiss()
     }
 
