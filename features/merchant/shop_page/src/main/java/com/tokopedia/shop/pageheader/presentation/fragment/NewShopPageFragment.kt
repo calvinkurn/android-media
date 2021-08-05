@@ -50,7 +50,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.mvcwidget.MvcSource
-import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
@@ -2236,14 +2235,5 @@ class NewShopPageFragment :
             scrollToTopButton?.hide()
             scrollToTopButton?.gone()
         }
-    }
-
-    fun refreshShopHomeMvcWidget() {
-        refreshData()
-//        val fragmentHomePosition = viewPagerAdapter?.getFragmentPosition(
-//                ShopPageHomeFragment::class.java
-//        ).orZero()
-//        val shopHomeFragment = viewPagerAdapter?.getRegisteredFragment(fragmentHomePosition) as? ShopPageHomeFragment
-//        shopHomeFragment?.onVoucherReloaded()
     }
 }

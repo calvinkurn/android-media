@@ -118,7 +118,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         when(requestCode){
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK){
-                    (fragment as? NewShopPageFragment)?.refreshShopHomeMvcWidget()
+                    (fragment as? NewShopPageFragment)?.refreshData()
                 }
             }
             else ->{
