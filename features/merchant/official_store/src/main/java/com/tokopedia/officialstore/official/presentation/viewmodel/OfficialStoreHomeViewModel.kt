@@ -181,7 +181,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreDynamicChannelResult.postValue(Success(result))
             result.forEach {
                 //call external api
-                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND) {
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP) {
                     getDisplayTopAdsHeader(FeaturedShopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
                 }
