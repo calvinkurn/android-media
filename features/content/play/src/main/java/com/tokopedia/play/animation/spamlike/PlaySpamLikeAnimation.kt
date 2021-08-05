@@ -26,6 +26,8 @@ import kotlinx.coroutines.*
  */
 
 class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
+    private val view: View
+
     /**
      * Custom
      */
@@ -54,7 +56,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     private val imageList = mutableListOf<ImageView>()
 
     init {
-        val view = View.inflate(context, R.layout.layout_play_spam_like, this)
+        view = View.inflate(context, R.layout.layout_play_spam_like, this)
 
         val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeAnimation)
 
@@ -253,10 +255,13 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     }
 
     private fun getImageCoordinate(position: View): Pair<Float, Float> {
-        val coordinate = IntArray(2)
-        position.getLocationInWindow(coordinate)
+        val fixCoordinate = IntArray(2)
+        view.getLocationInWindow(fixCoordinate)
 
-        return Pair(coordinate[0].toFloat(), coordinate[1].toFloat())
+        val x = (fixCoordinate[0]..fixCoordinate[0] + view.measuredWidth).random().toFloat()
+        val y = fixCoordinate[1].toFloat() + view.measuredHeight
+
+        return Pair(x, y)
     }
 
     /**
