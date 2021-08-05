@@ -27,7 +27,7 @@ class OfficialHomeMapper (
         private val context: Context,
         private val dispatchers: CoroutineDispatchers
 ){
-    private val listOfficialStore = mutableListOf<Visitable<*>>()
+    val listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
         private const val BENEFIT_POSITION = 1
@@ -59,6 +59,8 @@ class OfficialHomeMapper (
         }
     }
 
+    //this is old featured brand from external api
+    //now doubles with featured brand on dynamic channel
     fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
         listOfficialStore.run {
             val index = indexOfFirst { it is OfficialFeaturedShopDataModel }
@@ -91,7 +93,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
                         DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND,
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP
                 )
                 availableLegoBannerScreens = setOf(
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
@@ -105,7 +108,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
                         DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND,
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP
                 )
             }
 
@@ -124,6 +128,10 @@ class OfficialHomeMapper (
                         }
                         DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND -> {
                             views.add(FeaturedBrandDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP -> {
+                            views.add(FeaturedShopDataModel(
                                     OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
@@ -225,4 +233,30 @@ class OfficialHomeMapper (
                 productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
     }
+
+    inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        listOfficialStore.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
+        }
+        actionOnFound.invoke(listFound)
+    }
+
+//    private fun updateWidget(visitable: Visitable<*>, position: Int, adapter: OfficialHomeAdapter?) {
+//        listOfficialStore.run {
+//            homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { adapter?.submitList(this.toMutableList()) }
+//        }
+//    }
+//
+//    private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
+//        listOfficialStore.run {
+//            homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { adapter?.submitList(this.toMutableList()) }
+//        }
+//    }
 }

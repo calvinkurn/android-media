@@ -14,6 +14,8 @@ import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdap
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.viewmodel_official_featured_shop.view.*
 
+//this is old featured brand from external api
+//now doubles with featured brand on dynamic channel
 class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
 
     private var adapter: FeaturedShopAdapter? = null
