@@ -85,16 +85,25 @@
             app:flexWrap="wrap"
             tools:visibility="visible">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:gravity="center_vertical"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="Rp100.000" />
+
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/label_slash_price_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_product_variant"
                 android:layout_marginEnd="@dimen/dp_4"
-                android:layout_toEndOf="@+id/iu_image_product"
                 android:gravity="center_vertical"
                 android:visibility="gone"
-                app:labelType="general_dark_red"
+                app:labelType="general_light_red"
                 tools:labelTitle="60%"
                 tools:visibility="visible" />
 
@@ -102,28 +111,12 @@
                 android:id="@+id/text_slash_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/text_product_price"
-                android:layout_alignBottom="@+id/text_product_price"
                 android:layout_marginEnd="@dimen/dp_4"
-                android:layout_toEndOf="@+id/label_slash_price_percentage"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 tools:text="Rp300.000"
                 tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_product_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text_product_variant"
-                android:layout_alignBottom="@+id/label_slash_price_percentage"
-                android:layout_toEndOf="@+id/text_slash_price"
-                android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_96"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Rp100.000" />
 
         </com.google.android.flexbox.FlexboxLayout>
 
