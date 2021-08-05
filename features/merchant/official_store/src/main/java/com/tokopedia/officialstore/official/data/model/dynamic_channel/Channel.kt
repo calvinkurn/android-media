@@ -13,6 +13,7 @@ data class Channel(
         @Expose @SerializedName("id") val id: String = "",
         @Expose @SerializedName("name") val name: String = "",
         @Expose @SerializedName("layout") val layout: String = "",
+        @Expose @SerializedName("widgetParam") val widgetParam: String = "",
         @Expose @SerializedName("campaignID") val campaignID: Int = -1,
         @Expose @SerializedName("campaignCode") val campaignCode: String = "",
         @Expose @SerializedName("grids") val grids: List<Grid> = listOf(),
