@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
-import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
@@ -19,7 +16,10 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.RechargeAddBillsData
+import com.tokopedia.smartbills.data.RechargeCatalogProductInput
+import com.tokopedia.smartbills.data.RechargeCatalogProductInputMultiTabData
+import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -127,7 +127,7 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     fun addBill(mapParam: Map<String, Any>) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                val graphqlRequest = GraphqlRequest(SmartBillsQueries.ADD_BILL_QUERY,
+                val graphqlRequest = GraphqlRequest(CommonTopupBillsGqlQuery.ADD_BILL_QUERY,
                         RechargeAddBillsData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

@@ -20,11 +20,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsProductTabAdapter
+import com.tokopedia.common.topupbills.view.bottomsheet.AddSmartBillsInquiryBottomSheet
+import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsInquiryCallBack
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
@@ -36,6 +39,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -240,6 +244,35 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 enquire()
             }
         })
+
+        observe(viewModel.addBills){
+            when(it){
+                is Success -> {
+                    val errorMessage = it.data.rechargeSBMAddBill.errorMessage
+                    val message = it.data.rechargeSBMAddBill.message
+                    if(!errorMessage.isNullOrEmpty()){
+                        view?.let {
+                            Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
+                    } else {
+                        val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMART_BILLS)
+                        intent.putExtra(EXTRA_ADD_BILLS_MESSAGE, message)
+                        activity?.setResult(Activity.RESULT_OK, intent)
+                        activity?.finish()
+
+                    }
+                }
+
+                is Fail -> {
+                    view?.let { v ->
+                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -806,6 +839,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         )
     }
 
+    private fun addBills(productId: Int, clientNumber: String){
+        viewModel.addBillRecharge(viewModel.createAddBillsParam(RechargeSBMAddBillRequest(productId, clientNumber)))
+    }
+
     override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
         if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
@@ -873,7 +910,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         enquiryData = data.enquiry
         price = data.enquiry.attributes.pricePlain
-        renderCheckoutView(data.enquiry)
+        if(isAddSBM){
+            renderBottomSheetAddBillInquiry(data.enquiry)
+        } else {
+            renderCheckoutView(data.enquiry)
+        }
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
@@ -954,6 +995,20 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         view?.let { v ->
             Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+        }
+    }
+
+    private fun renderBottomSheetAddBillInquiry(data: TopupBillsEnquiry){
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
+            override fun onInquiryClicked() {
+                inputData[PARAM_CLIENT_NUMBER]?.let {
+                    addBills(productId, it)
+                }
+            }
+        })
+        inquiryBottomSheet.addSBMInquiry(data.attributes.mainInfoList)
+        fragmentManager?.let { fm ->
+            inquiryBottomSheet.show(fm, "")
         }
     }
 
@@ -1129,6 +1184,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_INPUT_DATA_KEYS = "EXTRA_PARAM_INPUT_DATA_KEYS"
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
         const val EXTRA_PARAM_IS_ADD_BILLS = "EXTRA_PARAM_IS_ADD_BILLS"
+        const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
 
         const val OPERATOR_TYPE_VISIBLE = "select_dropdown"
         const val OPERATOR_TYPE_HIDDEN = "hidden"

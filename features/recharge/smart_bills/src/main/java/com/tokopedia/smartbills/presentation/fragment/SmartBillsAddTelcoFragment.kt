@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
@@ -31,7 +32,6 @@ import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.data.RechargeCatalogProductInputMultiTabData
 import com.tokopedia.smartbills.data.RechargeProduct
-import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel

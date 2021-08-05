@@ -1,9 +1,9 @@
-package com.tokopedia.smartbills.data
+package com.tokopedia.common.topupbills.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class RechargeSBMAddBillRequest(
+class RechargeSBMAddBillRequest (
         @SerializedName("ProductID")
         @Expose
         val productId : Int = 0,

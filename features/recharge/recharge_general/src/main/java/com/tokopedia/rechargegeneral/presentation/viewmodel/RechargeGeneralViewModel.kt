@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,6 +14,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.rechargegeneral.model.AddSmartBills
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,6 +35,10 @@ class RechargeGeneralViewModel @Inject constructor(
     private val mutableProductList = MutableLiveData<Result<RechargeGeneralDynamicInput>>()
     val productList: LiveData<Result<RechargeGeneralDynamicInput>>
         get() = mutableProductList
+
+    private val mutableAddBills= MutableLiveData<Result<AddSmartBills>>()
+    val addBills: LiveData<Result<AddSmartBills>>
+        get() = mutableAddBills
 
     fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, nullErrorMessage: String) {
         launchCatchError(block = {
@@ -72,6 +79,21 @@ class RechargeGeneralViewModel @Inject constructor(
         }
     }
 
+    fun addBillRecharge(mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                val graphqlRequest = GraphqlRequest(CommonTopupBillsGqlQuery.ADD_BILL_QUERY,
+                        AddSmartBills::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<AddSmartBills>()
+
+            mutableAddBills.postValue(Success(data))
+        }) {
+            mutableAddBills.postValue(Fail(it))
+        }
+    }
+
     fun createOperatorClusterParams(menuID: Int): Map<String, Int> {
         return mapOf(PARAM_MENU_ID to menuID)
     }
@@ -80,10 +102,15 @@ class RechargeGeneralViewModel @Inject constructor(
         return mapOf(PARAM_MENU_ID to menuID, PARAM_OPERATOR to operator.toString())
     }
 
+    fun createAddBillsParam(addBillRequest: RechargeSBMAddBillRequest): Map<String, Any> {
+        return mapOf(PARAM_ADD_REQUEST to addBillRequest)
+    }
+
     companion object {
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_OPERATOR = "operator"
         const val NULL_PRODUCT_ERROR = "null product"
         const val PARAM_PRODUCT = "product_id"
+        const val PARAM_ADD_REQUEST = "addRequest"
     }
 }
