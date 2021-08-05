@@ -43,6 +43,10 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
                     setMargins(leftMargin, marginTop, rightMargin, bottomMargin)
                     recharge_home_banner_empty_text_container.layoutParams = this
                 }
+
+                iv_recharge_home_banner_empty.layoutParams.height = CONTENT_MARGIN_TOP_DP + recharge_home_banner_empty_text_container.height +
+                        resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                iv_recharge_home_banner_empty.requestLayout()
             }
         }
     }
