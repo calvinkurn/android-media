@@ -71,14 +71,14 @@ class PinpointNewPageViewModelTest {
 
     @Test
     fun `Get AutoComplete Data Success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
+        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
         pinpointNewPageViewModel.getAutoComplete("Setiabudi")
         verify { autoCompleteDataObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get AutoComplete Data Fail`() {
-        coEvery { repo.getAutoComplete(any()) } throws defaultThrowable
+        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
         pinpointNewPageViewModel.getAutoComplete("Setiabudi")
         verify { autoCompleteDataObserver.onChanged(match { it is Fail }) }
     }
