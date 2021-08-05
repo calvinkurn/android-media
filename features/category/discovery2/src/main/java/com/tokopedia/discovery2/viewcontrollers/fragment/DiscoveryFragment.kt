@@ -653,6 +653,10 @@ class DiscoveryFragment :
         getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLICK_SHARE, getUserID())
     }
 
+    override fun screenShotTaken() {
+        showUniversalShareBottomSheet(pageInfoHolder)
+    }
+
     private fun setToolBarPageInfoOnFail() {
         if (showOldToolbar) {
             typographyHeader.text = getString(R.string.discovery_tokopedia)
@@ -949,9 +953,7 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
-        //Todo Zishan You will need to initialize the content observer
-        //Uncomment the line below
-        //context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -971,9 +973,7 @@ class DiscoveryFragment :
         }
         getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
-        //Todo Zishan this method will unregister the content resolver observer
-        //Uncomment the line below
-        //UniversalShareBottomSheet.clearState()
+        UniversalShareBottomSheet.clearState()
     }
 
     override fun onDestroy() {
@@ -1134,13 +1134,5 @@ class DiscoveryFragment :
         activity?.window?.decorView?.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
-    }
-
-    override fun screenShotTaken() {
-        //Todo Zishan this method is triggered once the screenshot is detected by the content resolver
-        //make data as a class variable
-        //Uncomment the lines below
-        //var data:PageInfo? = null
-        //showUniversalShareBottomSheet(data)
     }
 }
