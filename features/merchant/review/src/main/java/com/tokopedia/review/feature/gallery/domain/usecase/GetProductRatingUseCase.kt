@@ -8,8 +8,8 @@ import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTo
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-@GqlQuery(GetReviewRatingUseCase.GET_PRODUCT_RATING_USE_CASE_CLASS_NAME, GetReviewRatingUseCase.GET_PRODUCT_RATING_QUERY)
-class GetReviewRatingUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+@GqlQuery(GetProductRatingUseCase.GET_PRODUCT_RATING_USE_CASE_CLASS_NAME, GetProductRatingUseCase.GET_PRODUCT_RATING_QUERY)
+class GetProductRatingUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<ProductReviewRatingResponse>(graphqlRepository) {
 
     companion object {

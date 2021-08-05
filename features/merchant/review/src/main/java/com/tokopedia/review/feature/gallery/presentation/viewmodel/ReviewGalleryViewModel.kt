@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
+import com.tokopedia.review.feature.gallery.domain.usecase.GetProductRatingUseCase
 import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
-import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewRatingUseCase
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,7 +16,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewGalleryViewModel @Inject constructor(
-    private val getReviewRatingUseCase: GetReviewRatingUseCase,
+    private val getProductRatingUseCase: GetProductRatingUseCase,
     private val getReviewImagesUseCase: GetReviewImagesUseCase,
     coroutineDispatchers: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatchers.io) {
@@ -34,7 +34,7 @@ class ReviewGalleryViewModel @Inject constructor(
 
     init {
         _rating.addSource(productId) {
-            getRatingAndTopics(it)
+            getRating(it)
         }
         _reviewImages.addSource(currentPage) {
             getReviewImages(it)
@@ -53,10 +53,10 @@ class ReviewGalleryViewModel @Inject constructor(
         currentPage.value = page
     }
 
-    private fun getRatingAndTopics(productId: String) {
+    private fun getRating(productId: String) {
         launchCatchError(block = {
-            getReviewRatingUseCase.setParams(productId)
-            val data = getReviewRatingUseCase.executeOnBackground()
+            getProductRatingUseCase.setParams(productId)
+            val data = getProductRatingUseCase.executeOnBackground()
             _rating.postValue(Success(data.productRating))
         }) {
             _rating.postValue(Fail(it))
