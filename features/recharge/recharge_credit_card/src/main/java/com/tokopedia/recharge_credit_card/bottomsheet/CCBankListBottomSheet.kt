@@ -79,7 +79,7 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
 
     private fun initView() {
         descBankList.text = getString(R.string.cc_desc_bank_list)
-        rechargeCCViewModel.getListBank(RechargeCCGqlQuery.creditCardBankList, 26)
+        rechargeCCViewModel.getListBank(RechargeCCGqlQuery.creditCardBankList, CATEGORY_ID)
         rechargeCCViewModel.rechargeCCBankList.observe(this, Observer {
             adapter = CreditCardBankAdapter(it.bankList)
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -90,5 +90,9 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
         })
 
         creditCardAnalytics.impressionBankList(categoryId,"none", userSession.userId)
+    }
+
+    companion object {
+        private const val CATEGORY_ID = 26
     }
 }

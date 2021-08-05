@@ -154,11 +154,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             }
         }
 
-        if (Build.VERSION.SDK_INT in 19..20) {
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             activity?.window?.statusBarColor = Color.TRANSPARENT
         }
@@ -167,14 +167,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private fun calculateToolbarView(offset: Int) {
 
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / searchBarTransitionRange * (offset)
+        var offsetAlpha = OFFSET_ALPHA / searchBarTransitionRange * (offset)
         //2.5 is maximum
         if (offsetAlpha < 0) {
             offsetAlpha = 0f
         }
 
         val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= 255) {
+        if (offsetAlpha >= OFFSET_ALPHA) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
             context?.run {
@@ -437,6 +437,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
+
+        private const val OFFSET_ALPHA = 255f
 
         fun newInstance(platformId: Int, enablePersonalize: Boolean = false, sliceOpenApp: Boolean = false): RechargeHomepageFragment {
             val fragment = RechargeHomepageFragment()
