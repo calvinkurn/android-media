@@ -30,6 +30,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     private var startActivityForResultFunction: (() -> Unit)? = null
 
     var shopId: String = ""
+    var isTokomember = false
 
     @MvcSource
     var source: Int = MvcSource.SHOP
@@ -61,7 +62,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 }
             }
 
-            Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source)
+            Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
         }
     }
 
@@ -79,11 +80,13 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             mvcAnimationHandler.animatedInfoList = animatedInfos
 
             if (animatedInfos.size == 1) {
+                isTokomember = false
                 val animatedInfo = animatedInfos.first()
                 animatedInfo?.let {
                     mvcTextContainerFirst.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
                 }
             } else {
+                isTokomember = true
                 mvcAnimationHandler.startTimer()
             }
         }
