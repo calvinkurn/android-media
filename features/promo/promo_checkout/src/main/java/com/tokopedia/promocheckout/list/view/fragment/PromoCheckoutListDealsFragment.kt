@@ -31,7 +31,7 @@ import timber.log.Timber
  * Abrar
  */
 
-class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
+class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment() {
 
     private val dealsPromoCheckoutListViewModel: PromoCheckoutListDealsViewModel by lazy { viewModelProvider.get(PromoCheckoutListDealsViewModel::class.java) }
 
@@ -120,7 +120,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
                 ?: "", false, checkoutData), REQUEST_CODE_PROMO_DETAIL)
     }
 
-    override fun onSuccessCheckPromo(data: DataUiModel) {
+    fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(PromoData.VOUCHER_RESULT_CODE, data.codes[0],
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
