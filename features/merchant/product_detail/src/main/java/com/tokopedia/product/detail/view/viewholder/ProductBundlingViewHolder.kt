@@ -12,14 +12,19 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
+import java.util.*
 
 class ProductBundlingViewHolder(
-    view: View
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductBundlingDataModel>(view) {
 
     companion object {
@@ -33,12 +38,15 @@ class ProductBundlingViewHolder(
 
     private val component: View = view.findViewById(R.id.product_bundling_component)
 
+    private var componentTrackDataModel: ComponentTrackDataModel? = null
+
     private val title: Typography = view.findViewById(R.id.product_bundling_title)
     private val info: Typography = view.findViewById(R.id.product_bundling_info)
     private val slash: Typography = view.findViewById(R.id.product_bundling_total_slash)
     private val saving: Typography = view.findViewById(R.id.product_bundling_total_saving)
     private val price: Typography = view.findViewById(R.id.product_bundling_total_price)
     private val quantity: Typography = view.findViewById(R.id.product_bundling_total_quantity)
+    private val buttonCheck: UnifyButton = view.findViewById(R.id.product_bundling_button_check)
 
     private val singleView: View = view.findViewById(R.id.product_bundling_content_single)
     private val singleImage: ImageUnify by lazy { view.findViewById(R.id.product_bundling_single_image) }
@@ -77,11 +85,14 @@ class ProductBundlingViewHolder(
             return
         } else showComponent(true)
 
-        val bundleItems = bundle.bundleItems
+        componentTrackDataModel = getComponentTrackData(element)
 
-        when (bundle.type) {
+        val bundleId = bundle.bundleId
+        val bundleItems = bundle.bundleItems
+        val bundleType = bundle.type
+        when (bundleType) {
             BUNDLE_TYPE_SINGLE -> showSingleBundle(bundleItems.firstOrNull())
-            BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundleItems)
+            BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundle)
             else -> return
         }
 
@@ -101,6 +112,15 @@ class ProductBundlingViewHolder(
         saving.text = bundle.savingPriceBundling
         price.text = bundle.finalPriceBundling
         quantity.text = quantityText
+        buttonCheck.setOnClickListener {
+            listener.onCheckBundlingClicked(
+                bundleId,
+                bundleType.toLowerCase(Locale.ROOT),
+                componentTrackDataModel
+            )
+        }
+
+        listener.onImpressionProductBundling(bundleId, bundleType, componentTrackDataModel)
     }
 
     private fun showSingleBundle(item: BundleInfo.BundleItem?) {
@@ -120,9 +140,11 @@ class ProductBundlingViewHolder(
         }
     }
 
-    private fun showMultiBundle(items: List<BundleInfo.BundleItem>) {
+    private fun showMultiBundle(bundle: BundleInfo) {
         singleView.hide()
         multiView.show()
+
+        val items = bundle.bundleItems
 
         val viewImages = listOf(multiImage1, multiImage2, multiImage3)
         val viewPrices = listOf(multiPrice1, multiPrice2, multiPrice3)
@@ -137,23 +159,40 @@ class ProductBundlingViewHolder(
 
         val unusedGroups = viewGroups.toMutableList()
         items.forEachIndexed { index, item ->
+            val viewImage = viewImages[index]
+            val viewPrice = viewPrices[index]
+            val viewDiscount = viewDiscounts[index]
+            val viewSlash = viewSlashes[index]
+
             viewGroups[index].apply {
                 unusedGroups -= this
                 show()
             }
-            viewImages[index].urlSrc = item.picURL
+
+            viewImage.urlSrc = item.picURL
 
             val discount = item.discountPercentage
             if (discount.isBlank()) {
                 viewDiscountSlashGroups[index].gone()
-                viewPrices[index].text = item.originalPrice
+                viewPrice.text = item.originalPrice
             } else {
                 viewDiscountSlashGroups[index].show()
-                viewPrices[index].text = item.bundlePrice
-                viewDiscounts[index].text = discount
-                viewSlashes[index].apply {
+                viewPrice.text = item.bundlePrice
+                viewDiscount.text = discount
+                viewSlash.apply {
                     text = item.originalPrice
                     paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                }
+            }
+
+            val itemProductId = item.productId
+            if (itemProductId != bundle.productId) {
+                setItemClickListener(listOf(viewImage, viewPrice, viewDiscount, viewSlash)) {
+                    listener.onProductInBundlingClicked(
+                        bundle.bundleId,
+                        itemProductId,
+                        componentTrackDataModel
+                    )
                 }
             }
         }
@@ -168,5 +207,15 @@ class ProductBundlingViewHolder(
         params.height = if (isShow) WRAP_CONTENT else 0
         component.layoutParams = params
     }
+
+    private fun setItemClickListener(views: List<View>, onClick: () -> Unit) {
+        views.forEach { it.setOnClickListener { onClick() } }
+    }
+
+    private fun getComponentTrackData(element: ProductBundlingDataModel) = ComponentTrackDataModel(
+        componentType = element.type(),
+        componentName = element.name(),
+        adapterPosition = adapterPosition + 1
+    )
 
 }

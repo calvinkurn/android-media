@@ -2090,6 +2090,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
 
+        if(it.bundleInfo.isEmpty()) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
+        }
+
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
         pdpUiUpdater?.updateDataP2(
                 context = context,
@@ -3750,5 +3754,37 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String) {
         DynamicProductDetailTracking.Click.eventClickBestSeller(componentTrackDataModel, viewModel.getDynamicProductInfoP1, "", viewModel.userId)
         goToApplink(appLink)
+    }
+
+    override fun onImpressionProductBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        DynamicProductDetailTracking.ProductBundling.eventImpressionProductBundling(
+            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel
+        )
+    }
+
+    override fun onCheckBundlingClicked(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
+            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel
+        )
+    }
+
+    override fun onProductInBundlingClicked(
+        bundleId: String,
+        bundleProductId: String,
+        componentTrackDataModel: ComponentTrackDataModel?
+    ) {
+        DynamicProductDetailTracking.ProductBundling.eventClickMultiBundleProduct(
+            bundleId, bundleProductId, viewModel.getDynamicProductInfoP1, componentTrackDataModel
+        )
+        val intent = ProductDetailActivity.createIntent(requireContext(), bundleProductId)
+        startActivity(intent)
     }
 }

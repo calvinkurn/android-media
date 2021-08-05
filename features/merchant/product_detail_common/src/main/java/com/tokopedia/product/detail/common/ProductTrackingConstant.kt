@@ -209,6 +209,10 @@ object ProductTrackingConstant {
 
         const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
+
+        const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
+        const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
+        const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
     }
 
 
@@ -232,6 +236,9 @@ object ProductTrackingConstant {
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
         const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
+        const val EVENT_LABEL_CLICK_PRODUCT_BUNDLING_MULTIPLE = "product_id:%s; bundling_id:%s; bundling_type:multiple;"
+        const val EVENT_LABEL_CLICK_CHECK_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
+        const val VIEW_LABEL_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
     }
 
     object Report {

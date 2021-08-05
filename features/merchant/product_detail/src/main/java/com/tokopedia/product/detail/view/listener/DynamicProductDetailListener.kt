@@ -177,4 +177,12 @@ interface DynamicProductDetailListener {
      */
     fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductBundlingViewHolder
+     */
+    fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel:ComponentTrackDataModel?)
+    fun onCheckBundlingClicked(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onProductInBundlingClicked(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel?)
+
 }

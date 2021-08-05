@@ -153,7 +153,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(view, listener)
-            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }
