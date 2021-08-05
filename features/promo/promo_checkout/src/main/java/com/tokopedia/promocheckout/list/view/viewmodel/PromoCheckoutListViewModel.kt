@@ -94,6 +94,6 @@ class PromoCheckoutListViewModel @Inject constructor(private val dispatcher: Cor
         const val INCLUDE_EXTRA_INFO = "includeExtraInfo"
         const val API_VERSION_VALUE = "2.0.0"
         const val DEFAULT_VALUE_EMPTY = 0
-        const val PROMO_LIST_LIMIT = 0
+        const val PROMO_LIST_LIMIT = 10
     }
 }
