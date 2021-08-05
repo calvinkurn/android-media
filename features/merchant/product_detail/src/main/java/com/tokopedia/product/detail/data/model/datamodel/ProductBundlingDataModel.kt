@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductBundlingDataModel(
     private val name: String = "",
     private val type: String = "",
-    var bundleInfo: BundleInfo? = BundleInfo()
+    var bundleInfo: BundleInfo? = null
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
