@@ -36,13 +36,12 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment() {
     private val dealsPromoCheckoutListViewModel: PromoCheckoutListDealsViewModel by lazy { viewModelProvider.get(PromoCheckoutListDealsViewModel::class.java) }
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
-    var categoryID: Int = 1
     var checkoutData: String = ""
     var promoCodeApplied: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        categoryID = arguments?.getInt(EXTRA_CATEGORY_ID, 1) ?: 1
+        categoryId = arguments?.getInt(EXTRA_CATEGORY_ID, 1) ?: 1
         checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
         promoCodeApplied = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
     }
