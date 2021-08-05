@@ -45,7 +45,7 @@ class PromoCheckoutDetailFlightViewModel @Inject constructor(private val dispatc
         launchCatchError(block = {
             showProgressLoadingPromoFlight.postValue( false)
             _flightCheckVoucherResult.postValue(
-                flightCheckVoucherUsecase.execute(flightCheckVoucherUsecase.createRequestParams(promoCode,cartID), onMessageColorChange = { hexColor })
+                flightCheckVoucherUsecase.execute(flightCheckVoucherUsecase.createRequestParams(promoCode,cartID), onMessageColorChange = hexColor)
             )
         }){
             showProgressLoadingPromoFlight.postValue( false)
