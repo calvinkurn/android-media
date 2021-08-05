@@ -173,7 +173,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
-        analytics.eventClickBuy(pageName, products)
+        val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+        analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
     private fun initializeGlobalEventObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {

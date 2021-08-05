@@ -1809,7 +1809,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
                 sendTrackingATC(cartId)
-                showAddToCartDoneBottomSheet()
+                showAddToCartDoneBottomSheet(result.data.cartId)
             }
             ProductDetailCommonConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 // Same with OCS but should send devideId
@@ -2184,7 +2184,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
     }
 
-    private fun showAddToCartDoneBottomSheet() {
+    private fun showAddToCartDoneBottomSheet(cartId: String) {
         viewModel.getDynamicProductInfoP1?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
             val productName = it.getProductName
@@ -2195,7 +2195,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     productImageUrl,
                     it.data.variant.isVariant,
                     it.basic.getShopId(),
-                    viewModel.getBebasOngkirDataByProductId().imageURL
+                    viewModel.getBebasOngkirDataByProductId().imageURL,
+                    cartId = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) "" else cartId
             )
             val bundleData = Bundle()
             bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)

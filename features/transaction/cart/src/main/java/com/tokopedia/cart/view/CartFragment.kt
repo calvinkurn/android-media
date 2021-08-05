@@ -1816,9 +1816,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun scrollToLastAddedProductShop() {
         val cartId: String = getCartId()
         if (cartId.isNotBlank()) {
-            val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
-            if (shopIndex != RecyclerView.NO_POSITION) {
-                binding?.rvCart?.smoothScrollToPosition(shopIndex)
+            var hasTokoNowProduct = false
+            loop@ for (shop in cartAdapter.allShopGroupDataList) {
+                hasTokoNowProduct = true
+                break@loop
+            }
+
+            if (hasTokoNowProduct) {
+                val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
+                if (shopIndex != RecyclerView.NO_POSITION) {
+                    val offset = context?.resources?.getDimensionPixelSize(R.dimen.select_all_view_holder_height)
+                            ?: 0
+                    val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+                    if (layoutManager != null) {
+                        (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(shopIndex, offset)
+                    }
+                }
             }
         }
     }
