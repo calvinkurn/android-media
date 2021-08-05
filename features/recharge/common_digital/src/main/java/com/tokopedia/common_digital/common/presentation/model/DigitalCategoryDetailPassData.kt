@@ -7,37 +7,21 @@ import kotlinx.android.parcel.Parcelize
  * @author anggaprasetiyo on 5/10/17.
  */
 @Parcelize
-class DigitalCategoryDetailPassData : Parcelable {
-
-    var categoryId: String? = null
-    var operatorId: String? = null
-    var productId: String? = null
-    var clientNumber: String? = null
-    var menuId: String? = null
-    var isFromWidget = false
-    var isCouponApplied = false
-    var url: String? = null
-    var appLinks: String? = null
-    var categoryName: String? = null
-    var additionalETollBalance: String? = null
-    var additionalETollLastUpdatedDate: String? = null
-    var additionalETollOperatorName: String? = null
-
-    private constructor(builder: Builder) {
-        categoryId = builder.categoryId
-        operatorId = builder.operatorId
-        menuId = builder.menuId
-        productId = builder.productId
-        clientNumber = builder.clientNumber
-        isFromWidget = builder.isFromWidget
-        isCouponApplied = builder.isCouponApplied
-        url = builder.url
-        appLinks = builder.appLinks
-        categoryName = builder.categoryName
-        additionalETollBalance = builder.additionalETollLastBalance
-        additionalETollLastUpdatedDate = builder.additionalETollLastUpdatedDate
-        additionalETollOperatorName = builder.additionalETollOperatorName
-    }
+class DigitalCategoryDetailPassData(
+        var categoryId: String?,
+        var operatorId: String?,
+        var productId: String?,
+        var clientNumber: String?,
+        var menuId: String?,
+        var isFromWidget: Boolean,
+        var isCouponApplied: Boolean,
+        var url: String?,
+        var appLinks: String?,
+        var categoryName: String?,
+        var additionalETollBalance: String?,
+        var additionalETollLastUpdatedDate: String?,
+        var additionalETollOperatorName: String?
+) : Parcelable {
 
     class Builder {
         var categoryId: String? = null
@@ -120,7 +104,20 @@ class DigitalCategoryDetailPassData : Parcelable {
         }
 
         fun build(): DigitalCategoryDetailPassData {
-            return DigitalCategoryDetailPassData(this)
+            return DigitalCategoryDetailPassData(
+                    categoryId = this.categoryId,
+                    operatorId = this.operatorId,
+                    menuId = this.menuId,
+                    productId = this.productId,
+                    clientNumber = this.clientNumber,
+                    isFromWidget = this.isFromWidget,
+                    isCouponApplied = this.isCouponApplied,
+                    url = this.url,
+                    appLinks = this.appLinks,
+                    categoryName = this.categoryName,
+                    additionalETollBalance = this.additionalETollLastBalance,
+                    additionalETollLastUpdatedDate = this.additionalETollLastUpdatedDate,
+                    additionalETollOperatorName = this.additionalETollOperatorName)
         }
     }
 
