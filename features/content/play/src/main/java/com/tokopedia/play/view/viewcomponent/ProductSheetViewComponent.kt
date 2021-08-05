@@ -42,7 +42,7 @@ class ProductSheetViewComponent(
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
-    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val rvVoucherList: RecyclerView = findViewById(R.id.rv_voucher_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
@@ -109,7 +109,7 @@ class ProductSheetViewComponent(
     private var isProductSheetsInitialized = false
 
     init {
-        findViewById<ImageView>(R.id.iv_sheet_close)
+        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
                 }

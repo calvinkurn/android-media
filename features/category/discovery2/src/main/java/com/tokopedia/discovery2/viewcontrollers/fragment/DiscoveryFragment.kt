@@ -49,6 +49,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -97,6 +98,7 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
+private const val ROTATION = 90f
 
 class DiscoveryFragment :
         BaseDaggerFragment(),
@@ -138,6 +140,9 @@ class DiscoveryFragment :
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
     private var userAddressData: LocalCacheModel? = null
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private var lastVisibleComponent: ComponentsItem? = null
+    private var screenScrollPercentage = 0
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -239,6 +244,7 @@ class DiscoveryFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
                     ivToTop.hide()
+                    calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
@@ -268,6 +274,48 @@ class DiscoveryFragment :
         })
     }
 
+    private fun calculateScrollDepth(recyclerView: RecyclerView) {
+        if(::discoveryViewModel.isInitialized){
+            val offset =
+                recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
+            val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+            val range = recyclerView.computeVerticalScrollRange() // max scroll height
+
+            val currentScrollDepth = discoveryViewModel.getScrollDepth(offset, extent, range)
+            if (screenScrollPercentage == 0 || currentScrollDepth > screenScrollPercentage) {
+                screenScrollPercentage = currentScrollDepth
+            }
+            updateLastVisibleComponent()
+        }
+    }
+
+    private fun updateLastVisibleComponent() {
+        if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName)
+        ) {
+            return
+        }
+        staggeredGridLayoutManager?.findLastVisibleItemPositions(null)?.let { positionArray ->
+            if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
+                if (discoveryAdapter.currentList.size <= positionArray.first()) return
+                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
+
+                if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName)
+                ) {
+                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
+                        .getComponent(
+                            lastVisibleComponent!!.parentComponentId,
+                            lastVisibleComponent!!.pageEndPoint
+                        )
+                }
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
@@ -284,7 +332,8 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+            staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            setLayoutManager(staggeredGridLayoutManager!!)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
@@ -374,11 +423,11 @@ class DiscoveryFragment :
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
                 if (widgetVisibilityStatus) {
-                    if(shouldShowChooseAddressWidget) {
+                    if (shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
                     }
-                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
@@ -587,7 +636,7 @@ class DiscoveryFragment :
         }
     }
 
-    private fun hideGlobalError(){
+    private fun hideGlobalError() {
         globalError.hide()
     }
 
@@ -691,10 +740,10 @@ class DiscoveryFragment :
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                    if (this.componentPosition != null && this.componentPosition!! >= 0) {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                         discoveryBaseViewModel?.loggedInCallback()
-                    }else{
+                    } else {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     }
                 }
@@ -816,6 +865,10 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
+        if(lastVisibleComponent == null){
+            updateLastVisibleComponent()
+        }
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
     }
 
@@ -928,7 +981,7 @@ class DiscoveryFragment :
     fun showCustomContent(view: View){
         hideSystemUi()
         coordinatorLayout.hide()
-        view.rotation = 90f
+        view.rotation = ROTATION
         val width = Resources.getSystem().displayMetrics.widthPixels
         val height = activity?.let {
             val metrics = DisplayMetrics()
