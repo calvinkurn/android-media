@@ -79,6 +79,7 @@ import com.tokopedia.tokopedianow.home.domain.model.ShareHomeTokonow
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -168,7 +169,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isFirstResumed = false
     private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -232,7 +232,6 @@ class TokoNowHomeFragment: Fragment(),
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
-        isFirstResumed = true
         context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
@@ -249,7 +248,7 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
-        updateProductCard(miniCartSimplifiedData)
+        viewModelTokoNow.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
@@ -264,11 +263,6 @@ class TokoNowHomeFragment: Fragment(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         UniversalShareBottomSheet.getScreenShotDetector()?.onRequestPermissionsResult(requestCode, grantResults)
-    }
-
-    private fun updateProductCard(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModelTokoNow.setMiniCartSimplifiedData(miniCartSimplifiedData)
-        viewModelTokoNow.updateProductCard(miniCartSimplifiedData, true)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -642,14 +636,16 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
+        observe(viewModelTokoNow.productAddToCartQuantity) {
+            if(it is Success) {
+                rvHome.submitProduct(it.data)
+            }
+        }
+
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
-                if (isFirstResumed) {
-                    updateProductCard(it.data)
-                    isFirstResumed = false
-                }
             }
         }
 
@@ -851,9 +847,8 @@ class TokoNowHomeFragment: Fragment(),
                 loadNextItem(data)
             }
             isLoadDataFinished -> {
-                rvHome?.post {
-                    addLoadMoreListener()
-                }
+                getProductAddToCartQuantity()
+                rvHome?.post { addLoadMoreListener() }
             }
             !isLoadDataFinished -> loadNextItem(data)
         }
@@ -874,7 +869,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.result.map { it.layout }
+        val items = data.items.map { it.layout }
         adapter.submitList(items)
     }
 
@@ -922,7 +917,7 @@ class TokoNowHomeFragment: Fragment(),
         val layoutManager = rvHome.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
+        viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
     }
 
     private fun loadMoreLayoutData() {
@@ -930,17 +925,23 @@ class TokoNowHomeFragment: Fragment(),
         val layoutManager = rvHome.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
+        viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
     }
 
     private fun getHomeLayout() {
-        viewModelTokoNow.getHomeLayout()
+        viewModelTokoNow.getHomeLayout(localCacheModel)
     }
 
-    private fun getMiniCart()  {
+    private fun getMiniCart() {
         val shopId = listOf(localCacheModel?.shop_id.orEmpty())
         val warehouseId = localCacheModel?.warehouse_id
         viewModelTokoNow.getMiniCart(shopId, warehouseId)
+    }
+
+    private fun getProductAddToCartQuantity()  {
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        viewModelTokoNow.getProductAddToCartQuantity(shopId, warehouseId)
     }
 
     private fun loadLayout() {

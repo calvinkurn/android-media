@@ -116,6 +116,19 @@ class HomeProductRecomViewHolder(
         )
     }
 
+    fun submitList(data: HomeProductRecomUiModel?) {
+        data?.recomWidget?.let {
+            productRecom.bind(
+                carouselData = RecommendationCarouselData(
+                    recommendationData = it,
+                    state = RecommendationCarouselData.STATE_READY,
+                ),
+                widgetListener = this,
+                scrollToPosition = listener?.onGetCarouselScrollPosition(adapterPosition).orZero()
+            )
+        }
+    }
+
     interface HomeProductRecomListener {
         fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String, isOoc: Boolean)
         fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String, isOoc: Boolean)

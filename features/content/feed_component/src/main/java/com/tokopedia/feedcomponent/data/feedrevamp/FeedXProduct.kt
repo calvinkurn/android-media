@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.data.feedrevamp
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class FeedXProduct(
@@ -16,7 +17,10 @@ data class FeedXProduct(
         var discount: Int = 0,
         @SerializedName("discountFmt")
         var discountFmt: String = "",
-        @SerializedName("id")
+        @SerializedName("isCashback")
+        var isCashback: Boolean = false,
+        @SerializedName("cashbackFmt")
+        var cashbackFmt: String = "",
         var id: String = "",
         @SerializedName("isBebasOngkir")
         var isBebasOngkir: Boolean = false,
@@ -26,7 +30,7 @@ data class FeedXProduct(
         var mods: List<Any> = listOf(),
         @SerializedName("name")
         var name: String = "",
-        @SerializedName("price")
+        @SuppressLint("Invalid Data Type") @SerializedName("price")
         var price: Int = 0,
         @SerializedName("priceDiscount")
         var priceDiscount: Int = 0,
