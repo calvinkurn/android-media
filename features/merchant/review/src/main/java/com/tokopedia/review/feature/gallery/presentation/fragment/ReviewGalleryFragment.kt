@@ -29,8 +29,8 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAd
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
+import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
-import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
@@ -200,9 +200,9 @@ class ReviewGalleryFragment :
         })
     }
 
-    private fun onSuccessGetRating(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
+    private fun onSuccessGetRating(rating: ProductRating) {
         reviewHeader?.apply {
-            setRatingData(ratingAndTopics.rating)
+            setRatingData(rating)
             setListener(this@ReviewGalleryFragment)
             setSeeAll(this@ReviewGalleryFragment)
             show()
@@ -257,11 +257,11 @@ class ReviewGalleryFragment :
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
-        return (viewModel.rating.value as? Success)?.data?.rating?.detail ?: listOf()
+        return (viewModel.rating.value as? Success)?.data?.detail ?: listOf()
     }
 
     private fun getSatisfactionRate(): String {
-        return (viewModel.rating.value as? Success)?.data?.rating?.satisfactionRate ?: ""
+        return (viewModel.rating.value as? Success)?.data?.satisfactionRate ?: ""
     }
 
     private fun goToReadingPage() {

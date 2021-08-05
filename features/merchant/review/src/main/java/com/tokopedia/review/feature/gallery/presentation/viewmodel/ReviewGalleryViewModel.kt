@@ -8,15 +8,15 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
-import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
-import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
+import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewRatingUseCase
+import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewGalleryViewModel @Inject constructor(
-    private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
+    private val getReviewRatingUseCase: GetReviewRatingUseCase,
     private val getReviewImagesUseCase: GetReviewImagesUseCase,
     coroutineDispatchers: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatchers.io) {
@@ -24,8 +24,8 @@ class ReviewGalleryViewModel @Inject constructor(
     private var productId: MutableLiveData<String> = MutableLiveData()
     private val currentPage = MutableLiveData<Int>()
 
-    private val _rating = MediatorLiveData<Result<ProductrevGetProductRatingAndTopic>>()
-    val rating: LiveData<Result<ProductrevGetProductRatingAndTopic>>
+    private val _rating = MediatorLiveData<Result<ProductRating>>()
+    val rating: LiveData<Result<ProductRating>>
         get() = _rating
 
     private val _reviewImages = MediatorLiveData<Result<ProductrevGetReviewImage>>()
@@ -55,9 +55,9 @@ class ReviewGalleryViewModel @Inject constructor(
 
     private fun getRatingAndTopics(productId: String) {
         launchCatchError(block = {
-            getProductRatingAndTopicsUseCase.setParams(productId)
-            val data = getProductRatingAndTopicsUseCase.executeOnBackground()
-            _rating.postValue(Success(data.productrevGetProductRatingAndTopics))
+            getReviewRatingUseCase.setParams(productId)
+            val data = getReviewRatingUseCase.executeOnBackground()
+            _rating.postValue(Success(data.productRating))
         }) {
             _rating.postValue(Fail(it))
         }
