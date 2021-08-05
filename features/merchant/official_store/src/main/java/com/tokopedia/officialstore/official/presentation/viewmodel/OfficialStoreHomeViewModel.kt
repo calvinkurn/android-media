@@ -14,6 +14,7 @@ import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -50,11 +51,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
-        private val officialHomeMapper: OfficialHomeMapper,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
-
-    private val listOfficialStore = mutableListOf<Visitable<*>>()
 
     var currentSlug: String = ""
         private set
@@ -180,13 +178,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
             val result = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
+            _officialStoreDynamicChannelResult.postValue(Success(result))
             result.forEach {
                 //call external api
                 if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND) {
-
+                    getDisplayTopAdsHeader(FeaturedShopDataModel(
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
                 }
             }
-            _officialStoreDynamicChannelResult.postValue(Success(result))
         }){
             _officialStoreDynamicChannelResult.postValue(Fail(it))
         }
@@ -250,27 +249,20 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
-    private fun getDisplayTopAdsHeader(){
-        officialHomeMapper.findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
-            indexedFeaturedShopModelList.forEach { model ->
-                val featuredShopDataModel = model.value
-                val index = model.index
-
-                launchCatchError(coroutineContext, block={
-                    getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
-                    val data = getDisplayHeadlineAds.executeOnBackground()
-                    if(data.isEmpty()){
-                        _featuredShopRemove.value = featuredShopDataModel
-                    } else {
-                        _featuredShopResult.value = Success(featuredShopDataModel.copy(
-                                channelModel = featuredShopDataModel.channelModel.copy(
-                                        channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                                )))
-                    }
-                }){
-                    _featuredShopRemove.value = featuredShopDataModel
-                }
+    private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
+        launchCatchError(coroutineContext, block={
+            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+            val data = getDisplayHeadlineAds.executeOnBackground()
+            if(data.isEmpty()){
+                _featuredShopRemove.value = featuredShopDataModel
+            } else {
+                _featuredShopResult.value = Success(featuredShopDataModel.copy(
+                        channelModel = featuredShopDataModel.channelModel.copy(
+                                channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                        )))
             }
+        }){
+            _featuredShopRemove.value = featuredShopDataModel
         }
     }
 

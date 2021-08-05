@@ -252,6 +252,7 @@ class OfficialHomeMapper (
         val newList = mutableListOf<Visitable<*>>()
         listOfficialStore.forEach {
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
+                newData.channelModel.verticalPosition = it.channelModel.verticalPosition
                 newList.add(newData.copy())
             } else newList.add(it)
         }
@@ -267,16 +268,4 @@ class OfficialHomeMapper (
         }
         adapter?.submitList(newList)
     }
-
-//    private fun updateWidget(visitable: Visitable<*>, position: Int, adapter: OfficialHomeAdapter?) {
-//        listOfficialStore.run {
-//            homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { adapter?.submitList(this.toMutableList()) }
-//        }
-//    }
-//
-//    private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
-//        listOfficialStore.run {
-//            homeDataModel.updateWidgetModel(visitable, visitableToChange, position) { adapter?.submitList(this.toMutableList()) }
-//        }
-//    }
 }
