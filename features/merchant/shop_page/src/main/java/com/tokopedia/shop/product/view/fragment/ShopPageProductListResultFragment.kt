@@ -76,10 +76,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.createIntent
@@ -97,6 +94,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopProductImpressionListener, ShopProductEmptySearchListener, ShopProductChangeGridSectionListener,
+        ShopShowcaseEmptySearchListener,
         SortFilterBottomSheet.Callback {
 
     interface ShopPageProductListResultFragmentListener {
@@ -187,6 +185,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 this,
                 null,
                 null,
+                this,
                 this,
                 this,
                 true,
@@ -644,7 +643,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun renderProductListEmptyState(productList: List<ShopProductUiModel>) {
         hideLoading()
         shopProductAdapter.clearAllElements()
-        shopProductAdapter.addEmptyStateData(productList)
+        if(keyword.isEmpty()){
+            shopProductAdapter.addEmptyShowcaseResultState()
+        } else {
+            shopProductAdapter.addEmptySearchResultState()
+        }
+        if(productList.isNotEmpty()) {
+            shopProductAdapter.addProductSuggestion(productList)
+        }
+        shopProductAdapter.notifyDataSetChanged()
     }
 
     override fun onItemClicked(baseShopProductViewModel: BaseShopProductViewModel) {
@@ -1352,6 +1359,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopRef
             ))
         }
+    }
+
+    override fun onShowcaseEmptyBackButtonClicked() {
+        activity?.finish()
     }
 
 }

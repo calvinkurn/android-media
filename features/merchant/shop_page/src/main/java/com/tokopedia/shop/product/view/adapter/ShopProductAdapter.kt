@@ -613,4 +613,17 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             notifyChangedItem(visitables.indexOf(this))
         }
     }
+
+    fun addEmptySearchResultState() {
+        visitables.add(ShopProductEmptySearchUiModel())
+    }
+
+    fun addEmptyShowcaseResultState() {
+        visitables.add(ShopProductEmptyShowcaseUiModel())
+    }
+
+    fun addProductSuggestion(productList: List<ShopProductUiModel>) {
+        visitables.add(ShopProductTitleEmptyUiModel())
+        visitables.addAll(productList)
+    }
 }
