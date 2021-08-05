@@ -405,6 +405,11 @@ class PlayViewModel @Inject constructor(
     private val interactiveFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 5)
 
     /**
+     * Real Time Notification
+     */
+    private val rtnFlow = MutableSharedFlow<RealTimeNotificationUiModel>(extraBufferCapacity = 10)
+
+    /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
     private val stateHandlerObserver = object : Observer<Unit> {
@@ -427,6 +432,10 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             interactiveFlow.collect(::onReceivedInteractiveAction)
+        }
+
+        viewModelScope.launch {
+            rtnFlow.collect(::onReceivedRealTimeNotification)
         }
     }
 
@@ -1201,14 +1210,8 @@ class PlayViewModel @Inject constructor(
             }
             is RealTimeNotification -> {
                 val notif = playSocketToModelMapper.mapRealTimeNotification(result)
-                showRealTimeNotification(notif)
+                rtnFlow.emit(notif)
             }
-        }
-    }
-
-    private fun showRealTimeNotification(notification: RealTimeNotificationUiModel) {
-        viewModelScope.launch {
-            _uiEvent.emit(ShowRealTimeNotificationEvent(notification))
         }
     }
 
@@ -1224,6 +1227,14 @@ class PlayViewModel @Inject constructor(
             val isSuccess = interactiveRepo.postInteractiveTap(channelId, activeInteractiveId)
             if (isSuccess) interactiveRepo.setJoined(activeInteractiveId)
         } catch (ignored: MessageErrorException) {}
+    }
+
+    /**
+     * Called when new RTN arrived
+     */
+    private suspend fun onReceivedRealTimeNotification(rtn: RealTimeNotificationUiModel) {
+        _uiEvent.emit(ShowRealTimeNotificationEvent(rtn))
+        delay(2000)
     }
 
     private fun doFollowUnfollow(shouldForceFollow: Boolean): PartnerFollowAction? {
