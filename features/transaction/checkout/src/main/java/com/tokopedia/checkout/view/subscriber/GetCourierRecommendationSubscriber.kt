@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 import timber.log.Timber
 
@@ -27,6 +28,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
+        view.logOnErrorLoadCourier(e, itemPosition)
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
@@ -43,6 +45,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                                     shippingCourierUiModel.productData.shipperId == shipperId) {
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+                                    view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                     return
                                 } else {
                                     shippingCourierUiModel.isSelected = true
@@ -73,6 +76,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                 }
             }
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
+            view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
         } else {
             if (shippingRecommendationData?.shippingDurationViewModels != null && shippingRecommendationData.shippingDurationViewModels.size > 0) {
                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {

@@ -408,6 +408,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void onBiometricSettingClicked() {
+        accountAnalytics.eventClickFingerprint();
         RouteManager.route(getContext(), ApplinkConstInternalGlobal.BIOMETRIC_SETTING);
     }
 

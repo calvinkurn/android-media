@@ -13,11 +13,13 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_PROFILE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_REWARD_SECTION
+import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_SCREEN_RECORDER
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOGGLE_ON_GEOLOCATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_SIMPAN_THEME_SELECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
+import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.HOME_AND_BROWSE
 import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.home_account.AccountConstants.Analytics.CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.CURRENCY_CODE
@@ -74,7 +76,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_NOTIFIC
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_REVIEW_THIS_APP
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_SAFE_MODE
-import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_SCREEN_RECORD
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_SHAKE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_STICKER_TOKOPEDIA
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_TERMS_AND_CONDITIONS
@@ -534,12 +535,12 @@ class HomeAccountAnalytics(val context: Context, val userSession: UserSessionInt
     fun eventClickAppSettingScreenRecord() {
         val analytics: Analytics = TrackApp.getInstance().gtm
         val map = TrackAppUtils.gtmData(
-                EVENT_CLICK_ACCOUNT,
-                CATEGORY_ACCOUNT_BUYER,
-                ACTION_CLICK_APP_SETTING_SECTION,
-                LABEL_SCREEN_RECORD
+                EVENT_CLICK_SETTING,
+                CATEGORY_SETTING_PAGE,
+                ACTION_CLICK_SCREEN_RECORDER,
+                ""
         )
-        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_BUSINESS_UNIT] = HOME_AND_BROWSE
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
