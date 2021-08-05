@@ -6,10 +6,13 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
+import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
+import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
+import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
@@ -24,6 +27,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -41,6 +45,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
+        `Then assert visitable list footer`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
@@ -76,6 +81,41 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
+    }
+
+    private fun `Then assert visitable list footer`(
+            visitableList: List<Visitable<*>>,
+            searchModel: SearchModel
+    ) {
+        val lastProductIndex = visitableList.indexOfLast { it is ProductItemDataView }
+        val footerStartIndex = lastProductIndex + 1
+        val footerList = visitableList.subList(footerStartIndex, visitableList.size)
+
+        footerList.first().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
+        footerList.last().assertCTATokopediaNowHomeDataView()
+    }
+
+    private fun Visitable<*>.assertCategoryJumperDataView(
+            searchCategoryJumper: SearchCategoryJumperData
+    ) {
+        assertThat(this, instanceOf(CategoryJumperDataView::class.java))
+
+        val categoryJumperDataView = this as CategoryJumperDataView
+        assertThat(categoryJumperDataView.title, shouldBe(searchCategoryJumper.getTitle()))
+
+        val expectedItemList = searchCategoryJumper.getJumperItemList()
+        assertThat(categoryJumperDataView.itemList.size, shouldBe(expectedItemList.size))
+
+        categoryJumperDataView.itemList.forEachIndexed { index, actualItem ->
+            val expectedItem = expectedItemList[index]
+
+            assertThat(actualItem.title, shouldBe(expectedItem.title))
+            assertThat(actualItem.applink, shouldBe(expectedItem.applink))
+        }
+    }
+
+    private fun Visitable<*>.assertCTATokopediaNowHomeDataView() {
+        assertThat(this, instanceOf(CTATokopediaNowHomeDataView::class.java))
     }
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
