@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.viewholder.SettingViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.SettingViewHolder
 
 /**
  * Created by Yoris Prayogo on 16/10/20.

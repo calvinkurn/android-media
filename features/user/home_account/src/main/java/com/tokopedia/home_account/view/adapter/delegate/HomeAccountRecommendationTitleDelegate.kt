@@ -1,11 +1,11 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.data.model.RecommendationTitleView
-import com.tokopedia.home_account.view.viewholder.RecommendationTitleViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.RecommendationTitleViewHolder
 
 class HomeAccountRecommendationTitleDelegate :
         TypedAdapterDelegate<RecommendationTitleView, Any, RecommendationTitleViewHolder>(

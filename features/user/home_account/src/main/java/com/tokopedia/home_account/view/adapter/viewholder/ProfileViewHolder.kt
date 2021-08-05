@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.viewholder
+package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.content.Context
 import android.content.res.Configuration

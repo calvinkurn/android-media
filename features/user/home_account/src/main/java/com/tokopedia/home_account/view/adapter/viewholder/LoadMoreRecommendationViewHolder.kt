@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.viewholder
+package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder

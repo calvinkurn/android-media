@@ -1,6 +1,6 @@
 package com.tokopedia.home_account.data.model
 
-import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder
 
 /**
  * Created by Yoris Prayogo on 19/10/20.

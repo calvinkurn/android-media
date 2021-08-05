@@ -1,10 +1,10 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.home_account.view.viewholder.TopAdsHeadlineViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.user.session.UserSessionInterface
 

@@ -1,11 +1,11 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.data.model.SeparatorView
-import com.tokopedia.home_account.view.viewholder.SeparatorViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.SeparatorViewHolder
 
 class HomeAccountSeparatorDelegate :
         TypedAdapterDelegate<SeparatorView, Any, SeparatorViewHolder>(

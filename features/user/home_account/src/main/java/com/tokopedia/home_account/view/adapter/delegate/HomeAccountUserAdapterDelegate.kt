@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.viewholder.ProfileViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ProfileViewHolder
 
 /**
  * Created by Yoris Prayogo on 16/10/20.

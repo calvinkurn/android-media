@@ -101,4 +101,8 @@
 
     <string name="default_member_title">Rewards</string>
     <string name="new_home_account_label_beta">BETA</string>
+    
+    <!-- Funds And Investment  -->
+    <string name="funds_and_investment_balance_and_points">Saldo &amp; Points</string>
+    <string name="funds_and_investment_try_another">Cobain ini juga, yuk</string>
 </resources>

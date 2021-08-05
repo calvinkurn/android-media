@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
-import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
-import com.tokopedia.home_account.view.viewholder.FinancialItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.FinancialItemViewHolder
 import java.util.*
 
 /**

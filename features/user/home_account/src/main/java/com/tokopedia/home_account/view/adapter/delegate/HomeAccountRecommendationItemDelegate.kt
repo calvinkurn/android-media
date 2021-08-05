@@ -1,10 +1,10 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.viewholder.ProductItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ProductItemViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class HomeAccountRecommendationItemDelegate (val listener: HomeAccountUserListener):

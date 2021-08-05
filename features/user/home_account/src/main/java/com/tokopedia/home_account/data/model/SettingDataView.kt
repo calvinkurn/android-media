@@ -1,6 +1,6 @@
 package com.tokopedia.home_account.data.model
 
-import com.tokopedia.home_account.view.viewholder.SettingViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.SettingViewHolder
 
 /**
  * Created by Yoris Prayogo on 16/10/20.

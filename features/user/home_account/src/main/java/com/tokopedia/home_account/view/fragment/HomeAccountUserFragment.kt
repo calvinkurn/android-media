@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.view
+package com.tokopedia.home_account.view.fragment
 
 import android.Manifest
 import android.app.Activity
@@ -58,6 +58,7 @@ import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -68,12 +69,12 @@ import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.home_account.view.mapper.DataViewMapper
-import com.tokopedia.home_account.view.viewholder.CommonViewHolder
-import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
-import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
-import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
-import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
-import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
+import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
+import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
+import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
@@ -189,7 +190,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun fetchRemoteConfig() {
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
+            isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(
+                REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
             isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
             isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
@@ -1137,7 +1139,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                                 item.productId.toString(),
                                 item.name,
                                 item.imageUrl,
-                                COMPONENT_NAME_TOP_ADS)
+                                COMPONENT_NAME_TOP_ADS
+                        )
             }
         }
     }
@@ -1151,7 +1154,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         item.productId.toString(),
                         item.name,
                         item.imageUrl,
-                        COMPONENT_NAME_TOP_ADS)
+                        COMPONENT_NAME_TOP_ADS
+                )
             }
         }
 
@@ -1180,7 +1184,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
                 val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                val wishlistStatusFromPdp = data.getBooleanExtra(
+                    WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)

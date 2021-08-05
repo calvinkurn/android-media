@@ -1,11 +1,11 @@
-package com.tokopedia.home_account.view.delegate
+package com.tokopedia.home_account.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.home_account.data.model.LoadMoreRecommendation
-import com.tokopedia.home_account.view.viewholder.LoadMoreRecommendationViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.LoadMoreRecommendationViewHolder
 
 class HomeAccountRecommendationLoaderDelegate :
         TypedAdapterDelegate<LoadMoreRecommendation, Any, LoadMoreRecommendationViewHolder>(

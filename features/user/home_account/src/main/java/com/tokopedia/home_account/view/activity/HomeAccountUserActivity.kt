@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.di.*
-import com.tokopedia.home_account.view.HomeAccountUserFragment
+import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.listener.onAppBarCollapseListener
 import com.tokopedia.sessioncommon.di.SessionModule
 

@@ -202,4 +202,9 @@ object AccountConstants {
     object LAYOUT {
         const val TYPE_ERROR = -1
     }
+
+    object WALLET {
+        const val OVO = "ovo"
+        const val GOPAY = "gopay"
+    }
 }
