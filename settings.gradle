@@ -44,7 +44,7 @@ gradleEnterprise {
     }
 }
 
-
+rootProject.name = "android-tokopedia-core"
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
