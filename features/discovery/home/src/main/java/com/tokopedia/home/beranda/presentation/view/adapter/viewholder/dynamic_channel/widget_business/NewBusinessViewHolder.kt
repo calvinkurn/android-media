@@ -163,35 +163,18 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         )
     }
 
-    private fun mapBusinessUnitWidgetToDynamicChannelModel(element: NewBusinessUnitWidgetDataModel) : ChannelModel {
-        return ChannelModel(id = element.channel.id,
-        groupId = element.channel.groupId,
-        type = element.channel.type,
-        style = ChannelStyle.ChannelHome,
-        verticalPosition = 0,
-        contextualInfo = element.channel.contextualInfo,
-        widgetParam = element.channel.widgetParam,
-        pageName = element.channel.pageName,
-        channelHeader = ChannelHeader(name = element.channel.name),
-        channelBanner = ChannelBanner(),
-        channelConfig = ChannelConfig(),
-        trackingAttributionModel = TrackingAttributionModel(),
-        channelGrids  = listOf(),
-        name = element.channel.name,
-        layout = "")
-    }
-
     private fun setHeaderComponent(element: NewBusinessUnitWidgetDataModel?) {
-//        val channelModel = mapBusinessUnitWidgetToDynamicChannelModel(element?: NewBusinessUnitWidgetDataModel())
-        element?.channelModel?.let { itemView.home_component_header_view.setChannel(it, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
+        element?.channelModel?.let {
+            itemView.home_component_header_view.setChannel(it, object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    listener.onDynamicChannelClicked(link)
+                }
 
-            }
+                override fun onChannelExpired(channelModel: ChannelModel) {
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-
-            }
-        }) }
+                }
+            })
+        }
     }
 
     private fun initContainerColor(color: String){
