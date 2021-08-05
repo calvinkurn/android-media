@@ -537,18 +537,16 @@ class DiscoveryFragment :
     private fun handleShareClick(data: PageInfo?) {
         if (showOldToolbar) {
             getDiscoveryAnalytics().trackShareClick()
+            discoDefaultShare(data)
         } else {
-//            if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-//                sendUnifyShareGTM()
-//                showUniversalShareBottomSheet(data)
-//            }else{
-//                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
-//                discoDefaultShare(data)
-//            }
+            if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+                sendUnifyShareGTM()
+                showUniversalShareBottomSheet(data)
+            }else{
+                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
+                discoDefaultShare(data)
+            }
         }
-        // To be removed
-        sendUnifyShareGTM()
-        showUniversalShareBottomSheet(data)
     }
 
     private fun discoDefaultShare(data: PageInfo?) {
