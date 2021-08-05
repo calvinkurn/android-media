@@ -10,6 +10,7 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
@@ -89,9 +90,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    val featuredShopResult: LiveData<Result<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>
+    val featuredShopResult: LiveData<Result<FeaturedShopDataModel>>
         get() = _featuredShopResult
-    val _featuredShopResult by lazy { MutableLiveData<Result<DisplayHeadlineAdsEntity.DisplayHeadlineAds>>() }
+    val _featuredShopResult by lazy { MutableLiveData<Result<FeaturedShopDataModel>>() }
+
+    val featuredShopRemove: LiveData<FeaturedShopDataModel>
+        get() = _featuredShopRemove
+    val _featuredShopRemove by lazy { MutableLiveData<FeaturedShopDataModel>() }
 
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
@@ -174,7 +179,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
             getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
-            _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
+            val result = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
+            result.forEach {
+                //call external api
+                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND) {
+
+                }
+            }
+            _officialStoreDynamicChannelResult.postValue(Success(result))
         }){
             _officialStoreDynamicChannelResult.postValue(Fail(it))
         }
@@ -238,29 +250,29 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
-//    private fun getDisplayTopAdsHeader(){
-//        officialHomeMapper.findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
-//            indexedFeaturedShopModelList.forEach { model ->
-//                val featuredShopDataModel = model.value
-//                val index = model.index
-//
-//                launchCatchError(coroutineContext, block={
-//                    getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
-//                    val data = getDisplayHeadlineAds.executeOnBackground()
-//                    if(data.isEmpty()){
-//                        deleteWidget(featuredShopDataModel, index)
-//                    } else {
-//                        updateWidget(featuredShopDataModel.copy(
-//                                channelModel = featuredShopDataModel.channelModel.copy(
-//                                        channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-//                                )), index)
-//                    }
-//                }){
-//                    deleteWidget(featuredShopDataModel, index)
-//                }
-//            }
-//        }
-//    }
+    private fun getDisplayTopAdsHeader(){
+        officialHomeMapper.findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
+            indexedFeaturedShopModelList.forEach { model ->
+                val featuredShopDataModel = model.value
+                val index = model.index
+
+                launchCatchError(coroutineContext, block={
+                    getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+                    val data = getDisplayHeadlineAds.executeOnBackground()
+                    if(data.isEmpty()){
+                        _featuredShopRemove.value = featuredShopDataModel
+                    } else {
+                        _featuredShopResult.value = Success(featuredShopDataModel.copy(
+                                channelModel = featuredShopDataModel.channelModel.copy(
+                                        channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                                )))
+                    }
+                }){
+                    _featuredShopRemove.value = featuredShopDataModel
+                }
+            }
+        }
+    }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 

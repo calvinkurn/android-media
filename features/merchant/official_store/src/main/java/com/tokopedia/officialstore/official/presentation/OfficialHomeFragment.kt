@@ -195,6 +195,8 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        observeFeaturedShopSuccessDC()
+        observeFeaturedShopRemoveDC()
         initLocalChooseAddressData()
         resetData()
         loadData()
@@ -230,6 +232,8 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
+        viewModel.featuredShopRemove.removeObservers(this)
+        viewModel.featuredShopResult.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -796,6 +800,23 @@ class OfficialHomeFragment :
                 }
             }
             productRecommendationPerformanceMonitoring.stopTrace()
+        })
+    }
+
+    private fun observeFeaturedShopSuccessDC() {
+        viewModel.featuredShopResult.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                   //update UI
+                    officialHomeMapper.updateFeaturedShopDC(it.data, adapter)
+                }
+            }
+        })
+    }
+
+    private fun observeFeaturedShopRemoveDC() {
+        viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
+            officialHomeMapper.removeFeaturedShopDC(it, adapter)
         })
     }
 

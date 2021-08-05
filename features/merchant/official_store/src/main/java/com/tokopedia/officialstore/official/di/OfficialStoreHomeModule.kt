@@ -10,6 +10,10 @@ import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -26,6 +30,16 @@ class OfficialStoreHomeModule {
     @OfficialStoreHomeScope
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
+
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideGraphqlCoroutineUseCase(graphqlRepository: GraphqlRepository) =
+            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
 
     @OfficialStoreHomeScope
     @Provides
@@ -78,4 +92,10 @@ class OfficialStoreHomeModule {
     @OfficialStoreHomeScope
     @Provides
     fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+
+    @OfficialStoreHomeScope
+    @Provides
+    fun provideGetDisplayHeadlineAds(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DisplayHeadlineAdsEntity>): GetDisplayHeadlineAds {
+        return GetDisplayHeadlineAds(graphqlUseCase)
+    }
 }
