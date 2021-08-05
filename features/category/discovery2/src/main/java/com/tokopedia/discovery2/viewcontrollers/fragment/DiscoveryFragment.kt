@@ -104,6 +104,8 @@ private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
 private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
 private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
 private const val ROTATION = 90f
+const val CUSTOM_SHARE_SHEET = 1
+const val SCREENSHOT_SHARE_SHEET = 2
 
 class DiscoveryFragment :
     BaseDaggerFragment(),
@@ -150,6 +152,8 @@ class DiscoveryFragment :
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var shareType: Int = 1
+
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -604,8 +608,13 @@ class DiscoveryFragment :
                 )
                 setOgImageUrl(pageInfo.share?.image ?: "")
             }
-            getDiscoveryAnalytics().trackUnifyShare(VIEW_DISCOVERY_IRIS, VIEW_UNIFY_SHARE, getUserID())
             universalShareBottomSheet?.show(fragmentManager)
+            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+            getDiscoveryAnalytics().trackUnifyShare(
+                VIEW_DISCOVERY_IRIS,
+                if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
+                getUserID()
+            )
         }
     }
 
@@ -619,8 +628,11 @@ class DiscoveryFragment :
                 ogImageUrl = shareModel.ogImgUrl
             }
         }
-        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, CLICK_SHARE_CHANNEL,
-            getUserID(), shareModel.channel ?: "" )
+        getDiscoveryAnalytics().trackUnifyShare(
+            EVENT_CLICK_DISCOVERY,
+            if (shareType == CUSTOM_SHARE_SHEET) CLICK_SHARE_CHANNEL else CLICK_SCREENSHOT_SHARE_CHANNEL,
+            getUserID(), shareModel.channel ?: ""
+        )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
@@ -645,7 +657,9 @@ class DiscoveryFragment :
     }
 
     override fun onCloseOptionClicked() {
-        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY, UNIFY_CLOSE_SHARE, getUserID())
+        getDiscoveryAnalytics().trackUnifyShare(EVENT_CLICK_DISCOVERY,
+            if (shareType == CUSTOM_SHARE_SHEET) UNIFY_CLOSE_SHARE else UNIFY_CLOSE_SCREENSHOT_SHARE,
+            getUserID())
         universalShareBottomSheet?.dismiss()
     }
 
