@@ -21,6 +21,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.UPDATE_BUNDLE_CONTENT_LAYOUT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.UPDATE_BUNDLE_TAB_LAYOUT
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ContainerUnify
@@ -111,6 +113,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         try {
             adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
             model = element
+            setHeaderComponent(element)
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
                 if(bundle.containsKey(ERROR_BUNDLE_TAB_LAYOUT)){
@@ -158,6 +161,37 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             dividerTop = itemView.home_component_divider_header,
             dividerBottom = itemView.home_component_divider_footer
         )
+    }
+
+    private fun mapBusinessUnitWidgetToDynamicChannelModel(element: NewBusinessUnitWidgetDataModel) : ChannelModel {
+        return ChannelModel(id = element.channel.id,
+        groupId = element.channel.groupId,
+        type = element.channel.type,
+        style = ChannelStyle.ChannelHome,
+        verticalPosition = 0,
+        contextualInfo = element.channel.contextualInfo,
+        widgetParam = element.channel.widgetParam,
+        pageName = element.channel.pageName,
+        channelHeader = ChannelHeader(name = element.channel.name),
+        channelBanner = ChannelBanner(),
+        channelConfig = ChannelConfig(),
+        trackingAttributionModel = TrackingAttributionModel(),
+        channelGrids  = listOf(),
+        name = element.channel.name,
+        layout = "")
+    }
+
+    private fun setHeaderComponent(element: NewBusinessUnitWidgetDataModel?) {
+//        val channelModel = mapBusinessUnitWidgetToDynamicChannelModel(element?: NewBusinessUnitWidgetDataModel())
+        element?.channelModel?.let { itemView.home_component_header_view.setChannel(it, object : HeaderListener {
+            override fun onSeeAllClick(link: String) {
+
+            }
+
+            override fun onChannelExpired(channelModel: ChannelModel) {
+
+            }
+        }) }
     }
 
     private fun initContainerColor(color: String){

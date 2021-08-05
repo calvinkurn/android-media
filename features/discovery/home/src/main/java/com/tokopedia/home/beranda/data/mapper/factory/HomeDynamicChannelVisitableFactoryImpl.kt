@@ -315,7 +315,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
             visitableList.add(NewBusinessUnitWidgetDataModel(
                 channel = channel,
                 position = position,
-                isCache = false)
+                isCache = false,
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, position))
             )
         }
     }
