@@ -212,16 +212,21 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private String createSearchResultApplink() {
-        if (baseSRPApplink.isEmpty()) {
-            return ApplinkConstInternalDiscovery.SEARCH_RESULT
-                    + "?"
-                    + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
-        }
-        else {
-            return baseSRPApplink
-                    + "?"
-                    + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
-        }
+        String searchResultApplink = baseSRPApplink.isEmpty()
+                ? ApplinkConstInternalDiscovery.SEARCH_RESULT
+                : baseSRPApplink;
+
+        Map<String, String> parameter = searchParameter.getSearchParameterHashMap();
+        removeNonRequiredSRPParam(parameter);
+
+        return searchResultApplink
+                + "?"
+                + UrlParamHelper.generateUrlParamString(parameter);
+    }
+
+    private void removeNonRequiredSRPParam(Map<String, String> parameter) {
+        parameter.remove(SearchApiConst.BASE_SRP_APPLINK);
+        parameter.remove(SearchApiConst.HINT);
     }
 
     private void sendVoiceSearchGTM(String keyword) {
