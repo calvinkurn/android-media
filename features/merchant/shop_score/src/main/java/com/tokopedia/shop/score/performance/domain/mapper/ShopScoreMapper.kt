@@ -232,12 +232,6 @@ class ShopScoreMapper @Inject constructor(
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: -1
         with(headerShopPerformanceUiModel) {
             when {
-                shopScore < 0 || shopLevel < 0 -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
-                        ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
-                        ?: ""
-                }
                 shopAge < SHOP_AGE_SIXTY -> {
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
                         ?: ""
@@ -249,7 +243,12 @@ class ShopScoreMapper @Inject constructor(
                     descHeaderShopService = context?.getString(
                         R.string.desc_new_seller_level_0,
                         dateNewSellerProjection
-                    )
+                    ) ?: ""
+                }
+                shopScore < 0 || shopLevel < 0 -> {
+                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
+                        ?: ""
+                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
                         ?: ""
                 }
                 shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
