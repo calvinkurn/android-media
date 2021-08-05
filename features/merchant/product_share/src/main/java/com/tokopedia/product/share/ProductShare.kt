@@ -34,7 +34,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
-class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) : ShareBottomsheetListener {
+class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
 
     companion object {
         private const val DEFAULT_IMAGE_WIDTH = 2048
@@ -237,7 +237,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
     //region universal sharing
 
-    override fun onShareOptionClicked(shareModel: ShareModel) {
+    private fun shareChannelClicked(shareModel: ShareModel) {
         if (isBranchUrlActive()) {
             val branchStart = System.currentTimeMillis()
 
@@ -297,7 +297,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             return "${productData.shopName} - ${productData.productShareDescription}"
     }
 
-    override fun onCloseOptionClicked() {
+    private fun onCloseShareClicked() {
         onCloseShareWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
         universalShareBottomSheet?.dismiss()
     }
@@ -321,7 +321,16 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
 
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@ProductShare)
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    shareChannelClicked(shareModel)
+                }
+
+                override fun onCloseOptionClicked() {
+                    onCloseShareClicked()
+                }
+
+            })
             setUtmCampaignData("PDP", productData.userId, productData.productId, "Share")
             setMetaData(productData.productName ?: "",
                             productData.productImageUrl ?: "",
