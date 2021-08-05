@@ -27,6 +27,6 @@ data class FeaturedShopDataModel(
     }
 
     private fun areGridsSame(newModel: ChannelModel): Boolean {
-        return channelModel.channelGrids.size == channelModel.channelGrids.size && newModel.channelGrids == channelModel.channelGrids
+        return newModel.channelGrids.size == channelModel.channelGrids.size && newModel.channelGrids == channelModel.channelGrids
     }
 }
