@@ -82,6 +82,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.ext.RecyclerViewExt.submitProduct
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
@@ -124,7 +125,7 @@ class TokoNowHomeFragment: Fragment(),
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
-
+        const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
@@ -171,10 +172,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isFirstImpressionOnBanner = false
     private var isRefreshed = true
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var headerName = ""
-    private var channelId: String = ""
-    private var productPosition: String = ""
-    private var recomItem: RecommendationItem? = null
     private var carouselScrollPosition = SparseIntArray()
 
     private val homeMainToolbarHeight: Int
@@ -300,7 +297,8 @@ class TokoNowHomeFragment: Fragment(),
         recomItem: RecommendationItem,
         channelId: String,
         headerName: String,
-        position: String
+        position: String,
+        isOoc: Boolean
     ) {
         RouteManager.route(
             context,
@@ -312,7 +310,8 @@ class TokoNowHomeFragment: Fragment(),
             headerName = headerName,
             userId = userSession.userId,
             recommendationItem = recomItem,
-            position = position
+            position = position,
+            isOoc = isOoc
         )
     }
 
@@ -320,7 +319,8 @@ class TokoNowHomeFragment: Fragment(),
         recomItems: List<RecommendationItem>,
         channelId: String,
         headerName: String,
-        pageName: String
+        pageName: String,
+        isOoc: Boolean
     ) {
         if (isRefreshed) {
             isRefreshed = false
@@ -329,15 +329,17 @@ class TokoNowHomeFragment: Fragment(),
                 headerName = headerName,
                 userId = userSession.userId,
                 recomItems = recomItems,
-                pageName = pageName
+                pageName = pageName,
+                isOoc = isOoc
             )
         }
     }
 
-    override fun onSeeAllBannerClicked(channelId: String, headerName: String) {
+    override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean) {
         analytics.onClickAllProductRecom(
             channelId = channelId,
-            headerName = headerName
+            headerName = headerName,
+            isOoc = isOoc
         )
     }
 
@@ -358,10 +360,6 @@ class TokoNowHomeFragment: Fragment(),
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
-        this.headerName = headerName
-        this.recomItem = recomItem
-        this.productPosition = position
-        this.channelId = channelId
     }
 
     override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
@@ -383,7 +381,6 @@ class TokoNowHomeFragment: Fragment(),
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
-        this.recomItem = null
     }
 
     override fun onProductCardImpressed(data: HomeProductCardUiModel) {
@@ -680,13 +677,11 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartAdd) {
             when(it) {
                 is Success -> {
-                    val message = it.data.errorMessage.joinToString(separator = ", ")
-
                     getMiniCart()
-                    showToaster(message = message, type = TYPE_NORMAL)
-
-                    // track add to cart
-                    trackAddToCart(it.data.data.quantity, it.data.data.cartId)
+                    showToaster(
+                        message = it.data.errorMessage.joinToString(separator = ", "),
+                        type = TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
                     showToaster(
@@ -702,12 +697,6 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
                     miniCartWidget?.updateData(shopIds)
-
-                    // track add to cart
-                    recomItem?.let { recomItem ->
-                        val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem.productId.toString())
-                        trackAddToCart(miniCartItem?.quantity.toZeroIfNull(), miniCartItem?.cartId.orEmpty())
-                    }
                 }
                 is Fail -> {
                     showToaster(
@@ -722,13 +711,10 @@ class TokoNowHomeFragment: Fragment(),
             when(it) {
                 is Success -> {
                     getMiniCart()
-                    showToaster(message = it.data.second, type = TYPE_NORMAL)
-
-                    // track add to cart
-                    recomItem?.let { recomItem ->
-                        val miniCartItem = viewModelTokoNow.getMiniCartItem(recomItem.productId.toString())
-                        trackAddToCart(0, miniCartItem?.cartId.orEmpty())
-                    }
+                    showToaster(
+                        message = it.data.second,
+                        type = TYPE_NORMAL
+                    )
                 }
                 is Fail -> {
                     val message = it.throwable.message.orEmpty()
@@ -744,22 +730,26 @@ class TokoNowHomeFragment: Fragment(),
                     it.quantity,
                     it.data
                 )
+                is HomeProductRecomUiModel -> trackProductRecomAddToCart(
+                    it.quantity,
+                    it.position,
+                    it.cartId,
+                    it.data
+                )
             }
         }
     }
 
-    private fun trackAddToCart(quantity: Int, cartId: String) {
-        recomItem?.apply {
-            analytics.onClickProductRecomAddToCart(
-                channelId = channelId,
-                headerName = headerName,
-                userId = userSession.userId,
-                quantity = quantity.toString(),
-                recommendationItem = this,
-                position = productPosition,
-                cartId = cartId
-            )
-        }
+    private fun trackProductRecomAddToCart(quantity: Int, position: Int, cartId: String, productRecomModel: HomeProductRecomUiModel) {
+        analytics.onClickProductRecomAddToCart(
+            channelId = productRecomModel.id,
+            headerName = productRecomModel.recomWidget.title,
+            userId = userSession.userId,
+            quantity = quantity.toString(),
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            position = position.toString(),
+            cartId = cartId
+        )
     }
 
     private fun trackRecentPurchaseImpression(data: HomeProductCardUiModel) {
