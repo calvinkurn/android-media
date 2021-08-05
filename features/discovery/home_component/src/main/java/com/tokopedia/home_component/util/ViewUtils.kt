@@ -29,7 +29,7 @@ object ChannelWidgetUtil {
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
                 dividerTop?.invisible()
