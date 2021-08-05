@@ -8,9 +8,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
-import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.utils.SaldoDateUtil.DATE_PATTERN_FOR_UI
 import com.tokopedia.saldodetails.utils.SaldoDateUtil.DATE_PATTERN_FROM_SERVER
+import com.tokopedia.saldodetails.utils.SaldoRollence
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -58,7 +58,7 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
         }else {
             labelTransactionStatus.gone()
         }
-        if(element.haveDetail){
+        if(element.haveDetail && SaldoRollence.isSaldoRevampEnabled()){
             itemView.setOnClickListener { openDetailPage(element) }
             iconNext.visible()
         }else{
