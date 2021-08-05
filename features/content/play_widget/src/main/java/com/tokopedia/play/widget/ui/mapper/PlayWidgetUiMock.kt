@@ -84,7 +84,8 @@ object PlayWidgetUiMock {
             totalView = "10,0 rb",
             totalViewVisible = true,
             promoType = PlayWidgetPromoType.NoPromo,
-            video = getVideoUiModel(channelType)
+            video = getVideoUiModel(channelType),
+            hasGiveaway = true
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
@@ -119,7 +120,8 @@ object PlayWidgetUiMock {
                     "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
                     isShow = true
             ),
-            performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734"
+            performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
+            hasGiveaway = true
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

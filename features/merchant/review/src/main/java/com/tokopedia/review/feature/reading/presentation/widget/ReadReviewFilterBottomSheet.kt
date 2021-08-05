@@ -71,6 +71,25 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     ): View? {
         val view = View.inflate(context, R.layout.bottomsheet_read_review_filter, null)
         setChild(view)
+        setShowListener {
+            sortFilterViewModel.setInitialValues(previouslySelectedFilter, filterData)
+            setListUnifyData()
+            if (isSortMode()) {
+                setSortItemListener()
+                setSubmitSortButton()
+                listUnify?.onLoadFinish {
+                    configSortData()
+                }
+            } else {
+                observeSubmitButtonState()
+                observeResetButtonState()
+                setFilterItemListener()
+                setSubmitFilterButton()
+                listUnify?.onLoadFinish {
+                    configFilterData()
+                }
+            }
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -85,23 +104,6 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        sortFilterViewModel.setInitialValues(previouslySelectedFilter, filterData)
-        setListUnifyData()
-        if (isSortMode()) {
-            setSortItemListener()
-            setSubmitSortButton()
-            listUnify?.onLoadFinish {
-                configSortData()
-            }
-        } else {
-            observeSubmitButtonState()
-            observeResetButtonState()
-            setFilterItemListener()
-            setSubmitFilterButton()
-            listUnify?.onLoadFinish {
-                configFilterData()
-            }
-        }
     }
 
     private fun bindViews(view: View) {
