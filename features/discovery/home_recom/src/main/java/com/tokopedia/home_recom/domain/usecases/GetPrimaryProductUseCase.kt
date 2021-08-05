@@ -3,10 +3,7 @@ package com.tokopedia.home_recom.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home_recom.DEFAULT_X_SOURCE
-import com.tokopedia.home_recom.PARAM_PRODUCT_ID
-import com.tokopedia.home_recom.PARAM_QUERY_PARAM
-import com.tokopedia.home_recom.PARAM_X_SOURCE
+import com.tokopedia.home_recom.*
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -30,7 +27,7 @@ class GetPrimaryProductUseCase (
 
     fun setParameter(productId: String, queryParam: String){
         parameter.parameters.clear()
-        parameter.putString(PARAM_PRODUCT_ID, productId)
+        parameter.putString(PARAM_PRODUCT_ID_STRING, productId)
         parameter.putString(PARAM_QUERY_PARAM, queryParam)
         parameter.putString(PARAM_X_SOURCE, DEFAULT_X_SOURCE)
     }
