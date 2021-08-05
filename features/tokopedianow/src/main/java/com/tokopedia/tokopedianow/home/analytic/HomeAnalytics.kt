@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_ALL_CATEGORY
@@ -266,7 +267,7 @@ class HomeAnalytics {
                     index = position,
                     productId = recommendationItem.productId.toString(),
                     productName = recommendationItem.name,
-                    price = recommendationItem.price,
+                    price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero(),
                     productCategory = recommendationItem.categoryBreadcrumbs
                 )
             )
@@ -288,7 +289,7 @@ class HomeAnalytics {
                     index = position.toString(),
                     productId = recomItem.productId.toString(),
                     productName = recomItem.name,
-                    price = recomItem.price,
+                    price = recomItem.price.filter { it.isDigit() }.toLongOrZero(),
                     productCategory = recomItem.categoryBreadcrumbs
                 )
             )
@@ -314,7 +315,7 @@ class HomeAnalytics {
             index = position,
             productId = recommendationItem.productId.toString(),
             productName = recommendationItem.name,
-            price = recommendationItem.price
+            price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
             putString(KEY_DIMENSION_40, "{'list': '/tokonow - recomproduct - carousel - ${recommendationItem.recommendationType} - ${recommendationItem.pageName} - $headerName'}")
             putString(KEY_DIMENSION_45, cartId)
@@ -547,7 +548,7 @@ class HomeAnalytics {
         return Bundle().apply { putParcelable(KEY_ADD, click) }
     }
 
-    private fun productRecomItemDataLayer(index: String, productId: String, productName: String, price: String, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
+    private fun productRecomItemDataLayer(index: String, productId: String, productName: String, price: Long, productBrand: String = "", productCategory: String = "", productVariant: String = ""): Bundle {
         return Bundle().apply {
             putString(KEY_INDEX, index)
             putString(KEY_ITEM_BRAND, productBrand)
@@ -555,7 +556,7 @@ class HomeAnalytics {
             putString(KEY_ITEM_ID, productId)
             putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, productVariant)
-            putString(KEY_PRICE, price)
+            putLong(KEY_PRICE, price)
         }
     }
 
