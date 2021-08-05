@@ -74,6 +74,7 @@
     <string name="form_final_subtitle_fail">Foto KTP belum terlihat jelas.\nAmbil ulang foto sekarang.</string>
 
     <string name="title_kyc_info">Verifikasi Data Diri</string>
+    <string name="title_kyc_info_simple">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
     <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
@@ -159,4 +160,8 @@
 
     <string name="kyc_benefit_three_title">Tingkatkan keamanan toko</string>
     <string name="kyc_benefit_three_desc">Datamu akan digunakan untuk mengamankan akses ke tokomu.</string>
+
+    <string name="uii_simple_title">Silakan lanjut ke pengisian formulir</string>
+    <string name="uii_simple_desc">Dokumen KTPmu sedang kami proses</string>
+    <string name="uii_simple_button">Lanjut Isi Formulir</string>
 </resources>

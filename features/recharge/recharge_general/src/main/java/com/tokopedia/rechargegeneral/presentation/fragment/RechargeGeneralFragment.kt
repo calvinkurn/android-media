@@ -1102,6 +1102,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         adapter.hideLoading()
     }
 
+    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        // do nothing
+    }
+
+    override fun onSeamlessFavoriteNumbersError(error: Throwable) {
+        // do nothing
+    }
+
     override fun getScreenName(): String {
         return ""
     }
