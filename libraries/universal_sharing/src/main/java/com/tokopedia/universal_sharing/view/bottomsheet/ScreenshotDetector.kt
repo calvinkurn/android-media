@@ -20,7 +20,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import java.lang.Exception
 
-class ScreenshotDetector(internal val context: Context, private val screenShotListener: ScreenShotListener) {
+class ScreenshotDetector(internal val context: Context, internal var screenShotListener: ScreenShotListener?) {
 
     private var contentObserver: ContentObserver? = null
     val pendingRegex = ".pending"
@@ -68,7 +68,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                             if (!path.contains(pendingRegex)) {
                                 UniversalShareBottomSheet.setImageOnlySharingOption(true)
                                 UniversalShareBottomSheet.setScreenShotImagePath(path)
-                                screenShotListener.screenShotTaken()
+                                screenShotListener?.screenShotTaken()
                             }
                         }
                     }
@@ -108,7 +108,7 @@ class ScreenshotDetector(internal val context: Context, private val screenShotLi
                             if (!relativePath.contains(pendingRegex)) {
                                 UniversalShareBottomSheet.setImageOnlySharingOption(true)
                                 UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-                                screenShotListener.screenShotTaken()
+                                screenShotListener?.screenShotTaken()
                             }
                         }
                     }
