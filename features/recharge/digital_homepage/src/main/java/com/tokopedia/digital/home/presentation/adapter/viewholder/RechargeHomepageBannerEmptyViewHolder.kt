@@ -55,7 +55,7 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
 
                         iv_recharge_home_banner_empty.layoutParams.height = recharge_home_banner_empty_text_container.measuredHeight +
                                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) +
-                                location[1]
+                                location[Y_COORDINATE_INDEX]
                         iv_recharge_home_banner_empty.requestLayout()
                     }
                 })
@@ -67,5 +67,7 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_banner_empty
         const val CONTENT_MARGIN_TOP_DP = 56
+
+        private const val Y_COORDINATE_INDEX = 1
     }
 }
