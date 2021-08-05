@@ -13,6 +13,7 @@ import com.tokopedia.promocheckout.list.domain.HotelCheckVoucherUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -44,9 +45,11 @@ class PromoCheckoutDetailHotelViewModel @Inject constructor(private val dispatch
         showProgressLoadingPromoHotel.postValue(true)
         launchCatchError(block = {
             showProgressLoadingPromoHotel.postValue( false)
-            _hotelCheckVoucherResult.postValue(
-                hotelCheckVoucherUseCase.execute(hotelCheckVoucherUseCase.createRequestParams(promoCode,cartID), onMessageColorChange = hexColor)
-            )
+            val data = withContext(dispatcher.io){
+                hotelCheckVoucherUseCase.execute(hotelCheckVoucherUseCase.createRequestParams(promoCode,cartID),
+                    onMessageColorChange = hexColor)
+            }
+            _hotelCheckVoucherResult.postValue(data)
         }){
             showProgressLoadingPromoHotel.postValue( false)
             _hotelCheckVoucherResult.postValue(Fail(it))
@@ -57,7 +60,10 @@ class PromoCheckoutDetailHotelViewModel @Inject constructor(private val dispatch
         showLoadingPromoHotel.postValue(true)
         launchCatchError(block = {
             showLoadingPromoHotel.postValue( false)
-            _promoCheckoutDetail.postValue(getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon)))
+            val data = withContext(dispatcher.io){
+                getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon))
+            }
+            _promoCheckoutDetail.postValue(data)
         }){
             showLoadingPromoHotel.postValue( false)
             _promoCheckoutDetail.postValue(Fail(it))
@@ -68,7 +74,10 @@ class PromoCheckoutDetailHotelViewModel @Inject constructor(private val dispatch
         showLoadingPromoHotel.postValue(true)
         launchCatchError(block = {
             showLoadingPromoHotel.postValue( false)
-            _cancelVoucher.postValue(travelCancelVoucherUseCase.execute())
+            val data = withContext(dispatcher.io){
+                travelCancelVoucherUseCase.execute()
+            }
+            _cancelVoucher.postValue(data)
         }){
             showLoadingPromoHotel.postValue( false)
             _cancelVoucher.postValue(Fail(it))

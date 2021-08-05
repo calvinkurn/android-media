@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.list.domain.DealsCheckVoucherUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -38,9 +39,11 @@ class PromoCheckoutDetailDealsViewModel @Inject constructor(private val dispatch
         showProgressLoadingPromoDeals.postValue(true)
         launchCatchError(block = {
             showProgressLoadingPromoDeals.postValue( false)
-            _dealsCheckVoucherResult.postValue(
-                dealsCheckVoucherUseCase.execute(dealsCheckVoucherUseCase.createMapParam(flag), dealsCheckVoucherUseCase.setDealsVerifyBody(requestBody))
-            )
+            val data = withContext(dispatcher.io){
+                dealsCheckVoucherUseCase.execute(dealsCheckVoucherUseCase.createMapParam(flag),
+                    dealsCheckVoucherUseCase.setDealsVerifyBody(requestBody))
+            }
+            _dealsCheckVoucherResult.postValue(data)
         }){
             showProgressLoadingPromoDeals.postValue( false)
             _dealsCheckVoucherResult.postValue(Fail(it))
@@ -51,7 +54,10 @@ class PromoCheckoutDetailDealsViewModel @Inject constructor(private val dispatch
         showLoadingPromoDeals.postValue(true)
         launchCatchError(block = {
             showLoadingPromoDeals.postValue( false)
-            _promoCheckoutDetail.postValue(getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon)))
+            val data = withContext(dispatcher.io){
+                getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon))
+            }
+            _promoCheckoutDetail.postValue(data)
         }){
             showLoadingPromoDeals.postValue( false)
             _promoCheckoutDetail.postValue(Fail(it))

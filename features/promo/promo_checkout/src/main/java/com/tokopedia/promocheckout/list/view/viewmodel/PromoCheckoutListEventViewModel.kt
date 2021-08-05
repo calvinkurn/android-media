@@ -10,6 +10,7 @@ import com.tokopedia.promocheckout.list.domain.EventCheckVoucherUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -28,7 +29,11 @@ class PromoCheckoutListEventViewModel @Inject constructor(private val dispatcher
         showLoadingPromoEvent.postValue(true)
         launchCatchError(block = {
             showLoadingPromoEvent.postValue(false)
-            _eventCheckVoucherResult.postValue(eventCheckVoucherUseCase.execute(eventCheckVoucherUseCase.createMapParam(book), eventCheckVoucherUseCase.setEventVerifyBody(eventVerifyBody)))
+            val data = withContext(dispatchers.io){
+                eventCheckVoucherUseCase.execute(eventCheckVoucherUseCase.createMapParam(book),
+                    eventCheckVoucherUseCase.setEventVerifyBody(eventVerifyBody))
+            }
+            _eventCheckVoucherResult.postValue(data)
         }){
             showLoadingPromoEvent.postValue(false)
             _eventCheckVoucherResult.postValue(Fail(it))

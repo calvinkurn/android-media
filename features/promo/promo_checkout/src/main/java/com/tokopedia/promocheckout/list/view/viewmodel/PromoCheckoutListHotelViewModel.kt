@@ -9,6 +9,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -28,9 +29,11 @@ class PromoCheckoutListHotelViewModel @Inject constructor(private val dispatcher
         showLoadingPromoHotel.postValue(true)
         launchCatchError(block = {
             showLoadingPromoHotel.postValue( false)
-            _hotelCheckVoucherResult.postValue(hotelCheckVoucherUseCase.
-                execute(hotelCheckVoucherUseCase.createRequestParams(promoCode,cartID), onMessageColorChange = hexColor)
-            )
+            val data = withContext(dispatcher.io){
+                hotelCheckVoucherUseCase.execute(hotelCheckVoucherUseCase.createRequestParams(promoCode,cartID),
+                    onMessageColorChange = hexColor)
+            }
+            _hotelCheckVoucherResult.postValue(data)
         }){
             showLoadingPromoHotel.postValue( false)
             _hotelCheckVoucherResult.postValue(Fail(it))

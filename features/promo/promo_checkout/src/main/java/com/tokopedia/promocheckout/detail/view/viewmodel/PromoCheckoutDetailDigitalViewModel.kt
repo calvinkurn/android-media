@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.list.domain.DigitalCheckVoucherUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -38,13 +39,14 @@ class PromoCheckoutDetailDigitalViewModel @Inject constructor(private val dispat
         showProgressLoadingPromoDigital.postValue(true)
         launchCatchError(block = {
             showProgressLoadingPromoDigital.postValue(false)
-            _digitalCheckVoucherResult.postValue(
+            val data = withContext(dispatcher.io){
                 digitalCheckVoucherUseCase.execute(
                     digitalCheckVoucherUseCase.createRequest(
                         promoCode,
                         promoDigitalModel
                     ))
-            )
+            }
+            _digitalCheckVoucherResult.postValue(data)
         }) {
             showProgressLoadingPromoDigital.postValue(false)
             _digitalCheckVoucherResult.postValue(Fail(it))
@@ -55,11 +57,10 @@ class PromoCheckoutDetailDigitalViewModel @Inject constructor(private val dispat
         showLoadingPromoDigital.postValue(true)
         launchCatchError(block = {
             showLoadingPromoDigital.postValue(false)
-            _promoCheckoutDetail.postValue(
-                getDetailPromoCheckoutUseCase.execute(
-                    getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon)
-                )
-            )
+            val data = withContext(dispatcher.io){
+                getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon))
+            }
+            _promoCheckoutDetail.postValue(data)
         }) {
             showLoadingPromoDigital.postValue(false)
             _promoCheckoutDetail.postValue(Fail(it))

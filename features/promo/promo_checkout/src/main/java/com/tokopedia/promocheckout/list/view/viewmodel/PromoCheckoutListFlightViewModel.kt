@@ -10,6 +10,7 @@ import com.tokopedia.promocheckout.list.domain.FlightCheckVoucherUsecase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -30,9 +31,11 @@ class PromoCheckoutListFlightViewModel @Inject constructor(private val dispatche
         showLoadingPromoFlight.postValue(true)
         launchCatchError(block = {
             showLoadingPromoFlight.postValue( false)
-            _flightCheckVoucherResult.postValue(
-                flightCheckVoucherUsecase.execute(flightCheckVoucherUsecase.createRequestParams(promoCode,cartID), onMessageColorChange = hexColor)
-            )
+            val data = withContext(dispatcher.io){
+                flightCheckVoucherUsecase.execute(flightCheckVoucherUsecase.createRequestParams(promoCode,cartID),
+                    onMessageColorChange = hexColor)
+            }
+            _flightCheckVoucherResult.postValue(data)
         }){
             showLoadingPromoFlight.postValue( false)
             _flightCheckVoucherResult.postValue(Fail(it))

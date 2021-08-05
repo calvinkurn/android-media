@@ -13,6 +13,7 @@ import com.tokopedia.promocheckout.list.domain.FlightCheckVoucherUsecase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -44,9 +45,11 @@ class PromoCheckoutDetailFlightViewModel @Inject constructor(private val dispatc
         showProgressLoadingPromoFlight.postValue(true)
         launchCatchError(block = {
             showProgressLoadingPromoFlight.postValue( false)
-            _flightCheckVoucherResult.postValue(
-                flightCheckVoucherUsecase.execute(flightCheckVoucherUsecase.createRequestParams(promoCode,cartID), onMessageColorChange = hexColor)
-            )
+            val data = withContext(dispatcher.io){
+                flightCheckVoucherUsecase.execute(flightCheckVoucherUsecase.createRequestParams(promoCode,cartID),
+                    onMessageColorChange = hexColor)
+            }
+            _flightCheckVoucherResult.postValue(data)
         }){
             showProgressLoadingPromoFlight.postValue( false)
             _flightCheckVoucherResult.postValue(Fail(it))
@@ -57,7 +60,10 @@ class PromoCheckoutDetailFlightViewModel @Inject constructor(private val dispatc
         showLoadingPromoFlight.postValue(true)
         launchCatchError(block = {
             showLoadingPromoFlight.postValue( false)
-            _promoCheckoutDetail.postValue(getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon)))
+            val data = withContext(dispatcher.io){
+                getDetailPromoCheckoutUseCase.execute(getDetailPromoCheckoutUseCase.createRequestParams(codeCoupon))
+            }
+            _promoCheckoutDetail.postValue(data)
         }){
             showLoadingPromoFlight.postValue( false)
             _promoCheckoutDetail.postValue(Fail(it))
@@ -68,7 +74,10 @@ class PromoCheckoutDetailFlightViewModel @Inject constructor(private val dispatc
         showLoadingPromoFlight.postValue(true)
         launchCatchError(block = {
             showLoadingPromoFlight.postValue( false)
-            _cancelVoucher.postValue(travelCancelVoucherUseCase.execute())
+            val data = withContext(dispatcher.io){
+                travelCancelVoucherUseCase.execute()
+            }
+            _cancelVoucher.postValue(data)
         }){
             showLoadingPromoFlight.postValue( false)
             _cancelVoucher.postValue(Fail(it))

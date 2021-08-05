@@ -43,9 +43,11 @@ class PromoCheckoutListDealsViewModel @Inject constructor(private val dispatcher
         showLoadingPromoDeals.postValue(true)
         launchCatchError(block = {
             showLoadingPromoDeals.postValue( false)
-            _dealsCheckVoucherResult.postValue(
-                dealsCheckVoucherUseCase.execute(dealsCheckVoucherUseCase.createMapParam(flag), dealsCheckVoucherUseCase.setDealsVerifyBody(requestParams))
-            )
+            val data = withContext(dispatcher.io){
+                dealsCheckVoucherUseCase.execute(dealsCheckVoucherUseCase.createMapParam(flag),
+                    dealsCheckVoucherUseCase.setDealsVerifyBody(requestParams))
+            }
+            _dealsCheckVoucherResult.postValue(data)
         }){
             showLoadingPromoDeals.postValue( false)
             _dealsCheckVoucherResult.postValue(Fail(it))
