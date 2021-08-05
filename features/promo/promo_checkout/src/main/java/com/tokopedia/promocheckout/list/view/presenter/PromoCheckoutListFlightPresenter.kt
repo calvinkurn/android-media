@@ -4,17 +4,16 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
+import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
 import rx.Subscriber
 
 @Deprecated("Not needed anymore.")
 class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCheckVoucherUseCase,
-                                       val checkVoucherMapper: FlightCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
+                                       val checkVoucherMapper: FlightCheckVoucherMapper
+) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
 
     override fun checkPromoCode(cartID: String, promoCode: String, hexColor: String) {
         view.showProgressLoading()

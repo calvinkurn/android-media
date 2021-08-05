@@ -3,7 +3,7 @@ package com.tokopedia.promocheckout.list.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel

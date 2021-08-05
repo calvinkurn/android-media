@@ -4,14 +4,13 @@ import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
-import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
+import com.tokopedia.promocheckout.list.domain.mapper.DealsCheckoutMapper
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.common.util.PromoQuery

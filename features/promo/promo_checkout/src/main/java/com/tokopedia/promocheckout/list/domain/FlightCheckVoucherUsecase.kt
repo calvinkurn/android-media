@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
-import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.FlightCheckVoucher
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.usecase.RequestParams

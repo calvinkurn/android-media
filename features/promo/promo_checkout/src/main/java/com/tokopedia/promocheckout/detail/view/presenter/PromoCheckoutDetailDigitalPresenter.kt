@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase

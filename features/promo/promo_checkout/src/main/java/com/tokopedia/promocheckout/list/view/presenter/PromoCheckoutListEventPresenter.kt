@@ -3,7 +3,7 @@ package com.tokopedia.promocheckout.list.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
-import com.tokopedia.promocheckout.common.domain.mapper.EventCheckVoucherMapper.mapDataEvent
+import com.tokopedia.promocheckout.list.domain.mapper.EventCheckVoucherMapper.mapDataEvent
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import rx.Subscriber

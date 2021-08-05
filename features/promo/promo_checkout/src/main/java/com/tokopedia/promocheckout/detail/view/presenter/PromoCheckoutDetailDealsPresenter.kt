@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
-import com.tokopedia.promocheckout.common.domain.mapper.DealsCheckoutMapper
+import com.tokopedia.promocheckout.list.domain.mapper.DealsCheckoutMapper
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase

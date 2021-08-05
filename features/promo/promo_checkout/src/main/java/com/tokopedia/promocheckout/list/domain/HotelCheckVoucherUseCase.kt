@@ -3,7 +3,7 @@ package com.tokopedia.promocheckout.list.domain
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.HotelCheckVoucher
 import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -17,7 +17,8 @@ import javax.inject.Inject
  * @author: astidhiyaa on 02/08/21.
  */
 class HotelCheckVoucherUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                              val checkVoucherMapper: HotelCheckVoucherMapper) :
+                                              val checkVoucherMapper: HotelCheckVoucherMapper
+) :
     GraphqlUseCase<HotelCheckVoucher.Response>(graphqlRepository) {
 
     suspend fun execute(requestParams: RequestParams?, onMessageColorChange: String): Result<DataUiModel> {

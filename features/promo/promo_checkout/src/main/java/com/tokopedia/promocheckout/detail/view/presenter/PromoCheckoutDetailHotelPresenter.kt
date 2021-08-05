@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.domain.model.HotelCheckVoucher
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase

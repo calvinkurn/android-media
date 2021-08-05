@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.domain.FlightCheckVoucherUsecase
 import com.tokopedia.usecase.coroutines.Fail

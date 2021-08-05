@@ -1,15 +1,14 @@
-package com.tokopedia.promocheckout.common.domain.mapper
+package com.tokopedia.promocheckout.list.domain.mapper
 
-import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
+import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
 
-object DealsCheckoutMapper {
-
-    fun mapData(data: DealsVerifyResponse): DataUiModel {
+object EventCheckVoucherMapper {
+    fun mapDataEvent(data: EventVerifyResponse): DataUiModel {
         return DataUiModel(
                 success = true,
-                message = mapMessageDeals(data.data.cart.promocodeSuccessMessage),
+                message = mapMessageEvent(data.data.cart.promocodeSuccessMessage),
                 codes = listOf(data.data.cart.promocode),
                 discountAmount = data.data.cart.promocodeDiscount,
                 cashbackWalletAmount = data.data.cart.promocodeCashback,
@@ -17,7 +16,7 @@ object DealsCheckoutMapper {
         )
     }
 
-    private fun mapMessageDeals(message: String): MessageUiModel {
+    private fun mapMessageEvent(message: String): MessageUiModel {
         return MessageUiModel(
                 text = message,
                 state = "green"

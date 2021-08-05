@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
-import com.tokopedia.promocheckout.common.domain.mapper.EventCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.EventCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase

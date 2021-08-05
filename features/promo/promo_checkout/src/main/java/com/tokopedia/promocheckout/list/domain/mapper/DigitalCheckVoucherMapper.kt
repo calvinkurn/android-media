@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.domain.mapper
+package com.tokopedia.promocheckout.list.domain.mapper
 
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
 import com.tokopedia.promocheckout.common.domain.model.Message

@@ -30,9 +30,9 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCa
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
-import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.view.presenter.*
 import com.tokopedia.user.session.UserSession

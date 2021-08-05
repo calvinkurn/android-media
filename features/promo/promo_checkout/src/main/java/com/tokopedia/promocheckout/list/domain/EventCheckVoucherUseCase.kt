@@ -13,7 +13,7 @@ import com.tokopedia.promocheckout.util.PromoCheckoutUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.promocheckout.common.domain.mapper.EventCheckVoucherMapper.mapDataEvent
+import com.tokopedia.promocheckout.list.domain.mapper.EventCheckVoucherMapper.mapDataEvent
 import java.lang.reflect.Type
 import javax.inject.Inject
 

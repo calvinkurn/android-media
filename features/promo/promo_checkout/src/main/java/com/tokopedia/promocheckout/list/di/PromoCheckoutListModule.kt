@@ -31,6 +31,9 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCas
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.*
 import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
+import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.list.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -100,14 +103,16 @@ class PromoCheckoutListModule {
     @PromoCheckoutListScope
     @Provides
     fun provideFlightPresenter(flightCheckVoucherUseCase: FlightCheckVoucherUseCase,
-                               flightCheckVoucherMapper: FlightCheckVoucherMapper): PromoCheckoutListFlightPresenter {
+                               flightCheckVoucherMapper: FlightCheckVoucherMapper
+    ): PromoCheckoutListFlightPresenter {
         return PromoCheckoutListFlightPresenter(flightCheckVoucherUseCase, flightCheckVoucherMapper)
     }
 
     @PromoCheckoutListScope
     @Provides
     fun provideHotelPresenter(hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
-                              hotelCheckVoucherMapper: HotelCheckVoucherMapper) : PromoCheckoutListHotelPresenter {
+                              hotelCheckVoucherMapper: HotelCheckVoucherMapper
+    ) : PromoCheckoutListHotelPresenter {
         return PromoCheckoutListHotelPresenter(hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
     }
 

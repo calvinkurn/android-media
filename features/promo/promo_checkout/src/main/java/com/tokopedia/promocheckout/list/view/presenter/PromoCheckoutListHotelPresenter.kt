@@ -4,13 +4,14 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.HotelCheckVoucher
 import rx.Subscriber
 
 @Deprecated("Not needed anymore.")
 class PromoCheckoutListHotelPresenter(private val checkVoucherUseCase: HotelCheckVoucherUseCase,
-                                      val checkVoucherMapper: HotelCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
+                                      val checkVoucherMapper: HotelCheckVoucherMapper
+) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
 
     override fun checkPromoCode(cartID: String, promoCode: String, hexColor: String) {
         view?.let {
