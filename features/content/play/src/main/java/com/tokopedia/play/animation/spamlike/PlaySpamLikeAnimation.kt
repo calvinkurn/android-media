@@ -256,13 +256,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         val coordinate = IntArray(2)
         position.getLocationInWindow(coordinate)
 
-        val dm = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(dm)
-
-        val widthOffset = dm.widthPixels - (parentView?.measuredWidth ?: 0)
-        val verticalOffset = dm.heightPixels - (parentView?.measuredHeight ?: 0)
-
-        return Pair(coordinate[0].toFloat() - widthOffset, coordinate[1].toFloat() - verticalOffset)
+        return Pair(coordinate[0].toFloat(), coordinate[1].toFloat())
     }
 
     /**
