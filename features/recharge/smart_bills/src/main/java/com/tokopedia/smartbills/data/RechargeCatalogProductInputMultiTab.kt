@@ -1,20 +1,25 @@
 package com.tokopedia.smartbills.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class RechargeCatalogProductInputMultiTabData(
         @SerializedName("rechargeCatalogProductInputMultiTab")
         @Expose
         val multitabData: RechargeCatalogProductInputMultiTab = RechargeCatalogProductInputMultiTab()
-)
+): Parcelable
 
+@Parcelize
 data class RechargeCatalogProductInputMultiTab(
         @SerializedName("productInputs")
         @Expose
         val productInputs: List<RechargeCatalogProductInput> = emptyList()
-)
+): Parcelable
 
+@Parcelize
 data class RechargeCatalogProductInput(
         @SerializedName("id")
         @Expose
@@ -33,8 +38,10 @@ data class RechargeCatalogProductInput(
         val enquiryFields: List<RechargeCatalogEnquiryFields> = emptyList(),
         @SerializedName("product")
         @Expose
-        val product: RechargeCatalogProduct = RechargeCatalogProduct())
+        val product: RechargeCatalogProduct = RechargeCatalogProduct()
+): Parcelable
 
+@Parcelize
 data class RechargeCatalogEnquiryFields(
         @SerializedName("id")
         @Expose
@@ -45,8 +52,9 @@ data class RechargeCatalogEnquiryFields(
         @SerializedName("name")
         @Expose
         val name: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class RechargeCatalogProduct(
         @SerializedName("id")
         @Expose
@@ -65,23 +73,27 @@ data class RechargeCatalogProduct(
         val validation: List<RechargeCatalogProductValidation> = emptyList(),
         @SerializedName("dataCollections")
         @Expose
-        val dataCollections: List<RechargeCatalogDataCollection> = emptyList())
+        val dataCollections: List<RechargeCatalogDataCollection> = emptyList()
+): Parcelable
 
-
+@Parcelize
 data class RechargeCatalogProductValidation(
         @SerializedName("rule")
         @Expose
         val name: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class RechargeCatalogDataCollection(
         @SerializedName("name")
         @Expose
         val name: String = "",
         @SerializedName("products")
         @Expose
-        val products: List<RechargeProduct> = listOf())
+        val products: List<RechargeProduct> = listOf()
+): Parcelable
 
+@Parcelize
 data class RechargeProduct(
         @SerializedName("id")
         @Expose
@@ -89,8 +101,9 @@ data class RechargeProduct(
         @SerializedName("attributes")
         @Expose
         val attributes: RechargeAttributesProduct = RechargeAttributesProduct()
-)
+): Parcelable
 
+@Parcelize
 data class RechargeAttributesProduct(
         @SerializedName("product_labels")
         @Expose
@@ -131,8 +144,9 @@ data class RechargeAttributesProduct(
         @SerializedName("operator_id")
         @Expose
         val operatorId: String = ""
-)
+): Parcelable
 
+@Parcelize
 data class RechargeProductPromo(
         @SerializedName("id")
         @Expose
@@ -149,4 +163,4 @@ data class RechargeProductPromo(
         @SerializedName("value_text")
         @Expose
         val valueText: String = ""
-)
+): Parcelable

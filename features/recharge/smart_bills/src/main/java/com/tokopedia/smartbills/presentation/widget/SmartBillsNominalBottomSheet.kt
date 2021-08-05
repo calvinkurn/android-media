@@ -13,14 +13,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.CategoryTelcoType
+import com.tokopedia.smartbills.data.RechargeCatalogProductInputMultiTabData
 import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.di.DaggerSmartBillsComponent
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsNominalAdapter
-import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsNominalBottomSheetViewModel
+import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -38,8 +40,10 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         private const val PARAM_CATEGORY_ID = "category_id"
         private const val PARAM_OPERATOR_ID = "operator_id"
         private const val PARAM_CLIENT_NUMBER = "client_number"
+        private const val PARAM_IS_REQUEST_NOMINAL = "is_request_nominal"
+        private const val PARAM_CATALOG_PRODUCT = "catalog_product"
 
-        fun newInstance(menuId: Int, categoryId:String, opeartorId: String, clientNumber: String,
+        fun newInstance(isRequestNominal:Boolean, catalogProductInput: RechargeCatalogProductInputMultiTabData, menuId: Int, categoryId:String, opeartorId: String, clientNumber: String,
                        getNominalCallback: SmartBillsGetNominalCallback):
                 SmartBillsNominalBottomSheet {
             return SmartBillsNominalBottomSheet(getNominalCallback).apply {
@@ -48,19 +52,24 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
                     putString(PARAM_CATEGORY_ID, categoryId)
                     putString(PARAM_OPERATOR_ID, opeartorId)
                     putString(PARAM_CLIENT_NUMBER, clientNumber)
+                    putBoolean(PARAM_IS_REQUEST_NOMINAL, isRequestNominal)
+                    putParcelable(PARAM_CATALOG_PRODUCT, catalogProductInput)
                 }
             }
         }
     }
 
     @Inject
-    lateinit var viewModel: SmartBillsNominalBottomSheetViewModel
+    lateinit var viewModel: SmartBillsAddTelcoViewModel
 
     private var menuId: Int = 0
     private var platformId: Int = 5
     private var categoryId: String = ""
     private var operator: String = ""
     private var clientNumber: String = ""
+    private var isRequestNominal: Boolean = true
+    private var catalogProductInput: RechargeCatalogProductInputMultiTabData =
+            RechargeCatalogProductInputMultiTabData()
 
     private var titleBottomSheet: String = ""
     private var emptyGlobalErrorTitle: String = ""
@@ -78,6 +87,8 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         categoryId = arguments?.getString(PARAM_CATEGORY_ID).orEmpty()
         operator = arguments?.getString(PARAM_OPERATOR_ID).orEmpty()
         clientNumber = arguments?.getString(PARAM_CLIENT_NUMBER).orEmpty()
+        isRequestNominal = arguments?.getBoolean(PARAM_IS_REQUEST_NOMINAL, true).orTrue()
+        catalogProductInput = arguments?.getParcelable(PARAM_CATALOG_PRODUCT) ?: RechargeCatalogProductInputMultiTabData()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -132,7 +143,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     }
 
     private fun getNominalTelco(){
-        viewModel.getCatalogNominal(viewModel.createCatalogNominal(
+        viewModel.getCatalogNominal(isRequestNominal, catalogProductInput,viewModel.createCatalogNominal(
                 menuId, platformId, operator, clientNumber))
         showLoader()
     }
@@ -145,6 +156,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
                         showGlobalError(true)
                     } else {
                         showNominalCatalogList(viewModel.getProductByCategoryId(it.data.multitabData.productInputs, CategoryTelcoType.getCategoryString(categoryId)))
+                        getNominalCallback.onNominalLoaded(false, it.data)
                     }
                 }
 
@@ -156,6 +168,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     }
 
     private fun showNominalCatalogList(listProduct: List<RechargeProduct>?){
+        isFullpage = true
         listProduct?.let {
             hideLoader()
             val adapterNominal = SmartBillsNominalAdapter(this@SmartBillsNominalBottomSheet)

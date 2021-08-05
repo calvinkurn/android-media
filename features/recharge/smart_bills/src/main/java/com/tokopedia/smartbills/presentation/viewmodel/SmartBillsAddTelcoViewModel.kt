@@ -19,8 +19,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.smartbills.data.RechargeAddBillsData
-import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
+import com.tokopedia.smartbills.data.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -53,6 +52,11 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
     private val mutableRechargeAddBills= MutableLiveData<Result<RechargeAddBillsData>>()
     val rechargeAddBills: LiveData<Result<RechargeAddBillsData>>
         get() = mutableRechargeAddBills
+
+    private val mutableCatalogProduct = MutableLiveData<Result<RechargeCatalogProductInputMultiTabData>>()
+    val catalogProduct: LiveData<Result<RechargeCatalogProductInputMultiTabData>>
+        get() = mutableCatalogProduct
+
 
     fun getMenuDetailAddTelco(mapParam: Map<String, Any>) {
         launchCatchError(block = {
@@ -135,6 +139,26 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         }
     }
 
+    fun getCatalogNominal(isRequestNominal: Boolean, catalogProductInput: RechargeCatalogProductInputMultiTabData, mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            if(isRequestNominal || (catalogProduct.value is Fail) ||
+                    catalogProductInput.multitabData.productInputs.isNullOrEmpty()) {
+                val data = withContext(dispatcher.io) {
+                    val graphqlRequest = GraphqlRequest(SmartBillsQueries.GET_NOMINAL_TELCO,
+                            RechargeCatalogProductInputMultiTabData::class.java, mapParam)
+                    graphqlRepository.getReseponse(listOf(graphqlRequest),
+                            GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+                }.getSuccessData<RechargeCatalogProductInputMultiTabData>()
+
+                mutableCatalogProduct.postValue(Success(data))
+            } else {
+                mutableCatalogProduct.postValue(Success(catalogProductInput))
+            }
+        }) {
+            mutableCatalogProduct.postValue(Fail(it))
+        }
+    }
+
     fun createMenuDetailAddTelcoParams(menuId: Int): Map<String, Any> {
         return mapOf(PARAM_MENU_ID to menuId)
     }
@@ -151,6 +175,29 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
 
     fun createAddBillsParam(addBillRequest: RechargeSBMAddBillRequest): Map<String, Any> {
         return mapOf(PARAM_ADD_REQUEST to addBillRequest)
+    }
+
+    fun createCatalogNominal(menuId: Int, platformID: Int, operator: String, clientNumber: String): Map<String, Any> {
+        return mapOf(
+                SmartBillsNominalBottomSheetViewModel.PARAM_MENU_ID to menuId,
+                SmartBillsNominalBottomSheetViewModel.PARAM_PLATFORM_ID to platformID,
+                SmartBillsNominalBottomSheetViewModel.PARAM_OPERATOR to operator,
+                SmartBillsNominalBottomSheetViewModel.PARAM_CLIENT_NUMBER to clientNumber
+        )
+    }
+
+    fun getProductByCategoryId(listProductAll: List<RechargeCatalogProductInput>, categoryName: String): List<RechargeProduct>? {
+        val mutableListRechargeProduct = mutableListOf<RechargeProduct>()
+
+        val listDataCollection = listProductAll.single {
+            it.label == categoryName
+        }.product.dataCollections
+
+        for (dataCollection in listDataCollection){
+            mutableListRechargeProduct.addAll(dataCollection.products)
+        }
+
+        return mutableListRechargeProduct
     }
 
 

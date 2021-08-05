@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.CategoryTelcoType
+import com.tokopedia.smartbills.data.RechargeCatalogProductInputMultiTabData
 import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.smartbills.di.SmartBillsComponent
@@ -60,6 +61,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private var validationsPhoneNumber: List<RechargeValidation> = emptyList()
     private var operatorActive: TelcoOperator = TelcoOperator()
     private var selectedProduct: RechargeProduct? = null
+    private var isRequestNominal: Boolean = false
+    private var catalogProduct: RechargeCatalogProductInputMultiTabData = RechargeCatalogProductInputMultiTabData()
 
     override fun getScreenName(): String = ""
 
@@ -164,6 +167,12 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun observeSelectedPrefix(){
         observe(viewModel.selectedOperator){
+            if (operatorActive.id.isNullOrEmpty()
+                    || (operatorActive.id != it.operator.id)
+                    || (operatorActive.attributes.defaultProductId
+                            != it.operator.attributes.defaultProductId)){
+                isRequestNominal = true
+            }
             operatorActive = it.operator
             renderIconOperator(it.operator.attributes.imageUrl)
         }
@@ -277,12 +286,17 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                         && !operatorActive.id.isNullOrEmpty()
                                         && !menuId.isNullOrEmpty()
                                 ) {
-                                    SmartBillsNominalBottomSheet.newInstance(menuId.toIntOrZero(),
+                                    SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntOrZero(),
                                             categoryId.orEmpty(), operatorActive.id, getNumber(), object : SmartBillsGetNominalCallback {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
                                             renderSelectedProduct(rechargeProduct)
                                             setErrorNominal(false, "")
                                             isDisableButton()
+                                        }
+
+                                        override fun onNominalLoaded(isRequesting: Boolean, catalogProductRecharge: RechargeCatalogProductInputMultiTabData) {
+                                            isRequestNominal = isRequesting
+                                            catalogProduct = catalogProductRecharge
                                         }
                                     }).show(childFragmentManager)
                                 } else validationNumber()
