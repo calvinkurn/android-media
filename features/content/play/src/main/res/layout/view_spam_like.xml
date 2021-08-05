@@ -11,8 +11,8 @@
 
     <com.tokopedia.play.animation.spamlike.PlaySpamLikeAnimation
         android:id="@+id/spam_like_animation"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:additionalShot="true"
         app:bouncing="true"
         app:maxShot="30"
