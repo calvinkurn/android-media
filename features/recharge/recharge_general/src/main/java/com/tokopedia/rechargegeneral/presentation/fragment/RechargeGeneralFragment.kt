@@ -857,8 +857,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun enquire() {
         if (validateEnquiry()) {
-            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
-            if (!isExpressCheckout) {
+            // If it's express checkout & not add sbm, open checkout bottomsheet; if not navigate to old checkout
+            if (!isExpressCheckout && !isAddSBM) {
                 processCheckout()
             } else {
                 if (!userSession.isLoggedIn) {

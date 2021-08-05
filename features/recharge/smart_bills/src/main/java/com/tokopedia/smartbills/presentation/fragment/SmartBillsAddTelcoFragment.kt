@@ -20,6 +20,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.common.topupbills.view.bottomsheet.AddSmartBillsInquiryBottomSheet
+import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsInquiryCallBack
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -33,9 +35,7 @@ import com.tokopedia.smartbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
-import com.tokopedia.smartbills.presentation.widget.SmartBillAddInquiryCallback
 import com.tokopedia.smartbills.presentation.widget.SmartBillsGetNominalCallback
-import com.tokopedia.smartbills.presentation.widget.SmartBillsInquiryBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsNominalBottomSheet
 import com.tokopedia.smartbills.util.SmartBillsGlobalError.errorSBMHandlerGlobalError
 import com.tokopedia.unifycomponents.Toaster
@@ -384,7 +384,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun showInquiryBottomSheet(inquiry: TopupBillsEnquiryData){
         val attribute = inquiry.enquiry.attributes
-        val inquiryBottomSheet = SmartBillsInquiryBottomSheet(object : SmartBillAddInquiryCallback{
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
             override fun onInquiryClicked() {
                 addBills(attribute.productId.toIntOrZero(), attribute.clientNumber)
             }

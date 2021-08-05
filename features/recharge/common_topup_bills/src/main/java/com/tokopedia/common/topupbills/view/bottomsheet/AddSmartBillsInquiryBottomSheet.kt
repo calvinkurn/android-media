@@ -1,4 +1,4 @@
-package com.tokopedia.smartbills.presentation.widget
+package com.tokopedia.common.topupbills.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
-import com.tokopedia.smartbills.R
-import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterItemInquiry
+import com.tokopedia.common.topupbills.view.adapter.AddSmartBillsInquiryAdapter
+import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsInquiryCallBack
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class SmartBillsInquiryBottomSheet(private val getInquiryCallback: SmartBillAddInquiryCallback): BottomSheetUnify() {
+class AddSmartBillsInquiryBottomSheet (private val getInquiryCallback: AddSmartBillsInquiryCallBack): BottomSheetUnify() {
 
     init {
         isFullpage = false
@@ -20,16 +21,16 @@ class SmartBillsInquiryBottomSheet(private val getInquiryCallback: SmartBillAddI
         showCloseIcon = true
     }
 
-    private val smartBillsInquiryAdapter = SmartBillsAdapterItemInquiry()
+    private val smartBillsInquiryAdapter = AddSmartBillsInquiryAdapter()
     private lateinit var smartBillInquiryRecycleView: RecyclerView
     private lateinit var btnAddInquiry: UnifyButton
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val itemView = inflater.inflate(R.layout.bottomsheet_smart_bills_inquiry, container)
+        val itemView = inflater.inflate(R.layout.bottom_sheets_add_bills_inquiry, container)
         smartBillInquiryRecycleView = itemView.findViewById(R.id.rv_inquiry_result)
         btnAddInquiry = itemView.findViewById(R.id.btn_sbm_add_inquiry)
         setChild(itemView)
-        setTitle(getString(R.string.smart_bills_add_bills_title_bottom_sheet_inquiry))
+        setTitle(getString(R.string.common_topup_add_sbm_inqiry_title))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

@@ -1,14 +1,14 @@
-package com.tokopedia.smartbills.presentation.adapter
+package com.tokopedia.common.topupbills.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
-import com.tokopedia.smartbills.R
-import kotlinx.android.synthetic.main.view_smart_bills_item_inquiry.view.*
+import kotlinx.android.synthetic.main.item_add_sbm_inquiry.view.*
 
-class SmartBillsAdapterItemInquiry: RecyclerView.Adapter<SmartBillsAdapterItemInquiry.SmartBillsInquiryViewHolder>() {
+class AddSmartBillsInquiryAdapter: RecyclerView.Adapter<AddSmartBillsInquiryAdapter.SmartBillsInquiryViewHolder>() {
 
     var listInquiry = emptyList<TopupBillsEnquiryMainInfo>()
 
@@ -24,12 +24,12 @@ class SmartBillsAdapterItemInquiry: RecyclerView.Adapter<SmartBillsAdapterItemIn
         return listInquiry.size
     }
 
-    override fun onBindViewHolder(holder: SmartBillsAdapterItemInquiry.SmartBillsInquiryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AddSmartBillsInquiryAdapter.SmartBillsInquiryViewHolder, position: Int) {
         holder.bind(listInquiry[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsAdapterItemInquiry.SmartBillsInquiryViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item_inquiry, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddSmartBillsInquiryAdapter.SmartBillsInquiryViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_add_sbm_inquiry, parent, false)
         return SmartBillsInquiryViewHolder(itemView)
     }
 }
