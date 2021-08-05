@@ -215,6 +215,7 @@ class TokoNowHomeFragment: Fragment(),
         updateCurrentPageLocalCacheModelData()
 
         loadLayout()
+        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -232,12 +233,17 @@ class TokoNowHomeFragment: Fragment(),
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
+        UniversalShareBottomSheet.getScreenShotDetector()?.start()
     }
 
     override fun onStop() {
         UniversalShareBottomSheet.clearState()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        UniversalShareBottomSheet.clearScreenShotDetector()
+        super.onDestroy()
     }
 
     override fun onTickerDismissed(id: String) {
