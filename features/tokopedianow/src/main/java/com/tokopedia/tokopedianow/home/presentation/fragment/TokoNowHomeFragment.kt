@@ -236,7 +236,6 @@ class TokoNowHomeFragment: Fragment(),
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
         getMiniCart()
-        context?.let { UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this) }
         UniversalShareBottomSheet.getScreenShotDetector()?.start()
     }
 
