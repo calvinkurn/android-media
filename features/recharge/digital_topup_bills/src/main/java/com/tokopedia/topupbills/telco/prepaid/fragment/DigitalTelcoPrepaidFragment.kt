@@ -21,6 +21,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -28,13 +30,11 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
-import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
-import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -79,6 +79,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+    private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -131,7 +132,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
-                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it)
+                sharedModelPrepaid.getCatalogProductList(
+                    DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it,
+                    clientNumber = telcoClientNumberWidget.getInputNumber()
+                )
             }
         })
 
@@ -141,16 +145,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 hideDynamicSpacer()
             } else {
                 telcoClientNumberWidget.setVisibleResultNumber(true)
-                if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) showDynamicSpacer() else hideDynamicSpacer()
+                if (telcoClientNumberWidget.getInputNumber()
+                        .isNotEmpty()
+                ) showDynamicSpacer() else hideDynamicSpacer()
             }
         })
     }
 
     private fun showDynamicSpacer() {
-        val defaultSpaceHeight = 81
         dynamicSpacer.layoutParams.height =
-                context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
-                        ?: defaultSpaceHeight
+            context?.resources?.getDimensionPixelSize(R.dimen.telco_dynamic_banner_space)
+                ?: DEFAULT_SPACE_HEIGHT
         dynamicSpacer.requestLayout()
     }
 
@@ -159,7 +164,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         dynamicSpacer.requestLayout()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         pageContainer = view.findViewById(R.id.telco_page_container)
         mainContainer = view.findViewById(R.id.telco_main_container)
@@ -181,6 +190,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         subscribeUi()
         initViewPager()
+        buyWidget.setBuyButtonLabel(getString(R.string.telco_pick_product))
+
+        //load data
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
         if (rechargeProductFromSlice.isNotEmpty()) {
@@ -193,11 +205,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         productId = telcoProduct.id.toIntOrZero()
         price = telcoProduct.attributes.pricePlain
         checkVoucherWithDelay()
-        generateCheckoutPassData(telco_input_number.getInputNumber(),
-                if (telcoProduct.attributes.productPromo != null) "1" else "0",
-                telcoProduct.attributes.categoryId.toString(),
-                telcoProduct.attributes.operatorId.toString(),
-                telcoProduct.id)
+        generateCheckoutPassData(
+            telco_input_number.getInputNumber(),
+            if (telcoProduct.attributes.productPromo != null) "1" else "0",
+            telcoProduct.attributes.categoryId.toString(),
+            telcoProduct.attributes.operatorId.toString(),
+            telcoProduct.id
+        )
     }
 
     private fun initViewPager() {
@@ -277,7 +291,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getCatalogMenuDetail() {
         onLoadingMenuDetail(true)
         getMenuDetail(TelcoComponentType.TELCO_PREPAID)
-        getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
+        getFavoriteNumber(
+            categoryIds = listOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            ),
+            oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID
+        )
     }
 
     //region Promo and Recommendation
@@ -307,7 +328,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         val newItems = telcoTabViewModel.createIdSnapshot()
         DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    oldItems[oldItemPosition] == newItems[newItemPosition]
+                oldItems[oldItemPosition] == newItems[newItemPosition]
 
             override fun getOldListSize(): Int {
                 return oldItems.size
@@ -318,7 +339,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                    areItemsTheSame(oldItemPosition, newItemPosition)
+                areItemsTheSame(oldItemPosition, newItemPosition)
         }, true).dispatchUpdatesTo(viewPager.adapter!!)
     }
 
@@ -326,7 +347,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         if (savedInstanceState == null) {
             arguments?.run {
                 val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
-                        ?: TopupBillsExtraParam()
+                    ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -371,9 +392,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
                 showProducts = true
-                val selectedOperator = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
-                    telcoClientNumberWidget.getInputNumber().startsWith(it.value)
-                }
+                val selectedOperator =
+                    this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
+                        telcoClientNumberWidget.getInputNumber().startsWith(it.value)
+                    }
                 operatorId = selectedOperator.operator.id
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
@@ -384,7 +406,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: Exception) {
             telcoClientNumberWidget.setErrorInputNumber(
-                    getString(R.string.telco_number_error_not_found))
+                getString(R.string.telco_number_error_not_found)
+            )
         }
     }
 
@@ -452,11 +475,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             sharedModelPrepaid.setVisibilityTotalPrice(false)
 
             telcoClientNumberWidget.clearFocusAutoComplete()
-            startActivityForResult(activity?.let {
-                DigitalSearchNumberActivity.newInstance(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
-            },
-                    REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+
+            val dgCategoryIds = arrayListOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
+
+            navigateFavoriteNumberPage(
+                clientNumber, favNumberList,
+                dgCategoryIds, topupAnalytics.getCategoryName(categoryId)
+            )
         }
     }
 
@@ -465,32 +494,53 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setInputNumber(contactNumber)
     }
 
+    override fun setContactNameFromContact(contactName: String) {
+        telcoClientNumberWidget.setContactName(contactName)
+    }
+
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
-            sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
-                    productId)
+            sharedModelPrepaid.getCatalogProductList(
+                DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
+                productId, telcoClientNumberWidget.getInputNumber()
+            )
         }
     }
 
     private fun renderProductViewPager() {
-        var idProductTab = 6L
+        var idProductTab = DEFAULT_ID_PRODUCT_TAB
         val listProductTab = mutableListOf<TelcoTabItem>()
         tabLayout.getUnifyTabLayout().removeAllTabs()
         listProductTab.add(
-                TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_PULSA,
-                        operatorName, TelcoProductType.PRODUCT_GRID),
-                        TelcoComponentName.PRODUCT_PULSA,
-                        idProductTab++))
+            TelcoTabItem(
+                generateBundleProduct(
+                    TelcoComponentName.PRODUCT_PULSA,
+                    operatorName, TelcoProductType.PRODUCT_GRID
+                ),
+                TelcoComponentName.PRODUCT_PULSA,
+                idProductTab++
+            )
+        )
         listProductTab.add(
-                TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_PAKET_DATA,
-                        operatorName, TelcoProductType.PRODUCT_LIST),
-                        TelcoComponentName.PRODUCT_PAKET_DATA,
-                        idProductTab++))
+            TelcoTabItem(
+                generateBundleProduct(
+                    TelcoComponentName.PRODUCT_PAKET_DATA,
+                    operatorName, TelcoProductType.PRODUCT_LIST
+                ),
+                TelcoComponentName.PRODUCT_PAKET_DATA,
+                idProductTab++
+            )
+        )
         listProductTab.add(
-                TelcoTabItem(generateBundleProduct(TelcoComponentName.PRODUCT_ROAMING,
-                        operatorName, TelcoProductType.PRODUCT_LIST),
-                        TelcoComponentName.PRODUCT_ROAMING,
-                        idProductTab++))
+            TelcoTabItem(
+                generateBundleProduct(
+                    TelcoComponentName.PRODUCT_ROAMING,
+                    operatorName, TelcoProductType.PRODUCT_LIST
+                ),
+                TelcoComponentName.PRODUCT_ROAMING,
+                idProductTab++
+            )
+        )
 
         for (i in 0 until listProductTab.size) {
             tabLayout.addNewTab(listProductTab[i].title)
@@ -503,7 +553,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         setTabFromProductSelected()
     }
 
-    private fun generateBundleProduct(titlePage: String, operatorName: String, productType: Int): Bundle {
+    private fun generateBundleProduct(
+        titlePage: String,
+        operatorName: String,
+        productType: Int
+    ): Bundle {
         val bundle = Bundle()
         bundle.putString(DigitalTelcoProductFragment.TITLE_PAGE, titlePage)
         bundle.putInt(DigitalTelcoProductFragment.PRODUCT_TYPE, productType)
@@ -564,6 +618,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
+        performanceMonitoringStopTrace()
+        val favNumbers = data.favoriteNumbers
+        seamlessFavNumberList.addAll(favNumbers)
+        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
+            autoSelectTabProduct = true
+            telcoClientNumberWidget.run {
+                setInputNumber(favNumbers[0].clientNumber)
+                setContactName(favNumbers[0].clientName)
+            }
+        }
+    }
+
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
     }
@@ -575,38 +642,48 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(
+        clientName: String,
+        clientNumber: String,
+        productId: String,
+        categoryId: String,
+        inputNumberActionTypeIndex: Int
+    ) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         autoSelectTabProduct = true
-        if (orderClientNumber.productId.isNotEmpty() &&
-                orderClientNumber.categoryId.toIntOrNull() ?: 0 == categoryId) {
-            sharedModelPrepaid.setFavNumberSelected(orderClientNumber)
+        if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {
+            sharedModelPrepaid.setFavNumberSelected(productId)
             sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
         }
 
-        telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
-        telcoClientNumberWidget.clearFocusAutoComplete()
+        telcoClientNumberWidget.run {
+            setContactName(clientName)
+            setInputNumber(clientNumber)
+            clearFocusAutoComplete()
+        }
     }
 
-    override fun handleCallbackSearchNumberCancel() {
+    override fun handleCallbackAnySearchNumberCancel() {
         telcoClientNumberWidget.clearFocusAutoComplete()
     }
-    // endregion Favorite Numbers
 
     //region Recent Numbers
     override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         if (operatorName.isNotEmpty()) {
-            topupAnalytics.clickEnhanceCommerceRecentTransaction(topupBillsRecommendation, operatorName,
-                    topupBillsRecommendation.position)
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(
+                topupBillsRecommendation, operatorName,
+                topupBillsRecommendation.position
+            )
         }
 
         generateCheckoutPassData(
-                topupBillsRecommendation.clientNumber,
-                "0",
-                topupBillsRecommendation.categoryId.toString(),
-                topupBillsRecommendation.operatorId.toString(),
-                topupBillsRecommendation.productId.toString())
+            topupBillsRecommendation.clientNumber,
+            "0",
+            topupBillsRecommendation.categoryId.toString(),
+            topupBillsRecommendation.operatorId.toString(),
+            topupBillsRecommendation.productId.toString()
+        )
 
         if (userSession.isLoggedIn) {
             addToCart()
@@ -619,7 +696,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
         inputs[EXPRESS_PARAM_CLIENT_NUMBER] = telcoClientNumberWidget.getInputNumber()
-        val operatorId = checkoutPassData.operatorId ?: ""
+        val operatorId = if (isCheckoutPassDataInitialized()) {
+            checkoutPassData.operatorId ?: ""
+        } else ""
+
         if (operatorId.isNotEmpty()) inputs[EXPRESS_PARAM_OPERATOR_ID] = operatorId
         inputFields = inputs
     }
@@ -632,12 +712,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             val coachMarks = ArrayList<CoachMark2Item>()
-            coachMarks.add(CoachMark2Item(telcoClientNumberWidget,
-                    getString(R.string.Telco_title_showcase_client_number),
-                    getString(R.string.telco_label_showcase_client_number)))
-            coachMarks.add(CoachMark2Item(viewPager,
+            coachMarks.add(
+                CoachMark2Item(
+                    telcoClientNumberWidget,
+                    getString(R.string.telco_title_showcase_client_number),
+                    getString(R.string.telco_label_showcase_client_number)
+                )
+            )
+            coachMarks.add(
+                CoachMark2Item(
+                    viewPager,
                     getString(R.string.telco_title_showcase_promo),
-                    getString(R.string.telco_label_showcase_promo)))
+                    getString(R.string.telco_label_showcase_promo)
+                )
+            )
 
             val coachMark = CoachMark2(this)
             coachMark.showCoachMark(coachMarks)
@@ -649,16 +737,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    private fun generateCheckoutPassData(inputNumber: String, promoStatus: String,
-                                         categoryId: String, operatorId: String, productId: String) {
+    private fun generateCheckoutPassData(
+        inputNumber: String, promoStatus: String,
+        categoryId: String, operatorId: String, productId: String
+    ) {
         checkoutPassData = getDefaultCheckoutPassDataBuilder()
-                .categoryId(categoryId)
-                .clientNumber(inputNumber)
-                .isPromo(promoStatus)
-                .operatorId(operatorId)
-                .productId(productId)
-                .utmCampaign(categoryId)
-                .build()
+            .categoryId(categoryId)
+            .clientNumber(inputNumber)
+            .isPromo(promoStatus)
+            .operatorId(operatorId)
+            .productId(productId)
+            .utmCampaign(categoryId)
+            .build()
     }
 
     override fun onDestroy() {
@@ -682,13 +772,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         const val TELCO_COACH_MARK_HAS_SHOWN = "telco_show_coach_mark"
         const val ID_PRODUCT_EMPTY = "-1"
 
+        private const val DEFAULT_SPACE_HEIGHT = 81
+        private const val DEFAULT_ID_PRODUCT_TAB = 6L
+
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_PREPAID_TRACE = "dg_telco_prepaid_pdp"
 
         private const val TITLE_PAGE = "telco prepaid"
 
-        fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
+        fun newInstance(
+            telcoExtraParam: TopupBillsExtraParam,
+            rechargeProductFromSlice: String = ""
+        ): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)

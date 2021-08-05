@@ -33,7 +33,6 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
-import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -99,15 +98,6 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: NetworkRouter,
-                                  userSession: UserSession):
-            XUserIdInterceptor {
-        return XUserIdInterceptor(context, networkRouter, userSession)
-    }
-
-    @ChatScope
-    @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
                                       userSessionInterface: UserSessionInterface):
             FingerprintInterceptor {
@@ -147,12 +137,10 @@ class ChatModuleStub {
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            xUserIdInterceptor: XUserIdInterceptor):
+                            httpLoggingInterceptor: HttpLoggingInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)

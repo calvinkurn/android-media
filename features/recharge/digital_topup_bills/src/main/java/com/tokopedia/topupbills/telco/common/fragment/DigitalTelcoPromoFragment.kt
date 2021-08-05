@@ -84,15 +84,20 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
                 }
 
                 activity?.let {
-                    val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText(
+                    try {
+                        val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText(
                             CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
-                    )
-                    clipboard.setPrimaryClip(clip)
-                    view?.run {
-                        Toaster.build(this,
+                        )
+
+                        clipboard.setPrimaryClip(clip)
+                        view?.run {
+                            Toaster.build(this,
                                 getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
                                 Snackbar.LENGTH_LONG).show()
+                        }
+                    } catch (e: SecurityException) {
+                        e.printStackTrace()
                     }
                 }
             }

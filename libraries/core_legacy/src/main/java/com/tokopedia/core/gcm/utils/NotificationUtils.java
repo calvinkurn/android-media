@@ -18,29 +18,6 @@ import java.util.List;
  */
 
 public class NotificationUtils {
-    private static final String MOVE_TO_CART_KEY = "MOVE_TO_CART_KEY";
-    private static final String WHICH_FRAGMENT_KEY = "which_fragment_key";
-
-
-    public static Intent configureGeneralIntent(Intent intent) {
-        intent.putExtra("from_notif", true);
-        intent.putExtra("unread", false);
-        return intent;
-    }
-
-    public static Intent configurePromoIntent(Intent intent, Bundle data) {
-        if (data.getInt("keylogin1", -99) != -99) {
-            intent.putExtra(
-                    WHICH_FRAGMENT_KEY,
-                    data.getInt("keylogin1")
-            );
-            intent.putExtra(
-                    MOVE_TO_CART_KEY,
-                    data.getInt("keylogin2")
-            );
-        }
-        return intent;
-    }
 
     /**
      * Set notification channel if device >= oreo
