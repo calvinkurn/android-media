@@ -186,7 +186,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             val intent =
                 RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
             val extras = Bundle()
-            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
+            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
