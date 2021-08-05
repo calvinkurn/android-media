@@ -233,9 +233,9 @@ class PlayViewModel @Inject constructor(
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
     val isAllowMultipleLike: Boolean
-        // TODO: testing multiplelikes on youtube for now..
-        get() = videoPlayer.isYouTube
-//        get() = !videoPlayer.isYouTube && channelType.isLive
+//        get() = videoPlayer.isYouTube // Youtube
+        get() = !videoPlayer.isYouTube && channelType.isVod // Vod
+//        get() = !videoPlayer.isYouTube && channelType.isLive // Live
 
     private var mChannelData: PlayChannelData? = null
 
