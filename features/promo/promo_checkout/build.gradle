@@ -60,6 +60,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
