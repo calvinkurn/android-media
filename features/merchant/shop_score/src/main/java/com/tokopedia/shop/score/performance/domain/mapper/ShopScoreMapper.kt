@@ -215,20 +215,20 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: -1
         with(headerShopPerformanceUiModel) {
             when {
-                shopScore < 0 || shopLevel < 0 -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
-                            ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
-                            ?: ""
-                }
                 shopAge < SHOP_AGE_SIXTY -> {
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
-                            ?: ""
+                        ?: ""
                     this.showCardNewSeller = true
                     val nextSellerDays = SHOP_AGE_SIXTY - shopAge
                     val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
                     val dateNewSellerProjection = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
+                        ?: ""
+                }
+                shopScore < 0 || shopLevel < 0 -> {
+                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
+                            ?: ""
+                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
                             ?: ""
                 }
                 shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
