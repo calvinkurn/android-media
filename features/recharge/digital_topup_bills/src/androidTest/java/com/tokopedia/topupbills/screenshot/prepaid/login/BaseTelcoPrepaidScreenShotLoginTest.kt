@@ -41,6 +41,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewAndScreenShot
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.prepaid.TelcoPrepaidLoginInstrumentTest
@@ -50,6 +51,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.core.AllOf
@@ -75,6 +77,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().toBlocking().first()
+        setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_MENU_DETAIL_LOGIN),
                 MockModelConfig.FIND_BY_CONTAINS)
@@ -93,7 +96,6 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
             putExtra(BaseTelcoActivity.PARAM_CLIENT_NUMBER, "")
         }
         mActivityRule.launchActivity(intent)
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK, null))
@@ -101,7 +103,11 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
 
     @Test
     fun screenshot() {
-        stubSearchNumber()
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        stubSearchNumber(
+            VALID_PHONE_NUMBER,
+            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
+        )
         isCoachmarkDisabled(context, false)
         Thread.sleep(3000)
 
@@ -193,7 +199,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
     }
 
     fun take_screenshot_interaction_product_login() {
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         Thread.sleep(3000)
 
         // Pulsa
@@ -240,27 +246,13 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
 
     fun take_screenshot_recent_widget_login() {
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
 
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         findViewAndScreenShot(R.id.layout_widget, generatePrefix(), "transaksi_terakhir_view")
 
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
         findViewAndScreenShot(R.id.layout_widget, generatePrefix(), "promo_view")
-    }
-
-    private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.isInternal()).respondWith(createOrderNumberTypeManual())
-    }
-
-    private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
-        val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(
-            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
@@ -291,7 +283,7 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
 
     companion object {
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
-        private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        private const val KEY_QUERY_FAV_NUMBER = "rechargeFetchFavoriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
         private const val KEY_QUERY_PRODUCT_MULTI_TAB = "telcoProductMultiTab"
 
