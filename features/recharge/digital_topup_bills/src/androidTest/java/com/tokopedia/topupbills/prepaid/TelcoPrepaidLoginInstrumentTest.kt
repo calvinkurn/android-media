@@ -108,6 +108,7 @@ class TelcoPrepaidLoginInstrumentTest {
         validate_pdp_client_number_widget_interaction()
         validate_tab_menu_login()
         interaction_product_login()
+        interaction_product_mccm()
         validate_recent_widget_login()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
@@ -174,7 +175,7 @@ class TelcoPrepaidLoginInstrumentTest {
         pdp_validateProductViewDisplayed()
         val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(R.id.telco_product_rv))).check(matches(isDisplayed()))
 
-        productItem_click(viewInteraction)
+        productItem_click(viewInteraction, 1)
         Thread.sleep(2000)
         pdp_validateBuyWidgetDisplayed()
 
@@ -183,17 +184,37 @@ class TelcoPrepaidLoginInstrumentTest {
         tabLayout_clickTabWithText("Roaming")
         productItemRv_scrollToPosition(viewInteraction, 8)
         Thread.sleep(2000)
-        productItemRv_scrollToPosition(viewInteraction, 1)
+        productItemRv_scrollToPosition(viewInteraction, 3)
 
         //click tab paket data, click lihat detail and close bottom sheet
         Thread.sleep(2000)
         tabLayout_clickTabWithText("Paket Data")
         pdp_validateBuyWidgetNotDisplayed()
-        productItem_clickSeeMore(viewInteraction, 1)
+        productItem_clickSeeMore(viewInteraction, 2)
         Thread.sleep(2000)
         onView(AllOf.allOf(withId(R.id.telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
         onView(withId(R.id.telco_button_select_item)).perform(click())
     }
+
+    fun interaction_product_mccm() {
+        // click tab paket data, click lihat detail and close bottom sheet
+        val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(R.id.telco_mccm_rv))).check(matches(isDisplayed()))
+        Thread.sleep(2000)
+
+        // click item, should show buy widget
+        productItem_click(viewInteraction, 0)
+        Thread.sleep(2000)
+        pdp_validateBuyWidgetDisplayed()
+        onView(withId(R.id.txt_recharge_checkout_price)).check(matches(withText("Rp 15.500")))
+        Thread.sleep(1000)
+
+        // click see more button, should show see more item
+        productItem_clickSeeMore(viewInteraction, 0)
+        Thread.sleep(2000)
+        onView(AllOf.allOf(withId(R.id.telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
+        onView(withId(R.id.telco_button_select_item)).perform(click())
+    }
+
 
     fun validate_recent_widget_login() {
         clientNumberWidget_clickClearBtn()
@@ -220,7 +241,7 @@ class TelcoPrepaidLoginInstrumentTest {
         private const val EMPTY_TEXT = ""
 
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
-        private const val KEY_QUERY_FAV_NUMBER = "rechargeFetchFavoriteNumber"
+        private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
         private const val KEY_QUERY_PRODUCT_MULTI_TAB = "telcoProductMultiTab"
 

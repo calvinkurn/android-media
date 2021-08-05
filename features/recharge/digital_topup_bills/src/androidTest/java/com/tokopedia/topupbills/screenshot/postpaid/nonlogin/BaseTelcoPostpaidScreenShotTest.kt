@@ -43,6 +43,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
 import org.hamcrest.CoreMatchers.allOf
 import java.lang.StringBuilder
 
@@ -85,19 +86,6 @@ abstract class BaseTelcoPostpaidScreenShotTest {
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
-        val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-                TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
-
-    private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.isInternal()).respondWith(createOrderNumberTypeManual())
-    }
-
     @After
     fun cleanUp() {
         Intents.release()
@@ -105,7 +93,10 @@ abstract class BaseTelcoPostpaidScreenShotTest {
 
     @Test
     fun screenshot() {
-        stubSearchNumber()
+        stubSearchNumber(
+            VALID_PHONE_NUMBER,
+            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
+        )
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_interaction_promo()
@@ -147,7 +138,7 @@ abstract class BaseTelcoPostpaidScreenShotTest {
     }
 
     fun take_screenshot_interaction_promo() {
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
         val viewInteraction = onView(AllOf.allOf(
                 allOf(withId(R.id.recycler_view_menu_component), withParent(withId(R.id.layout_widget)),
@@ -187,7 +178,7 @@ abstract class BaseTelcoPostpaidScreenShotTest {
 
     companion object {
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
-        private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        private const val KEY_QUERY_FAV_NUMBER = "rechargeFetchFavoriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
         private const val KEY_QUERY_ENQUIRY = "enquiry"
 

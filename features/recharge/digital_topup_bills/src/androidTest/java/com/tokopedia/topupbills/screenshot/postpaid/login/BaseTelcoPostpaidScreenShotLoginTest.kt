@@ -38,6 +38,7 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.CoreMatchers
 import org.hamcrest.core.AllOf
@@ -94,7 +95,10 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
 
     @Test
     fun screenshot() {
-        stubSearchNumber()
+        stubSearchNumber(
+            VALID_PHONE_NUMBER,
+            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
+        )
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_enquiry_phone_number()
@@ -138,7 +142,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
     }
 
     fun take_screenshot_enquiry_phone_number() {
-        Espresso.onView(ViewMatchers.withId(R.id.telco_ac_input_number)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(ViewActions.click())
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.telco_buy_widget)).check(ViewAssertions.matches(IsNot.not(ViewMatchers.isDisplayed())))
         Espresso.onView(ViewMatchers.withId(R.id.telco_enquiry_btn))
@@ -212,19 +216,6 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
             val test = mActivityRule.activity.findViewById<RelativeLayout>(R.id.telco_page_container)
             CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout_header_disappear")
         }
-    }
-
-    private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.isInternal()).respondWith(createOrderNumberTypeManual())
-    }
-
-    private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
-        val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-                TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
     private fun scrollRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
