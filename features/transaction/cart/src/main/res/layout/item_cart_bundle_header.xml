@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox_bundle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_bundle"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_bundle"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_bundle_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="@+id/image_bundle"
+        app:layout_constraintEnd_toStartOf="@+id/text_change_bundle"
+        app:layout_constraintStart_toEndOf="@+id/image_bundle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Paket Murah Banget" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        app:flexWrap="wrap"
+        app:layout_constraintEnd_toStartOf="@+id/text_change_bundle"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_bundle"
+        app:layout_constraintTop_toBottomOf="@+id/text_bundle_title">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_bundle_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp100.000" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_slash_price_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:labelType="general_dark_red"
+            tools:labelTitle="60%"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_slash_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_toEndOf="@+id/label_slash_price_percentage"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
+            tools:text="Rp300.000"
+            tools:visibility="visible" />
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_change_bundle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:text="Ubah"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
