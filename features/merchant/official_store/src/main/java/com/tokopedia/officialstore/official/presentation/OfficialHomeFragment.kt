@@ -645,7 +645,16 @@ class OfficialHomeFragment :
         RouteManager.route(context, shopData.url)
     }
 
+    override fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String) {
+        RouteManager.route(requireContext(), applink)
+    }
 
+    override fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int) {
+    }
+
+    override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
+        RouteManager.route(requireContext(), applink)
+    }
 
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.slug.orEmpty()

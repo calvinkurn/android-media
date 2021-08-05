@@ -13,14 +13,17 @@ class OSFeaturedShopDCCallback(private val dcEventHandler: DynamicChannelEventHa
     }
 
     override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
+        dcEventHandler.onSeeAllFeaturedShopDCClicked(channelModel, position, applink)
     }
 
     override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
     }
 
     override fun onFeaturedShopItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        dcEventHandler.onFeaturedShopDCImpressed(channelGrid, position)
     }
 
     override fun onFeaturedShopItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        dcEventHandler.onFeaturedShopDCClicked(channelGrid, position, channelGrid.applink)
     }
 }

@@ -50,6 +50,11 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
     fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
 
+    //featured shop OS
+    fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String)
+    fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int)
+    fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String)
+
     fun getOSCategory(): Category?
     fun isLogin(): Boolean
 
