@@ -34,7 +34,6 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     private var loveList = mutableListOf<Drawable?>()
     private var sizeList = mutableListOf<Pair<Int, Int>>()
     private var sizeMultiplyList = mutableListOf<Float>()
-    private var positionList = mutableListOf<View>()
     private val dotColorList = mutableListOf<Int>()
     private var shot = 0
     private var dot: Drawable? = null
@@ -67,7 +66,6 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         type.recycle()
 
         setDefaultLoveList()
-        setDefaultPositionList(view)
         setDefaultSizeList()
         setDefaultDotList()
         setDefaultDotColorList()
@@ -76,13 +74,6 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     private fun setDefaultLoveList() {
         loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_shipping_voucher))
         loveList.add(ContextCompat.getDrawable(context, R.drawable.ic_play_special_voucher))
-    }
-
-    private fun setDefaultPositionList(view: View) {
-        positionList.add(view.findViewById(R.id.position1))
-        positionList.add(view.findViewById(R.id.position2))
-        positionList.add(view.findViewById(R.id.position3))
-        positionList.add(view.findViewById(R.id.position4))
     }
 
     private fun setDefaultSizeList() {
@@ -168,8 +159,6 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
             val love = loveList[(0 until loveList.size).random()]
             val sizeMultiply = sizeMultiplyList[(0 until sizeMultiplyList.size).random()]
             val size = sizeList[(0 until sizeList.size).random()]
-            val positionIdx = (0 until positionList.size).random()
-            val position = positionList[positionIdx]
 
             love?.let {
                 val dimension = when(SIZE_TYPE) {
@@ -180,7 +169,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                 val image = ImageView(context)
                 image.setImageBitmap(Bitmap.createScaledBitmap(love.toBitmap(), dimension.first, dimension.second, true))
 
-                val coordinate = getImageCoordinate(position)
+                val coordinate = getImageCoordinate()
                 image.x = coordinate.first
                 image.y = coordinate.second
                 image.id = View.generateViewId()
@@ -226,10 +215,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                     val image = ImageView(context)
                     image.setImageBitmap(Bitmap.createScaledBitmap(it.toBitmap(), 20, 20, true))
 
-                    val positionIdx = (0 until positionList.size).random()
-                    val position = positionList[positionIdx]
-
-                    val coordinate = getImageCoordinate(position)
+                    val coordinate = getImageCoordinate()
                     image.x = coordinate.first
                     image.y = coordinate.second
                     image.id = View.generateViewId()
@@ -254,7 +240,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         }
     }
 
-    private fun getImageCoordinate(position: View): Pair<Float, Float> {
+    private fun getImageCoordinate(): Pair<Float, Float> {
         val fixCoordinate = IntArray(2)
         view.getLocationInWindow(fixCoordinate)
 
