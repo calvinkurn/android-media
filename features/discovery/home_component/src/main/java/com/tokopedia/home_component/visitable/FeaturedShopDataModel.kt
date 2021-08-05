@@ -13,10 +13,20 @@ data class FeaturedShopDataModel(
 ) : HomeComponentVisitable {
     override fun visitableId(): String = channelModel.id
 
-    override fun equalsWith(b: Any?): Boolean = b is FeaturedShopDataModel && b.channelModel.channelGrids == channelModel.channelGrids
+    override fun equalsWith(b: Any?): Boolean = isEqualWith(b)
 
     override fun getChangePayloadFrom(b: Any?): Bundle? = Bundle()
 
     override fun type(typeFactory: HomeComponentTypeFactory): Int = typeFactory.type(this)
 
+
+    private fun isEqualWith(newData: Any?): Boolean {
+        if (newData !is FeaturedShopDataModel) return false
+        if (areGridsSame(newData.channelModel)) return true
+        return false
+    }
+
+    private fun areGridsSame(newModel: ChannelModel): Boolean {
+        return channelModel.channelGrids.size == channelModel.channelGrids.size && newModel.channelGrids == channelModel.channelGrids
+    }
 }
