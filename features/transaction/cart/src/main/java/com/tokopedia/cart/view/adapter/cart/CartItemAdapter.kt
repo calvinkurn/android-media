@@ -75,7 +75,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
         fun onCartItemQuantityInputFormClicked(qty: String?)
         fun onCartItemLabelInputRemarkClicked()
         fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean)
-        fun onWishlistCheckChanged(productId: String?, cartId: Long?, imageView: ImageView?)
+        fun onWishlistCheckChanged(productId: String?, cartId: String?, imageView: ImageView?)
         fun onNeedToRefreshSingleShop(parentPosition: Int)
         fun onNeedToRefreshWeight(parentPosition: Int)
         fun onNeedToRefreshMultipleShop()

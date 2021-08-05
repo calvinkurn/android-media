@@ -14,14 +14,14 @@ data class CartItemData(
         var isWarning: Boolean = false,
         var isDisableAllProducts: Boolean = false,
         var isFulfillment: Boolean = false,
-        var selectedUnavailableActionId: Int = 0,
+        var selectedUnavailableActionId: String = "",
         var selectedUnavailableActionLink: String = "",
         var shouldValidateWeight: Boolean = false
 ) : Parcelable {
 
     @Parcelize
     data class OriginData(
-            var cartId: Long = 0,
+            var cartId: String = "",
             var parentId: String = "",
             var productId: String = "",
             var productName: String = "",
@@ -67,7 +67,7 @@ data class CartItemData(
             var preOrderInfo: String = "",
             var cartString: String = "",
             var isCheckboxState: Boolean = false,
-            var warehouseId: Int = 0,
+            var warehouseId: String = "",
             var promoCodes: String = "",
             var promoDetails: String = "",
             var priceOriginal: Long = 0,
@@ -80,7 +80,7 @@ data class CartItemData(
             var initialPriceBeforeDrop: Long = 0,
             var productInformation: List<String> = emptyList(),
             var productAlertMessage: String = "",
-            var campaignId: Int = 0,
+            var campaignId: String = "",
             var isTokoNow: Boolean = false
     ) : Parcelable
 
@@ -93,15 +93,6 @@ data class CartItemData(
 
         fun resetQuantity() {
             quantity = 0
-        }
-
-        fun decreaseQuantity() {
-            if (quantity > 0)
-                this.quantity--
-        }
-
-        fun increaseQuantity() {
-            this.quantity++
         }
 
     }

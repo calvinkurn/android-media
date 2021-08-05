@@ -177,7 +177,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             promoCodes = availableGroup.promoCodes
             maximumWeightWording = availableGroup.shop.maximumWeightWording
             maximumShippingWeight = availableGroup.shop.maximumShippingWeight
-            cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, this, cartDataListResponse, false, actionsData, 0, "")
+            cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, this, cartDataListResponse, false, actionsData, "", "")
 
             preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
             isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
@@ -242,7 +242,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                           cartDataListResponse: CartDataListResponse,
                                           isDisabledAllProduct: Boolean,
                                           actionsData: List<ActionData>,
-                                          selectedUnavailableActionId: Int,
+                                          selectedUnavailableActionId: String,
                                           errorType: String): MutableList<CartItemHolderData> {
         val cartItemHolderDataList = arrayListOf<CartItemHolderData>()
         cartDetails?.forEach {
@@ -268,7 +268,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                 shopGroupData: Any,
                                 cartDataListResponse: CartDataListResponse,
                                 isDisabledAllProduct: Boolean,
-                                selectedUnavailableActionId: Int): CartItemData {
+                                selectedUnavailableActionId: String): CartItemData {
         return CartItemData().let {
             it.originData = mapOriginData(cartDetail, shopGroup)
             it.updatedData = mapUpdatedData(cartDetail, cartDataListResponse)
@@ -316,8 +316,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapOriginData(cartDetail: CartDetail, shopData: Any): CartItemData.OriginData {
         return CartItemData.OriginData().let {
             it.cartId = cartDetail.cartId
-            it.parentId = cartDetail.product.parentId.toString()
-            it.productId = cartDetail.product.productId.toString()
+            it.parentId = cartDetail.product.parentId
+            it.productId = cartDetail.product.productId
             it.productName = cartDetail.product.productName
             it.minOrder = cartDetail.product.productMinOrder
             it.maxOrder = if (cartDetail.product.productSwitchInvenage == 0) {
@@ -348,7 +348,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
             it.freeReturnLogo = cartDetail.product.freeReturns.freeReturnsLogo
             it.category = cartDetail.product.category
-            it.categoryId = cartDetail.product.categoryId.toString()
+            it.categoryId = cartDetail.product.categoryId
             it.wholesalePriceData = mapWholeSalePriceDataList(cartDetail.product.wholesalePrice)
             it.trackerAttribution = cartDetail.product.productTrackerData.attribution
             it.trackerListName = cartDetail.product.productTrackerData.trackerListName
@@ -440,7 +440,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                     cartItemDataList.let {
                         for (cartItemHolderData in cartItemDataList) {
                             val originData = cartItemHolderData.cartItemData.originData
-                            if (originData.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {
+                            if (originData.productId.equals(trackingDetail.productId, ignoreCase = true)) {
                                 originData.promoCodes = trackingDetail.promoCodesTracking
                                 originData.promoDetails = trackingDetail.promoDetailsTracking
                             }
@@ -513,7 +513,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupWithErrorDataList(unavailableGroups: List<UnavailableGroup>,
                                               cartDataListResponse: CartDataListResponse,
                                               actionsData: List<ActionData>,
-                                              selectedUnavailableActionId: Int,
+                                              selectedUnavailableActionId: String,
                                               errorType: String): List<ShopGroupWithErrorData> {
         val shopGroupWithErrorDataList = arrayListOf<ShopGroupWithErrorData>()
         unavailableGroups.forEach {
@@ -527,7 +527,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupWithErrorData(unavailableGroup: UnavailableGroup,
                                           cartDataListResponse: CartDataListResponse,
                                           actionsData: List<ActionData>,
-                                          selectedUnavailableActionId: Int,
+                                          selectedUnavailableActionId: String,
                                           errorType: String): ShopGroupWithErrorData {
         return ShopGroupWithErrorData().let {
             it.isError = !unavailableGroup.errors.isNullOrEmpty()

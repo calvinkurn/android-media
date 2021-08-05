@@ -6,7 +6,7 @@ import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.NicotineLiteMessageData
 
 data class DisabledCartItemHolderData(
-        var cartId: Long = 0,
+        var cartId: String = "",
         var productId: String = "",
         var productImage: String = "",
         var productName: String = "",
@@ -15,7 +15,7 @@ data class DisabledCartItemHolderData(
         var showDivider: Boolean = true,
         var data: CartItemData? = CartItemData(),
         var actionsData: List<ActionData> = emptyList(),
-        var selectedUnavailableActionId: Int = 0,
+        var selectedUnavailableActionId: String = "",
         var selectedUnavailableActionLink: String = "",
         var errorType: String = ""
 )

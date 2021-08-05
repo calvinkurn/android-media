@@ -148,7 +148,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val removeAllItems = allCartItemData.size == removedCartItems.size
             val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
-                toBeDeletedCartIds.add(cartItemData.originData.cartId.toString())
+                toBeDeletedCartIds.add(cartItemData.originData.cartId)
             }
 
             deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
@@ -381,7 +381,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         for (cartItemData in cartItemDataList) {
             if (!onlyTokoNowProducts || (onlyTokoNowProducts && cartItemData.originData.isTokoNow)) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData.cartId.toString()
+                updateCartRequest.cartId = cartItemData.originData.cartId
                 updateCartRequest.notes = cartItemData.updatedData.remark
                 updateCartRequest.quantity = cartItemData.updatedData.quantity
                 updateCartRequestList.add(updateCartRequest)
@@ -678,8 +678,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     private fun getEnhancedECommerceProductCartMapData(cartItemData: CartItemData): EnhancedECommerceProductCartMapData {
         return EnhancedECommerceProductCartMapData().apply {
-            setCartId(cartItemData.originData.cartId.toString())
-            setDimension45(cartItemData.originData.cartId.toString())
+            setCartId(cartItemData.originData.cartId)
+            setDimension45(cartItemData.originData.cartId)
             setProductName(cartItemData.originData.productName)
             setProductID(cartItemData.originData.productId)
             setPrice(cartItemData.originData.pricePlanInt.toString())
@@ -998,7 +998,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         cartItemData.originData.trackerAttribution
                     }
             )
-            setDimension45(cartItemData.originData.cartId.toString())
+            setDimension45(cartItemData.originData.cartId)
             setDimension54(cartItemData.isFulfillment)
             setDimension53(cartItemData.originData.priceOriginal > 0)
             setProductName(cartItemData.originData.productName)
@@ -1018,9 +1018,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setShopType(cartItemData.originData.shopTypeInfoData.shopType)
             setShopName(cartItemData.originData.shopName)
             setCategoryId(cartItemData.originData.categoryId)
-            setWarehouseId(cartItemData.originData.warehouseId.toString())
+            setWarehouseId(cartItemData.originData.warehouseId)
             setProductWeight(cartItemData.originData.weightPlan.toString())
-            setCartId(cartItemData.originData.cartId.toString())
+            setCartId(cartItemData.originData.cartId)
             setPromoCode(cartItemData.originData.promoCodes)
             setPromoDetails(cartItemData.originData.promoDetails)
             setDimension83(
@@ -1030,7 +1030,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     }
             )
-            setCampaignId(cartItemData.originData.campaignId.toString())
+            setCampaignId(cartItemData.originData.campaignId)
         }
         return enhancedECommerceProductCartMapData
     }

@@ -2,13 +2,9 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by Irfan Khoirul on 2019-10-16.
- */
-
 data class AvailableGroup(
         @SerializedName("user_address_id")
-        val userAddressId: Int = 0,
+        val userAddressId: String = "",
         @SerializedName("shipment_information")
         val shipmentInformation: ShipmentInformation = ShipmentInformation(),
         @SerializedName("cart_string")

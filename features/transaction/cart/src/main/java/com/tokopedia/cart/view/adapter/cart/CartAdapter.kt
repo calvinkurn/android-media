@@ -819,7 +819,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             if (any is CartShopHolderData) {
                 any.shopGroupAvailableData?.cartItemDataList?.let { cartItemHolderDataList ->
                     innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
-                        if (cartItemHolderData.cartItemData.originData.cartId.toString() == cartId) {
+                        if (cartItemHolderData.cartItemData.originData.cartId == cartId) {
                             return index
                         }
                     }
@@ -967,7 +967,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     obj.shopGroupAvailableData?.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
                             cartItemHolderData.cartItemData.originData.let { data ->
-                                if (cartIds.contains(data.cartId.toString())) {
+                                if (cartIds.contains(data.cartId)) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
                                     if (!toBeUpdatedIndex.contains(i)) {
                                         toBeUpdatedIndex.add(i)
@@ -986,7 +986,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
 
                 // For disabled / unavailable item, also delete other item (shop, unavailable reason, unavailable header, accordion) if needed
-                is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId.toString())) {
+                is DisabledCartItemHolderData -> if (cartIds.contains(obj.cartId)) {
                     if (i < 1) {
                         continue@loop
                     }
