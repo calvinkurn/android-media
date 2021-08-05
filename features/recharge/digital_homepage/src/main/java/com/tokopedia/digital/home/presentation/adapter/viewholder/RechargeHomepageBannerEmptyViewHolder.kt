@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -44,9 +45,17 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
                     recharge_home_banner_empty_text_container.layoutParams = this
                 }
 
-                iv_recharge_home_banner_empty.layoutParams.height = CONTENT_MARGIN_TOP_DP + recharge_home_banner_empty_text_container.height +
-                        resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-                iv_recharge_home_banner_empty.requestLayout()
+                val vto = recharge_home_banner_empty_text_container.viewTreeObserver
+                vto.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        recharge_home_banner_empty_text_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                        iv_recharge_home_banner_empty.layoutParams.height = CONTENT_MARGIN_TOP_DP +
+                                recharge_home_banner_empty_text_container.measuredHeight +
+                                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                        iv_recharge_home_banner_empty.requestLayout()
+                    }
+                })
             }
         }
     }
