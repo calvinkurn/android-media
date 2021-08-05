@@ -1,12 +1,15 @@
 package com.tokopedia.media.common
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import com.tokopedia.media.common.common.UrlBuilder.urlBuilder
+import com.tokopedia.media.common.data.MediaBitmapSize
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
+@SuppressLint("StaticFieldLeak")
 object Loader {
 
     private var context: Context? = null
@@ -33,6 +36,11 @@ object Loader {
         return if (isAdaptiveImage) {
             urlBuilder(networkState, settings.qualitySettings(), url)
         } else url
+    }
+
+    fun bitmapSize(): MediaBitmapSize? {
+        if (context == null) return null
+        return MediaBitmapSize(context)
     }
 
 }

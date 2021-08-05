@@ -172,6 +172,7 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
+import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -288,6 +289,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var tokopointsCoachmarkPosition: Int? = null
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
@@ -726,33 +728,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
 
-        //add location
-        if (isLocalizingAddressNeedShowCoachMark(requireContext())) {
-            val chooseLocationWidget = getLocationWidgetView()
-            chooseLocationWidget?.let {
-                if (it.isVisible) {
-                    this.add(
-                            ChooseAddressUtils.coachMark2Item(requireContext(), chooseLocationWidget)
-                    )
-                }
-            }
-        }
         //add balance widget
         //uncomment this to activate balance widget coachmark
-
-        if (!skipBalanceWidget && !isBalanceWidgetCoachmarkShown(requireContext())) {
-            val balanceWidget = getTokopointsBalanceWidgetView()
-            balanceWidget?.let {
-                this.add(
-                        CoachMark2Item(
-                                balanceWidget,
-                                getString(R.string.onboarding_coachmark_wallet_title),
-                                getString(R.string.onboarding_coachmark_wallet_description)
-                        )
-                )
-            }
-        }
-
         if (isUsingWalletApp()) {
             if (!skipBalanceWidget && !isWalletAppCoachmarkShown(requireContext())) {
                 val gopayWidget = getGopayBalanceWidgetView()
@@ -798,7 +775,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(skipBalanceWidget: Boolean = false) {
-        if (checkNavigationOnboardingFinished() && !bottomSheetIsShowing) {
+        if (!bottomSheetIsShowing) {
             context?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachmark = CoachMark2(it)
@@ -1498,9 +1475,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                 if (!isTokopointsOrOvoFailed) {
                     showCoachMark()
+                } else {
+                    showCoachMark(skipBalanceWidget = true)
                 }
-            } else {
-                showCoachMark(skipBalanceWidget = true)
             }
         }
     }
@@ -1877,6 +1854,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         it.startActivity(intentHome)
                     }
                     it.finish()
+                }
+            }
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
+                    if (isSuccessRegister && getUserSession().isLoggedIn) {
+                        gotoNewUserZonePage()
+                    }
                 }
             }
         }
@@ -2938,5 +2923,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun getErrorString(e: Throwable) : String {
         return ErrorHandler.getErrorMessage(requireContext(), e)
+    }
+
+    private fun gotoNewUserZonePage() {
+        activity?.let {
+            val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+            val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+            intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            it.startActivities(arrayOf(intentHome, intentNewUser))
+            it.finish()
+        }
     }
 }
