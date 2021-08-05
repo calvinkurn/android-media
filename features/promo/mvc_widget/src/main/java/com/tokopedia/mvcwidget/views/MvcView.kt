@@ -10,26 +10,24 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
 import java.lang.ref.WeakReference
-import java.util.*
 
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
-    companion object{
+    companion object {
         const val REQUEST_CODE = 121
         const val RESULT_CODE_OK = 1
     }
 
     lateinit var imageChevron: AppCompatImageView
-    lateinit var imageCouponBg: AppCompatImageView
     lateinit var mvcTextContainerFirst: MvcTextContainer
     lateinit var mvcTextContainerSecond: MvcTextContainer
     lateinit var mvcContainer: View
 
-    lateinit var mvcAnimationHandler: MvcAnimationHandler
-    private var startActivityForResultFunction: (() -> Unit)? =null
+    var mvcAnimationHandler: MvcAnimationHandler
+    private var startActivityForResultFunction: (() -> Unit)? = null
 
     var shopId: String = ""
 
@@ -41,7 +39,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         initViews()
         setClicks()
 
-        mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst),WeakReference(mvcTextContainerSecond))
+        mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
     }
 
     private fun initViews() {
@@ -53,12 +51,12 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            if(startActivityForResultFunction!=null){
+            if (startActivityForResultFunction != null) {
                 startActivityForResultFunction?.invoke()
-            }else{
-                if (context is AppCompatActivity){
+            } else {
+                if (context is AppCompatActivity) {
                     (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
-                }else{
+                } else {
                     (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
                 }
             }
@@ -67,7 +65,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int, startActivityForResultFunction:(() -> Unit)? = null) {
+    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int, startActivityForResultFunction: (() -> Unit)? = null) {
         this.source = source
         this.shopId = shopId
         this.startActivityForResultFunction = startActivityForResultFunction
@@ -75,18 +73,19 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     }
 
     private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {
+        mvcAnimationHandler.stopAnimation()
 
         if (!animatedInfos.isNullOrEmpty()) {
-            if(animatedInfos.size == 1){
+            mvcAnimationHandler.animatedInfoList = animatedInfos
+
+            if (animatedInfos.size == 1) {
                 val animatedInfo = animatedInfos.first()
                 animatedInfo?.let {
                     mvcTextContainerFirst.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
                 }
-            }else{
-                    mvcAnimationHandler.animatedInfoList = animatedInfos
-                    mvcAnimationHandler.startTimer()
+            } else {
+                mvcAnimationHandler.startTimer()
             }
-
         }
     }
 

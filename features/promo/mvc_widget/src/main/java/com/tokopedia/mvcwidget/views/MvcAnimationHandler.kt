@@ -17,15 +17,15 @@ import java.util.*
 
 class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, val secondContainer: WeakReference<MvcTextContainer>) {
     lateinit var animatedInfoList: List<AnimatedInfos?>
-    var currentPositionAnimationInfo = 0
+    private var currentPositionAnimationInfo = 0
 
-    var visibleContainer = firstContainer
-    var invisibleContainer = secondContainer
-    var isAnimationStarted = false
-    var animatorSet:AnimatorSet?=null
-    var timer:Timer?=null
+    private var visibleContainer = firstContainer
+    private var invisibleContainer = secondContainer
+    private var isAnimationStarted = false
+    private var animatorSet:AnimatorSet?=null
+    private var timer:Timer?=null
 
-    val animListener = object :Animator.AnimatorListener{
+    private val animListener = object :Animator.AnimatorListener{
         override fun onAnimationStart(animation: Animator?) {
 
         }
@@ -54,7 +54,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
         })
     }
 
-    fun animateView() {
+    private fun animateView() {
         checkToCancelTimer()
         isAnimationStarted = true
 
@@ -62,7 +62,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
         animateTwoViews(visibleContainer,invisibleContainer)
     }
 
-    fun setDataIntoViews(){
+    private fun setDataIntoViews(){
         if (!::animatedInfoList.isInitialized) return
 
         val visibleDataPos = if (currentPositionAnimationInfo == animatedInfoList.size) 0 else currentPositionAnimationInfo
@@ -72,6 +72,11 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
         visibleContainer.get()?.setData(animatedInfoList[visibleDataPos])
         invisibleContainer.get()?.setData(animatedInfoList[invisibleDataPos])
 
+    }
+
+    fun stopAnimation(){
+        timer?.cancel()
+        reset()
     }
 
     fun startTimer(){
@@ -92,7 +97,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
         },START_DELAY,INTERVAL)
     }
 
-    fun afterAnimationComplete(){
+    private fun afterAnimationComplete(){
         if (!::animatedInfoList.isInitialized) return
 
         //switch container reference
@@ -108,7 +113,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
             currentPositionAnimationInfo = 0
     }
 
-    fun reset() {
+    private fun reset() {
 
         firstContainer.get()?.clearAnimation()
         secondContainer.get()?.clearAnimation()
@@ -121,12 +126,10 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
 
         visibleContainer = firstContainer
         invisibleContainer = secondContainer
-
-        setDataIntoViews()
     }
 
     @SuppressLint("Recycle")
-    fun animateTwoViews(viewOne:WeakReference<MvcTextContainer>, viewTwo:WeakReference<MvcTextContainer>){
+    private fun animateTwoViews(viewOne:WeakReference<MvcTextContainer>, viewTwo:WeakReference<MvcTextContainer>){
 
         viewOne.get()?.let {v1->
 
