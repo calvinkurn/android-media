@@ -47,8 +47,6 @@ abstract class GqlUseCase<P, out R> {
     ): T {
         val parameters = if (params is Map<*, *>) params as Map<String, Any> else mapOf()
 
-        if (parameters.entries.isEmpty()) throw Exception("UseCase : No param found")
-
         val request = GraphqlRequest(graphqlQuery(), T::class.java, parameters)
         val response = repository.getReseponse(listOf(request))
 

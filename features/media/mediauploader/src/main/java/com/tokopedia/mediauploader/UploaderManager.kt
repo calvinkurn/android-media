@@ -63,9 +63,6 @@ class UploaderManager constructor(
 
         return when {
             !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
-            !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
-                formatNotAllowedMessage(sourcePolicy.imagePolicy.extension)
-            )
             else -> onUpload(sourcePolicy)
         }
     }
