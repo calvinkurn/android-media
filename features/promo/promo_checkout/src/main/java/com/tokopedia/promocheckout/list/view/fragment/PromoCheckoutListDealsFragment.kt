@@ -153,7 +153,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment() {
         if (isCouponActive) {
             promoCheckoutListViewModel.getPromoList(serviceId, categoryId, page)
         }
-        promoCheckoutListViewModel.getPromoLastSeen(listOf(categoryId))
+        dealsPromoCheckoutListViewModel.getListTravelCollectiveBanner()
     }
 
     companion object {
