@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -202,12 +203,26 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
+        safeguardQuantityEditorInput(nonVariant)
+
         val inputQuantity = editText.text.toString().toIntOrZero()
 
         addButton.isEnabled = inputQuantity < nonVariant.maxQuantity
         subtractButton.isEnabled = inputQuantity > nonVariant.minQuantity
 
         editorChangeQuantity(inputQuantity)
+    }
+
+    private fun QuantityEditorUnify.safeguardQuantityEditorInput(
+            nonVariant: ProductCardModel.NonVariant
+    ) {
+        val userQuantity = editText.text.toString().replace(".", "").toIntOrZero()
+        val quantityRange = nonVariant.minQuantity..nonVariant.maxQuantity
+        val coercedQuantity = userQuantity.coerceIn(quantityRange)
+        val coercedQuantityString = coercedQuantity.toString()
+
+        editText.setText(coercedQuantityString, TextView.BufferType.EDITABLE)
+        editText.setSelection(coercedQuantityString.length)
     }
 
     private fun editorChangeQuantity(inputQuantity: Int) {

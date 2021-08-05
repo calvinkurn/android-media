@@ -637,8 +637,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                         if (isViewFullMap) {
                             trackingHotelUtil.searchCloseMap(context,
-                                    searchDestinationName,
                                     searchDestinationType,
+                                    searchDestinationName,
                                     SEARCH_SCREEN_NAME)
                             isViewFullMap = false
                         }
@@ -668,8 +668,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
-                                    searchDestinationName,
                                     searchDestinationType,
+                                    searchDestinationName,
                                     SEARCH_SCREEN_NAME)
                             isViewFullMap = true
                         }
@@ -897,8 +897,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             wrapper.addView(textView)
             wrapper.setOnClickListener {
                 trackingHotelUtil.searchNearLocation(context,
-                        searchDestinationName,
                         searchDestinationType,
+                        searchDestinationName,
                         SEARCH_SCREEN_NAME)
 
                 onSearchByMap()
@@ -1000,8 +1000,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun initGetMyLocation() {
         ivGetLocationHotelSearchMap.setOnClickListener {
             trackingHotelUtil.searchClickMyLocation(context,
-                    searchDestinationName,
                     searchDestinationType,
+                    searchDestinationName,
                     SEARCH_SCREEN_NAME)
 
             isSearchByMap = true
