@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="@string/recharge_home_empty_banner_title"
             android:textColor="@color/Unify_N0"
-            app:typographyType="heading_2" />
+            app:typographyType="heading_4" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_recharge_home_banner_empty_desc"
