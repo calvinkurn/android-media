@@ -20,14 +20,14 @@ class HotelCheckVoucherUseCase @Inject constructor(private val graphqlRepository
                                               val checkVoucherMapper: HotelCheckVoucherMapper) :
     GraphqlUseCase<HotelCheckVoucher.Response>(graphqlRepository) {
 
-    suspend fun execute(requestParams: RequestParams?, onMessageColorChange: () -> String): Result<DataUiModel> {
+    suspend fun execute(requestParams: RequestParams?, onMessageColorChange: String): Result<DataUiModel> {
         return try{
             this.setTypeClass(HotelCheckVoucher.Response::class.java)
             this.setGraphqlQuery(PromoQuery.promoCheckoutHotelCheckVoucher())
             this.setRequestParams(mapOf(PARAMNAME_DATA to requestParams?.parameters))
 
             val data = this.executeOnBackground()
-            data.response.messageColor = onMessageColorChange()
+            data.response.messageColor = onMessageColorChange
             if(data.response.isSuccess){
                 Success(checkVoucherMapper.mapData(data.response))
             }else{

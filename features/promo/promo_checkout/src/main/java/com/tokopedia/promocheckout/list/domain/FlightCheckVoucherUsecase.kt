@@ -23,7 +23,7 @@ class FlightCheckVoucherUsecase  @Inject constructor(private val graphqlReposito
 ) :
     GraphqlUseCase<FlightCheckVoucher.Response>(graphqlRepository) {
 
-    suspend fun execute(requestParams: RequestParams?, onMessageColorChange: () -> String): Result<DataUiModel> {
+    suspend fun execute(requestParams: RequestParams?, onMessageColorChange: String): Result<DataUiModel> {
         return try{
             val gqlRequest = GraphqlRequest(PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CHECK_VOUCHER, FlightCheckVoucher.Response::class.java, requestParams?.parameters)
             val data = graphqlRepository.getReseponse(listOf(gqlRequest))
@@ -34,7 +34,7 @@ class FlightCheckVoucherUsecase  @Inject constructor(private val graphqlReposito
                 Fail(MessageErrorException(errorMessage.title))
             }else{
                 val checkVoucherData = data.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
-                checkVoucherData.messageColor = onMessageColorChange()
+                checkVoucherData.messageColor = onMessageColorChange
                 Success(checkVoucherMapper.mapData(checkVoucherData))
             }
         }catch (t: Throwable){

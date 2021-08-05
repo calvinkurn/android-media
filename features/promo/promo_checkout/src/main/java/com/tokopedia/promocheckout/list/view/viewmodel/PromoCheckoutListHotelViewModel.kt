@@ -29,7 +29,7 @@ class PromoCheckoutListHotelViewModel @Inject constructor(private val dispatcher
         launchCatchError(block = {
             showLoadingPromoHotel.postValue( false)
             _hotelCheckVoucherResult.postValue(hotelCheckVoucherUseCase.
-                execute(hotelCheckVoucherUseCase.createRequestParams(promoCode,cartID), onMessageColorChange = { hexColor })
+                execute(hotelCheckVoucherUseCase.createRequestParams(promoCode,cartID), onMessageColorChange = hexColor)
             )
         }){
             showLoadingPromoHotel.postValue( false)
