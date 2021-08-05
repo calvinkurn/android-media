@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.databinding.HolderItemCartNewBinding
+import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
@@ -21,7 +21,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = HolderItemCartNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCartProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CartItemViewHolder(binding, actionListener)
     }
 
