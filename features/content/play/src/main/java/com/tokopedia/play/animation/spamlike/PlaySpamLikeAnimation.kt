@@ -26,7 +26,8 @@ import kotlinx.coroutines.*
  */
 
 class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
-    private val view: View
+
+    private val view: View = View.inflate(context, R.layout.layout_play_spam_like, this)
 
     /**
      * Custom
@@ -55,8 +56,6 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     private val imageList = mutableListOf<ImageView>()
 
     init {
-        view = View.inflate(context, R.layout.layout_play_spam_like, this)
-
         val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlaySpamLikeAnimation)
 
         isBouncing = type.getBoolean(R.styleable.PlaySpamLikeAnimation_bouncing, false)
@@ -258,7 +257,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
      * 4. Setup Initial X Direction
      * 5. Animate
      */
-    private fun startAnimate(image: ImageView, isDot: Boolean = false) {
+    private fun startAnimate(image: ImageView) {
         val start = image.y
         val end = image.y - 500
 
