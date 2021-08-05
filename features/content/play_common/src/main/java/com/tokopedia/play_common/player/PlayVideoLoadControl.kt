@@ -33,14 +33,9 @@ class PlayVideoLoadControl private constructor(
 
     private var preventLoading: Boolean = false
 
-
-    override fun shouldContinueLoading(
-        playbackPositionUs: Long,
-        bufferedDurationUs: Long,
-        playbackSpeed: Float
-    ): Boolean {
+    override fun shouldContinueLoading(bufferedDurationUs: Long, playbackSpeed: Float): Boolean {
         return if (preventLoading) false
-        else loadControl.shouldContinueLoading(playbackPositionUs, bufferedDurationUs, playbackSpeed)
+        else loadControl.shouldContinueLoading(bufferedDurationUs, playbackSpeed)
     }
 
     fun setPreventLoading(shouldPrevent: Boolean) {
