@@ -256,7 +256,7 @@ class OfficialHomeMapper (
                 newList.add(newData.copy())
             } else newList.add(it)
         }
-        adapter?.submitList(newList)
+        adapter?.submitList(newList.toMutableList())
     }
 
     fun removeFeaturedShopDC(newData: FeaturedShopDataModel, adapter: OfficialHomeAdapter?) {
@@ -266,6 +266,6 @@ class OfficialHomeMapper (
                 newList.add(it)
             }
         }
-        adapter?.submitList(newList)
+        adapter?.submitList(newList.toMutableList())
     }
 }
