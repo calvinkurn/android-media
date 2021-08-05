@@ -165,30 +165,17 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                     PlaySpamLikeSize.MULTIPLY -> getDimensionMultiply(love, sizeMultiply)
                 }
 
-                val image = ImageView(context)
-                image.setImageBitmap(Bitmap.createScaledBitmap(love.toBitmap(), dimension.first, dimension.second, true))
-
-                val coordinate = getImageCoordinate()
-                image.x = coordinate.first
-                image.y = coordinate.second
-                image.id = View.generateViewId()
+                val image = prepareImage(love, dimension)
 
                 parentView?.addView(image)
-
                 startAnimate(image)
+                imageList.add(image)
 
                 setShot(INCREASE_SHOT)
-                imageList.add(image)
 
                 CoroutineScope(Dispatchers.IO + job).launch {
                     delay(DURATION)
-                    withContext(Dispatchers.Main) {
-                        synchronized(imageList) {
-                            parentView?.removeView(image)
-                            imageList.remove(image)
-                            setShot(DECREASE_SHOT)
-                        }
-                    }
+                    removeImageFromView(image)
                 }
 
                 if(isAdditionalShot) {
@@ -211,28 +198,15 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                 dot?.let {
                     DrawableCompat.setTint(it, dotColorList[(0 until dotColorList.size).random()])
 
-                    val image = ImageView(context)
-                    image.setImageBitmap(Bitmap.createScaledBitmap(it.toBitmap(), 20, 20, true))
-
-                    val coordinate = getImageCoordinate()
-                    image.x = coordinate.first
-                    image.y = coordinate.second
-                    image.id = View.generateViewId()
+                    val image = prepareImage(it, Pair(20, 20))
 
                     parentView?.addView(image)
-
                     startAnimate(image)
-
                     imageList.add(image)
 
                     CoroutineScope(Dispatchers.IO + job).launch {
                         delay(DURATION)
-                        withContext(Dispatchers.Main) {
-                            synchronized(imageList) {
-                                parentView?.removeView(image)
-                                imageList.remove(image)
-                            }
-                        }
+                        removeImageFromView(image, false)
                     }
                 }
             }
@@ -247,6 +221,28 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         val y = fixCoordinate[1].toFloat() + view.measuredHeight
 
         return Pair(x, y)
+    }
+
+    private fun prepareImage(drawable: Drawable, size: Pair<Int, Int>): ImageView {
+        val image = ImageView(context)
+        image.setImageBitmap(Bitmap.createScaledBitmap(drawable.toBitmap(), size.first, size.second, true))
+
+        val coordinate = getImageCoordinate()
+        image.x = coordinate.first
+        image.y = coordinate.second
+        image.id = View.generateViewId()
+
+        return image
+    }
+
+    private suspend fun removeImageFromView(image: ImageView, isDecreaseShot: Boolean = true) {
+        withContext(Dispatchers.Main) {
+            synchronized(imageList) {
+                parentView?.removeView(image)
+                imageList.remove(image)
+                if(isDecreaseShot) setShot(DECREASE_SHOT)
+            }
+        }
     }
 
     /**
