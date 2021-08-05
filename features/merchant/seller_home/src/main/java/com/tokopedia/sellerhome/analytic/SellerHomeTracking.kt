@@ -72,7 +72,7 @@ object SellerHomeTracking {
         val map = createEventMap(
                 TrackingConstant.CLICK_HOMEPAGE,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, TrackingConstant.EMPTY_STATE).joinToString(" - "),
                 arrayOf(dataKey, emptyStatus, title).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
