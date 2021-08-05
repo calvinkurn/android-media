@@ -50,9 +50,12 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
                     override fun onGlobalLayout() {
                         recharge_home_banner_empty_text_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
+                        val location = intArrayOf(0,0)
+                        recharge_home_banner_empty_text_container.getLocationOnScreen(location)
+
                         iv_recharge_home_banner_empty.layoutParams.height = recharge_home_banner_empty_text_container.measuredHeight +
-                                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) +
-                                resources.getDimensionPixelSize(R.dimen.recharge_empty_banner_bg_height)
+                                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) +
+                                location[1]
                         iv_recharge_home_banner_empty.requestLayout()
                     }
                 })
