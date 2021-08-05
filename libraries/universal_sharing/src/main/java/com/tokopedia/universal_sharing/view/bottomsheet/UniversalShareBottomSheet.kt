@@ -76,6 +76,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var screenshotDetector: ScreenshotDetector? = null
 
         private const val DELAY_TIME_MILLISECOND = 500L
+        const val CUSTOM_SHARE_SHEET = 1
+        const val SCREENSHOT_SHARE_SHEET = 2
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -106,6 +108,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 }
                 screenshotDetector?.detectScreenshots(fragment)
             }
+        }
+
+        //Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
+        //This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
+        fun getShareBottomSheetType() : Int{
+            var shareSheetType = CUSTOM_SHARE_SHEET
+            if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+                shareSheetType = SCREENSHOT_SHARE_SHEET
+            }
+            return shareSheetType
         }
 
         fun getScreenShotDetector(): ScreenshotDetector? {
