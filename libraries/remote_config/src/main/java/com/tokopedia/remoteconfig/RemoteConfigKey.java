@@ -119,6 +119,8 @@ public class RemoteConfigKey {
 
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
+    public static final String REMOTE_CONFIG_APP_WORDING_TOKONOW_USP_PDP = "app_wording_tokonow_usp_pdp";
+
     public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";

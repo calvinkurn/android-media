@@ -41,7 +41,6 @@
         <activity
             android:name="com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity"
             android:label="@string/title_activity_reputation_review"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

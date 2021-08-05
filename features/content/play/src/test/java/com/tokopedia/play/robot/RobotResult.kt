@@ -24,4 +24,10 @@ interface RobotResult {
                 .assertThat(this)
                 .isEqualTo(expected)
     }
+
+    fun <T: Any> Any.isInstanceOf(expected: Class<T>) {
+        Assertions
+                .assertThat(this)
+                .isInstanceOf(expected)
+    }
 }
