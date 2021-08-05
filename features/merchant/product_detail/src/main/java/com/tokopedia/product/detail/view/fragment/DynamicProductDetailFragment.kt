@@ -671,14 +671,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             android.R.id.home -> {
                 activity?.onBackPressed(); true
             }
-            R.id.action_share -> {
-                shareProductFromToolbar(); true
+            R.id.action_share, R.id.action_report -> {
+                shareProduct(); true
             }
             R.id.action_cart -> {
                 gotoCart(); true
-            }
-            R.id.action_report -> {
-                reportProductFromToolbar(); true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -2339,13 +2336,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun shareProductFromToolbar() {
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
-            shareProduct()
-        }
-    }
-
     private fun shareProductFromNavToolbar() {
         // new navbar
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
@@ -2357,6 +2347,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun shareProduct() {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
+                DynamicProductDetailTracking.Click.eventClickShare(productInfo.basic.productID, viewModel.userId)
+
                 val productData = ProductData(
                         viewModel.userId,
                         productInfo.finalPrice.getCurrencyFormatted(),

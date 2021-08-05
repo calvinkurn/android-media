@@ -22,6 +22,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
+import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -320,6 +321,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             productData.productImageUrl ?: "",
                             "", productImgList)
         }
+        onImpressShareWidget(productData.userId, productData.productId)
         universalShareBottomSheet?.show(fragmentManager)
     }
     //endregion
