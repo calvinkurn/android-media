@@ -115,12 +115,14 @@ class ProductBundlingViewHolder(
         buttonCheck.setOnClickListener {
             listener.onCheckBundlingClicked(
                 bundleId,
-                bundleType.toLowerCase(Locale.ROOT),
+                bundleType,
                 componentTrackDataModel
             )
         }
 
-        listener.onImpressionProductBundling(bundleId, bundleType, componentTrackDataModel)
+        listener.onImpressionProductBundling(
+            bundleId, bundleType, componentTrackDataModel
+        )
     }
 
     private fun showSingleBundle(item: BundleInfo.BundleItem?) {

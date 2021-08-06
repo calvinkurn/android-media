@@ -27,6 +27,9 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 object DynamicProductDetailTracking {
@@ -2117,7 +2120,7 @@ object DynamicProductDetailTracking {
                 String.format(
                     ProductTrackingConstant.Label.VIEW_LABEL_PRODUCT_BUNDLING,
                     bundleId,
-                    bundleType
+                    bundleType.toLowerCase(Locale.ROOT)
                 )
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
@@ -2157,7 +2160,7 @@ object DynamicProductDetailTracking {
                 String.format(
                     ProductTrackingConstant.Label.EVENT_LABEL_CLICK_CHECK_PRODUCT_BUNDLING,
                     bundleId,
-                    bundleType
+                    bundleType.toLowerCase(Locale.ROOT)
                 )
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
