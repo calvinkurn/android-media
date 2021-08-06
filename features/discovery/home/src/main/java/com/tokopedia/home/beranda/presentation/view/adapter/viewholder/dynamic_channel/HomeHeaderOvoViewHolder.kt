@@ -1,8 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -101,5 +99,9 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 balanceWidgetView.gone()
             }
         }
+    }
+
+    fun getBalanceWidgetView(): BalanceWidgetView? {
+        return itemView.findViewById(R.id.view_balance_widget)
     }
 }

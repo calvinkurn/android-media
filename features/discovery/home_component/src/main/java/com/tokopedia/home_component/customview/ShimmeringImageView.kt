@@ -16,6 +16,7 @@ import com.bumptech.glide.request.target.Target
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -53,7 +54,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             loaderImageView?.visibility = View.GONE
-                            stopTraceOnResourceReady(dataSource, performanceMonitoring)
+                            stopTraceOnResourceReady(dataSource, performanceMonitoring, fpmItemLabel)
                             return false
                         }
                     })
@@ -76,7 +77,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             loaderImageView?.visibility = View.GONE
-                            stopTraceOnResourceReady(dataSource, performanceMonitoring)
+                            stopTraceOnResourceReady(dataSource, performanceMonitoring, fpmItemLabel)
                             return false
                         }
                     })
@@ -93,12 +94,17 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         val performanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring?.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
 
+        Embrace.getInstance().startEvent(fpmItemLabel, null, false)
+
         return performanceMonitoring
     }
 
-    fun stopTraceOnResourceReady(dataSource: DataSource?, performanceMonitoring: PerformanceMonitoring?) {
+    fun stopTraceOnResourceReady(dataSource: DataSource?,
+                                 performanceMonitoring: PerformanceMonitoring?,
+                                 fpmItemLabel: String) {
         if (dataSource == DataSource.REMOTE) {
             performanceMonitoring?.stopTrace()
+            Embrace.getInstance().endEvent(fpmItemLabel)
         }
     }
 }

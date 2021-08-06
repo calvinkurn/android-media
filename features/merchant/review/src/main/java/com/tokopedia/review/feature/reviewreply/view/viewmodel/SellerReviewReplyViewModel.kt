@@ -61,7 +61,7 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun insertReviewReply(reviewId: Long, productId: Long, shopId: Long, responseMessage: String) {
+    fun insertReviewReply(reviewId: String, productId: String, shopId: String, responseMessage: String) {
         launchCatchError(block = {
             val responseInsertReply = withContext(dispatcherProvider.io) {
                 insertSellerResponseUseCase.params = InsertSellerResponseUseCase.createParams(

@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
@@ -34,7 +35,6 @@ class PlayInteractionViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val mockPostLikeUseCase: PostLikeUseCase = mockk(relaxed = true)
-    private val mockPostFollowPartnerUseCase: PostFollowPartnerUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private val likeModelBuilder = PlayLikeModelBuilder()
@@ -45,7 +45,6 @@ class PlayInteractionViewModelTest {
     fun setUp() {
         playInteractionViewModel = PlayInteractionViewModel(
                 mockPostLikeUseCase,
-                mockPostFollowPartnerUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
@@ -195,53 +194,6 @@ class PlayInteractionViewModelTest {
      */
 
     @Test
-    fun `test do follow shop`() {
-        coEvery { mockPostFollowPartnerUseCase.executeOnBackground() } returns true
-
-        val expectedModel = true
-        val expectedResult = Success(expectedModel)
-
-        playInteractionViewModel.doFollow(
-                shopId = 123,
-                action = PartnerFollowAction.Follow
-        )
-
-        Assertions
-                .assertThat(playInteractionViewModel.observableFollowPartner.getOrAwaitValue())
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `test do follow shop fail`() {
-        coEvery { mockPostFollowPartnerUseCase.executeOnBackground() } returns false
-
-        val expectedResult = Success(false)
-
-        playInteractionViewModel.doFollow(
-                shopId = 123,
-                action = PartnerFollowAction.Follow
-        )
-
-        Assertions
-                .assertThat(playInteractionViewModel.observableFollowPartner.getOrAwaitValue())
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `test do follow shop null`() {
-        coEvery { mockPostFollowPartnerUseCase.executeOnBackground() } throws MessageErrorException("error")
-
-        playInteractionViewModel.doFollow(
-                shopId = 123,
-                action = PartnerFollowAction.Follow
-        )
-
-        Assertions
-                .assertThat(playInteractionViewModel.observableFollowPartner.getOrAwaitValue())
-                .isExactlyInstanceOf(Fail::class.java)
-    }
-
-    @Test
     fun `test do like post call like use case`() {
         val likeParamUiModel = likeModelBuilder.buildParam()
         val shouldLike = true
@@ -253,7 +205,7 @@ class PlayInteractionViewModelTest {
 
         coVerifySequence {
             mockPostLikeUseCase.params = PostLikeUseCase.createParam(
-                    likeParamUiModel.contentId.toIntOrZero(),
+                    likeParamUiModel.contentId.toLongOrZero(),
                     likeParamUiModel.contentType,
                     likeParamUiModel.likeType,
                     shouldLike

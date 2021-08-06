@@ -61,7 +61,7 @@ class BroadMatchViewHolder(
                             productImageUrl = it.imageUrl,
                             countSoldRating = it.ratingAverage,
                             labelGroupList = it.labelGroupDataList.toProductCardLabelGroup(),
-                            shopLocation = it.shopLocation,
+                            shopLocation = if (it.shopLocation.isNotEmpty()) it.shopLocation else it.shopName,
                             shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
                             freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                             isTopAds = it.isOrganicAds,

@@ -416,12 +416,18 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventClickSearchBar(keyword: String?) {
+    fun trackEventClickSearchBar(keyword: String?, pageSource: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.CLICK_TOP_NAV,
-                SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
-                SearchEventTracking.Action.CLICK_SEARCH_BOX,
-                keyword)
+                DataLayer.mapOf(
+                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
+                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SEARCH_BOX,
+                        SearchTrackingConstant.EVENT_LABEL, keyword,
+                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                        SearchTrackingConstant.PAGE_SOURCE, pageSource,
+                )
+        )
     }
 
     @JvmStatic
@@ -489,7 +495,7 @@ object SearchTracking {
     @JvmStatic
     fun trackGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
         val value = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchTrackingConstant.EVENT_CATEGORY, generalSearchTrackingModel.eventCategory,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingModel.eventLabel,
