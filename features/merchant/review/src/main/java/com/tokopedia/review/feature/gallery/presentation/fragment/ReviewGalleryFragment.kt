@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -36,6 +37,7 @@ import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.review_layout.*
@@ -60,6 +62,7 @@ class ReviewGalleryFragment :
     @Inject
     lateinit var viewModel: ReviewGalleryViewModel
 
+    private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
     private var loadingView: ConstraintLayout? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
@@ -183,6 +186,7 @@ class ReviewGalleryFragment :
     }
 
     private fun bindViews(view: View) {
+        reviewGalleryCoordinatorLayout = view.findViewById(R.id.review_gallery_coordinator_layout)
         reviewHeader = view.findViewById(R.id.review_gallery_header)
         loadingView = view.findViewById(R.id.review_gallery_shimmering)
     }
@@ -225,6 +229,9 @@ class ReviewGalleryFragment :
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
+        showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
+            loadData(currentPage)
+        }
         logToCrashlytics(throwable)
     }
 
@@ -243,7 +250,10 @@ class ReviewGalleryFragment :
     private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
         val reviewImages = mutableListOf<ReviewGalleryUiModel>()
         productrevGetReviewImage.detail.images.forEachIndexed { index, images ->
-            val ratingAndVariant = getRatingAndVariantBasedOnFeedbackID(productrevGetReviewImage.detail.reviewDetail, images.feedbackId)
+            val ratingAndVariant = getRatingAndVariantBasedOnFeedbackID(
+                productrevGetReviewImage.detail.reviewDetail,
+                images.feedbackId
+            )
             reviewImages.add(
                 ReviewGalleryUiModel(
                     images.thumbnailURL,
@@ -255,7 +265,10 @@ class ReviewGalleryFragment :
         return reviewImages
     }
 
-    private fun getRatingAndVariantBasedOnFeedbackID(reviews: List<ReviewDetail>, feedbackId: String): Pair<Int, String>? {
+    private fun getRatingAndVariantBasedOnFeedbackID(
+        reviews: List<ReviewDetail>,
+        feedbackId: String
+    ): Pair<Int, String>? {
         reviews.firstOrNull { it.feedbackId == feedbackId }?.apply {
             return Pair(rating, variantName)
         }
@@ -280,5 +293,17 @@ class ReviewGalleryFragment :
 
     private fun hideFullPageLoading() {
         loadingView?.hide()
+    }
+
+    private fun showToasterError(message: String, action: () -> Unit) {
+        reviewGalleryCoordinatorLayout?.let {
+            Toaster.build(
+                it,
+                message,
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR,
+                getString(R.string.review_refresh)
+            ) { action.invoke() }.show()
+        }
     }
 }
