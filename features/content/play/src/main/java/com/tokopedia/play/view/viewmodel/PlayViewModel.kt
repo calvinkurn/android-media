@@ -63,7 +63,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
-import android.util.Log
 
 /**
  * Created by jegul on 29/11/19
@@ -667,7 +666,6 @@ class PlayViewModel @Inject constructor(
     }
 
     fun focusPage(channelData: PlayChannelData) {
-        Log.d("<CHANNEL ID>", channelData.id)
         isActive.compareAndSet(false, true)
 
         focusVideoPlayer(channelData)
