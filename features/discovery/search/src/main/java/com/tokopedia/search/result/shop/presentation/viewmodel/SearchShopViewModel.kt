@@ -318,7 +318,7 @@ internal class SearchShopViewModel(
     }
 
     private fun isViewWillRenderCpmDigital(cpm: Cpm): Boolean {
-        return cpm.templateId == 4
+        return cpm.templateId == SearchConstant.CPM_TEMPLATE_ID
     }
 
     private fun createShopCpmViewModel(searchShopModel: SearchShopModel): Visitable<*> {
