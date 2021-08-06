@@ -728,6 +728,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    fun adjustAdminFee() {
+        globalEvent.value = OccGlobalEvent.Loading
+        launch(executorDispatchers.immediate) {
+            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+            if (isSuccess && orderProfile.value.isValidProfile) {
+                finalUpdate(onSuccessCheckout, true)
+                return@launch
+            }
+            globalEvent.value = newGlobalEvent
+        }
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()

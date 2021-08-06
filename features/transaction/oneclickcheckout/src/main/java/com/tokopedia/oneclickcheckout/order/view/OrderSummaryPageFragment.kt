@@ -640,6 +640,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.UpdateLocalCacheAddress -> {
                     updateLocalCacheAddressData(it.addressModel)
                 }
+                is OccGlobalEvent.AdjustAdminFeeError -> {
+                    //TODO
+                    // - show error toaster with hardcoded message
+                    // - pilih pembayarannya jadi "Pilih Bayar Penuh / Cicilan
+                }
             }
         }
     }
@@ -1298,6 +1303,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             context?.let {
                 startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
             }
+        }
+
+        override fun onAdminFeeAdjusted() {
+            TODO("Not yet implemented")
         }
     }
 

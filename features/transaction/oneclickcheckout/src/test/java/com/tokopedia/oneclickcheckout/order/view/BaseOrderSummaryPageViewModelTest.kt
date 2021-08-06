@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
+import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.processor.*
@@ -56,6 +57,9 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
 
     @MockK(relaxed = true)
+    lateinit var creditCardTenorListUseCase: CreditCardTenorListUseCase
+
+    @MockK(relaxed = true)
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
@@ -80,7 +84,7 @@ open class BaseOrderSummaryPageViewModelTest {
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
                 OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
-                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, creditCardTenorListUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
                 userSessionInterface, orderSummaryAnalytics)

@@ -815,5 +815,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
+
+        fun onAdminFeeAdjusted()
     }
 }

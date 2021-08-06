@@ -36,6 +36,7 @@ sealed class OccGlobalEvent {
     data class ToasterAction(val toast: OccToasterAction) : OccGlobalEvent()
     data class ForceOnboarding(val onboarding: OccOnboarding) : OccGlobalEvent()
     data class UpdateLocalCacheAddress(val addressModel: ChosenAddressModel) : OccGlobalEvent()
+    data class AdjustAdminFeeError(val message: String = "") : OccGlobalEvent()
 }
 
 data class OccEvent<out T : Any>(private val data: T) {
