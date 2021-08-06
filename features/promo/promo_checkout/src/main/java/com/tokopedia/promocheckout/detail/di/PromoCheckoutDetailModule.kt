@@ -19,16 +19,6 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
-import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
-import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
-import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
-import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
-import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
-import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
-import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
@@ -60,79 +50,10 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
-    fun provideDigitalCheckVoucherUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
-        return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideFlightCheckVoucherUseCase(): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(GraphqlUseCase())
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideFlightCancelVoucherUseCase(): FlightCancelVoucherUseCase {
-        return FlightCancelVoucherUseCase(GraphqlUseCase())
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideHotelCheckVoucherUseCase(@ApplicationContext context: Context): HotelCheckVoucherUseCase {
-        return HotelCheckVoucherUseCase(context, GraphqlUseCase())
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                     checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                     clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
         return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideDigitalPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-                                digitalCheckVoucherMapper: DigitalCheckVoucherMapper,
-                                clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailDigitalPresenter {
-        return PromoCheckoutDetailDigitalPresenter(getDetailCouponMarketplaceUseCase, digitalCheckVoucherUseCase, digitalCheckVoucherMapper, clearCacheAutoApplyStackUseCase)
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideFlightPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                               flightCheckVoucherUseCase: FlightCheckVoucherUseCase,
-                               flightCheckVoucherMapper: FlightCheckVoucherMapper,
-                               flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailFlightPresenter {
-        return PromoCheckoutDetailFlightPresenter(getDetailCouponMarketplaceUseCase, flightCheckVoucherUseCase, flightCheckVoucherMapper, flightCancelVoucherUseCase)
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideHotelPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                              hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
-                              hotelCheckVoucherMapper: HotelCheckVoucherMapper,
-                              flightCancelVoucherUseCase: FlightCancelVoucherUseCase): PromoCheckoutDetailHotelPresenter {
-        return PromoCheckoutDetailHotelPresenter(getDetailCouponMarketplaceUseCase, hotelCheckVoucherUseCase, hotelCheckVoucherMapper, flightCancelVoucherUseCase)
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideEventPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                              eventCheckRepository: EventCheckRepository,
-                              compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
-        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, eventCheckRepository, compositeSubscription)
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideDetailDealsPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                    clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                    dealsCheckRepository: PromoCheckoutDealsRepository,
-                                    compositeSubscription: CompositeSubscription): PromoCheckoutDetailDealsPresenter {
-        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, dealsCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
@@ -205,45 +126,6 @@ class PromoCheckoutDetailModule {
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .build()
     }
-
-    @Provides
-    @PromoCheckoutDetailScope
-    fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
-        val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(EventCheckoutApi.BASE_URL_EVENT)
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-        retrofitBuilder.client(client)
-        val retrofit = retrofitBuilder.build()
-        return retrofit.create(EventCheckoutApi::class.java)
-    }
-
-    @Provides
-    @PromoCheckoutDetailScope
-    fun provideDealsApiService(gson: Gson, client: OkHttpClient): DealsCheckoutApi {
-        val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(EventCheckoutApi.BASE_URL_EVENT)
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-        retrofitBuilder.client(client)
-        val retrofit = retrofitBuilder.build()
-        return retrofit.create(DealsCheckoutApi::class.java)
-    }
-
-    @Provides
-    @PromoCheckoutDetailScope
-    fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
-        return EventCheckRepositoryImpl(eventCheckoutApi)
-    }
-
-    @Provides
-    @PromoCheckoutDetailScope
-    fun provideDealsRepository(dealsCheckoutApi: DealsCheckoutApi): PromoCheckoutDealsRepository {
-        return DealsCheckRepositoryImpl(dealsCheckoutApi)
-    }
-
 
     @Provides
     @PromoCheckoutDetailScope

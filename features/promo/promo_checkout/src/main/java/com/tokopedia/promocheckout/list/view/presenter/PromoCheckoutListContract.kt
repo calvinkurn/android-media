@@ -8,7 +8,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
-@Deprecated("Not needed anymore.")
+@Deprecated("Module Umroh used this contract")
 
 interface PromoCheckoutListContract {
 
