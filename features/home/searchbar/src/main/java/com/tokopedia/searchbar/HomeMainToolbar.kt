@@ -196,9 +196,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     fun switchToDarkToolbar() {
         if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
-            wishlistCrossfader.reverseTransition(200)
-            notifCrossfader.reverseTransition(200)
-            inboxCrossfader.reverseTransition(200)
+            wishlistCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            notifCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            inboxCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
 
             toolbarType = TOOLBAR_DARK_TYPE
         } else if (!crossfaderIsInitialized()) {
@@ -213,16 +213,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                     && ::inboxCrossfader.isInitialized
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as Drawable
-        } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
+        return BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
     private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
         var drawable = ContextCompat.getDrawable(context, drawableId)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = DrawableCompat.wrap(drawable!!).mutate()
-        }
 
         val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
                 drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -235,9 +230,9 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     fun switchToLightToolbar() {
         if (toolbarType != TOOLBAR_LIGHT_TYPE && crossfaderIsInitialized()) {
-            wishlistCrossfader.reverseTransition(200)
-            notifCrossfader.reverseTransition(200)
-            inboxCrossfader.reverseTransition(200)
+            wishlistCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            notifCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
+            inboxCrossfader.reverseTransition(DEFAULT_TRANSITION_DURATION)
 
             toolbarType = TOOLBAR_LIGHT_TYPE
         } else if (!crossfaderIsInitialized()) {
@@ -359,7 +354,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
-
+        private const val DEFAULT_TRANSITION_DURATION = 200
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }
