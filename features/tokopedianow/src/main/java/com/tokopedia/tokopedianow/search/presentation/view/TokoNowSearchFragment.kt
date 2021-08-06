@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -22,8 +23,11 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
+import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
@@ -34,7 +38,8 @@ class TokoNowSearchFragment:
         BaseSearchCategoryFragment(),
         SuggestionListener,
         CategoryJumperListener,
-        CTATokoNowHomeListener {
+        CTATokoNowHomeListener,
+        BroadMatchListener {
 
     companion object {
 
@@ -269,5 +274,35 @@ class TokoNowSearchFragment:
     override fun onCTAToTokopediaNowHomeClick() {
         SearchTracking.sendClickCTAToHome()
         goToTokopediaNowHome()
+    }
+
+    override fun getRecyclerViewPool() = recycledViewPool
+
+    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+
+    }
+
+    override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
+        RouteManager.route(context, broadMatchItemDataView.applink)
+    }
+
+    override fun onBroadMatchItemATCNonVariant(broadMatchItemDataView: BroadMatchItemDataView, quantity: Int) {
+
+    }
+
+    override fun onBroadMatchItemAddVariant(broadMatchItemDataView: BroadMatchItemDataView) {
+
+    }
+
+    override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
+        RouteManager.route(context, broadMatchDataView.applink)
+    }
+
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
+        carouselScrollPosition.put(adapterPosition, scrollPosition)
+    }
+
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
+        return carouselScrollPosition.get(adapterPosition)
     }
 }

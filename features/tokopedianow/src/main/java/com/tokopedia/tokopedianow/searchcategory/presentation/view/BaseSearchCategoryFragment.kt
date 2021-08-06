@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.view
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,6 +116,8 @@ abstract class BaseSearchCategoryFragment:
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
+    protected val carouselScrollPosition = SparseIntArray()
+    protected val recycledViewPool = RecyclerView.RecycledViewPool()
 
     private var movingPosition = 0
 
@@ -312,6 +315,7 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
+            carouselScrollPosition.clear()
             getViewModel().onViewReloadPage()
         }
     }
@@ -618,14 +622,21 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        val productId = productItemDataView.id
+        val shopId = productItemDataView.shop.id
+
+        openATCVariantBottomSheet(productId, shopId)
+    }
+
+    private fun openATCVariantBottomSheet(productId: String, shopId: String) {
         val context = context ?: return
 
         AtcVariantHelper.goToAtcVariant(
                 context = context,
-                productId = productItemDataView.id,
+                productId = productId,
                 pageSource = "tokonow",
                 isTokoNow = true,
-                shopId = productItemDataView.shop.id,
+                shopId = shopId,
                 trackerCdListName = getCDListName(),
                 startActivitResult = this::startActivityForResult,
         )
