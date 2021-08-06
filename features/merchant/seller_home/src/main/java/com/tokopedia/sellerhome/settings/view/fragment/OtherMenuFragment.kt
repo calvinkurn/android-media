@@ -49,6 +49,7 @@ import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
+import com.tokopedia.sellerhome.settings.view.customview.FireworksLottieView
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -147,6 +148,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var recyclerView: RecyclerView? = null
     private var statusBarBackgroundView: View? = null
     private var scrollView: NestedScrollView? = null
+    private var fireworksLottieView: FireworksLottieView? = null
 
     override fun onResume() {
         super.onResume()
@@ -258,7 +260,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun setCurrentFragmentType(fragmentType: Int) {
         currentFragmentType = fragmentType
-        if (fragmentType != FragmentType.OTHER) {
+        if (fragmentType == FragmentType.OTHER) {
+            fireworksLottieView?.animateFireworks()
+        } else {
             multipleErrorSnackbar?.dismiss()
         }
     }
@@ -699,6 +703,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun setupView(view: View) {
         statusBarBackgroundView?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
+        fireworksLottieView?.loadAnimationFromUrl()
         populateAdapterData()
         recyclerView?.layoutManager = LinearLayoutManager(context)
         context?.let {
@@ -731,6 +736,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             statusBarBackgroundView = findViewById(R.id.view_sah_other_status_bar_background)
             recyclerView = findViewById(R.id.recycler_view)
             scrollView = findViewById(R.id.sv_sah_other_menu)
+            fireworksLottieView = findViewById(R.id.lottie_anniv_fireworks)
         }
     }
 
@@ -765,6 +771,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             statusHeaderImage?.gone()
             statusIconImage?.gone()
             whiteBackgroundView?.gone()
+            fireworksLottieView?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
@@ -773,6 +780,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             statusHeaderImage?.visible()
             statusIconImage?.visible()
             whiteBackgroundView?.visible()
+            fireworksLottieView?.visible()
         }
     }
 
