@@ -581,8 +581,8 @@ open class TopChatRoomPresenter @Inject constructor(
         val startTime = SendableViewModel.generateStartTime()
         val addressMasking = getAddressMasking()
         val ctaButton = attachment.ctaButton
-        // TODO: product name
-        val srwMessage = "Ubah alamat pengiriman \"Nama produk...\" ke $addressMasking"
+        val productName = ctaButton.productName
+        val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
         val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
         val products = ctaButton.generateSendableProductPreview()
         topchatSendMessageWithWebsocket(

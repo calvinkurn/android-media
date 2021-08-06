@@ -7,5 +7,7 @@ data class ExtrasProduct(
     @SerializedName("product_id")
     var productId: String = "",
     @SerializedName("url")
-    var url: String = ""
+    var url: String = "",
+    @SerializedName("product_name")
+    var product_name: String = ""
 )

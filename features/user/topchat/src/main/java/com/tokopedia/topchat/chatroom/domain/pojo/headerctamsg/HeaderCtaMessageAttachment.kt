@@ -22,6 +22,10 @@ data class HeaderCtaMessageAttachment(
     @SerializedName("url")
     var url: String = ""
 ) {
+
+    val productName: String get() = extras.extrasProduct.getOrNull(0)?.product_name
+        ?: ""
+
     fun generateSendableProductPreview(): List<SendablePreview> {
         return extras.extrasProduct.map { extraProduct ->
             val productPreview = ProductPreview(
