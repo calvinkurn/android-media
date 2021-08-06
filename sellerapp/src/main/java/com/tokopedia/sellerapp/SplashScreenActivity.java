@@ -46,6 +46,7 @@ public class SplashScreenActivity extends SplashScreen {
     public void onCreate(Bundle savedInstanceState) {
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
                 .start(this.getApplication());
+        setUserIdNewRelic();
         isApkTempered = false;
         try {
             getResources().getDrawable(R.drawable.launch_screen);
@@ -62,6 +63,13 @@ public class SplashScreenActivity extends SplashScreen {
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
         syncFcmToken();
+    }
+
+    private void setUserIdNewRelic() {
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
     }
 
     /**
