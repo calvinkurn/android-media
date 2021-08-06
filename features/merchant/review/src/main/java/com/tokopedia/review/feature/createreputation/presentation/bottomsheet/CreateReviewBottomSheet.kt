@@ -700,7 +700,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             showIncentivesExitWarningDialog()
             return
         }
-        if (isGoodRating() && (textArea?.isEmpty() == true || createReviewViewModel.isImageNotEmpty())) {
+        if (isGoodRating() && (textArea?.isEmpty() == true || !createReviewViewModel.isImageNotEmpty())) {
             showSendRatingOnlyDialog()
             return
         }
