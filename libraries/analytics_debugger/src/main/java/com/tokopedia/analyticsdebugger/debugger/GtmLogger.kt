@@ -43,7 +43,6 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                     data = URLDecoder.decode(gson.toJson(data)
                             .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
                             .replace("\\+".toRegex(), "%2B"), "UTF-8")
-                            .replace("\\\\","\\")
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
                 dbSource.insert(logData)
