@@ -293,6 +293,7 @@ class TopupBillsFavoriteNumberFragment :
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
+                binding?.commonTopupbillsFavoriteNumberClue?.hide()
             }
         }
     }
