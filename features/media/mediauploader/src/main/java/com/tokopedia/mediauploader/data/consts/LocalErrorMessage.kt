@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.data.consts
 
-import java.util.*
+import com.tokopedia.kotlin.extensions.view.formattedToMB
 
 const val NETWORK_ERROR = "Oops, ada gangguan yang perlu kami bereskan. Refresh atau balik lagi nanti."
 const val TIMEOUT_ERROR = "Oops, upload gambar perlu waktu lebih lama dari biasanya. Coba upload lagi, yuk!"
@@ -13,7 +13,7 @@ fun formatNotAllowedMessage(allowedFormat: String): String {
 }
 
 fun maxFileSizeMessage(allowedFileSize: Int): String {
-    return "Wah, ukuran gambar kebesaran. Yuk, upload ulang dengan ukuran max. ${getFormattedMBSize(allowedFileSize.toLong())} Mb, ya!"
+    return "Wah, ukuran gambar kebesaran. Yuk, upload ulang dengan ukuran max ${allowedFileSize.toLong().formattedToMB()} Mb, ya!"
 }
 
 fun minResBitmapMessage(allowedWidth: Int, allowedHeight: Int): String {
@@ -22,12 +22,4 @@ fun minResBitmapMessage(allowedWidth: Int, allowedHeight: Int): String {
 
 fun maxResBitmapMessage(allowedWidth: Int, allowedHeight: Int): String {
     return "Wah, ukuran gambar kebesaran. Yuk, upload ulang dengan ukuran maksimum $allowedWidth x $allowedHeight, ya!"
-}
-
-// TODO, remove it once pulled from latest release
-private fun getFormattedMBSize(sizeInByte: Long): String {
-    val SIZE_FORMAT = "%.2f"
-    val MB_SIZE: Long = 1000000
-    val sizeInMB = sizeInByte.toFloat() / MB_SIZE
-    return String.format(Locale.ENGLISH, SIZE_FORMAT, sizeInMB)
 }
