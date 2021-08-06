@@ -59,7 +59,7 @@ class PromoCheckoutListDigitalViewModelTest {
         assert(viewModel.digitalCheckVoucherResult.value is Success)
         assert(viewModel.showLoadingPromoDigital.value is Boolean)
         assertEquals(Success(DUMMY_DATA_UI_MODEL), (viewModel.digitalCheckVoucherResult.value) as Success)
-        assertEquals(false, viewModel.digitalCheckVoucherResult.value)
+        assertEquals(false, viewModel.showLoadingPromoDigital.value)
     }
 
     @Test
