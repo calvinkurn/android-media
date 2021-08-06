@@ -55,7 +55,6 @@ buildCache {
         url = "${ci_url}"
         push = isCiServer
         enabled = true
-//        allowUntrustedServer = true
         credentials {
             username = "${ci_username}"
             password = "${ci_password}"
