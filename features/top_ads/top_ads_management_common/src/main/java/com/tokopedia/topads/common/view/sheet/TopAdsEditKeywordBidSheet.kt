@@ -51,6 +51,9 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                     result < minBid.toDouble() -> {
                         setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                     }
+                    (result >= minBid.toDouble() && result < suggestedBid.toDouble()) -> {
+                        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_recommended_bid_error), "", false)
+                    }
                     result > maxBid.toDouble() -> {
                         setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
                     }

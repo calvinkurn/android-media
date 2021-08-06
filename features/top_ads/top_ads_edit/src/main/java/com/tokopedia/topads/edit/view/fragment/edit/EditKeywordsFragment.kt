@@ -78,6 +78,11 @@ import javax.inject.Inject
 
 
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
+private const val CLICK_DAILY_BUDGET_BOX = "click - box anggaran harian manual"
+private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
+private const val CLICK_EDIT_KEYWORD_TYPE = "click - button edit luas pencarian"
+private const val CLICK_EDIT_KEYWORD_BID = "click - edit kata kunci"
+private const val CLICK_EDIT_KEYWORD_DELETE = "click - delete icon kata kunci"
 
 class EditKeywordsFragment : BaseDaggerFragment() {
 
@@ -287,6 +292,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, false)
                 actionEnable(false)
             }
+            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
+                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_recommended_bid_error), "", true, false)
+                actionEnable(false)
+            }
             result > maxBid.toDouble() -> {
                 actionEnable(false)
                 setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true, false)
@@ -322,6 +331,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, true)
                 actionEnable(false)
             }
+            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
+                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_recommended_bid_error), "", true, true)
+                actionEnable(false)
+            }
             result > maxBid.toDouble() -> {
                 actionEnable(false)
                 setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true, true)
@@ -348,6 +361,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onEditBudget(pos: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_BID, "")
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
@@ -357,6 +371,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onEditType(pos: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
         val type = (adapter.items[pos] as EditKeywordItemViewModel).data.typeInt
         sheet.show(childFragmentManager, type)
@@ -421,6 +436,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onDeleteItem(position: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_EDIT_KEYWORD_DELETE, "")
         showConfirmationDialog(position)
     }
 
@@ -610,6 +626,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 CLICK_TAMBAH_KATA_KUNCI,
                 ""
             )
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                CLICK_TAMBAH_KATA_KUNCI,
+                ""
+            )
             onAddKeyword()
         }
 
@@ -628,6 +648,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 sharedViewModel.setDailyBudget(result)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                    CLICK_DAILY_BUDGET_BOX, "")
                 checkForbidValidity(result)
             }
         })
@@ -639,6 +661,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 sharedViewModel.setRekomendedBudget(result)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                    CLICK_DAILY_BUDGET_REKOMENDASI_BOX, "")
                 checkForRekommendedBid(result)
             }
         })

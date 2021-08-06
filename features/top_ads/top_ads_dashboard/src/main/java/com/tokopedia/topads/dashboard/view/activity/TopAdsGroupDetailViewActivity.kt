@@ -89,6 +89,7 @@ private const val CLICK_GRAPH_SECTOR_3 = "click - graph selector 3"
 private const val CLICK_TAB_PRODUK = "click - tab produk"
 private const val CLICK_TAB_KATA_KUNCI = "click - tab kata kunci"
 private const val CLICK_TAB_NEG_KATA_KUNCI = "click - tab kata kunci negatif"
+private const val CLICK_GROUP_EDIT_ICON = "click - edit form"
 class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener, ChangePlacementFilter {
 
     private var dataStatistic: DataStatistic? = null
@@ -209,6 +210,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             clearImage()
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
             setOnClickListener {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                    CLICK_GROUP_EDIT_ICON, "")
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                     putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                     putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())

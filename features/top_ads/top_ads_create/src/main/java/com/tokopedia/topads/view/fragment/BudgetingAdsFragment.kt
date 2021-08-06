@@ -61,7 +61,11 @@ private const val CLICK_ATUR_BIAYA_IKLAN = "click-atur biaya iklan"
 private const val CLICK_BUDGET = "click - biaya non kata kunci box"
 private const val EVENT_CLICK_BUDGET = "biaya yang diinput"
 private const val CLICK_SETUP_KEY = "click - setup keyword"
-
+private const val CLICK_DAILY_BUDGET_BOX = "click - box biaya iklan manual"
+private const val CLICK_EDIT_KEYWORD_TYPE = "click - button edit luas pencarian"
+private const val CLICK_EDIT_KEYWORD_BID = "click - edit bid kata kunci"
+private const val CLICK_EDIT_KEYWORD_DELETE = "click - delete button kata kunci"
+private const val CLICK_ADDED_KEYWORD = "click - tambah kata kunci"
 
 const val COUNT_TO_BE_SHOWN = 5
 
@@ -134,6 +138,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     }
 
     private fun onDeleteItem(position: Int) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_EDIT_KEYWORD_DELETE, "")
         ticker.gone()
         bidInfoAdapter.items.removeAt(position)
         bidInfoAdapter.notifyItemRemoved(position)
@@ -175,6 +180,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun onEditBudget(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_EDIT_KEYWORD_BID, "")
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
@@ -185,6 +191,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun onEditType(pos: Int) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_SETUP_KEY, shopID, userID)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_EDIT_KEYWORD_TYPE, "")
         val sheet = ChooseKeyBottomSheet.newInstance()
         val type = (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keywordType
         val typeInt = if (type == BROAD_TYPE)
@@ -413,6 +420,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
+                    CLICK_DAILY_BUDGET_BOX, "")
                 stepperModel?.finalBidPerClick = result
                 when {
                     result < minBid.toDouble() -> {
@@ -459,7 +468,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 if(it.bidSuggest == "0")
                     it.bidSuggest = minSuggestKeyword
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
+//                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
+//                    CLICK_ADDED_KEYWORD, "${it.keyword} - ${it.totalSearch} - ${it.competition}")
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(CLICK_ADDED_KEYWORD, "",
+                stepperModel?.selectedKeywordStage!!
+            )
             bidInfoAdapter.notifyDataSetChanged()
         }
         setCount()

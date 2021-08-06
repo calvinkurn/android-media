@@ -41,6 +41,7 @@ private const val CLICK_PRODUK_TAB = "click - tab produk"
 private const val CLICK_KATA_KUNCI_TAB = "click - tab kata kunci"
 private const val CLICK_ATUR_TAB = "click - tab atur"
 private const val CLICK_SIMPAN_BUTTON = "click - simpan"
+private const val CLICK_SIMPAN_BUTTON_EDIT = "click - simpan edit form"
 
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
 
@@ -63,6 +64,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         }
 
         btn_submit.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_SIMPAN_BUTTON_EDIT, "")
             btn_submit?.isEnabled = false
             getDataFromChildFragments()
             saveChanges()

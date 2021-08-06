@@ -56,6 +56,9 @@ import javax.inject.Inject
 
 private const val CLICK_IKLANKAN_BUTTON = "click-iklankan manual"
 private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: %s"
+private const val CLICK_PRODUCT_EDIT = "click - edit produk di ringkasan iklan"
+private const val CLICK_KATA_KUNCI_EDIT = "click - edit kata kunci di ringkasan iklan"
+private const val CLICK_BIAYA_EDIT = "lick - edit biaya iklan di ringkasan iklan"
 
 const val DEBOUNCE_CONST: Long = 200
 const val DAILYBUDGET_FACTOR = 1000
@@ -317,15 +320,18 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         keywordCount?.text = stepperModel?.selectedKeywordStage?.count().toString()
 
         goToProduct?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_PRODUCT_EDIT, "")
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_1, stepperModel)
         }
 
         goToKeyword?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_KATA_KUNCI_EDIT, "")
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }
         goToBudget?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_BIAYA_EDIT, "")
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }

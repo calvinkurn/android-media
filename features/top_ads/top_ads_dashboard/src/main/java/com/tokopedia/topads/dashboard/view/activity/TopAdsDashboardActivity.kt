@@ -66,6 +66,7 @@ import javax.inject.Inject
  */
 
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
+private const val CLICK_BUAT_IKLAN_1 = "click - buat iklan topads home"
 private const val VIEW_BUAT_IKLAN = "view - tambah iklan"
 private const val CLICK_IKLAN_TOKO = " click - iklan toko"
 private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
@@ -102,6 +103,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 navigateToAdTypeSelection()
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(CLICK_BUAT_IKLAN_1, "")
         }
         header_toolbar?.setNavigationOnClickListener {
             onBackPressed()

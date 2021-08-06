@@ -98,6 +98,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         selectDate.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         selectDate.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         selectDate.setOnClickListener {
+            getCustomDateText(currentDate.text.toString())
             showBottomSheet()
         }
     }
@@ -113,7 +114,6 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
                 currentDate.text = text
             }
         }
-        getCustomDateText(currentDate.text.toString())
     }
 
     private fun getCurrentSelected(): Int {

@@ -73,6 +73,7 @@ private const val CLICK_COBA_SEKARANG = "click - coba sekarang"
 private const val CLICK_COBA_AUO_ADS = "click - coba auto ads"
 private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produk"
 private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
+private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -218,7 +219,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
-        Log.d("Naveen", "got the result")
         response.data.forEach {
             if(it.featureId == 39 && it.featureName == "split_bid") {
                 isWhiteListedUser = true
@@ -331,6 +331,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
         empty_view?.visible()
         mulai_beriklan.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
+                CLICK_MULAI_BERIKLAN, "")
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
     }
@@ -344,6 +346,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         empty_view?.text_desc?.text = getString(R.string.topads_dashboard_empty_ads_desc)
         empty_view?.visible()
         mulai_beriklan.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
+                CLICK_MULAI_BERIKLAN, "")
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
     }

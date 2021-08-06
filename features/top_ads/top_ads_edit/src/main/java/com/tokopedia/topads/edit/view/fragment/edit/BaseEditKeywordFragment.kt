@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
+private const val CLICK_BID_TYPE_EDIT = "click - edit ubah metode"
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
@@ -93,6 +94,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             view_pager.currentItem = POSITION1
         }
         autobid_layout.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_BID_TYPE_EDIT, "")
             autoBidSelectionSheet = AutoBidSelectionSheet.newInstance()
             autoBidSelectionSheet?.setChecked(autobid_selection.text.toString())
             autoBidSelectionSheet?.show(childFragmentManager, "")

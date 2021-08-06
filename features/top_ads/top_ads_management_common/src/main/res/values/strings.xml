@@ -212,6 +212,8 @@
 
     <string name="empty_bid_error_message">Tidak boleh kosong</string>
 
+    <string name="topads_common_recommended_bid_error">Iklanmu berpotensi kalah saing</string>
+
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>
