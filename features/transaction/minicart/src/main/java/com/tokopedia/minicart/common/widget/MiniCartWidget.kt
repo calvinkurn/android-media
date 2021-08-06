@@ -437,10 +437,11 @@ class MiniCartWidget @JvmOverloads constructor(
             totalAmount?.post {
                 val ellipsis = totalAmount?.amountCtaView?.layout?.getEllipsisCount(0) ?: 0
                 if (ellipsis > 0) {
+                    val ctaText = context.getString(R.string.mini_cart_widget_cta_text_default)
                     if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-                        totalAmount?.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_empty)))
+                        totalAmount?.setCtaText(ctaText)
                     } else {
-                        totalAmount?.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
+                        totalAmount?.setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
                     }
                 }
             }
@@ -451,11 +452,9 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
-            if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
-            } else {
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
-            }
+            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+            setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
             amountCtaView.isEnabled = true
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
@@ -469,11 +468,9 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.apply {
             setLabelTitle("")
             setAmount("")
-            if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
-            } else {
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
-            }
+            val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
+                    ?: context.getString(R.string.mini_cart_widget_cta_text_default)
+            setCtaText(ctaText)
             amountCtaView.isEnabled = false
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
