@@ -5,8 +5,9 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.data.consts.GraphQueryBuilder
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-open class DataPolicyUseCase constructor(
+open class DataPolicyUseCase @Inject constructor(
     private val repository: GraphqlRepository
 ) : CoroutineUseCase<Map<String, String>, DataUploaderPolicy>(Dispatchers.IO) {
 
