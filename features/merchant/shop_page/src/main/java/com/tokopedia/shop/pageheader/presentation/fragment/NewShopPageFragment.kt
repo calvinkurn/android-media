@@ -1846,7 +1846,7 @@ class NewShopPageFragment :
         linkerShareData?.apply {
             shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
             url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
-            shareUri = replaceLastUrlSegment(shareUri, shopBranchLinkDomain)
+            shareUri = replaceLastUrlSegment(shareUri.orEmpty(), shopBranchLinkDomain)
         }
     }
 
