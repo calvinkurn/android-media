@@ -6,16 +6,15 @@ import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.util.UploadRequestBody
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.createFormData
 import java.io.File
 import okhttp3.MediaType.parse as mediaTypeParse
 
 open class MediaUploaderUseCase constructor(
-        private val services: FileUploadServices,
-        dispatcher: CoroutineDispatcher
-) : CoroutineUseCase<RequestParams, MediaUploader>(dispatcher) {
+        private val services: FileUploadServices
+) : CoroutineUseCase<RequestParams, MediaUploader>(Dispatchers.IO) {
 
     var progressCallback: ProgressCallback? = null
 

@@ -11,7 +11,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
 
 @Module (includes = [MediaUploaderNetworkModule::class])
 class MediaUploaderModule {
@@ -29,7 +28,7 @@ class MediaUploaderModule {
     fun provideDataPolicyUseCase(
             repository: GraphqlRepository
     ): DataPolicyUseCase {
-        return DataPolicyUseCase(repository, Dispatchers.IO)
+        return DataPolicyUseCase(repository)
     }
 
     @Provides
@@ -37,14 +36,14 @@ class MediaUploaderModule {
     fun provideMediaUploaderUseCase(
             services: FileUploadServices
     ): MediaUploaderUseCase {
-        return MediaUploaderUseCase(services, Dispatchers.IO)
+        return MediaUploaderUseCase(services)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideUploaderUseCase(
-            @MediaUploaderQualifier dataPolicyUseCase: DataPolicyUseCase,
-            @MediaUploaderQualifier mediaUploaderUseCase: MediaUploaderUseCase
+            dataPolicyUseCase: DataPolicyUseCase,
+            mediaUploaderUseCase: MediaUploaderUseCase
     ): UploaderUseCase {
         return UploaderUseCase(dataPolicyUseCase, mediaUploaderUseCase)
     }

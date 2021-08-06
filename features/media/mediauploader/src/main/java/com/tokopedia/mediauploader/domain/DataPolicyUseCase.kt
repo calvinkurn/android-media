@@ -4,12 +4,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.data.consts.GraphQueryBuilder
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 open class DataPolicyUseCase constructor(
-    private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatcher
-) : CoroutineUseCase<Map<String, String>, DataUploaderPolicy>(dispatcher) {
+    private val repository: GraphqlRepository
+) : CoroutineUseCase<Map<String, String>, DataUploaderPolicy>(Dispatchers.IO) {
 
     override suspend fun execute(params: Map<String, String>): DataUploaderPolicy {
         return request(repository, params)
