@@ -54,7 +54,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                                 enableBtnNext()
                             }
                         } else {
-                            if (it.length > 7) {
+                            if (it.length > MIN_VALID_LENGTH) {
                                 listener.onCheckPrefix(inputDigit)
                             } else {
                                 cc_text_input.setFirstIcon("")
@@ -109,7 +109,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     fun setImageIcon(urlImg: String) {
         cc_text_input.setFirstIcon(urlImg)
-        cc_text_input.textFieldIcon1.layoutParams.width = 150
+        cc_text_input.textFieldIcon1.layoutParams.width = IMAGE_ICON_WIDTH
         cc_text_input.textFieldIcon1.requestLayout()
         cc_text_input.textFieldIcon1.adjustViewBounds = true
         cc_text_input.textFieldIcon1.visibility = View.VISIBLE
@@ -142,5 +142,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         private const val DIVIDER_MODULO = 5
         private const val DIVIDER_POSITION = DIVIDER_MODULO - 1
         private const val DIVIDER = ' '
+        private const val MIN_VALID_LENGTH = 7
+        private const val IMAGE_ICON_WIDTH = 150
     }
 }
