@@ -10,10 +10,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.createFormData
 import java.io.File
-import javax.inject.Inject
 import okhttp3.MediaType.parse as mediaTypeParse
 
-open class MediaUploaderUseCase @Inject constructor(
+open class MediaUploaderUseCase constructor(
         private val services: FileUploadServices,
         dispatcher: CoroutineDispatcher
 ) : CoroutineUseCase<RequestParams, MediaUploader>(dispatcher) {
