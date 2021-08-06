@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.list.domain.FlightCheckVoucherUsecase
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,8 +16,7 @@ import javax.inject.Inject
  * @author: astidhiyaa on 31/07/21.
  */
 class PromoCheckoutListFlightViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
-                                                           val flightCheckVoucherUsecase: FlightCheckVoucherUsecase,
-                                                           val checkVoucherMapper: FlightCheckVoucherMapper
+                                                           val flightCheckVoucherUsecase: FlightCheckVoucherUsecase
 ): BaseViewModel(dispatcher.io) {
 
     private val _flightCheckVoucherResult = MutableLiveData<Result<DataUiModel>>()

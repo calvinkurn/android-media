@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.list.domain.DigitalCheckVoucherUseCase
@@ -18,8 +17,7 @@ import javax.inject.Inject
  * @author: astidhiyaa on 02/08/21.
  */
 class PromoCheckoutListDigitalViewModel  @Inject constructor(private val dispatcher: CoroutineDispatchers,
-                                                             val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-                                                             val checkVoucherMapper: DigitalCheckVoucherMapper
+                                                             val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase
 ): BaseViewModel(dispatcher.io) {
 
     private val _digitalCheckVoucherResult = MutableLiveData<Result<DataUiModel>>()
