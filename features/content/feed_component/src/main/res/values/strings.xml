@@ -106,6 +106,8 @@
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
     <string name="content_product_bs_title">Dalam post ini</string>
+    <string name="content_product_tag_dot">Product Tag Pointer Dot</string>
+    <string name="content_product_tag_up">Product Tag Pointer Up</string>
 
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
     <string name="feed_color_pojo_dms_hex_white_value">#fff</string>

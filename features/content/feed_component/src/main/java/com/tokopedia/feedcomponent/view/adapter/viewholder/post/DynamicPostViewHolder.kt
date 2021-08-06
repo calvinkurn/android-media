@@ -675,6 +675,11 @@ open class DynamicPostViewHolder(v: View,
             postTagItem: FeedXProduct,
             itemPosition: Int
         )
+        fun onPostTagBubbleClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct
+        )
         fun onPostTagItemBSImpression(
             activityId: String,
             postTagItemList: List<FeedXProduct>,

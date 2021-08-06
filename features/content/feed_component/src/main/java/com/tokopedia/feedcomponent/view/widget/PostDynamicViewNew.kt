@@ -54,6 +54,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -67,6 +68,7 @@ private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
 private const val TIMER_TO_BE_SHOWN = 3000L
+private const val PRODUCT_DOT_TIMER = 4000L
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
@@ -678,6 +680,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 media.forEach { feedMedia ->
 
                     if (feedMedia.type == TYPE_IMAGE) {
+                        var width : Int = 0
+                        var height : Int = 0
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
                         val param = LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -685,18 +689,37 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                         imageItem.layoutParams = param
                         imageItem.run {
-                            findViewById<ImageUnify>(R.id.post_image).setImageUrl(feedMedia.mediaUrl)
+                            val postImage = findViewById<ImageUnify>(R.id.post_image)
+                            postImage.setImageUrl(feedMedia.mediaUrl)
                             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
                                 products.isNotEmpty()
                             )
+
+                            val bitmapDrawable = postImage.drawable.toBitmap()
+                            width = bitmapDrawable.width
+                            height = bitmapDrawable.height
                             val productTag = findViewById<IconUnify>(R.id.product_tag_button)
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
+                            val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
+
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
                                     context,
                                     R.drawable.ic_thumb_filled
                                 )
                             )
+                            feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
+                                val productTagView = PostTagView(context)
+                                productTagView.bindData(listener,
+                                    feedXMediaTagging,
+                                    products,
+                                    width,
+                                    height,
+                                    positionInFeed)
+
+                                layout.addView(productTagView)
+
+                            }
                             productTagText.gone()
                             imagePostListener.userImagePostImpression(
                                 positionInFeed,
@@ -722,6 +745,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             feedXCard.followers.isFollowed,
                                             feedXCard.author.id
                                         )
+
+                                        for (i in 0 until layout.childCount) {
+                                            var view = layout.getChildAt(i)
+                                            if(view is PostTagView){
+                                                val item = (view as PostTagView)
+                                                item.showExpandedView()
+
+                                            }
+                                        }
                                         if (!productTagText.isVisible) {
                                             productTagText.apply {
                                                 visible()

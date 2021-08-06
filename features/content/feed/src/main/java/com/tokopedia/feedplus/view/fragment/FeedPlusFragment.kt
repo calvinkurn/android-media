@@ -1689,6 +1689,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
+    override fun onPostTagBubbleClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        postTagItem: FeedXProduct
+    ) {
+        if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+            val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
+            feedAnalytics.eventClickPostTagitem(
+                item.feedXCard.id,
+                postTagItem,
+                0,
+                item.feedXCard.typename,
+                item.feedXCard.followers.isFollowed,
+                item.feedXCard.author.id
+            )
+        }
+        onGoToLink(redirectUrl)
+    }
     override fun onPostTagItemBSImpression(
         activityId: String,
         products: List<FeedXProduct>,
