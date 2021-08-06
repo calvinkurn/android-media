@@ -33,6 +33,7 @@ object CameraUtil {
     }
 
     private fun dispatchTakePictureIntent(weakFragment: WeakReference<Fragment?>?):String? {
+        var filePath:String? = null
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             // Ensure that there's a camera activity to handle the intent
             weakFragment?.get()?.context?.let {context->
@@ -54,11 +55,11 @@ object CameraUtil {
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                         weakFragment?.get()?.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                     }
-                    photoFile?.absolutePath
+                    filePath = photoFile?.absolutePath
                 }
             }
 
         }
-        return null
+        return filePath
     }
 }

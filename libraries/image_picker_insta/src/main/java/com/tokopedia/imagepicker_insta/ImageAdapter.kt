@@ -36,11 +36,13 @@ class ImageAdapter(val dataList: List<Asset>, val contentHeight:Int, var onCamer
             holder.setData()
         } else if (holder is PhotosViewHolder) {
             holder.setData(dataList[position])
+            holder.setChecked(selectedPositions.contains(position))
+
             holder.itemView.setOnClickListener {
                 if(selectedPositions.contains(position)){
                     //un select
                     selectedPositions.remove(position)
-                    holder.setChecked(false)
+
                     itemSelectCallback?.invoke(dataList[position],false)
                 }else{
                     //select

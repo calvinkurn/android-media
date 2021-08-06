@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 import android.util.Log
 import android.util.SparseArray
+import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.imagepicker_insta.util.CursorUtil
@@ -28,7 +29,7 @@ class PhotoImporter {
                                      photosOnPhone: SparseArray<JSONObject>,
                                      photoNames:SparseArray<String>
     ):PhotosImporterData {
-        val photosList = arrayListOf<PhotosData>()
+        val photosList = arrayListOf<Asset>()
         val folders = hashSetOf<String>()
 
         if (cur != null && cur.count > 0) {

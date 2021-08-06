@@ -1,8 +1,12 @@
 package com.tokopedia.imagepicker_insta
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +51,19 @@ class MainFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDagger()
+        handleCameraPermissionCallback()
+    }
+
+    fun handleCameraPermissionCallback(){
+        if(activity is MainActivity){
+            (activity as MainActivity).cameraPermissionCallback = {hasAllPermission->
+                if(hasAllPermission){
+                    openCamera()
+                }else{
+                    Toast.makeText(context,"Please allow Permissions",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     fun initDagger(){
@@ -81,7 +98,7 @@ class MainFragment: Fragment() {
             if(folders.isEmpty()) return@setOnClickListener
 
             val bottomSheet = BottomSheetUnify()
-            val folderView = FolderChooserView(it.context,)
+            val folderView = FolderChooserView(it.context)
             bottomSheet.setChild(folderView)
             bottomSheet.show(childFragmentManager,"BottomSheet Tag")
             folderView.setData(folders)
@@ -108,9 +125,17 @@ class MainFragment: Fragment() {
         rv.addItemDecoration(GridItemDecoration(itemPadding,true))
     }
 
-    fun handleOnCameraIconTap(){
+
+    fun openCamera(){
         cameraCaptureFilePath = null
         cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this))
+    }
+
+    fun handleOnCameraIconTap(){
+
+        if(activity is MainActivity){
+            (activity as MainActivity).requestCameraAndWritePermission()
+        }
     }
 
     fun setObservers(){
@@ -120,14 +145,16 @@ class MainFragment: Fragment() {
                     Toast.makeText(context,"Loading",Toast.LENGTH_SHORT).show()
                 }
                 LiveDataResult.STATUS.SUCCESS->{
+
+                    imageDataList.clear()
+                    imageDataList.add(Camera())
+                    folders.clear()
+
                     if(!it.data?.assets.isNullOrEmpty()){
-                        imageDataList.clear()
-                        imageDataList.add(Camera())
                         imageDataList.addAll(it.data!!.assets)
-                        imageAdapter.notifyDataSetChanged()
+
 
                         //update folders
-                        folders.clear()
                         if(!it.data.folders.isNullOrEmpty()){
                             folders.addAll(it.data.folders)
                             tvSelectedFolder.text = it.data.selectedFolder ?: ALL
@@ -135,8 +162,10 @@ class MainFragment: Fragment() {
 
                         Toast.makeText(context,"List updated",Toast.LENGTH_SHORT).show()
                     }else{
+                        tvSelectedFolder.text = "No Photos are available"
                         Toast.makeText(context,"No data",Toast.LENGTH_SHORT).show()
                     }
+                    imageAdapter.notifyDataSetChanged()
                 }
                 LiveDataResult.STATUS.ERROR->{
                     Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
@@ -165,6 +194,32 @@ class MainFragment: Fragment() {
     }
 
     private fun handleCameraSuccessResponse(){
-        cameraCaptureFilePath = null
+        /*
+        * 1. Add image to viewModel's list
+        * 2. add image to selected image
+        * 3. Add image to gallery
+        * 4. Clear current Image file path
+        * */
+        if(!cameraCaptureFilePath.isNullOrEmpty()){
+            val asset = viewModel.photosImporterData?.addCameraImage(cameraCaptureFilePath!!)
+            if(asset!=null) {
+                selectedImage.loadAsset(asset)
+                addAssetToGallery(asset)
+                addToCurrnetDisplayedList(asset)
+            }
+
+            cameraCaptureFilePath = null
+        }
+    }
+    fun addAssetToGallery(asset:Asset){
+        viewModel.insertIntoGallery(asset)
+    }
+
+    fun addToCurrnetDisplayedList(asset: Asset){
+        if(tvSelectedFolder.text == "Pictures"){
+            imageDataList.add(1,asset)
+            imageAdapter.selectedPositions.add(1)
+            imageAdapter.notifyItemInserted(1)
+        }
     }
 }
