@@ -507,7 +507,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
             checkout_loading_view.show()
             viewModel.runMultiCheckout(
-                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
+                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession), userSession.userId
             )
         }
     }
