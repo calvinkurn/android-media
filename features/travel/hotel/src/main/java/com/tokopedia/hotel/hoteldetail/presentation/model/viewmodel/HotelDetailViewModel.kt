@@ -125,20 +125,39 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private suspend fun getRoomList(rawQuery: String, searchParam: HotelHomepageModel) {
-        roomListResult.postValue(useCase.execute(rawQuery, HotelRoomListPageModel(
-                propertyId = searchParam.locId,
-                checkIn = searchParam.checkInDate,
-                checkOut = searchParam.checkOutDate,
-                adult = searchParam.adultCount,
-                child = 0,
-                room = searchParam.roomCount)))
+        try{
+            val hotelRoomListData = async {
+                val data = withContext(dispatcher.io){
+                    useCase.execute(rawQuery, HotelRoomListPageModel(
+                        propertyId = searchParam.locId,
+                        checkIn = searchParam.checkInDate,
+                        checkOut = searchParam.checkOutDate,
+                        adult = searchParam.adultCount,
+                        child = 0,
+                        room = searchParam.roomCount))                }
+                data
+            }
+            roomListResult.postValue(hotelRoomListData.await())
+        } catch (t: Throwable) {
+            roomListResult.postValue(Fail(t))
+        }
     }
 
     private suspend fun getNearbyLandmarks(rawQuery: String, propertyId: Long){
         val filterNearby = HotelNearbyLandmarkParam.FilterNearbyLandmark(propertyId)
         val nearbyLandmarkParam = HotelNearbyLandmarkParam(template = HotelNearbyLandmarkTemplate.HOTEL_PDP.value, filter = filterNearby)
 
-        hotelNearbyLandmarks.postValue(hotelNearbyLandmark.execute(rawQuery, nearbyLandmarkParam))
+        try{
+            val hotelNearbyData = async {
+                val data = withContext(dispatcher.io){
+                    hotelNearbyLandmark.execute(rawQuery, nearbyLandmarkParam)
+                }
+                data
+            }
+            hotelNearbyLandmarks.postValue(hotelNearbyData.await())
+        } catch (t: Throwable) {
+            hotelNearbyLandmarks.postValue(Fail(t))
+        }
     }
 
     companion object {
