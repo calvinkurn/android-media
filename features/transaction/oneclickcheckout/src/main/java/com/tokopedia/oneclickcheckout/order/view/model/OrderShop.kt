@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class OrderShop(
@@ -40,7 +39,7 @@ data class OrderShop(
         // Analytics
         var hasTriggerViewOverweightTicker: Boolean = false,
         var hasTriggerViewErrorOrderLevelTicker: Boolean = false
-) : OrderItem {
+) {
 
     val isError: Boolean
         get() = errors.isNotEmpty()
