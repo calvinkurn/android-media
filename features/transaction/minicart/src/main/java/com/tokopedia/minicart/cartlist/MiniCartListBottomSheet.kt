@@ -173,7 +173,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
-        val isOCCFlow = viewModel?.isOCCFlow?.value ?: false
+        val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
         analytics.eventClickBuy(pageName, products, isOCCFlow)
     }
 
@@ -421,7 +421,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             if (miniCartWidgetData.totalProductCount == 0) {
                 setAmount("-")
-                if (viewModel?.isOCCFlow?.value == true) {
+                if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
                     setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
                 } else {
                     setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
@@ -430,7 +430,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 enableAmountChevron(false)
             } else {
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-                if (viewModel?.isOCCFlow?.value == true) {
+                if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
                     setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartWidgetData.totalProductCount))
                 } else {
                     setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
@@ -446,7 +446,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun validateAmountCtaLabel(viewBinding: LayoutBottomsheetMiniCartListBinding, miniCartWidgetData: MiniCartWidgetData) {
-        if (viewModel?.isOCCFlow?.value == true) {
+        if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             viewBinding.totalAmount.post {
                 val ellipsis = viewBinding.totalAmount.amountCtaView.layout?.getEllipsisCount(0)
                         ?: 0

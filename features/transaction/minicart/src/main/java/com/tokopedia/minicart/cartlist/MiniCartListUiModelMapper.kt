@@ -76,6 +76,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
             totalProductCount = totalProductAvailable
             totalProductPrice = miniCartData.data.totalProductPrice
             totalProductError = totalProductUnavailable
+            isOCCFlow = miniCartData.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC
+            buttonBuyWording = miniCartData.data.beliButtonConfig.buttonWording
         }
     }
 
