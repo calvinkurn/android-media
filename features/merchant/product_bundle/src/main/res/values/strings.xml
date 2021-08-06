@@ -1,0 +1,13 @@
+<resources>
+
+    <!-- add edit product screen name -->
+    <string name="product_bundle_page_title">Pilih paket</string>
+
+    <!-- id -->
+    <item name="product_bundle_info_tag" type="id" />
+    <item name="product_variant_tag" type="id" />
+
+    <!-- variant bottomsheet -->
+    <string name="variant_bottomsheet_action_save">Simpan</string>
+
+</resources>

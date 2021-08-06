@@ -44,7 +44,7 @@ object AtcVariantHelper {
     const val BUNDLING_PAGESOURCE = "bundling page"
 
     /**
-     * For PDP only
+     * For PDP and ProductBundle only
      */
     fun pdpToAtcVariant(context: Context,
                         pageSource: String,
@@ -118,22 +118,22 @@ object AtcVariantHelper {
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 
-    fun generateSimpanCartRedirection(productVariant: ProductVariant, buttonText: String): Map<String, CartTypeData>? {
+    fun generateSaveCartRedirection(productVariant: ProductVariant, buttonText: String): Map<String, CartTypeData>? {
         if (!productVariant.hasChildren) return null
         val mapOfCartRedirection = mutableMapOf<String, CartTypeData>()
         productVariant.children.forEach {
-            mapOfCartRedirection[it.productId] = generateCartTypeDataSimpan(it.productId, buttonText)
+            mapOfCartRedirection[it.productId] = generateCartTypeDataSave(it.productId, buttonText)
         }
         return mapOfCartRedirection
     }
 
-    private fun generateCartTypeDataSimpan(productId: String, buttonText: String): CartTypeData {
+    private fun generateCartTypeDataSave(productId: String, buttonText: String): CartTypeData {
         return CartTypeData(
                 productId = productId,
                 availableButtons = listOf(
                         AvailableButton(
                                 cartType = ProductDetailCommonConstant.KEY_SAVE_BUTTON,
-                                color = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                                color = ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
                                 text = buttonText,
                                 showRecommendation = false
                         )),
