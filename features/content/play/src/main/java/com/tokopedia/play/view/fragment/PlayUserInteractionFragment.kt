@@ -693,16 +693,13 @@ class PlayUserInteractionFragment @Inject constructor(
             private var isFirstTime = true
 
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
-                val shotAmount: Long
                 val isAnimate: Boolean
+                val shotAmount = minOf(
+                    if(viewModel.firstLikeShot) it.totalLike else it.totalLike - it.previousLike,
+                    spamLikeView.maxShot
+                )
 
-                if (isFirstTime) {
-                    shotAmount = minOf(it.totalLike, spamLikeView.maxShot)
-                    likeView.setEnabled(true)
-                }
-                else {
-                    shotAmount = minOf(it.totalLike - it.previousLike, spamLikeView.maxShot)
-                }
+                if (isFirstTime) likeView.setEnabled(true)
 
                 if(playViewModel.isAllowMultipleLike) {
                     isAnimate = false
@@ -719,6 +716,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 likeView.playLikeAnimation(it.isLiked, isAnimate)
                 isFirstTime = false
+                viewModel.firstLikeShot = false
 
                 likeView.setTotalLikes(it)
             }

@@ -26,6 +26,8 @@ class PlayInteractionViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
 
+    var firstLikeShot = true
+
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
