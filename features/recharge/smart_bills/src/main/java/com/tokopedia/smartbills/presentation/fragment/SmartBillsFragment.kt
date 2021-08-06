@@ -26,10 +26,8 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -47,6 +45,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsEmptyS
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsCatalogBottomSheet
+import com.tokopedia.smartbills.presentation.widget.SmartBillsDeleteBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.smartbills.util.DividerSBMItemDecoration
@@ -289,8 +288,30 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 }
             }
-
         })
+
+        observe(viewModel.deleteSBM){
+            when(it){
+                is Success -> {
+                    val message = it.data.rechargeSBMDeleteBill.message
+                    if (!message.isNullOrEmpty()) {
+                        view?.let { view ->
+                            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
+                        showLoading()
+                        loadInitialData()
+                    }
+                }
+
+                is Fail -> {
+                    view?.let { view ->
+                        Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -473,16 +494,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun clickEmptyButton() {
-        if (getRemoteConfigAddBillsEnabler()) {
-            getCatalogData()
-        } else {
-            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
-        }
+        getCatalogData()
     }
 
     private fun getCatalogData() {
-        showProgressBar()
-        viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
+        if (getRemoteConfigAddBillsEnabler()) {
+            showProgressBar()
+            viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
+        } else {
+            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
+        }
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
@@ -551,6 +572,41 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         fragmentManager?.run {
             bottomSheet.setTitle(getString(R.string.smart_bills_item_detail_bottomsheet_title))
             bottomSheet.show(this)
+        }
+    }
+
+    override fun onDeleteClicked(bill: RechargeBills) {
+        fragmentManager?.let {
+            val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet(object :
+                    SmartBillsDeleteBottomSheet.DeleteProductSBMListener{
+                override fun onDeleteProductClicked() {
+                    showDeleteDialog(bill)
+                }
+            })
+
+            smartBillsDeleteBottomSheet.show(it, "")
+        }
+    }
+
+    private fun showDeleteDialog(bill: RechargeBills){
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(resources.getString(R.string.smart_bills_delete_dialog_title))
+                setDescription(resources.getString(R.string.smart_bills_delete_dialog_desc))
+                setPrimaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_yes))
+                setSecondaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_no))
+
+                setPrimaryCTAClickListener{
+                    dismiss()
+                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)))
+                }
+
+                setSecondaryCTAClickListener{
+                    dismiss()
+                }
+
+            }
+            dialog.show()
         }
     }
 

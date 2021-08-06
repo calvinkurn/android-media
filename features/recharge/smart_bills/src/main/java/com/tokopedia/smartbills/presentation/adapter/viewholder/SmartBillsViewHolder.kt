@@ -175,6 +175,16 @@ class SmartBillsViewHolder(val view: View,
                 tv_due_date_label.gone()
                 iv_urgency_icon.gone()
             }
+
+
+            if(element.newBillLabel.isNewLabel){
+                icon_menu_sbm_delete.apply {
+                    show()
+                    setOnClickListener {
+                        detailListener.onDeleteClicked(element)
+                    }
+                }
+            }
         }
     }
 
@@ -184,6 +194,7 @@ class SmartBillsViewHolder(val view: View,
 
     interface DetailListener {
         fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet)
+        fun onDeleteClicked(bill: RechargeBills)
     }
 
     private fun getDueUrgencyColor(type: Int, context: Context): Int {

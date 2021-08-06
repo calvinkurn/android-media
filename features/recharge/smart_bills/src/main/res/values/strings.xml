@@ -62,4 +62,10 @@
     <string name="smart_bills_add_bills_product_placeholder_pulsa">Pulsa</string>
     <string name="smart_bills_add_bills_product_placeholder_data">Paket Data</string>
     <string name="smart_bills_add_bills_nominal_error">Oops, nominal tidak boleh kosong</string>
+
+    <string name="smart_bills_delete_bills">Hapus Tagihan</string>
+    <string name="smart_bills_delete_dialog_title">Hapus tagihan ini?</string>
+    <string name="smart_bills_delete_dialog_desc">Kamu bisa tambah tagihan ini lagi lain kali.</string>
+    <string name="smart_bills_delete_dialog_yes">Hapus</string>
+    <string name="smart_bills_delete_dialog_no">Batal</string>
 </resources>

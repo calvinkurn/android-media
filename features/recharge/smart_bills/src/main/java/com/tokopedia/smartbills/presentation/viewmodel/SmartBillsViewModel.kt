@@ -3,6 +3,9 @@ package com.tokopedia.smartbills.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,16 +16,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.smartbills.data.DataRechargeMultiCheckoutResponse
-import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -48,6 +47,10 @@ class SmartBillsViewModel @Inject constructor(
     private val mutableCatalogList = MutableLiveData<Result<List<SmartBillsCatalogMenu>>>()
     val catalogList: LiveData<Result<List<SmartBillsCatalogMenu>>>
         get() = mutableCatalogList
+
+    private val mutableDeleteSBM = MutableLiveData<Result<RechargeDeleteSBM>>()
+    val deleteSBM: LiveData<Result<RechargeDeleteSBM>>
+        get() = mutableDeleteSBM
 
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
@@ -161,6 +164,24 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
+    fun deleteProductSBM(mapParams: Map<String, Any>){
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.DELETE_SBM,
+                    RechargeDeleteSBM::class.java, mapParams
+            )
+
+            val data = withContext(dispatcher.io) {
+                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeDeleteSBM>()
+
+            mutableDeleteSBM.postValue(Success(data))
+        }
+        ) {
+            mutableCatalogList.postValue(Fail(it))
+        }
+    }
+
     fun createStatementMonthsParams(limit: Int): Map<String, Int> {
         return mapOf(PARAM_LIMIT to limit)
     }
@@ -199,6 +220,11 @@ class SmartBillsViewModel @Inject constructor(
         return map
     }
 
+    fun createParamDeleteSBM(request : RechargeSBMDeleteBillRequest): Map<String, Any> {
+        val map = mutableMapOf(PARAM_DELETE_SBM to request)
+        return map
+    }
+
     fun convertSBMMultiResponse(typeRestResponseMap: Map<Type, RestResponse?>): DataRechargeMultiCheckoutResponse {
         return typeRestResponseMap[DataRechargeMultiCheckoutResponse::class.java]?.getData() as DataRechargeMultiCheckoutResponse
     }
@@ -210,6 +236,7 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_SOURCE = "source"
         const val PARAM_UUIDS = "uuids"
         const val PARAM_PLATFORM_ID = "platformID"
+        const val PARAM_DELETE_SBM = "req"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"

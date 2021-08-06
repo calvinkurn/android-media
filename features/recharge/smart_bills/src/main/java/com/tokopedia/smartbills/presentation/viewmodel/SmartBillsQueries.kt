@@ -174,6 +174,10 @@ object SmartBillsQueries {
                   operatorID:OperatorID
                   operatorName: OperatorName
                   clientNumber: ClientNumber
+                  newBillLabel: NewBillLabel{
+                    isNewLabel: IsNewBill
+                    text: Text
+                  }
                   amount: Amount
                   amountText: AmountText
                   iconURL: IconURL
@@ -244,4 +248,15 @@ object SmartBillsQueries {
     }
     """
     }
+
+
+    val DELETE_SBM by lazy {
+        """mutation DeleteFromSBMList(${'$'}req:RechargeSBMDeleteBillRequest!) {
+                rechargeSBMDeleteBill(req: ${'$'}req) {
+                    Message
+                }
+            }
+        """.trimIndent()
+    }
+
 }
