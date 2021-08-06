@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.searchbar.SearchBarConstant.HOME_SCREEN_NAME
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
@@ -74,7 +75,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun setViewAttributesAfterInflation(){
-        this.screenName = HOME_PAGE_NAME
+        this.screenName = HOME_SCREEN_NAME
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -358,7 +359,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
-        private const val HOME_PAGE_NAME = "\\"
+
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }
