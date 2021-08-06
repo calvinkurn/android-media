@@ -3,15 +3,6 @@ package com.tokopedia.mediauploader.util
 import android.graphics.BitmapFactory
 import java.io.File
 
-/**
- * check if the exception comes from [ERROR_SOURCE_NOT_FOUND]
- */
-fun isSourceMediaNotFound(exception: Exception): Boolean {
-    val errorSourceNotSound = "Required: source (-1)"
-    val exceptionMessage = exception.message.orEmpty()
-    return exceptionMessage.startsWith(errorSourceNotSound)
-}
-
 fun getFileExtension(filePath: String): String {
     val lastIndexOf = filePath.lastIndexOf(".")
     return if (lastIndexOf == -1) "" else filePath.substring(lastIndexOf)
