@@ -6,6 +6,7 @@
 
     <ImageView
         android:id="@+id/iv_recharge_home_banner_empty"
+        tools:ignore="contentDescription"
         android:layout_width="match_parent"
         android:layout_height="@dimen/recharge_empty_banner_bg_height"
         android:scaleType="fitXY"
@@ -16,8 +17,8 @@
         android:id="@+id/recharge_home_banner_empty_text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginHorizontal="@dimen/layout_lvl3"
+        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
