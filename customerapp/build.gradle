@@ -58,12 +58,6 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
-android.applicationVariants.all { variant ->
-    def variantNameCap = variant.name.capitalize()
-    task ("generateBundledResourcesHash${variantNameCap}")
-    task ("bundle${variantNameCap}JsAndAssets")
-}
-
 project.ext {
     defaultVersionCode = 418001101;
     defaultVersionName = "4.01-test";
@@ -79,12 +73,16 @@ buildscript {
         maven {
             url 'https://www.jitpack.io'
         }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.gradlePlugin.googleServices
+        classpath rootProject.ext.gradlePlugin.testRetry
     }
 }
 ext.lintchecks = [
@@ -94,9 +92,9 @@ ext.lintchecks = [
         'TypographyOverTextViewUsage'
 ] as String[]
 
+apply plugin: "org.gradle.test-retry"
 
 android {
-
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'
@@ -105,6 +103,15 @@ android {
         pickFirst '**/x86_64/libc++_shared.so'
         pickFirst '**/x86/libjsc.so'
         pickFirst '**/armeabi-v7a/libjsc.so'
+    }
+    testOptions {
+        unitTests.all {
+           retry {
+                failOnPassedAfterRetry = true
+                maxFailures = 42
+                maxRetries = 1
+            }
+        }
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
