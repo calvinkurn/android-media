@@ -1,10 +1,12 @@
 package com.tokopedia.profilecompletion.settingprofile.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -45,6 +48,7 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,7 +56,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
-import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -82,6 +85,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private var chancesChangeName = "0"
 
+    private var userIdLabel: Typography? = null
+    private var userIdButton: IconUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +99,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         overlayView = view.findViewById(R.id.overlay_view)
         tickerPhoneVerification = view.findViewById(R.id.ticker_phone_verification)
         tickerAddNameWarning = view.findViewById(R.id.ticker_default_name_warning)
+        userIdLabel = view.findViewById(R.id.user_id_label)
+        userIdButton = view.findViewById(R.id.user_id_copy)
         return view
     }
 
@@ -108,6 +115,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         profilePhoto.setOnClickListener(EditUserProfilePhotoListener())
         btnEditProfilePhoto.setOnClickListener(EditUserProfilePhotoListener())
 
+        userIdLabel?.text = getString(R.string.user_id_label, userSession.userId)
+        userIdButton?.setOnClickListener { copyUserId() }
         initSettingProfileData()
     }
 
@@ -361,6 +370,15 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+    }
+
+    private fun copyUserId() {
+        val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val myClip: ClipData = ClipData.newPlainText("User Id", userSession.userId)
+        myClipboard.setPrimaryClip(myClip)
+        if(view != null) {
+            Toaster.build(requireView(), "User Id Copied", Toaster.LENGTH_SHORT).show()
+        }
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
