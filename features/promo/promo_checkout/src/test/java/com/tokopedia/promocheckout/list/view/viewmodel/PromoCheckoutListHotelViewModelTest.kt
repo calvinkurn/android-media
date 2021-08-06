@@ -4,10 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.promocheckout.list.domain.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.mockdata.*
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert.assertEquals
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +40,7 @@ class PromoCheckoutListHotelViewModelTest{
             get() = Dispatchers.Unconfined
     }
 
-    private val hotelCheckVoucherUseCase: HotelCheckVoucherUseCase = mockk()
+    private val hotelCheckVoucherUseCase: HotelCheckVoucherUseCase = mockk(relaxed = true)
     private lateinit var viewModel: PromoCheckoutListHotelViewModel
 
     @Before
@@ -59,7 +61,7 @@ class PromoCheckoutListHotelViewModelTest{
         //when
         assert(viewModel.hotelCheckVoucherResult.value is Success)
         assert(viewModel.showLoadingPromoHotel.value is Boolean)
-        assertEquals(DUMMY_DATA_UI_MODEL, (viewModel.hotelCheckVoucherResult.value) as Success)
+        assertEquals(Success(DUMMY_DATA_UI_MODEL), (viewModel.hotelCheckVoucherResult.value) as Success)
         assertEquals(false, viewModel.showLoadingPromoHotel.value)
     }
 
@@ -76,7 +78,7 @@ class PromoCheckoutListHotelViewModelTest{
         //when
         assert(viewModel.hotelCheckVoucherResult.value is Fail)
         assert(viewModel.showLoadingPromoHotel.value is Boolean)
-        assertEquals(FAILED_CHECK_VOUCHER_MESSAGE_EXCEPTION, (viewModel.hotelCheckVoucherResult.value) as Fail)
+        assertEquals(Fail(FAILED_CHECK_VOUCHER_MESSAGE_EXCEPTION), (viewModel.hotelCheckVoucherResult.value) as Fail)
         assertEquals(false, viewModel.showLoadingPromoHotel.value)
     }
 
@@ -93,7 +95,7 @@ class PromoCheckoutListHotelViewModelTest{
         //when
         assert(viewModel.hotelCheckVoucherResult.value is Fail)
         assert(viewModel.showLoadingPromoHotel.value is Boolean)
-        assertEquals(FAILED_CHECK_VOUCHER_GENERAL_EXCEPTION, (viewModel.hotelCheckVoucherResult.value) as Fail)
+        assertEquals(Fail(FAILED_CHECK_VOUCHER_GENERAL_EXCEPTION), (viewModel.hotelCheckVoucherResult.value) as Fail)
         assertEquals(false, viewModel.showLoadingPromoHotel.value)
     }
 }
