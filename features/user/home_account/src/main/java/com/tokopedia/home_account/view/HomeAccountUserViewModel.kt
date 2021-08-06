@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -27,20 +27,20 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
+    @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
-        private val accountPref: AccountPreference,
-        private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
-        private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-        private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
-        private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
-        private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
-        private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
-        private val getLinkStatusUseCase: GetLinkStatusUseCase,
-        private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+    private val accountPref: AccountPreference,
+    private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
+    private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
+    private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
+    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
+    private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
+    private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
+    private val getLinkStatusUseCase: GetLinkStatusUseCase,
+    private val walletPref: WalletPref,
+    private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>

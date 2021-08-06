@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.home_account.R
+import com.tokopedia.home_account.databinding.FragmentLinkAccountLayoutBinding
 import com.tokopedia.home_account.linkaccount.data.LinkStatus
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.data.UserAccountDataView
@@ -27,8 +29,8 @@ import com.tokopedia.home_account.linkaccount.di.LinkAccountComponent
 import com.tokopedia.home_account.linkaccount.listener.AccountItemListener
 import com.tokopedia.home_account.linkaccount.view.adapter.LinkAccountAdapter
 import com.tokopedia.home_account.linkaccount.viewmodel.LinkAccountViewModel
-import com.tokopedia.linkaccount.R
-import com.tokopedia.linkaccount.databinding.FragmentLinkAccountLayoutBinding
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail

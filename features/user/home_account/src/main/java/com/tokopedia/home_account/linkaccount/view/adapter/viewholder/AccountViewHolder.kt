@@ -7,10 +7,12 @@ package com.tokopedia.home_account.linkaccount.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home_account.R
+import com.tokopedia.home_account.databinding.LayoutItemAccountBinding
 import com.tokopedia.home_account.linkaccount.data.UserAccountDataView
 import com.tokopedia.home_account.linkaccount.listener.AccountItemListener
-import com.tokopedia.linkaccount.R
-import com.tokopedia.linkaccount.databinding.LayoutItemAccountBinding
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 open class AccountViewHolder(
