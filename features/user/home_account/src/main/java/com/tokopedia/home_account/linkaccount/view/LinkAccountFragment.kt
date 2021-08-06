@@ -211,7 +211,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
     private fun goToLinkPage() {
         activity?.run {
             Toaster.build(requireView(), getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT) ?: "", Toaster.LENGTH_LONG).show()
-//            RouteManager.route(activity, ApplinkConst.WEBVIEW, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
+            RouteManager.route(activity, ApplinkConst.WEBVIEW, getLinkAccountUrl(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT))
         }
     }
 

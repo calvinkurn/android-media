@@ -1161,6 +1161,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             requireActivity(),
             ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
         ) ?: "", Toaster.LENGTH_LONG).show()
+
+        RouteManager.route(activity, ApplinkConst.WEBVIEW,
+            LinkAccountFragment.getLinkAccountUrl(requireContext(), ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+        )
 //        showBottomSheetLinkAccount()
     }
 
