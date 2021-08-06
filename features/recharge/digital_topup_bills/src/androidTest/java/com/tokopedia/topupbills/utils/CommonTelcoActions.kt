@@ -119,10 +119,10 @@ object CommonTelcoActions {
         onView(withId(R.id.telco_buy_widget)).perform(click())
     }
 
-    fun productItem_click(viewInteraction: ViewInteraction) {
+    fun productItem_click(viewInteraction: ViewInteraction, position: Int) {
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(
-                1,
+                position,
                 click()
             )
         )
