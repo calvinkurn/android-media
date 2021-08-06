@@ -24,12 +24,16 @@ class PlayLikeModelBuilder {
             totalLike: Long = 1,
             totalLikeFormatted: String = "1",
             isLiked: Boolean = false,
-            source: LikeSource = LikeSource.Network
+            source: LikeSource = LikeSource.Network,
+            previousLike: Long = 0,
+            previousLikeFormatted: String = "0"
     ) = PlayLikeStatusInfoUiModel(
             totalLike = totalLike,
             totalLikeFormatted = totalLikeFormatted,
             isLiked = isLiked,
-            source = source
+            source = source,
+            previousLike = previousLike,
+            previousLikeFormatted = previousLikeFormatted
     )
 
     fun buildIncompleteData(
