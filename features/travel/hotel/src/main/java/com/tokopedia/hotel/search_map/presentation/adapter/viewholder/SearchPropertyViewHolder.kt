@@ -4,75 +4,77 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemPropertySearchResultBinding
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.data.model.PropertyPrice
 import com.tokopedia.kotlin.extensions.view.*
-import kotlinx.android.synthetic.main.item_property_search_result.view.*
 
-class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) {
+class SearchPropertyViewHolder(val binding: ItemPropertySearchResultBinding) : AbstractViewHolder<Property>(binding.root) {
 
     override fun bind(element: Property) {
-        with(itemView) {
+        with(binding) {
             image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
             if (element.star < 1) {
-                rating_star.hide()
+                ratingStar.hide()
             } else {
-                rating_star.show()
-                rating_star.numStars = element.star
-                rating_star.rating = element.star.toFloat()
+                ratingStar.show()
+                ratingStar.numStars = element.star
+                ratingStar.rating = element.star.toFloat()
             }
             title.text = element.name
             type.text = element.type
             location.text = element.location.description
 
             if (element.review.score == 0f) {
-                rating_counter.visibility = View.INVISIBLE
+                ratingCounter.visibility = View.INVISIBLE
                 rate.visibility = View.INVISIBLE
             } else {
-                rating_counter.visibility = View.VISIBLE
+                ratingCounter.visibility = View.VISIBLE
                 rate.visibility = View.VISIBLE
-                rating_counter.text = element.review.score.toString()
+                ratingCounter.text = element.review.score.toString()
                 rate.text = element.review.description
             }
 
             if (element.roomAvailability <= MINIMUM_ROOM_AVAILABLE) {
                 info.visible()
-                info.text = getString(R.string.hotel_room_room_left_text,
-                        Integer.toString(element.roomAvailability))
+                info.text = getString(
+                    R.string.hotel_room_room_left_text,
+                    element.roomAvailability.toString()
+                )
             }
 
             val propertyPrice = element.roomPrice.firstOrNull() ?: PropertyPrice()
             price.text = propertyPrice.price
 
             if (propertyPrice.deals.price.isNotEmpty()) {
-                price_origin.visibility = View.VISIBLE
-                price_origin.text = propertyPrice.deals.price
-                price_origin.paintFlags = price_origin.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                priceOrigin.visibility = View.VISIBLE
+                priceOrigin.text = propertyPrice.deals.price
+                priceOrigin.paintFlags = priceOrigin.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
-                price_origin.visibility = View.GONE
+                priceOrigin.visibility = View.GONE
             }
             if (propertyPrice.deals.tagging.isNotEmpty()) {
-                hotel_property_item_tag.visibility = View.VISIBLE
-                hotel_property_item_tag.text = propertyPrice.deals.tagging
+                hotelPropertyItemTag.visibility = View.VISIBLE
+                hotelPropertyItemTag.text = propertyPrice.deals.tagging
             } else {
-                hotel_property_item_tag.visibility = if (!element.isDirectPayment) View.GONE else View.INVISIBLE
+                hotelPropertyItemTag.visibility = if (!element.isDirectPayment) View.GONE else View.INVISIBLE
             }
-            price_origin_shadow.visibility = if (price_origin.isVisible) View.GONE else View.INVISIBLE
-            if (!element.isDirectPayment) price_origin_shadow.hide()
+            priceOriginShadow.visibility = if (priceOrigin.isVisible) View.GONE else View.INVISIBLE
+            if (!element.isDirectPayment) priceOriginShadow.hide()
 
             if (!element.isDirectPayment) {
-                container_pay_at_hotel.show()
+                containerPayAtHotel.show()
             } else {
-                container_pay_at_hotel.hide()
+                containerPayAtHotel.hide()
             }
 
             if (element.propertySafetyBadge.isShow && element.propertySafetyBadge.title.isNotEmpty()) {
-                tv_tag_hotel_badge.show()
-                ic_tag_hotel_badge_outline.show()
-                tv_tag_hotel_badge.text = element.propertySafetyBadge.title
+                tvTagHotelBadge.show()
+                icTagHotelBadgeOutline.show()
+                tvTagHotelBadge.text = element.propertySafetyBadge.title
             } else {
-                tv_tag_hotel_badge.hide()
-                ic_tag_hotel_badge_outline.hide()
+                tvTagHotelBadge.hide()
+                icTagHotelBadgeOutline.hide()
             }
 
             renderView(element.isForHorizontalItem)
@@ -80,19 +82,19 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
     }
 
     private fun renderView(isHorizontal: Boolean) {
-        with(itemView) {
+        with(binding) {
             if (isHorizontal) {
                 type.gone()
-                rating_star.gone()
-                hotel_property_item_tag.gone()
-                include_tax.gone()
-                container_pay_at_hotel.gone()
+                ratingStar.gone()
+                hotelPropertyItemTag.gone()
+                includeTax.gone()
+                containerPayAtHotel.gone()
             } else {
                 // other view no need to change the visibility when not for horizontal,
                 // because already handled in bind function.
                 // Only type and include_tax need to be handled manually in here
                 type.visible()
-                include_tax.visible()
+                includeTax.visible()
             }
         }
     }
