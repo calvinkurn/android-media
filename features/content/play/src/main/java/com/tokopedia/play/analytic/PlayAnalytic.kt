@@ -59,10 +59,19 @@ class PlayAnalytic(
 
     fun clickLeaveRoom(duration: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_BACK,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "leave room",
-                "$mChannelId - $duration - ${mChannelType.value}"
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "leave room",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $duration - ${mChannelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                KEY_CHANNEL to mChannelName,
+                "duration" to duration.toString()
+            )
         )
     }
 
