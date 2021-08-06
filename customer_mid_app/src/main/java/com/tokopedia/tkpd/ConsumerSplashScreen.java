@@ -61,7 +61,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         super.onCreate(savedInstanceState);
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
                 .start(this.getApplication());
-        setUserIdNewRelic()
+        setUserIdNewRelic();
         executeInBackground();
     }
 
