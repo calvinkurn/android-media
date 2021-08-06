@@ -25,7 +25,7 @@
             android:id="@+id/rv_recharge_home_carousell"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:nestedScrollingEnabled="false"
             android:clipToPadding="false"
             android:paddingHorizontal="@dimen/spacing_lvl4"
