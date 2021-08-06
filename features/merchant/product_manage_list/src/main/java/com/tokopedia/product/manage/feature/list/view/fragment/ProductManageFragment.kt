@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 import android.accounts.NetworkErrorException
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -22,6 +21,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -50,7 +50,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -151,6 +150,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_M
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -189,6 +189,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private var isOfficialStore: Boolean = false
     private var productListFeaturedOnlySize: Int = 0
     private var dialogFeaturedProduct: DialogUnify? = null
+    private var searchBar: SearchBarUnify? = null
     private var productManageBottomSheet: ProductManageBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageMoreMenuBottomSheet: ProductManageMoreMenuBottomSheet? = null
@@ -272,7 +273,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(view)
     }
 
     override fun clearAllData() {
@@ -280,9 +281,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         super.clearAllData()
     }
 
-    private fun initView() {
+    private fun initView(view: View) {
         setupInterceptor()
-        setupSearchBar()
+        setupSearchBar(view)
         setupProductList()
         setupProgressDialogVariant()
         setupFiltersTab()
@@ -700,53 +701,46 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         isLoadingInitialData = true
         tabSortFilter?.show()
         searchBar?.show()
-        searchBar?.searchTextView?.setText(keyword)
+        searchBar?.searchBarTextField?.setText(keyword)
         showLoadingProgress()
         getProductList()
-        searchBar.clearFocus()
+        searchBar?.clearFocus()
     }
 
     private fun showProductEmptyState(): Boolean {
         val selectedFilters = viewModel.selectedFilterAndSort.value
-        val searchKeyword = searchBar.searchTextView.text.toString()
+        val searchKeyword = searchBar?.searchBarTextField?.text?.toString().orEmpty()
         return searchKeyword.isEmpty() && selectedFilters?.selectedFilterCount.orZero() == 0 && filterTab?.isFilterActive() == false
     }
 
     private fun setupInterceptor() {
-        interceptor.setOnTouchListener { _, _ ->
-            searchBar.clearFocus()
-            searchBar.hideKeyboard()
+        interceptor.setOnTouchListener { v, event ->
+            searchBar?.clearFocus()
+            if (event?.action == MotionEvent.ACTION_UP) {
+                v?.performClick()
+            }
             false
         }
     }
 
-    private fun setupSearchBar() {
-        searchBar.clearFocus()
+    private fun setupSearchBar(view: View) {
+        searchBar = view.findViewById(R.id.search_bar_product_manage)
+        searchBar?.clearFocus()
 
-        searchBar.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
+        searchBar?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 showLoadingProgress()
                 getProductList()
-                searchBar.clearFocus()
+                searchBar?.clearFocus()
+                true
+            } else {
+                false
             }
+        }
 
-            override fun onSearchTextChanged(text: String?) {}
-        })
-
-        searchBar.closeImageButton.setOnClickListener {
+        searchBar?.clearListener =  {
             clearSearchBarInput()
             loadInitialData()
-        }
-
-        searchBar.setOnTouchListener { view, _ ->
-            view.requestFocus()
-        }
-
-        searchBar.setSearchHint(getString(R.string.product_manage_search_hint))
-
-        context?.let {
-            searchBar.closeImageButton.setImageResource(android.R.color.transparent)
-            searchBar.closeImageButton.setBackgroundResource(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
         }
     }
 
@@ -985,7 +979,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false, isRefreshFromSortFilter: Boolean = false) {
-        val keyword = searchBar.searchTextView.text.toString()
+        val keyword = searchBar?.searchBarTextField?.text?.toString().orEmpty()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
         val sortOption = selectedFilter?.sortOption
@@ -1408,7 +1402,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun clearSearchBarInput() {
-        searchBar.searchTextView.text.clear()
+        searchBar?.searchBarTextField?.text?.clear()
     }
 
     private fun onSuccessChangeFeaturedProduct(productId: String, status: Int) {
