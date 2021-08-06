@@ -43,8 +43,8 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideUploaderUseCase(
-            dataPolicyUseCase: DataPolicyUseCase,
-            mediaUploaderUseCase: MediaUploaderUseCase
+            @MediaUploaderQualifier dataPolicyUseCase: DataPolicyUseCase,
+            @MediaUploaderQualifier mediaUploaderUseCase: MediaUploaderUseCase
     ): UploaderUseCase {
         return UploaderUseCase(dataPolicyUseCase, mediaUploaderUseCase)
     }
