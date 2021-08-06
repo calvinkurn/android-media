@@ -115,6 +115,10 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
+        if (userSession != null) {
+            userSession = new UserSession(this);
+        }
+
         if (handleAppLink(userSession)) {
             finish();
             return;
