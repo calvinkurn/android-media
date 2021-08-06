@@ -2,7 +2,9 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.MvcSource
@@ -29,8 +31,9 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         element.let {
             setMerchantVoucher(it.animatedInfos, it.shopId)
         }
-        merchantVoucher?.let {
-            sendImpressionTracker()
+
+        merchantVoucher?.addOnImpressionListener(ImpressHolder()){
+            merchantVoucher?.sendImpressionTrackerForPdp()
         }
     }
 
@@ -44,9 +47,4 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         }
         merchantVoucher?.show()
     }
-
-    private fun sendImpressionTracker(){
-        merchantVoucher?.sendImpressionTrackerForPdp()
-    }
-
 }
