@@ -245,7 +245,7 @@ class BarChartViewHolder(
 
     private fun setupSeeMoreCta(element: BarChartWidgetUiModel) {
         with(itemView) {
-            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcBarChartMore.visibility = ctaVisibility
             btnShcBarChartNext.visibility = ctaVisibility
