@@ -376,6 +376,11 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
         val shake = AnimationUtils.loadAnimation(context, R.anim.flight_rotate)
         imgFlightReverseAirport.startAnimation(shake)
+
+        listener?.onReverseAirportClicked(
+                flightSearchData.departureAirport,
+                flightSearchData.arrivalAirport
+        )
     }
 
     private fun onSaveSearch() {
@@ -427,6 +432,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onRoundTripSwitchChanged(isRoundTrip: Boolean)
         fun onDepartureAirportClicked()
         fun onDestinationAirportClicked()
+        fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel)
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
 
