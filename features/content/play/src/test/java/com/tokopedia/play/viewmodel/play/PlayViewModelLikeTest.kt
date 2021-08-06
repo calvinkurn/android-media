@@ -47,7 +47,9 @@ class PlayViewModelLikeTest {
                         status = likeModelBuilder.buildStatus(
                                 totalLike = initialTotalLike.toLong(),
                                 totalLikeFormatted = initialTotalLike.toString(),
-                                isLiked = false
+                                isLiked = false,
+                                previousLike = 0,
+                                previousLikeFormatted = "0"
                         )
                 )
         )
@@ -66,7 +68,9 @@ class PlayViewModelLikeTest {
                                     totalLike = newLikeCount.toLong(),
                                     totalLikeFormatted = newLikeCount.toString(),
                                     isLiked = true,
-                                    source = LikeSource.UserAction
+                                    source = LikeSource.UserAction,
+                                    previousLike = 1,
+                                    previousLikeFormatted = "1"
                             )
                     )
         }
