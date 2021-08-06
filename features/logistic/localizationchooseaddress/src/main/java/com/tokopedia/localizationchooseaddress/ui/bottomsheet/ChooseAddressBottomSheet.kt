@@ -135,7 +135,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         if (userSession.isLoggedIn) {
             initData()
         } else {
-            setViewState(false)
+            setViewState(userSession.isLoggedIn)
         }
     }
 
@@ -287,7 +287,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             when (it) {
                 is Success -> {
                     adapter.updateData(it.data)
-                    setViewState(true)
+                    setViewState(userSession.isLoggedIn)
                 }
 
                 is Fail -> {

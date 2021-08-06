@@ -18,6 +18,7 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -27,11 +28,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+class ChooseAddressWidget : ConstraintLayout,
+    ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -77,7 +83,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
-                        if (it.data.errorCode.code == 9) {
+                        if (it.data.errorCode.code == ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS) {
                             val data = it.data
                             val defaultAddress = ChooseAddressConstant.defaultAddress
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -94,72 +100,20 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                         } else {
-                            if (it.data.addressId == 0) {
-                                val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-                                source?.let { it -> viewModel.getDefaultChosenAddress("", it, isSupportWarehouseLoc) }
-                            } else {
-                                val data = it.data
-                                val localData = ChooseAddressUtils.setLocalizingAddressData(
-                                    addressId = data.addressId.toString(),
-                                    cityId = data.cityId.toString(),
-                                    districtId = data.districtId.toString(),
-                                    lat = data.latitude,
-                                    long = data.longitude,
-                                    label = "${data.addressName} ${data.receiverName}",
-                                    postalCode = data.postalCode,
-                                    shopId = data.tokonowModel.shopId.toString(),
-                                    warehouseId = data.tokonowModel.warehouseId.toString()
-                                )
-                                chooseAddressPref?.setLocalCache(localData)
-                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                            }
-                        }
-                    }
-                    is Fail -> {
-                        onLocalizingAddressError()
-                    }
-                }
-            })
-
-            viewModel.getDefaultAddress.observe(fragment.viewLifecycleOwner, {
-                when (it) {
-                    is Success -> {
-                        if (it.data.keroAddrError.code == 3 || it.data.keroAddrError.code == 4 ||
-                            it.data.keroAddrError.code == 5 || it.data.keroAddrError.code == 6) {
-                            val defaultAddress = ChooseAddressConstant.defaultAddress
+                            val data = it.data
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
-                                addressId = defaultAddress.address_id,
-                                cityId = defaultAddress.city_id,
-                                districtId = defaultAddress.district_id,
-                                lat = defaultAddress.lat,
-                                long = defaultAddress.long,
-                                label = defaultAddress.label,
-                                postalCode = defaultAddress.postal_code,
-                                shopId = it.data.tokonow.shopId.toString(),
-                                warehouseId = it.data.tokonow.warehouseId.toString()
+                                addressId = data.addressId.toString(),
+                                cityId = data.cityId.toString(),
+                                districtId = data.districtId.toString(),
+                                lat = data.latitude,
+                                long = data.longitude,
+                                label = "${data.addressName} ${data.receiverName}",
+                                postalCode = data.postalCode,
+                                shopId = data.tokonowModel.shopId.toString(),
+                                warehouseId = data.tokonowModel.warehouseId.toString()
                             )
                             chooseAddressPref?.setLocalCache(localData)
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                        } else {
-                            if (it.data.addressData.addressId != 0) {
-                                val data = it.data.addressData
-                                val tokonowData = it.data.tokonow
-                                val localData = ChooseAddressUtils.setLocalizingAddressData(
-                                    addressId = data.addressId.toString(),
-                                    cityId = data.cityId.toString(),
-                                    districtId = data.districtId.toString(),
-                                    lat = data.latitude,
-                                    long = data.longitude,
-                                    label = "${data.addressName} ${data.receiverName}",
-                                    postalCode = data.postalCode,
-                                    shopId = tokonowData.shopId.toString(),
-                                    warehouseId = tokonowData.warehouseId.toString()
-                                )
-                                chooseAddressPref?.setLocalCache(localData)
-                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                            } else {
-                                chooseAddressPref?.setLocalCache(ChooseAddressConstant.defaultAddress)
-                            }
                         }
                     }
                     is Fail -> {
@@ -170,12 +124,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         }
     }
 
-    private fun checkRollence(){
+    private fun checkRollence() {
         val value = ChooseAddressUtils.isRollOutUser(context)
         value.let { chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(it) }
     }
 
-    fun updateWidget(){
+    fun updateWidget() {
         val textColor = chooseAddressWidgetListener?.onChangeTextColor()
         if (textColor != null) {
             val newColor = ContextCompat.getColor(context, textColor)
@@ -195,8 +149,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private fun getComponent(): ChooseAddressComponent {
         return DaggerChooseAddressComponent.builder()
-                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     private fun initChooseAddressFlow() {
@@ -212,18 +166,29 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         this.chooseAddressWidgetListener = listener
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
-            viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
+            viewModel = ViewModelProviders.of(
+                fragment,
+                viewModelFactory
+            )[ChooseAddressViewModel::class.java]
         }
 
         isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: true
         initChooseAddressFlow()
 
         buttonChooseAddress?.setOnClickListener {
-            if (hasClicked == false ) {
+            if (hasClicked == false) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
                 val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
                 val eventLabel = chooseAddressWidgetListener?.getEventLabelHostPage()
-                source?.let { _source -> eventLabel?.let { _eventLabel -> ChooseAddressTracking.onClickWidget(_source, userSession.userId, _eventLabel) } }
+                source?.let { _source ->
+                    eventLabel?.let { _eventLabel ->
+                        ChooseAddressTracking.onClickWidget(
+                            _source,
+                            userSession.userId,
+                            _eventLabel
+                        )
+                    }
+                }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
                 chooseAddressBottomSheet.show(fragment?.childFragmentManager)
@@ -239,7 +204,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     override fun onAddressDataChanged() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         fragment?.view?.let {
-            Toaster.build(it, context.getString(R.string.toaster_success_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.build(
+                it,
+                context.getString(R.string.toaster_success_chosen_address),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+            ).show()
         }
         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
     }
@@ -259,13 +229,18 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     override fun isSupportWarehouseLoc(): Boolean {
-        return chooseAddressWidgetListener?.isSupportWarehouseLoc()?: false
+        return chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: false
     }
 
     private fun onLocalizingAddressError() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         fragment?.view?.let {
-            Toaster.build(it, context.getString(R.string.toaster_failed_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                it,
+                context.getString(R.string.toaster_failed_chosen_address),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
         }
         chooseAddressWidgetListener?.onLocalizingAddressServerDown()
     }
@@ -342,5 +317,5 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         fun isSupportWarehouseLoc(): Boolean {
             return true
         }
-     }
+    }
 }
