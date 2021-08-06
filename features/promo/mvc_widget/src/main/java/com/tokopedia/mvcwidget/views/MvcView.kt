@@ -92,4 +92,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
+    fun sendImpressionTrackerForPdp(){
+        if(this.shopId.isNotEmpty()){
+            if(isTokomember){
+                Tracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
+            }
+        }
+    }
 }

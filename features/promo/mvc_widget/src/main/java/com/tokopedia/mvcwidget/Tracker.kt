@@ -73,6 +73,7 @@ object Tracker {
         const val CLICK_CEK_TOKO = "click cek toko"
         const val CLICK_LIHAT_SELENGKAPNYA = "click lihat selengkapnya"
         const val CLICK_MULAI_BELANJA = "click mulai belanja"
+        const val VIEW_TOKOMEMBER = "view coupon tokomember"
     }
 
     object Label {
@@ -421,6 +422,17 @@ object Tracker {
         map[Constants.EVENT_LABEL] = label
 
         fillCommonItems(map, userId, TOKOPOINT_BUSINESSUNIT)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.VIEW_SHOP
+        map[Constants.EVENT_CATEGORY] = Category.SHOP_PAGE_BUYER
+        map[Constants.EVENT_LABEL] = "${Label.SHOP_PAGE}-$shopId"
+        map[Constants.EVENT_ACTION] = Action.VIEW_TOKOMEMBER
+
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 

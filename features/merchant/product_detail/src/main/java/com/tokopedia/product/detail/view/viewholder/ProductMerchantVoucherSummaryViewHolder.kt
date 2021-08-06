@@ -29,6 +29,9 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         element.let {
             setMerchantVoucher(it.animatedInfos, it.shopId)
         }
+        merchantVoucher?.let {
+            sendImpressionTracker()
+        }
     }
 
     private fun initMerchantVoucher() {
@@ -40,6 +43,10 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
             listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP)
         }
         merchantVoucher?.show()
+    }
+
+    private fun sendImpressionTracker(){
+        merchantVoucher?.sendImpressionTrackerForPdp()
     }
 
 }
