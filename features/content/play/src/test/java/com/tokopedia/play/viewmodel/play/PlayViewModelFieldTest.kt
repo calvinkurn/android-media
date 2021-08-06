@@ -225,7 +225,9 @@ class PlayViewModelFieldTest {
                                                     totalLike = totalLike.toLong(),
                                                     totalLikeFormatted = totalLike,
                                                     isLiked = isLiked,
-                                                    source = LikeSource.Network
+                                                    source = LikeSource.Network,
+                                                    previousLike = 751,
+                                                    previousLikeFormatted = "751"
                                             )
                                     ),
                                     cartInfo = cartInfoBuilder.buildCompleteData(
