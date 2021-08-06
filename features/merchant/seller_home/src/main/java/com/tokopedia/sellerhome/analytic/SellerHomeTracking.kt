@@ -356,36 +356,42 @@ object SellerHomeTracking {
 
     fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val value = model.data?.chartData?.summary?.valueFmt.orEmpty()
 
         val eventMap = createEventMap(
                 event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                category = arrayOf(TrackingConstant.SELLER_APP,
+                        TrackingConstant.HOME).joinToString(" - "),
                 action = TrackingConstant.IMPRESSION_WIDGET_BAR_CHART,
-                label = arrayOf(model.dataKey, state, model.title).joinToString(" - ")
+                label = arrayOf(model.dataKey, state, value).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
     fun sendBarChartEmptyStateCtaClickEvent(model: BarChartWidgetUiModel) {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val value = model.data?.chartData?.summary?.valueFmt.orEmpty()
 
         val eventMap = createEventMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
-                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-                action = arrayOf(TrackingConstant.CLICK_WIDGET_BAR_CHART, TrackingConstant.EMPTY_STATE).joinToString(" - "),
-                label = arrayOf(model.dataKey, state, model.title).joinToString(" - ")
+                category = arrayOf(TrackingConstant.SELLER_APP,
+                        TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_BAR_CHART,
+                        TrackingConstant.EMPTY_STATE).joinToString(" - "),
+                label = arrayOf(model.dataKey, state, value).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
     fun sendBarChartSeeMoreClickEvent(model: BarChartWidgetUiModel) {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val value = model.data?.chartData?.summary?.valueFmt.orEmpty()
 
         val eventMap = createEventMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.CLICK_WIDGET_BAR_CHART, TrackingConstant.SEE_MORE).joinToString(" - "),
-                label = arrayOf(model.dataKey, state, model.title).joinToString(" - ")
+                label = arrayOf(model.dataKey, state, value).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
