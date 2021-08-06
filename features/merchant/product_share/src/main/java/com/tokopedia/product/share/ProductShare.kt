@@ -22,6 +22,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
+import com.tokopedia.product.share.ekstensions.getTextDescription
 import com.tokopedia.product.share.tracker.ProductShareTracking.onClickChannelWidgetClicked
 import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidgetClicked
 import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
@@ -236,6 +237,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     //region universal sharing
+    private fun openIntentShareDefaultUniversalSharing(file: File?, data: ProductData) {
+        openIntentShare(file, data.productName, data.getTextDescription(activity.applicationContext, data.renderShareUri), data.renderShareUri)
+    }
 
     private fun shareChannelClicked(shareModel: ShareModel) {
         if (isBranchUrlActive()) {
@@ -262,7 +266,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                         val branchEnd = System.currentTimeMillis()
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
-                        var shareString = productData.getShareContent(linkerShareData.url)
+                        var shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
                         shareModel.subjectName = productData.productName ?: ""
                         SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
                         if (isLog) {
@@ -273,7 +277,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
                     override fun onError(linkerError: LinkerError) {
                         postBuildImage.invoke()
-                        productData.let { openIntentShareDefault(null, it) }
+                        productData.let { openIntentShareDefaultUniversalSharing(null, it) }
                         if (isLog) {
                             log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
                         }
@@ -282,7 +286,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }))
         } else {
             postBuildImage.invoke()
-            productData.let { openIntentShareDefault(null, it) }
+            productData.let { openIntentShareDefaultUniversalSharing(null, it) }
             if (isLog) {
                 log(mode, resourceReady, imageProcess, branchTime, err, null)
             }
@@ -319,7 +323,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         if (view != null) {
             parentView = view
         }
-
+        val a = productData.getTextDescription(activity.applicationContext,"https:link")
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(object : ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -331,7 +335,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }
 
             })
-            setUtmCampaignData("PDP", productData.userId, productData.productId, "Share")
+            setUtmCampaignData("PDP", productData.userId, productData.productId, "share")
             setMetaData(productData.productName ?: "",
                             productData.productImageUrl ?: "",
                             "", productImgList)

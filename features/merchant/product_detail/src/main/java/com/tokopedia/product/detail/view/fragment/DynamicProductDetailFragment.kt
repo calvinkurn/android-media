@@ -2404,8 +2404,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun executeProductShare(productData: ProductData) {
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-            productData.productShareDescription = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
-                    ?: "" + "..."
+            val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)?.replace("(\r\n|\n)".toRegex(), " ") ?: ""
+            productData.productShareDescription = "$description..."
             executeUniversalShare(productData)
         } else {
             executeNativeShare(productData)
