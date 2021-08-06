@@ -115,7 +115,7 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
-        if (userSession != null) {
+        if (userSession == null) {
             userSession = new UserSession(this);
         }
 
