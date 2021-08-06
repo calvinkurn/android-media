@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Handler
 import android.provider.Settings
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -312,6 +313,8 @@ class LottieBottomNavbar : LinearLayout {
 
             // add text view to show title
             val title = TextView(context)
+            title.maxLines = 1
+            title.ellipsize = TextUtils.TruncateAt.END;
             title.layoutParams = txtLayoutParam
             title.setPadding(DEFAULT_TITLE_PADDING, 0, DEFAULT_TITLE_PADDING, DEFAULT_TITLE_PADDING_BOTTOM)
             title.text = bottomMenu.title

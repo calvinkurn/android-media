@@ -337,12 +337,25 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 navSearchbarInterface = navSearchbarInterface,
                 editorActionCallback = editorActionCallback
         )
-        if (searchbarType == SearchBarType.TYPE_CLICK) {
-            navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
-        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
-            val hint = hints.getOrNull(0)
-            navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+        searchbarTypeValidation(
+            searchbarType = searchbarType,
+            ifClickSearchbarType = {
+                navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
+            },
+            ifEditableSearchbarType = {
+                val hint = hints.getOrNull(0)
+                navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+            }
+        )
+    }
 
+    fun searchbarTypeValidation(searchbarType: Int,
+                                ifClickSearchbarType: () -> Unit = {},
+                                ifEditableSearchbarType: () -> Unit = {}) {
+        if (searchbarType == SearchBarType.TYPE_CLICK) {
+            ifClickSearchbarType.invoke()
+        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
+            ifEditableSearchbarType.invoke()
         }
     }
 
