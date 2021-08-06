@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQueryResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
@@ -88,10 +87,6 @@ data class ProductInfoP2Data(
         @SerializedName("upcomingCampaigns")
         @Expose
         var upcomingCampaigns: List<ProductUpcomingData> = listOf(),
-
-        @SerializedName("merchantVoucher")
-        @Expose
-        var merchantVoucher: MerchantVoucherQueryResult = MerchantVoucherQueryResult(),
 
         @SerializedName("installmentRecommendation")
         @Expose

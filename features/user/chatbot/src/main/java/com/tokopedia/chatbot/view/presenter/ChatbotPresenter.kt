@@ -96,7 +96,8 @@ class ChatbotPresenter @Inject constructor(
         private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
         private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
         private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase
+        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -596,5 +597,23 @@ class ChatbotPresenter @Inject constructor(
         val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found)
                 ?: ""
         return ChatActionBubbleViewModel(text, value, action)
+    }
+
+    override fun checkForSession(messageId: String) {
+        val params = getTopBotNewSessionUseCase.createRequestParams(messageId)
+        launchCatchError(
+            block = {
+                val response = getTopBotNewSessionUseCase.getTobBotUserSession(params)
+                val isNewSession = response.topBotGetNewSession.isNewSession
+                if (isNewSession) {
+                    view.startNewSession()
+                } else {
+                    view.loadChatHistory()
+                }
+            },
+            onError = {
+                view.loadChatHistory()
+            }
+        )
     }
 }
