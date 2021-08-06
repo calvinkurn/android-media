@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -17,6 +18,9 @@ data class HomeLayoutResponse(
     @Expose
     @SerializedName("id")
     val id: String = "",
+    @Expose
+    @SerializedName("pageName")
+    val pageName: String = "",
     @Expose
     @SerializedName("group_id")
     val groupId: String = "",
@@ -97,6 +101,7 @@ class Hero(
     val url: String = "",
     @Expose
     @SerializedName("price")
+    @SuppressLint("Invalid Data Type")
     val price: String = "0",
     @Expose
     @SerializedName("attribution")
@@ -111,13 +116,23 @@ data class Grid(
     @SerializedName("warehouseID")
     val warehouseId: String = "",
     @Expose
+    @SerializedName("parentProductID")
+    val parentProductId: String = "",
+    @Expose
+    @SerializedName("recommendationType")
+    val recommendationType: String = "",
+    @Expose
     @SerializedName("minOrder")
     val minOrder: Int = 0,
+    @Expose
+    @SerializedName("stock")
+    val stock: Int = 0,
     @Expose
     @SerializedName("shop")
     val shop: Shop = Shop(),
     @Expose
     @SerializedName("price")
+    @SuppressLint("Invalid Data Type")
     val price: String = "0",
     @Expose
     @SerializedName("imageUrl")

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/show_all_buttons" />
+
+    <ConstraintSet android:id="@+id/show_only_primary_buttons">
+        <Constraint
+            android:id="@+id/btnBuyerOrderDetailSecondaryActions"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toStartOf="parent" />
+        <Constraint
+            android:id="@+id/btnBuyerOrderDetailPrimaryActions"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent" />
+    </ConstraintSet>
+
+    <Transition
+        motion:constraintSetEnd="@id/show_only_primary_buttons"
+        motion:constraintSetStart="@id/show_all_buttons"
+        motion:duration="300" />
+
+    <Transition
+        motion:constraintSetEnd="@id/show_all_buttons"
+        motion:constraintSetStart="@id/show_only_primary_buttons"
+        motion:duration="300" />
+</MotionScene>

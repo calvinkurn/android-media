@@ -508,7 +508,7 @@ object SearchTracking {
     @JvmStatic
     fun trackGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
         val value = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchTrackingConstant.EVENT_CATEGORY, generalSearchTrackingModel.eventCategory,
                 SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingModel.eventLabel,

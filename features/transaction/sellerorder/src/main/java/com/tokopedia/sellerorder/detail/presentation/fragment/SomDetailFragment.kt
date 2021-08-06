@@ -57,7 +57,6 @@ import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
@@ -221,14 +220,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun goToAskBuyer() {
-        val urlInvoice = detailResponse?.invoiceUrl.orEmpty()
-        val invoiceUri = Uri.parse(urlInvoice)
-        val invoiceId = invoiceUri.getQueryParameter(ATTRIBUTE_ID)
+        val orderId = orderId.takeIf { it.isNotBlank() } ?: getOrderIdExtra()
         val intent = RouteManager.getIntent(activity,
                 ApplinkConst.TOPCHAT_ASKBUYER,
                 detailResponse?.customer?.id.orEmpty(), "",
                 PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image).apply {
-            putExtra(ApplinkConst.Chat.INVOICE_ID, invoiceId)
+            putExtra(ApplinkConst.Chat.INVOICE_ID, orderId) // it's actually require the id of the order
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
 
             if (detailResponse?.listProduct?.isNotEmpty() == true) {
@@ -248,7 +245,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         getActivityPltPerformanceMonitoring()
         if (arguments != null) {
-            orderId = arguments?.getString(PARAM_ORDER_ID).toString()
+            orderId = getOrderIdExtra()
             somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
             checkUserRole()
         }
@@ -689,9 +686,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))
                 cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
             }
-            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
         }
     }
 
@@ -1426,6 +1423,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun getOrderIdExtra(): String {
+        return arguments?.getString(PARAM_ORDER_ID)?.takeIf { it.isNotBlank() } ?: SomConsts.DEFAULT_INVALID_ORDER_ID
     }
 
     protected open fun onGoToOrderDetailButtonClicked() {
