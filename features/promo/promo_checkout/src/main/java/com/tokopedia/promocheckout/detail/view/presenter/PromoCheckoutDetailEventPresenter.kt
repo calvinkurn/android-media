@@ -3,20 +3,18 @@ package com.tokopedia.promocheckout.detail.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
-import com.tokopedia.promocheckout.list.domain.mapper.EventCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyResponse
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
+import com.tokopedia.promocheckout.list.domain.mapper.EventCheckVoucherMapper
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
 class PromoCheckoutDetailEventPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                        private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                         private val eventCheckRepository: EventCheckRepository,
                                         private val compositeSubscription: CompositeSubscription
 ) :
@@ -80,7 +78,6 @@ class PromoCheckoutDetailEventPresenter(private val getDetailCouponMarketplaceUs
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        clearCacheAutoApplyStackUseCase.unsubscribe()
         compositeSubscription.unsubscribe()
         super.detachView()
     }

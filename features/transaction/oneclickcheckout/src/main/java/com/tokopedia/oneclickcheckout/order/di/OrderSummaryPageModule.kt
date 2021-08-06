@@ -20,7 +20,6 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -76,12 +75,6 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @OrderSummaryPageScope
-    @Provides
-    fun provideClearCacheAutoApplyStackUseCase(context: Context): ClearCacheAutoApplyStackUseCase {
-        return ClearCacheAutoApplyStackUseCase(context)
     }
 
     @OrderSummaryPageScope

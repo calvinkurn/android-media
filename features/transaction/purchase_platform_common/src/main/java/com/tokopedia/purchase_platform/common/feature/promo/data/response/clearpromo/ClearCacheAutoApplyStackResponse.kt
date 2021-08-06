@@ -1,10 +1,11 @@
-package com.tokopedia.promocheckout.common.domain.model.clearpromo
+package com.tokopedia.purchase_platform.common.feature.promo.data.response.clearpromo
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by Irfan Khoirul on 28/03/19.
- */
+data class ClearCacheAutoApplyStackResponse(
+        @SerializedName("clearCacheAutoApplyStack")
+        var successData: SuccessData = SuccessData()
+)
 
 data class SuccessData(
         @SerializedName("Success")

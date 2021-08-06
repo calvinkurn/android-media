@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.common.view.model.clearpromo
+package com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

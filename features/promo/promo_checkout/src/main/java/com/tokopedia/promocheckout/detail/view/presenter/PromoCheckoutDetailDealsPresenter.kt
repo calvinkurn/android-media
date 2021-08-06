@@ -5,13 +5,12 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
-import com.tokopedia.promocheckout.list.domain.mapper.DealsCheckoutMapper
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsErrorResponse
 import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
+import com.tokopedia.promocheckout.list.domain.mapper.DealsCheckoutMapper
 import retrofit2.HttpException
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -20,7 +19,6 @@ import rx.subscriptions.CompositeSubscription
 
 @Deprecated("Not needed anymore.")
 class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                        private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                         private val dealsCheckRepository: PromoCheckoutDealsRepository,
                                         private val compositeSubscription: CompositeSubscription) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDealsContract.Presenter {
@@ -106,7 +104,6 @@ class PromoCheckoutDetailDealsPresenter(private val getDetailCouponMarketplaceUs
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        clearCacheAutoApplyStackUseCase.unsubscribe()
         compositeSubscription.unsubscribe()
         super.detachView()
     }

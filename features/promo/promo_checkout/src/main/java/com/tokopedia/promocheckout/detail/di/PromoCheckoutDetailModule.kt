@@ -18,7 +18,6 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
@@ -30,11 +29,11 @@ import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCa
 import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
+import com.tokopedia.promocheckout.detail.view.presenter.*
 import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
-import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.detail.view.presenter.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -85,18 +84,16 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                    checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                                    clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailPresenter {
-        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
+                                    checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase): PromoCheckoutDetailPresenter {
+        return PromoCheckoutDetailPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase)
     }
 
     @PromoCheckoutDetailScope
     @Provides
     fun provideDigitalPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                 digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-                                digitalCheckVoucherMapper: DigitalCheckVoucherMapper,
-                                clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailDigitalPresenter {
-        return PromoCheckoutDetailDigitalPresenter(getDetailCouponMarketplaceUseCase, digitalCheckVoucherUseCase, digitalCheckVoucherMapper, clearCacheAutoApplyStackUseCase)
+                                digitalCheckVoucherMapper: DigitalCheckVoucherMapper): PromoCheckoutDetailDigitalPresenter {
+        return PromoCheckoutDetailDigitalPresenter(getDetailCouponMarketplaceUseCase, digitalCheckVoucherUseCase, digitalCheckVoucherMapper)
     }
 
     @PromoCheckoutDetailScope
@@ -120,19 +117,17 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideEventPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                               eventCheckRepository: EventCheckRepository,
                               compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
-        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, eventCheckRepository, compositeSubscription)
+        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, eventCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
     @Provides
     fun provideDetailDealsPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                    clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                     dealsCheckRepository: PromoCheckoutDealsRepository,
                                     compositeSubscription: CompositeSubscription): PromoCheckoutDetailDealsPresenter {
-        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, dealsCheckRepository, compositeSubscription)
+        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase, dealsCheckRepository, compositeSubscription)
     }
 
     @PromoCheckoutDetailScope
