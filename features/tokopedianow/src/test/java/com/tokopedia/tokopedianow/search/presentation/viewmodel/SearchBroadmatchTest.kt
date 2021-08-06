@@ -4,8 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
+import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -14,7 +16,7 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 class SearchBroadmatchTest: SearchTestFixtures() {
 
     @Test
-    fun `show broadmatch no result`() {
+    fun `show broad match no result`() {
         val searchModel = "search/broadmatch/broadmatch-no-result.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel)
 
@@ -26,11 +28,21 @@ class SearchBroadmatchTest: SearchTestFixtures() {
     private fun `Then assert broadmatch for no result`(searchModel: SearchModel) {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
-        visitableList[1].assertSuggestionDataView(searchModel.getSuggestion())
+        val expectedSuggestionIndex = 1
+        assertBroadMatchInVisitableList(visitableList, expectedSuggestionIndex, searchModel)
+    }
 
+    private fun assertBroadMatchInVisitableList(
+        visitableList: List<Visitable<*>>,
+        expectedSuggestionIndex: Int,
+        searchModel: SearchModel,
+    ) {
+        visitableList[expectedSuggestionIndex].assertSuggestionDataView(searchModel.getSuggestion())
+
+        val expectedBroadMatchIndex = expectedSuggestionIndex + 1
         val broadMatchList = searchModel.getRelated().otherRelatedList
         broadMatchList.forEachIndexed { index, otherRelated ->
-            visitableList[2 + index].assertBroadMatchViewModel(otherRelated)
+            visitableList[expectedBroadMatchIndex + index].assertBroadMatchViewModel(otherRelated)
         }
     }
 
@@ -77,5 +89,40 @@ class SearchBroadmatchTest: SearchTestFixtures() {
             assertThat(actualLabelGroup.type, shouldBe(expectedLabelGroup.type))
             assertThat(actualLabelGroup.url, shouldBe(expectedLabelGroup.url))
         }
+    }
+
+    @Test
+    fun `show broad match low result`() {
+        val searchModel = "search/broadmatch/broadmatch-low-result.json".jsonToObject<SearchModel>()
+        `Given get search first page use case will be successful`(searchModel)
+
+        `When view created`()
+
+        `Then assert broadmatch for low result`(searchModel)
+    }
+
+    private fun `Then assert broadmatch for low result`(searchModel: SearchModel) {
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
+        val lastProductIndex = visitableList.indexOfLast { it is ProductItemDataView }
+
+        val expectedSuggestionIndex = lastProductIndex + 1
+        assertBroadMatchInVisitableList(visitableList, expectedSuggestionIndex, searchModel)
+    }
+
+    @Test
+    fun `should not show broad match without correct response code`() {
+        val searchModel = "search/broadmatch/broadmatch-invalid-response-code.json".jsonToObject<SearchModel>()
+        `Given get search first page use case will be successful`(searchModel)
+
+        `When view created`()
+
+        `Then assert visitable list does not contain broad match`()
+    }
+
+    private fun `Then assert visitable list does not contain broad match`() {
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
+
+        assertThat(visitableList.any { it is SuggestionDataView }, shouldBe(false))
+        assertThat(visitableList.any { it is BroadMatchDataView }, shouldBe(false))
     }
 }

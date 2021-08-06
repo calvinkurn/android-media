@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataVi
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
+import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
@@ -128,12 +129,16 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
+        if (!shouldShowSuggestion()) return
+
         processSuggestionModel { suggestionDataView ->
             val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
 
             headerList.add(suggestionDataViewIndex, suggestionDataView)
         }
     }
+
+    private fun shouldShowSuggestion() = showSuggestionResponseCodeList.contains(responseCode)
 
     private fun processSuggestionModel(action: (SuggestionDataView) -> Unit) {
         val suggestionModel = suggestionModel ?: return
@@ -159,11 +164,65 @@ class TokoNowSearchViewModel @Inject constructor (
         return quickFilterIndex + 1
     }
 
-    override fun createFooterVisitableList() =
-            listOf(
-                createCategoryJumperDataView(),
-                CTATokopediaNowHomeDataView(),
-            )
+    override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
+        val broadMatchVisitableList = createBroadMatchVisitableList()
+
+        return broadMatchVisitableList + listOf(
+            createCategoryJumperDataView(),
+            CTATokopediaNowHomeDataView(),
+        )
+    }
+
+    private fun createBroadMatchVisitableList(): List<Visitable<SearchTypeFactory>> {
+        val broadMatchVisitableList = mutableListOf<Visitable<SearchTypeFactory>>()
+
+        if (!isShowBroadMatch()) return broadMatchVisitableList
+
+        processSuggestionModel { suggestionDataView ->
+            broadMatchVisitableList.add(suggestionDataView)
+        }
+
+        processBroadMatch { broadMatchDataView ->
+            broadMatchVisitableList.add(broadMatchDataView)
+        }
+
+        return broadMatchVisitableList
+    }
+
+    private fun isShowBroadMatch() =
+        showBroadMatchResponseCodeList.contains(responseCode)
+
+    private fun processBroadMatch(action: (BroadMatchDataView) -> Unit) {
+        related?.otherRelatedList?.forEach { otherRelated ->
+            val broadMatchDataView = createBroadMatchDataView(otherRelated)
+            action(broadMatchDataView)
+        }
+
+        related = null
+    }
+
+    private fun createBroadMatchDataView(otherRelated: AceSearchProductModel.OtherRelated) =
+        BroadMatchDataView(
+            keyword = otherRelated.keyword,
+            applink = otherRelated.applink,
+            broadMatchItemDataViewList = otherRelated.productList
+                .mapIndexed { index, otherRelatedProduct ->
+                    BroadMatchItemDataView(
+                        id = otherRelatedProduct.id,
+                        name = otherRelatedProduct.name,
+                        price = otherRelatedProduct.price,
+                        imageUrl = otherRelatedProduct.imageUrl,
+                        applink = otherRelatedProduct.applink,
+                        priceString = otherRelatedProduct.priceString,
+                        position = index + 1,
+                        alternativeKeyword = otherRelated.keyword,
+                        ratingAverage = otherRelatedProduct.ratingAverage,
+                        labelGroupDataList = otherRelatedProduct.labelGroupList
+                            .map(::mapToLabelGroupDataView),
+                    )
+                },
+        )
+
 
     private fun createCategoryJumperDataView(): CategoryJumperDataView {
         val categoryJumperItemList =
@@ -185,44 +244,15 @@ class TokoNowSearchViewModel @Inject constructor (
             )
 
     override fun createVisitableListWithEmptyProduct() {
-        if (isShowBroadMatchOnEmptyProduct())
+        if (isShowBroadMatch())
             createVisitableListWithEmptyProductBroadmatch()
         else
             super.createVisitableListWithEmptyProduct()
     }
 
-    private fun isShowBroadMatchOnEmptyProduct() =
-        showBroadMatchResponseCodeList.contains(responseCode)
-
     private fun createVisitableListWithEmptyProductBroadmatch() {
         visitableList.add(chooseAddressDataView)
-
-        processSuggestionModel { suggestionDataView ->
-            visitableList.add(suggestionDataView)
-        }
-
-        related?.otherRelatedList?.forEach { otherRelated ->
-            visitableList.add(BroadMatchDataView(
-                keyword = otherRelated.keyword,
-                applink = otherRelated.applink,
-                broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
-                    BroadMatchItemDataView(
-                        id = otherRelatedProduct.id,
-                        name = otherRelatedProduct.name,
-                        price = otherRelatedProduct.price,
-                        imageUrl = otherRelatedProduct.imageUrl,
-                        applink = otherRelatedProduct.applink,
-                        priceString = otherRelatedProduct.priceString,
-                        position = index + 1,
-                        alternativeKeyword = otherRelated.keyword,
-                        ratingAverage = otherRelatedProduct.ratingAverage,
-                        labelGroupDataList = otherRelatedProduct.labelGroupList.map(::mapToLabelGroupDataView),
-                    )
-                }
-            ))
-        }
-
-        related = null
+        visitableList.addAll(createBroadMatchVisitableList())
     }
 
     private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
@@ -266,5 +296,6 @@ class TokoNowSearchViewModel @Inject constructor (
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("4", "5")
+        private val showSuggestionResponseCodeList = listOf("3", "6", "7")
     }
 }
