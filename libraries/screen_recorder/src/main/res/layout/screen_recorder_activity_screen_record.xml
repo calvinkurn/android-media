@@ -17,7 +17,7 @@
         android:textAlignment="center"
         android:gravity="center"
         android:text="@string/screen_record_info_requesting_permissions"
-        app:typographyType="heading_4"
+        app:typographyType="body_3"
         />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -31,6 +31,7 @@
         android:id="@+id/btnActivate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/screen_recorder_default_padding"
         android:text="@string/screen_recorder_button_activate_text"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
