@@ -695,6 +695,7 @@ class PlayUserInteractionFragment @Inject constructor(
             override fun onChanged(it: PlayLikeStatusInfoUiModel) {
                 val shotAmount: Long
                 val isAnimate: Boolean
+
                 if (isFirstTime) {
                     shotAmount = minOf(it.totalLike, spamLikeView.maxShot)
                     likeView.setEnabled(true)
@@ -706,6 +707,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 if(playViewModel.isAllowMultipleLike) {
                     isAnimate = false
                     spamLikeView.shot(shotAmount.toInt())
+
+                    if(orientation.isLandscape) {
+                        fadeInFadeOutAnimation.cancel()
+                        triggerImmersive(false)
+                    }
                 }
                 else {
                     isAnimate = it.source == LikeSource.UserAction && !isFirstTime
