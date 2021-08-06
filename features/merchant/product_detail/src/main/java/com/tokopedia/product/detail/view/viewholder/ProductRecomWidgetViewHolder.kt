@@ -26,6 +26,9 @@ class ProductRecomWidgetViewHolder (
     companion object {
         val LAYOUT = R.layout.item_dynamic_widget_recom
     }
+
+
+
     private var productRecom: ProductRecomWidgetDataModel? = null
 
     private val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
@@ -33,11 +36,12 @@ class ProductRecomWidgetViewHolder (
     override fun bind(element: ProductRecomWidgetDataModel) {
         productRecom = element
         itemView.visible()
-        listener.setViewToLifecycleOwner(recomWidget)
+        listener.setViewToLifecycleOwner(recomWidget) //pasang di oncreate viewholder
         if ((element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) && element.pageName.isEmpty()) {
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
         } else if (element.pageName.isNotEmpty()) {
             if (element.forceRefresh) {
+                //
                 recomWidget.bind(
                         pageName = element.name,
                         tempHeaderName = itemView.context.getString(R.string.title_other_product),

@@ -76,6 +76,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModel: RecommendationViewModel? by lazy {
         context?.let {
             initializeViewModel(it)
@@ -93,6 +94,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         const val NAME_CAMPAIGN_WIDGET = "Campaign-Widget"
     }
 
+    //viewmodel provider access array
+    //harusnya buat viewmodel baru
+
+    //create viewmodel baru for each recommendation <- wajib
     private fun initializeViewModel(it: Context): RecommendationViewModel? {
         val component = DaggerRecommendationComponent.builder()
                 .recommendationWidgetModule(RecommendationWidgetModule())
@@ -120,6 +125,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             }
         }
     }
+    //step 1. validate viewmodel itu single atau multiple dalem pdp
+    //step 2. define viewmodel service (load recom & minicart) bedasarkan step 1
+    //step 3. define force refresh
 
     fun bind(
             carouselData: RecommendationCarouselData = RecommendationCarouselData(),
@@ -145,7 +153,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
+    //get data with network call
     private fun bindWidgetWithPageName(pageName: String, isForceRefresh: Boolean) {
+        viewModel?.set
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
             itemView.loadingRecom.visible()
@@ -155,6 +165,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
+    //data alrd from fragment
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
         initVar()
