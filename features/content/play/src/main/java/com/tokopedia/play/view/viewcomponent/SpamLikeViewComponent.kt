@@ -5,10 +5,9 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.R
-import com.tokopedia.play.animation.spamlike.PlaySpamLikeAnimation
+import com.tokopedia.play.animation.spamlike.PlaySpamLikeView
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
-import okhttp3.Dispatcher
 
 /**
  * Created By : Jonathan Darwin on August 02, 2021
@@ -19,7 +18,7 @@ class SpamLikeViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val job = SupervisorJob()
-    private val spamLike = findViewById<PlaySpamLikeAnimation>(R.id.spam_like_animation)
+    private val spamLike = findViewById<PlaySpamLikeView>(R.id.spam_like_animation)
 
     init {
         spamLike.setParentView(container)

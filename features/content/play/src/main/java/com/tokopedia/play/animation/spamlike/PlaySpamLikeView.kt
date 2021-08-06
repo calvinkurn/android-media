@@ -21,7 +21,7 @@ import kotlinx.coroutines.*
  * Created By : Jonathan Darwin on August 02, 2021
  */
 
-class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
+class PlaySpamLikeView(context: Context, attributeSet: AttributeSet): ConstraintLayout(context, attributeSet) {
 
     private val view: View = View.inflate(context, R.layout.layout_play_spam_like, this)
 
