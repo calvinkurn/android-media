@@ -25,8 +25,8 @@ class PlayLikeModelBuilder {
             totalLikeFormatted: String = "1",
             isLiked: Boolean = false,
             source: LikeSource = LikeSource.Network,
-            previousLike: Long = 0,
-            previousLikeFormatted: String = "0"
+            previousLike: Long = 1,
+            previousLikeFormatted: String = "1"
     ) = PlayLikeStatusInfoUiModel(
             totalLike = totalLike,
             totalLikeFormatted = totalLikeFormatted,
