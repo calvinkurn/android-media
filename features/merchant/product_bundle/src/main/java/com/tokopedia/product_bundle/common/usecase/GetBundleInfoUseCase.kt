@@ -2,24 +2,35 @@ package com.tokopedia.product_bundle.common.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
-import com.tokopedia.product_bundle.common.data.model.response.GetBundleByProductIdResponse
+import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetBundleByProductIdUseCase @Inject constructor(
+class GetBundleInfoUseCase @Inject constructor(
     repository: GraphqlRepository
-) : GraphqlUseCase<GetBundleByProductIdResponse>(repository) {
+) : GraphqlUseCase<GetBundleInfoResponse>(repository) {
 
     companion object {
-        private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_SQUAD = "squad"
         private const val PARAM_USE_CASE = "usecase"
         private const val PARAM_REQUEST_DATA = "requestData"
+        private const val PARAM_PRODUCT_DATA = "productData"
         private val query =
             """ 
-            query GetBundleByProductIdUseCase(${'$'}productID: String, ${'$'}squad: String, ${'$'}usecase: String, ${'$'}requestData: RequestData) {
-                getBundleByProductIdUseCase(productID: ${'$'}productID, squad: ${'$'}squad, ) {                  
+            query GetBundleByProductIdUseCase(
+                ${'$'}squad: String, 
+                ${'$'}usecase: String, 
+                ${'$'}requestData: RequestData, 
+                ${'$'}productData: ProductData
+            ) {
+                getBundleByProductIdUseCase(
+                    squad: ${'$'}squad, 
+                    usecase: ${'$'}usecase,
+                    requestData: ${'$'}requestData,
+                    productData: ${'$'}productData
+                ) {                  
                     error{
                       message
                       reason
@@ -91,15 +102,19 @@ class GetBundleByProductIdUseCase @Inject constructor(
 
     init {
         setGraphqlQuery(query)
-        setTypeClass(GetBundleByProductIdResponse::class.java)
+        setTypeClass(GetBundleInfoResponse::class.java)
     }
 
-    fun setParams(productId: String, squad: String, usecase: String, requestData: RequestData) {
+    fun setParams(
+        squad: String, usecase: String,
+        requestData: RequestData,
+        productData: ProductData
+    ) {
         val requestParams = RequestParams.create()
-        requestParams.putString(PARAM_PRODUCT_ID, productId)
         requestParams.putString(PARAM_SQUAD, squad)
         requestParams.putString(PARAM_USE_CASE, usecase)
         requestParams.putObject(PARAM_REQUEST_DATA, requestData)
+        requestParams.putObject(PARAM_PRODUCT_DATA, productData)
         setRequestParams(requestParams.parameters)
     }
 }

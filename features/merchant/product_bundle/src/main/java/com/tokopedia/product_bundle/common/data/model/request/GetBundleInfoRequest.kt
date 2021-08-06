@@ -2,36 +2,9 @@ package com.tokopedia.product_bundle.common.data.model.request
 
 import com.google.gson.annotations.SerializedName
 
-data class GetBundleInfoRequest(
-        @SerializedName("bundles")
-        val bundles: List<Bundle> = listOf(),
-        @SerializedName("squad")
-        val squad: String = "",
-        @SerializedName("usecase")
-        val usecase: String = "",
-        @SerializedName("requestData")
-        val requestData: RequestData = RequestData()
-)
-
-data class Bundle(
-        @SerializedName("ID")
-        val id: String = "",
-        @SerializedName("WarehouseID")
-        val warehouseId: String = "",
-        @SerializedName("Products")
-        val products: List<Product> = listOf()
-)
-
-data class Product(
-        @SerializedName("ProductID")
-        val productID: String = "",
-        @SerializedName("ChildIDs")
-        val childIds: List<String> = listOf()
-)
-
 data class RequestData(
         @SerializedName("ProductDetail")
-        val productDetail: ProductDetail = ProductDetail(),
+        val productDetail: ProductInfo = ProductInfo(),
         @SerializedName("InventoryDetail")
         val inventoryDetail: InventoryDetail = InventoryDetail(),
         @SerializedName("VariantDetail")
@@ -40,11 +13,9 @@ data class RequestData(
         val campaign: Campaign = Campaign()
 )
 
-data class ProductDetail(
+data class ProductInfo(
         @SerializedName("Picture")
         val picture: Boolean = false,
-        @SerializedName("Preorder")
-        val preorder: Boolean = false
 )
 
 data class Campaign(
@@ -68,4 +39,11 @@ data class UserLocation(
         val postalCode: String = "",
         @SerializedName("Latlon")
         val latlon: String = ""
+)
+
+data class ProductData(
+        @SerializedName("ProductID")
+        val productID: String = "",
+        @SerializedName("WarehouseIDs")
+        val WarehouseIDs: List<String> = listOf()
 )

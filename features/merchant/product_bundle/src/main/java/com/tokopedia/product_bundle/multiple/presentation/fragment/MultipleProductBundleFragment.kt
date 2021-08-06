@@ -79,18 +79,19 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         soldProductBundleTextView = view.findViewById(R.id.tv_sold_product_bundle)
-        // setup product bundle master
+
+        // init multiple product bundle views
         setupProductBundleMasterView(view)
-        // setup product bundle detail
         setupProductBundleDetailView(view)
-        // setup product bundle overview
         setupProductBundleOverView(view)
-        // simulate get product info api call and conversion from bundle to product bundle master
+
+        // simulate get bundle info api call
         val productBundleMasters = viewModel.getProductBundleMasters()
         // render product bundle master chips
         productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
         // simulate get the first bundle information
         val recommendedBundleId = viewModel.getRecommendedProductBundleId(viewModel.getProductBundleMasters())
+
         // get recommended product bundle info
         viewModel.getBundleInfo(recommendedBundleId)
 

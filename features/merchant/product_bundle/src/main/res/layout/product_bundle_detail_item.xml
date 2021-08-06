@@ -43,7 +43,7 @@
         app:discountprice_discount_amount="0%"
         app:discountprice_price="Rp0"
         app:discountprice_slashprice="Rp0"
-        app:layout_constraintLeft_toLeftOf="@id/sv_product_variants"
+        app:layout_constraintLeft_toLeftOf="@id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@id/sv_product_variants" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

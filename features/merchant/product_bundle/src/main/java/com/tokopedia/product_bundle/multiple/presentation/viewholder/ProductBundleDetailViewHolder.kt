@@ -2,7 +2,9 @@ package com.tokopedia.product_bundle.multiple.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
@@ -31,6 +33,10 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
     fun bindData(bundleDetail: ProductBundleDetail) {
         productImageView?.loadImage(bundleDetail.productImageUrl)
         productNameView?.text = bundleDetail.productName
+        // hide product variant dropbox when there is no selection
+        if (bundleDetail.hasNoSelection) productVariantsView?.gone()
+        else productVariantsView?.visible()
+        // set product price
         productPriceView?.apply {
             price = Utility.formatToRupiahFormat(bundleDetail.bundlePrice.roundToInt())
             slashPrice = Utility.formatToRupiahFormat((bundleDetail.originalPrice.roundToInt()))
