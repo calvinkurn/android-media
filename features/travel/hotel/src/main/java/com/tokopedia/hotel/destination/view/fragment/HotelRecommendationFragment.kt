@@ -69,7 +69,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private var gpsRetryCounter: Int = 0
-    private val GPS_MAX_RETRY = 5
 
     override fun getScreenName(): String = ""
 
@@ -195,7 +194,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     private fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
         recentSearchLayout.visibility = if (recentSearches.isEmpty()) View.GONE else View.VISIBLE
-        if (recentSearches.size >= 5) recentSearchAdapter.setData(recentSearches.subList(0, 5))
+        if (recentSearches.size >= RECENT_SEARCH_SIZE) recentSearchAdapter.setData(recentSearches.subList(RECENT_SEARCH_SIZE_SUBLIST, RECENT_SEARCH_SIZE))
         else recentSearchAdapter.setData(recentSearches)
     }
 
@@ -352,6 +351,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     companion object {
         private const val REQUEST_CODE_GPS = 10101
         const val GPS_FAILED_SHOW_ERROR = "GPS_FAILED_SHOW_ERROR"
+        const val GPS_MAX_RETRY = 5
+        const val RECENT_SEARCH_SIZE = 5
+        const val RECENT_SEARCH_SIZE_SUBLIST = 0
 
         fun getInstance(): HotelRecommendationFragment = HotelRecommendationFragment()
     }

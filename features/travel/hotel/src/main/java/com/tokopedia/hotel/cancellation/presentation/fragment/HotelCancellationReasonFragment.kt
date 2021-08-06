@@ -52,8 +52,6 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
-    private val SOFT_KEYBOARD_HEIGHT = 500
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -168,7 +166,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         dialog.setSecondaryCTAText(getString(R.string.hotel_cancellation_reason_submit))
         dialog.setPrimaryCTAText(getString(R.string.hotel_cancellation_reason_dismiss))
         dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-        dialog.dialogDesc.maxLines = 99
+        dialog.dialogDesc.maxLines = DIALOG_MAX_LINES
         dialog.setSecondaryCTAClickListener {
             trackingHotelUtil.clickSubmitCancellation(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_REASON_SCREEN_NAME)
             startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), invoiceId, orderAmount, cancellationFee, refundAmount,
@@ -192,6 +190,8 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     companion object {
         const val HOTEL_DEFAULT_AMOUNT_ZERO = "0"
         const val HOTEL_CANCELLATION_REASON_SCREEN_NAME = "/hotel/ordercancelreason"
+        const val SOFT_KEYBOARD_HEIGHT = 500
+        const val DIALOG_MAX_LINES = 99
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationReasonFragment =
                 HotelCancellationReasonFragment().also {

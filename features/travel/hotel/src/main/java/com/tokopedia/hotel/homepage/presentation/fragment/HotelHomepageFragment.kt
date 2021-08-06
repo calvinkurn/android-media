@@ -352,7 +352,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private fun measureBannerWidth() {
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = (displayMetrics.widthPixels / 1.1).toInt()
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_WIDTH_DIVIDER).toInt()
         bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
     }
 
@@ -634,7 +634,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 slideToShow = 1.0f
                 setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
             } else {
-                slideToShow = 1.1f
+                slideToShow = SLIDE_TO_SHOW
                 autoplay = true
                 infinite = true
             }
@@ -754,6 +754,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         // banner height ratio 414:139
         const val BANNER_HEIGHT_RATIO = 0.336f
+        const val BANNER_WIDTH_DIVIDER = 1.1
+
+        const val SLIDE_TO_SHOW = 1.1f
 
         const val EXTRA_PARAM_SEARCH_ID = "param_search_id"
         const val EXTRA_PARAM_SEARCH_TYPE = "param_search_type"
