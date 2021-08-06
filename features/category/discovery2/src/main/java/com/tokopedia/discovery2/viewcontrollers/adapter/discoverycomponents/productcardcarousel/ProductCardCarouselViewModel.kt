@@ -47,6 +47,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
         handleLihatSemuaHeader()
         handleErrorState()
         fetchProductCarouselData()
@@ -207,6 +208,20 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             isLoading = false
             productCarouselList.value = it
             syncData.value = true
+        }
+    }
+
+    fun areFitterApplied():Boolean{
+        return ((components.selectedSort != null && components.selectedFilters != null) &&
+            (components.selectedSort?.isNotEmpty() == true ||
+                    components.selectedFilters?.isNotEmpty() == true))
+    }
+
+    fun getErrorStateComponent():ComponentsItem{
+        return ComponentsItem(name = ComponentNames.ProductListEmptyState.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.ProductListEmptyState.componentName
         }
     }
 }

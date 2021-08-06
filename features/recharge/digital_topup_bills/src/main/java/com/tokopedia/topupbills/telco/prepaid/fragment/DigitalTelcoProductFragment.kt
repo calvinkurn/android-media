@@ -43,7 +43,7 @@ import javax.inject.Inject
 /**
  * Created by nabillasabbaha on 09/05/19.
  */
-class DigitalTelcoProductFragment : BaseDaggerFragment() {
+class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWidget.ActionListener {
 
     private lateinit var telcoTelcoProductView: DigitalTelcoProductWidget
     private lateinit var emptyStateProductView: ConstraintLayout
@@ -140,9 +140,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 if (sharedModelPrepaid.productList.value is Success) {
                     val productList = (sharedModelPrepaid.productList.value as Success).data
                     productList.map { list ->
-                        if (list.label == titleProduct && it == titleProduct &&
-                                list.product.dataCollections.isNotEmpty()) {
-                            telcoTelcoProductView.calculateProductItemVisibleItemTracking(list.product.dataCollections[0].products)
+                        if (list.label == titleProduct && it == titleProduct && list.product.dataCollections.isNotEmpty()) {
+                            telcoTelcoProductView.calculateProductItemVisibleItemTracking(telcoTelcoProductView.adapter.data)
+                            telcoTelcoProductView.trackFirstMccmVisibleItemToUser()
 
                             if (list.filterTagComponents.isNotEmpty()) {
                                 topupAnalytics.impressionFilterCluster(categoryId, userSession.userId)
@@ -153,54 +153,79 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             })
         }
 
-        telcoTelcoProductView.setListener(telcoProductItemCallback)
+        telcoTelcoProductView.setListener(this)
     }
 
-    private val telcoProductItemCallback = object : DigitalTelcoProductWidget.ActionListener {
-        override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
-            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-            telcoTelcoProductView.selectProductItem(position)
-            if (::selectedOperatorName.isInitialized) {
-                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
-                        userSession.userId, labelList)
-            }
+    override fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
+        sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+        telcoTelcoProductView.selectProductItem(position)
+        if (::selectedOperatorName.isInitialized) {
+            topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
+                    userSession.userId, labelList)
         }
+    }
 
-        override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
-            topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
+    override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int) {
+        topupAnalytics.clickOnMccmProduct(itemProduct, selectedOperatorName, position, userSession.userId, titleProduct)
+        sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+        telcoTelcoProductView.selectMccmProductItem(position)
+    }
 
-            activity?.let {
-                val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
-                        itemProduct.attributes.desc,
-                        MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
-                        itemProduct.attributes.price,
-                        itemProduct.attributes.productPromo?.newPrice,
-                        object: DigitalProductBottomSheet.ActionListener {
-                            override fun onClickOnProduct() {
-                                activity?.run {
-                                    telcoTelcoProductView.selectProductItem(position)
-                                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
-                                }
-                            }
-                        }
-                )
-                seeMoreBottomSheet.setOnDismissListener {
-                    topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
+    override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
+        topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
+        renderSeeMoreBottomSheet(itemProduct, object : DigitalProductBottomSheet.ActionListener {
+            override fun onClickOnProduct() {
+                activity?.run {
+                    telcoTelcoProductView.selectProductItem(position)
+                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
                 }
-                seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
-
             }
-        }
+        })
+    }
 
-        override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
-            topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, selectedOperatorName,
-                    userSession.userId)
-        }
+    override fun onSeeMoreMccmProduct(itemProduct: TelcoProduct, position: Int) {
+        topupAnalytics.clickSeeMoreOnMccmProductItem(titleProduct, selectedOperatorName, userSession.userId)
+        renderSeeMoreBottomSheet(itemProduct, object : DigitalProductBottomSheet.ActionListener {
+            override fun onClickOnProduct() {
+                activity?.run {
+                    telcoTelcoProductView.selectMccmProductItem(position)
+                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId, TelcoComponentName.SPECIAL_PROMO_MCCM)
+                }
+            }
+        })
+    }
 
-        override fun onScrollToPositionItem(position: Int) {
-            sharedModelPrepaid.setPositionScrollToItem(position)
+    override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
+        topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, selectedOperatorName,
+                userSession.userId)
+    }
+
+    override fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
+        topupAnalytics.impressionViewMccmProduct(digitalTrackProductTelcoList, selectedOperatorName, userSession.userId, titleProduct)
+    }
+
+    override fun onScrollToPositionItem(position: Int) {
+        sharedModelPrepaid.setPositionScrollToItem(position)
+    }
+
+    private fun renderSeeMoreBottomSheet(itemProduct: TelcoProduct, bottomSheetListener: DigitalProductBottomSheet.ActionListener) {
+        activity?.let {
+            val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
+                    itemProduct.attributes.desc,
+                    MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
+                    itemProduct.attributes.price,
+                    itemProduct.attributes.productPromo?.newPrice,
+                    bottomSheetListener
+            )
+            seeMoreBottomSheet.setOnDismissListener {
+                topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
+            }
+            seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
+
         }
     }
 
@@ -284,7 +309,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     val showTitle = hasTitle && !telcoFilterData.isFilterSelected()
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
-                    telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections)
+                    telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections, sharedModelPrepaid.selectedCategoryViewPager.value == titleProduct)
                 } else {
                     onErrorProductList()
                 }
@@ -293,10 +318,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
         }
 
-        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { favNumber ->
+        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { productId ->
             val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
             if (activeCategory == titleProduct) {
-                telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)
+                telcoTelcoProductView.selectProductFromFavNumber(productId)
             }
         })
     }
