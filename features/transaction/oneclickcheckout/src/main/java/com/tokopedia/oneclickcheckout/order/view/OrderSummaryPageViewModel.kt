@@ -18,6 +18,8 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -455,9 +457,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = param.profile.copy(
-                    addressId = addressModel.id
-            ), skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+            param = param.copy(profile = param.profile.copy(addressId = addressModel.id),
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    source = SOURCE_UPDATE_OCC_ADDRESS)
             val chosenAddress = ChosenAddress(
                     addressId = addressModel.id,
                     districtId = addressModel.destinationDistrictId,
@@ -499,7 +501,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
                 expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
                 param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
-                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                        source = SOURCE_UPDATE_OCC_PAYMENT)
             } catch (e: RuntimeException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -534,7 +537,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
-                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    source = SOURCE_UPDATE_OCC_PAYMENT)
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
