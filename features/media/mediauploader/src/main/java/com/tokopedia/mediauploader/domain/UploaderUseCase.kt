@@ -46,6 +46,10 @@ class UploaderUseCase @Inject constructor(
 
                 // upload file
                 uploaderManager.post(fileToUpload, sourceId, sourcePolicy)
+            }.also {
+                if (it is UploadResult.Error) {
+                    uploaderManager.setError(listOf(it.message), sourceId, fileToUpload)
+                }
             }
         } catch (e: SocketTimeoutException) {
             uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, fileToUpload)

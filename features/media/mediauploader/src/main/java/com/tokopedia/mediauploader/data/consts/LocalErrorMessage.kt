@@ -16,12 +16,12 @@ fun maxFileSizeMessage(allowedFileSize: Int): String {
     return "Wah, ukuran gambar kebesaran. Yuk, upload ulang dengan ukuran max. ${getFormattedMBSize(allowedFileSize.toLong())} Mb, ya!"
 }
 
-fun resBitmapMessage(isMaxRes: Boolean, allowedWidth: Int, allowedHeight: Int): String {
-    return if (isMaxRes) {
-        "Wah, ukuran gambar kebesaran. Yuk, upload ulang dengan ukuran maksimum $allowedWidth x $allowedHeight, ya!"
-    } else {
-        "Wah, ukuran gambar kekecilan. Yuk, upload ulang dengan ukuran minimum $allowedWidth x $allowedHeight, ya!"
-    }
+fun minResBitmapMessage(allowedWidth: Int, allowedHeight: Int): String {
+    return "Wah, ukuran gambar kekecilan. Yuk, upload ulang dengan ukuran minimum $allowedWidth x $allowedHeight, ya!"
+}
+
+fun maxResBitmapMessage(allowedWidth: Int, allowedHeight: Int): String {
+    return "Wah, ukuran gambar kebesaran. Yuk, upload ulang dengan ukuran maksimum $allowedWidth x $allowedHeight, ya!"
 }
 
 // TODO, remove it once pulled from latest release

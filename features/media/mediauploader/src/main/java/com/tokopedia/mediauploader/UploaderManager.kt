@@ -61,6 +61,9 @@ class UploaderManager constructor(
         // sourceId empty validation
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
+        // file full path
+        val filePath = fileToUpload.path
+
         // request policy by sourceId
         val sourcePolicy = requestPolicy(sourceId)
 
@@ -74,9 +77,6 @@ class UploaderManager constructor(
         val maxRes = sourcePolicy.imagePolicy.maximumRes
         val minRes = sourcePolicy.imagePolicy.minimumRes
 
-        // file full path
-        val filePath = fileToUpload.path
-
         return when {
             !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
             !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
@@ -86,15 +86,18 @@ class UploaderManager constructor(
                 maxFileSizeMessage(maxFileSize)
             )
             isMaxBitmapResolution(filePath, maxRes.width, maxRes.height) -> UploadResult.Error(
-                resBitmapMessage(true, maxRes.width, maxRes.height)
+                maxResBitmapMessage(maxRes.width, maxRes.height)
             )
             isMinBitmapResolution(filePath, minRes.width, minRes.height) -> UploadResult.Error(
-                resBitmapMessage(false, minRes.width, minRes.height)
+                minResBitmapMessage(minRes.width, minRes.height)
             )
             else -> onUpload(sourcePolicy)
         }
     }
 
+    /*
+    * common error tracker and expose to user
+    * */
     fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
         trackToTimber(fileToUpload, sourceId, message)
         return UploadResult.Error(message.first())
