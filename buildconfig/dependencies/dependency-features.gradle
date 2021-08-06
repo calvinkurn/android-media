@@ -274,7 +274,6 @@ ext {
             logintestapp                    : ":testapp-features:user:logintestapp",
             travel_slice                    : ":features:travel:travel_slice",
             customer_mid_app                : ":customer_mid_app",
-            telephony_masking               : ":features:user:telephony_masking",
-            linkAccount                     : ":features:user:linkaccount"
+            telephony_masking               : ":features:user:telephony_masking"
     ]
 }

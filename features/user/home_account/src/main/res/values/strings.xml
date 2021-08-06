@@ -107,4 +107,11 @@
     <string name="link_account_description"><![CDATA[You can get GoPayPoints cashback, level up your Tokopedia Rewards & GoClub memberships, and use GoPay on Tokopedia.]]></string>
     <string name="link_account_btn_primary">Let’s Do It!</string>
     <string name="link_account_label">Link Account to Gojek</string>
+
+    <string name="label_link_account">Akun yang terhubung</string>
+    <string name="link_account_layout_description">Atur aplikasi dan website yang terhubung ke akun Tokopedia-mu.</string>
+
+    <string name="hyperlink">Learn more about Android app development at\n<a href="https://learntodroid.com">LearnToDroid.com</a></string>
+    <string name="label_call_tokopedia">Butuh bantuan? Hubungi Tokopedia Care</string>
+
 </resources>
