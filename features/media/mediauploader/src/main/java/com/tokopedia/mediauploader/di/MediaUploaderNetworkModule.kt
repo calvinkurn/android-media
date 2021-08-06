@@ -12,14 +12,16 @@ class MediaUploaderNetworkModule {
     @Provides
     @MediaUploaderQualifier
     fun provideMediaUploaderRetrofit(
-            @MediaUploaderQualifier retrofit: Retrofit.Builder,
-            @MediaUploaderQualifier okHttpClient: OkHttpClient.Builder
+        @MediaUploaderQualifier retrofit: Retrofit.Builder,
+        @MediaUploaderQualifier okHttpClient: OkHttpClient.Builder
     ): Retrofit {
         return retrofit.client(okHttpClient.build()).build()
     }
 
     @Provides
-    fun provideMediaUploaderServices(@MediaUploaderQualifier retrofit: Retrofit): FileUploadServices {
+    fun provideMediaUploaderServices(
+        @MediaUploaderQualifier retrofit: Retrofit
+    ): FileUploadServices {
         return retrofit.create(FileUploadServices::class.java)
     }
 

@@ -11,9 +11,9 @@ import java.io.FileInputStream
 
 
 class UploadRequestBody(
-        private val file: File,
-        private val contentType: MediaType?,
-        private val callback: ProgressCallback?
+    private val file: File,
+    private val contentType: MediaType?,
+    private val callback: ProgressCallback?
 ): RequestBody() {
 
     override fun contentType(): MediaType? = contentType
