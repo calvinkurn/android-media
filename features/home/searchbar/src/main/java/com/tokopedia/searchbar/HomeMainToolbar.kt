@@ -74,6 +74,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun setViewAttributesAfterInflation(){
+        this.screenName = HOME_PAGE_NAME
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -357,7 +358,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
-
+        private const val HOME_PAGE_NAME = "\\"
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }
