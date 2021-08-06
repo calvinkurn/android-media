@@ -8,12 +8,21 @@ import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
 import com.tokopedia.mediauploader.util.getFileExtension
 import com.tokopedia.mediauploader.util.trackToTimber
+import com.tokopedia.mediauploader.util.isMaxFileSize
+import com.tokopedia.mediauploader.util.isMaxBitmapResolution
+import com.tokopedia.mediauploader.util.isMinBitmapResolution
 import java.io.File
 
 class UploaderManager constructor(
     private val dataPolicyUseCase: DataPolicyUseCase,
     private val mediaUploaderUseCase: MediaUploaderUseCase
 ) {
+
+    suspend fun requestPolicy(sourceId: String): SourcePolicy {
+        val dataPolicyParams = dataPolicyUseCase.createParams(sourceId)
+        val policyData = dataPolicyUseCase(dataPolicyParams)
+        return ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
+    }
 
     suspend fun post(fileToUpload: File, sourceId: String, policy: SourcePolicy): UploadResult {
         // media uploader
@@ -53,16 +62,35 @@ class UploaderManager constructor(
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
         // request policy by sourceId
-        val sourcePolicy = mediaPolicy(sourceId)
+        val sourcePolicy = requestPolicy(sourceId)
 
         // get acceptable extension based on policy
         val extensions = sourcePolicy.imagePolicy.extension.split(",")
+
+        // get maximum file size
+        val maxFileSize = sourcePolicy.imagePolicy.maxFileSize
+
+        // get max and min bitmap resolution
+        val maxRes = sourcePolicy.imagePolicy.maximumRes
+        val minRes = sourcePolicy.imagePolicy.minimumRes
 
         // file full path
         val filePath = fileToUpload.path
 
         return when {
             !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
+            !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
+                formatNotAllowedMessage(sourcePolicy.imagePolicy.extension)
+            )
+            isMaxFileSize(filePath, maxFileSize) -> UploadResult.Error(
+                maxFileSizeMessage(maxFileSize)
+            )
+            isMaxBitmapResolution(filePath, maxRes.width, maxRes.height) -> UploadResult.Error(
+                resBitmapMessage(true, maxRes.width, maxRes.height)
+            )
+            isMinBitmapResolution(filePath, minRes.width, minRes.height) -> UploadResult.Error(
+                resBitmapMessage(false, minRes.width, minRes.height)
+            )
             else -> onUpload(sourcePolicy)
         }
     }
@@ -70,12 +98,6 @@ class UploaderManager constructor(
     fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
         trackToTimber(fileToUpload, sourceId, message)
         return UploadResult.Error(message.first())
-    }
-
-    suspend fun mediaPolicy(sourceId: String): SourcePolicy {
-        val dataPolicyParams = dataPolicyUseCase.createParams(sourceId)
-        val policyData = dataPolicyUseCase(dataPolicyParams)
-        return ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
     }
 
 }
