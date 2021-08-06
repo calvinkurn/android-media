@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -18,8 +19,7 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
-import com.tokopedia.saldodetails.view.fragment.history.DateRangePickerBottomSheet
-import com.tokopedia.saldodetails.view.fragment.history.OnDateRangeSelectListener
+import com.tokopedia.saldodetails.utils.SaldoRollence
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
 import com.tokopedia.saldodetails.view.fragment.new.TransactionTitle
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
@@ -99,6 +99,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
         transactionHistoryViewPager.adapter = saldoHistoryPagerAdapter
+        saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+        saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_START
         saldoTransactionTabsUnify.setupWithViewPager(transactionHistoryViewPager)
 
     }
@@ -238,7 +240,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     fun isSalesTabEnabled(): Boolean {
-        return false
+        return SaldoRollence.isSaldoRevampEnabled()
     }
 
 

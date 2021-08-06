@@ -16,6 +16,7 @@ import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
+import com.tokopedia.saldodetails.utils.SaldoRollence
 import com.tokopedia.saldodetails.view.activity.detail.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.view.activity.detail.SaldoWithdrawalDetailActivity
 import com.tokopedia.saldodetails.view.fragment.new.*
@@ -166,11 +167,7 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
     }
 
     private fun retryInitialLoading() {
-        val isPenjualanTabActive: Boolean = when (parentFragment) {
-            is SaldoTransactionHistoryFragment ->
-                (parentFragment as SaldoTransactionHistoryFragment).isSalesTabEnabled()
-            else -> false
-        }
+        val isPenjualanTabActive: Boolean = SaldoRollence.isSaldoRevampEnabled()
         transactionHistoryViewModel?.retryAllTabLoading(isPenjualanTabActive)
     }
 
