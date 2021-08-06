@@ -114,7 +114,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
                     youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PAUSED) {
                     youTubeViewViewModel.disableAutoplay()
                 }
-            }, 1000)
+            }, DELAY_FOR_STATE_CHANGE)
         }
     }
 
@@ -168,6 +168,10 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
                 youtubeWebView?.play()
                 youtubeWebView?.mute()
             }
+    }
+
+    companion object{
+        const val DELAY_FOR_STATE_CHANGE: Long = 1000
     }
 
 }
