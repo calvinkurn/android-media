@@ -1,5 +1,5 @@
 query primaryProduct($productID: Int, $productIDString: String, $xSource: String!, $queryParam: String!) {
-    productRecommendationProductDetail(productID: Int, productIDString: String, xSource: $xSource, queryParam: $queryParam) {
+    productRecommendationProductDetail(productID: $productID, productIDString: $productIDString, xSource: $xSource, queryParam: $queryParam) {
         data {
           tID
           source
