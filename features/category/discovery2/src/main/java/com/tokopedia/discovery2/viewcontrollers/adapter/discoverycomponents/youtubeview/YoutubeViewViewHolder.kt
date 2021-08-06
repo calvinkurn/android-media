@@ -3,7 +3,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.you
 import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -111,7 +110,6 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
 //            this check is required because video gets paused for a very
 //            short time during seek as well
             mainThreadHandler.postDelayed({
-                Log.e("TEST_TAG","postDelayed $videoID")
                 if (videoID != youtubeWebView?.videoId ||
                     youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PAUSED) {
                     youTubeViewViewModel.disableAutoplay()
@@ -123,8 +121,10 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onVideoPlaying(time: Int) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             ?.trackClickVideo(videoId, videoName, time.toString())
-        if(!youTubeViewViewModel.isAutoPlayEnabled()){
-            mainThreadHandler.post {
+        mainThreadHandler.post {
+            if (youTubeViewViewModel.isAutoPlayEnabled()) {
+                youTubeViewViewModel.pauseOtherVideos()
+            } else {
                 youtubeWebView?.unMute()
             }
         }
@@ -132,12 +132,10 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
 
     override fun onShowCustomView(view: View) {
         (fragment as? DiscoveryFragment)?.showCustomContent(view)
-//        if(youTubeViewViewModel.isAutoPlayEnabled()){
-//            mainThreadHandler.postDelayed ({
-//                youtubeWebView?.unMute()
-//                youtubeWebView?.play()
-//            },1000)
-//        }
+        if (youTubeViewViewModel.isAutoPlayEnabled())
+            mainThreadHandler.post {
+                youtubeWebView?.unMute()
+            }
     }
 
     override fun onHideCustomView() {

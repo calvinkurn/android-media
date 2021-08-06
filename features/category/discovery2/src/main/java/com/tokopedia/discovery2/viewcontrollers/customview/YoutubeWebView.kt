@@ -31,6 +31,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
         setupTouchListener()
         setUpWebViewClient()
         settings.javaScriptEnabled = true
+        settings.mediaPlaybackRequiresUserGesture = false
     }
 
     private fun setUpWebViewClient() {

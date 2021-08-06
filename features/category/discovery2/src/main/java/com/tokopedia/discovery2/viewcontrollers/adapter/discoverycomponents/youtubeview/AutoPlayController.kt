@@ -21,8 +21,8 @@ class AutoPlayController {
             count++
             if (valueFound) {
                 currentlyAutoPlaying = key
-                getComponent(key, pageEndPoint)?.apply {
-                    shouldRefreshComponent = true
+                getComponent(key, pageEndPoint)?.let {
+                    it.shouldRefreshComponent = true
                 }
                 return true
             }
@@ -31,6 +31,19 @@ class AutoPlayController {
                     isAutoPlayEnabled = false
                 }
                 valueFound = true
+            }
+        }
+        return false
+    }
+
+    fun pauseAutoPlayedVideo(pageEndPoint: String) :Boolean {
+        if(isAutoPlayEnabled){
+            isAutoPlayEnabled = false
+            currentlyAutoPlaying?.let { id ->
+                getComponent(id, pageEndPoint)?.let{
+                    it.shouldRefreshComponent = true
+                    return true
+                }
             }
         }
         return false

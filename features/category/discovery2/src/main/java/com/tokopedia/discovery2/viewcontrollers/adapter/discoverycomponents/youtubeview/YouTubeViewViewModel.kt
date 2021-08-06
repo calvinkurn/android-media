@@ -43,4 +43,12 @@ class YouTubeViewViewModel(val application: Application, private val components:
     fun disableAutoplay(){
         components.autoPlayController?.isAutoPlayEnabled = false
     }
+
+    fun pauseOtherVideos() {
+        if (components.autoPlayController?.currentlyAutoPlaying != components.id) {
+            _shouldResync.value =
+                components.autoPlayController?.pauseAutoPlayedVideo(components.pageEndPoint)
+                    ?: false
+        }
+    }
 }
