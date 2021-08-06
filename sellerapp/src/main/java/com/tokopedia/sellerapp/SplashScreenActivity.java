@@ -42,6 +42,8 @@ public class SplashScreenActivity extends SplashScreen {
     private boolean isApkTempered;
     private static String KEY_AUTO_LOGIN = "is_auto_login";
 
+    private UserSessionInterface userSession;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
@@ -66,7 +68,7 @@ public class SplashScreenActivity extends SplashScreen {
     }
 
     private void setUserIdNewRelic() {
-        UserSessionInterface userSession = new UserSession(this);
+        userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
             NewRelic.setUserId(userSession.getUserId());
         }
@@ -113,7 +115,6 @@ public class SplashScreenActivity extends SplashScreen {
             return;
         }
 
-        UserSessionInterface userSession = new UserSession(this);
         if (handleAppLink(userSession)) {
             finish();
             return;
