@@ -366,10 +366,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_mainapp_enable_slice_recharge</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_exec_seq1_async</key>
         <value>true</value>
     </entry>

@@ -103,19 +103,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         setupAppScreenMode();
         Embrace.getInstance().start(this);
         super.onCreate();
-        setGrantPermissionSlice();
-    }
-
-    public void setGrantPermissionSlice(){
-        if(getSliceRemoteConfig()) {
-            SlicePermission slicePermission = new SlicePermission();
-            slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
-            slicePermission.initPermission(this, TRAVEL_SLICE_AUTHORITY);
-        }
-    }
-
-    private Boolean getSliceRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, false);
     }
 
     private void setupAppScreenMode() {
