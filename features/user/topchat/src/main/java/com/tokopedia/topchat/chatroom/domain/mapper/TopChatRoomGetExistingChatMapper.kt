@@ -20,7 +20,7 @@ import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -202,7 +202,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     private fun convertToCtaHeaderMsg(reply: Reply): Visitable<*> {
         val attachment = gson.fromJson(
-            reply.attachment.attributes, HeaderCtaMessageAttachment::class.java
+            reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
         )
         return MessageViewModel(reply, attachment)
     }

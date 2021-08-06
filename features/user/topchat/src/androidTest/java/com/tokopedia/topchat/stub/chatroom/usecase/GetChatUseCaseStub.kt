@@ -34,7 +34,7 @@ class GetChatUseCaseStub @Inject constructor(
 
     val srwChangeAddressCtaDisabled: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
-            alterAttachmentAttributesAt(
+            alterHeaderCtaButtonAttachment(
                 listPosition = 0,
                 chatsPosition = 0,
                 repliesPosition = 0,
@@ -47,7 +47,7 @@ class GetChatUseCaseStub @Inject constructor(
 
     val srwChangeAddressBodyMsg: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
-            alterAttachmentAttributesAt(
+            alterHeaderCtaButtonAttachment(
                 listPosition = 0,
                 chatsPosition = 0,
                 repliesPosition = 0,
@@ -59,7 +59,7 @@ class GetChatUseCaseStub @Inject constructor(
 
     val srwChangeAddressNoCta: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
-            alterAttachmentAttributesAt(
+            alterHeaderCtaButtonAttachment(
                 listPosition = 0,
                 chatsPosition = 0,
                 repliesPosition = 0,
@@ -109,6 +109,25 @@ class GetChatUseCaseStub @Inject constructor(
     private val interlocutor = "interlocutor"
     private val name = "name"
     private val isOpposite = "isOpposite"
+    private val cta_button = "cta_button"
+
+    private fun alterHeaderCtaButtonAttachment(
+        listPosition: Int,
+        chatsPosition: Int,
+        repliesPosition: Int,
+        responseObj: JsonObject,
+        altercation: (JsonObject) -> Unit
+    ) {
+        alterAttachmentAttributesAt(
+            listPosition = listPosition,
+            chatsPosition = chatsPosition,
+            repliesPosition = repliesPosition,
+            responseObj = responseObj
+        ) {
+            val ctaButton = it.getAsJsonObject(cta_button)
+            altercation(ctaButton)
+        }
+    }
 
     private fun alterAttachmentAttributesAt(
         listPosition: Int,

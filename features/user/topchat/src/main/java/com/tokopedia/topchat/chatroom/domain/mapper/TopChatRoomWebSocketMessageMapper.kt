@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
-import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -51,7 +51,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
         jsonAttributes: JsonObject
     ): Visitable<*> {
         val attachment = gson.fromJson(
-            jsonAttributes, HeaderCtaMessageAttachment::class.java
+            jsonAttributes, HeaderCtaButtonAttachment::class.java
         )
         return MessageViewModel(pojo, attachment)
     }

@@ -41,7 +41,7 @@ import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
@@ -574,15 +574,17 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendSrwFrom(
-        attachment: HeaderCtaMessageAttachment,
+        attachment: HeaderCtaButtonAttachment,
         opponentId: String
     ) {
         if (thisMessageId.isEmpty()) return
         val startTime = SendableViewModel.generateStartTime()
         val addressMasking = getAddressMasking()
+        val ctaButton = attachment.ctaButton
+        // TODO: product name
         val srwMessage = "Ubah alamat pengiriman \"Nama produk...\" ke $addressMasking"
-        val question = QuestionUiModel(srwMessage, attachment.extras.intent)
-        val products = attachment.generateSendableProductPreview()
+        val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
+        val products = ctaButton.generateSendableProductPreview()
         topchatSendMessageWithWebsocket(
             thisMessageId, question.content, startTime,
             opponentId, question.intent, products

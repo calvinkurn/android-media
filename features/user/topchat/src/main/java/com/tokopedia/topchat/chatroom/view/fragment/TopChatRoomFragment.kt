@@ -85,7 +85,7 @@ import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResu
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -211,7 +211,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     /**
      * stack to keep latest change address request
      */
-    private val changeAddressStack = Stack<HeaderCtaMessageAttachment>()
+    private val changeAddressStack = Stack<HeaderCtaButtonAttachment>()
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -2158,7 +2158,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
     }
 
-    private fun sendSrwQuestion(attachment: HeaderCtaMessageAttachment) {
+    private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
         onSendAndReceiveMessage()
         presenter.sendSrwFrom(attachment, opponentId)
         onSendingMessage(false).invoke()
@@ -2206,7 +2206,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun changeAddress(attachment: HeaderCtaMessageAttachment) {
+    override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
         changeAddressStack.push(attachment)
         showChangeAddressBottomSheet()
     }

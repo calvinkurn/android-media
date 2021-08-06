@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.unifyprinciples.Typography
@@ -84,7 +85,7 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     interface Listener {
-        fun changeAddress(attachment: HeaderCtaMessageAttachment)
+        fun changeAddress(attachment: HeaderCtaButtonAttachment)
     }
 
     override fun setBackground(background: Drawable?) {
@@ -191,7 +192,7 @@ class FlexBoxChatLayout : ViewGroup {
     ) {
         header?.show()
         when (attachment) {
-            is HeaderCtaMessageAttachment -> renderCtaHeader(
+            is HeaderCtaButtonAttachment -> renderCtaHeader(
                 attachment,
                 shouldHideDivider
             )
@@ -204,7 +205,7 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun renderCtaHeader(
-        attachment: HeaderCtaMessageAttachment,
+        attachment: HeaderCtaButtonAttachment,
         shouldHideDivider: Boolean
     ) {
         bindHeaderTitle(attachment)
@@ -213,8 +214,8 @@ class FlexBoxChatLayout : ViewGroup {
         bindHeaderDivider(shouldHideDivider)
     }
 
-    private fun bindHeaderCta(attachment: HeaderCtaMessageAttachment) {
-        if (attachment.hasVisibleCta()) {
+    private fun bindHeaderCta(attachment: HeaderCtaButtonAttachment) {
+        if (attachment.ctaButton.hasVisibleCta()) {
             headerCta?.show()
             bindHeaderCtaTitle(attachment)
             binDHeaderCtaState(attachment)
@@ -228,16 +229,16 @@ class FlexBoxChatLayout : ViewGroup {
         headerDivider?.showWithCondition(!shouldHideDivider)
     }
 
-    private fun bindHeaderBody(attachment: HeaderCtaMessageAttachment) {
-        setMessage(attachment.body)
+    private fun bindHeaderBody(attachment: HeaderCtaButtonAttachment) {
+        setMessage(attachment.ctaButton.body)
     }
 
-    private fun bindHeaderTitle(attachment: HeaderCtaMessageAttachment) {
-        headerTitle?.text = attachment.header
+    private fun bindHeaderTitle(attachment: HeaderCtaButtonAttachment) {
+        headerTitle?.text = attachment.ctaButton.header
     }
 
-    private fun binDHeaderCtaState(attachment: HeaderCtaMessageAttachment) {
-        val ctaColor = when (attachment.status) {
+    private fun binDHeaderCtaState(attachment: HeaderCtaButtonAttachment) {
+        val ctaColor = when (attachment.ctaButton.status) {
             HeaderCtaMessageAttachment.STATUS_ENABLED ->
                 com.tokopedia.unifyprinciples.R.color.Unify_G500
             HeaderCtaMessageAttachment.STATUS_DISABLED ->
@@ -248,15 +249,15 @@ class FlexBoxChatLayout : ViewGroup {
         headerCta?.setTextColor(color)
     }
 
-    private fun bindHeaderCtaTitle(attachment: HeaderCtaMessageAttachment) {
-        headerCta?.text = attachment.textUrl
+    private fun bindHeaderCtaTitle(attachment: HeaderCtaButtonAttachment) {
+        headerCta?.text = attachment.ctaButton.textUrl
     }
 
-    private fun bindHeaderCtaClick(attachment: HeaderCtaMessageAttachment) {
+    private fun bindHeaderCtaClick(attachment: HeaderCtaButtonAttachment) {
         headerCta?.setOnClickListener {
             listener?.changeAddress(attachment)
         }
-        headerCta?.isEnabled = attachment.isClickable()
+        headerCta?.isEnabled = attachment.ctaButton.isClickable()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
