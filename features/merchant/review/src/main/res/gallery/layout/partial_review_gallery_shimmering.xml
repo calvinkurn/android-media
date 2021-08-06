@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/review_gallery_rating_star_loading"
@@ -74,34 +75,63 @@
         app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_loading" />
 
-    <include
-        layout="@layout/partial_review_gallery_item_shimmering"
-        android:id="@+id/review_gallery_item_loading"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/review_gallery_shimmering_guideline"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
+
+    <include
+        android:id="@+id/review_gallery_item_loading"
+        layout="@layout/partial_review_gallery_item_shimmering"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toStartOf="@id/review_gallery_shimmering_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
 
     <include
-        layout="@layout/partial_review_gallery_item_shimmering"
         android:id="@+id/review_gallery_item_loading_2"
-        android:layout_width="wrap_content"
+        layout="@layout/partial_review_gallery_item_shimmering"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/review_gallery_shimmering_guideline"
         app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
 
     <include
+        android:id="@+id/review_gallery_item_loading_3"
         layout="@layout/partial_review_gallery_item_shimmering"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_bar_divider_loading" />
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toStartOf="@id/review_gallery_shimmering_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_item_loading" />
+
+    <include
+        android:id="@+id/review_gallery_item_loading_4"
+        layout="@layout/partial_review_gallery_item_shimmering"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/review_gallery_shimmering_guideline"
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_item_loading_2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

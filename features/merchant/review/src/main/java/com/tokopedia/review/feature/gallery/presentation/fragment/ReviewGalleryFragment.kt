@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -59,6 +61,7 @@ class ReviewGalleryFragment :
     lateinit var viewModel: ReviewGalleryViewModel
 
     private var reviewHeader: ReadReviewHeader? = null
+    private var loadingView: ConstraintLayout? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
@@ -103,6 +106,7 @@ class ReviewGalleryFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        showFullPageLoading()
         observeReviewImages()
         observeRatingAndTopics()
     }
@@ -180,6 +184,7 @@ class ReviewGalleryFragment :
 
     private fun bindViews(view: View) {
         reviewHeader = view.findViewById(R.id.review_gallery_header)
+        loadingView = view.findViewById(R.id.review_gallery_shimmering)
     }
 
     private fun observeRatingAndTopics() {
@@ -193,6 +198,7 @@ class ReviewGalleryFragment :
 
     private fun observeReviewImages() {
         viewModel.reviewImages.observe(viewLifecycleOwner, {
+            hideFullPageLoading()
             when (it) {
                 is Success -> onSuccessGetReviewImages(it.data)
                 is Fail -> onFailGetReviewImages(it.throwable)
@@ -266,5 +272,13 @@ class ReviewGalleryFragment :
 
     private fun goToReadingPage() {
         RouteManager.route(context, ApplinkConst.PRODUCT_REVIEW, viewModel.getProductId())
+    }
+
+    private fun showFullPageLoading() {
+        loadingView?.show()
+    }
+
+    private fun hideFullPageLoading() {
+        loadingView?.hide()
     }
 }

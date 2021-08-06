@@ -42,4 +42,8 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <include
+        android:id="@+id/review_gallery_shimmering"
+        layout="@layout/partial_review_gallery_shimmering" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
