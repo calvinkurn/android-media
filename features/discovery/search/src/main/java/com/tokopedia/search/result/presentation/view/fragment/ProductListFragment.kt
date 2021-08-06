@@ -166,6 +166,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val REQUEST_CODE_LOGIN = 561
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
+        private const val ON_BOARDING_DELAY_MS: Long = 200
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -1687,7 +1688,7 @@ class ProductListFragment: BaseDaggerFragment(),
             } else {
                 buildCoachMark2(productWithBOELabel)
             }
-        }, 200)
+        }, ON_BOARDING_DELAY_MS)
     }
 
     private fun getFirstProductWithBOELabel(firstProductPositionWithBOELabel: Int): View? {
