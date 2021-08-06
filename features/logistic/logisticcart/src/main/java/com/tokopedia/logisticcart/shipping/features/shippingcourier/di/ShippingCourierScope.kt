@@ -1,15 +1,10 @@
-package com.tokopedia.logisticcart.shipping.features.shippingcourier.di;
+package com.tokopedia.logisticcart.shipping.features.shippingcourier.di
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import javax.inject.Scope;
+import javax.inject.Scope
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
  */
-
 @Scope
-@Retention(RetentionPolicy.CLASS)
-public @interface ShippingCourierScope {
-}
+@kotlin.annotation.Retention(AnnotationRetention.BINARY)
+annotation class ShippingCourierScope

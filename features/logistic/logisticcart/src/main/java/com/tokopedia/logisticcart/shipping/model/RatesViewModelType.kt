@@ -1,4 +1,3 @@
-package com.tokopedia.logisticcart.shipping.model;
+package com.tokopedia.logisticcart.shipping.model
 
-public interface RatesViewModelType {
-}
+interface RatesViewModelType
