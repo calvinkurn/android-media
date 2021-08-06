@@ -52,10 +52,10 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
             status
             data {
               errors
-              beli_button_config {
-                button_type
-                button_wording
-              }
+//              beli_button_config {
+//                button_type
+//                button_wording
+//              }
               total_product_count
               total_product_error
               total_product_price
