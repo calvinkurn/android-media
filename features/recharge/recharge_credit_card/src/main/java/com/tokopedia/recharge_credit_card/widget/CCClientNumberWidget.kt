@@ -6,6 +6,8 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -25,7 +27,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_text_input.textFieldInput.clearFocus()
 
         cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
-        cc_text_input.setSecondIcon(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
+        cc_text_input.textFieldIcon2.setImageDrawable(getIconUnifyDrawable(context, IconUnify.CLEAR))
         cc_text_input.textFieldIcon2.visibility = View.GONE
 
         setLengthMaxTextField()
