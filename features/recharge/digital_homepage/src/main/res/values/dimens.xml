@@ -32,6 +32,7 @@
     <dimen name="bills_item_image_width">28dp</dimen>
     <dimen name="bills_shimmering_width">220dp</dimen>
     <dimen name="shimmering_text_view_width">150dp</dimen>
+    <dimen name="favorite_section_top_margin">12dp</dimen>
 
     <dimen name="recharge_custom_product_card_iv_margin">40dp</dimen>
     <dimen name="recharge_custom_product_card_parallax_margin">-40dp</dimen>
