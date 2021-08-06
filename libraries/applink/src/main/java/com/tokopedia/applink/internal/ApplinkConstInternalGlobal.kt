@@ -453,6 +453,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/new-home-account
     const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
+    // FundsAndInvestmentActivity
+    // tokopedia-android-internal://global/funds-and-investment
+    const val FUNDS_AND_INVESTMENT = "$INTERNAL_GLOBAL/funds-and-investment"
+
     // ChooseAccountFingerprintActivity
     // tokopedia-android-internal://global/choose-account-fingerprint
     const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"

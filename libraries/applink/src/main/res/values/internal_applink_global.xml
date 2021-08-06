@@ -94,6 +94,8 @@
 
     <string name="new_home_account">/new-home-account</string>
 
+    <string name="funds-and-investment">/funds-and-investment</string>
+
     <string name="path_screen_recorder">/screen-recorder</string>
 
     <string name="path_internal_feedback">/internal-feedback</string>
