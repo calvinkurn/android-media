@@ -1,14 +1,11 @@
 package com.tokopedia.play.animation.spamlike
 
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -18,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
-import kotlinx.android.synthetic.main.layout_play_spam_like.view.*
 import kotlinx.coroutines.*
 
 /**
@@ -42,11 +38,9 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     /**
      * Config
      */
-    private var INCREASE_SHOT = 1
-    private var DECREASE_SHOT = -1
-    private var MAX_SHOT = 30
-    private var SIZE_TYPE = PlaySpamLikeSize.MULTIPLY
-    private val DURATION = 1500L
+    private var maxShot = 30
+    private var sizeType = PlaySpamLikeSize.MULTIPLY
+    private val duration = 1500L
     private var isAdditionalShot: Boolean = false
     private var isBouncing: Boolean = false
 
@@ -60,7 +54,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
 
         isBouncing = type.getBoolean(R.styleable.PlaySpamLikeAnimation_bouncing, false)
         isAdditionalShot = type.getBoolean(R.styleable.PlaySpamLikeAnimation_additionalShot, false)
-        MAX_SHOT = type.getInteger(R.styleable.PlaySpamLikeAnimation_maxShot, 30)
+        maxShot = type.getInteger(R.styleable.PlaySpamLikeAnimation_maxShot, 30)
 
         type.recycle()
 
@@ -114,13 +108,13 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     }
 
     fun setSizeList(sizeList: List<Pair<Int, Int>>) {
-        SIZE_TYPE = PlaySpamLikeSize.EXACT
+        sizeType = PlaySpamLikeSize.EXACT
         this.sizeList.clear()
         this.sizeList.addAll(sizeList)
     }
 
     fun setSizeMultiplyList(sizeMultiplyList: List<Float>) {
-        SIZE_TYPE = PlaySpamLikeSize.MULTIPLY
+        sizeType = PlaySpamLikeSize.MULTIPLY
         this.sizeMultiplyList.clear()
         this.sizeMultiplyList.addAll(sizeMultiplyList)
     }
@@ -135,10 +129,10 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     }
 
     fun setMaxShot(maxShot: Int) {
-        this.MAX_SHOT = maxShot
+        this.maxShot = maxShot
     }
 
-    fun getMaxShot(): Int = MAX_SHOT
+    fun getMaxShot(): Int = maxShot
 
     /**
      * Step shot()
@@ -154,13 +148,13 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
     fun shot() {
         if(loveList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
 
-        if(shot < MAX_SHOT) {
+        if(shot < maxShot) {
             val love = loveList[(0 until loveList.size).random()]
             val sizeMultiply = sizeMultiplyList[(0 until sizeMultiplyList.size).random()]
             val size = sizeList[(0 until sizeList.size).random()]
 
             love?.let {
-                val dimension = when(SIZE_TYPE) {
+                val dimension = when(sizeType) {
                     PlaySpamLikeSize.EXACT -> size
                     PlaySpamLikeSize.MULTIPLY -> getDimensionMultiply(love, sizeMultiply)
                 }
@@ -174,7 +168,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                 setShot(INCREASE_SHOT)
 
                 CoroutineScope(Dispatchers.IO + job).launch {
-                    delay(DURATION)
+                    delay(duration)
                     removeImageFromView(image)
                 }
 
@@ -205,7 +199,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
                     imageList.add(image)
 
                     CoroutineScope(Dispatchers.IO + job).launch {
-                        delay(DURATION)
+                        delay(duration)
                         removeImageFromView(image, false)
                     }
                 }
@@ -315,7 +309,7 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
         }
 
         move.interpolator = LinearInterpolator()
-        move.duration = DURATION
+        move.duration = duration
         move.start()
     }
 
@@ -334,5 +328,10 @@ class PlaySpamLikeAnimation(context: Context, attributeSet: AttributeSet): Const
             parentView?.removeView(it)
         }
         imageList.clear()
+    }
+
+    companion object {
+        private const val INCREASE_SHOT = 1
+        private const val DECREASE_SHOT = -1
     }
 }
