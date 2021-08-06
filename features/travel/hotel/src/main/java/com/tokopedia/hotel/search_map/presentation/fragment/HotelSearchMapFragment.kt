@@ -47,6 +47,7 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.databinding.FragmentHotelSearchMapBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search_map.data.model.*
@@ -74,9 +75,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
-import kotlinx.android.synthetic.main.item_network_error_view.*
 import javax.inject.Inject
 
 /**
@@ -89,6 +89,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var hotelSearchMapViewModel: HotelSearchMapViewModel
+
+    private var binding by autoClearedNullable<FragmentHotelSearchMapBinding>()
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -165,7 +167,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
 
         activity?.let {
-            (it as HotelSearchMapActivity).setSupportActionBar(headerHotelSearchMap)
+            (it as HotelSearchMapActivity).setSupportActionBar(binding?.headerHotelSearchMap)
         }
 
         setCardListViewAdapter()
@@ -302,16 +304,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        container_error.visible()
+        binding?.containerError?.root?.visible()
         context?.run {
-            ErrorHandlerHotel.getErrorUnify(this, throwable,
-                { onRetryClicked() }, global_error)
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, throwable,
+                    { onRetryClicked() }, it
+                )
+            }
         }
     }
 
     override fun onRetryClicked() {
-        view?.let {
-            container_error.hide()
+        binding?.let {
+            it.containerError.root.hide()
             halfExpandBottomSheet()
         }
         super.onRetryClicked()
@@ -319,8 +324,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun loadInitialData() {
         hotelSearchMapViewModel.searchParam.page = defaultInitialPage
-        tvHotelSearchListTitleLoader.visible()
-        tvHotelSearchListTitle.gone()
+        binding?.tvHotelSearchListTitleLoader?.visible()
+        binding?.tvHotelSearchListTitle?.gone()
 
         cardListPosition = SELECTED_POSITION_INIT
         adapterCardList.clearAllElements()
@@ -333,9 +338,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val viewRoot = inflater.inflate(R.layout.fragment_hotel_search_map, container, false)
-        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        return viewRoot
+        binding = FragmentHotelSearchMapBinding.inflate(inflater, container, false)
+        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -353,7 +358,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         halfExpandBottomSheet()
         initInfoMaxRadius()
 
-        ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
+        binding?.ivHotelSearchMapNoResult?.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
         trackingHotelUtil.viewHotelSearchMap(context,
                 searchDestinationName,
@@ -364,7 +369,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onMapReady(map: GoogleMap) {
         //for SS-testing purpose
-        mapHotelSearchMap.contentDescription = "MAP READY"
+        binding?.mapHotelSearchMap?.contentDescription = "MAP READY"
         this.googleMap = map
         setGoogleMap()
     }
@@ -406,21 +411,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 text = getString(R.string.hotel_search_map_max_radius_info)
             }
             wrapper.addView(textView)
-            fabHotelInfoMaxRadius.addItem(wrapper)
+            binding?.fabHotelInfoMaxRadius?.addItem(wrapper)
         }
-        fabHotelInfoMaxRadius.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
+        binding?.fabHotelInfoMaxRadius?.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
         hideInfoMaxRadius()
     }
 
     private fun hideInfoMaxRadius(){
-        view?.let {
-            animateFAB(fabHotelInfoMaxRadius, false)
+        binding?.let {
+            animateFAB(it.fabHotelInfoMaxRadius, false)
         }
     }
 
     private fun showInfoMaxRadius(){
-        view?.let {
-            animateFAB(fabHotelInfoMaxRadius, true)
+        binding?.let {
+            animateFAB(it.fabHotelInfoMaxRadius, true)
         }
     }
 
@@ -428,7 +433,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         allMarker.forEach {
             if (it.tag == marker.tag) {
                 cardListPosition = it.tag as Int
-                rvHorizontalPropertiesHotelSearchMap.scrollToCenterPosition(cardListPosition)
+                binding?.rvHorizontalPropertiesHotelSearchMap?.scrollToCenterPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
                 if (cardListPosition != -1 &&
                         cardListPosition != lastHorizontalTrackingPositionSent &&
@@ -451,20 +456,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     fun RecyclerView.scrollToCenterPosition(position: Int){
         if(::linearLayoutManager.isInitialized) {
             try {
-                rvHorizontalPropertiesHotelSearchMap.scrollToPosition(position)
-                rvHorizontalPropertiesHotelSearchMap.post {
+                binding?.rvHorizontalPropertiesHotelSearchMap?.scrollToPosition(position)
+                binding?.rvHorizontalPropertiesHotelSearchMap?.post {
                     val itemView = linearLayoutManager.findViewByPosition(position)
                     if(itemView != null){
                         val snapDistance: IntArray = snapHelper.calculateDistanceToFinalSnap(linearLayoutManager, itemView) ?: intArrayOf()
                         if(snapDistance.isNotEmpty()){
                             if (snapDistance[0] != 0 || snapDistance[1] != 0) {
-                                rvHorizontalPropertiesHotelSearchMap.scrollBy(snapDistance[0], snapDistance[1])
+                                binding?.rvHorizontalPropertiesHotelSearchMap?.scrollBy(snapDistance[0], snapDistance[1])
                             }
                         }
                     }
                 }
             }catch (e: Exception){
-                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(position)
+                binding?.rvHorizontalPropertiesHotelSearchMap?.smoothScrollToPosition(position)
             }
         }
     }
@@ -532,8 +537,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun hideLoading() {
-        tvHotelSearchListTitleLoader.gone()
-        tvHotelSearchListTitle.visible()
+        binding?.tvHotelSearchListTitleLoader?.gone()
+        binding?.tvHotelSearchListTitle?.visible()
         super.hideLoading()
     }
 
@@ -575,12 +580,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
         super.onGetListErrorWithEmptyData(throwable)
-        bottomSheetBehavior.peekHeight = hotel_search_map_bottom_sheet.measuredHeight
+        bottomSheetBehavior.peekHeight = binding?.hotelSearchMapBottomSheet?.measuredHeight ?:0
         hideSearchWithMap()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        bottomSheetBehavior.peekHeight = hotel_search_map_bottom_sheet.measuredHeight
+        bottomSheetBehavior.peekHeight = binding?.hotelSearchMapBottomSheet?.measuredHeight ?: 0
         hideSearchWithMap()
         return super.getEmptyDataViewModel()
     }
@@ -605,10 +610,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 changeSearchParameter()
             }
 
-            headerHotelSearchMap.headerView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-            headerHotelSearchMap.addCustomRightContent(wrapper)
-            headerHotelSearchMap.isShowBackButton = true
-            headerHotelSearchMap.setNavigationOnClickListener {
+            binding?.headerHotelSearchMap?.headerView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            binding?.headerHotelSearchMap?.addCustomRightContent(wrapper)
+            binding?.headerHotelSearchMap?.isShowBackButton = true
+            binding?.headerHotelSearchMap?.setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
         }
@@ -616,15 +621,17 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupPersistentBottomSheet() {
         if (!::bottomSheetBehavior.isInitialized) {
-            bottomSheetBehavior = BottomSheetBehavior.from<ConstraintLayout>(hotel_search_map_bottom_sheet)
+            binding?.hotelSearchMapBottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(it)
+            }
         }
         bottomSheetBehavior.isFitToContents = false
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val opacity = SLIDE_MINUS_OPACITY - (slideOffset * SLIDE_MULT_OPACITY)
-                rvHorizontalPropertiesHotelSearchMap?.let {
-                    rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                binding?.rvHorizontalPropertiesHotelSearchMap?.let {
+                    it.alpha = opacity
                 }
             }
 
@@ -653,7 +660,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                                     MAPS_ZOOM_OUT))
                         }
                         setupContentMargin(false)
-                        if(containerEmptyResultState.isVisible){
+                        if(binding?.containerEmptyResultState?.isVisible == true){
                             googleMap.uiSettings.setAllGesturesEnabled(false)
                            enabledMapsClick()
                         }else{
@@ -681,58 +688,59 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
 
         })
-
-        tvHotelSearchListTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding?.tvHotelSearchListTitle?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                tvHotelSearchListTitle.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.tvHotelSearchListTitle?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
 
-                val titleLayoutParam = tvHotelSearchListTitle.layoutParams as ViewGroup.MarginLayoutParams
+                val titleLayoutParam = binding?.tvHotelSearchListTitle?.layoutParams as ViewGroup.MarginLayoutParams
 
-                var bottomSheetHeaderHeight = tvHotelSearchListTitle.measuredHeight // title height
-                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
+                var bottomSheetHeaderHeight = binding?.tvHotelSearchListTitle?.measuredHeight // title height
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(resources.getDimensionPixelSize(
                         com.tokopedia.unifycomponents.R.dimen.bottom_sheet_knob_height)) // knob height
-                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(resources.getDimensionPixelSize(
                         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)) // knob top margin
-                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(titleLayoutParam.topMargin) // title top margin
-                bottomSheetHeaderHeight = bottomSheetHeaderHeight.plus(resources.getDimensionPixelSize(
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(titleLayoutParam.topMargin) // title top margin
+                bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(resources.getDimensionPixelSize(
                         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)) // add margin
 
-                bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight
+                bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight ?: 0
             }
         })
     }
 
     private fun setupContentMargin(isExpanded: Boolean) {
-        if (isExpanded) {
-            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+        binding?.let {
+            if (isExpanded) {
+                it.rvVerticalPropertiesHotelSearchMap.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
                     0)
-            containerEmptyResultState.setMargin(0,
+                it.containerEmptyResultState.setMargin(0,
                     resources.getDimensionPixelSize(R.dimen.hotel_80dp),
                     0,
                     0)
-        } else {
-            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+            } else {
+                it.rvVerticalPropertiesHotelSearchMap.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
                     0,
                     0)
-            containerEmptyResultState.setMargin(0,
+                it.containerEmptyResultState.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
                     0,
                     0)
-        }
+            }
 
-        if (isHotelListShowingError()) {
-            hideSearchWithMap()
-            rvVerticalPropertiesHotelSearchMap.setMargin(0,
+            if (isHotelListShowingError()) {
+                hideSearchWithMap()
+                it.rvVerticalPropertiesHotelSearchMap.setMargin(0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
                     0,
                     0)
-        }
+            }
 
-        rvVerticalPropertiesHotelSearchMap.requestLayout()
-        containerEmptyResultState.requestLayout()
+            it.rvVerticalPropertiesHotelSearchMap.requestLayout()
+            it.containerEmptyResultState.requestLayout()
+        }
     }
 
     private fun setUpTitleAndSubtitle() {
@@ -741,13 +749,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val checkInString = hotelSearchModel.checkIn.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR)
             val checkOutString = hotelSearchModel.checkOut.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR)
 
-            headerHotelSearchMap.title = hotelSearchModel.name
-            headerHotelSearchMap.subtitle = getString(R.string.template_search_subtitle,
+            binding?.headerHotelSearchMap?.let { view ->
+                view.title = hotelSearchModel.name
+                view.subtitle = getString(R.string.template_search_subtitle,
                     checkInString,
                     checkOutString,
                     hotelSearchModel.room,
                     hotelSearchModel.adult)
-            headerHotelSearchMap.subheaderView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                view.subheaderView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            }
         }
     }
 
@@ -779,19 +789,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun initRecyclerViewMap() {
-        rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
+        binding?.rvHorizontalPropertiesHotelSearchMap?.adapter = adapterCardList
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
+        binding?.rvHorizontalPropertiesHotelSearchMap?.layoutManager = linearLayoutManager
 
-        if (rvHorizontalPropertiesHotelSearchMap.onFlingListener == null) {
-            snapHelper.attachToRecyclerView(rvHorizontalPropertiesHotelSearchMap)
+        if (binding?.rvHorizontalPropertiesHotelSearchMap?.onFlingListener == null) {
+            snapHelper.attachToRecyclerView(binding?.rvHorizontalPropertiesHotelSearchMap)
         }
 
         initScrollCardList()
     }
 
     private fun initScrollCardList() {
-        rvHorizontalPropertiesHotelSearchMap.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding?.rvHorizontalPropertiesHotelSearchMap?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -817,7 +827,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun getCurrentItemCardList(): Int =
-            (rvHorizontalPropertiesHotelSearchMap.layoutManager as LinearLayoutManager)
+            (binding?.rvHorizontalPropertiesHotelSearchMap?.layoutManager as LinearLayoutManager)
                     .findFirstCompletelyVisibleItemPosition()
 
     private fun setGoogleMap() {
@@ -836,7 +846,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     fun enabledMapsClick(){
-        mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
+        binding?.mapHotelSearchMap?.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
                 when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> v.performClick()
@@ -844,7 +854,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 return true
             }
         })
-        mapHotelSearchMap.setOnClickListener {
+        binding?.mapHotelSearchMap?.setOnClickListener {
             collapseBottomSheet()
         }
         if(::googleMap.isInitialized) {
@@ -864,10 +874,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun initLocationMap() {
-        if (mapHotelSearchMap != null) {
-            mapHotelSearchMap.onCreate(null)
-            mapHotelSearchMap.onResume()
-            mapHotelSearchMap.getMapAsync(this)
+        if (binding?.mapHotelSearchMap != null) {
+            binding?.mapHotelSearchMap?.onCreate(null)
+            binding?.mapHotelSearchMap?.onResume()
+            binding?.mapHotelSearchMap?.getMapAsync(this)
         }
         setGoogleMap()
     }
@@ -898,9 +908,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 onSearchByMap()
             }
 
-            btnGetRadiusHotelSearchMap.addItem(wrapper)
+            binding?.btnGetRadiusHotelSearchMap?.addItem(wrapper)
         }
-        btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
+        binding?.btnGetRadiusHotelSearchMap?.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
     }
 
     private fun onSearchByMap() {
@@ -992,7 +1002,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     /** Location permission is handled by LocationDetector */
     private fun initGetMyLocation() {
-        ivGetLocationHotelSearchMap.setOnClickListener {
+        binding?.ivGetLocationHotelSearchMap?.setOnClickListener {
             trackingHotelUtil.searchClickMyLocation(context,
                     searchDestinationName,
                     searchDestinationType,
@@ -1099,12 +1109,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             isFirstInitializeFilter = false
             initializeQuickFilter(data.quickFilter, data.filters, data.displayInfo.sort)
 
-            quickFilterSortHotelSearchMap.chipItems?.filter {
-                it.type == ChipsUnify.TYPE_SELECTED
-            }?.forEach {
-                quickFilterSortHotelSearchMap.indicatorCounter -= 1
+            binding?.quickFilterSortHotelSearchMap?.let {
+                quickFilter ->
+                quickFilter.chipItems?.filter {
+                    it.type == ChipsUnify.TYPE_SELECTED
+                }?.forEach { _ ->
+                    quickFilter.indicatorCounter -= 1
+                }
             }
-
             showCoachMark()
         }
     }
@@ -1132,19 +1144,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (!coachmarkShowed) {
                 val coachMarkItem = arrayListOf(
                         CoachMark2Item(
-                                topHotelSearchMapListKnob,
-                                getString(R.string.hotel_search_map_coach_mark_map_title),
-                                getString(R.string.hotel_search_map_coach_mark_map_desc),
-                                CoachMark2.POSITION_BOTTOM
-                        ),
+                            binding?.topHotelSearchMapListKnob ?: View(requireContext()),
+                            getString(R.string.hotel_search_map_coach_mark_map_title),
+                            getString(R.string.hotel_search_map_coach_mark_map_desc),
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                        ,
                         CoachMark2Item(
-                                invisibleViewBottomSheet,
+                                binding?.invisibleViewBottomSheet ?: View(requireContext()),
                                 getString(R.string.hotel_search_map_coach_mark_list_title),
                                 getString(R.string.hotel_search_map_coach_mark_list_desc),
                                 CoachMark2.POSITION_TOP
                         ),
                         CoachMark2Item(
-                                requireView().findViewById(com.tokopedia.sortfilter.R.id.sort_filter_prefix),
+                            binding?.quickFilterSortHotelSearchMap?.sortFilterPrefix ?: View(requireContext()),
                                 getString(R.string.hotel_search_map_coach_mark_filter_title),
                                 getString(R.string.hotel_search_map_coach_mark_filter_desc),
                                 CoachMark2.POSITION_BOTTOM
@@ -1170,54 +1183,58 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun showCollapsingHeader() {
-        tvHotelSearchListTitle.visible()
-        topHotelSearchMapListKnob.visible()
+        binding?.let {
+            it.tvHotelSearchListTitle.visible()
+            it.topHotelSearchMapListKnob.visible()
+        }
     }
 
     private fun hideCollapsingHeader() {
-        tvHotelSearchListTitle.gone()
-        topHotelSearchMapListKnob.gone()
+        binding?.let {
+            it.tvHotelSearchListTitle.gone()
+            it.topHotelSearchMapListKnob.gone()
+        }
     }
 
     private fun showCardListView() {
-        rvHorizontalPropertiesHotelSearchMap.visible()
+        binding?.rvHorizontalPropertiesHotelSearchMap?.visible()
     }
 
     private fun hideCardListView() {
-        rvHorizontalPropertiesHotelSearchMap.gone()
+        binding?.rvHorizontalPropertiesHotelSearchMap?.gone()
     }
 
     private fun showLoader() {
-        hotel_loader.show()
+        binding?.hotelLoader?.show()
     }
 
     private fun hideLoader() {
-        hotel_loader.gone()
+        binding?.hotelLoader?.gone()
     }
 
     private fun showGetMylocation() {
-        ivGetLocationHotelSearchMap.visible()
+        binding?.ivGetLocationHotelSearchMap?.visible()
     }
 
     private fun hideGetMyLocation() {
-        ivGetLocationHotelSearchMap.gone()
+        binding?.ivGetLocationHotelSearchMap?.gone()
     }
 
     private fun changeHeaderTitle() {
-        headerHotelSearchMap.title = if (isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
+        binding?.headerHotelSearchMap?.title = if (isSearchByMap) getString(R.string.hotel_header_title_nearby) else getString(R.string.hotel_header_title_nearby_area)
     }
 
     private fun showFindNearHereView() {
-        view?.let {
-            btnGetRadiusHotelSearchMap.visible()
-            animateFAB(btnGetRadiusHotelSearchMap, true)
+        binding?.let {
+            it.btnGetRadiusHotelSearchMap.visible()
+            animateFAB(it.btnGetRadiusHotelSearchMap, true)
         }
     }
 
     private fun hideFindNearHereView() {
-        view?.let {
-            animateFAB(btnGetRadiusHotelSearchMap, false)
-            btnGetRadiusHotelSearchMap.gone()
+        binding?.let {
+            animateFAB(it.btnGetRadiusHotelSearchMap, false)
+            it.btnGetRadiusHotelSearchMap.gone()
         }
     }
 
@@ -1230,7 +1247,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     //for setup quick filter after click submit in bottom sheet
     private fun setupQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
-        quickFilterSortHotelSearchMap.chipItems?.forEach { it.type = ChipsUnify.TYPE_NORMAL }
+        binding?.quickFilterSortHotelSearchMap?.chipItems?.forEach { it.type = ChipsUnify.TYPE_NORMAL }
         val selectedFiltersMap = selectedFilters.associateBy({ it.name }, { it })
         quickFilters.forEachIndexed { index, quickFilter ->
             if (selectedFiltersMap.containsKey(quickFilter.name)) {
@@ -1244,7 +1261,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                         if (!contains) break
                     }
-                    quickFilterSortHotelSearchMap.chipItems?.let {
+                    binding?.quickFilterSortHotelSearchMap?.chipItems?.let {
                         if (contains) it[index].type = ChipsUnify.TYPE_SELECTED
                     }
                 }
@@ -1253,19 +1270,21 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun showQuickFilterShimmering(isShimmering: Boolean) {
-        if (isShimmering) {
-            shimmeringQuickFilterHotelSearchMap.show()
-            quickFilterSortHotelSearchMap.hide()
-        } else {
-            shimmeringQuickFilterHotelSearchMap.hide()
-            quickFilterSortHotelSearchMap.show()
+        binding?.let {
+            if (isShimmering) {
+                it.shimmeringQuickFilterHotelSearchMap.root.show()
+                it.quickFilterSortHotelSearchMap.hide()
+            } else {
+                it.shimmeringQuickFilterHotelSearchMap.root.hide()
+                it.quickFilterSortHotelSearchMap.show()
+            }
+            it.quickFilterSortHotelSearchMap.indicatorCounter = hotelSearchMapViewModel.getFilterCount()
         }
-        quickFilterSortHotelSearchMap.indicatorCounter = hotelSearchMapViewModel.getFilterCount()
     }
 
     private fun hideQuickFilter() {
-        shimmeringQuickFilterHotelSearchMap.hide()
-        quickFilterSortHotelSearchMap.hide()
+        binding?.shimmeringQuickFilterHotelSearchMap?.root?.hide()
+        binding?.quickFilterSortHotelSearchMap?.hide()
     }
 
     private fun initializeQuickFilter(quickFilters: List<QuickFilter>, filters: List<FilterV2>, sort: List<Sort>) {
@@ -1281,8 +1300,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             itemQuickFilter
         }
 
-        quickFilterSortHotelSearchMap.chipItems?.let {
-            quickFilterSortHotelSearchMap.dismissListener = {
+        binding?.quickFilterSortHotelSearchMap?.chipItems?.let {
+            binding?.quickFilterSortHotelSearchMap?.dismissListener = {
                 hotelSearchMapViewModel.addFilter(quickFilters, it)
             }
         }
@@ -1297,9 +1316,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
             item
         }
-        quickFilterSortHotelSearchMap.addItem(ArrayList(sortFilterItem))
+        binding?.quickFilterSortHotelSearchMap?.addItem(ArrayList(sortFilterItem))
 
-        quickFilterSortHotelSearchMap.chipItems?.let { sortFilterItemList ->
+        binding?.quickFilterSortHotelSearchMap?.chipItems?.let { sortFilterItemList ->
             for ((index, item) in sortFilterItemList.withIndex()) {
                 item.refChipUnify.setOnClickListener {
                     item.toggleSelected()
@@ -1309,13 +1328,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         }
 
-        quickFilterSortHotelSearchMap.filterType = SortFilter.TYPE_ADVANCED
-        quickFilterSortHotelSearchMap.parentListener = {
+        binding?.quickFilterSortHotelSearchMap?.filterType = SortFilter.TYPE_ADVANCED
+        binding?.quickFilterSortHotelSearchMap?.parentListener = {
             trackingHotelUtil.clickOnAdvancedFilter(context, SEARCH_SCREEN_NAME)
             initiateAdvancedFilter(filters, sort)
         }
 
-        quickFilterSortHotelSearchMap.show()
+        binding?.quickFilterSortHotelSearchMap?.show()
     }
 
     private fun initiateAdvancedFilter(filters: List<FilterV2>, sort: List<Sort>) {
@@ -1421,7 +1440,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupFindWithMapButton() {
         context?.let {
-            btnHotelSearchWithMap.color = FloatingButtonUnify.COLOR_GREEN
+            binding?.btnHotelSearchWithMap?.color = FloatingButtonUnify.COLOR_GREEN
             val wrapper = LinearLayout(it)
             wrapper.gravity = Gravity.CENTER
 
@@ -1438,30 +1457,34 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
             wrapper.addView(textView)
 
-            btnHotelSearchWithMap.addItem(wrapper)
+            binding?.btnHotelSearchWithMap?.addItem(wrapper)
         }
-        btnHotelSearchWithMap.setOnClickListener {
-            rvVerticalPropertiesHotelSearchMap.scrollTo(0, 0)
+        binding?.btnHotelSearchWithMap?.setOnClickListener {
+            binding?.rvVerticalPropertiesHotelSearchMap?.scrollTo(0, 0)
             collapseBottomSheet()
         }
     }
 
     private fun showHotelResultList() {
-        rvVerticalPropertiesHotelSearchMap.visible()
+        binding?.rvVerticalPropertiesHotelSearchMap?.visible()
     }
 
     private fun hideHotelResultList() {
-        rvVerticalPropertiesHotelSearchMap.gone()
+        binding?.rvVerticalPropertiesHotelSearchMap?.gone()
     }
 
     private fun showSearchWithMap() {
-        btnHotelSearchWithMap.visible()
-        btnHotelSearchWithMap.show()
+        binding?.let {
+            it.btnHotelSearchWithMap.visible()
+            it.btnHotelSearchWithMap.show()
+        }
     }
 
     private fun hideSearchWithMap() {
-        btnHotelSearchWithMap.hide()
-        btnHotelSearchWithMap.gone()
+        binding?.let {
+            it.btnHotelSearchWithMap.hide()
+            it.btnHotelSearchWithMap.gone()
+        }
     }
 
     private fun showErrorNoResult() {
@@ -1470,15 +1493,34 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 searchDestinationType,
                 SEARCH_SCREEN_NAME)
 
-        containerEmptyResultState.visible()
-        containerEmptyResultState.postDelayed({
-            bottomSheetBehavior.setPeekHeight(containerEmptyResultState.measuredHeight +
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6), true)
-        }, DELAY_EMPTY_STATE)
+        binding?.containerEmptyResultState?.visible()
+        binding?.containerEmptyResultState?.doOnNextLayout {
+            bottomSheetBehavior.peekHeight = binding?.containerEmptyResultState?.bottom ?: 0 +
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
+        }
+    }
+
+    inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
+        addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                view: View,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
+            ) {
+                view.removeOnLayoutChangeListener(this)
+                action(view)
+            }
+        })
     }
 
     private fun hideErrorNoResult() {
-        containerEmptyResultState.gone()
+        binding?.containerEmptyResultState?.gone()
     }
 
     private fun expandBottomSheet() {
