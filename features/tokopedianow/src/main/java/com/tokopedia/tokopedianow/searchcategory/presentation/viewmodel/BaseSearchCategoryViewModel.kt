@@ -44,7 +44,9 @@ import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -362,7 +364,7 @@ abstract class BaseSearchCategoryViewModel(
             createVisitableListWithProduct(headerDataView, contentDataView)
     }
 
-    private fun createVisitableListWithEmptyProduct() {
+    protected open fun createVisitableListWithEmptyProduct() {
         visitableList.add(chooseAddressDataView)
         visitableList.add(EmptyProductDataView(filterController.getActiveFilterOptionList()))
     }
@@ -524,14 +526,7 @@ abstract class BaseSearchCategoryViewModel(
                 ratingAverage = product.ratingAverage,
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
-                labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
-                    LabelGroupDataView(
-                            url = labelGroup.url,
-                            title = labelGroup.title,
-                            position = labelGroup.position,
-                            type = labelGroup.type,
-                    )
-                },
+                labelGroupDataViewList = product.labelGroupList.map(::mapToLabelGroupDataView),
                 labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
                     LabelGroupVariantDataView(
                             title = labelGroupVariant.title,
@@ -561,6 +556,14 @@ abstract class BaseSearchCategoryViewModel(
                         quantity = getProductNonVariantQuantity(product.id)
                 )
             else null
+
+    protected open fun mapToLabelGroupDataView(labelGroup: ProductLabelGroup) =
+        LabelGroupDataView(
+            url = labelGroup.url,
+            title = labelGroup.title,
+            position = labelGroup.position,
+            type = labelGroup.type,
+        )
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage())

@@ -54,6 +54,35 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             query
             text
           }
+          related {
+            relatedKeyword
+            position
+            otherRelated {
+                keyword
+                url
+                applink
+                product {
+                    id
+                    name
+                    price
+                    imageUrl
+                    url
+                    applink
+                    priceStr
+                    wishlist
+                    ratingAverage
+                    labelGroups {
+                        title
+                        position
+                        type
+                        url
+                    }
+                    shop {
+                        city
+                    }
+                }
+            }
+        }
           products {
             id
             imageUrl300

@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.searchcategory.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -65,6 +66,10 @@ data class AceSearchProductModel(
             @Expose
             val ticker: Ticker = Ticker(),
 
+            @SerializedName("related")
+            @Expose
+            val related: Related = Related(),
+
             @SerializedName("suggestion")
             @Expose
             val suggestion: Suggestion = Suggestion(),
@@ -97,6 +102,91 @@ data class AceSearchProductModel(
             @Expose
             val typeId: Int = 0
     )
+
+        data class Related(
+            @SerializedName("relatedKeyword")
+            @Expose
+            val relatedKeyword: String = "",
+
+            @SerializedName("position")
+            @Expose
+            val position: Int = 0,
+
+            @SerializedName("otherRelated")
+            @Expose
+            val otherRelatedList: List<OtherRelated> = listOf()
+        )
+
+        data class OtherRelated(
+            @SerializedName("keyword")
+            @Expose
+            val keyword: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("product")
+            @Expose
+            val productList: List<OtherRelatedProduct> = listOf()
+        )
+
+        data class OtherRelatedProduct(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+
+            @SuppressLint("Invalid Data Type")
+            @SerializedName("price")
+            @Expose
+            val price: Int = 0,
+
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String = "",
+
+            @SerializedName("url")
+            @Expose
+            val url: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = "",
+
+            @SerializedName("priceStr")
+            @Expose
+            val priceString: String = "",
+
+            @SerializedName("wishlist")
+            @Expose
+            val isWishlisted: Boolean = false,
+
+            @SerializedName("shop")
+            @Expose
+            val shop: OtherRelatedProductShop = OtherRelatedProductShop(),
+
+            @SerializedName("ratingAverage")
+            @Expose
+            val ratingAverage: String = "",
+
+            @SerializedName("labelGroups")
+            @Expose
+            val labelGroupList: List<ProductLabelGroup> = listOf(),
+        )
+
+        data class OtherRelatedProductShop(
+            @SerializedName("city")
+            @Expose
+            val city: String = ""
+        )
 
     data class Suggestion(
             @SerializedName("suggestion")

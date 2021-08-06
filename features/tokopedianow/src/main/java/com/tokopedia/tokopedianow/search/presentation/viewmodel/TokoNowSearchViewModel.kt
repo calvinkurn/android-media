@@ -21,6 +21,8 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PEN
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
@@ -82,8 +84,10 @@ class TokoNowSearchViewModel @Inject constructor (
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
+    private var responseCode = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
     private var searchCategoryJumper: SearchCategoryJumperData? = null
+    private var related: AceSearchProductModel.Related? = null
 
     override val tokonowSource: String
         get() = TOKONOW
@@ -98,8 +102,10 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
-        suggestionModel = searchModel.searchProduct.data.suggestion
+        responseCode = searchModel.getResponseCode()
+        suggestionModel = searchModel.getSuggestion()
         searchCategoryJumper = searchModel.searchCategoryJumper
+        related = searchModel.getRelated()
 
         val searchProductHeader = searchModel.searchProduct.header
 
@@ -122,27 +128,30 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
-        processSuggestionModel(headerList)
+        processSuggestionModel { suggestionDataView ->
+            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
+
+            headerList.add(suggestionDataViewIndex, suggestionDataView)
+        }
     }
 
-    private fun processSuggestionModel(headerList: MutableList<Visitable<*>>) {
+    private fun processSuggestionModel(action: (SuggestionDataView) -> Unit) {
         val suggestionModel = suggestionModel ?: return
 
         if (suggestionModel.text.isNotEmpty()) {
-            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
-
-            headerList.add(
-                    suggestionDataViewIndex,
-                    SuggestionDataView(
-                            text = suggestionModel.text,
-                            query = suggestionModel.query,
-                            suggestion = suggestionModel.suggestion,
-                    ),
-            )
+            val suggestionDataView = createSuggestionDataView(suggestionModel)
+            action(suggestionDataView)
         }
 
         this.suggestionModel = null
     }
+
+    private fun createSuggestionDataView(suggestionModel: AceSearchProductModel.Suggestion) =
+        SuggestionDataView(
+            text = suggestionModel.text,
+            query = suggestionModel.query,
+            suggestion = suggestionModel.suggestion,
+        )
 
     private fun determineSuggestionDataViewIndex(headerList: List<Visitable<*>>): Int {
         val quickFilterIndex = headerList.indexOfFirst { it is QuickFilterDataView }
@@ -174,6 +183,47 @@ class TokoNowSearchViewModel @Inject constructor (
                     title = jumperData.title,
                     applink = jumperData.applink,
             )
+
+    override fun createVisitableListWithEmptyProduct() {
+        if (isShowBroadMatchOnEmptyProduct())
+            createVisitableListWithEmptyProductBroadmatch()
+        else
+            super.createVisitableListWithEmptyProduct()
+    }
+
+    private fun isShowBroadMatchOnEmptyProduct() =
+        showBroadMatchResponseCodeList.contains(responseCode)
+
+    private fun createVisitableListWithEmptyProductBroadmatch() {
+        visitableList.add(chooseAddressDataView)
+
+        processSuggestionModel { suggestionDataView ->
+            visitableList.add(suggestionDataView)
+        }
+
+        related?.otherRelatedList?.forEach { otherRelated ->
+            visitableList.add(BroadMatchDataView(
+                keyword = otherRelated.keyword,
+                applink = otherRelated.applink,
+                broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
+                    BroadMatchItemDataView(
+                        id = otherRelatedProduct.id,
+                        name = otherRelatedProduct.name,
+                        price = otherRelatedProduct.price,
+                        imageUrl = otherRelatedProduct.imageUrl,
+                        applink = otherRelatedProduct.applink,
+                        priceString = otherRelatedProduct.priceString,
+                        position = index + 1,
+                        alternativeKeyword = otherRelated.keyword,
+                        ratingAverage = otherRelatedProduct.ratingAverage,
+                        labelGroupDataList = otherRelatedProduct.labelGroupList.map(::mapToLabelGroupDataView),
+                    )
+                }
+            ))
+        }
+
+        related = null
+    }
 
     private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
         val eventLabel = query +
@@ -212,5 +262,9 @@ class TokoNowSearchViewModel @Inject constructor (
 
     private fun onGetSearchLoadMorePageError(throwable: Throwable) {
 
+    }
+
+    companion object {
+        private val showBroadMatchResponseCodeList = listOf("4", "5")
     }
 }
