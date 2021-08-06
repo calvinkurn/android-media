@@ -1,7 +1,9 @@
 package com.tokopedia.promocheckout.mockdata
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
@@ -31,3 +33,9 @@ val SUCCESS_PROMO_LIST = DataPromoCheckoutList()
 
 val SUCCESS_PROMO_LAST_SEEN = listOf<PromoCheckoutLastSeenModel>(PromoCheckoutLastSeenModel
     (id = 1, title = "Diskon khusus Android", subtitle = "Android", promoCode = "ANDROIDDISKON"))
+
+val SUCCESS_DETAIL_PROMO = PromoCheckoutDetailModel()
+
+val SUCCESS_CANCEL_VOUCHER = FlightCancelVoucher.Response(FlightCancelVoucher(
+    type = "", attributes = FlightCancelVoucher.Attributes(success = true)
+))
