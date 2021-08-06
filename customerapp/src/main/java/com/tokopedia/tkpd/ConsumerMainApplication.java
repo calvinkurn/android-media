@@ -18,8 +18,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import io.embrace.android.embracesdk.Embrace;
 
-import static com.tokopedia.utils.permission.SlicePermission.RECHARGE_SLICE_AUTHORITY;
-import static com.tokopedia.utils.permission.SlicePermission.TRAVEL_SLICE_AUTHORITY;
 
 /**
  * Created by ricoharisin on 11/11/16.
