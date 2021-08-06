@@ -534,21 +534,22 @@ class DiscoveryFragment :
         }
     }
 
+
     private fun handleShareClick(data: PageInfo?) {
         if (showOldToolbar) {
             getDiscoveryAnalytics().trackShareClick()
-            discoDefaultShare(data)
         } else {
-            if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-                sendUnifyShareGTM()
-                showUniversalShareBottomSheet(data)
-            }else{
-                handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
-                discoDefaultShare(data)
-            }
+            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
+        }
+
+        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+            sendUnifyShareGTM()
+            showUniversalShareBottomSheet(data)
+        }else{
+            discoDefaultShare(data)
         }
     }
-
+    
     private fun discoDefaultShare(data: PageInfo?) {
         data?.let {
             LinkerManager.getInstance().executeShareRequest(
