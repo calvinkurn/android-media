@@ -104,7 +104,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(2, 20, false))
-                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
+                marginValue = 0
             }
             //end setup for lego 4 banner rollence
             val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
