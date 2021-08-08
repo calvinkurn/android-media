@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,10 +18,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 
 private const val PRODUCT_DOT_TIMER = 3000L
@@ -39,6 +37,7 @@ class PostTagView @JvmOverloads constructor(
     private var productViewArrow: IconUnify
     private var productViewName: Typography
     private var productViewPrice: Typography
+    private var productViewSlashedPrice: Typography
     private var constraintLayout: ConstraintLayout
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var bubbleMarginStart: Int = 0
@@ -66,6 +65,7 @@ class PostTagView @JvmOverloads constructor(
             productViewArrow = findViewById(R.id.product_arrow)
             productViewName = findViewById(R.id.product_name_text)
             productViewPrice = findViewById(R.id.product_price_text)
+            productViewSlashedPrice = findViewById(R.id.product_slashed_price_text)
             constraintLayout = findViewById(R.id.parent_id)
         }
     }
@@ -83,25 +83,31 @@ class PostTagView @JvmOverloads constructor(
         this.postImageHeight = height
         this.postImageWidth = convertDpToPixel(width.toFloat(), context)
         this.feedXTag = feedXMediaTagging
+        val product = products[feedXMediaTagging.tagIndex]
 
-        if (feedXTag.posY <= 0.25) {
+        productViewName.text = product.name
+
+        if (product.isDiscount) {
+            productViewPrice.text = product.priceDiscountFmt
+            setSlashedPriceText(product.priceOriginalFmt)
+        } else {
+            productViewSlashedPrice.gone()
+            productViewPrice.text = product.priceFmt
+        }
+
+        if (feedXTag.posY < 0.25) {
             productTagPointer.setImageDrawable(MethodChecker.getDrawable(
                 context,
                 R.drawable.ic_down
             ))
             position = POSITION_TOP
-        }
-        else {
+        } else {
             position = POSITION_BOTTOM
             productTagPointer.setImageDrawable(MethodChecker.getDrawable(
                 context,
                 R.drawable.ic_up
             ))
         }
-
-        val product = products[feedXMediaTagging.tagIndex]
-        productViewName.text = product.name
-        productViewPrice.text = product.priceFmt
         productTagDot.setMargin(
             dotMarginStart,
             dotMarginTop,
@@ -131,15 +137,25 @@ class PostTagView @JvmOverloads constructor(
                    productTagPointer.id,
                    ConstraintSet.BOTTOM,
                    bubbleMarginStart)
-           else
+           else {
+               constraintSet.connect(productTagExpandedView.id,
+                   ConstraintSet.TOP,
+                   ConstraintSet.PARENT_ID,
+                   ConstraintSet.BOTTOM,
+                   bubbleMarginStart)
                constraintSet.connect(productTagExpandedView.id,
                    ConstraintSet.BOTTOM,
                    productTagPointer.id,
                    ConstraintSet.TOP,
                    bubbleMarginStart)
-           constraintSet.applyTo(constraintLayout)
 
-           productTagExpandedView.setMargin(bubbleMarginStart,0 , 0, 0)
+               constraintSet.connect(productTagPointer.id,
+                   ConstraintSet.TOP,
+                   productTagExpandedView.id,
+                   ConstraintSet.BOTTOM,
+                   bubbleMarginStart)
+           }
+           constraintSet.applyTo(constraintLayout)
 
        }
 
@@ -183,9 +199,12 @@ class PostTagView @JvmOverloads constructor(
                 postImageWidth - bubbleInflatedWidth
         }
     }
-    private fun setSlashedPrice(feedXProduct: FeedXProduct){
-
+    private fun setSlashedPriceText( priceOriginal: String) {
+        productViewSlashedPrice?.run {
+            text = priceOriginal
+            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            visible()
+        }
     }
-
 }
 

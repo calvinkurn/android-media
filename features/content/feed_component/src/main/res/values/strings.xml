@@ -14,8 +14,8 @@
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
 
     <!--Post Time new-->
-    <string name="post_time_just_now_new">1 mnt</string>
-    <string name="post_time_minutes_ago_new">mnt</string>
+    <string name="post_time_just_now_new">1 menit</string>
+    <string name="post_time_minutes_ago_new">menit</string>
     <string name="post_time_hours_ago_new">jam </string>
     <string name="post_time_days_ago">hari</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
@@ -148,7 +148,7 @@
     <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
     <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
     <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
-    <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
+    <string name="feed_component_see_all_comments">Lihat semua %s komentar</string>
     <string name="feed_component_add_comment">Comment as %s…</string>
     <string name="feed_component_read_more_button">Selengkapnya</string>
 

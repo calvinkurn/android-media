@@ -31,6 +31,6 @@
         android:paddingStart="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_producttag_list"
+        tools:listitem="@layout/item_producttag_list_new"
         tools:ignore="RtlSymmetry" />
 </LinearLayout>
