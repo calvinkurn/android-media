@@ -959,11 +959,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
-        val fragment = parentFragment?.let{
-            (it as FeedPlusContainerFragment).getCurrentFragment()
-        }
-        val isFeedCurrentFragment = fragment!=null && fragment is FeedPlusFragment
-        if(isUserEventTrackerDoneOnResume && isAdded && userVisibleHint && isFeedCurrentFragment) {
+        if(isUserEventTrackerDoneOnResume && isAdded && userVisibleHint) {
             isUserEventTrackerDoneOnResume = false
             feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
         }
