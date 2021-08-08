@@ -1,6 +1,8 @@
 package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
@@ -36,7 +38,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 config = configMapper.mapWidgetConfig(data),
                 items = mapWidgetItem(prevMediumModel?.items, data.data).toMutableList().apply {
                     if (shouldAddLeftBanner(widgetBackground)) add(0, mapWidgetItemOverlay(widgetBackground))
-                }
+                },
+                channelModel = ChannelModel(id = "", groupId = "", channelHeader = ChannelHeader(name = data.meta.widgetTitle, applink = data.meta.buttonApplink))
         )
     }
 

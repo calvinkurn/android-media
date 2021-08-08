@@ -7,47 +7,20 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/play_widget_medium_title"
-        android:layout_width="0dp"
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:ellipsize="end"
-        android:lines="1"
-        android:maxEms="12"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3"
-        app:typographyWeight="bold"
-        tools:text="Tonton keseruannya"
-        tools:visibility="visible" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/play_widget_medium_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:gravity="end"
-        android:text="@string/lihat_semua"
-        android:textColor="@color/Unify_G500"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/play_widget_medium_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/play_widget_medium_title" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
         android:id="@+id/play_widget_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/play_widget_dp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title"
+        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
         tools:background="@color/play_widget_dms_light_gray">
 
         <FrameLayout
@@ -85,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/play_widget_medium_title"
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
             tools:itemCount="10"
             tools:listitem="@layout/item_play_widget_card_channel_medium"
             tools:orientation="horizontal"

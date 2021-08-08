@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.model
 
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.analytic.ImpressionableModel
 
@@ -29,6 +30,7 @@ sealed class PlayWidgetUiModel {
             override val config: PlayWidgetConfigUiModel,
             val background: PlayWidgetBackgroundUiModel,
             val items: List<PlayWidgetMediumItemUiModel>,
+            val channelModel: ChannelModel
     ) : PlayWidgetUiModel(), PlayWidgetConfigProvider, ImpressionableModel {
 
         override val impressHolder = ImpressHolder()

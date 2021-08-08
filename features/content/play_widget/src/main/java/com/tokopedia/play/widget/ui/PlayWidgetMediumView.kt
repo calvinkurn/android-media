@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.home_component.customview.DynamicChannelHeaderView
+import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toDp
@@ -47,8 +51,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val title: Typography
-    private val actionTitle: TextView
+    private val dynamicChannelHeaderView: DynamicChannelHeaderView
 
     private val itemContainer: FrameLayout
     private val overlay: FrameLayout
@@ -153,9 +156,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
-
-        title = view.findViewById(R.id.play_widget_medium_title)
-        actionTitle = view.findViewById(R.id.play_widget_medium_action)
+        dynamicChannelHeaderView = view.findViewById(R.id.home_component_header_view)
 
         itemContainer = view.findViewById(R.id.play_widget_container)
         overlay = view.findViewById(R.id.play_widget_overlay)
@@ -220,13 +221,17 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     }
 
     fun setData(data: PlayWidgetUiModel.Medium) {
-        title.text = data.title
-        actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
-        actionTitle.text = data.actionTitle
-        actionTitle.setOnClickListener {
-            mAnalyticListener?.onClickViewAll(this)
-            RouteManager.route(context, data.actionAppLink)
-        }
+        dynamicChannelHeaderView.setChannel(data.channelModel, object :
+            HeaderListener {
+            override fun onSeeAllClick(link: String) {
+                mAnalyticListener?.onClickViewAll(this@PlayWidgetMediumView)
+                RouteManager.route(context, data.actionAppLink)
+            }
+
+            override fun onChannelExpired(channelModel: ChannelModel) {
+
+            }
+        })
 
         configureOverlay(data.background)
 
