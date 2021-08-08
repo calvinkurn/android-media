@@ -13,9 +13,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -52,7 +49,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     protected open fun initiateViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
         }
     }
@@ -141,7 +138,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
         emoneyBalanceViewModel.errorInquiryBalance.observe(this, Observer {  throwable ->
             context?.let {
-                val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(it, throwable, ErrorHandler.Builder().build())
+                var errorThrowable = throwable
+                if ((throwable.message ?: "").contains(getString(com.tokopedia.common_digital.R.string.digital_common_grpc_error_msg), true)) {
+                    errorThrowable = MessageErrorException(getString(com.tokopedia.common_digital.R.string.digital_common_grpc_full_page_title))
+                }
+                val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(it, errorThrowable, ErrorHandler.Builder().build())
+
                 if((throwable is SocketTimeoutException)){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),
