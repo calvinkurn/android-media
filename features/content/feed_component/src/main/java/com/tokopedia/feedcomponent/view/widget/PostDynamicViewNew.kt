@@ -710,12 +710,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             )
                             feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
                                 val productTagView = PostTagView(context)
-                                productTagView.bindData(listener,
-                                    feedXMediaTagging,
-                                    products,
-                                    width,
-                                    height,
-                                    positionInFeed)
+                                productTagView.postDelayed({
+                                    productTagView.bindData(listener,
+                                        feedXMediaTagging,
+                                        products,
+                                        width,
+                                        height,
+                                        positionInFeed)
+                                }, TIME_SECOND)
 
                                 layout.addView(productTagView)
 
@@ -734,6 +736,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 }
 
                             }, TIME_SECOND)
+
+                            productTagText.postDelayed({
+                                if (productTagText.isVisible) {
+                                    productTagText.apply {
+                                        gone()
+                                        animate().alpha(0f)
+                                    }
+                                }
+
+                            }, PRODUCT_DOT_TIMER)
 
                             val gd = GestureDetector(
                                 context,

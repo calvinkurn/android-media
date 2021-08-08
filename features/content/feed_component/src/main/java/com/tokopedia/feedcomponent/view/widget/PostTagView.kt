@@ -83,6 +83,7 @@ class PostTagView @JvmOverloads constructor(
         this.postImageHeight = height
         this.postImageWidth = convertDpToPixel(width.toFloat(), context)
         this.feedXTag = feedXMediaTagging
+        productViewArrow.visible()
         val product = products[feedXMediaTagging.tagIndex]
 
         productViewName.text = product.name
@@ -156,6 +157,8 @@ class PostTagView @JvmOverloads constructor(
                    bubbleMarginStart)
            }
            constraintSet.applyTo(constraintLayout)
+           productTagExpandedView.setMargin(bubbleMarginStart,0 , 0, 0)
+
 
        }
 
