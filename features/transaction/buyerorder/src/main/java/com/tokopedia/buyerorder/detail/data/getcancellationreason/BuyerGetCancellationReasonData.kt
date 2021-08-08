@@ -45,7 +45,19 @@ data class BuyerGetCancellationReasonData(
 
 				@SerializedName("ticker_info")
 				@Expose
-				val tickerInfo: TickerInfo = TickerInfo()) {
+				val tickerInfo: TickerInfo = TickerInfo(),
+
+				@SerializedName("order_details")
+				@Expose
+				val orderDetails: List<OrderDetailsCancellation> = emptyList(),
+
+				@SerializedName("bundle_detail")
+				@Expose
+				val bundleDetail: BundleDetailCancellation = BundleDetailCancellation(),
+
+				@SerializedName("have_product_bundle")
+				@Expose
+				val isHaveProductBundle: Boolean = false) {
 
 			data class TickerInfo (
 					@SerializedName("text")
@@ -90,6 +102,80 @@ data class BuyerGetCancellationReasonData(
 						@SerializedName("reason")
 						@Expose
 						val reason: String = ""
+				)
+			}
+
+			data class OrderDetailsCancellation(
+				@SerializedName("product_id")
+				@Expose
+				val productId: String = "",
+
+				@SerializedName("product_name")
+				@Expose
+				val productName: String = "",
+
+				@SerializedName("product_price")
+				@Expose
+				val productPrice: String = "",
+
+				@SerializedName("picture")
+				@Expose
+				val picture: String = "",
+
+				@SerializedName("bundle_id")
+				@Expose
+				val bundleId: String = "",
+
+				@SerializedName("bundle_variant_id")
+				@Expose
+				val bundleVariantId: String = ""
+			)
+
+			data class BundleDetailCancellation(
+				@SerializedName("total_product")
+				@Expose
+				val totalProduct: Int = 0,
+
+				@SerializedName("product_bundling_icon")
+				@Expose
+				val productBundlingIcon: String = "",
+
+				@SerializedName("bundle")
+				@Expose
+				val bundle: List<BundleDataCancellation> = emptyList(),
+
+				@SerializedName("non_bundle")
+				@Expose
+				val nonBundle: List<OrderDetailsCancellation> = emptyList()) {
+
+				data class BundleDataCancellation(
+					@SerializedName("bundle_id")
+					@Expose
+					val bundleId: String = "",
+
+					@SerializedName("bundle_variant_id")
+					@Expose
+					val bundleVariantId: String = "",
+
+					@SerializedName("bundle_name")
+					@Expose
+					val bundleName: String = "",
+
+					@SerializedName("bundle_price")
+					@Expose
+					val bundlePrice: Float = 0F,
+
+					@SerializedName("bundle_quantity")
+					@Expose
+					val bundleQty: Int = 0,
+
+					@SerializedName("bundle_subtotal_price")
+					@Expose
+					val bundleSubtotalPrice: Float = 0F,
+
+					@SerializedName("order_detail")
+					@Expose
+					val orderDetails: OrderDetailsCancellation = OrderDetailsCancellation()
 				)
 			}
 		}

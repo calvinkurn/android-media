@@ -95,9 +95,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var statusInfo = ""
     private var isFromUoh : Boolean = false
     private var helplinkUrl: String = ""
-    private var listProductsSerializable : Serializable? = null
-    private var listProductsJsonString : String? = null
-    private var listProduct = emptyList<Items>()
+    private var listProduct = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -151,11 +149,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         if (arguments != null) {
             shopName = arguments?.getString(BuyerConsts.PARAM_SHOP_NAME).toString()
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
-            listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT)
-            listProductsJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT)
-            listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
-                GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
-            } ?: emptyList()
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
@@ -205,9 +198,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         label_invoice?.text = invoiceNum
 
         if (listProduct.isNotEmpty()) {
-            label_product_name?.text = listProduct.first().title
-            label_price?.text = listProduct.first().price
-            iv_product?.loadImage(listProduct.first().imageUrl)
+            label_product_name?.text = listProduct.first().productName
+            label_price?.text = listProduct.first().productPrice
+            iv_product?.loadImage(listProduct.first().picture)
 
             if (listProduct.size > 1) {
                 label_see_all_products?.visible()
@@ -406,6 +399,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     empty_state_cancellation?.gone()
                     cl_cancellation_content?.visible()
                     cancelReasonResponse = it.data.getCancellationReason
+                    listProduct = it.data.getCancellationReason.orderDetails
                     renderPage()
                 }
                 is Fail -> {
@@ -710,15 +704,15 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         if (shopId != -1) {
             val applink = "tokopedia://topchat/askseller/$shopId"
             val intent = RouteManager.getIntent(context, applink)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_ID, listProduct.first().invoiceId)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceNum)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, listProduct.first().title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, listProduct.first().productName)
             intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, boughtDate)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, listProduct.first().imageUrl)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, listProduct.first().picture)
             intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().totalPrice)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().productPrice)
             intent.putExtra(ApplinkConst.Chat.SOURCE, MarketPlaceDetailFragment.TX_ASK_SELLER)
             startActivity(intent)
         }
