@@ -7,7 +7,6 @@ import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

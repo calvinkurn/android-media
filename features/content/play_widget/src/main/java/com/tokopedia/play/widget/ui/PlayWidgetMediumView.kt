@@ -17,7 +17,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toDp
@@ -37,7 +36,6 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
-import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
 
