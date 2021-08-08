@@ -47,6 +47,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         initCalculator()
     }
 
+    private var resultOccData: ResultGetOccCart = ResultGetOccCart()
     var orderCart: OrderCart = OrderCart()
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
@@ -102,6 +103,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source)
+            resultOccData = result
             addressState.value = result.addressState
             orderCart = result.orderCart
             orderShop.value = orderCart.shop
@@ -730,10 +732,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun adjustAdminFee() {
         globalEvent.value = OccGlobalEvent.Loading
+        val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
+            userSession.userId, resultOccData.totalProductPrice, resultOccData.profileCode)
         launch(executorDispatchers.immediate) {
-            val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
-            if (isSuccess && orderProfile.value.isValidProfile) {
-                finalUpdate(onSuccessCheckout, true)
+            val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
+            if (isSuccess) {
+                globalEvent.value = OccGlobalEvent.Normal
                 return@launch
             }
             globalEvent.value = newGlobalEvent

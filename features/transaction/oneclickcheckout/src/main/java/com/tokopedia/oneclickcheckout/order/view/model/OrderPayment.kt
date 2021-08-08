@@ -78,7 +78,11 @@ data class OrderPaymentCreditCard(
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null,
         val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData(),
-        val isDebit: Boolean = false
+        val isDebit: Boolean = false,
+        val isAfpb: Boolean = false,
+        val unixTimestamp: String = "",
+        val tokenId: String = "",
+        val tenorSignature: String = ""
 ) {
     companion object {
         internal const val DEBIT_GATEWAY_CODE = "DEBITONLINE"

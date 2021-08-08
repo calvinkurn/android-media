@@ -8,9 +8,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.checkout.*
-import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
-import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -19,7 +17,6 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkoutOccUseCase: CheckoutOccUseCase,
-                                                            private val creditCardTenorListUseCase: CreditCardTenorListUseCase,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: CoroutineDispatchers) {
 
@@ -169,63 +166,5 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             }
         }
         return ""
-    }
-
-    suspend fun doAdjustAdminFee(token: String, userId: Int): Pair<CreditCardTenorListData?, OccGlobalEvent?> {
-        OccIdlingResource.increment()
-        val result = withContext(executorDispatchers.io) {
-            val input = CreditCardTenorListRequest(
-                tokenId = token,
-                userId = userId,
-            )
-
-            try {
-                val creditCardData = creditCardTenorListUseCase.executeSuspend(input)
-                if (creditCardData.tenorList.isNotEmpty()) {
-                    // TODO
-                    // ini ngapain ya?
-                } else {
-                    // TODO
-                    // ini trigger OccGlobalEvent.AdjustAdminFeeError
-                }
-                if (checkoutOccData.status.equals(STATUS_OK, true)) {
-                    if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
-                        var paymentType = profile.payment.gatewayName
-                        if (paymentType.isBlank()) {
-                            paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
-                        }
-                        products.forEach {
-                            if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
-                                orderSummaryAnalytics.eventPPClickBayar(userId,
-                                    it.categoryId,
-                                    "",
-                                    it.purchaseProtectionPlanData.protectionTitle,
-                                    it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
-                                    orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
-                            }
-                        }
-                        orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
-                            userId,
-                            getTransactionId(checkoutOccData.result.paymentParameter.redirectParam.form),
-                            paymentType,
-                            orderSummaryPageEnhanceECommerce.apply {
-                                dataList.forEach {
-                                    setPromoCode(allPromoCodes, it)
-                                }
-                            }.build(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION)
-                        )
-                        return@withContext checkoutOccData.result to null
-                    }
-                    return@withContext null to onCheckoutError(checkoutOccData, orderTotal)
-                } else {
-                    return@withContext null to OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccData.headerMessage
-                        ?: DEFAULT_ERROR_MESSAGE)
-                }
-            } catch (t: Throwable) {
-                return@withContext null to OccGlobalEvent.Error(t)
-            }
-        }
-        OccIdlingResource.decrement()
-        return result
     }
 }

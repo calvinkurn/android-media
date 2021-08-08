@@ -8,7 +8,7 @@ data class CreditCardTenorListRequest(
 	val tokenId: String = "",
 
 	@field:SerializedName("user_id")
-	val userId: Int = 0,
+	val userId: String = "",
 
 	@field:SerializedName("total_amount")
 	val totalAmount: String = "",

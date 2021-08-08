@@ -120,6 +120,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private var orderProfile: OrderProfile? = null
+    private var creditCardTenorListData: CreditCardTenorListData? = null
 
     private lateinit var adapter: OrderSummaryPageAdapter
 
@@ -461,14 +462,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderPayment() {
         viewModel.orderPayment.observe(viewLifecycleOwner) {
-            if (shouldShowToaster) showToasterSuccess()
-            adapter.payment = it
-            if (binding.rvOrderSummaryPage.isComputingLayout) {
-                binding.rvOrderSummaryPage.post {
+            if (it.creditCard.isAfpb) {
+                viewModel.adjustAdminFee()
+            } else {
+                if (shouldShowToaster) showToasterSuccess()
+                adapter.payment = it
+                if (binding.rvOrderSummaryPage.isComputingLayout) {
+                    binding.rvOrderSummaryPage.post {
+                        adapter.notifyItemChanged(adapter.preferenceIndex)
+                    }
+                } else {
                     adapter.notifyItemChanged(adapter.preferenceIndex)
                 }
-            } else {
-                adapter.notifyItemChanged(adapter.preferenceIndex)
             }
         }
     }
@@ -640,10 +645,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.UpdateLocalCacheAddress -> {
                     updateLocalCacheAddressData(it.addressModel)
                 }
-                is OccGlobalEvent.AdjustAdminFeeError -> {
-                    //TODO
-                    // - show error toaster with hardcoded message
-                    // - pilih pembayarannya jadi "Pilih Bayar Penuh / Cicilan
+                is OccGlobalEvent.AdjustAdminFeeError ->  {
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    }
+                }
+                is OccGlobalEvent.AdjustAdminFeeSuccess -> {
+                    creditCardTenorListData = it.ccData
+
+                    // update total
+                    // TODO: make sure apakah total yg dimaksud adalah total dari response
+                    // TODO: update bottomsheet & summary transaction
                 }
             }
         }
@@ -1249,7 +1261,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                     override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
                         viewModel.chooseInstallment(installment)
                     }
@@ -1303,10 +1315,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             context?.let {
                 startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
             }
-        }
-
-        override fun onAdminFeeAdjusted() {
-            TODO("Not yet implemented")
         }
     }
 

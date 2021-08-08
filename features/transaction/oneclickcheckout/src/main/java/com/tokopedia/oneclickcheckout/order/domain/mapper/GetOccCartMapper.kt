@@ -38,7 +38,10 @@ class GetOccCartMapper @Inject constructor() {
                 payment = mapOrderPayment(data),
                 prompt = mapPrompt(data.prompt),
                 errorCode = data.errorCode,
-                popUpMessage = data.popUpMessage)
+                popUpMessage = data.popUpMessage,
+                maxQty = data.maxQty,
+                totalProductPrice = data.totalProductPrice,
+                profileCode = data.paymentAdditionalData.profileCode)
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -326,7 +329,11 @@ class GetOccCartMapper @Inject constructor() {
                 tncInfo = creditCard.tncInfo,
                 selectedTerm = availableTerms.firstOrNull { it.isSelected },
                 additionalData = mapPaymentCreditCardAdditionalData(data),
-                isDebit = payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE
+                isDebit = payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE,
+                isAfpb = creditCard.isAfpb,
+                unixTimestamp = creditCard.unixTimestamp,
+                tokenId = creditCard.tokenId,
+                tenorSignature = creditCard.tenorSignature
         )
     }
 

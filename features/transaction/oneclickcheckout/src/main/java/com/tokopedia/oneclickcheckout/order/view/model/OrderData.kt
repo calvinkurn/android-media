@@ -13,4 +13,8 @@ data class OrderData(
         // LCA
         val errorCode: String = "",
         val popUpMessage: String = "",
+        // AFPB
+        val maxQty: String = "",
+        val totalProductPrice: String = "",
+        val profileCode: String = ""
 )

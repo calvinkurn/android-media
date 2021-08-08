@@ -12,8 +12,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -24,7 +23,7 @@ class InstallmentDetailBottomSheet {
 
     private var bottomSheetUnify: BottomSheetUnify? = null
 
-    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, listener: InstallmentDetailBottomSheetListener) {
+    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData, listener: InstallmentDetailBottomSheetListener) {
         val context: Context = fragment.activity ?: return
         fragment.parentFragmentManager.let {
             this.listener = listener
@@ -36,7 +35,7 @@ class InstallmentDetailBottomSheet {
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
 
                 val binding = BottomSheetInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(context, binding, fragment, creditCard)
+                setupChild(context, binding, fragment, creditCard, creditCardTenorListData)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -46,45 +45,77 @@ class InstallmentDetailBottomSheet {
         }
     }
 
-    private fun setupChild(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
+    private fun setupChild(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData) {
         setupTerms(binding, creditCard.tncInfo)
-        setupInstallments(context, binding, fragment, creditCard.availableTerms)
+        setupInstallments(context, binding, fragment, creditCard, creditCardTenorListData)
     }
 
-    private fun setupInstallments(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
+    private fun setupInstallments(context: Context, binding: BottomSheetInstallmentBinding, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, creditCardTenorListData: CreditCardTenorListData) {
         SplitCompat.installActivity(context)
         val inflater = LayoutInflater.from(fragment.context)
-        for (i in installmentDetails.lastIndex downTo 0) {
-            val installment = installmentDetails[i]
-            val viewInstallmentDetailItem = ItemInstallmentDetailBinding.inflate(inflater)
-            if (installment.term > 0) {
-                viewInstallmentDetailItem.tvInstallmentDetailName.text = "${installment.term}x Cicilan 0%"
-                viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
-            } else {
-                viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
-                viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
-            }
-            if (installment.isEnable) {
-                viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
-                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+        val viewInstallmentDetailItem = ItemInstallmentDetailBinding.inflate(inflater)
+        if (creditCard.isAfpb) {
+            creditCardTenorListData.tenorList.forEach { tenor ->
+                if (tenor.type.equals(CC_TYPE_TENOR_FULL, true)) {
+                    viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount, false).removeDecimalSuffix()
+                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = !tenor.disable
+                } else {
+                    viewInstallmentDetailItem.tvInstallmentDetailName.text = "${tenor.type}x Cicilan 0%"
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount, false).removeDecimalSuffix())
+                }
+                viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.fee, false).removeDecimalSuffix())
                 viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(installment)
+                    listener.onSelectInstallment(mapAfpbToInstallmentTerm(tenor))
                     dismiss()
                 }
                 viewInstallmentDetailItem.root.alpha = 1.0f
-            } else {
-                viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
-                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
-                viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
-                viewInstallmentDetailItem.root.alpha = 0.5f
             }
-            binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
-        }
-        if (installmentDetails.size > 1) {
-            binding.tvInstallmentMessage.gone()
         } else {
-            binding.tvInstallmentMessage.visible()
+            val installmentDetails = creditCard.availableTerms
+            for (i in installmentDetails.lastIndex downTo 0) {
+                val installment = installmentDetails[i]
+                if (installment.term > 0) {
+                    viewInstallmentDetailItem.tvInstallmentDetailName.text = "${installment.term}x Cicilan 0%"
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
+                } else {
+                    viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
+                }
+                if (installment.isEnable) {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
+                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+                    viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
+                        listener.onSelectInstallment(installment)
+                        dismiss()
+                    }
+                    viewInstallmentDetailItem.root.alpha = 1.0f
+                } else {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
+                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+                    viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
+                    viewInstallmentDetailItem.root.alpha = 0.5f
+                }
+                binding.mainContent.addView(viewInstallmentDetailItem.root, 0)
+            }
+            if (installmentDetails.size > 1) {
+                binding.tvInstallmentMessage.gone()
+            } else {
+                binding.tvInstallmentMessage.visible()
+            }
         }
+    }
+
+    private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
+        var intTerm = 0
+        if (!tenor.type.equals(CC_TYPE_TENOR_FULL)) intTerm = tenor.type.toInt()
+        return OrderPaymentInstallmentTerm(
+            term = intTerm,
+            minAmount = MIN_AMOUNT_CC,
+            isEnable = !tenor.disable,
+            fee = tenor.fee.toDouble(),
+            monthlyAmount = tenor.amount.toDouble()
+        )
     }
 
     private fun generateColorRGBAString(colorInt: Int): String {
@@ -157,5 +188,10 @@ class InstallmentDetailBottomSheet {
     interface InstallmentDetailBottomSheetListener {
 
         fun onSelectInstallment(installment: OrderPaymentInstallmentTerm)
+    }
+
+    companion object {
+        private const val CC_TYPE_TENOR_FULL = "FULL"
+        private const val MIN_AMOUNT_CC = 500000L
     }
 }

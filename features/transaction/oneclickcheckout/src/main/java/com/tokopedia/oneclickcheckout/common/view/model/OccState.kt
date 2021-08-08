@@ -2,10 +2,7 @@ package com.tokopedia.oneclickcheckout.common.view.model
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
-import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
-import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
-import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import java.util.*
 
@@ -19,6 +16,7 @@ sealed class OccState<out T : Any> {
             return eventFailure.getData()
         }
     }
+    data class UpdateAfpb<out T : Any>(val data: T) : OccState<T>()
 }
 
 sealed class OccGlobalEvent {
@@ -36,7 +34,8 @@ sealed class OccGlobalEvent {
     data class ToasterAction(val toast: OccToasterAction) : OccGlobalEvent()
     data class ForceOnboarding(val onboarding: OccOnboarding) : OccGlobalEvent()
     data class UpdateLocalCacheAddress(val addressModel: ChosenAddressModel) : OccGlobalEvent()
-    data class AdjustAdminFeeError(val message: String = "") : OccGlobalEvent()
+    object AdjustAdminFeeError : OccGlobalEvent()
+    data class AdjustAdminFeeSuccess(val ccData: CreditCardTenorListData) : OccGlobalEvent()
 }
 
 data class OccEvent<out T : Any>(private val data: T) {
