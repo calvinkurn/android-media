@@ -117,7 +117,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun renderPurchaseProtection(cartItem: CartItemModel) {
         mRlPurchaseProtection.visibility = if (cartItem.isProtectionAvailable && !cartItem.isError) View.VISIBLE else View.GONE
         if (cartItem.isProtectionAvailable && !cartItem.isError) {
-            mIconTooltip.setOnClickListener { shipmentItemListener?.navigateToWebView(cartItem.protectionLinkUrl) }
+            mIconTooltip.setOnClickListener { shipmentItemListener?.navigateToWebView(cartItem) }
             mTvPPPLinkText.text = cartItem.protectionTitle
             mTvPPPPrice.text = cartItem.protectionSubTitle
             mPricePerProduct.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.protectionPricePerProduct.toLong(), false).removeDecimalSuffix()
@@ -195,7 +195,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
-        fun navigateToWebView(protectionLinkUrl: String?)
+        fun navigateToWebView(cartItem: CartItemModel)
     }
 
     companion object {

@@ -90,15 +90,21 @@ class AttachProductPresenterTest {
 
     @Test
     fun `on complete selection` () {
-        presenter.updateCheckedList(listOf(AttachProductItemUiModel(
-                "testUrl",
-                "testName",
-                "0",
-                "testImageFull",
-                "testImage",
-                "testPrice",
-                "testShopName")
-        ))
+        presenter.updateCheckedList(
+            listOf(
+                AttachProductItemUiModel(
+                    "testUrl",
+                    "testName",
+                    "0",
+                    "testImageFull",
+                    "testImage",
+                    "testPrice",
+                    "testShopName",
+                    "Rp1.200",
+                    "10"
+                )
+            )
+        )
         presenter.completeSelection()
 
         verify {
