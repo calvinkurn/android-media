@@ -144,6 +144,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String FEED_PAGE = "FeedPlusContainerFragment";
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
@@ -646,11 +647,10 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            FragmentManager manager = getSupportFragmentManager();
             int position = HOME_MENU;
             if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
-                for (int i = 0; i < manager.getFragments().size(); i++) {
-                    Fragment frag = manager.getFragments().get(i);
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment frag = fragmentList.get(i);
                     if (frag.getClass().getName().equalsIgnoreCase(currentFragment.getClass().getName())) {
                         position = i;
                         break;
@@ -1217,16 +1217,25 @@ public class MainParentActivity extends BaseActivity implements
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
                     pageName = "OS Homepage";
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
                     pageName = "Feed";
                 }
                 globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
+
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed)))
+                    globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }
         }
         isFirstNavigationImpression = false;
 
-        if (position == FEED_MENU) {
+        if (position != FEED_MENU) {
+            Intent intent = new Intent(BROADCAST_VISIBLITY);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        }
+        else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
