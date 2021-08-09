@@ -225,7 +225,7 @@ class TelcoPrepaidInstrumentTest {
         Thread.sleep(4000)
         pdp_validateProductViewDisplayed()
         val viewInteraction = onView(AllOf.allOf(isDisplayingAtLeast(30), withId(R.id.telco_product_rv))).check(matches(isDisplayed()))
-        productItem_click(viewInteraction)
+        productItem_click(viewInteraction, 1)
         pdp_validateBuyWidgetDisplayed()
 
         //click tab roaming
@@ -246,7 +246,7 @@ class TelcoPrepaidInstrumentTest {
 
         //click product cluster on paket data
         pdp_validateBuyWidgetNotDisplayed()
-        productItem_click(viewInteraction)
+        productItem_click(viewInteraction, 1)
         pdp_validateBuyWidgetDisplayed()
     }
 
