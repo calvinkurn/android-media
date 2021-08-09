@@ -32,7 +32,6 @@
             tools:layout_height="100dp"
             app:autoScroll="true"
             app:isInfinite="true"
-            android:layout_marginBottom="@dimen/unify_space_8"
             app:layout_goneMarginTop="@dimen/dp_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
