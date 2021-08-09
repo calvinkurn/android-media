@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 
-class SingleProductBundleAdapter : RecyclerView.Adapter<SingleProductBundleViewHolder>() {
+class SingleProductBundleAdapter(
+    private var listener: BundleItemListener
+) : RecyclerView.Adapter<SingleProductBundleViewHolder>() {
 
     private var data: List<SingleProductBundleItem> = listOf()
     private var checkedStatus: MutableList<Boolean> = mutableListOf()
@@ -23,6 +25,13 @@ class SingleProductBundleAdapter : RecyclerView.Adapter<SingleProductBundleViewH
             viewHolder.radioItem.isChecked = true
             checkedStatus = MutableList(data.size) { false }
             checkedStatus[viewHolder.adapterPosition] = true
+            notifyDataSetChanged()
+        }
+        viewHolder.spinnerItemVariant.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            val selectedVariant = data.getOrNull(position)?.productVariant
+            listener.onVariantSpinnerClicked(selectedVariant)
+            checkedStatus[position] = true
             notifyDataSetChanged()
         }
     }
