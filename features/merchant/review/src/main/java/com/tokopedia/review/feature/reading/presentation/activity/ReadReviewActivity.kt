@@ -24,7 +24,6 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
         return if (isProductReviewAppLink(uriPath)) {
             ReadReviewFragment.createNewInstance(productId = getDataFromApplink(), isProductReview = true)
         } else {
-            supportActionBar?.title = resources.getString(R.string.shop_review_reading_title)
             ReadReviewFragment.createNewInstance(shopId = getDataFromApplink(), isProductReview = false)
         }
     }
