@@ -36,4 +36,6 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         InboxAssertion.assertTotalSwitchRoleCounter(expectedTotalSellerNotifCounter.toString())
     }
 
+    // TODO: should show title as Notifikasi when showBottomNav is false and user has no shop
+    // TODO: should show title as Inbox when showBottomNav is true and user has no shop
 }
