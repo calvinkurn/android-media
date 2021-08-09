@@ -1275,7 +1275,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             false, null, getDeviceId(), getCheckoutLeasingId()
                     );
                 }
-                if(data!= null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)){
+                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)) {
                     showToastError(getString(R.string.checkout_label_payment_try_again));
                 }
                 break;
@@ -1509,12 +1509,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString) {
-        ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+        ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
         boolean stillHasPromo = false;
-        if (validateUsePromoRequest != null) {
-            if (validateUsePromoRequest.getCodes().size() > 0) stillHasPromo = true;
-            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                if (ordersItem.getCodes().size() > 0) {
+        if (validateUsePromoRevampUiModel != null) {
+            if (validateUsePromoRevampUiModel.getPromoUiModel().getCodes().size() > 0) {
+                stillHasPromo = true;
+            }
+            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                if (voucherOrdersItemUiModel != null && !TextUtils.isEmpty(voucherOrdersItemUiModel.getCode())) {
                     stillHasPromo = true;
                     break;
                 }
