@@ -51,6 +51,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include layout="@layout/fragment_hotel_global_search"/>
+    <include layout="@layout/fragment_hotel_global_search" android:id="@+id/layoutGlobalSearch"/>
 
 </LinearLayout>
