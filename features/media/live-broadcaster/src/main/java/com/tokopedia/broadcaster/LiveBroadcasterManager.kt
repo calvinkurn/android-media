@@ -34,7 +34,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
     private var mHandler: Handler? = null
     private var mBitrateAdapter: BitrateAdapter? = null
     private val mConnection = BroadcasterConnection()
-    private val mStatistic = BroadcasterLogger()
+    private val mLogger = BroadcasterLogger()
 
     private var isPushStarted = false
     private var canSwitchCamera = false
@@ -234,7 +234,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
             Streamer.CONNECTION_STATE.SETUP -> {
                 broadcastState(BroadcasterState.Connecting)
             }
-            Streamer.CONNECTION_STATE.CONNECTED -> mStatistic.init(streamer, connectionId)
+            Streamer.CONNECTION_STATE.CONNECTED -> mLogger.init(streamer, connectionId)
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {
                     lastState.isError -> broadcastState(BroadcasterState.Recovered)
@@ -344,8 +344,8 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener, CoroutineScop
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mStatistic.update()
-                    mListener?.onUpdateLivePusherStatistic(mStatistic)
+                    mLogger.update()
+                    mListener?.onUpdateLivePusherStatistic(mLogger)
                 }
             }
 
