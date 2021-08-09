@@ -26,6 +26,9 @@ import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
+import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryFragment
+import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
 import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImagePreviewAdapter
@@ -51,10 +54,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
-        fun newInstance(cacheManagerId: String): ReviewImagePreviewFragment {
+        fun newInstance(cacheManagerId: String, isFromGallery: Boolean): ReviewImagePreviewFragment {
             return ReviewImagePreviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewImagePreviewActivity.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                    putBoolean(ReviewImagePreviewActivity.EXTRA_IS_FROM_GALLERY, isFromGallery)
                 }
             }
         }
@@ -79,6 +83,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private var productId: String = ""
     private var areComponentsHidden = false
     private var isLikeValueChange: Boolean = false
+    private var galleryRoutingData: ReviewGalleryRoutingUiModel = ReviewGalleryRoutingUiModel()
+    private var isFromGallery = false
 
     override fun getScreenName(): String {
         return ""
@@ -99,7 +105,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     override fun onImageSwiped(previousIndex: Int, index: Int) {
         if (index != RecyclerView.NO_POSITION) {
             ReviewImagePreviewTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
-            reviewImagePreviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+            reviewImagePreviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size.toLong())
         }
     }
 
@@ -117,8 +123,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         bindViews(view)
         setupCloseButton()
         setupThreeDots()
-        setupRecyclerView()
-        setupReviewDetail()
+        if(isFromGallery) {
+            setupReviewDetailFromGallery()
+        } else {
+            setupRecyclerView()
+            setupReviewDetail()
+        }
         observeToggleLikeReviewResult()
     }
 
@@ -160,15 +170,38 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun getDataFromArguments() {
-        arguments?.getString(ReviewImagePreviewActivity.EXTRA_CACHE_MANAGER_ID)?.let {
-            context?.let { context ->
-                with(SaveInstanceCacheManager(context, it)) {
-                    productReview = get(ReadReviewFragment.PRODUCT_REVIEW_KEY, ProductReview::class.java)
-                            ?: ProductReview()
-                    index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
-                    shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
-                    productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
-                }
+        arguments?.let {
+            val cacheManagerId = it.getString(ReviewImagePreviewActivity.EXTRA_CACHE_MANAGER_ID) ?: ""
+            isFromGallery = it.getBoolean(ReviewImagePreviewActivity.EXTRA_IS_FROM_GALLERY)
+            if (isFromGallery) {
+                setImagesDataFromCacheManager(cacheManagerId)
+            } else {
+                setProductReviewDataFromCacheManager(cacheManagerId)
+            }
+        }
+    }
+
+    private fun setImagesDataFromCacheManager(cacheManagerId: String) {
+        context?.let { context ->
+            with(SaveInstanceCacheManager(context, cacheManagerId)) {
+                galleryRoutingData = get(
+                    ReviewGalleryFragment.KEY_REVIEW_GALLERY_ROUTING_DATA,
+                    ReviewGalleryRoutingUiModel::class.java) ?: ReviewGalleryRoutingUiModel()
+            }
+        }
+    }
+
+
+    private fun setProductReviewDataFromCacheManager(cacheManagerId: String) {
+        context?.let { context ->
+            with(SaveInstanceCacheManager(context, cacheManagerId)) {
+                productReview = get(
+                    ReadReviewFragment.PRODUCT_REVIEW_KEY,
+                    ProductReview::class.java
+                ) ?: ProductReview()
+                index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
+                shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
+                productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
             }
         }
     }
@@ -209,15 +242,34 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         imagesRecyclerView?.addOnScrollListener(SnapPagerScrollListener(helper, this))
     }
 
+    private fun setupReviewDetailFromGallery(){
+        with(galleryRoutingData) {
+            reviewImagePreviewDetail?.apply {
+                setPhotoCount(index, totalImageCount)
+                setRating(selectedReview.rating)
+                setReviewerName(selectedReview.reviewerName)
+                setTimeStamp(selectedReview.reviewTime)
+                setReviewMessage(selectedReview.review) { openExpandedReviewBottomSheet() }
+                setLikeCount(selectedReview.totalLiked.toString())
+                setLikeButtonClickListener {
+                    ReviewImagePreviewTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
+                    viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
+                }
+                setLikeButtonImage(selectedReview.isLiked)
+            }
+            setThreeDotsVisibility(selectedReview.isReportable)
+        }
+    }
+
     private fun setupReviewDetail() {
         with(productReview) {
             reviewImagePreviewDetail?.apply {
-                setPhotoCount(index, imageAttachments.size)
+                setPhotoCount(index, imageAttachments.size.toLong())
                 setRating(productRating)
                 setReviewerName(user.fullName)
                 setTimeStamp(reviewCreateTimestamp)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
-                setLikeCount(likeDislike.totalLike)
+                setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
                     ReviewImagePreviewTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
                     viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
@@ -237,6 +289,15 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         })
     }
 
+    private fun observeReviewImagesResult() {
+        viewModel.reviewImages.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onSuccessGetReviewImages(it.data)
+                is Fail -> onFailGetReviewImages(it.throwable)
+            }
+        })
+    }
+
     private fun onSuccessLikeReview(toggleLikeReviewResponse: ToggleProductReviewLike) {
         with(toggleLikeReviewResponse) {
             updateLikeCount(totalLike)
@@ -250,6 +311,14 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         logToCrashlytics(throwable)
     }
 
+    private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
+
+    }
+
+    private fun onFailGetReviewImages(throwable: Throwable) {
+        logToCrashlytics(throwable)
+    }
+
     private fun setThreeDotsVisibility(isReportable: Boolean) {
         menuButton?.showWithCondition(isReportable)
     }
@@ -259,7 +328,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun updateLikeCount(totalLike: Int) {
-        reviewImagePreviewDetail?.setLikeCount(totalLike)
+        reviewImagePreviewDetail?.setLikeCount(totalLike.toString())
     }
 
     private fun updateLikeStatus(likeStatus: Int) {
@@ -292,10 +361,16 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun openExpandedReviewBottomSheet() {
         ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
         if (expandedReviewBottomSheet == null) {
-            with(productReview) {
-                expandedReviewBottomSheet = ReviewImagePreviewExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
-                configBottomSheet()
+            if(isFromGallery) {
+                with(galleryRoutingData.selectedReview) {
+                    expandedReviewBottomSheet = ReviewImagePreviewExpandedReviewBottomSheet.createInstance(rating, reviewTime, reviewerName, review)
+                }
+            } else {
+                with(productReview) {
+                    expandedReviewBottomSheet = ReviewImagePreviewExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
+                }
             }
+            configBottomSheet()
         }
         activity?.supportFragmentManager?.let { expandedReviewBottomSheet?.show(it, ReviewImagePreviewExpandedReviewBottomSheet.REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG) }
     }

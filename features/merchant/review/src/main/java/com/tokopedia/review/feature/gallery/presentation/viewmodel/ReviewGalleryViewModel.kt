@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.domain.usecase.GetProductRatingUseCase
 import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
+import com.tokopedia.review.feature.gallery.presentation.uimodel.SelectedReview
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -51,6 +52,31 @@ class ReviewGalleryViewModel @Inject constructor(
 
     fun setPage(page: Int) {
         currentPage.value = page
+    }
+
+    fun getReviewDataBasedOnFeedbackId(fullImageUrl: String, feedbackId: String): SelectedReview{
+        (_reviewImages.value as? Success)?.data?.let { response ->
+            val reviewData = response.detail.reviewDetail.firstOrNull {
+                it.feedbackId == feedbackId
+            } ?: return SelectedReview()
+            with(reviewData) {
+                return SelectedReview(
+                    fullImageUrl,
+                    user.fullName,
+                    rating,
+                    isLiked,
+                    totalLike,
+                    review,
+                    createTimestamp,
+                    isReportable
+                )
+            }
+        }
+        return SelectedReview()
+    }
+
+    fun getImageCount(): Long {
+        return (_reviewImages.value as? Success)?.data?.detail?.imageCount ?: 0L
     }
 
     private fun getRating(productId: String) {

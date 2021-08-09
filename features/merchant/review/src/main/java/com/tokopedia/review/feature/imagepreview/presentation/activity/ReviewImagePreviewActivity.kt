@@ -13,21 +13,31 @@ class ReviewImagePreviewActivity : BaseSimpleActivity() {
 
     companion object {
         const val EXTRA_CACHE_MANAGER_ID = "cacheId"
-        fun getIntent(context: Context, cacheManagerId: String): Intent {
-            return Intent(context, ReviewImagePreviewActivity::class.java).putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+        const val EXTRA_IS_FROM_GALLERY = "isFromGallery"
+        fun getIntent(
+            context: Context,
+            cacheManagerId: String,
+            isFromGallery: Boolean = false
+        ): Intent {
+            return Intent(context, ReviewImagePreviewActivity::class.java).apply {
+                putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                putExtra(EXTRA_IS_FROM_GALLERY, isFromGallery)
+            }
         }
     }
 
     private var cacheManagerId = ""
+    private var isFromGallery = false
     private var fragment: ReviewImagePreviewFragment? = null
 
     override fun getNewFragment(): Fragment? {
-        fragment = ReviewImagePreviewFragment.newInstance(cacheManagerId)
+        fragment = ReviewImagePreviewFragment.newInstance(cacheManagerId, isFromGallery)
         return fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         cacheManagerId = intent.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
+        isFromGallery = intent.getBooleanExtra(EXTRA_IS_FROM_GALLERY, false)
         super.onCreate(savedInstanceState)
         hideToolbar()
     }

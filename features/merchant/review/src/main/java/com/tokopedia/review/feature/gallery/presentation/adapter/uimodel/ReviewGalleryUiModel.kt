@@ -6,7 +6,9 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAd
 data class ReviewGalleryUiModel(
     val imageUrl: String,
     val rating: Int,
-    val variantName: String = ""
+    val variantName: String = "",
+    val feedbackId: String = "",
+    val fullImageUrl: String = ""
 ) : Visitable<ReviewGalleryAdapterTypeFactory> {
 
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {

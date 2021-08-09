@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.BuildConfig
@@ -31,7 +32,9 @@ import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
+import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
+import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
@@ -50,6 +53,7 @@ class ReviewGalleryFragment :
 
     companion object {
         const val REVIEW_GALLERY_SPAN_COUNT = 2
+        const val KEY_REVIEW_GALLERY_ROUTING_DATA = "reviewGalleryData"
         fun createNewInstance(productId: String): ReviewGalleryFragment {
             return ReviewGalleryFragment().apply {
                 arguments = Bundle().apply {
@@ -138,8 +142,8 @@ class ReviewGalleryFragment :
         component?.inject(this)
     }
 
-    override fun onItemClicked(t: ReviewGalleryUiModel?) {
-
+    override fun onItemClicked(t: ReviewGalleryUiModel) {
+        goToImagePreview(t)
     }
 
     override fun loadData(page: Int) {
@@ -258,7 +262,9 @@ class ReviewGalleryFragment :
                 ReviewGalleryUiModel(
                     images.thumbnailURL,
                     ratingAndVariant?.first ?: 0,
-                    ratingAndVariant?.second ?: ""
+                    ratingAndVariant?.second ?: "",
+                    images.feedbackId,
+                    images.fullsizeURL
                 )
             )
         }
@@ -306,4 +312,18 @@ class ReviewGalleryFragment :
             ) { action.invoke() }.show()
         }
     }
+
+    private fun goToImagePreview(reviewGalleryUiModel: ReviewGalleryUiModel) {
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(KEY_REVIEW_GALLERY_ROUTING_DATA, ReviewGalleryRoutingUiModel(
+                viewModel.getProductId(),
+                currentPage,
+                viewModel.getImageCount(),
+                viewModel.getReviewDataBasedOnFeedbackId(reviewGalleryUiModel.fullImageUrl, reviewGalleryUiModel.feedbackId)
+            ))
+            startActivity(ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true))
+        }
+    }
+
 }

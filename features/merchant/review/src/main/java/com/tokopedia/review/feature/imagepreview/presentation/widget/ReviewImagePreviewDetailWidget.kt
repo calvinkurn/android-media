@@ -51,7 +51,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         likeButton = findViewById(R.id.review_gallery_like_icon)
     }
 
-    fun setPhotoCount(index: Int, total: Int) {
+    fun setPhotoCount(index: Int, total: Long) {
         photoCount?.text = context.getString(R.string.review_gallery_image_count, index, total)
     }
 
@@ -67,8 +67,8 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         basicInfo?.setReviewerName(reviewerName)
     }
 
-    fun setLikeCount(totalLike: Int) {
-        likeCount?.text = totalLike.toString()
+    fun setLikeCount(totalLike: String) {
+        likeCount?.text = totalLike
     }
 
     fun setLikeButtonClickListener(action: () -> Unit) {
