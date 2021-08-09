@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home_account.AccountConstants
@@ -86,10 +87,12 @@ class ProfileViewHolder(
         val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         when (mode) {
             Configuration.UI_MODE_NIGHT_YES -> {
-                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
+                val drawable = MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark)
+                accountUserItemProfileContainer?.background = drawable
             }
             Configuration.UI_MODE_NIGHT_NO -> {
-                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop)
+                val drawable = MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop)
+                accountUserItemProfileContainer?.background = drawable
             }
             Configuration.UI_MODE_NIGHT_UNDEFINED -> {
             }
