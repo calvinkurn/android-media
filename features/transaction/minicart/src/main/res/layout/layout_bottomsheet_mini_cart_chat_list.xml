@@ -30,8 +30,10 @@ android:layout_height="wrap_content">
         app:layout_constraintStart_toStartOf="parent">
 
         <RelativeLayout
+            android:id="@+id/btn_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_chat"

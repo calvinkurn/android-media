@@ -44,8 +44,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
     private var viewModel: MiniCartViewModel? = null
-    private var fragmentManager: FragmentManager? = null
-    private var lifecycleOwner: LifecycleOwner? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartListAdapter? = null
     private var bottomSheetListener: MiniCartListBottomSheetListener? = null
@@ -70,8 +68,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
              bottomSheetListener: MiniCartListBottomSheetListener) {
         context?.let {
             if (!isShow) {
-                this.fragmentManager = fragmentManager
-                this.lifecycleOwner = lifecycleOwner
                 this.bottomSheetListener = bottomSheetListener
                 val viewBinding = LayoutBottomsheetMiniCartListBinding.inflate(LayoutInflater.from(context))
                 this.viewBinding = viewBinding
@@ -142,7 +138,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         this.viewModel = viewModel
         viewModel.initializeGlobalState()
         initializeGlobalEventObserver(viewBinding, viewModel, fragmentManager)
-        initializeBottomSheetUiModelObserver(viewBinding)
+        initializeBottomSheetUiModelObserver(viewBinding, fragmentManager, viewModel, lifecycleOwner)
         observeGlobalEvent(viewModel, lifecycleOwner)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
     }
@@ -237,7 +233,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+    private fun initializeBottomSheetUiModelObserver(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 dismiss()
@@ -263,6 +259,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                     sendFirstLoadAnalytics(it)
                     it.isFirstLoad = false
                 }
+            }
+
+            viewBinding.totalAmount.totalAmountAdditionalButton.setOnClickListener {
+                analytics.eventClickChatOnMiniCart()
+                miniCartChatListBottomSheet.show(context = viewBinding.totalAmount.context, fragmentManager = fragmentManager, lifecycleOwner = lifecycleOwner, viewModel = viewModel)
+                dismiss()
             }
         }
     }
@@ -396,11 +398,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         with(viewBinding) {
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             totalAmount.setAdditionalButton(chatIcon)
-            totalAmount.totalAmountAdditionalButton.setOnClickListener {
-                analytics.eventClickChatOnMiniCart()
-                miniCartChatListBottomSheet.show(context = context, fragmentManager = fragmentManager!!, lifecycleOwner = lifecycleOwner!!, viewModel = viewModel!!)
-                dismiss()
-            }
             this.chatIcon.setImageDrawable(chatIcon)
             totalAmount.amountChevronView.setOnClickListener(miniCartChevronClickListener)
         }

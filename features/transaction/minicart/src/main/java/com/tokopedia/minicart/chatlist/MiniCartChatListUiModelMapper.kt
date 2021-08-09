@@ -129,8 +129,6 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         )
     }
 
-
-
     private fun constructChatVisitableOrder(miniCartAvailableSectionUiModels: MutableList<MiniCartChatProductUiModel>, miniCartUnavailableSectionUiModels: MutableList<Visitable<*>>): MutableList<Visitable<*>> {
         val visitables = mutableListOf<Visitable<*>>()
         visitables.addAll(miniCartAvailableSectionUiModels)

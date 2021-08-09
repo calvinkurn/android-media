@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.MiniCartListDecoration
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
@@ -32,11 +33,17 @@ import javax.inject.Inject
 class MiniCartChatListBottomSheet @Inject constructor(
     private var miniCartListDecoration: MiniCartListDecoration
 ) : MiniCartChatProductViewHolder.ChatProductListener {
+
+    companion object {
+        const val MAX_PRODUCT_SIZE = 3
+        const val DEFAULT_PRODUCT_SIZE = 0
+    }
+
     private var viewBinding: LayoutBottomsheetMiniCartChatListBinding? = null
+    private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartChatListAdapter? = null
     private var viewModel: MiniCartViewModel? = null
-    private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
     private var mContext: Context? = null
     private var miniCartListUiModel: MiniCartListUiModel? = null
     private var elements: ArrayList<MiniCartChatProductUiModel> = arrayListOf()
@@ -45,45 +52,9 @@ class MiniCartChatListBottomSheet @Inject constructor(
         mContext?.apply {
             element.isChecked = isChecked
             if (isChecked) {
-                if (elements.size <= 3) {
-                    elements.add(element)
-                    if (elements.size == 3) {
-                        miniCartListUiModel?.chatVisitables?.forEach { model ->
-                            if (model is MiniCartChatProductUiModel) {
-                                if (model.productId == element.productId) {
-                                    model.isChecked = element.isChecked
-                                    model.size = elements.size
-                                } else {
-                                    model.size = elements.size
-                                }
-                            }
-                        }
-                        miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
-                            adapter?.updateList(it)
-                        }
-                    }
-                }
-                viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
+                updateDataWhenAdding(element)
             } else {
-                elements.remove(element)
-                if (elements.size == 0) {
-                    viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
-                } else {
-                    viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
-                    miniCartListUiModel?.chatVisitables?.forEach { model ->
-                        if (model is MiniCartChatProductUiModel) {
-                            if (model.productId == element.productId) {
-                                model.isChecked = element.isChecked
-                                model.size = elements.size
-                            } else {
-                                model.size = elements.size
-                            }
-                        }
-                    }
-                    miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
-                        adapter?.updateList(it)
-                    }
-                }
+                updateDataWhenRemoving(element)
             }
         }
     }
@@ -118,36 +89,9 @@ class MiniCartChatListBottomSheet @Inject constructor(
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             miniCartListUiModel = it
             hideLoading()
+            setButton(viewBinding)
             mContext?.apply {
                 bottomSheet?.setTitle(getString(com.tokopedia.minicart.R.string.mini_cart_chat_bottomsheet_title_label))
-                viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, R.color.Unify_NN0)))
-                viewBinding.btnChat.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
-                viewBinding.btnChat.setOnClickListener {
-                    val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
-                    if (elements.isNullOrEmpty()) {
-                        val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
-                        mContext?.startActivity(intent)
-                    } else {
-                        val productPreviews = mutableListOf<ProductPreview>()
-                        elements.forEach {
-                            val productPreview = ProductPreview(
-                                id = it.productId,
-                                imageUrl = it.productImageUrl,
-                                name = it.productName,
-                                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productPrice, false),
-                                dropPercentage = "${it.productCashbackPercentage}%",
-                                remainingStock = it.productQtyLeft.toIntOrZero(),
-                                priceBeforeInt = it.productInitialPriceBeforeDrop.toDouble(),
-                                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.productPrice, false),
-                            )
-                            productPreviews.add(productPreview)
-                        }
-                        val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
-                        val stringProductPreviews = CommonUtil.toJson(productPreviews)
-                        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
-                        startActivity(intent)
-                    }
-                }
             }
             if (viewBinding.rvMiniCartChatList.isComputingLayout) {
                 viewBinding.rvMiniCartChatList.post {
@@ -204,6 +148,91 @@ class MiniCartChatListBottomSheet @Inject constructor(
         adapter?.clearAllElements()
         showLoading()
         viewModel.getCartList(isFirstLoad = true)
+    }
+
+    private fun updateDataWhenAdding(element: MiniCartChatProductUiModel) {
+        mContext?.apply {
+            if (elements.size <= MAX_PRODUCT_SIZE) {
+                elements.add(element)
+                if (elements.size == MAX_PRODUCT_SIZE) {
+                    resetModelData(element)
+                    miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
+                        adapter?.updateList(it)
+                    }
+                }
+            }
+            viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
+        }
+    }
+
+    private fun updateDataWhenRemoving(element: MiniCartChatProductUiModel) {
+        mContext?.apply {
+            elements.remove(element)
+            if (elements.size == DEFAULT_PRODUCT_SIZE) {
+                viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
+            } else {
+                viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
+                resetModelData(element)
+                miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
+                    adapter?.updateList(it)
+                }
+            }
+        }
+    }
+
+    private fun resetModelData(productSelected: MiniCartChatProductUiModel) {
+        miniCartListUiModel?.chatVisitables?.forEach { model ->
+            if (model is MiniCartChatProductUiModel) {
+                if (model.productId == productSelected.productId) {
+                    model.isChecked = productSelected.isChecked
+                    model.size = elements.size
+                } else {
+                    model.size = elements.size
+                }
+            }
+        }
+    }
+
+    private fun setButton(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
+        mContext?.apply {
+            viewBinding.btnContent.show()
+            viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, R.color.Unify_NN0)))
+            viewBinding.btnChat.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
+            viewBinding.btnChat.setOnClickListener {
+                val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
+                if (elements.isNullOrEmpty()) {
+                    openChatPageWithoutProduct(shopId)
+                } else {
+                    openChatPage(shopId)
+                }
+            }
+        }
+    }
+
+    private fun openChatPageWithoutProduct(shopId: String) {
+        val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
+        mContext?.startActivity(intent)
+    }
+
+    private fun openChatPage(shopId: String) {
+        val productPreviews = mutableListOf<ProductPreview>()
+        elements.forEach { element ->
+            val productPreview = ProductPreview(
+                id = element.productId,
+                imageUrl = element.productImageUrl,
+                name = element.productName,
+                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
+                dropPercentage = "${element.productCashbackPercentage}%",
+                remainingStock = element.productQtyLeft.toIntOrZero(),
+                priceBeforeInt = element.productInitialPriceBeforeDrop.toDouble(),
+                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
+            )
+            productPreviews.add(productPreview)
+        }
+        val intent = RouteManager.getIntent(mContext, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId)
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+        mContext?.startActivity(intent)
     }
 
     private fun showLoading() {
