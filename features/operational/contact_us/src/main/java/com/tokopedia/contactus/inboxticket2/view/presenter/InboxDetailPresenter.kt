@@ -49,6 +49,8 @@ private const val MEDIA_TYPE = "image/*"
 private const val FORM_DATA_KEY = "file_upload"
 private const val SUCCESS_KEY_SECURE_IMAGE_PARAMETER = 1
 private const val FAILURE_KEY_UPLOAD_HOST_CONFIG = "0"
+private const val TEXT_MIN_LENGTH = 15
+private const val INVALID_IMAGE_RESULT = -2
 
 class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                            private val postMessageUseCase2: PostMessageUseCase2,
@@ -341,7 +343,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length >= 15) {
+                if (s.length >= TEXT_MIN_LENGTH) {
                     mView?.setSubmitButtonEnabled(true)
                 } else {
                     mView?.setSubmitButtonEnabled(false)
@@ -566,7 +568,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
             val uploadImageList = mView?.imageList
             if (mTicketDetail?.isNeedAttachment == true && (uploadImageList == null || uploadImageList.isEmpty())) {
                 showMessageAndSendEvent()
-                return -2
+                return INVALID_IMAGE_RESULT
             }
             val numOfImages = uploadImageList?.size ?: 0
             if (numOfImages > 0) {
