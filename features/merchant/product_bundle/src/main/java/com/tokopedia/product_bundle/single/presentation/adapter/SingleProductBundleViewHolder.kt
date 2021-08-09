@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.single.presentation.adapter
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
@@ -30,5 +31,6 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
         discountViewItem.price = item.price
         discountViewItem.discountAmount = "${item.discount}%"
         discountViewItem.slashPrice = item.slashPrice
+        spinnerItemVariant.isVisible = item.productVariant != null
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
@@ -30,7 +31,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return SingleProductBundleFragment.newInstance()
+        return SingleProductBundleFragment.newInstance(BundleInfo())
     }
 
     private fun initInjector() {

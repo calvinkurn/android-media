@@ -36,6 +36,17 @@ data class BundleInfo(
         val originalQuota: Int = 0,
         @SerializedName("MaxOrder")
         val maxOrder: Int = 0,
+        @SerializedName("preorder")
+        val preorder: PreOrder = PreOrder()
+)
+
+data class PreOrder (
+        @SerializedName("status")
+        val status: String = "INACTIVE",
+        @SerializedName("processTypeNum")
+        val processTypeNum: Int = 1,
+        @SerializedName("processTime")
+        val processTime: Int = 0
 )
 
 data class BundleItem(
@@ -53,7 +64,9 @@ data class BundleItem(
         val selections: List<Selection> = listOf(),
         @SerializedName("Children")
         val children: List<Child> = listOf(),
-        @SerializedName("BundlePrice")
+        @SerializedName("originalPrice")
+        val originalPrice: Long = 0L,
+        @SerializedName("bundlePrice")
         val bundlePrice: Long = 0L,
         @SerializedName("Stock")
         val stock: Int = 0,
