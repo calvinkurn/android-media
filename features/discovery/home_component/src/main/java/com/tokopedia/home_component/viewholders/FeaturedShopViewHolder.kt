@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.CommonMarginStartDecoration
 import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.HomeComponentListener
@@ -108,15 +107,6 @@ class FeaturedShopViewHolder(
         itemView.banner_description?.text = element.channelModel.channelBanner.description
         itemView.banner_title?.setTextColor(textColor)
         itemView.banner_description?.setTextColor(textColor)
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                listener.onSeeAllClicked(element.channelModel, adapterPosition)
-            }
-
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
-            }
-        })
     }
 
     private fun convertDataToProductData(channel: ChannelModel): List<CarouselFeaturedShopCardDataModel> {
