@@ -22,8 +22,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.material.snackbar.Snackbar
@@ -152,8 +150,10 @@ import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTI
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -1160,7 +1160,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun showMessageToast(message: String) {
         view?.let {
-            val actionLabel = getString(com.tokopedia.design.R.string.close)
+            val actionLabel = getString(com.tokopedia.abstraction.R.string.close)
             Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionLabel).show()
         }
     }
@@ -1239,9 +1239,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_product_add)
 
-                val btnSubmit: Button = dialog.findViewById(R.id.filterSubmitButton)
-                val btnGoToPdp: Button = dialog.findViewById(R.id.btn_product_list)
-                val txtTipsTrick: TextView = dialog.findViewById(R.id.txt_tips_trick)
+                val btnSubmit: UnifyButton = dialog.findViewById(R.id.filterSubmitButton)
+                val btnGoToPdp: UnifyButton = dialog.findViewById(R.id.btn_product_list)
+                val txtTipsTrick: Typography = dialog.findViewById(R.id.txt_tips_trick)
 
                 btnSubmit.setOnClickListener {
                     RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
