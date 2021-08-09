@@ -36,6 +36,20 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         InboxAssertion.assertTotalSwitchRoleCounter(expectedTotalSellerNotifCounter.toString())
     }
 
-    // TODO: should show title as Notifikasi when showBottomNav is false and user has no shop
+    @Test
+    fun should_show_title_as_Notifikasi_when_showBottomNav_is_false_and_user_has_no_shop() {
+        // Given
+        val expectedTitle = "Notifikasi"
+        inboxDep.apply {
+            userSession.fakeHasShop = false
+        }
+        startInboxActivity {
+            setShowBottomNav(it, false)
+        }
+
+        // Then
+        InboxAssertion.assertInboxTitle(expectedTitle)
+    }
+
     // TODO: should show title as Inbox when showBottomNav is true and user has no shop
 }
