@@ -2800,7 +2800,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updateCashback(cashback: Double) {
-        cartAdapter.updateShipmentSellerCashback(cashback)
+        val result = cartAdapter.updateShipmentSellerCashback(cashback)
+        result?.let {
+            when (result.first) {
+                CartAdapter.SELLER_CASHBACK_ACTION_INSERT -> {
+                    if (result.second != RecyclerView.NO_POSITION) {
+                        cartAdapter.notifyItemInserted(result.second)
+                    }
+                }
+                CartAdapter.SELLER_CASHBACK_ACTION_UPDATE -> {
+                    if (result.second != RecyclerView.NO_POSITION) {
+                        onNeedToUpdateViewItem(result.second)
+                    }
+                }
+                CartAdapter.SELLER_CASHBACK_ACTION_DELETE -> {
+                    if (result.second != RecyclerView.NO_POSITION) {
+                        cartAdapter.notifyItemRemoved(result.second)
+                    }
+                }
+            }
+        }
         cartListData?.shoppingSummaryData?.sellerCashbackValue = cashback.toInt()
     }
 
