@@ -3,7 +3,7 @@ package com.tokopedia.play.analytic
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -273,7 +273,7 @@ class PlayAnalytic(
                            cartId: String,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType,
-                           shopInfo: PlayPartnerInfoUiModel) {
+                           shopInfo: PlayPartnerInfo) {
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
@@ -563,7 +563,7 @@ class PlayAnalytic(
         )
     }
 
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfoUiModel, dimension39: String = ""): MutableList<HashMap<String, Any>> {
+    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): MutableList<HashMap<String, Any>> {
         return mutableListOf(
             hashMapOf(
                 "category_id" to "", // TODO: from where?
@@ -578,9 +578,9 @@ class PlayAnalytic(
                     is OriginalPrice -> product.price.priceNumber
                 },
                 "quantity" to product.minQty,
-                "shop_id" to shopInfo.basicInfo.id,
-                "shop_name" to shopInfo.basicInfo.name,
-                "shop_type" to shopInfo.basicInfo.type
+                "shop_id" to shopInfo.id,
+                "shop_name" to shopInfo.name,
+                "shop_type" to shopInfo.type
             )
         )
     }
@@ -606,7 +606,7 @@ class PlayAnalytic(
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
                                                     cartId: String,
-                                                    shopInfo: PlayPartnerInfoUiModel) {
+                                                    shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
                     KEY_TRACK_ADD_TO_CART,
@@ -634,7 +634,7 @@ class PlayAnalytic(
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                    product: PlayProductUiModel.Product,
                                                    cartId: String,
-                                                   shopInfo: PlayPartnerInfoUiModel) {
+                                                   shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -662,7 +662,7 @@ class PlayAnalytic(
     private fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
                                         product: PlayProductUiModel.Product,
                                         cartId: String,
-                                        shopInfo: PlayPartnerInfoUiModel) {
+                                        shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
@@ -690,7 +690,7 @@ class PlayAnalytic(
     private fun clickBeliButtonInVariant(trackingQueue: TrackingQueue,
                                          product: PlayProductUiModel.Product,
                                          cartId: String,
-                                         shopInfo: PlayPartnerInfoUiModel) {
+                                         shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
                     KEY_TRACK_ADD_TO_CART,
