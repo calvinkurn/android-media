@@ -1,5 +1,6 @@
 package com.tokopedia.saldodetails.viewholder
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,14 +32,14 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
     private fun setColorState(isFirstItem: Boolean) {
         view.apply {
             if (isFirstItem) {
-                tvStatusTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tvStatusTitle.setTextColor(Color.parseColor("#03AC0E"))
                 ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_circle_light_green))
-                statusDivider.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                statusDivider.setBackgroundColor(Color.parseColor("#03AC0E"))
             }
             else {
-                tvStatusTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                tvStatusTitle.setTextColor(Color.parseColor("#F531353B"))
                 ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_circle_light_grey))
-                statusDivider.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                statusDivider.setBackgroundColor(Color.parseColor("#5231353B"))
             }
         }
     }
