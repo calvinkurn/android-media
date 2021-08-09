@@ -87,6 +87,8 @@ data class RecommendationEntity (
         val minOrder: Int = 0
         @SerializedName("specificationLabels")
         val specificationsLabels: List<SpecificationsLabels> = listOf()
+        @SerializedName("parentID")
+        val parentID: Long = 0L
 
         class SpecificationsLabels {
             @SerializedName("key")
@@ -168,13 +170,15 @@ data class RecommendationEntity (
         @SerializedName("landingPageLink")
         val landingPageLink: String = ""
         @SerializedName("assets")
-        val assets: Assets = Assets()
+        val assets: Assets? = Assets()
         @SerializedName("foreignTitle")
         val foreignTitle: String = ""
+        @SerializedName("thematicID")
+        val thematicID: Long = 0L
 
         class Assets {
             @SerializedName("banner")
-            val banner: Banner = Banner()
+            val banner: Banner? = Banner()
         }
 
         class Banner {

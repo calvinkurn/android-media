@@ -32,7 +32,8 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
             }
         }
 
-        (view.findViewById<View>(R.id.text_title_recomm) as TextView).text = data.title
+        (view.findViewById<View>(R.id.text_title_recomm) as TextView).text =
+            view.context.resources.getString(R.string.tp_recom_title)
 
         (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text =
             view.context.resources.getString(R.string.tp_recom_subtitle)

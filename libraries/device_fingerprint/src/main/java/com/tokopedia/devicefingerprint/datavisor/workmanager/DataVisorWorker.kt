@@ -11,6 +11,7 @@ import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitRespon
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
@@ -111,7 +112,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                 .apply()
         lastToken = token
         lastTimestampToken = now
-        FingerprintCache.clearFingerprintCache(context)
+        FingerprintModelGenerator.expireFingerprint()
     }
 
     suspend fun sendErrorDataVisorToServer(runAttemptCount: Int, errorMessage: String) {

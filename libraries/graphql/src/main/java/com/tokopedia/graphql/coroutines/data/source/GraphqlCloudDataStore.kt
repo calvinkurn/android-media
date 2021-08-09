@@ -118,6 +118,7 @@ class GraphqlCloudDataStore @Inject constructor(
                 result?.let {
 
                     launch(Dispatchers.IO) {
+                        gResponse.httpStatusCode = result.code()
                         if (result.code() == Const.GQL_QUERY_HASHING_ERROR) {
                             val queryHashValues = StringBuilder()
                             //Reset request bodies

@@ -1,6 +1,6 @@
 package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
@@ -43,16 +43,21 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             val includeOs: Boolean = false
             val sampleShopBadgeValue = "shop_badge"
             val shopBasicData = ShopBasicDataModel()
-            val goldGetPmOsStatus = GoldGetPmOsStatus()
+            val pmOsStatus = PMStatusUiModel()
             val shopInfo = ShopInfo(
                     goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue)
             )
             coEvery {
                 getShopInfoUseCase.executeOnBackground()
             } returns shopInfo
+
+            coEvery {
+                getShopStatusUseCase.executeOnBackground()
+            } returns pmOsStatus
+
             shopSettingsInfoViewModel.getShopData(shopId, includeOs)
             val expectedResultShopBasicData = Success(shopBasicData)
-            val expectedResultGoldGetPmOsStatus = Success(goldGetPmOsStatus)
+            val expectedResultGoldGetPmOsStatus = Success(pmOsStatus)
             assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Success)
             shopSettingsInfoViewModel.shopBadgeData
                     .verifySuccessEquals(Success(sampleShopBadgeValue))

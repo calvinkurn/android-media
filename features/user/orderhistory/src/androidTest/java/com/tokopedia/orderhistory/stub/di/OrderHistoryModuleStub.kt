@@ -38,13 +38,4 @@ class OrderHistoryModuleStub {
     internal fun provideAddWishListUseCase(@OrderHistoryContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
-
-    @OrderHistoryScope
-    @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-                context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart
-        )
-    }
 }

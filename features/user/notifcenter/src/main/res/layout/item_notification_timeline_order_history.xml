@@ -29,7 +29,7 @@
     <View
         android:id="@+id/view_bottom_line"
         android:layout_width="@dimen/notif_dp_1"
-        android:layout_height="@dimen/unify_space_24"
+        android:layout_height="0dp"
         android:background="@color/Unify_G400"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/iv_mark_seen"
@@ -38,23 +38,27 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_timeline_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/notif_dp_14"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/iv_mark_seen"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_mark_seen"
         app:layout_constraintTop_toTopOf="@+id/iv_mark_seen"
         app:typographyType="body_3"
-        tools:text="Timeline" />
+        tools:text="@string/lorem" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_timeline_desc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/notif_dp_14"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_mark_seen"
         app:layout_constraintTop_toBottomOf="@+id/tp_timeline_title"
         app:typographyType="small"

@@ -41,8 +41,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -53,7 +51,6 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
-import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -81,9 +78,7 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.GraphqlHelper;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -93,7 +88,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
@@ -115,7 +109,6 @@ import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 
@@ -288,17 +281,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getChuckerInterceptor() {
         return getAppComponent().ChuckerInterceptor();
-    }
-
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
-                                                Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = getHomeClass();
-        mNotificationPass.title = notifTitle;
-        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        return mNotificationPass;
     }
 
     private Intent getInboxReputationIntent(Context context) {

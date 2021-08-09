@@ -48,6 +48,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
@@ -68,7 +69,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -1049,11 +1049,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         recyclerView?.let { renderStickyPromoHeader(it) }
 
         // dismiss coachmark if user click promo with coachmark
-        if (promoWithCoachMarkIndex != -1 && adapter.list[promoWithCoachMarkIndex] is PromoListItemUiModel &&
-                promoWithCoachMarkIndex == position &&
-                (adapter.list[promoWithCoachMarkIndex] as PromoListItemUiModel).id == element.id &&
-                ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
-            promoCoachMark.dismissCoachMark()
+        val adapterItems = adapter.list
+        if (promoWithCoachMarkIndex < adapterItems.size && promoWithCoachMarkIndex == position) {
+            val data = adapterItems[promoWithCoachMarkIndex]
+            if (data is PromoListItemUiModel && data.id == element.id && ::promoCoachMark.isInitialized && promoCoachMark.isShowing) {
+                promoCoachMark.dismissCoachMark()
+            }
         }
     }
 

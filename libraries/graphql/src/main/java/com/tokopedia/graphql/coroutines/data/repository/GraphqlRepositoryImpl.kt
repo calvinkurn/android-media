@@ -112,6 +112,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
         }
 
         val graphqlResponse = GraphqlResponse(results, errors, isCachedData)
+        //adding http status code
+        graphqlResponse.httpStatusCode = httpStatusCode
 
         if (refreshRequests.isEmpty()) {
             return graphqlResponse
@@ -119,7 +121,6 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
 
         //adding cached request.
         graphqlResponse.refreshRequests = refreshRequests
-
         return graphqlResponse
     }
 

@@ -2,17 +2,13 @@ package com.tokopedia.shop.pageheader.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -31,11 +27,9 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, ShopPagePerformanceMonitoringListener{
@@ -71,18 +65,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment? {
-        return if(ShopUtil.isUsingNewShopPageHeader(this))
-            NewShopPageFragment.createInstance()
-        else
-            ShopPageFragment.createInstance()
-    }
+    override fun getNewFragment(): Fragment = NewShopPageFragment.createInstance()
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 

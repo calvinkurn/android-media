@@ -20,11 +20,7 @@ class PostListPagerAdapter(
         private val onPostItemClicked: (PostItemUiModel) -> Unit
 ) : RecyclerView.Adapter<PostListPagerAdapter.PostListPagerViewHolder>() {
 
-    private var pagers = listOf<PostListPagerUiModel>()
-
-    fun setItems(pagers: List<PostListPagerUiModel>) {
-        this.pagers = pagers
-    }
+    var pagers = listOf<PostListPagerUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostListPagerViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -51,11 +47,8 @@ class PostListPagerAdapter(
                 rvShcPostList.adapter = postAdapter
             }
 
-            if (postAdapter.itemCount <= 0) {
-                postAdapter.data.addAll(pager.postList)
-                postAdapter.notifyDataSetChanged()
-            }
-
+            postAdapter.data.addAll(pager.postList)
+            postAdapter.notifyDataSetChanged()
             postAdapter.setOnAdapterInteractionListener {
                 onPostItemClicked(it)
             }

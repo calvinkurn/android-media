@@ -6,6 +6,11 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -15,7 +20,10 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
+import com.tokopedia.otp.verification.view.fragment.VerificationFragment.Companion.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import javax.inject.Inject
@@ -25,7 +33,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
@@ -36,6 +44,9 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     override val viewBound = OnboardingMisscallViewBinding()
 
     private val permissionCheckerHelper = PermissionCheckerHelper()
+
+    private var remoteConfigInstance: RemoteConfigInstance? = null
+    private var rollanceType = ""
 
     override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
@@ -53,6 +64,7 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        rollanceType = getAbTestPlatform()?.getString(ROLLANCE_KEY_MISCALL_OTP).toString()
         initView()
     }
 
@@ -78,6 +90,11 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         viewBound.btnCallMe?.setOnClickListener {
             (activity as VerificationActivity).goToVerificationPage(modeListData)
         }
+
+        viewBound.title?.text = getTitle()
+        viewBound.subtitle?.text = getDescription()
+
+        setNewImage()
     }
 
     private fun startAnimation() {
@@ -87,6 +104,18 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun stopAnimation() {
         viewBound.imgAnimation?.pauseAnimation()
+    }
+
+    private fun setNewImage() {
+        viewBound.img?.setImageUrl(URL_IMG_ON_BOARDING_NEW)
+
+        if (isOtpMiscallNew()) {
+            viewBound.imgAnimation?.hide()
+            viewBound.img?.show()
+        } else {
+            viewBound.imgAnimation?.show()
+            viewBound.img?.hide()
+        }
     }
 
     private fun checkPermissionGetPhoneNumber(){
@@ -114,9 +143,44 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    companion object {
+    private fun getTitle(): String {
+        var title = ""
+        context?.let {
+            title = if (isOtpMiscallNew()) {
+                getString(R.string.cotp_miscall_onboarding_title_new)
+            } else {
+                getString(R.string.cotp_miscall_onboarding_title)
+            }
+        }
+        return title
+    }
 
+    private fun getDescription(): String {
+        var description = ""
+        context?.let {
+            description = if (isOtpMiscallNew()) {
+                getString(R.string.cotp_miscall_onboarding_desc_new)
+            } else {
+                getString(R.string.cotp_miscall_onboarding_desc)
+            }
+        }
+        return description
+    }
+
+    private fun isOtpMiscallNew(): Boolean {
+        return rollanceType.contains(VerificationFragment.ROLLANCE_KEY_MISCALL_OTP)
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    companion object {
         const val ANIMATION_SPEED = 1F
+        private const val URL_IMG_ON_BOARDING_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_onboarding_2.png"
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = OnboardingMiscallFragment()

@@ -27,6 +27,7 @@ class GetShopClosedInfoUseCase @Inject constructor(
             "           detail{\n" +
             "               startDate\n" +
             "               endDate\n" +
+            "               status\n" +
             "           }\n" +
             "      }\n" +
             "    }\n" +

@@ -61,6 +61,8 @@ class ShopPenaltyViewModel @Inject constructor(
 
     private var startDate = format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var startDateSummary = format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var endDateSummary = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var typeId = 0
     private var sortBy = 0
 
@@ -94,7 +96,7 @@ class ShopPenaltyViewModel @Inject constructor(
         launchCatchError(block = {
             val penaltySummaryTypeResponse = asyncCatchError(block = {
                 getShopPenaltySummaryTypesUseCase.requestParams = GetShopPenaltySummaryTypesUseCase.createParams(
-                        startDate, endDate)
+                        startDateSummary, endDateSummary)
                 getShopPenaltySummaryTypesUseCase.executeOnBackground()
             }, onError = {
                 _penaltyPageData.postValue(Fail(it))

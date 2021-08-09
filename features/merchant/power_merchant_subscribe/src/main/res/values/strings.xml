@@ -62,8 +62,7 @@
     <string name="pm_have_not_one_active_product_yet">Belum Memiliki 1 Produk Aktif</string>
     <string name="pm_label_already_have_one_active_product">Kamu sudah memiliki minimal 1 produk aktif.</string>
     <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
-    <string name="pm_shop_score_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
-    <string name="pm_shop_score_not_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
+    <string name="pm_term_shop_score"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_shop_score_not_eligible_new_seller">Skor Toko: -</string>
     <string name="pm_shop_score_eligible_description">Batas min. skor %1$d</string>
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>

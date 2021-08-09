@@ -10,7 +10,10 @@ interface ChatListHeightManager {
 
     suspend fun invalidateHeightNonChatMode(
             videoOrientation: VideoOrientation,
-            videoPlayer: PlayVideoPlayerUiModel
+            videoPlayer: PlayVideoPlayerUiModel,
+            forceInvalidate: Boolean,
+            hasProductFeatured: Boolean,
+            hasPinnedVoucher: Boolean
     )
 
     suspend fun invalidateHeightChatMode(

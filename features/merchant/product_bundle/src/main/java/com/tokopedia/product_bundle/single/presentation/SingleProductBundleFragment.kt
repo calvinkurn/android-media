@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.single.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
+import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
@@ -45,6 +48,15 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
         setupTotalAmount(view)
 
         observeSingleProductBundleUiModel()
+
+        AtcVariantNavigation.showVariantBottomSheet(this, viewModel.generateBundleItem())
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+           println(this.toString())
+        }
     }
 
     override fun getScreenName() = SingleProductBundleFragment::class.java.simpleName

@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingEnd="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -38,7 +37,8 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="visible"
+        tools:ignore="RtlSymmetry">
 
         <FrameLayout
             android:layout_width="match_parent"

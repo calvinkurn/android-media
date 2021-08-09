@@ -114,7 +114,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     }
 
     protected open fun initContentDesc() {
-        contentDesc?.text = notification?.shortDescription
+        contentDesc?.text = notification?.shortDescHtml
     }
 
     protected open fun initCtaButton() {

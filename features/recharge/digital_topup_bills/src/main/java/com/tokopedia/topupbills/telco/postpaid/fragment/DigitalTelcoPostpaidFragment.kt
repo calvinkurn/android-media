@@ -193,6 +193,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
             //initiate impression promo
             sendImpressionPromo()
+        } else {
+            separator.hide()
+            tabLayout.hide()
         }
     }
 
@@ -315,7 +318,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-                if (userSession.isLoggedIn) {
+                if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
+                    postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
+                } else if (userSession.isLoggedIn) {
                     getEnquiryNumber()
                 } else {
                     navigateToLoginPage()
@@ -411,7 +416,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         }
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
-                    if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                    if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
                     } else {
@@ -420,7 +425,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     validatePhoneNumber(operatorData, postpaidClientNumberWidget)
                 }
             }
-        } catch (exception: Exception) {
+        } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
                     getString(R.string.telco_number_error_not_found))
         }
@@ -516,6 +521,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         private const val TITLE_PAGE = "telco post paid"
 
+        private const val VALID_MIN_INPUT_NUMBER = 10
+        private const val VALID_MAX_INPUT_NUMBER = 14
 
         fun newInstance(telcoExtraParam: TopupBillsExtraParam, rechargeProductFromSlice: String = ""): Fragment {
             val fragment = DigitalTelcoPostpaidFragment()

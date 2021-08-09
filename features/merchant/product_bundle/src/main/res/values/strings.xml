@@ -17,4 +17,7 @@
     <item name="product_bundle_master_tag" type="id" />
     <item name="product_variant_tag" type="id" />
 
+    <!-- variant bottomsheet -->
+    <string name="variant_bottomsheet_action_save">Simpan</string>
+
 </resources>

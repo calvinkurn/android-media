@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             userSession.deviceId = DataSource.MOCK_DEVICE_ID
         }
 
+        val fullLoginOption = findViewById<CheckBox>(R.id.fullLoginOption)
         val loginButton = findViewById<Button>(R.id.loginButton)
         val toggleDarkMode = findViewById<CheckBox>(R.id.toggle_dark_mode)
 
@@ -47,7 +48,11 @@ class MainActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             if (!userSession.isLoggedIn()) {
-                startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalTestApp.LOGIN), REQUEST_CODE_LOGIN)
+                if (fullLoginOption.isChecked) {
+                    startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+                } else {
+                    startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalTestApp.LOGIN), REQUEST_CODE_LOGIN)
+                }
             } else {
                 Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
                 goTo()

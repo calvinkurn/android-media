@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Static_White"
+    app:rcl_cornerRadius="@dimen/play_interactive_live_radius"
+    >
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_interactive_title"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/play_interactive_live"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        />
+
+    <com.tokopedia.play_common.view.RoundedConstraintLayout
+        android:id="@+id/cl_timer_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:background="@color/Neutral_N75"
+        app:rcl_cornerRadius="@dimen/play_interactive_time_radius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_interactive_title"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_interactive_timer_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/play_dp_12"
+            android:text="@string/play_interactive_live_end_in"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="small"
+            />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer_interactive_setup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_interactive_timer_info"
+            app:layout_constraintTop_toTopOf="parent"
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_variant="general"
+            />
+
+    </com.tokopedia.play_common.view.RoundedConstraintLayout>
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

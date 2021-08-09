@@ -7,7 +7,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.MenuItemType
@@ -16,7 +15,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.PrintingMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.setting_menu_list.view.*
 
@@ -37,12 +35,6 @@ class MenuItemsViewHolder(
                 if (isNoIcon) LAYOUT_NO_ICON else LAYOUT
     }
 
-    private var itemLabel: Label? = null
-
-    init {
-        itemLabel = itemView.findViewById(R.id.label_seller_menu_item)
-    }
-
     override fun bind(element: MenuItemUiModel) {
         with(itemView) {
             element.iconUnify?.let { settingMenuIcon?.setImage(it) }
@@ -55,7 +47,6 @@ class MenuItemsViewHolder(
                 sendSettingShopInfoImpressionTracking(element, trackingListener::sendImpressionDataIris)
             }
             bindNotificationCounter(element.notificationCount)
-            itemLabel?.showWithCondition(element.isNewItem)
             setOnClickListener {
                 element.run {
                     sendTracker(this)

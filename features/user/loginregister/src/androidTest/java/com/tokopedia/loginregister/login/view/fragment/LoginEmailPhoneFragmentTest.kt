@@ -21,6 +21,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.TkpdIdlingResource
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.test.application.annotations.UiAnalyticsTest
 import org.hamcrest.MatcherAssert
@@ -83,8 +84,8 @@ class LoginEmailPhoneFragmentTest {
     private fun launchActivity() {
 
         val bundle = Bundle()
-        bundle.putBoolean(LoginEmailPhoneFragment.IS_AUTO_FILL, true)
-        bundle.putString(LoginEmailPhoneFragment.AUTO_FILL_EMAIL, email)
+        bundle.putBoolean(LoginConstants.AutoLogin.IS_AUTO_FILL, true)
+        bundle.putString(LoginConstants.AutoLogin.AUTO_FILL_EMAIL, email)
         val intent = Intent(context, LoginActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)

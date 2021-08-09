@@ -1,8 +1,9 @@
 package com.tokopedia.flight.common.util
 
-import com.tokopedia.flight.common.util.FlightDateUtil.Companion.addTimeToSpesificDate
-import com.tokopedia.flight.common.util.FlightDateUtil.Companion.removeTime
-import com.tokopedia.flight.common.util.FlightDateUtil.Companion.stringToDate
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.removeTime
+import com.tokopedia.utils.date.toDate
 import java.util.*
 import javax.inject.Inject
 
@@ -44,29 +45,26 @@ class FlightPassengerInfoValidator @Inject constructor() {
     }
 
     fun validateDateMoreThan(dateDefaultViewFormat: String, secondDate: Date): Boolean {
-        return removeTime(stringToDate(
-                FlightDateUtil.DEFAULT_VIEW_FORMAT, dateDefaultViewFormat)) > removeTime(secondDate)
+        return dateDefaultViewFormat.toDate(DateUtil.DEFAULT_VIEW_FORMAT).removeTime() > secondDate.removeTime()
     }
 
     fun validateDateLessThan(dateDefaultViewFormat: String, secondDate: Date): Boolean {
-        return removeTime(stringToDate(
-                FlightDateUtil.DEFAULT_VIEW_FORMAT, dateDefaultViewFormat)) < removeTime(secondDate)
+        return dateDefaultViewFormat.toDate(DateUtil.DEFAULT_VIEW_FORMAT).removeTime() < secondDate.removeTime()
     }
 
     fun validateDateNotLessThan(indicator: Date, selectedDate: String): Boolean {
-        val inputDate = removeTime(stringToDate(
-                FlightDateUtil.DEFAULT_VIEW_FORMAT, selectedDate))
+        val inputDate = selectedDate.toDate(DateUtil.DEFAULT_VIEW_FORMAT).removeTime()
         return inputDate.before(indicator)
     }
 
     fun validateExpiredDateOfPassportAtLeast6Month(expiredDateString: String, lastFlightDate: Date): Boolean {
-        val expiredDate = stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString)
-        val lastFlightDateUsed = addTimeToSpesificDate(lastFlightDate, Calendar.DATE, 0)
+        val expiredDate = expiredDateString.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+        val lastFlightDateUsed = lastFlightDate.addTimeToSpesificDate(Calendar.DATE, 0)
         return expiredDate.after(lastFlightDateUsed)
     }
 
     fun validateExpiredDateOfPassportMax20Years(expiredDateString: String, lastFlightDate: Date): Boolean {
-        val expiredDate = stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, expiredDateString)
+        val expiredDate = expiredDateString.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
         return expiredDate.before(lastFlightDate)
     }
 

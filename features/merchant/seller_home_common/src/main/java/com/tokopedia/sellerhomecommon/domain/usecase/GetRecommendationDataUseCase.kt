@@ -28,7 +28,7 @@ class GetRecommendationDataUseCase(
             val response: GetRecommendationDataResponse? = gqlResponse.getData<GetRecommendationDataResponse>(GetRecommendationDataResponse::class.java)
             response?.let {
                 val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-                return mapper.mapRemoteModelToUiModel(it.recommendationWidgetData.data, isFromCache)
+                return mapper.mapRemoteModelToUiModel(it.recommendationWidgetData?.data.orEmpty(), isFromCache)
             }
             throw NullPointerException("recommendation data can not be null")
         } else {
@@ -65,6 +65,7 @@ class GetRecommendationDataUseCase(
                       bar {
                         value
                         maxValue
+                        valueDisplay
                       }
                     }
                     recommendation {

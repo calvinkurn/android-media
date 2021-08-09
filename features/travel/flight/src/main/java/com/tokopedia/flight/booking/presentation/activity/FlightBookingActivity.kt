@@ -11,7 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.presentation.fragment.FlightBookingFragment
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -61,7 +61,7 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean = true
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.BOOKING
+    override fun getScreenName(): String = FlightAnalyticsScreenName.BOOKING
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 6

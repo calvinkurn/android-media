@@ -41,26 +41,25 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-import com.tokopedia.hotel.common.util.HotelSearchMapQuery
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
-import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
-import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
-import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
-import com.tokopedia.hotel.search_map.data.HotelLoadingModel
+import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.FilterV2.Companion.FILTER_TYPE_SORT
+import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
+import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultAdapter
+import com.tokopedia.hotel.search_map.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
+import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheets
+import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.sortfilter.SortFilter
@@ -72,8 +71,12 @@ import com.tokopedia.unifycomponents.setHeadingText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import javax.inject.Inject
 
 /**
@@ -176,7 +179,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Success -> {
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
-                    if (!it.data.properties.isNullOrEmpty()) {
+                    if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
                         changeMarkerState(cardListPosition)
                     } else {
                         hideLoader()
@@ -298,6 +301,22 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
+    override fun showGetListError(throwable: Throwable?) {
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, throwable,
+                { onRetryClicked() }, global_error)
+        }
+    }
+
+    override fun onRetryClicked() {
+        view?.let {
+            container_error.hide()
+            halfExpandBottomSheet()
+        }
+        super.onRetryClicked()
+    }
+
     override fun loadInitialData() {
         hotelSearchMapViewModel.searchParam.page = defaultInitialPage
         tvHotelSearchListTitleLoader.visible()
@@ -411,7 +430,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.scrollToCenterPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
-                putPriceMarkerOnTop(cardListPosition)
                 if (cardListPosition != -1 &&
                         cardListPosition != lastHorizontalTrackingPositionSent &&
                         adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
@@ -483,7 +501,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = HotelSearchMapQuery.propertySearchInput
+        val searchQuery = HotelGqlQuery.PROPERTY_SEARCH
         hotelSearchMapViewModel.searchProperty(page, searchQuery)
     }
 
@@ -604,8 +622,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val opacity = 1f - (slideOffset * 3f)
-                rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                val opacity = SLIDE_MINUS_OPACITY - (slideOffset * SLIDE_MULT_OPACITY)
+                rvHorizontalPropertiesHotelSearchMap?.let {
+                    rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                }
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -627,21 +647,24 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         if (searchPropertiesMap.isNullOrEmpty()) {
                             googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         } else {
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[0],
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
+                            val newLatLng = getMapCenter(searchPropertiesMap[0])
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,
                                     MAPS_ZOOM_OUT))
                         }
                         setupContentMargin(false)
-                        googleMap.uiSettings.setAllGesturesEnabled(false)
-
+                        if(containerEmptyResultState.isVisible){
+                            googleMap.uiSettings.setAllGesturesEnabled(false)
+                           enabledMapsClick()
+                        }else{
+                            enabledMapsGesture()
+                        }
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
 
-                        googleMap.uiSettings.isZoomGesturesEnabled = true
-                        googleMap.uiSettings.isRotateGesturesEnabled = false
-                        googleMap.uiSettings.isScrollGesturesEnabled = true
-                        googleMap.uiSettings.isTiltGesturesEnabled = false
+                        enabledMapsGesture()
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
@@ -715,8 +738,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun setUpTitleAndSubtitle() {
         context?.let {
             val hotelSearchModel = hotelSearchMapViewModel.hotelSearchModel
-            val checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelSearchModel.checkIn))
-            val checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelSearchModel.checkOut))
+            val checkInString = hotelSearchModel.checkIn.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR)
+            val checkOutString = hotelSearchModel.checkOut.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR)
 
             headerHotelSearchMap.title = hotelSearchModel.name
             headerHotelSearchMap.subtitle = getString(R.string.template_search_subtitle,
@@ -774,7 +797,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
-                    putPriceMarkerOnTop(cardListPosition)
                 }
             }
 
@@ -815,21 +837,35 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveStartedListener(this)
+            enabledMapsClick()
+        }
+    }
 
-            mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
-                override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
-                    when (motionEvent.action) {
-                        MotionEvent.ACTION_DOWN -> v.performClick()
-                    }
-                    return true
+    fun enabledMapsClick(){
+        mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> v.performClick()
                 }
-            })
-            mapHotelSearchMap.setOnClickListener {
-                collapseBottomSheet()
+                return true
             }
+        })
+        mapHotelSearchMap.setOnClickListener {
+            collapseBottomSheet()
+        }
+        if(::googleMap.isInitialized) {
             googleMap.setOnMapClickListener {
                 collapseBottomSheet()
             }
+        }
+    }
+
+    fun enabledMapsGesture(){
+        if(::googleMap.isInitialized){
+            googleMap.uiSettings.isZoomGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = false
+            googleMap.uiSettings.isScrollGesturesEnabled = true
+            googleMap.uiSettings.isTiltGesturesEnabled = false
         }
     }
 
@@ -914,10 +950,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         resetMarkerState()
         try {
             if (!allMarker.isNullOrEmpty()) {
-                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
+                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty() && position < searchPropertiesMap.size) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                    putPriceMarkerOnTop(position)
                     if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        val newLatLng = getMapCenter(searchPropertiesMap[position])
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
                     } else {
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                     }
@@ -925,6 +964,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         } catch (t: Throwable) {
             t.printStackTrace()
+        }
+    }
+
+    fun getMapCenter(latLng: LatLng): LatLng{
+        return try{
+            val mapCenter: Double = googleMap.cameraPosition.target.latitude
+            val southMap: Double = googleMap.projection.visibleRegion.latLngBounds.southwest.latitude
+            val diff = (mapCenter - southMap) / MAP_CENTER_DIVIDER
+            val newLat: Double = latLng.latitude - diff
+            LatLng(newLat, latLng.longitude)
+        }catch (t: Throwable) {
+            latLng
         }
     }
 
@@ -1453,7 +1504,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun putPriceMarkerOnTop(position: Int){
         resetStackPriceMarker()
-        if(!allMarker.isNullOrEmpty() && position != -1){
+        if(!allMarker.isNullOrEmpty() && position != -1 && position < allMarker.size){
             allMarker[position].zIndex = 1.0f
         }
     }
@@ -1503,9 +1554,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
         private const val MAX_RADIUS: Float = 10.5f
+        private const val MAP_CENTER_DIVIDER = 4
+        private const val SLIDE_MINUS_OPACITY: Float = 1f
+        private const val SLIDE_MULT_OPACITY: Float = 3f
 
-        private const val PREFERENCES_NAME = "hotel_search_map_preferences"
-        private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
+        const val PREFERENCES_NAME = "hotel_search_map_preferences"
+        const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
         fun createInstance(hotelSearchModel: HotelSearchModel,
                            selectedParam: ParamFilterV2,

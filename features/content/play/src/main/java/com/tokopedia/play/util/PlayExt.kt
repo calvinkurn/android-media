@@ -6,6 +6,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PortraitVideoBoundsProvider
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withTimeout
+import kotlin.reflect.KProperty1
 
 /**
  * Created by jegul on 14/04/20
@@ -36,4 +42,44 @@ internal fun ViewPager2.findFragmentByPosition(
 
 internal fun ViewPager2.findCurrentFragment(fragmentManager: FragmentManager): Fragment? {
     return findFragmentByPosition(fragmentManager, currentItem)
+}
+
+private const val MEASURE_TIMEOUT_IN_MS: Long = 500
+
+internal suspend inline fun measureWithTimeout(
+        timeout: Long = MEASURE_TIMEOUT_IN_MS,
+        crossinline measureFn: suspend () -> Unit
+) = withTimeout(timeout) {
+    measureFn()
+}
+
+data class CachedState<T>(val prevValue: T? = null, val value: T) {
+
+    fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {
+        val prevState = this.prevValue
+        val currState = this.value
+
+        return when {
+            currState == null -> false
+            prevState == null -> true
+            else -> {
+                val prevValue = prop.get(prevState)
+                val currentValue = prop.get(currState)
+                prevValue != currentValue
+            }
+        }
+    }
+}
+
+internal fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+    var cachedValue : T? = null
+    return map {
+        val prevValue = cachedValue
+        cachedValue = it
+        CachedState(prevValue, it)
+    }
+}
+
+internal fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
+    value = value.fn()
 }

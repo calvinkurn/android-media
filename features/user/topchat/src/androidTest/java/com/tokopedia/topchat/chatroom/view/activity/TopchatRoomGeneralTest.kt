@@ -19,15 +19,14 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
     fun test_intent_ask_seller_with_custom_msg() {
         // Given
         val intentMsg = "Hi seller"
-        setupChatRoomActivity {
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity {
             val intent = RouteManager.getIntent(
-                    context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER_WITH_MSG, exShopId, intentMsg
+                context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER_WITH_MSG, exShopId, intentMsg
             )
             it.putExtras(intent)
         }
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
 
         // Then
         onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))
@@ -37,15 +36,14 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
     fun test_intent_ask_buyer_with_custom_msg() {
         // Given
         val intentMsg = "Hi buyer"
-        setupChatRoomActivity {
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity {
             val intent = RouteManager.getIntent(
-                    context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG, exUserId, intentMsg
+                context, ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG, exUserId, intentMsg
             )
             it.putExtras(intent)
         }
-        getChatUseCase.response = firstPageChatAsSeller
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
 
         // Then
         onView(withId(R.id.new_comment)).check(matches(withText(intentMsg)))

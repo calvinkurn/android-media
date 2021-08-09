@@ -19,3 +19,9 @@ android_lint.skip_gradle_task = true
 android_lint.severity = "Warning"
 android_lint.filtering = true
 android_lint.lint(inline_mode: true)
+
+# Kotlin Detekt
+kotlin_detekt.filtering = false
+kotlin_detekt.gradle_task = "detektCheck"
+kotlin_detekt.report_file = "build/reports/detekt/detekt.xml"
+kotlin_detekt.detekt(inline_mode: true)

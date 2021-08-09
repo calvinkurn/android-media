@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="loginfingerprint_20">20dp</dimen>
+
     <dimen name="loginfingerprint_180">180dp</dimen>
     <dimen name="loginfingerprint_225">225dp</dimen>
 </resources>

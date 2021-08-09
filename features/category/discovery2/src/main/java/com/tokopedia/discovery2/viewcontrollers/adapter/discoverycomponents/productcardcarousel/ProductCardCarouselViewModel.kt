@@ -48,7 +48,14 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         handleLihatSemuaHeader()
+        handleErrorState()
         fetchProductCarouselData()
+    }
+
+    private fun handleErrorState() {
+        if(components.verticalProductFailState){
+            productLoadError.value = true
+        }
     }
 
     private fun handleLihatSemuaHeader() {
@@ -71,12 +78,19 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun fetchProductCarouselData() {
         launchCatchError(block = {
             productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+            components.shouldRefreshComponent = null
             setProductsList()
         }, onError = {
-            components.noOfPagesLoaded = 0
-            components.pageLoadedCounter = 1
+            components.noOfPagesLoaded = 1
+            components.verticalProductFailState = true
+            components.shouldRefreshComponent = null
             productLoadError.value = true
         })
+    }
+
+    fun resetComponent(){
+        components.noOfPagesLoaded = 0
+        components.pageLoadedCounter = 1
     }
 
     private suspend fun setProductsList() {

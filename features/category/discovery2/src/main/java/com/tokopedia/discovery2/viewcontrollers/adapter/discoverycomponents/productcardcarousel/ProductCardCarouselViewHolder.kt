@@ -16,6 +16,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LocalLoad
 
@@ -41,7 +43,11 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
         getSubComponent().inject(mProductCarouselComponentViewModel)
-        addShimmer()
+        if (mDiscoveryRecycleAdapter.itemCount == 0 || mProductCarouselComponentViewModel.getProductList().isNullOrEmpty()) {
+            addShimmer()
+        }
+        mProductCarouselRecyclerView.show()
+        carouselEmptyState?.hide()
         addDefaultItemDecorator()
         handleCarouselPagination()
     }
@@ -151,6 +157,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private fun reloadComponent() {
         mProductCarouselRecyclerView.visible()
         carouselEmptyState?.gone()
+        mProductCarouselComponentViewModel.resetComponent()
         mProductCarouselComponentViewModel.fetchProductCarouselData()
     }
 

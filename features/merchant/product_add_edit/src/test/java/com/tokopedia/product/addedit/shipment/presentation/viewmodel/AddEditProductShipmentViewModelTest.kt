@@ -2,11 +2,15 @@ package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -57,6 +61,18 @@ class AddEditProductShipmentViewModelTest {
 
         isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MAX_WEIGHT_KILOGRAM + 1}", AddEditProductShipmentConstants.UNIT_KILOGRAM)
         Assert.assertFalse(isValid)
+    }
+
+    @Test
+    fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
+        val draftIdResult = 1L
+        val productInputModel = ProductInputModel().apply {
+            productId = 220
+        }
+
+        coEvery { saveProductDraftUseCase.executeOnBackground() } returns draftIdResult
+        viewModel.saveProductDraft(productInputModel)
+        coVerify { saveProductDraftUseCase.executeOnBackground() }
     }
 
     @Test
