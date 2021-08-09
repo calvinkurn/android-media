@@ -461,7 +461,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         mView?.setSnackBarErrorMessage(message, true)
     }
 
-    private suspend fun getSecurelyUploadedImages(files: List<String>, chipUploadHostConfig: ChipUploadHostConfig): ArrayList<ImageUpload>? {
+     suspend fun getSecurelyUploadedImages(files: List<String>, chipUploadHostConfig: ChipUploadHostConfig): ArrayList<ImageUpload>? {
         val listOfSecureImageParmeter = getListOfSecureImageParameter(files, chipUploadHostConfig)
         if (listOfSecureImageParmeter.isEmpty() || files.size != listOfSecureImageParmeter.size) return null
 
@@ -476,7 +476,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
 
     private suspend fun getUploadedImageList(files: List<String>, listOfSecureImageParmeter: ArrayList<SecureImageParameter>): ArrayList<ImageUpload> {
         val list = arrayListOf<ImageUpload>()
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher.io) {
             list.addAll(contactUsUploadImageUseCase.uploadFile(
                     userSession.userId,
                     mView?.imageList,

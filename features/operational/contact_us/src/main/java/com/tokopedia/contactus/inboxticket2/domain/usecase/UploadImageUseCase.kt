@@ -47,7 +47,7 @@ class ContactUsUploadImageUseCase @Inject constructor(private val context: Conte
         return list
     }
 
-    private fun getModifiedPicObj(picObj: String, secureImageParameter: SecureImageParameter): String? {
+    fun getModifiedPicObj(picObj: String, secureImageParameter: SecureImageParameter): String? {
         val picObjPojo = GsonBuilder().create()
                 .fromJson<PicObjPojo>(picObj.decode(),
                         PicObjPojo::class.java)
