@@ -1128,9 +1128,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.updateCart()
         }
 
-        override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String) {
+        override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionPricePerProduct: Int, protectionTitle: String) {
             PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, viewModel.orderProduct.purchaseProtectionPlanData.protectionPricePerProduct, protectionTitle)
+            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, protectionPricePerProduct, protectionTitle)
         }
 
         override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {

@@ -105,10 +105,9 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                         it.categoryId,
                                         it.purchaseProtectionPlanData.protectionTitle,
                                         it.purchaseProtectionPlanData.protectionPricePerProduct,
-                                        orderCart.cartId,
+                                        it.cartId,
                                         if (it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP
-                                        else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP,
-                                        orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                                        else ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP)
                             }
                         }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
