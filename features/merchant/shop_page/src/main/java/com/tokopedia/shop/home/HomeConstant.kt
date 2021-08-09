@@ -36,4 +36,7 @@ object WidgetName {
     const val SHOWCASE_SLIDER_SMALL = "etalase_persegi_kecil_slider"
     const val SHOWCASE_SLIDER_MEDIUM = "etalase_persegi_sedang_slider"
     const val SHOWCASE_SLIDER_TWO_ROWS = "etalase_carausel_2_row"
+    const val SHOWCASE_GRID_SMALL = "etalase_banner_3_x_2"
+    const val SHOWCASE_GRID_MEDIUM = "etalase_banner_besar_2_x_2"
+    const val SHOWCASE_GRID_BIG = "etalase_banner_besar_2_x_1"
 }

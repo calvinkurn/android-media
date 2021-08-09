@@ -10,24 +10,24 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 /**
- * author by Rafli Syam on 05/08/2021
+ * author by Rafli Syam on 09/08/2021
  */
-class ShopHomeShowcaseListSliderSmallViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ShopHomeShowcaseListGridViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         /**
-         * Slider small layout types
+         * Grid layout types
          */
         @LayoutRes
-        val ITEM_SLIDER_SMALL_LAYOUT = R.layout.item_shop_home_etalase_list_slider_small
+        val ITEM_GRID_LAYOUT = R.layout.item_shop_home_etalase_list_grid
     }
 
     private var showcaseItemImage: ImageUnify? = null
     private var showcaseItemName: Typography? = null
 
     init {
-        showcaseItemImage = itemView.findViewById(R.id.img_showcase_item_slider_small)
-        showcaseItemName = itemView.findViewById(R.id.tv_showcase_name_item_slider_small)
+        showcaseItemImage = itemView.findViewById(R.id.img_showcase_item_grid)
+        showcaseItemName = itemView.findViewById(R.id.tv_showcase_name_item_grid)
     }
 
     fun bind(element: ShopHomeShowcaseListItemUiModel) {

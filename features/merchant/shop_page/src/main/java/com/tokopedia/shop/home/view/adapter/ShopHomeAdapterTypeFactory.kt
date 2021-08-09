@@ -18,6 +18,9 @@ import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_BIG
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_MEDIUM
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_SMALL
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_MEDIUM
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
@@ -47,7 +50,8 @@ class ShopHomeAdapterTypeFactory(
     var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
-    private var showcaseSliderLayoutType = ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
+    private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
+    private var showcaseWidgetGridColumnSize = 0
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         when (baseShopHomeWidgetUiModel.name) {
@@ -60,10 +64,21 @@ class ShopHomeAdapterTypeFactory(
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
-            SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT
+            SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_TWO_ROWS -> {
-                showcaseSliderLayoutType = ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
-                return ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT
+                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
+                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
+                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            }
+            SHOWCASE_GRID_SMALL -> {
+                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
+                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE
+                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            }
+            SHOWCASE_GRID_MEDIUM, SHOWCASE_GRID_BIG -> {
+                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
+                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
+                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
             else -> return HideViewHolder.LAYOUT
         }
@@ -153,10 +168,11 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
-            ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT -> ShopHomeShowcaseListSliderBaseViewHolder(
+            ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
                     parent,
-                    ShopHomeShowcaseListSliderAdapter(),
-                    showcaseSliderLayoutType
+                    ShopHomeShowcaseListWidgetAdapter(),
+                    showcaseWidgetLayoutType,
+                    showcaseWidgetGridColumnSize
             )
             else -> return super.createViewHolder(parent, type)
         }
