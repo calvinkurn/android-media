@@ -209,7 +209,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when(tab?.position) {
                     CONST_1 -> {
-                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_TANPA_GRUP, "")
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_TANPA_GRUP, "")
                     }
                 }
             }
