@@ -18,6 +18,7 @@ object ConstantKey {
     const val AB_TEST_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
     const val AB_TEST_VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
 
-    //applink default
+    //default value
     const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+    const val DEFAULT_QUANTITY = 0
 }

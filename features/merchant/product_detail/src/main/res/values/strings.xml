@@ -61,6 +61,7 @@
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
     <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
+    <string name="pdp_search_hint_tokonow">Cari "'"%s"'" di Tokopedia NOW!</string>
 
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
@@ -120,7 +121,7 @@
     <string name="label_terjual_builder">Terjual %1s</string>
     <string name="label_wishlist_builder">Wishlist %1s</string>
     <string name="label_view_builder">Dilihat %1s</string>
-    <string name="terjual_single_text_template_builder">%1s barang laku terjual</string>
+    <string name="terjual_single_text_template_builder">%1s barang berhasil terjual</string>
     <string name="wishlist_single_text_template_builder">%1s orang menyukai barang ini</string>
     <string name="view_single_text__template_builder">%1s orang melihat barang ini</string>
     <string name="label_buyer_photos">Foto Pembeli</string>
@@ -198,7 +199,7 @@
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
     <string name="content_desc_btnAddToWishlist">button tambahkan ke wishlist</string>
-    <string name="content_desc_txt_main_price">text harga %1d</string>
+    <string name="content_desc_txt_main_price">text harga %1f</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>
     <string name="content_desc_product_name">text nama produk %1s</string>
     <string name="content_desc_img_pdp_video">image produk</string>
@@ -259,5 +260,7 @@
     <string name="pdp_boe_coachmark_title">Pengiriman gratis &amp; cepat dengan TokoCabang</string>
     <string name="pdp_boe_coachmark_desc">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Extra sepuasnya!</string>
 
-    <string name="pdp_shipping_error_to_home">Ke Home</string>
+    <string name="pdp_pcs_builder">%1d pcs</string>
+    <string name="pdp_total_stock_static">Jumlah Barang:</string>
+
 </resources>

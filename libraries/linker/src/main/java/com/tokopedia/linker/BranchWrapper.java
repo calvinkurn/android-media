@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -176,7 +177,7 @@ public class BranchWrapper implements WrapperInterface {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
                 if (error == null) {
-                    if(!uriHaveCampaignData) {
+                    if(!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
                         sendUtmParameters(context, referringParams);
                     }else {
                         logNonBranchLinkData(context, referringParams);
@@ -318,6 +319,12 @@ public class BranchWrapper implements WrapperInterface {
                     );
                 }
                 break;
+            case LinkerConstants.EVENT_SEARCH:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof ArrayList) {
+                    BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
+                }
+                break;
         }
     }
 
@@ -350,7 +357,11 @@ public class BranchWrapper implements WrapperInterface {
                         removeHandlerTimeoutMessage();
                         if (error == null) {
                             if (shareCallback != null) {
-                                shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                if(!TextUtils.isEmpty(url)) {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                } else {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+                                }
                             }
                         } else {
                             if (shareCallback != null) {

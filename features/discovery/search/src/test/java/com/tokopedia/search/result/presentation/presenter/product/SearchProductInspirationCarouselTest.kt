@@ -29,6 +29,7 @@ private const val samePosition = "searchproduct/inspirationcarousel/same-positio
 private const val unknownLayout = "searchproduct/inspirationcarousel/unknown-layout.json"
 private const val chips = "searchproduct/inspirationcarousel/chips.json"
 private const val dynamicProduct = "searchproduct/inspirationcarousel/dynamic-product.json"
+private const val dynamicProductNoSuggestion = "searchproduct/inspirationcarousel/dynamic-product-no-suggestion.json"
 private const val keywordProduct = "searchproduct/inspirationcarousel/keyword-product.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
@@ -624,12 +625,14 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         `Then verify view set product list`()
         `Then assert inspiration carousel product list`(
+                1,
                 searchProductModel,
                 ::assertCarouselProductTypeDynamic
         )
     }
 
     private fun `Then assert inspiration carousel product list`(
+            suggestionDataViewCount: Int,
             searchProductModel: SearchProductModel,
             assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
     ) {
@@ -640,6 +643,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         val visitableList = visitableListSlot.captured
         val firstProductPosition = visitableList.indexOfFirst { it is ProductItemDataView }
         val assertionData = CarouselProductListAssertionData(
+                suggestionDataViewCount,
                 firstProductPosition,
                 inspirationCarouselData,
                 assertType
@@ -664,6 +668,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     class CarouselProductListAssertionData(
+            suggestionDataViewCount: Int,
             firstProductPosition: Int,
             val inspirationCarouselData: SearchProductModel.InspirationCarouselData,
             val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
@@ -671,9 +676,11 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         val topSeparatorPosition =
                 firstProductPosition + inspirationCarouselData.position
         val bottomSeparatorPosition =
-                topSeparatorPosition + inspirationCarouselData.inspirationCarouselOptions.size + 2
+                topSeparatorPosition +
+                        inspirationCarouselData.inspirationCarouselOptions.size +
+                        suggestionDataViewCount + 1
         val inspirationCarouselRange =
-                (topSeparatorPosition + 1) until bottomSeparatorPosition
+                (topSeparatorPosition + suggestionDataViewCount) until bottomSeparatorPosition
 
         var inspirationCarouselOptionIndex = 0
     }
@@ -755,8 +762,15 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
         shopLocation shouldBe inspirationCarouselProduct.shop.city
+        shopName shouldBe inspirationCarouselProduct.shop.name
         position shouldBe index + 1
         alternativeKeyword shouldBe expectedAlternativeKeyword
+        freeOngkirDataView.isActive shouldBe inspirationCarouselProduct.freeOngkir.isActive
+        freeOngkirDataView.imageUrl shouldBe inspirationCarouselProduct.freeOngkir.imageUrl
+        isOrganicAds shouldBe inspirationCarouselProduct.isOrganicAds()
+        topAdsClickUrl shouldBe inspirationCarouselProduct.ads.productClickUrl
+        topAdsViewUrl shouldBe inspirationCarouselProduct.ads.productViewUrl
+        topAdsWishlistUrl shouldBe inspirationCarouselProduct.ads.productWishlistUrl
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
@@ -794,6 +808,21 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     @Test
+    fun `Show inspiration carousel dynamic product with no suggestion`() {
+        val searchProductModel = dynamicProductNoSuggestion.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then assert inspiration carousel product list`(
+            0,
+            searchProductModel,
+            ::assertCarouselProductTypeDynamic
+        )
+    }
+
+    @Test
     fun `Show inspiration carousel keyword product`() {
         val searchProductModel = keywordProduct.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
@@ -802,6 +831,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         `Then verify view set product list`()
         `Then assert inspiration carousel product list`(
+                1,
                 searchProductModel,
                 ::assertCarouselProductTypeBroadMatch,
         )
@@ -816,7 +846,6 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
 
             val broadMatchProductType = carouselProductType as BroadMatchProduct
-            broadMatchProductType.isOrganicAds shouldBe false
             broadMatchProductType.hasThreeDots shouldBe false
         }
     }

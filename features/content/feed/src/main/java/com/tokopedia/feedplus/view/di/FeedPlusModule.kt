@@ -25,12 +25,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
-import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
-import com.tokopedia.shop.common.data.source.ShopCommonDataSource
-import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -124,40 +119,6 @@ class FeedPlusModule {
         return retrofitBuilder.baseUrl(FeedUrl.BASE_DOMAIN)
                 .client(okHttpClient)
                 .build()
-    }
-
-    @FeedPlusScope
-    @Named("TOME")
-    @Provides
-    fun provideTomeRetrofitDomain(okHttpClient: OkHttpClient,
-                                  retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(FeedUrl.TOME_DOMAIN)
-                .client(okHttpClient)
-                .build()
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonApi(@Named("TOME") retrofit: Retrofit): ShopCommonApi {
-        return retrofit.create(ShopCommonApi::class.java)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi): ShopCommonCloudDataSource {
-        return ShopCommonCloudDataSource(shopCommonApi)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonDataSource(shopInfoCloudDataSource: ShopCommonCloudDataSource): ShopCommonDataSource {
-        return ShopCommonDataSource(shopInfoCloudDataSource)
-    }
-
-    @FeedPlusScope
-    @Provides
-    fun provideShopCommonRepository(shopInfoDataSource: ShopCommonDataSource): ShopCommonRepository {
-        return ShopCommonRepositoryImpl(shopInfoDataSource)
     }
 
     @FeedPlusScope

@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,6 +39,12 @@ class CommonTopupBillsModule {
     @Provides
     fun provideDigitalCheckVoucherUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
         return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper {
+        return PermissionCheckerHelper()
     }
 
 }
