@@ -575,12 +575,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
-        if (channelData.statusInfo.statusType.isFreeze) return
-        if (!channelData.videoMetaInfo.videoPlayer.isGeneral()) return
-
         fun loadCast() {
-            playVideoPlayer.stop(resetState = false)
-            playVideoPlayer.removeListener(videoManagerListener)
+            if (channelData.statusInfo.statusType.isFreeze) return
 
             val videoStream = channelData.videoMetaInfo.videoStream
             if(mChannelData?.id.toString() != castPlayerHelper.getCurrentMediaChannelId()) {
@@ -589,23 +585,29 @@ class PlayViewModel @Inject constructor(
                     title = videoStream.title,
                     partnerName = channelData.partnerInfo.basicInfo.name,
                     coverUrl = channelData.channelInfo.coverUrl,
-                    videoUrl = channelData.videoMetaInfo.videoPlayer.params.videoUrl,
+                    videoUrl = if(channelData.videoMetaInfo.videoPlayer.isGeneral())
+                                    channelData.videoMetaInfo.videoPlayer.params.videoUrl
+                                else "",
                     currentPosition = playVideoPlayer.getCurrentPosition()
                 )
             }
 
-            _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+            if(channelData.videoMetaInfo.videoPlayer.isGeneral())
+                _observableVideoMeta.value = channelData.videoMetaInfo.copy(
                     videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelInfo.coverUrl)
-            )
+                )
         }
 
         fun loadPlayer() {
+            if (channelData.statusInfo.statusType.isFreeze) return
+            if (!channelData.videoMetaInfo.videoPlayer.isGeneral()) return
+
             playVideoPlayer.addListener(videoManagerListener)
 //            playVideoPlayer.resume()
             updateVideoMetaInfo(channelData.videoMetaInfo)
 
             _observableVideoMeta.value = channelData.videoMetaInfo.copy(
-                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(playVideoPlayer.videoPlayer)
+                videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(playVideoPlayer.videoPlayer)
             )
         }
 
