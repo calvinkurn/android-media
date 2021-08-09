@@ -15,6 +15,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -261,8 +262,6 @@ class ShakeDetectPresenterTest {
     @Test
     fun `is shake detected as normal shake is not first shake` () {
         val remoteConfigTest = mockk<RemoteConfig>(relaxed =  true)
-        val remoteConfig = presenter.remoteConfig
-        val isFirstShake = presenter.firstShake
         val isFirstShakeTest = true
         val permissionCheckerHelperTest = mockk<PermissionCheckerHelper>(relaxed = true)
 
@@ -278,16 +277,11 @@ class ShakeDetectPresenterTest {
         verify {
             presenter.addLocationParameterBeforeRequest(any())
         }
-        presenter.changeRemoteConfig(remoteConfig)
-        presenter.changeFirstShake(isFirstShake)
-        presenter.setPermissionChecker(null)
     }
 
     @Test
     fun `is shake detected as normal shake is first shake` () {
         val remoteConfigTest = mockk<RemoteConfig>(relaxed =  true)
-        val remoteConfig = presenter.remoteConfig
-        val isFirstShake = presenter.firstShake
         val isFirstShakeTest = true
         val permissionCheckerHelperTest = mockk<PermissionCheckerHelper>(relaxed = true)
 
@@ -303,9 +297,13 @@ class ShakeDetectPresenterTest {
         verify {
             presenter.addLocationParameterBeforeRequest(any())
         }
+    }
 
-        presenter.changeRemoteConfig(remoteConfig)
-        presenter.changeFirstShake(isFirstShake)
+    @After
+    fun after() {
+        println("test after")
+        presenter.changeRemoteConfig(null)
+        presenter.changeFirstShake(false)
         presenter.setPermissionChecker(null)
     }
 
@@ -337,5 +335,4 @@ class ShakeDetectPresenterTest {
             activity.getString(any())
         } returns stringTest
     }
-
 }
