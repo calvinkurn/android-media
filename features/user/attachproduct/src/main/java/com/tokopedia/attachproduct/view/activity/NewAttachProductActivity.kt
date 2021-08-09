@@ -1,0 +1,108 @@
+package com.tokopedia.attachproduct.view.activity
+
+import android.content.Intent
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.AttachProduct
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.attachproduct.view.fragment.NewAttachProductFragment.Companion.newInstance
+import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
+import com.tokopedia.unifyprinciples.R
+import java.util.*
+
+class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.Activity {
+
+    private var warehouseId = "0"
+    private var _shopId = ""
+    private var shopName: String = ""
+    private var _isSeller = false
+    private var source: String = ""
+    var maxChecked = MAX_CHECKED_DEFAULT
+    private var hiddenProducts: ArrayList<String>? = null
+
+    companion object {
+        val MAX_CHECKED_DEFAULT = 3
+        val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
+        val SOURCE_TALK = "talk"
+    }
+
+    override val isSeller: Boolean
+        get() = _isSeller
+    override val shopId: String
+        get() = _shopId
+
+    private fun setupWarehouseId() {
+        warehouseId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID) ?: ""
+        if (warehouseId.isEmpty()) {
+            warehouseId = "0"
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setupWarehouseId()
+        super.onCreate(savedInstanceState)
+        if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
+            _shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) ?: ""
+        }
+    }
+
+
+    override fun getNewFragment(): Fragment {
+        var fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        return if (fragment != null) {
+            fragment
+        } else {
+            if (intent != null && intent.extras != null) {
+                _isSeller = intent.getBooleanExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, false)
+                source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY) ?: ""
+                maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
+                hiddenProducts = intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
+            }
+            fragment = newInstance(
+                this, isSeller, source, maxChecked, hiddenProducts, warehouseId
+            )
+            fragment
+        }
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        title = getString(com.tokopedia.attachproduct.R.string.string_attach_product_activity_title)
+        super.setupLayout(savedInstanceState)
+        if (supportActionBar != null) {
+            supportActionBar!!.setBackgroundDrawable(
+                resources.getDrawable(com.tokopedia.attachproduct.R.drawable.bg_attach_product_white_toolbar_drop_shadow))
+            supportActionBar!!.setHomeAsUpIndicator(
+                MethodChecker.getDrawable(this, com.tokopedia.attachproduct.R.drawable.ic_attach_product_close_default))
+        }
+        shopName = if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
+            intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) ?: ""
+        } else {
+            ""
+        }
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, R.color.Unify_N0))
+        toolbar.subtitle = shopName
+    }
+
+    override fun finishActivityWithResult(products: ArrayList<ResultProduct>) {
+        val data = Intent()
+        data.putParcelableArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products)
+        setResult(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK, data)
+        finish()
+    }
+
+    override fun goToAddProduct(shopId: String) {
+        if (isSeller) {
+            RouteManager.route(this, ApplinkConst.PRODUCT_ADD)
+        }
+    }
+
+    override fun setShopName(shopName: String) {
+        this.shopName = shopName
+        intent.putExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName)
+        toolbar.subtitle = shopName
+    }
+}
