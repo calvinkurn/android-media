@@ -3766,7 +3766,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
     }
 
-    override fun onCheckBundlingClicked(
+    override fun onClickCheckBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel?
@@ -3776,7 +3776,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
     }
 
-    override fun onProductInBundlingClicked(
+    override fun onClickProductInBundling(
         bundleId: String,
         bundleProductId: String,
         componentTrackDataModel: ComponentTrackDataModel?

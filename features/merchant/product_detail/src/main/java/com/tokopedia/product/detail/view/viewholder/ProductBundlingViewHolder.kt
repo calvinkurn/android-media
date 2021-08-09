@@ -100,7 +100,7 @@ class ProductBundlingViewHolder(
         saving.text = bundle.savingPriceBundling
         price.text = bundle.finalPriceBundling
         buttonCheck.setOnClickListener {
-            listener.onCheckBundlingClicked(
+            listener.onClickCheckBundling(
                 bundleId,
                 bundleType,
                 componentTrackDataModel
@@ -176,7 +176,7 @@ class ProductBundlingViewHolder(
             val itemProductId = item.productId
             if (itemProductId != bundle.productId) {
                 setItemClickListener(listOf(viewImage, viewPrice, viewDiscount, viewSlash)) {
-                    listener.onProductInBundlingClicked(
+                    listener.onClickProductInBundling(
                         bundle.bundleId,
                         itemProductId,
                         componentTrackDataModel

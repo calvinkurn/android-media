@@ -182,7 +182,7 @@ interface DynamicProductDetailListener {
      * ProductBundlingViewHolder
      */
     fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel:ComponentTrackDataModel?)
-    fun onCheckBundlingClicked(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun onProductInBundlingClicked(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel?)
 
 }
