@@ -8,7 +8,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
     fun type(data: ProductDiscussionMostHelpfulDataModel): Int
     fun type(data: ProductGeneralInfoDataModel): Int
-    fun type(data: ProductMerchantVoucherDataModel): Int
     fun type(data: ProductRecommendationDataModel): Int
     fun type(data: PageErrorDataModel): Int
     fun type(data: VariantDataModel): Int

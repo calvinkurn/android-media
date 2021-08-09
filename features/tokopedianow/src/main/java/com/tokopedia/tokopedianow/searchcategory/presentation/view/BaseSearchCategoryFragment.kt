@@ -44,7 +44,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
@@ -714,7 +714,7 @@ abstract class BaseSearchCategoryFragment:
         val context = activity ?: return
         val view = view ?: return
 
-        NetworkErrorHelper.showEmptyState(context, view, getErrorMessage(context, throwable)) {
+        NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             getViewModel().onViewReloadPage()
         }
     }
