@@ -91,13 +91,6 @@ class ProductBundlingViewHolder(
             BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundle)
         }
 
-        val context = weakContext.get()
-
-        val quantityText = context?.getString(
-            R.string.pdp_bundling_quantity,
-            bundleItems.size.toString()
-        ) ?: bundleItems.size.toString()
-
         title.text = bundle.titleComponent
         info.text = bundle.preorderString
         slash.apply {
@@ -106,7 +99,6 @@ class ProductBundlingViewHolder(
         }
         saving.text = bundle.savingPriceBundling
         price.text = bundle.finalPriceBundling
-        quantity.text = quantityText
         buttonCheck.setOnClickListener {
             listener.onCheckBundlingClicked(
                 bundleId,
@@ -135,6 +127,8 @@ class ProductBundlingViewHolder(
             text = item.originalPrice
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
+
+        quantity.hide()
     }
 
     private fun showMultiBundle(bundle: BundleInfo) {
@@ -194,6 +188,13 @@ class ProductBundlingViewHolder(
         unusedGroups.forEach { group ->
             group.invisible()
         }
+
+        val quantityText = weakContext.get()?.getString(
+            R.string.pdp_bundling_quantity,
+            items.size.toString()
+        ) ?: items.size.toString()
+        quantity.text = quantityText
+        quantity.show()
     }
 
     private fun checkBundleItems(
