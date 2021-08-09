@@ -13,6 +13,7 @@ import com.tokopedia.thankyou_native.data.mapper.PaymentType
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.thank_fragment_processing.*
 
@@ -37,6 +38,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
+    override fun getTopAdsView(): TopAdsView? = topAdsView
 
     override fun getTopTickerView(): Ticker? = topTicker
 

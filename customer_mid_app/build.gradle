@@ -83,6 +83,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticcart)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.qrscanner)
@@ -100,7 +101,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
@@ -222,7 +223,11 @@ dependencies {
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
+    //new relic sdk
+    implementation rootProject.ext.miscDependencies.newRelic
 
     // unify dependencies
     implementation rootProject.ext.unifyDependencies.principles
@@ -296,6 +301,7 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore

@@ -80,6 +80,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_SIMPLE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.VERIFY_BIOMETRIC
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
@@ -201,6 +202,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
     const val DF_CONTENT_PROFILE = "df_content_profile"
+    const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -459,6 +461,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_USER_SETTINGS, R.string.applink_setting_bank_title, { DFWebviewFallbackUrl.USER_SETTING_BANK }))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DF_BASE, R.string.notif_settings_title))
             add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
+            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO_SIMPLE) }, DF_BASE, R.string.user_identification_info_simple))
             add(DFP({ it.startsWith(ORDER_HISTORY) || it.startsWithPattern(ApplinkConstInternalMarketplace.ORDER_HISTORY) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
@@ -483,8 +486,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PUSH_NOTIFICATION_TROUBLESHOOTER) }, DF_BASE, R.string.applink_notif_troubleshooter))
 
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
-            add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_loginphone))
+            add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
+            add(DFP({ it.startsWith(TELEPHONY_MASKING) }, DF_OPERATIONAL_CONTACT_US, R.string.applink_telephony))
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
@@ -520,6 +524,16 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
             add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
+
+            // Tokopedia NOW!
+            add(DFP({
+                it.startsWith(TokopediaNow.HOME) ||
+                    it.startsWith(TokopediaNow.CATEGORY) ||
+                    it.startsWith(TokopediaNow.SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH)
+            }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
         }
     }
 
@@ -532,6 +546,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
             add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
+            add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO_SIMPLE) }, DF_BASE, R.string.user_identification_info_simple))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                         it.startsWith(TOPADS_DASHBOARD_INTERNAL)

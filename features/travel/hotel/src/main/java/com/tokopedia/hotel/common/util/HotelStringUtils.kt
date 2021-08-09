@@ -89,7 +89,7 @@ class HotelStringUtils {
                 0.0
             } else {
                 val result: String = if (useCommaInThousandSeparator) {
-                    stringToReplace.replace("[^0-9\\.]".toRegex(), "")
+                    stringToReplace.replace("[^0-9.]".toRegex(), "")
                 } else {
                     stringToReplace.replace("[^0-9,]".toRegex(), "").replaceFirst(",".toRegex(), ".")
                 }

@@ -4,6 +4,8 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
         //region General data
@@ -50,7 +52,7 @@ data class ComponentData(
         @SerializedName("stock")
         val stock: Stock = Stock(),
         @SerializedName("variant")
-        val variant: Variant = Variant(),
+        val variant: VariantBasic = VariantBasic(),
         @SerializedName("videos")
         val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
@@ -70,12 +72,12 @@ data class ComponentData(
         @SerializedName("defaultChild")
         val defaultChild: String = "",
         @SerializedName("variants")
-        val variants: List<ProductP1Variant> = listOf(),
+        val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf(),
+        val children: List<VariantChild> = listOf(),
         //endregioncopy
 
-        //region best seller data
+        //region one liners data
         @SerializedName("productID")
         val productId: String = "",
         @SerializedName("oneLinerContent")
@@ -85,10 +87,17 @@ data class ComponentData(
         @SerializedName("color")
         val color: String = "",
         @SerializedName("isVisible")
-        val isVisible: Boolean = true
+        val isVisible: Boolean = true,
         //endregioncopy
-)  {
-    companion object{
+
+        //region category carousel
+        @SerializedName("titleCarousel")
+        val titleCarousel: String = "",
+        @SerializedName("list")
+        val categoryCarouselList: List<CategoryCarousel> = listOf()
+        //endregion
+) {
+    companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
     }
 
@@ -142,3 +151,16 @@ data class ComponentData(
         })
     }
 }
+
+data class CategoryCarousel(
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("isApplink")
+        var isApplink: Boolean = false,
+        @SerializedName("applink")
+        val applink: String = "",
+        @SerializedName("categoryID")
+        val categoryId: String = ""
+)
