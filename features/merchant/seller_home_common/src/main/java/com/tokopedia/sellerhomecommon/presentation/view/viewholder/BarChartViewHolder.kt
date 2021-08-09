@@ -36,6 +36,7 @@ class BarChartViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_bar_chart_widget
+        private const val ANIMATION_DURATION = 200
     }
 
     private val emptyState: CardUnify? = itemView?.findViewById(R.id.bar_chart_empty_state)
@@ -134,8 +135,8 @@ class BarChartViewHolder(
         val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             barBorderRadius { itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1) }
 
             xAxis {
@@ -290,7 +291,7 @@ class BarChartViewHolder(
 
     private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 200L
+        animator.duration = ANIMATION_DURATION.toLong()
         animator.addUpdateListener { valueAnimator ->
             this?.context?.let {
                 scaleX = (valueAnimator.animatedValue as? Float).orZero()

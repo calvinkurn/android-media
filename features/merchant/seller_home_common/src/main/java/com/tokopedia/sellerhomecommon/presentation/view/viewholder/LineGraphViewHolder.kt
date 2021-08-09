@@ -42,6 +42,7 @@ class LineGraphViewHolder(
 
         @LayoutRes
         private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_chart_tooltip
+        private const val ANIMATION_DURATION = 200
     }
 
     private var showAnimation: ValueAnimator? = null
@@ -222,8 +223,8 @@ class LineGraphViewHolder(
     private fun getLineChartConfig(element: LineGraphWidgetUiModel): LineChartConfigModel {
         val lineChartData = getLineChartData(element)
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { !showEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
@@ -259,7 +260,7 @@ class LineGraphViewHolder(
 
     private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 200L
+        animator.duration = ANIMATION_DURATION.toLong()
         animator.addUpdateListener { valueAnimator ->
             this?.context?.let {
                 scaleX = (valueAnimator.animatedValue as? Float).orZero()

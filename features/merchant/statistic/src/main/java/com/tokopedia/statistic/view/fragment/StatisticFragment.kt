@@ -76,6 +76,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val DEFAULT_START_DATE_REGULAR_MERCHANT = 7L
         private const val DEFAULT_END_DATE_NON_REGULAR_MERCHANT = 0L
         private const val DEFAULT_END_DATE_REGULAR_MERCHANT = 1L
+        private const val TOAST_COUNT_DOWN_INTERVAL = 1000L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
@@ -849,8 +850,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun showToaster() = view?.run {
         val toaster = Toast.makeText(context, context.getString(R.string.stc_you_havent_access_this_page), Toast.LENGTH_LONG)
-        val countDownInterval = 1000L
-        val toastCountDown = object : CountDownTimer(TOAST_DURATION, countDownInterval) {
+        val toastCountDown = object : CountDownTimer(TOAST_DURATION, TOAST_COUNT_DOWN_INTERVAL) {
             override fun onTick(p0: Long) {
                 toaster.show()
             }
