@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
@@ -71,7 +72,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
             shopRef = if (data?.getQueryParameter(QUERY_SHOP_REF) == null) "" else data.getQueryParameter(QUERY_SHOP_REF)
             sort = if (data?.getQueryParameter(QUERY_SORT) == null) "" else data.getQueryParameter(QUERY_SORT)
             attribution = if (data?.getQueryParameter(QUERY_ATTRIBUTION) == null) "" else data.getQueryParameter(QUERY_ATTRIBUTION)
-            keyword = if (data?.getQueryParameter(QUERY_SEARCH) == null) "" else data.getQueryParameter(QUERY_SEARCH)
+            keyword = getKeywordFromAppLink(data)
         }
         if (shopRef == null) {
             shopRef = ""
@@ -80,6 +81,16 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         super.onCreate(savedInstanceState)
         initSearchInputView()
         findViewById<View>(R.id.mainLayout).requestFocus()
+    }
+
+    private fun getKeywordFromAppLink(data: Uri?): String {
+        return data?.let {
+            when {
+                it.getQueryParameter(QUERY_SEARCH) != null -> it.getQueryParameter(QUERY_SEARCH).orEmpty()
+                it.getQueryParameter(SearchApiConst.Q) != null -> it.getQueryParameter(SearchApiConst.Q).orEmpty()
+                else -> ""
+            }
+        }.orEmpty()
     }
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {

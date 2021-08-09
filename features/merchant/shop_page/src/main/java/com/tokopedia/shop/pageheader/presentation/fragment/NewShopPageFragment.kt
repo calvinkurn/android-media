@@ -30,13 +30,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -107,7 +105,6 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
-import com.tokopedia.shop.common.constant.ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
@@ -154,6 +151,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 
 
@@ -1066,7 +1064,25 @@ class NewShopPageFragment :
         }
     }
 
-    private fun redirectToShopSearchProduct() {
+    private fun redirectToSearchAutoCompletePage() {
+        val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST,
+                shopId,
+                ""
+        ), "utf-8")
+        val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+                .buildUpon()
+                .appendQueryParameter(SearchApiConst.Q, "")
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
+                .appendQueryParameter(SearchApiConst.NAVSOURCE, "shop")
+                .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
+                .build()
+                .toString()
+        RouteManager.route(context, searchPageUri)
+    }
+
+    private fun redirectToShopSearchProductPage() {
         context?.let { context ->
             shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
                 startActivity(ShopSearchProductActivity.createIntent(
@@ -1204,7 +1220,10 @@ class NewShopPageFragment :
 
     private fun clickSearch() {
         shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
-        redirectToShopSearchProduct()
+        if (GlobalConfig.isSellerApp())
+            redirectToShopSearchProductPage()
+        else
+            redirectToSearchAutoCompletePage()
     }
 
     private fun clickSettingButton() {
@@ -1287,7 +1306,7 @@ class NewShopPageFragment :
             setupSearchbar(
                     hints = listOf(HintData(placeholder = searchBarHintText)),
                     searchbarClickCallback = {
-                        redirectToShopSearchProduct()
+                        redirectToShopSearchProductPage()
                     }
             )
         }

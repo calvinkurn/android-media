@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -28,9 +29,13 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -91,6 +96,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import java.net.URLEncoder
 import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -1335,10 +1341,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     fun onSearchBarClicked() {
-        redirectToShopSearchProduct()
+        if (GlobalConfig.isSellerApp()) {
+            redirectToShopSearchProductPage()
+        } else {
+            redirectToSearchAutoCompletePage()
+        }
     }
 
-    private fun redirectToShopSearchProduct() {
+    private fun redirectToShopSearchProductPage() {
         context?.let {
             shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
             startActivity(createIntent(
@@ -1352,6 +1362,24 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopRef
             ))
         }
+    }
+    private fun redirectToSearchAutoCompletePage() {
+        shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
+        val shopSrpAppLink = URLEncoder.encode(UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST,
+                shopId,
+                ""
+        ), "utf-8")
+        val searchPageUri = Uri.parse(ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+                .buildUpon()
+                .appendQueryParameter(SearchApiConst.Q, keyword)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
+                .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
+                .appendQueryParameter(SearchApiConst.NAVSOURCE, "shop")
+                .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
+                .build()
+                .toString()
+        RouteManager.route(context, searchPageUri)
     }
 
 }
