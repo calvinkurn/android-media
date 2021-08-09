@@ -249,14 +249,12 @@ class ShakeDetectPresenterTest {
 
     @Test
     fun `is user loggedin` () {
-        val userSession = presenter.userSession
         val userSessionTest = mockk<UserSession>(relaxed = true)
         presenter.changeUserSession(userSessionTest)
         every { userSessionTest.isLoggedIn } returns true
         val isLogin = presenter.isLogin
         verify { presenter.isLogin }
         assertEquals(true, isLogin)
-        presenter.changeUserSession(userSession)
     }
 
     @Test
@@ -273,10 +271,11 @@ class ShakeDetectPresenterTest {
 
         presenter.onShakeDetect()
 
-        assertFalse(presenter.firstShake)
         verify {
             presenter.addLocationParameterBeforeRequest(any())
         }
+
+        assertFalse(presenter.firstShake)
     }
 
     @Test
@@ -293,18 +292,20 @@ class ShakeDetectPresenterTest {
 
         presenter.onShakeDetect()
 
-        assertFalse(presenter.firstShake)
         verify {
             presenter.addLocationParameterBeforeRequest(any())
         }
+
+        assertFalse(presenter.firstShake)
+
     }
 
     @After
     fun after() {
-        println("test after")
         presenter.changeRemoteConfig(null)
         presenter.changeFirstShake(false)
         presenter.setPermissionChecker(null)
+        presenter.changeUserSession(null)
     }
 
     private fun givenLocationParameterBeforeRequest
