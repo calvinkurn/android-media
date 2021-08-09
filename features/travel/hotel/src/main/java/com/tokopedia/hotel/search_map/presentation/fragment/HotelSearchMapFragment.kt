@@ -211,7 +211,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         long = it.data.first
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
-                    hotelSearchMapViewModel.addSort(Sort(HotelSortEnum.DISTANCE.value))
                     removeAllMarker()
                     showCardListView()
                     hideFindNearHereView()
@@ -236,7 +235,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         radius = it.data
                     }
                     hotelSearchMapViewModel.initSearchParam(hotelSearchModel)
-                    hotelSearchMapViewModel.addSort(Sort(HotelSortEnum.DISTANCE.value))
                     loadInitialData()
                 }
                 is Fail -> {
