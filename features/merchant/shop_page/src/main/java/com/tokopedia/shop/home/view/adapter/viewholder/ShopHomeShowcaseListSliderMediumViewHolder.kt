@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -13,7 +15,8 @@ import com.tokopedia.unifyprinciples.Typography
  * author by Rafli Syam on 03/08/2021
  */
 class ShopHomeShowcaseListSliderMediumViewHolder (
-        itemView: View
+        itemView: View,
+        private val itemWidgetListener: ShopHomeShowcaseListWidgetListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -40,7 +43,11 @@ class ShopHomeShowcaseListSliderMediumViewHolder (
             }
         } catch (e: Throwable) {
         }
-
         showcaseItemName?.text = element.name
+
+        itemView.setOnClickListener {
+            val showcaseId = ShopHomeShowcaseListWidgetAdapter.getShowcaseIdFromApplink(element.appLink)
+            itemWidgetListener.onShowcaseListWidgetItemClicked(showcaseId)
+        }
     }
 }

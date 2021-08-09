@@ -29,10 +29,7 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.view.adapter.viewholder.*
-import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
@@ -45,7 +42,8 @@ class ShopHomeAdapterTypeFactory(
         private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
         private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
-        private val playWidgetCoordinator: PlayWidgetCoordinator
+        private val playWidgetCoordinator: PlayWidgetCoordinator,
+        private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
@@ -170,7 +168,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
             ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
                     parent,
-                    ShopHomeShowcaseListWidgetAdapter(),
+                    ShopHomeShowcaseListWidgetAdapter(showcaseListWidgetListener = shopHomeShowcaseListWidgetListener),
                     showcaseWidgetLayoutType,
                     showcaseWidgetGridColumnSize
             )

@@ -11,44 +11,70 @@ import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListSliderMediumViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListSliderSmallViewHolder
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 
 class ShopHomeShowcaseListWidgetAdapter(
-        showcaseListItemData: List<ShopHomeShowcaseListItemUiModel> = listOf()
+        showcaseListItemData: List<ShopHomeShowcaseListItemUiModel> = listOf(),
+        private val showcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        /**
+         * Get showcase id from provided applink
+         * Example : tokopedia://shop/6551001/etalase/1428867
+         * @return : 1428867
+         */
+        fun getShowcaseIdFromApplink(applink: String): String {
+            val applinkSegments = applink.split("/")
+            return applinkSegments[applinkSegments.lastIndex]
+        }
+    }
 
     private var showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = showcaseListItemData
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT -> {
-                ShopHomeShowcaseListSliderSmallViewHolder(View.inflate(
-                        parent.context,
-                        ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
-                        null
-                ))
+                ShopHomeShowcaseListSliderSmallViewHolder(
+                        View.inflate(
+                                parent.context,
+                                ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
+                                null
+                        ),
+                        showcaseListWidgetListener
+                )
             }
             ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT -> {
-                ShopHomeShowcaseListSliderMediumViewHolder(View.inflate(
-                        parent.context,
-                        ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT,
-                        null
-                ))
+                ShopHomeShowcaseListSliderMediumViewHolder(
+                        View.inflate(
+                                parent.context,
+                                ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT,
+                                null
+                        ),
+                        showcaseListWidgetListener
+                )
             }
             ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT -> {
-                ShopHomeShowcaseListGridViewHolder(View.inflate(
-                        parent.context,
-                        ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT,
-                        null
-                ))
+                ShopHomeShowcaseListGridViewHolder(
+                        View.inflate(
+                                parent.context,
+                                ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT,
+                                null
+                        ),
+                        showcaseListWidgetListener
+                )
             }
             else -> {
                 // default type is slider small viewholder
-                ShopHomeShowcaseListSliderSmallViewHolder(View.inflate(
-                        parent.context,
-                        ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
-                        null
-                ))
+                ShopHomeShowcaseListSliderSmallViewHolder(
+                        View.inflate(
+                                parent.context,
+                                ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
+                                null
+                        ),
+                        showcaseListWidgetListener
+                )
             }
         }
     }

@@ -98,10 +98,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
-import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -139,6 +136,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
+        ShopHomeShowcaseListWidgetListener,
         InterfaceShopPageClickScrollToTop {
 
     companion object {
@@ -238,7 +236,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         get() = adapter as ShopHomeAdapter
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator)
+        ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator, this)
     }
 
     private val widgetDeleteDialogContainer by lazy {
@@ -1026,6 +1024,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeAdapter.shopHomeEtalaseTitlePosition,
                 0
         )
+    }
+
+    override fun onShowcaseListWidgetItemClicked(showcaseId: String) {
+        val intent = ShopProductListResultActivity.createIntent(
+                activity,
+                shopId,
+                "",
+                showcaseId,
+                "",
+                "",
+                shopRef
+        )
+        intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+        startActivity(intent)
     }
 
     override fun onDisplayItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
