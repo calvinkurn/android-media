@@ -99,12 +99,12 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     override fun renderGraph() {
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_DATE_PICKER, currentDateText)
         currentStatisticsFragment?.showLineGraph(dataStatistic)
     }
 
     override fun getCustomDateText(customDateText: String) {
         currentDateText = customDateText
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_DATE_PICKER, customDateText)
     }
 
     private var groupPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
