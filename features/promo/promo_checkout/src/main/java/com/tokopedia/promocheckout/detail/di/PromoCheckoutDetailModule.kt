@@ -9,7 +9,6 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -19,6 +18,9 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.promocheckout.common.domain.event.network_api.EventCheckoutApi
+import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepository
+import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
@@ -172,5 +174,34 @@ class PromoCheckoutDetailModule {
             listInterceptor.add(chuckerInterceptor)
         }
         return listInterceptor
+    }
+
+    /**===================WILL BE DELETED SOON=============================================*/
+    @PromoCheckoutDetailScope
+    @Provides
+    fun provideEventPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
+                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                              eventCheckRepository: EventCheckRepository,
+                              compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
+        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, eventCheckRepository, compositeSubscription)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideApiService(gson: Gson, client: OkHttpClient): EventCheckoutApi {
+        val retrofitBuilder = Retrofit.Builder()
+            .baseUrl(EventCheckoutApi.BASE_URL_EVENT)
+            .addConverterFactory(StringResponseConverter())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        retrofitBuilder.client(client)
+        val retrofit = retrofitBuilder.build()
+        return retrofit.create(EventCheckoutApi::class.java)
+    }
+
+    @Provides
+    @PromoCheckoutDetailScope
+    fun provideRepository(eventCheckoutApi: EventCheckoutApi): EventCheckRepository {
+        return EventCheckRepositoryImpl(eventCheckoutApi)
     }
 }
