@@ -266,7 +266,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearOldLogisticPromo(result.clearOldPromoCode)
         }
         if (result.autoApplyPromo != null) {
-            autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment)
+            autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment, result)
             return
         }
         orderShipment.value = result.orderShipment
@@ -313,12 +313,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, oldPromoCode)
     }
 
-    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
+    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment, ratesResult: ResultRates) {
         launch(executorDispatchers.immediate) {
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, shipping, orderPayment.value)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
+            orderShop.value = orderShop.value.copy(overweight = 0.0)
+            orderProfile.value = orderProfile.value.copy(enable = true)
             if (isApplied && resultValidateUse != null) {
                 val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                 if (newShipment != null) {
@@ -327,6 +329,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     globalEvent.value = OccGlobalEvent.Normal
                     updatePromoState(resultValidateUse.promoUiModel)
                     updateCart()
+                    sendViewOspEe()
+                    sendPreselectedCourierOption(ratesResult.preselectedSpId)
+                    configureForceShowOnboarding()
                     return@launch
                 }
             }
@@ -340,12 +345,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
                 updateCart()
+                sendViewOspEe()
+                sendPreselectedCourierOption(ratesResult.preselectedSpId)
+                configureForceShowOnboarding()
                 return@launch
             }
             clearAllPromoFromLastRequest()
             calculateTotal()
             globalEvent.value = newGlobalEvent
             updateCart()
+            sendViewOspEe()
+            sendPreselectedCourierOption(ratesResult.preselectedSpId)
+            configureForceShowOnboarding()
         }
     }
 
