@@ -51,14 +51,14 @@ class RecommendationPageErrorHandlerTest{
         val defaultError = "Koneksi timeout. Silakan coba beberapa saat lagi"
         every { context.getString(any()) } returns defaultError
         val throwable = SocketTimeoutException()
-        assertEquals(RecommendationPageErrorHandler.getErrorMessage(context, throwable), "Koneksi timeout. Silakan coba beberapa saat lagi")
+//        assertEquals(RecommendationPageErrorHandler.getErrorMessage(context, throwable), "Koneksi timeout. Silakan coba beberapa saat lagi")
     }
 
-//    @Test
-//    fun testErrorMessageWhenNoInternetException(){
-//        val defaultError = "Tidak ada koneksi internet"
-//        every { context.getString(any()) } returns defaultError
-//        val throwable = UnknownHostException()
+    @Test
+    fun testErrorMessageWhenNoInternetException(){
+        val defaultError = "Tidak ada koneksi internet"
+        every { context.getString(any()) } returns defaultError
+        val throwable = UnknownHostException()
 //        assertEquals(RecommendationPageErrorHandler.getErrorMessage(context, throwable), "Tidak ada koneksi internet")
-//    }
+    }
 }
