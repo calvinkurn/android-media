@@ -9,9 +9,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.clearText
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
@@ -19,10 +17,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -30,21 +25,17 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
+import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.common.topupbills.data.prefix_select.*
 import com.tokopedia.common.topupbills.util.TopupBillsFavoriteNumberMockResponseConfig
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_PREFERENCES_NAME
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_PREFERENCES_NAME
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.Companion.CACHE_SHOW_COACH_MARK_KEY
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
@@ -78,7 +69,7 @@ class TopupBillsFavoriteNumberActivityTest {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         val extras = Bundle()
-        extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
+        extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
         extras.putString(EXTRA_CLIENT_NUMBER, CLIENT_NUMBER)
         extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, DG_CATEGORY_IDS)
         extras.putString(EXTRA_DG_CATEGORY_NAME, CATEGORY_NAME)
