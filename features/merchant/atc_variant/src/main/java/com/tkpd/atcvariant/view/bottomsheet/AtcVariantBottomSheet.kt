@@ -547,6 +547,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             viewModel.getActivityResultData().let {
                 sharedViewModel.setActivityResult(it)
             }
+        } else {
+            (activity as? AtcVariantActivity)?.finish()
         }
 
         super.onDismiss(dialog)
