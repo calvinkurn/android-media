@@ -3,11 +3,7 @@ package com.tokopedia.attachproduct.view.presenter
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import java.util.*
-//
-///**
-// * Created by Hendri on 19/02/18.
-// */
-//
+
 interface NewAttachProductContract {
     interface View {
         fun addProductToList(productNews: List<NewAttachProductItemUiModel>, hasNextPage: Boolean)
@@ -30,8 +26,5 @@ interface NewAttachProductContract {
         fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>, onUpdated: (Int) -> Unit)
         fun resetCheckedList()
         fun completeSelection(onFinish: (ArrayList<ResultProduct>) -> Unit)
-        fun attachView(view: View?)
-        fun attachActivityContract(activityContract: Activity?)
-        fun detachView()
     }
 }

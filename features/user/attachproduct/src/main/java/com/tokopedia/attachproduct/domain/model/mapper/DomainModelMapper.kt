@@ -1,9 +1,7 @@
 package com.tokopedia.attachproduct.domain.model.mapper
 
 import com.tokopedia.attachproduct.data.model.mapper.mapToAttachUiModel
-import com.tokopedia.attachproduct.domain.model.AttachProductDomainModel
 import com.tokopedia.attachproduct.domain.model.NewAttachProductDomainModel
-//import com.tokopedia.attachproduct.domain.util.toAttachProductUIModel
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 
 fun NewAttachProductDomainModel.toDomainModelMapper(): List<NewAttachProductItemUiModel> {

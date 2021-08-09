@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 class NewAceResponseWrapper {
     @SerializedName("data")
     @Expose
-    var data: NewAttachProductAPIResponseWrapper? = null
+    var data: NewAttachProductApiResponseWrapper? = null
 }

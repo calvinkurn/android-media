@@ -64,20 +64,11 @@ class AttachProductViewModel @Inject constructor
         onFinish.invoke(resultProduct)
     }
 
-    override fun attachView(view: NewAttachProductContract.View?) {
-    }
-
-    override fun attachActivityContract(activityContract: NewAttachProductContract.Activity?) {
-    }
-
-    override fun detachView() {
-    }
-
     private fun generateParam(query: String, shopId: String,
                               page: Int, warehouseId: String): HashMap<String, Any> {
 
         return hashMapOf<String, Any>().apply {
-            put(PARAM, "device=android&source=shop_product&rows=$ROW&shop_id=" +
+            put(PARAM, "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
                     "$shopId&start=${(page * ROW) - ROW}&user_warehouseId=$warehouseId")
         }
     }

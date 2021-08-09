@@ -6,9 +6,9 @@ import com.tokopedia.attachproduct.view.fragment.NewAttachProductFragment
 import dagger.Component
 
 @AttachProductScope
-@Component(modules = [NewAttachProductModule::class, AttachProductViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [NewAttachProductModule::class, AttachProductViewModelModule::class],
+    dependencies = [BaseAppComponent::class])
 interface NewAttachProductComponent {
-    fun inject(newAttachProductActivity: NewAttachProductActivity)
 
     fun inject(newAttachProductFragment: NewAttachProductFragment)
 }

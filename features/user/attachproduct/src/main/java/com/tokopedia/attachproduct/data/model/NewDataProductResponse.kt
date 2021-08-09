@@ -9,24 +9,24 @@ import com.google.gson.annotations.SerializedName
  */
 data class NewDataProductResponse (
     @SerializedName("url")
-    var productUrl: String? = null,
+    var productUrl: String = "",
 
     @SerializedName("name")
-    var productName: String? = null,
+    var productName: String = "",
 
     @SerializedName("id")
-    var productId: String? = null,
+    var productId: String = "",
 
     @SerializedName("imageURL")
     @Expose
-    var productImage: String? = null,
+    var productImage: String = "",
 
     @SuppressLint("Invalid Data Type") @SerializedName("price")
-    var productPrice: String? = null,
+    var productPrice: String = "",
 
     @SerializedName("priceInt")
-    var priceInt: Int? = 0,
+    var priceInt: Int = 0,
 
     @SerializedName("shop")
-    val shop: DataShopResponse? = null
+    val shop: DataShopResponse = DataShopResponse()
 )

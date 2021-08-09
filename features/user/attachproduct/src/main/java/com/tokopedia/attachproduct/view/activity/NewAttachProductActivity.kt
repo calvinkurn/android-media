@@ -25,9 +25,9 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     private var hiddenProducts: ArrayList<String>? = null
 
     companion object {
-        val MAX_CHECKED_DEFAULT = 3
-        val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
-        val SOURCE_TALK = "talk"
+        const val MAX_CHECKED_DEFAULT = 3
+        const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
+        const val SOURCE_TALK = "talk"
     }
 
     override val isSeller: Boolean
@@ -36,7 +36,8 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
         get() = _shopId
 
     private fun setupWarehouseId() {
-        warehouseId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID) ?: ""
+        warehouseId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID)
+                ?: ""
         if (warehouseId.isEmpty()) {
             warehouseId = "0"
         }
@@ -46,7 +47,8 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
         setupWarehouseId()
         super.onCreate(savedInstanceState)
         if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
-            _shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) ?: ""
+            _shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
+                    ?: ""
         }
     }
 
@@ -57,10 +59,14 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
             fragment
         } else {
             if (intent != null && intent.extras != null) {
-                _isSeller = intent.getBooleanExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, false)
-                source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY) ?: ""
-                maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
-                hiddenProducts = intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
+                _isSeller = intent.getBooleanExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,
+                    false)
+                source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY)
+                        ?: ""
+                maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
+                    AttachProductActivity.MAX_CHECKED_DEFAULT)
+                hiddenProducts =
+                        intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
             }
             fragment = newInstance(
                 this, isSeller, source, maxChecked, hiddenProducts, warehouseId
@@ -74,11 +80,15 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
         super.setupLayout(savedInstanceState)
         if (supportActionBar != null) {
             supportActionBar!!.setBackgroundDrawable(
-                resources.getDrawable(com.tokopedia.attachproduct.R.drawable.bg_attach_product_white_toolbar_drop_shadow))
+                resources.getDrawable(com.tokopedia.attachproduct.
+                R.drawable.bg_attach_product_white_toolbar_drop_shadow))
             supportActionBar!!.setHomeAsUpIndicator(
-                MethodChecker.getDrawable(this, com.tokopedia.attachproduct.R.drawable.ic_attach_product_close_default))
+                MethodChecker.getDrawable(this,
+                    com.tokopedia.attachproduct.R.drawable.ic_attach_product_close_default))
         }
-        shopName = if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
+        shopName =
+                if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY)
+                        != null) {
             intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) ?: ""
         } else {
             ""

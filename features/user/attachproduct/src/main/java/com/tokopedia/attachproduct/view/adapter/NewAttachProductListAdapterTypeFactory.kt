@@ -13,7 +13,9 @@ import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewholder.NewAttachProductEmptyResultViewHolder
 import com.tokopedia.attachproduct.view.viewholder.NewAttachProductListItemViewHolder
 
-class NewAttachProductListAdapterTypeFactory(private val checkableInteractionListener: CheckableInteractionListener) : BaseAdapterTypeFactory(), BaseListCheckableTypeFactory<NewAttachProductItemUiModel?> {
+class NewAttachProductListAdapterTypeFactory
+    (private val checkableInteractionListener : CheckableInteractionListener)
+    : BaseAdapterTypeFactory(), BaseListCheckableTypeFactory<NewAttachProductItemUiModel?> {
     override fun type(viewModelNew: NewAttachProductItemUiModel?): Int {
         return NewAttachProductListItemViewHolder.LAYOUT
     }

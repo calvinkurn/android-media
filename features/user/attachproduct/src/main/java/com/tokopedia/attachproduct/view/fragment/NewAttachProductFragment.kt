@@ -68,6 +68,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     private var warehouseId = "0"
     private var maxChecked = NewAttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
+
     fun setActivityContract(activityContract: NewAttachProductContract.Activity?) {
         this.activityContract = activityContract
     }

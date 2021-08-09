@@ -29,8 +29,6 @@ class NewAttachProductEventTracking(event: String, category: String, action: Str
         get() = eventTracking
 
     init {
-        Log.d("GAv4", "EventTracking: " + event + " " + category + " " + action + " " + label
-                + " ")
         eventTracking["event"] = event
         eventTracking["eventCategory"] = category
         eventTracking["eventAction"] = action

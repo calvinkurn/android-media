@@ -14,7 +14,10 @@ import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 /**
  * Created by Hendri on 13/02/18.
  */
-class NewAttachProductListItemViewHolder(private val itemView: View, checkableInteractionListener: CheckableInteractionListener) : BaseCheckableViewHolder<NewAttachProductItemUiModel>(itemView, checkableInteractionListener), CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+class NewAttachProductListItemViewHolder
+    (private val itemView: View, checkableInteractionListener: CheckableInteractionListener)
+    : BaseCheckableViewHolder<NewAttachProductItemUiModel>(itemView, checkableInteractionListener),
+        CompoundButton.OnCheckedChangeListener, View.OnClickListener {
     private var imageView: ImageView? = null
     private var nameTextView: TextView? = null
     private var checkBox: CheckBox? = null
@@ -61,6 +64,7 @@ class NewAttachProductListItemViewHolder(private val itemView: View, checkableIn
         findAndAssignAllFields(itemView)
         checkBox!!.isClickable = false
         itemView.setOnClickListener(this)
-        this.newCheckableInteractionListener = checkableInteractionListener as NewCheckableInteractionListenerWithPreCheckedAction
+        this.newCheckableInteractionListener =
+                checkableInteractionListener as NewCheckableInteractionListenerWithPreCheckedAction
     }
 }

@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import java.util.*
 
-class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProductListAdapterTypeFactory?) : BaseListAdapter<NewAttachProductItemUiModel, NewAttachProductListAdapterTypeFactory>(baseListAdapterTypeFactoryNew) {
+class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProductListAdapterTypeFactory?)
+    : BaseListAdapter<NewAttachProductItemUiModel,
+        NewAttachProductListAdapterTypeFactory>(baseListAdapterTypeFactoryNew) {
     private var productIds: HashSet<String> = HashSet()
     private var checkedList: ArrayList<NewAttachProductItemUiModel> = ArrayList()
 

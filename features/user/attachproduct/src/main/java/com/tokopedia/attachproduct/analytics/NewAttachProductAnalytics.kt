@@ -31,17 +31,15 @@ object NewAttachProductAnalytics {
         }
 
     object Event {
-        val CLICK_CHAT_DETAIL: String = "ClickChatDetail"
+        const val CLICK_CHAT_DETAIL: String = "ClickChatDetail"
     }
 
     object Category {
-        val CHAT_DETAIL: String = "chat detail"
+        const val CHAT_DETAIL: String = "chat detail"
     }
 
     object Action {
-        val CLICK_PRODUCT_IMAGE: String = "click on product image"
-        val CHECK_PRODUCT: String = "click one of the product"
+        const val CLICK_PRODUCT_IMAGE: String = "click on product image"
+        const val CHECK_PRODUCT: String = "click one of the product"
     }
-
-    class Label()
 }
