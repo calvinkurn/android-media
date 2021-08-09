@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
@@ -66,11 +67,13 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -100,10 +103,13 @@ class AddEditProductShipmentFragment:
     private var radioCustomShipment: RadioButtonUnify? = null
     private var btnChangeOnDemandShipment: Typography? = null
     private var btnChangeConventionalShipment: Typography? = null
+    private var btnIconOnDemand: IconUnify? = null
+    private var btnIconConventional: IconUnify? = null
     private var shipmentListOnDemand: RecyclerView? = null
     private var shipmentListConventional: RecyclerView? = null
     private val shipmentOnDemandAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
     private val shipmentConventionalAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
+    private var bottomSheetInfoShipment: BottomSheetUnify? = null
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -287,7 +293,8 @@ class AddEditProductShipmentFragment:
         btnChangeConventionalShipment = requireView().findViewById(R.id.btn_change_conventional)
         shipmentListOnDemand = requireView().findViewById(R.id.rv_on_demand)
         shipmentListConventional = requireView().findViewById(R.id.rv_conventional)
-
+        btnIconOnDemand = requireView().findViewById(R.id.btn_info_on_demand)
+        btnIconConventional = requireView().findViewById(R.id.btn_info_conventional)
 
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
@@ -364,6 +371,14 @@ class AddEditProductShipmentFragment:
         btnChangeConventionalShipment?.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.CUSTOM_PRODUCT_LOGISTIC)
             startActivityForResult(intent, 1234)
+        }
+
+        btnIconOnDemand?.setOnClickListener {
+            ShipmentInfoBottomSheet().show(fragmentManager, ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE)
+        }
+
+        btnIconConventional?.setOnClickListener {
+            ShipmentInfoBottomSheet().show(fragmentManager, ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE)
         }
     }
 

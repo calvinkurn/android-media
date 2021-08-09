@@ -231,6 +231,10 @@
     <string name="error_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
     <string name="action_end_button">Selesai</string>
     <string name="action_shipment_dismiss">Mengerti</string>
+    <string name="text_shipment_on_demand">Kurir akan menjemput pesanan di alamatmu untuk dianter ke pembeli.</string>
+    <string name="text_shipment_conventional">Bawa pesanan ke gerai pengiriman terdekat dan minta resi dari petugas</string>
+    <string name="title_shipment_on_demand">Dijemput Kurir</string>
+    <string name="title_shipment_conventional">Antar ke Kantor Agen</string>
 
     <!--Product Add Validation-->
     <string name="error_invalid_category_id">Kategori tidak valid</string>

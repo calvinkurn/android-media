@@ -66,7 +66,7 @@
         app:typographyWeight="bold"/>
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_info_dijemput"
+        android:id="@+id/btn_info_on_demand"
         android:layout_width="@dimen/unify_space_16"
         android:layout_height="@dimen/unify_space_16"
         android:layout_marginStart="@dimen/dp_4"
@@ -110,7 +110,7 @@
         app:typographyWeight="bold"/>
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/btn_info_agen"
+        android:id="@+id/btn_info_conventional"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_4"
