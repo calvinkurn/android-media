@@ -74,6 +74,10 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
         source
         total_shop
         search_url
+        header {
+            response_code
+            keyword_process
+        }
         paging {
             uri_next
             uri_previous

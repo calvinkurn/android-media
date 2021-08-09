@@ -93,6 +93,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
     implementation projectOrAar(rootProject.ext.features.wallet)
     implementation projectOrAar(rootProject.ext.features.ovop2p)
+    implementation projectOrAar(rootProject.ext.features.paylater)
 
     //IM
     //implementation projectOrAar(rootProject.ext.features.referral) //Need to fix the structure
@@ -139,7 +140,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.otp)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.inbox)
 

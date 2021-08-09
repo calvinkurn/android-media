@@ -16,7 +16,7 @@ import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -447,7 +447,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check product review appLink then should return tokopedia internal product review in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product/890495024/review"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product/890495024/review-old"
         val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, "890495024")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -1135,9 +1135,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // When
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
             )
-        } returns AbTestPlatform.VARIANT_OLD_NOTFICENTER
+        } returns RollenceKey.VARIANT_OLD_NOTFICENTER
 
         // Then
         assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION, expectedDeepLink)

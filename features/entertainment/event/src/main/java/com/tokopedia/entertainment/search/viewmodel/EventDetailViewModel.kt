@@ -43,7 +43,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     val showParentView : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val showResetFilter : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val showProgressBar : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val errorReport : MutableLiveData<Throwable> by lazy { MutableLiveData<Throwable>() }
 
     val catLiveData: MutableLiveData<CategoryModel> by lazy { MutableLiveData<CategoryModel>() }
     var categoryData : MutableList<CategoryTextBubbleAdapter.CategoryTextBubble> = mutableListOf()
@@ -94,7 +94,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                 },
                 onError = {
                     Timber.tag(TAG + "Error").w(it)
-                    errorReport.value = it.message
+                    errorReport.value = it
                     isItRefreshing.value = false
                     isItShimmering.value = false
                     showParentView.value = false
@@ -104,7 +104,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    private fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
+    fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
         //Case 1 Still empty or Data Category size and API Category Size is different
         if(categoryData.size == 0 || hashSet.isEmpty() || categoryData.size != list.categories.size-1) return true
 

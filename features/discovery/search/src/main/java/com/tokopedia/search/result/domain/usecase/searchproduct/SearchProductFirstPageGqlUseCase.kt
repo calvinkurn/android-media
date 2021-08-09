@@ -180,7 +180,7 @@ class SearchProductFirstPageGqlUseCase(
             getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
-        val timeoutMs : Long = 2_000
+        val timeoutMs : Long = TDN_TIMEOUT
 
         return this.timeout(timeoutMs, TimeUnit.MILLISECONDS, Observable.create({ emitter ->
             searchLogger.logTDNError(RuntimeException("Timeout after $timeoutMs ms"))
@@ -207,6 +207,7 @@ class SearchProductFirstPageGqlUseCase(
 
     companion object {
         private const val HEADLINE_PRODUCT_COUNT = 3
+        private const val TDN_TIMEOUT: Long = 2_000
 
         private const val QUICK_FILTER_QUERY = """
             query QuickFilter(${'$'}query: String!, ${'$'}params: String!) {
@@ -385,6 +386,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_link_url
                             banner_applink_url
                             identifier
+                            meta
                             product {
                                 id
                                 name
@@ -411,7 +413,18 @@ class SearchProductFirstPageGqlUseCase(
                                     show
                                 }
                               	shop {
+                                    name
                                     city
+                                }
+                                freeOngkir {
+                                    isActive
+                                    image_url
+                                }
+                                ads {
+                                    id
+                                    productClickUrl
+                                    productWishlistUrl
+                                    productViewUrl
                                 }
                             }
                         }

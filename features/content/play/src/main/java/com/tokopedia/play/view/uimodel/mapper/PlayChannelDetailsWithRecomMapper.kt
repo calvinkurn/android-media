@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
@@ -34,7 +35,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
-                    statusInfo = mapChannelStatusInfo(it.config, it.title)
+                    statusInfo = mapChannelStatusInfo(it.config, it.title),
+                    leaderboardInfo = mapLeaderboardInfo()
             )
         }
     }
@@ -47,12 +49,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             backgroundUrl = configResponse.roomBackground.imageUrl
     )
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel.Incomplete(
-            basicInfo = PlayPartnerBasicInfoUiModel(
-                    id = partnerResponse.id.toLongOrZero(),
-                    name = htmlTextTransformer.transform(partnerResponse.name),
-                    type = PartnerType.getTypeByValue(partnerResponse.type),
-            )
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
+            id = partnerResponse.id.toLongOrZero(),
+            name = htmlTextTransformer.transform(partnerResponse.name),
+            type = PartnerType.getTypeByValue(partnerResponse.type),
+            status = PlayPartnerFollowStatus.Unknown,
     )
 
     private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
@@ -195,6 +196,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return if (isFreezed) PlayStatusType.Freeze
         else PlayStatusType.Active
     }
+
+    private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
 
     companion object {
         private const val MS_PER_SECOND = 1000
