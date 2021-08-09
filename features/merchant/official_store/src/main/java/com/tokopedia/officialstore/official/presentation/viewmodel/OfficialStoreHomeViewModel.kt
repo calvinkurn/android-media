@@ -259,7 +259,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 _featuredShopResult.value = Success(featuredShopDataModel.copy(
                         channelModel = featuredShopDataModel.channelModel.copy(
                                 channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                        )))
+                        ),
+                        state = FeaturedShopDataModel.STATE_READY)
+                )
             }
         }){
             _featuredShopRemove.value = featuredShopDataModel

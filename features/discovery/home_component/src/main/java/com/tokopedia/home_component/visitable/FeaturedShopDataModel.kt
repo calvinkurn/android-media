@@ -9,7 +9,8 @@ import com.tokopedia.home_component.model.ChannelModel
  */
 
 data class FeaturedShopDataModel(
-        val channelModel: ChannelModel
+        val channelModel: ChannelModel,
+        val state: Int = STATE_LOADING
 ) : HomeComponentVisitable {
     override fun visitableId(): String = channelModel.id
 
@@ -28,5 +29,11 @@ data class FeaturedShopDataModel(
 
     private fun areGridsSame(newModel: ChannelModel): Boolean {
         return newModel.channelGrids.size == channelModel.channelGrids.size && newModel.channelGrids == channelModel.channelGrids
+    }
+
+    companion object {
+        const val STATE_LOADING = 0
+        const val STATE_READY = 1
+        const val STATE_FAILED = 2
     }
 }
