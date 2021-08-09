@@ -134,7 +134,7 @@ open class ErrorHandler {
     }
 
     class Builder {
-        var sendToScalyr = false
+        var sendToScalyr = true
         var errorCode = true
         var className = ""
 
