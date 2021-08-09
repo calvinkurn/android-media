@@ -47,6 +47,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
 }
 

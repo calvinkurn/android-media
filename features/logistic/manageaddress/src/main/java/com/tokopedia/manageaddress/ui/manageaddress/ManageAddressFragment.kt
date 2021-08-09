@@ -44,6 +44,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
+import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CART_EXISTING_USER
+import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -469,15 +471,23 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
         if (data == null) {
+            val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
+                SCREEN_NAME_CART_EXISTING_USER
+            } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
+                SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
+            } else {
+                SCREEN_NAME_USER_NEW
+            }
+
             if (LogisticCommonUtil.isRollOutUserANARevamp()) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
                 intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                intent.putExtra(EXTRA_REF, screenName)
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
                 intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                intent.putExtra(EXTRA_REF, screenName)
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             }
         } else {
