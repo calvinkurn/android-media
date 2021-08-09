@@ -51,5 +51,18 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         InboxAssertion.assertInboxTitle(expectedTitle)
     }
 
-    // TODO: should show title as Inbox when showBottomNav is true and user has no shop
+    @Test
+    fun should_show_title_as_Inbox_when_showBottomNav_is_true_and_user_has_no_shop() {
+        // Given
+        val expectedTitle = "Inbox"
+        inboxDep.apply {
+            userSession.fakeHasShop = false
+        }
+        startInboxActivity {
+            setShowBottomNav(it, true)
+        }
+
+        // Then
+        InboxAssertion.assertInboxTitle(expectedTitle)
+    }
 }
