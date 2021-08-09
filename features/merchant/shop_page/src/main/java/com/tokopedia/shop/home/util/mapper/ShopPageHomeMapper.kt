@@ -260,7 +260,7 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
-            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data)
+            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name)
     )
 
     private fun mapToNewProductLaunchCampaignUiModel(
@@ -444,12 +444,14 @@ object ShopPageHomeMapper {
 
     private fun mapToShowcaseListItemUiModel(
             data: List<ShopLayoutWidget.Widget.Data>,
+            widgetName: String
     ) : List<ShopHomeShowcaseListItemUiModel> {
         return data.map {
             ShopHomeShowcaseListItemUiModel().apply {
                 imageUrl = it.imageUrl
                 appLink = it.appLink
                 name = it.showcaseName
+                viewType = widgetName
             }
         }
     }

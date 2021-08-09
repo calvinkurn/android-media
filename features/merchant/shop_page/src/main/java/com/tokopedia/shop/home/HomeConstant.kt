@@ -33,5 +33,7 @@ object WidgetName {
     const val VOUCHER_STATIC = "voucher_static"
 
     // showcase widget name list
+    const val SHOWCASE_SLIDER_SMALL = "etalase_persegi_kecil_slider"
     const val SHOWCASE_SLIDER_MEDIUM = "etalase_persegi_sedang_slider"
+    const val SHOWCASE_SLIDER_TWO_ROWS = "etalase_carausel_2_row"
 }

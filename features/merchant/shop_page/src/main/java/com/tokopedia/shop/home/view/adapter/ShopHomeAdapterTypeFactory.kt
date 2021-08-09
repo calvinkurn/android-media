@@ -19,6 +19,8 @@ import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_MEDIUM
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -44,8 +46,8 @@ class ShopHomeAdapterTypeFactory(
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
     var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
-    private var showcaseSliderViewType: String = ""
     private var previousViewHolder: AbstractViewHolder<*>? = null
+    private var showcaseSliderLayoutType = ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         when (baseShopHomeWidgetUiModel.name) {
@@ -58,7 +60,11 @@ class ShopHomeAdapterTypeFactory(
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
-            SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListSliderMediumViewHolder.LAYOUT
+            SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT
+            SHOWCASE_SLIDER_TWO_ROWS -> {
+                showcaseSliderLayoutType = ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
+                return ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT
+            }
             else -> return HideViewHolder.LAYOUT
         }
     }
@@ -147,7 +153,11 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
-            ShopHomeShowcaseListSliderMediumViewHolder.LAYOUT -> ShopHomeShowcaseListSliderMediumViewHolder(parent)
+            ShopHomeShowcaseListSliderBaseViewHolder.LAYOUT -> ShopHomeShowcaseListSliderBaseViewHolder(
+                    parent,
+                    ShopHomeShowcaseListSliderAdapter(),
+                    showcaseSliderLayoutType
+            )
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder
