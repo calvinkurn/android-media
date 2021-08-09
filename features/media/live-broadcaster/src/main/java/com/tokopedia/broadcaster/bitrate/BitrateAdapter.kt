@@ -1,6 +1,5 @@
 package com.tokopedia.broadcaster.bitrate
 
-import android.content.Context
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.Streamer.FpsRange
 import java.util.*
