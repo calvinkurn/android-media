@@ -114,4 +114,5 @@
     <string name="hyperlink">Learn more about Android app development at\n<a href="https://learntodroid.com">LearnToDroid.com</a></string>
     <string name="label_call_tokopedia">Butuh bantuan? Hubungi Tokopedia Care</string>
 
+    <string name="label_link_account_menu_skip">Lewati</string>
 </resources>
