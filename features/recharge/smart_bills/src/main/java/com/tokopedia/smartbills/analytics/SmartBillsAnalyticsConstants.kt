@@ -9,6 +9,7 @@ interface SmartBillsAnalyticConstants {
     interface Event {
         companion object {
             const val CLICK_SMART_BILLS = "clickSmartBill"
+            const val VIEW_SMART_BILLS_IRIS = "viewSmartBillIris"
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val CHECKOUT = "checkout"

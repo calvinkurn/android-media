@@ -18,7 +18,7 @@ class SmartBillsAddBillsAdapter(private val listener: SmartBillsCatalogsListener
         fun bind(catalogMenu: SmartBillsCatalogMenu) {
             with(itemView) {
                 setOnClickListener {
-                    listener.onCatalogClicked(catalogMenu.applink)
+                    listener.onCatalogClicked(catalogMenu.applink, catalogMenu.label)
                 }
                 img_catalog_smart_bills.loadImage(catalogMenu.icon)
                 txt_catalog_title_smart_bills.text = catalogMenu.label
@@ -40,6 +40,6 @@ class SmartBillsAddBillsAdapter(private val listener: SmartBillsCatalogsListener
     }
 
     interface SmartBillsCatalogsListener{
-        fun onCatalogClicked(applink: String)
+        fun onCatalogClicked(applink: String, category: String)
     }
 }

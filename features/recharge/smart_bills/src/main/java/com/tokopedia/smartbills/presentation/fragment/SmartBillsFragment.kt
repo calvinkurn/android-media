@@ -374,6 +374,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 })
 
                 tv_sbm_add_bills.setOnClickListener {
+                    smartBillsAnalytics.clickTambahTagihan()
                     getCatalogData()
                 }
 
@@ -497,6 +498,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         getCatalogData()
     }
 
+    override fun onCloseCatalogBottomSheet() {
+        smartBillsAnalytics.clickCloseBottomsheetCatalog()
+    }
+
     private fun getCatalogData() {
         if (getRemoteConfigAddBillsEnabler()) {
             showProgressBar()
@@ -507,6 +512,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
+        smartBillsAnalytics.viewBottomsheetCatalog()
         val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(this)
         catalogBottomSheet.showSBMCatalog(catalogList)
         catalogBottomSheet.show(requireFragmentManager(), "")
@@ -697,7 +703,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smartBillsAnalytics.clickCollapseAccordion(titleAccordion)
     }
 
-    override fun onCatalogClickCallback(applink: String) {
+    override fun onCatalogClickCallback(applink: String, category: String) {
+        smartBillsAnalytics.clickCategoryBottomsheetCatalog(category)
         val intent = RouteManager.getIntent(context, applink)
         startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
     }

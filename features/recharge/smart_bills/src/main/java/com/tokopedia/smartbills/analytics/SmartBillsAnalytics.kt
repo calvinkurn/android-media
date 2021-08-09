@@ -2,6 +2,8 @@ package com.tokopedia.smartbills.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.*
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Event.Companion.CLICK_SMART_BILLS
+import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Event.Companion.VIEW_SMART_BILLS_IRIS
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -252,9 +254,207 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
+    //Add Bills Tracking
+    //#1
+    fun clickTambahTagihan() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click tambah tagihan button",
+                TrackAppUtils.EVENT_LABEL, ""
+        )
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#2
+    fun viewBottomsheetCatalog() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view - mau tambah tagihan",
+                TrackAppUtils.EVENT_LABEL, "bottom sheet sbm add bills"
+        )
+        data.addGeneralView()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#3
+    fun clickCloseBottomsheetCatalog() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x - mau tambah tagihan",
+                TrackAppUtils.EVENT_LABEL, "bottom sheet sbm add bills"
+        )
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#4
+    fun clickCategoryBottomsheetCatalog(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click category - mau tambah tagihan",
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", "bottom sheet sbm add bills", category)
+        )
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#5
+    fun clickBackTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click back",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#6
+    fun clickCloseTickerTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x - top information box",
+                TrackAppUtils.EVENT_LABEL, category)
+
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#7
+    fun clickInputFieldTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click input field",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#8
+    fun clickDropDownList1TelcoAddBills(category: String, dropdownName: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click drop down list 1",
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, dropdownName)
+        )
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#9
+    fun clickCloseDropDownListTelcoAddBills(category: String, dropdownName: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x - drop down list product",
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, dropdownName)
+        )
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#10 TODO LIST Bottom sheet
+
+    //#12
+    fun clickTambahTagihanTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click tambah tagihan / lanjut",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#13
+    fun clickViewErrorToasterTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view error - toaster box",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralViewAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#14
+    fun clickViewShowToasterTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view add bills success - toaster box",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralViewAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#16
+    fun clickKebab(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click kebab menu",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#17
+    fun clickHapusTagihan(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click hapus tagihan",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#18
+    fun clickBatalHapusTagihan() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click batal",
+                TrackAppUtils.EVENT_LABEL, "delete confirmation pop up")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#19
+    fun clickConfirmHapusTagihan() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click hapus",
+                TrackAppUtils.EVENT_LABEL, "delete confirmation pop up")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#20
+    fun viewDeleteBillSuccess() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view delete bill success",
+                TrackAppUtils.EVENT_LABEL, "delete bottom sheet")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+
+    //High Order Function Common Tracking
+    fun MutableMap<String, Any>.addGeneralClick(): MutableMap<String, Any>? {
+        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_SMART_BILLS
+        this[TrackAppUtils.EVENT] = CLICK_SMART_BILLS
+        this[Key.CURRENT_SITE] = CURRENT_SITE_VALUE
+        this[Key.BUSINESS_UNIT] = BUSINESS_UNIT_VALUE
+        return this
+    }
+
+    fun MutableMap<String, Any>.addGeneralClickAddBills(): MutableMap<String, Any>? {
+        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_SMART_BILLS_ADD_BILLS
+        this[TrackAppUtils.EVENT] = CLICK_SMART_BILLS
+        this[Key.CURRENT_SITE] = CURRENT_SITE_VALUE
+        this[Key.BUSINESS_UNIT] = BUSINESS_UNIT_VALUE
+        return this
+    }
+
+    fun MutableMap<String, Any>.addGeneralView(): MutableMap<String, Any>? {
+        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_SMART_BILLS
+        this[TrackAppUtils.EVENT] = VIEW_SMART_BILLS_IRIS
+        this[Key.CURRENT_SITE] = CURRENT_SITE_VALUE
+        this[Key.BUSINESS_UNIT] = BUSINESS_UNIT_VALUE
+        return this
+    }
+
+    fun MutableMap<String, Any>.addGeneralViewAddBills(): MutableMap<String, Any>? {
+        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_SMART_BILLS_ADD_BILLS
+        this[TrackAppUtils.EVENT] = VIEW_SMART_BILLS_IRIS
+        this[Key.CURRENT_SITE] = CURRENT_SITE_VALUE
+        this[Key.BUSINESS_UNIT] = BUSINESS_UNIT_VALUE
+        return this
+    }
+
     companion object {
 
         const val CATEGORY_SMART_BILLS = "digital - smart bill management"
+        const val CATEGORY_SMART_BILLS_ADD_BILLS = "digital - smart bill management - add bills"
 
         const val SCREEN_NAME_INITAL = "/initial-sbm-page"
         const val SCREEN_NAME_DETAIL = "/detail-sbm-page"

@@ -51,9 +51,14 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
         smartBillsAddBillsAdapter.listCatalogMenu = sbmCatalogMenu
     }
 
-    override fun onCatalogClicked(applink: String) {
+    override fun onCatalogClicked(applink: String, category: String) {
         dismiss()
-        listener.onCatalogClickCallback(applink)
+        listener.onCatalogClickCallback(applink, category)
+    }
+
+    override fun dismiss() {
+        listener.onCloseCatalogBottomSheet()
+        super.dismiss()
     }
 
     companion object{
@@ -65,6 +70,7 @@ class SmartBillsCatalogBottomSheet(val listener: CatalogCallback): BottomSheetUn
     }
 
     interface CatalogCallback{
-        fun onCatalogClickCallback(applink: String)
+        fun onCatalogClickCallback(applink: String, category: String)
+        fun onCloseCatalogBottomSheet()
     }
 }
