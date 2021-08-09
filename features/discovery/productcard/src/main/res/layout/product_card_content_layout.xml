@@ -7,6 +7,17 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textCategoryBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_label_best_seller_height"
+        android:textColor="@color/Unify_N700"
+        tools:text="di Setelan anak laki-laki"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewGimmick"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_text_view_gimmick_height"
@@ -15,7 +26,7 @@
         app:typographyType="small"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textCategoryBottom"
         tools:text="Best Seller"
         tools:textColor="@color/Unify_Y400"
         tools:visibility="visible" />

@@ -281,19 +281,49 @@ internal fun renderLabelCampaign(
 internal fun renderLabelBestSeller(
         isShow: Boolean,
         labelBestSeller: Typography?,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
+        isShowCategoryBottom: Boolean = false,
+        labelCategoryBottom: Typography? = null,
 ) {
     labelBestSeller ?: return
 
     if (isShow) {
         labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
+        if(isShowCategoryBottom) {
+            labelCategoryBottom?.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
+        }
     }
     else {
         labelBestSeller.initLabelBestSeller(null)
     }
 }
 
+internal fun renderLabelCategorySide(
+    isShow: Boolean,
+    labelCategorySide: Typography?,
+    productCardModel: ProductCardModel
+) {
+    labelCategorySide ?: return
+
+    if (isShow) {
+        labelCategorySide.initLabelCategorySide(productCardModel.getLabelBestSeller())
+    }
+    else {
+        labelCategorySide.initLabelCategorySide(null)
+    }
+}
+
 private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup?) {
+    if (labelBestSellerModel == null) hide()
+    else showLabelBestSeller(labelBestSellerModel)
+}
+
+private fun Typography.initLabelCategorySide(labelCategorySide: ProductCardModel.LabelGroup?) {
+    if (labelCategorySide == null) hide()
+    else showLabelCategorySide(labelCategorySide)
+}
+
+private fun Typography.initLabelCategoryBottom(labelBestSellerModel: ProductCardModel.LabelGroup?) {
     if (labelBestSellerModel == null) hide()
     else showLabelBestSeller(labelBestSellerModel)
 }
@@ -304,6 +334,16 @@ private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardMode
     val defaultColor = "#E1AA1D"
     background.overrideColor(labelBestSellerModel.type, defaultColor)
     text = labelBestSellerModel.title
+}
+
+private fun Typography.showLabelCategorySide(labelCategorySide: ProductCardModel.LabelGroup) {
+    show()
+    text = labelCategorySide.title
+}
+
+private fun Typography.showLabelCategoryBottom(labelCategoryBottom: ProductCardModel.LabelGroup) {
+    show()
+    text = labelCategoryBottom.title
 }
 
 internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
