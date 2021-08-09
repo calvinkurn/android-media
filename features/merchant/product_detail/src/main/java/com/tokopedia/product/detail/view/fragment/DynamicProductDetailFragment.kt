@@ -1993,7 +1993,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             pdpUiUpdater?.removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
-        if (!it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+        if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+            DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(viewModel.userId,
+                viewModel.getDynamicProductInfoP1, getPPTitleName())
+        } else {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
         }
 
