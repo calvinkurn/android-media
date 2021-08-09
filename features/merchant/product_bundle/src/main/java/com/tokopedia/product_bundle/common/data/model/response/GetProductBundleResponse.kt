@@ -72,7 +72,10 @@ data class BundleItem(
         val stock: Int = 0,
         @SerializedName("MinOrder")
         val minOrder: Int = 0
-)
+) {
+        val hasVariant: Boolean
+                get() = (selections.isNotEmpty())
+}
 
 data class Selection(
         @SerializedName("ProductVariantID")

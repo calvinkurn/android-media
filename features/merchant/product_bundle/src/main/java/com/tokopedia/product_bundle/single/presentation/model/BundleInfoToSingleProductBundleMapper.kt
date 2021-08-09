@@ -16,7 +16,8 @@ object BundleInfoToSingleProductBundleMapper {
 
     fun mapToSingleProductBundle (context: Context, bundleInfo: BundleInfo) = SingleProductBundleUiModel(
         preorderDurationWording = getPreorderWording(context, bundleInfo.preorder),
-        items = mapToBundleItem(context, bundleInfo.bundleItems)
+        items = mapToBundleItem(context, bundleInfo.bundleItems),
+        selectedItems = mapToSelectedItem(bundleInfo.bundleItems)
     )
 
     private fun getPreorderWording(context: Context, preorder: PreOrder): String? {
@@ -47,5 +48,9 @@ object BundleInfoToSingleProductBundleMapper {
             imageUrl = it.picURL,
             productVariant = if (productVariant.hasVariant) productVariant else null
         )
+    }
+
+    private fun mapToSelectedItem(bundleItems: List<BundleItem>) = bundleItems.map {
+        SingleProductBundleSelectedItem(productId = if (it.hasVariant) "" else it.productID.toString())
     }
 }

@@ -1,13 +1,16 @@
 package com.tokopedia.product_bundle.single.presentation.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.single.presentation.model.BundleInfoToSingleProductBundleMapper
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleUiModel
 import javax.inject.Inject
 
@@ -19,9 +22,37 @@ class SingleProductBundleViewModel @Inject constructor(
     val singleProductBundleUiModel: LiveData<SingleProductBundleUiModel>
         get() = mSingleProductBundleUiModel
 
+    private val mToasterError = MutableLiveData<Throwable>()
+    val toasterError: LiveData<Throwable>
+        get() = mToasterError
+
+    private val mPageError = MutableLiveData<Throwable>()
+    val pageError: LiveData<Throwable>
+        get() = mPageError
+
     fun setBundleInfo(context: Context, bundleInfo: BundleInfo) {
         mSingleProductBundleUiModel.value = BundleInfoToSingleProductBundleMapper
             .mapToSingleProductBundle(context, bundleInfo)
+    }
+
+    fun checkout(selectedData: List<SingleProductBundleSelectedItem>) {
+        val selectedProductId = selectedData.firstOrNull {
+            it.isSelected
+        }
+
+        when {
+            selectedProductId == null -> {
+                // data not selected
+                mToasterError.value = MessageErrorException("Oops, pilih product dulu, ya.")
+            }
+            selectedProductId.productId.isEmpty() -> {
+                // variant not selected
+                mToasterError.value = MessageErrorException("Oops, pilih varian dulu, ya.")
+            }
+            else -> {
+                Log.e("checkout", selectedProductId.toString())
+            }
+        }
     }
 
     /*
@@ -39,16 +70,13 @@ class SingleProductBundleViewModel @Inject constructor(
                         45,
                         "https://placekitten.com/200/300"
                 )},
+                emptyList(),
                 "Rp100.000",
                 "Rp90.000",
                 "Rp10.000",
                 10
         )
     }
-
-    /*
-    Begin of Dummy model function generator
-    */
 
     fun generateBundleInfo() = BundleInfo(
         name = "Singel bundle",
@@ -154,6 +182,7 @@ class SingleProductBundleViewModel @Inject constructor(
                 )
             ),
             BundleItem(
+                productID = 123451L,
                 name = "Bundle 2",
                 picURL = "https://placekitten.com/200/200",
                 minOrder = 2,

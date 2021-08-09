@@ -25,6 +25,7 @@ import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListen
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -58,12 +59,13 @@ class SingleProductBundleFragment(
         setupTotalAmount(view)
 
         observeSingleProductBundleUiModel()
+        observeToasterError()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-           println(this.toString())
+           adapter.setSelectedVariant(this.selectedProductId, this.selectedProductId)
         }
     }
 
@@ -87,8 +89,16 @@ class SingleProductBundleFragment(
         viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
             swipeRefreshLayout?.isRefreshing = false
             updateTotalPO(it.preorderDurationWording)
-            adapter.setData(it.items)
+            adapter.setData(it.items, it.selectedItems)
             updateTotalAmount(it.price, it.discount, it.slashPrice, it.priceGap)
+        })
+    }
+
+    private fun observeToasterError() {
+        viewModel.toasterError.observe(viewLifecycleOwner, { throwable ->
+            throwable.message?.let {
+                Toaster.build(requireView(), it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
         })
     }
 
@@ -103,6 +113,7 @@ class SingleProductBundleFragment(
         rvBundleItems.adapter = adapter
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        swipeRefreshLayout?.isEnabled = false
         swipeRefreshLayout?.setOnRefreshListener {
             viewModel.getBundleData()
         }
@@ -113,6 +124,9 @@ class SingleProductBundleFragment(
         totalAmount?.apply {
             setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
             updateTotalAmount("Rp0", 0, "Rp0", "Rp0")
+            amountCtaView.setOnClickListener {
+                viewModel.checkout(adapter.getSelectedData())
+            }
         }
     }
 
