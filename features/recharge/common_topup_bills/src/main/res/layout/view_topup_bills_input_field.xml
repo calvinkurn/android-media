@@ -30,13 +30,14 @@
         android:id="@+id/input_info"
         android:layout_width="@dimen/input_field_info_icon_size"
         android:layout_height="@dimen/input_field_info_icon_size"
-        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/ac_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/input_label"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_info_black"
+        tools:ignore="contentDescription"
         tools:visibility="visible" />
 
     <com.tokopedia.common.topupbills.widget.TopupBillsBackEditText
