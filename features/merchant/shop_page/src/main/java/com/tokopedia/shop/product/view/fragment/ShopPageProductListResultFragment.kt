@@ -81,7 +81,6 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.createIntent
 import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
-import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -286,6 +285,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     public override fun loadInitialData() {
         updateCurrentPageLocalCacheModelData()
         isLoadingInitialData = true
+        isEmptyState = false
+        shopProductAdapter.clearShopPageChangeGridSection()
+        shopProductAdapter.clearShopPageProductResultEmptyState()
         shopProductAdapter.clearProductList()
         shopProductAdapter.clearAllNonDataElement()
         showLoading()
@@ -579,6 +581,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
                     changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
                 }
+            } else {
+                if (keyword.isEmpty()) {
+                    shopProductSortFilterUiModel?.apply {
+                        isShowSortFilter = false
+                    }?.let { shopProductAdapter.setSortFilterData(it) }
+                }
             }
         }
 
@@ -586,6 +594,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             showLoading()
             shopInfo?.let { loadProductDataEmptyState(it, defaultInitialPage) }
             isEmptyState = true
+            updateScrollListenerState(false)
         } else {
             shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProductData)
             shopProductAdapter.setProductListDataModel(productList)
@@ -642,7 +651,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun renderProductListEmptyState(productList: List<ShopProductUiModel>) {
         hideLoading()
-        shopProductAdapter.clearAllElements()
         if(keyword.isEmpty()){
             shopProductAdapter.addEmptyShowcaseResultState()
         } else {

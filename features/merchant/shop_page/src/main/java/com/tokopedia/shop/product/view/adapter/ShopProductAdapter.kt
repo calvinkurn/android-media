@@ -623,7 +623,43 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun addProductSuggestion(productList: List<ShopProductUiModel>) {
+        shopProductUiModelList.addAll(productList)
         visitables.add(ShopProductTitleEmptyUiModel())
         visitables.addAll(productList)
+        mapDataModel()
+    }
+
+    fun clearShopPageProductResultEmptyState() {
+        visitables.firstOrNull{
+            it is ShopProductEmptySearchUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+        visitables.firstOrNull{
+            it is ShopProductEmptyShowcaseUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+        visitables.firstOrNull{
+            it is ShopProductTitleEmptyUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+    }
+
+    fun clearShopPageChangeGridSection(){
+        visitables.firstOrNull{
+            it is ShopProductChangeGridSectionUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
     }
 }
