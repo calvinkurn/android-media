@@ -733,16 +733,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
 
-        val irisSessionId = irisSession?.getSessionId() ?: ""
-
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(
-                trackingQueue,
-                queryKey,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
-                irisSessionId,
-                getUserId(),
-        )
-
         trackingQueue?.sendAll()
     }
 
@@ -751,8 +741,19 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
+        val trackingQueue = trackingQueue ?: return
         val product: Product = createTopAdsProductForTracking(item)
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, item.dimension90)
+        val irisSessionId = irisSession?.getSessionId() ?: ""
+
+        TopAdsGtmTracker.getInstance().eventImpressionSearchResultProduct(
+            trackingQueue,
+            product,
+            item.position,
+            item.dimension90,
+            queryKey,
+            getUserId(),
+            irisSessionId,
+        )
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
@@ -1133,8 +1134,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE)
         presenter?.loadData(searchParameter.getSearchParameterMap())
-
-        TopAdsGtmTracker.getInstance().clearDataLayerList()
 
         setSortFilterIndicatorCounter()
     }
