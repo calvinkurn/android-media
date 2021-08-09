@@ -46,6 +46,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(path: ':features:user:chat_common')
+    implementation project(path: ':libraries:common_network')
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

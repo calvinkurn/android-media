@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
@@ -24,6 +23,7 @@ import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
@@ -44,6 +44,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
     private var viewModel: MiniCartViewModel? = null
+    private var fragmentManager: FragmentManager? = null
+    private var lifecycleOwner: LifecycleOwner? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartListAdapter? = null
     private var bottomSheetListener: MiniCartListBottomSheetListener? = null
@@ -58,6 +60,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private var isShow: Boolean = false
 
+    @Inject
+    lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheet
+
     fun show(context: Context?,
              fragmentManager: FragmentManager,
              lifecycleOwner: LifecycleOwner,
@@ -65,6 +70,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
              bottomSheetListener: MiniCartListBottomSheetListener) {
         context?.let {
             if (!isShow) {
+                this.fragmentManager = fragmentManager
+                this.lifecycleOwner = lifecycleOwner
                 this.bottomSheetListener = bottomSheetListener
                 val viewBinding = LayoutBottomsheetMiniCartListBinding.inflate(LayoutInflater.from(context))
                 this.viewBinding = viewBinding
@@ -391,11 +398,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             totalAmount.setAdditionalButton(chatIcon)
             totalAmount.totalAmountAdditionalButton.setOnClickListener {
                 analytics.eventClickChatOnMiniCart()
-                val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
-                val intent = RouteManager.getIntent(
-                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
-                )
-                context.startActivity(intent)
+                miniCartChatListBottomSheet.show(context = context, fragmentManager = fragmentManager!!, lifecycleOwner = lifecycleOwner!!, viewModel = viewModel!!)
+                dismiss()
             }
             this.chatIcon.setImageDrawable(chatIcon)
             totalAmount.amountChevronView.setOnClickListener(miniCartChevronClickListener)

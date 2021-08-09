@@ -16,6 +16,7 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -32,7 +33,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
-                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
+                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
+                                            private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
     companion object {
@@ -61,6 +63,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private val _miniCartListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
     val miniCartListBottomSheetUiModel: LiveData<MiniCartListUiModel>
         get() = _miniCartListBottomSheetUiModel
+
+    // Bottom Sheet Chat Data
+    private val _miniCartChatListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
+    val miniCartChatListBottomSheetUiModel: LiveData<MiniCartListUiModel>
+        get() = _miniCartChatListBottomSheetUiModel
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
@@ -129,6 +136,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
+    fun updateChatVisitables(visitables: MutableList<Visitable<*>>) {
+        miniCartChatListBottomSheetUiModel.value?.visitables = visitables
+        _miniCartChatListBottomSheetUiModel.value = miniCartChatListBottomSheetUiModel.value
+    }
+
     // API Call & Callback
 
     fun getLatestWidgetState(shopIds: List<String>? = null) {
@@ -171,9 +183,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             )
         } else {
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
+            val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
+
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+            tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartListUiModel.needToCalculateAfterLoad = true
+
             _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
+            _miniCartChatListBottomSheetUiModel.value = tmpMiniCartChatListUiModel
         }
     }
 
