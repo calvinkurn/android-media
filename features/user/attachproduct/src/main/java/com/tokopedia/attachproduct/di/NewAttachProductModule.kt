@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.data.source.api.AttachProductApi
-import com.tokopedia.attachproduct.data.source.service.GetShopProductService
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl
 import com.tokopedia.attachproduct.domain.usecase.NewAttachProductUseCase
 import com.tokopedia.config.GlobalConfig
@@ -114,7 +112,7 @@ class NewAttachProductModule(private val context: Context) {
     @Provides
     @AttachProductScope
     fun provideQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_ace_search_product)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_attach_product)
     }
 
     @Provides
