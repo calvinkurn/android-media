@@ -71,6 +71,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     priceStr
                     wishlist
                     ratingAverage
+                    stock
+                    minOrder
                     labelGroups {
                         title
                         position
@@ -78,11 +80,11 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         url
                     }
                     shop {
-                        city
+                        id
                     }
                 }
             }
-        }
+          }
           products {
             id
             imageUrl300
