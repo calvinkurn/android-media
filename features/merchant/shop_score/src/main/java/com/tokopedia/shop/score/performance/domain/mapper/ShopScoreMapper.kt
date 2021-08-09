@@ -215,20 +215,20 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: -1
         with(headerShopPerformanceUiModel) {
             when {
-                shopScore < 0 || shopLevel < 0 -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
-                            ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
-                            ?: ""
-                }
                 shopAge < SHOP_AGE_SIXTY -> {
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
-                            ?: ""
+                        ?: ""
                     this.showCardNewSeller = true
                     val nextSellerDays = SHOP_AGE_SIXTY - shopAge
                     val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
                     val dateNewSellerProjection = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
+                        ?: ""
+                }
+                shopScore < 0 || shopLevel < 0 -> {
+                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
+                            ?: ""
+                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
                             ?: ""
                 }
                 shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
@@ -512,13 +512,13 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun sortItemDetailPerformanceFormatted(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail> {
         val identifierFilter = hashMapOf(
-                ORDER_SUCCESS_RATE_KEY to 0,
-                CHAT_DISCUSSION_REPLY_SPEED_KEY to 1,
-                SPEED_SENDING_ORDERS_KEY to 2,
-                CHAT_DISCUSSION_SPEED_KEY to 3,
-                PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to 4,
-                TOTAL_BUYER_KEY to 5,
-                OPEN_TOKOPEDIA_SELLER_KEY to 6
+                ORDER_SUCCESS_RATE_KEY to ORDER_SUCCESS_RATE_INDEX,
+                CHAT_DISCUSSION_REPLY_SPEED_KEY to CHAT_DISCUSSION_REPLY_SPEED_INDEX,
+                SPEED_SENDING_ORDERS_KEY to SPEED_SENDING_ORDERS_INDEX,
+                CHAT_DISCUSSION_SPEED_KEY to CHAT_DISCUSSION_SPEED_INDEX,
+                PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to PRODUCT_REVIEW_WITH_FOUR_STARS_INDEX,
+                TOTAL_BUYER_KEY to TOTAL_BUYER_INDEX,
+                OPEN_TOKOPEDIA_SELLER_KEY to OPEN_TOKOPEDIA_SELLER_INDEX
         )
 
         val compareIdentifier = Comparator { item1: ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail,
@@ -731,5 +731,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         } catch (e: IndexOutOfBoundsException) {
             String.format("%.1f", valueResponse)
         }
+    }
+
+    companion object {
+        const val ORDER_SUCCESS_RATE_INDEX = 0
+        const val CHAT_DISCUSSION_REPLY_SPEED_INDEX = 1
+        const val SPEED_SENDING_ORDERS_INDEX = 2
+        const val CHAT_DISCUSSION_SPEED_INDEX = 3
+        const val PRODUCT_REVIEW_WITH_FOUR_STARS_INDEX = 4
+        const val TOTAL_BUYER_INDEX = 5
+        const val OPEN_TOKOPEDIA_SELLER_INDEX = 6
     }
 }

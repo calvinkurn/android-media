@@ -164,4 +164,8 @@
         android:layout_height="fill_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -196,8 +196,8 @@ object TrackingUtil {
         return TextUtils.join("/", list)
     }
 
-    fun getFormattedPrice(price: Int): String {
-        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    fun getFormattedPrice(price: Double): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price, false, 0).formattedString
     }
 
     fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {
