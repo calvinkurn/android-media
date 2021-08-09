@@ -28,35 +28,6 @@ query GETCANCELREASON($input:CancelReasonRequest!) {
         picture,
         bundle_id,
         bundle_variant_id
-    },
-    bundle_detail{
-        total_product,
-        product_bundling_icon,
-        bundle{
-            bundle_id,
-            bundle_variant_id,
-            bundle_name,
-            bundle_price,
-            bundle_quantity,
-            bundle_subtotal_price,
-            order_detail{
-                product_id,
-                product_name,
-                product_price,
-                picture,
-                bundle_id,
-                bundle_variant_id
-            }
-        },
-        non_bundle{
-            product_id,
-            product_name,
-            product_price,
-            picture,
-            bundle_id,
-            bundle_variant_id
-        }
-    },
-    have_product_bundle
+    }
   }
 }

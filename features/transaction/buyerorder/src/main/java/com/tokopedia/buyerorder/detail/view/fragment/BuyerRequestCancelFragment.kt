@@ -197,20 +197,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         label_shop_name?.text = shopName
         label_invoice?.text = invoiceNum
 
-        if (listProduct.isNotEmpty()) {
-            label_product_name?.text = listProduct.first().productName
-            label_price?.text = listProduct.first().productPrice
-            iv_product?.loadImage(listProduct.first().picture)
-
-            if (listProduct.size > 1) {
-                label_see_all_products?.visible()
-                label_see_all_products?.text = "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
-                label_see_all_products?.setOnClickListener { showProductsBottomSheet() }
-            } else {
-                label_see_all_products?.gone()
-            }
-        }
-
         when {
             isCancelAlreadyRequested -> {
                 setLayoutCancelAlreadyRequested()
@@ -419,12 +405,28 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderPage() {
         // page title
         if (cancelReasonResponse.isEligibleInstantCancel) {
             (activity as BuyerRequestCancelActivity).supportActionBar?.title = BUTTON_INSTANT_CANCELATION
         } else {
             (activity as BuyerRequestCancelActivity).supportActionBar?.title = BUTTON_REGULER_CANCELATION
+        }
+
+        // list product
+        if (listProduct.isNotEmpty()) {
+            label_product_name?.text = listProduct.first().productName
+            label_price?.text = listProduct.first().productPrice
+            iv_product?.loadImage(listProduct.first().picture)
+
+            if (listProduct.size > 1) {
+                label_see_all_products?.visible()
+                label_see_all_products?.text = "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
+                label_see_all_products?.setOnClickListener { showProductsBottomSheet() }
+            } else {
+                label_see_all_products?.gone()
+            }
         }
 
         // cancel reasons
