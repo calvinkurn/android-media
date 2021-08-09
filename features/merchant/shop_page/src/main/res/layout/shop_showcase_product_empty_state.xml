@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/shopSearchEmptyState"
+        android:id="@+id/shopShowcaseEmptyState"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:unifyEmptyStateTitle="@string/shop_product_showcase_empty_state_title"
