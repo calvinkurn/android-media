@@ -65,7 +65,7 @@
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="heading_6"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_NN950"
+            android:textColor="@color/Unify_N700_96"
             android:id="@+id/featured_shop_product_shop_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
