@@ -9,16 +9,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 private const val PRODUCT_DOT_TIMER = 3000L
@@ -29,10 +28,12 @@ class PostTagView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver  {
+) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     private var productTagDot: ImageView
-    private var productTagPointer: ImageView
+    private var productTagPointerTop: ImageView
+    private var productTagPointerBottom: ImageView
+    private var finalPointerView: ImageView
     private var productTagExpandedView: CardView
     private var productViewArrow: IconUnify
     private var productViewName: Typography
@@ -60,13 +61,15 @@ class PostTagView @JvmOverloads constructor(
         view.layoutParams = params
         view.run {
             productTagDot = findViewById(R.id.product_tag_dot)
-            productTagPointer = findViewById(R.id.product_tag_top_pointer)
+            productTagPointerTop = findViewById(R.id.product_tag_top_pointer)
+            productTagPointerBottom = findViewById(R.id.product_tag_bottom_pointer)
             productTagExpandedView = findViewById(R.id.product_tag_expanded_card)
             productViewArrow = findViewById(R.id.product_arrow)
             productViewName = findViewById(R.id.product_name_text)
             productViewPrice = findViewById(R.id.product_price_text)
             productViewSlashedPrice = findViewById(R.id.product_slashed_price_text)
             constraintLayout = findViewById(R.id.parent_id)
+            finalPointerView = productTagPointerTop
         }
     }
     fun bindData(
@@ -76,14 +79,13 @@ class PostTagView @JvmOverloads constructor(
         width: Int,
         height: Int,
         positionInFeed: Int
-    ){
+    ) {
         this.listener = dynamicPostListener
         this.dotMarginStart = convertDpToPixel((width * feedXMediaTagging.posX), context)
         this.dotMarginTop = convertDpToPixel((height * (1 - feedXMediaTagging.posY)), context)
         this.postImageHeight = height
         this.postImageWidth = convertDpToPixel(width.toFloat(), context)
         this.feedXTag = feedXMediaTagging
-        productViewArrow.visible()
         val product = products[feedXMediaTagging.tagIndex]
 
         productViewName.text = product.name
@@ -97,17 +99,11 @@ class PostTagView @JvmOverloads constructor(
         }
 
         if (feedXTag.posY < 0.25) {
-            productTagPointer.setImageDrawable(MethodChecker.getDrawable(
-                context,
-                R.drawable.ic_down
-            ))
+            this.finalPointerView = productTagPointerBottom
             position = POSITION_TOP
         } else {
+            this.finalPointerView = productTagPointerTop
             position = POSITION_BOTTOM
-            productTagPointer.setImageDrawable(MethodChecker.getDrawable(
-                context,
-                R.drawable.ic_up
-            ))
         }
         productTagDot.setMargin(
             dotMarginStart,
@@ -115,10 +111,19 @@ class PostTagView @JvmOverloads constructor(
             0,
             0
         )
-        productTagPointer.doOnLayout {
-            productTagPointer.setMargin(
+        productTagDot.visible()
+        finalPointerView.invisible()
+        productTagExpandedView.invisible()
+        productTagDot.postDelayed({
+            productTagDot.apply {
+                gone()
+            }
+        }, PRODUCT_DOT_TIMER)
+
+        finalPointerView.doOnLayout {
+            finalPointerView.setMargin(
                 dotMarginStart,
-                dotMarginStart,
+                0,
                 0,
                 0
             )
@@ -127,64 +132,44 @@ class PostTagView @JvmOverloads constructor(
 
        productTagExpandedView.doOnLayout {
            val w = productTagExpandedView.width
-
            bubbleMarginStart = setProductTagBubbleStartMargin(w)
 
-           val constraintSet = ConstraintSet()
-           constraintSet.clone(constraintLayout)
-           if (position == POSITION_BOTTOM)
-               constraintSet.connect(productTagExpandedView.id,
-                   ConstraintSet.TOP,
-                   productTagPointer.id,
-                   ConstraintSet.BOTTOM,
-                   bubbleMarginStart)
-           else {
-               constraintSet.connect(productTagExpandedView.id,
-                   ConstraintSet.TOP,
-                   ConstraintSet.PARENT_ID,
-                   ConstraintSet.BOTTOM,
-                   bubbleMarginStart)
-               constraintSet.connect(productTagExpandedView.id,
-                   ConstraintSet.BOTTOM,
-                   productTagPointer.id,
-                   ConstraintSet.TOP,
-                   bubbleMarginStart)
-
-               constraintSet.connect(productTagPointer.id,
-                   ConstraintSet.TOP,
-                   productTagExpandedView.id,
-                   ConstraintSet.BOTTOM,
-                   bubbleMarginStart)
-           }
-           constraintSet.applyTo(constraintLayout)
-           productTagExpandedView.setMargin(bubbleMarginStart,0 , 0, 0)
-
-
-       }
-
-        productTagExpandedView.setOnClickListener {
-            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
-        }
-        productTagDot.postDelayed({
-            productTagDot.apply {
-                gone()
+            if (position == POSITION_BOTTOM) {
+                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop + 8.toPx(), 0, 0)
+            } else {
+                productTagExpandedView.setMargin(bubbleMarginStart, dotMarginTop - 52.toPx(), 0, 0)
             }
-        }, PRODUCT_DOT_TIMER)
+
+            productTagExpandedView.setOnClickListener {
+                listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
+            }
+        }
 
     }
-    fun showExpandedView() {
+
+    fun showExpandedView(): Boolean {
+        val isProductDotVisible = productTagDot.isVisible
+
         if (productTagDot.isVisible) {
             productTagDot.gone()
-            productTagPointer.visible()
+            finalPointerView.visible()
             productTagExpandedView.visible()
-        } else if (productTagPointer.isVisible && productTagExpandedView.isVisible) {
-            productTagPointer.gone()
+        } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
+            finalPointerView.gone()
             productTagExpandedView.gone()
         } else {
-            productTagPointer.visible()
+            finalPointerView.visible()
             productTagExpandedView.visible()
         }
+        return isProductDotVisible
+
     }
+
+    fun getExandedViewVisibility(): Boolean {
+        return productTagExpandedView.isVisible
+
+    }
+
     private fun setProductTagBubbleStartMargin(
         bubbleInflatedWidth: Int
     ): Int {
@@ -202,8 +187,8 @@ class PostTagView @JvmOverloads constructor(
                 postImageWidth - bubbleInflatedWidth
         }
     }
-    private fun setSlashedPriceText( priceOriginal: String) {
-        productViewSlashedPrice?.run {
+    private fun setSlashedPriceText(priceOriginal: String) {
+        productViewSlashedPrice.run {
             text = priceOriginal
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             visible()

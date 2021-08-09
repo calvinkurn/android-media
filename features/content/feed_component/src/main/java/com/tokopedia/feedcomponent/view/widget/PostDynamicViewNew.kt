@@ -682,6 +682,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     if (feedMedia.type == TYPE_IMAGE) {
                         var width : Int = 0
                         var height : Int = 0
+                        var isInflatedBubbleShowing = false
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
                         val param = LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -740,8 +741,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             productTagText.postDelayed({
                                 if (productTagText.isVisible) {
                                     productTagText.apply {
-                                        gone()
-                                        animate().alpha(0f)
+                                        if (!isInflatedBubbleShowing) {
+                                            gone()
+                                            animate().alpha(0f)
+                                        }
                                     }
                                 }
 
@@ -751,6 +754,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
                                     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                                        var productTagBubbleShowing = false
                                         listener?.onImageClicked(
                                             postId.toString(),
                                             feedXCard.typename,
@@ -760,10 +764,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                         for (i in 0 until layout.childCount) {
                                             var view = layout.getChildAt(i)
-                                            if(view is PostTagView){
+                                            if (view is PostTagView) {
                                                 val item = (view as PostTagView)
-                                                item.showExpandedView()
-
+                                                productTagBubbleShowing = item.showExpandedView()
+                                                isInflatedBubbleShowing = item.getExandedViewVisibility()
                                             }
                                         }
                                         if (!productTagText.isVisible) {
@@ -771,7 +775,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 visible()
                                                 animate().alpha(1f).start()
                                             }
-                                        } else {
+                                        } else if(!productTagBubbleShowing) {
                                             productTagText.gone()
                                             productTagText.animate().alpha(0f)
                                         }
