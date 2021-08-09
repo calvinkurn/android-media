@@ -26,6 +26,12 @@
         </activity>
 
         <activity
+            android:label="Link Account"
+            android:name=".linkaccount.view.LinkAccountWebViewActivity"
+            android:theme="@style/Theme.White">
+
+        </activity>
+        <activity
             android:label="@string/label_link_account"
             android:name="com.tokopedia.home_account.linkaccount.view.LinkAccountActivity"
             android:theme="@style/Theme.White">
