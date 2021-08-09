@@ -7,6 +7,7 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsContactListFragment
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
@@ -60,8 +61,9 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
-        return TopupBillsFavoriteNumberFragment
-                .newInstance(clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds)
+//        return TopupBillsFavoriteNumberFragment
+//                .newInstance(clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds)
+        return TopupBillsContactListFragment()
     }
 
     companion object {
