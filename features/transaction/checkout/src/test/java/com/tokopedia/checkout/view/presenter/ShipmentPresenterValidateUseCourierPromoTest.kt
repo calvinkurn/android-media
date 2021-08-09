@@ -211,9 +211,9 @@ class ShipmentPresenterValidateUseCourierPromoTest {
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
 
         // Then
-        verify {
-            view.showToastError(errorMessage)
-        }
+//        verify {
+//            view.showToastError(errorMessage)
+//        }
     }
 
     @Test
