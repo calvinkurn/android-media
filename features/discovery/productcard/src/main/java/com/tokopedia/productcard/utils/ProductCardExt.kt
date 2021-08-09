@@ -284,6 +284,8 @@ internal fun renderLabelBestSeller(
         productCardModel: ProductCardModel,
         isShowCategoryBottom: Boolean = false,
         labelCategoryBottom: Typography? = null,
+        isShowCategorySide: Boolean = false,
+        labelCategorySide: Typography? = null,
 ) {
     labelBestSeller ?: return
 
@@ -292,24 +294,12 @@ internal fun renderLabelBestSeller(
         if(isShowCategoryBottom) {
             labelCategoryBottom?.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
         }
+        else if(isShowCategorySide) {
+            labelCategorySide?.initLabelCategorySide(productCardModel.getLabelCategorySide())
+        }
     }
     else {
         labelBestSeller.initLabelBestSeller(null)
-    }
-}
-
-internal fun renderLabelCategorySide(
-    isShow: Boolean,
-    labelCategorySide: Typography?,
-    productCardModel: ProductCardModel
-) {
-    labelCategorySide ?: return
-
-    if (isShow) {
-        labelCategorySide.initLabelCategorySide(productCardModel.getLabelBestSeller())
-    }
-    else {
-        labelCategorySide.initLabelCategorySide(null)
     }
 }
 
@@ -325,7 +315,7 @@ private fun Typography.initLabelCategorySide(labelCategorySide: ProductCardModel
 
 private fun Typography.initLabelCategoryBottom(labelBestSellerModel: ProductCardModel.LabelGroup?) {
     if (labelBestSellerModel == null) hide()
-    else showLabelBestSeller(labelBestSellerModel)
+    else showLabelCategoryBottom(labelBestSellerModel)
 }
 
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
@@ -339,11 +329,13 @@ private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardMode
 private fun Typography.showLabelCategorySide(labelCategorySide: ProductCardModel.LabelGroup) {
     show()
     text = labelCategorySide.title
+    setTextColor(labelCategorySide.type.toUnifyTextColor(context))
 }
 
 private fun Typography.showLabelCategoryBottom(labelCategoryBottom: ProductCardModel.LabelGroup) {
     show()
     text = labelCategoryBottom.title
+    setTextColor(labelCategoryBottom.type.toUnifyTextColor(context))
 }
 
 internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {

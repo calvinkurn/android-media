@@ -87,7 +87,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="Nomor 1 Kategory Anak"
-            android:gravity="end"
+            android:gravity="end|center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/labelBestSeller"
             app:layout_constraintBottom_toBottomOf="@id/labelBestSeller"
