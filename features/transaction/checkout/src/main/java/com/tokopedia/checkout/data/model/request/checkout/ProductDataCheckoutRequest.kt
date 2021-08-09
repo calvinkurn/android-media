@@ -43,5 +43,8 @@ data class ProductDataCheckoutRequest(
         var isDiscountedPrice: Boolean = false,
         var isFreeShipping: Boolean = false,
         var isFreeShippingExtra: Boolean = false,
-        var campaignId: Int = 0
+        var campaignId: Int = 0,
+        var protectionPricePerProduct: Int = 0,
+        var protectionTitle: String = "",
+        var isProtectionAvailable: Boolean = false
 ) : Parcelable

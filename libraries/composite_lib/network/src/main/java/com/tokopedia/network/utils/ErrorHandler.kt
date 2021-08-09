@@ -122,12 +122,12 @@ open class ErrorHandler {
             }
         }
 
-        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: Boolean, stackTraceString: String) {
+        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: Boolean, stackTraceString: String?) {
             val mapParam = mapOf(
                     "identifier" to errorIdentifier,
                     "class" to className,
                     "error_code" to if(errorCode) errorCode else "",
-                    "stack_trace" to stackTraceString
+                    "stack_trace" to stackTraceString.orEmpty()
             )
             ServerLogger.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
         }
