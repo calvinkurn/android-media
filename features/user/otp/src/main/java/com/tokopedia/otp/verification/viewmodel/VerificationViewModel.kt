@@ -160,8 +160,20 @@ open class VerificationViewModel @Inject constructor(
             TkpdIdlingResource.increment()
             val params = otpValidateUseCase2FA.getParams(otpType = otpType, validateToken = validateToken, userIdEnc = userIdEnc, mode = mode, code = code)
             val data = otpValidateUseCase2FA.getData(params).data
-            _otpValidateResult.value = Success(data)
-            TkpdIdlingResource.decrement()
+            when {
+                data.success -> {
+                    _otpValidateResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
+                }
+                data.errorMessage.isNotEmpty() -> {
+                    _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    TkpdIdlingResource.decrement()
+                }
+                else -> {
+                    _otpValidateResult.postValue(Fail(Throwable()))
+                    TkpdIdlingResource.decrement()
+                }
+            }
         }, {
             _otpValidateResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
