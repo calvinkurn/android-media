@@ -5,7 +5,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.promocheckout.R
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.promocheckout.common.domain.model.event.EventVerifyBody
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -14,14 +14,19 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailEventActivity
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailEventPresenter
+import com.tokopedia.promocheckout.detail.view.viewmodel.PromoCheckoutDetailEventViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
 import javax.inject.Inject
 
 class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
 
     @Inject
-    lateinit var promoCheckoutDetailEventPresenter : PromoCheckoutDetailEventPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val promoCheckoutDetailEventViewModel: PromoCheckoutDetailEventViewModel by lazy { viewModelProvider.get(
+        PromoCheckoutDetailEventViewModel::class.java) }
 
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
 
@@ -39,7 +44,6 @@ class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
     fun initView(){
         promoCheckoutDetailComponent = (activity as PromoCheckoutDetailEventActivity).getComponent()
         promoCheckoutDetailComponent.inject(this)
-        promoCheckoutDetailEventPresenter.attachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,9 +52,51 @@ class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
         progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        promoCheckoutDetailEventViewModel.showLoadingPromoEvent.observe(viewLifecycleOwner, {
+            if (it) {
+                showLoading()
+            } else {
+                hideLoading()
+            }
+        })
+
+        promoCheckoutDetailEventViewModel.showProgressLoadingPromoEvent.observe(viewLifecycleOwner, {
+            if (it) {
+                showProgressLoading()
+            } else {
+                hideProgressLoading()
+            }
+        })
+
+        promoCheckoutDetailEventViewModel.eventCheckVoucherResult.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessCheckPromo(it.data)
+                }
+                is Fail ->{
+                    onErrorCheckPromo(it.throwable)
+                }
+            }
+        })
+
+        promoCheckoutDetailEventViewModel.promoCheckoutDetail.observe(viewLifecycleOwner, {
+            when(it){
+                is Success ->{
+                    onSuccessGetDetailPromo(it.data)
+                }
+                is Fail ->{
+                    onErroGetDetail(it.throwable)
+                }
+            }
+        })
+    }
+
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailEventPresenter.getDetailPromo(codeCoupon)
+        promoCheckoutDetailEventViewModel.getDetailPromo(codeCoupon)
     }
 
     override fun hideProgressLoading() {
@@ -65,15 +111,10 @@ class PromoCheckoutDetailEventFragment : BasePromoCheckoutDetailFragment() {
         }
     }
 
-    override fun onDestroy() {
-        promoCheckoutDetailEventPresenter.detachView()
-        super.onDestroy()
-    }
-
     override fun onClickUse() {
         if (codeCoupon.isNotEmpty()) {
             eventVerify.promocode = codeCoupon
-            promoCheckoutDetailEventPresenter.checkPromoCode(codeCoupon, false, eventVerify)
+            promoCheckoutDetailEventViewModel.checkPromoCode(false,  eventVerify)
         }
     }
 

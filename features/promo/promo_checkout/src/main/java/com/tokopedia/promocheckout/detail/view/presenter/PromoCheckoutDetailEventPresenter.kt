@@ -14,6 +14,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 
+@Deprecated("Not needed anymore.")
 class PromoCheckoutDetailEventPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                         private val eventCheckRepository: EventCheckRepository,
                                         private val compositeSubscription: CompositeSubscription
