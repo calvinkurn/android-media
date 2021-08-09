@@ -45,7 +45,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
             val shopScore = element?.shopScore.toIntOrZero()
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
+            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY || shopScore < 0) {
                 progressBarNewSeller?.show()
                 progressBarScorePerformance?.hide()
             } else {
