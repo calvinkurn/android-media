@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content_container"
@@ -69,7 +69,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/featured_shop_background"
                 app:layout_constraintVertical_chainStyle="spread"
-                app:typographyType="heading_3"
+                app:typographyType="heading_4"
+                android:textColor="@color/Neutral_N700_68"
                 tools:text="Gratis Ongkir"
                 tools:visibility="visible" />
 
