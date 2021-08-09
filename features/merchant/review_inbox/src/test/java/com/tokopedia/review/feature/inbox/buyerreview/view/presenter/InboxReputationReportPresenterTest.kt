@@ -1,13 +1,12 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
-import com.tokopedia.review.R
-import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.report.ReportReviewUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.anyInt
 import rx.observers.TestSubscriber
 
 class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixture() {
@@ -25,7 +24,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), R.id.report_spam, anyString())
+        presenter.reportReview(anyString(), anyString(), anyInt(), anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -46,7 +45,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onError(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(), R.id.report_sara, anyString())
+        presenter.reportReview(anyString(), anyString(), anyInt(), anyString())
 
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()
@@ -66,7 +65,7 @@ class InboxReputationReportPresenterTest: InboxReputationReportPresenterTestFixt
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.reportReview(anyString(), anyString(),R.id.report_other, anyString())
+        presenter.reportReview(anyString(), anyString(), anyInt(), anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
