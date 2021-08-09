@@ -310,9 +310,11 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun showKeyboard() {
         inputPin?.pinTextField?.let { view ->
             view.post {
-                if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                if (view.requestFocus() && context != null) {
+                    val systemService = context?.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    if(systemService != null && systemService is InputMethodManager) {
+                        systemService.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                    }
                 }
             }
         }
