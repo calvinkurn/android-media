@@ -156,7 +156,7 @@ object ReadReviewTracking {
     fun trackOpenScreenShopReview(shopId: String) {
         val screenName = String.format(SCREEN_NAME_SHOP_REVIEW, shopId)
         val shopReviewCustomDimension = getShopReviewCustomDimension(shopId).toMutableMap().apply {
-            put(ReadReviewTrackingConstants.KEY_BUSINESS_UNIT, ReadReviewTrackingConstants.BUSINESS_UNIT)
+            put(ReadReviewTrackingConstants.KEY_BUSINESS_UNIT, ReadReviewTrackingConstants.PHYSICAL_GOODS)
             put(ReadReviewTrackingConstants.KEY_CURRENT_SITE, ReadReviewTrackingConstants.CURRENT_SITE)
         }
         tracker.sendScreenAuthenticated(screenName, shopReviewCustomDimension)
@@ -226,9 +226,9 @@ object ReadReviewTracking {
         return mapOf(
                 ReviewTrackingConstant.EVENT to event,
                 ReviewTrackingConstant.EVENT_ACTION to eventAction,
-                ReviewTrackingConstant.EVENT_CATEGORY to "",
+                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY_SHOP_REVIEW,
                 ReviewTrackingConstant.EVENT_LABEL to eventLabel,
-                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.PHYSICAL_GOODS,
                 ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
                 ReadReviewTrackingConstants.KEY_SHOP_ID to shopId
         )
@@ -277,9 +277,9 @@ object ReadReviewTracking {
                         ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
                         ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
                         ReviewTrackingConstant.EVENT_LABEL to String.format(ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION, countRating, countReview),
-                        ReviewTrackingConstant.EVENT_CATEGORY to "",
+                        ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY_SHOP_REVIEW,
                         ReadReviewTrackingConstants.KEY_USER_ID to userId,
-                        ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+                        ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.PHYSICAL_GOODS,
                         ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
                         ReadReviewTrackingConstants.KEY_SHOP_ID to shopId,
                         ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(

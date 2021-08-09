@@ -15,6 +15,7 @@ object ReadReviewTrackingConstants {
     const val KEY_SHOP_ID = "shopId"
 
     const val BUSINESS_UNIT = "product detail page"
+    const val PHYSICAL_GOODS = "physical goods"
     const val CURRENT_SITE = "tokopediamarketplace"
     const val SCREEN_NAME = "review-pdp"
     const val SCREEN_NAME_SHOP_REVIEW = "shoppage review - %1s"
@@ -47,6 +48,7 @@ object ReadReviewTrackingConstants {
     const val EVENT_LABEL_IMPRESSION = "count_rating:%d;count_ulasan:%d;"
 
     const val EVENT_CATEGORY = "product detail page - review"
+    const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"
 
     const val EE_NAME = "review_char:%d;count_image:%d;"
 }
