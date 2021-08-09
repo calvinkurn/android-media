@@ -48,7 +48,7 @@ class ImageUploadUseCase @Inject constructor(
 
         if (checkFileIsMoreThan10Mb(file)) {
             try {
-                file = ImageProcessingUtil.compressImageFile(filePath, 100)
+                file = ImageProcessingUtil.compressImageFile(filePath, IMAGE_QUALITY)
             } catch (e: Exception) {
                 throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
             }
@@ -58,13 +58,16 @@ class ImageUploadUseCase @Inject constructor(
     }
 
     private fun checkFileIsMoreThan10Mb(file: File): Boolean {
-        val maxFileSize = MAX_FILE_SIZE_IN_MB * 1024 * 1024
+        val maxFileSize = MAX_FILE_SIZE_IN_MB * BYTE * BYTE
         val fileSize = file.length()
         return fileSize > maxFileSize
     }
 
     companion object {
         private const val MAX_FILE_SIZE_IN_MB = 10
+        private const val IMAGE_QUALITY = 100
+        private const val BYTE = 1024
+
         const val STATUS_OK = "OK"
     }
 }
