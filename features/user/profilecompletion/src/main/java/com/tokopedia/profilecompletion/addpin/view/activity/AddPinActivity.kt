@@ -69,7 +69,8 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             if (enableBackBtn) {
-                setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
+                val backBtn = MethodChecker.getDrawable(this@AddPinActivity, R.drawable.ic_back_toolbar_profile_completion)
+                setHomeAsUpIndicator(backBtn)
             }
             setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
