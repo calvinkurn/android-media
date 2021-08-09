@@ -13,4 +13,7 @@ class PlayWidgetPromoLabelMapper @Inject constructor() {
         val promoLabel = promoLabels.firstOrNull() ?: return PlayWidgetPromoType.NoPromo
         return PlayWidgetPromoType.getByType(promoLabel.type, promoLabel.text)
     }
+
+    fun mapWidgetHasGiveaway(promoLabels: List<PlayWidgetPromoLabel>): Boolean =
+        promoLabels.firstOrNull { it.type == "GIVEAWAY" } != null
 }

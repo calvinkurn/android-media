@@ -52,7 +52,7 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
 
     fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword)
+            val autoComplete = repo.getAutoComplete(keyword, "")
             _autoCompleteList.value = Success(mapper.mapAutoComplete(autoComplete))
         }
     }

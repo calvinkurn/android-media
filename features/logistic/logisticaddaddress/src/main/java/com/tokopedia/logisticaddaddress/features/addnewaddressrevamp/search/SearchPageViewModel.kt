@@ -25,9 +25,9 @@ class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
         get() = _autoCompleteList
 
 
-    fun getAutoCompleteList(keyword: String) {
+    fun getAutoCompleteList(keyword: String, latlng: String) {
         viewModelScope.launch(onErrorAutoComplete) {
-            val autoComplete = repo.getAutoComplete(keyword)
+            val autoComplete = repo.getAutoComplete(keyword, latlng)
             _autoCompleteList.value = Success(autoCompleteMapper.mapAutoComplete(autoComplete))
         }
     }
