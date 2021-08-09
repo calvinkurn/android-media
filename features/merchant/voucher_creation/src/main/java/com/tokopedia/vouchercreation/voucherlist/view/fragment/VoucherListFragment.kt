@@ -198,7 +198,6 @@ class VoucherListFragment :
                 mViewModel.setShowBroadCastChatTicker(!isBroadCastChatTickerExpired)
             }
         } else mViewModel.setShowBroadCastChatTicker(false)
-
         VoucherCreationTracking.sendOpenScreenTracking(
             if (isActiveVoucher) {
                 VoucherCreationAnalyticConstant.ScreenName.VoucherList.ACTIVE
@@ -1228,6 +1227,7 @@ class VoucherListFragment :
                                     .show(childFragmentManager)
                             }
                         }
+                        mViewModel.setIsSuccessDialogDisplayed(true)
                     }
                 }
                 is Fail -> {
@@ -1259,7 +1259,8 @@ class VoucherListFragment :
                 }
             }
 
-            if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
+            // execute get voucher detail use case to show the bottomsheets
+            if (successVoucherId != 0 && isNeedToShowSuccessDialog && !mViewModel.isSuccessDialogDisplayed()) {
                 showSuccessCreateBottomSheet(successVoucherId)
             } else if (isNeedToShowSuccessUpdateDialog) {
                 showSuccessUpdateToaster()
