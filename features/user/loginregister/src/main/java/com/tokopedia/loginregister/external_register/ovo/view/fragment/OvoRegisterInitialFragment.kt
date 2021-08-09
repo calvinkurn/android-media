@@ -12,7 +12,7 @@ import com.tokopedia.loginregister.external_register.base.di.ExternalRegisterCom
 import com.tokopedia.loginregister.external_register.base.fragment.ExternalRegisterInitialFragment
 import com.tokopedia.loginregister.external_register.base.viewmodel.ExternalRegisterViewModel
 import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -125,7 +125,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RegisterInitialFragment.REQUEST_ADD_PIN){
+        if (requestCode == RegisterConstants.Request.REQUEST_ADD_PIN){
             externalRegisterViewModel.getUserInfo()
         }
         else {

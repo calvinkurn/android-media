@@ -13,7 +13,6 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +23,7 @@ import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
+import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -44,22 +44,22 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.notifications.common.CMConstant;
-import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.ToasterActivityLifecycle;
-import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -95,7 +95,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
+import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
+import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
@@ -125,6 +127,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
+    private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
@@ -159,6 +162,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppSignatureAsync();
 
         Loader.init(this);
+        if (getUserSession().isLoggedIn()) {
+            Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
+        }
     }
 
     private void checkAppSignatureAsync() {
@@ -328,8 +334,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
     }
 
 
@@ -429,6 +436,14 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
 
+        DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
+            @Override
+            public Unit invoke(String s) {
+                FingerprintModelGenerator.INSTANCE.expireFingerprint();
+                return Unit.INSTANCE;
+            }
+        });
+
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         return true;
@@ -519,6 +534,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+            }
+
+            @NotNull
+            @Override
+            public String getEmbraceConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_EMBRACE_KEY_LOG);
             }
         });
     }

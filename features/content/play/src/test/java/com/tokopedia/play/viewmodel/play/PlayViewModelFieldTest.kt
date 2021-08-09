@@ -163,26 +163,6 @@ class PlayViewModelFieldTest {
     }
 
     @Test
-    fun `given partner info is set, when page is created and partnerId is retrieved, it should return correct value`() {
-        val partnerId = 123515L
-
-        val channelData = channelDataBuilder.buildChannelData(
-                partnerInfo = partnerInfoBuilder.buildIncompleteData(
-                        basicInfo = partnerInfoBuilder.buildPlayPartnerBasicInfo(
-                                id = partnerId
-                        )
-                )
-        )
-
-        givenPlayViewModelRobot(
-        ) andWhen {
-            createPage(channelData)
-        } thenVerify {
-            viewModel.partnerId.isEqualTo(partnerId)
-        }
-    }
-
-    @Test
     fun `given total view is set, when page is created and total view is retrieved, it should return correct value`() {
         val totalView = "5.91k"
 

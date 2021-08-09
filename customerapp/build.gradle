@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'embrace-swazzler'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
+apply plugin: 'newrelic'
+
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
 }
@@ -81,6 +84,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.gradlePlugin.googleServices
     }
@@ -273,6 +277,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.oms)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)

@@ -1,8 +1,11 @@
 package com.tokopedia.hotel.common.util
 
 import android.content.Context
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.data.HotelErrorException
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import java.net.UnknownHostException
 
 /**
@@ -63,6 +66,23 @@ class ErrorHandlerHotel {
                 return R.drawable.hotel_ic_server_error
             } else if (e is UnknownHostException) return com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
             else return R.drawable.hotel_ic_server_error
+        }
+
+        fun getErrorUnify(context: Context?, error: Throwable?, action: () -> Unit, view: GlobalError){
+            when(error){
+                is UnknownHostException -> view.setType(GlobalError.NO_CONNECTION)
+                is MessageErrorException -> {
+                    view.setType(GlobalError.SERVER_ERROR)
+                    view.errorTitle.text = if(error.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, error) else error.message
+                }
+                else -> {
+                    view.setType(GlobalError.SERVER_ERROR)
+                    view.errorTitle.text = ErrorHandler.getErrorMessage(context, error)
+                }
+            }
+            view.setActionClickListener {
+                action()
+            }
         }
     }
 }

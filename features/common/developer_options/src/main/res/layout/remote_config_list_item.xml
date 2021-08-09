@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/config_container"
     android:orientation="vertical"
     android:background="?selectableItemBackground"
@@ -10,46 +11,48 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="6dp"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N0"
         android:textSize="@dimen/fontSize_lvl1"
-        android:textStyle="bold"
         android:background="@drawable/remote_config_key_bg"
-        android:text="@string/remote_config_key_label" />
+        android:text="@string/remote_config_key_label"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/config_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="6dp"
-        android:textColor="#273238"
         android:textSize="@dimen/fontSize_lvl4"
         android:maxLines="2"
-        android:background="@drawable/remote_config_value_bg" />
+        android:background="@drawable/remote_config_value_bg"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:padding="6dp"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N0"
         android:textSize="@dimen/fontSize_lvl1"
-        android:textStyle="bold"
         android:background="@drawable/remote_config_key_bg"
-        android:text="@string/remote_config_value_label" />
+        android:text="@string/remote_config_value_label"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/config_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="6dp"
-        android:textColor="#273238"
         android:textSize="@dimen/fontSize_lvl4"
-        android:background="@drawable/remote_config_value_bg" />
+        android:background="@drawable/remote_config_value_bg"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"/>
 
 </LinearLayout>

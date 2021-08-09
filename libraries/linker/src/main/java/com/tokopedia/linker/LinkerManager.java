@@ -1,5 +1,6 @@
 package com.tokopedia.linker;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.linker.interfaces.WrapperInterface;
@@ -91,6 +92,12 @@ public class LinkerManager {
     public void initSession(){
         if(wrapperObj != null){
             wrapperObj.initSession();
+        }
+    }
+
+    public void initSession(Activity activity, boolean uriHaveCampaignData){
+        if(wrapperObj != null){
+            wrapperObj.initSession(activity, uriHaveCampaignData);
         }
     }
 }

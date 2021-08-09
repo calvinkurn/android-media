@@ -53,6 +53,7 @@ import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
@@ -89,7 +90,7 @@ import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeCo
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -139,8 +140,11 @@ public class MainParentActivity extends BaseActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
+    public static final int REQUEST_CODE_LOGIN = 12137;
+    public static final String FEED_PAGE = "FeedPlusContainerFragment";
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
@@ -169,9 +173,9 @@ public class MainParentActivity extends BaseActivity implements
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
-    private static final String ROLLANCE_EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
-    private static final String ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
-    private static final String ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+    private static final String ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV;
+    private static final String ROLLANCE_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
+    private static final String ROLLANCE_VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
 
     private static final String OS_KEY_MOBILE = "mobile";
@@ -271,8 +275,8 @@ public class MainParentActivity extends BaseActivity implements
     private void initInboxAbTest() {
         try {
             useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-            ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
+                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+            ).equals(RollenceKey.VARIANT_NEW_INBOX) && isNewNavigation;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -283,9 +287,9 @@ public class MainParentActivity extends BaseActivity implements
             useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .getString(
-                            AbTestPlatform.KEY_NEW_NOTFICENTER,
-                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
-                    ).equals(AbTestPlatform.VARIANT_NEW_NOTFICENTER);
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_OLD_NOTFICENTER
+                    ).equals(RollenceKey.VARIANT_NEW_NOTFICENTER);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -357,7 +361,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
             super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-            reloadPage();
+            reloadPage(HOME_MENU);
         }
     }
 
@@ -643,7 +647,17 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage();
+            int position = HOME_MENU;
+            if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment frag = fragmentList.get(i);
+                    if (frag.getClass().getName().equalsIgnoreCase(currentFragment.getClass().getName())) {
+                        position = i;
+                        break;
+                    }
+                }
+            }
+            reloadPage(position);
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
@@ -658,6 +672,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
+        switch (requestCode) {
+            case REQUEST_CODE_LOGIN:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    boolean isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false);
+                    if (isSuccessRegister) {
+                        gotoNewUserZonePage();
+                    }
+                }
+                break;
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -681,8 +705,9 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
-    private void reloadPage() {
+    private void reloadPage(int position) {
         finish();
+        getIntent().putExtra(ARGS_TAB_POSITION, position);
         startActivity(getIntent());
     }
 
@@ -1192,25 +1217,41 @@ public class MainParentActivity extends BaseActivity implements
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
                     pageName = "OS Homepage";
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
                     pageName = "Feed";
                 }
                 globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
+
+                if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed)))
+                    globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }
         }
         isFirstNavigationImpression = false;
 
-        if (position == FEED_MENU) {
+        if (position != FEED_MENU) {
+            Intent intent = new Intent(BROADCAST_VISIBLITY);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        }
+        else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.get().isUserLogin()) {
+        if (position == CART_MENU && !presenter.get().isUserLogin()) {
             Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
             intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
             startActivity(intent);
+            return false;
+        }
+
+        if (position == ACCOUNT_MENU && !presenter.get().isUserLogin()) {
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
             return false;
         }
 
@@ -1256,5 +1297,14 @@ public class MainParentActivity extends BaseActivity implements
         } catch (Exception e) {
             this.isNewNavigation = false;
         }
+    }
+
+    private void gotoNewUserZonePage() {
+        Intent intentNewUser = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_NEW_USER);
+        Intent intentHome = RouteManager.getIntent(this, ApplinkConst.HOME);
+        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivities(new Intent[]{intentHome, intentNewUser});
+        finish();
     }
 }
