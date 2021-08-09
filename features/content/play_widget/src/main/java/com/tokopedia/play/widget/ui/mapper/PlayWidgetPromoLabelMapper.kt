@@ -10,7 +10,7 @@ import javax.inject.Inject
 class PlayWidgetPromoLabelMapper @Inject constructor() {
 
     fun mapWidgetPromoType(promoLabels: List<PlayWidgetPromoLabel>): PlayWidgetPromoType {
-        val promoLabel = promoLabels.firstOrNull() ?: return PlayWidgetPromoType.NoPromo
+        val promoLabel = promoLabels.firstOrNull { it.type != "GIVEAWAY" } ?: return PlayWidgetPromoType.NoPromo
         return PlayWidgetPromoType.getByType(promoLabel.type, promoLabel.text)
     }
 
