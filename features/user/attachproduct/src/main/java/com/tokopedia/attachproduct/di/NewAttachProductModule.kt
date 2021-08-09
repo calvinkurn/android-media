@@ -51,16 +51,6 @@ class NewAttachProductModule(private val context: Context) {
 
     @AttachProductScope
     @Provides
-    @AttachProductQualifier
-    fun provideRetrofit(okHttpClient: OkHttpClient?,
-                        retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(AttachProductUrl.URL)
-            .client(okHttpClient)
-            .build()
-    }
-
-    @AttachProductScope
-    @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
         return context as NetworkRouter?
     }
@@ -78,29 +68,6 @@ class NewAttachProductModule(private val context: Context) {
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter?,
                                       userSession: UserSession?): FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSession)
-    }
-
-    @AttachProductScope
-    @Provides
-    @AttachProductQualifier
-    fun provideOkHttpClient(retryPolicy: OkHttpRetryPolicy,
-                            errorResponseInterceptor: ErrorResponseInterceptor?,
-                            @ChuckInterceptorAttachProductQualifier chuckInterceptor: ChuckerInterceptor?,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                            tkpdAuthInterceptor: TkpdAuthInterceptor?,
-                            fingerprintInterceptor: FingerprintInterceptor?): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-            .addInterceptor(fingerprintInterceptor)
-            .addInterceptor(errorResponseInterceptor)
-            .addInterceptor(tkpdAuthInterceptor)
-            .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-            .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-            .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(chuckInterceptor)
-        }
-        return builder.build()
     }
 
     @Provides
