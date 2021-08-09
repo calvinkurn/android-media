@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -73,7 +72,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             sharedModelPrepaid = viewModelProvider.get(SharedTelcoPrepaidViewModel::class.java)
         }
     }
@@ -318,10 +317,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
             }
         }
 
-        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { favNumber ->
+        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { productId ->
             val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
             if (activeCategory == titleProduct) {
-                telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)
+                telcoTelcoProductView.selectProductFromFavNumber(productId)
             }
         })
     }

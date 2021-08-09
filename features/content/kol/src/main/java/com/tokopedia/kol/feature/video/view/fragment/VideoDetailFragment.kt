@@ -133,7 +133,6 @@ class VideoDetailFragment :
                 val mediaController = MediaController(it)
                 videoView.setMediaController(mediaController)
                 mediaController.setAnchorView(videoView)
-                mediaController.show()
             }
             player.start()
         }

@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewMode
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -38,6 +39,7 @@ class ProductPostTagViewHolderNew(
     private lateinit var divider: View
     private lateinit var star: IconUnify
     private lateinit var menuBtn: IconUnify
+    private lateinit var card: CardUnify
 
     override fun bind(item: ProductPostTagViewModelNew) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -53,6 +55,7 @@ class ProductPostTagViewHolderNew(
         divider = itemView.findViewById(R.id.divider)
         star = itemView.findViewById(R.id.star)
         menuBtn = itemView.findViewById(R.id.menu)
+        card = itemView.findViewById(R.id.container)
         label.showWithCondition(item.isDiscount)
         productTag.showWithCondition(item.isDiscount)
         if (item.isDiscount) {
@@ -72,7 +75,8 @@ class ProductPostTagViewHolderNew(
         }
         productImage.setImageUrl(item.imgUrl)
         productName.text = item.text
-        productNameSection.setOnClickListener(
+
+        card.setOnClickListener(
             getItemClickNavigationListener(
                 listener,
                 item.positionInFeed,
@@ -90,14 +94,6 @@ class ProductPostTagViewHolderNew(
         divider.showWithCondition(item.rating != 0 && item.totalSold != 0)
         rating.showWithCondition(item.rating != 0)
         soldInfo.showWithCondition(item.totalSold != 0)
-        productLayout.setOnClickListener(
-            getItemClickNavigationListener(
-                listener,
-                item.positionInFeed,
-                item.product,
-                adapterPosition
-            )
-        )
     }
 
     private fun getItemClickNavigationListener(

@@ -192,7 +192,7 @@ class InteractiveTapView : ConstraintLayout {
 
         private const val MAX_RETRY_COUNT = 3
 
-        private const val LOTTIE_CONFETTI_MIN_PROGRESS = 0.2f
+        private const val LOTTIE_CONFETTI_MIN_PROGRESS = 0.4f
         private const val LOTTIE_START_PROGRESS = 0f
     }
 

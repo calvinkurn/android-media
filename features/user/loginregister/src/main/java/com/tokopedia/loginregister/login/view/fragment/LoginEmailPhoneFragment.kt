@@ -528,10 +528,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onSuccessLoginBiometric() {
+        analytics.trackOnLoginFingerprintSuccess()
         viewModel.getUserInfo()
     }
 
     private fun onErrorLoginBiometric(throwable: Throwable) {
+        analytics.trackOnLoginFingerprintFailed(throwable.message ?:"")
         onErrorLogin("Error Login Fingerprint", "", throwable)
     }
 
@@ -723,6 +725,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             setLeftDrawableForFingerprint()
             show()
             setOnClickListener {
+                analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
         }
@@ -1187,17 +1190,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onErrorLogin(errorMessage: String?, flow: String) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
-
         dismissLoadingLogin()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        showToaster(errorMessage)
         loggingError(flow, errorMessage)
     }
 
     private fun onErrorLogin(errorMessage: String?, flow: String, throwable: Throwable) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
-
         dismissLoadingLogin()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        showToaster(errorMessage)
         loggingErrorWithThrowable(flow, errorMessage, throwable)
     }
 
@@ -1391,7 +1392,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun showGetAdminTypeError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        showToaster(errorMessage)
         dismissLoadingLogin()
     }
 
@@ -1592,11 +1593,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     viewModel.getUserInfo()
                 }
-            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
-                data?.extras?.let {
-                    val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
-                    val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
-                    onSuccessChooseAccountFingerprint(email, token)
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT) {
+                if(resultCode == Activity.RESULT_OK) {
+                    data?.extras?.let {
+                        val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
+                        val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
+                        onSuccessChooseAccountFingerprint(email, token)
+                    }
+                } else {
+                    showToaster(getString(R.string.error_login_fp_error))
                 }
             } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
@@ -1633,7 +1638,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onErrorVerifyFingerprint() {
-        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.error_login_fp_error))
+        showToaster(getString(R.string.error_login_fp_error))
+    }
+
+    private fun showToaster(message: String?) {
+        if(context != null) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message ?: getString(R.string.error_register_webview),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).show()
+            }
+        }
     }
 
     private fun onSuccessChooseAccountFingerprint(email: String, validateToken: String) {
