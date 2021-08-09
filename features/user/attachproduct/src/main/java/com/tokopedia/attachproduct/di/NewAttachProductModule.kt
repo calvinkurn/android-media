@@ -112,7 +112,7 @@ class NewAttachProductModule(private val context: Context) {
     @Provides
     @AttachProductScope
     fun provideQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_attach_product)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_attach_product)
     }
 
     @Provides
