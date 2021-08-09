@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -96,7 +97,7 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
 
         // Add unavailable separator
         if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
-            val miniCartSeparatorUiModel = MiniCartSeparatorUiModel(height = SEPARATOR_HEIGHT)
+            val miniCartSeparatorUiModel = MiniCartChatSeparatorUiModel(height = SEPARATOR_HEIGHT)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
         }
 
