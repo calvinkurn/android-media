@@ -1,7 +1,6 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
@@ -125,13 +124,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 if (isCommandFailed(writeResult)) {
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_FAILED"))
                     errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
-                } else if (writeResultString.length == MAX_WRITE_RESULT_SIZE) {
-                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(writeResultString, 48, 54)))
-                } else if (writeResultString.length == MAX_WRITE_RESULT_SIZE_V6) {
-                    recheckBalanceSecurePurse(tapcash, terminalRandomNumber)
                 } else {
-                    ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_RESULT_LENGTH"))
-                    errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
+                    recheckBalanceSecurePurse(tapcash, terminalRandomNumber)
                 }
             } catch (e: IOException) {
                 isoDep.close()
