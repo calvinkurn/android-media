@@ -22,7 +22,8 @@ import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepo
 import com.tokopedia.promocheckout.common.domain.event.repository.EventCheckRepositoryImpl
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.detail.view.presenter.*
+import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailEventPresenter
+import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import com.tokopedia.promocheckout.list.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.list.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.list.domain.mapper.HotelCheckVoucherMapper
@@ -178,10 +179,9 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideEventPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                              clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                               eventCheckRepository: EventCheckRepository,
                               compositeSubscription: CompositeSubscription): PromoCheckoutDetailEventPresenter {
-        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, clearCacheAutoApplyStackUseCase, eventCheckRepository, compositeSubscription)
+        return PromoCheckoutDetailEventPresenter(getDetailCouponMarketplaceUseCase, eventCheckRepository, compositeSubscription)
     }
 
     @Provides
