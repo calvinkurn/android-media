@@ -22,8 +22,12 @@ data class FeaturedShopDataModel(
 
 
     private fun isEqualWith(newData: Any?): Boolean {
-        if (newData !is FeaturedShopDataModel) return false
-        if (areGridsSame(newData.channelModel)) return true
+        if (newData !is FeaturedShopDataModel)
+            return false
+        if (state == newData.state) {
+            if (areGridsSame(newData.channelModel)) return true
+        } else
+            return false
         return false
     }
 
