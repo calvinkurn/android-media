@@ -32,6 +32,7 @@ import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
@@ -219,6 +220,12 @@ class TokoNowSearchViewModel @Inject constructor (
                         ratingAverage = otherRelatedProduct.ratingAverage,
                         labelGroupDataList = otherRelatedProduct.labelGroupList
                             .map(::mapToLabelGroupDataView),
+                        shop = BroadMatchItemDataView.Shop(id = otherRelatedProduct.shop.id),
+                        nonVariantATC = NonVariantATCDataView(
+                            minQuantity = otherRelatedProduct.minOrder,
+                            maxQuantity = otherRelatedProduct.stock,
+                            quantity = getProductNonVariantQuantity(otherRelatedProduct.id)
+                        ),
                     )
                 },
         )
@@ -292,6 +299,43 @@ class TokoNowSearchViewModel @Inject constructor (
 
     private fun onGetSearchLoadMorePageError(throwable: Throwable) {
 
+    }
+
+    override fun updateQuantityInVisitable(
+        visitable: Visitable<*>,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        super.updateQuantityInVisitable(visitable, index, updatedProductIndices)
+
+        if (visitable is BroadMatchDataView)
+            updateBroadMatchQuantities(visitable, index, updatedProductIndices)
+    }
+
+    private fun updateBroadMatchQuantities(
+        broadMatchDataView: BroadMatchDataView,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        broadMatchDataView.broadMatchItemDataViewList.forEach { broadMatchItemDataView ->
+            updateBroadMatchItemQuantity(broadMatchItemDataView, index, updatedProductIndices)
+        }
+    }
+
+    private fun updateBroadMatchItemQuantity(
+        broadMatchItemDataView: BroadMatchItemDataView,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        val nonVariantATC = broadMatchItemDataView.nonVariantATC ?: return
+        val quantity = getProductNonVariantQuantity(broadMatchItemDataView.id)
+
+        if (nonVariantATC.quantity != quantity) {
+            nonVariantATC.quantity = quantity
+
+            if (!updatedProductIndices.contains(index))
+                updatedProductIndices.add(index)
+        }
     }
 
     companion object {

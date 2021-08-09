@@ -111,7 +111,6 @@ class BroadMatchViewHolder(
             countSoldRating = it.ratingAverage,
             labelGroupList = it.labelGroupDataList.mapToLabelGroup(),
             nonVariant = it.nonVariantATC?.mapToNonVariant(),
-            variant = it.variantATC?.mapToVariant(),
         )
     }
 

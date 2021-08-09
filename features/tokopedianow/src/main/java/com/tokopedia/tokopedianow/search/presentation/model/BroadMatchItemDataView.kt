@@ -17,6 +17,9 @@ data class BroadMatchItemDataView(
     val ratingAverage: String = "",
     val labelGroupDataList: List<LabelGroupDataView> = listOf(),
     val dimension90: String = "",
+    val shop: Shop = Shop(),
     val nonVariantATC: NonVariantATCDataView? = null,
-    val variantATC: VariantATCDataView? = null,
-): ImpressHolder()
+): ImpressHolder() {
+
+    data class Shop(val id: String = "")
+}

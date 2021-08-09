@@ -180,12 +180,20 @@ data class AceSearchProductModel(
             @SerializedName("labelGroups")
             @Expose
             val labelGroupList: List<ProductLabelGroup> = listOf(),
+
+            @SerializedName("minOrder")
+            @Expose
+            val minOrder: Int = 1,
+
+            @SerializedName("stock")
+            @Expose
+            val stock: Int = 0,
         )
 
         data class OtherRelatedProductShop(
-            @SerializedName("city")
+            @SerializedName("id")
             @Expose
-            val city: String = ""
+            val id: String = "",
         )
 
     data class Suggestion(
@@ -253,6 +261,7 @@ data class AceSearchProductModel(
             @Expose
             val imageUrl700: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",

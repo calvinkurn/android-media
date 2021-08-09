@@ -34,7 +34,7 @@
             "applink": "tokopedia://search?q=pikachu+eevee&source=related_keyword&st=product",
             "product": [
               {
-                "id": 1074105134,
+                "id": 574261655,
                 "name": "Penghapus Pokemon 3D Setip Eraser Hapusan Stip Pikachu Snorlax Eevee - Kuning",
                 "price": 15500,
                 "priceStr": "Rp15.500",
@@ -42,11 +42,13 @@
                 "ratingAverage": "4.9",
                 "applink": "tokopedia://product/1074105134",
                 "shop": {
-                  "city": "Bandung"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 7
               },
               {
-                "id": 1025538191,
+                "id": 574261652,
                 "name": "Boneka eevee 18cm/boneka teman pokemon/boneka karakter/boneka pikachu",
                 "price": 55000,
                 "priceStr": "Rp55.000",
@@ -54,11 +56,13 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/1025538191",
                 "shop": {
-                  "city": "Jakarta Pusat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 4
               },
               {
-                "id": 1850040222,
+                "id": 576261652,
                 "name": "Pokemon Lets go Pikachu Eevee PC Include DLC - Google Drive",
                 "price": 10000,
                 "priceStr": "Rp10.000",
@@ -66,8 +70,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/1850040222",
                 "shop": {
-                  "city": "Depok"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               }
             ]
           },
@@ -77,7 +83,7 @@
             "applink": "tokopedia://search?q=eevee+plushie&source=related_keyword&st=product",
             "product": [
               {
-                "id": 787917600,
+                "id": 574211652,
                 "name": "Japan UFo Catcher eevee Jolteon plushie",
                 "price": 220000,
                 "priceStr": "Rp220.000",
@@ -85,11 +91,13 @@
                 "ratingAverage": "",
                 "applink": "tokopedia://product/787917600",
                 "shop": {
-                  "city": "Jakarta Utara"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
-                "id": 1310519588,
+                "id": 574262652,
                 "name": "TERPOPULER BONEKA POKEMON EEVEE PLUSHIE CHANGI AIRPORT SINGAPORE",
                 "price": 167000,
                 "priceStr": "Rp167.000",
@@ -97,11 +105,13 @@
                 "ratingAverage": "",
                 "applink": "tokopedia://product/1310519588",
                 "shop": {
-                  "city": "Jakarta Selatan"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 12
               },
               {
-                "id": 1321684390,
+                "id": 574262352,
                 "name": "TERPOPULER BONEKA POKEMON EEVEE PLUSHIE CHANGI AIRPORT SINGAPORE",
                 "price": 167000,
                 "priceStr": "Rp167.000",
@@ -109,8 +119,10 @@
                 "ratingAverage": "",
                 "applink": "tokopedia://product/1321684390",
                 "shop": {
-                  "city": "Jakarta Barat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               }
             ]
           },
@@ -120,7 +132,7 @@
             "applink": "tokopedia://search?q=pikachu+plushie&source=related_keyword&st=product",
             "product": [
               {
-                "id": 534485509,
+                "id": 574262659,
                 "name": "[ Pokemon Center ] Pikachu x Snorlax Plushie",
                 "price": 275000,
                 "priceStr": "Rp275.000",
@@ -128,8 +140,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/534485509",
                 "shop": {
-                  "city": "Jakarta Utara"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
                 "id": 1981032854,
@@ -140,8 +154,10 @@
                 "ratingAverage": "",
                 "applink": "tokopedia://product/1981032854",
                 "shop": {
-                  "city": "Jakarta Utara"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
                 "id": 469752802,
@@ -152,8 +168,10 @@
                 "ratingAverage": "",
                 "applink": "tokopedia://product/469752802",
                 "shop": {
-                  "city": "Tangerang Selatan"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               }
             ]
           },
@@ -171,8 +189,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/1694005698",
                 "shop": {
-                  "city": "Jakarta Barat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
                 "id": 1911369091,
@@ -183,8 +203,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/1911369091",
                 "shop": {
-                  "city": "Jakarta Barat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
                 "id": 1781420935,
@@ -195,8 +217,10 @@
                 "ratingAverage": "4.7",
                 "applink": "tokopedia://product/1781420935",
                 "shop": {
-                  "city": "Jakarta Barat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               }
             ]
           },
@@ -214,8 +238,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/410972256",
                 "shop": {
-                  "city": "Jakarta Barat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
                 "id": 378687907,
@@ -226,8 +252,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/378687907",
                 "shop": {
-                  "city": "Tangerang"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               },
               {
                 "id": 473836862,
@@ -238,8 +266,10 @@
                 "ratingAverage": "5.0",
                 "applink": "tokopedia://product/473836862",
                 "shop": {
-                  "city": "Jakarta Pusat"
-                }
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "stock": 13
               }
             ]
           }

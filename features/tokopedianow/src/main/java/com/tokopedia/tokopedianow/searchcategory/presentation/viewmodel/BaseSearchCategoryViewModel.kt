@@ -44,7 +44,6 @@ import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
@@ -100,8 +99,10 @@ abstract class BaseSearchCategoryViewModel(
     protected var nextPage = 1
     protected var chooseAddressData: LocalCacheModel? = null
     protected var currentProductPosition: Int = 1
-    private var cartItemsNonVariant: List<MiniCartItem>? = null
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+    protected var cartItemsNonVariant: List<MiniCartItem>? = null
+        private set
+    protected var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
+        private set
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -802,8 +803,7 @@ abstract class BaseSearchCategoryViewModel(
             val updatedProductIndices = mutableListOf<Int>()
 
             visitableList.forEachIndexed { index, visitable ->
-                if (visitable is ProductItemDataView)
-                    updateProductItemQuantity(index, visitable, updatedProductIndices)
+                updateQuantityInVisitable(visitable, index, updatedProductIndices)
             }
 
             withContext(baseDispatcher.main) {
@@ -824,6 +824,15 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) =
             miniCartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
+
+    protected open fun updateQuantityInVisitable(
+        visitable: Visitable<*>,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        if (visitable is ProductItemDataView)
+            updateProductItemQuantity(index, visitable, updatedProductIndices)
+    }
 
     private fun updateProductItemQuantity(
             index: Int,
@@ -852,12 +861,12 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
-    private fun getProductNonVariantQuantity(productId: String): Int {
+    protected fun getProductNonVariantQuantity(productId: String): Int {
         val cartItem = cartItemsNonVariant?.find { it.productId == productId }
         return cartItem?.quantity ?: 0
     }
 
-    private fun getProductVariantTotalQuantity(parentProductId: String): Int {
+    protected fun getProductVariantTotalQuantity(parentProductId: String): Int {
         val cartItemsVariantGrouped = cartItemsVariantGrouped
         val miniCartItemsWithSameParentId = cartItemsVariantGrouped?.get(parentProductId)
         val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
@@ -1052,6 +1061,6 @@ abstract class BaseSearchCategoryViewModel(
     )
 
     companion object {
-        private const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
+        const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
     }
 }
