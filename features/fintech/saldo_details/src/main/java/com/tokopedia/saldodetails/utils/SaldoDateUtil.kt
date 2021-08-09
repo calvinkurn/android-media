@@ -17,7 +17,7 @@ object SaldoDateUtil {
         val endCalender = GregorianCalendar.getInstance()
         val startCalender = GregorianCalendar().apply {
             time = endCalender.time
-            add(Calendar.DAY_OF_MONTH, -1)
+            set(Calendar.DAY_OF_MONTH, 1)
         }
         setMidnight(startCalender)
         setMidnight(endCalender)

@@ -15,8 +15,9 @@ import kotlinx.android.synthetic.main.saldo_withdrawal_status_item_view.view.*
 class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
     fun bindData(model: WithdrawalInfoHistory, isFirstItem: Boolean, showDescendingLine: Boolean) {
-        setSeparator(isFirstItem, showDescendingLine)
         setDetails(model)
+        setColorState(isFirstItem)
+        setSeparator(showDescendingLine)
     }
 
     private fun setDetails(model: WithdrawalInfoHistory) {
@@ -27,19 +28,24 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
         }
     }
 
-    private fun setSeparator(isFirstItem: Boolean, showDescendingLine: Boolean) {
-        if (isFirstItem) {
-            view.ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_circle_light_green))
-            view.statusDivider.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+    private fun setColorState(isFirstItem: Boolean) {
+        view.apply {
+            if (isFirstItem) {
+                tvStatusTitle.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_circle_light_green))
+                statusDivider.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            }
+            else {
+                tvStatusTitle.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_circle_light_grey))
+                statusDivider.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            }
         }
-        else {
-            view.ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_circle_light_grey))
-            view.statusDivider.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-        }
+    }
 
+    private fun setSeparator(showDescendingLine: Boolean) {
         if (showDescendingLine) view.statusDivider.visible()
         else view.statusDivider.gone()
-
     }
 
     companion object {

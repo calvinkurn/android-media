@@ -239,9 +239,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         }
     }
 
-    fun isSalesTabEnabled(): Boolean {
-        return SaldoRollence.isSaldoRevampEnabled()
-    }
-
+    private fun isSalesTabEnabled() = SaldoRollence.isSaldoRevampEnabled()
 
 }

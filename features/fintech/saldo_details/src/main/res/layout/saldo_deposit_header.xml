@@ -306,6 +306,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/unify_space_4"
                 android:layout_toEndOf="@+id/amount_review"
                 android:text="@string/check_saldo_hold_balance_status"
                 android:textColor="@color/Unify_G500"
