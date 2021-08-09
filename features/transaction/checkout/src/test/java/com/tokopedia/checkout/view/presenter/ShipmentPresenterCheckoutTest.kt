@@ -675,7 +675,7 @@ class ShipmentPresenterCheckoutTest {
         verifyOrder {
             view.setHasRunningApiCall(false)
             view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
-            analyticsPurchaseProtection.eventClickOnBuy(any())
+            analyticsPurchaseProtection.eventClickOnBuy(any(), any())
             view.renderCheckoutCartSuccess(any())
         }
     }
