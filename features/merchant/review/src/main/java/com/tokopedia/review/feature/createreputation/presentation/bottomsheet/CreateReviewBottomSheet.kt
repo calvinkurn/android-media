@@ -663,7 +663,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         CreateReviewTracking.reviewOnRatingChangedTracker(
                 getOrderId(),
                 productId,
-                (position).toString(10),
+                (position).toString(),
                 true,
                 isEditMode,
                 feedbackId.toString()
@@ -890,7 +890,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 getOrderId(),
                 productId,
                 true,
-                selectedImage.size.toString(10),
+                selectedImage.size.toString(),
                 isEditMode,
                 feedbackId.toString()
         )

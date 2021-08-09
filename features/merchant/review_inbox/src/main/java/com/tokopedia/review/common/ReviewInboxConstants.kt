@@ -22,4 +22,10 @@ object ReviewInboxConstants {
     const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"
     const val REVIEW_PENDING_PLT_NETWORK_METRICS = "review_pending_plt_network_metrics"
     const val REVIEW_PENDING_PLT_RENDER_METRICS = "review_pending_plt_render_metrics"
+    const val RATING_5 = 5
+    const val RATING_4 = 4
+    const val RATING_3 = 3
+    const val RATING_2 = 2
+    const val RATING_1 = 1
+
 }

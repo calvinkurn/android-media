@@ -292,7 +292,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 CreateReviewTracking.reviewOnRatingChangedTracker(
                         getOrderId(),
                         productId,
-                        (position).toString(10),
+                        (position).toString(),
                         true,
                         isEditMode,
                         feedbackId.toString()
@@ -312,7 +312,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         })
         if (!isEditMode) {
             animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
-            updateViewBasedOnSelectedRating(if (reviewClickAt != 0) reviewClickAt else 5)
+            updateViewBasedOnSelectedRating(if (reviewClickAt != 0) reviewClickAt else RATING_5)
             playAnimation()
         }
 
@@ -461,7 +461,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                             getOrderId(),
                             productId,
                             true,
-                            selectedImage.size.toString(10),
+                            selectedImage.size.toString(),
                             isEditMode,
                             feedbackId.toString()
                     )
@@ -497,9 +497,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
         CreateReviewTracking.reviewOnSubmitTracker(
                 getOrderId(),
                 productId,
-                reviewClickAt.toString(10),
+                reviewClickAt.toString(),
                 reviewMessage.isEmpty(),
-                createReviewViewModel.getSelectedImagesUrl().size.toString(10),
+                createReviewViewModel.getSelectedImagesUrl().size.toString(),
                 createReviewAnonymousCheckbox?.isChecked == true,
                 isEditMode,
                 feedbackId.toString(),
