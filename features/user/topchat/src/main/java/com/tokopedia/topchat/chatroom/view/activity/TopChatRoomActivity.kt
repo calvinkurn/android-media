@@ -53,6 +53,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private var layoutUpdatesJob: Job? = null
     private var role: Int = RoleType.BUYER
+    private var currentActiveChatId: String = ""
     private var displayState: Int = 0
     private var messageId: String = "0"
 
@@ -67,6 +68,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
             role = intent.getIntExtra(Constant.CHAT_USER_ROLE_KEY, RoleType.BUYER)
+            currentActiveChatId = intent.getStringExtra(Constant.CHAT_CURRENT_ACTIVE_ID)?: ""
         }
 
         return createChatRoomFragment(bundle)
@@ -106,7 +108,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun initWindowBackground() {
-        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         window.decorView.setBackgroundColor(color)
     }
 
@@ -222,12 +224,12 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private fun setupFragments(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             chatRoomFragment = newFragment as TopChatRoomFragment
-            chatListFragment = ChatListInboxFragment.createFragment(role)
+            chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChatId)
         } else {
             chatRoomFragment = (getChatFragment(R.id.chatroom_fragment) as TopChatRoomFragment?)
                 ?: newFragment as TopChatRoomFragment
             chatListFragment = (getChatFragment(R.id.chatlist_fragment) as ChatListInboxFragment?)
-                ?: ChatListInboxFragment.createFragment(role)
+                ?: ChatListInboxFragment.createFragment(role, currentActiveChatId)
         }
         chatListFragment.chatRoomFlexModeListener = this
     }

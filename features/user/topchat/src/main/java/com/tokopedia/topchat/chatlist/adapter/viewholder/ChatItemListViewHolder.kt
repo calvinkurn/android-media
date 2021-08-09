@@ -40,7 +40,7 @@ import com.tokopedia.utils.time.TimeHelper
  */
 class ChatItemListViewHolder constructor(
         itemView: View,
-        var listener: ChatListItemListener
+        var listener: ChatListItemListener,
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)
@@ -140,8 +140,9 @@ class ChatItemListViewHolder constructor(
                 bindMessageState(chat)
             }
         }
-
-        listener.chatItemClicked(chat, adapterPosition)
+        listener.chatItemClicked(chat, adapterPosition, currentActiveChat, lastActivePosition)
+        currentActiveChat = chat.msgId
+        lastActivePosition = adapterPosition
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
@@ -295,6 +296,15 @@ class ChatItemListViewHolder constructor(
         message.maxLines = 2
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        if (chat.msgId == currentActiveChat) {
+            itemView.setBackgroundColor(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+            )
+        } else {
+            itemView.setBackgroundColor(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     private fun hideTyping() {
@@ -372,6 +382,9 @@ class ChatItemListViewHolder constructor(
         const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
+
+        var currentActiveChat: String = ""
+        var lastActivePosition: Int? = null
     }
 
 }

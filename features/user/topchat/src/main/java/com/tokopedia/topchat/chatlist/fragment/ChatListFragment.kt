@@ -503,7 +503,12 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.getChatListMessage(page, filterChecked, sightTag)
     }
 
-    override fun chatItemClicked(element: ItemChatListPojo, itemPosition: Int) {
+    override fun chatItemClicked(
+        element: ItemChatListPojo,
+        itemPosition: Int,
+        lastActiveElementId: String?,
+        lastActiveItemPosition: Int?
+    ) {
         activity?.let {
             with(chatListAnalytics) {
                 eventClickChatList(

@@ -191,8 +191,8 @@ object ViewUtil {
         @IdRes toolbarId: Int,
         @IdRes deviceFeatureId: Int
     ) {
-        set.constrainHeight(deviceFeatureId, rect.bottom - rect.top)
-        set.constrainWidth(deviceFeatureId, rect.right - rect.left)
+//        set.constrainHeight(deviceFeatureId, rect.bottom - rect.top)
+//        set.constrainWidth(deviceFeatureId, rect.right - rect.left)
         set.connect(
             deviceFeatureId, ConstraintSet.START,
             ConstraintSet.PARENT_ID, ConstraintSet.START, 0

@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Unify_N50">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/rv_container"
