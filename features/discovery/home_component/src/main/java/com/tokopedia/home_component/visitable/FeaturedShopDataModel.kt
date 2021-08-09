@@ -12,7 +12,7 @@ data class FeaturedShopDataModel(
         val channelModel: ChannelModel,
         val state: Int = STATE_LOADING
 ) : HomeComponentVisitable {
-    override fun visitableId(): String = String.format("%s%s", state.hashCode(),channelModel.hashCode())
+    override fun visitableId(): String = channelModel.id
 
     override fun equalsWith(b: Any?): Boolean = isEqualWith(b)
 

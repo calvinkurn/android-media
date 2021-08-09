@@ -1412,7 +1412,8 @@ open class HomeRevampViewModel @Inject constructor(
                             channelModel = featuredShopDataModel.channelModel.copy(
                                 channelGrids = data.mappingTopAdsHeaderToChannelGrid()
                             ),
-                        state = FeaturedShopDataModel.STATE_READY), index)
+                            state = FeaturedShopDataModel.STATE_READY)
+                                , index)
                     }
                 }){
                     deleteWidget(featuredShopDataModel, index)
