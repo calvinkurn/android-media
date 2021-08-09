@@ -352,7 +352,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                 }
                 viewModel.getMaxPrice(laku6TradeIn, 0)
             } else {
-                askPermissions()
+                showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
+                        getString(R.string.tradein_ok)) { askPermissions() }
             }
         }
     }

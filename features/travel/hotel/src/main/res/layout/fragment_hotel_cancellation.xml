@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_hotel_cancellation_summary" />
+        <include layout="@layout/layout_hotel_cancellation_summary"
+            android:id="@+id/layoutHotelCancellationSummary"/>
 
         <View
             android:layout_width="match_parent"
@@ -40,7 +41,8 @@
             android:layout_height="@dimen/hotel_6dp"
             android:background="@color/Unify_N50" />
 
-        <include layout="@layout/layout_hotel_cancellation_refund_detail" />
+        <include layout="@layout/layout_hotel_cancellation_refund_detail"
+            android:id="@+id/layoutHotelCancellationRefundDetail"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/hotel_cancellation_button_next"
@@ -64,5 +66,10 @@
             app:typographyType="body_3"
             tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
 
+        <include
+            android:id="@+id/container_error"
+            layout="@layout/item_network_error_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
     </LinearLayout>
 </ScrollView>

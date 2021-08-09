@@ -202,9 +202,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterRefresh: Boolean = false
 
     private var isUserEventTrackerDoneTrack = false
+    private var isUserEventTrackerDoneOnResume = false
 
     private lateinit var shareData: LinkerData
-    private  lateinit var reportBottomSheet: ReportBottomSheet
+    private lateinit var reportBottomSheet: ReportBottomSheet
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -712,22 +713,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if (hasFeed()) {
                         when (newState) {
                             RecyclerView.SCROLL_STATE_IDLE -> {
-                                var position = 0
-                                when {
-                                    itemIsFullScreen() -> {
-                                        position = layoutManager?.findLastVisibleItemPosition() ?: 0
-                                    }
-                                    layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findFirstCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
-                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findLastCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
-                                }
+                                var position = getCurrentPosition()
                                 FeedScrollListenerNew.onFeedScrolled(
                                     recyclerView,
                                     adapter.getList()
@@ -958,6 +944,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        if (isUserEventTrackerDoneOnResume) {
+            isUserEventTrackerDoneOnResume = false
+            feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
+        }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         registerNewFeedReceiver()
@@ -967,6 +957,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        isUserEventTrackerDoneOnResume = true
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         unRegisterNewFeedReceiver()
@@ -1014,6 +1005,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
             isUserVisibleHint = isVisibleToUser
         )
+    }
+
+    private fun getCurrentPosition(): Int {
+        val position: Int
+        when {
+            itemIsFullScreen() -> {
+                position = layoutManager?.findLastVisibleItemPosition() ?: 0
+            }
+            layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
+                position =
+                    layoutManager?.findFirstCompletelyVisibleItemPosition()
+                        ?: 0
+            }
+            layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
+                position =
+                    layoutManager?.findLastCompletelyVisibleItemPosition()
+                        ?: 0
+            }
+            else -> {
+                position = layoutManager?.findLastVisibleItemPosition() ?: 0
+            }
+        }
+        return position
     }
 
     override fun onSearchShopButtonClicked() {
@@ -1485,7 +1499,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sheet.onReport = {
                 feedAnalytics.eventClickThreeDotsOption(
                     postId.toString(),
-                    "report",
+                    "laporkan",
                     postType,
                     isFollowed,
                     authorId,
@@ -1509,7 +1523,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                     )
                                 }
                             })
-                        reportBottomSheet.show((context as FragmentActivity).supportFragmentManager, "")
+                        reportBottomSheet.show(
+                            (context as FragmentActivity).supportFragmentManager,
+                            ""
+                        )
                     }
                 } else {
                     onGoToLogin()
@@ -2421,16 +2438,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessDeletePost(rowNumber: Int) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemRemoved(rowNumber)
             Toaster.build(
                 requireView(),
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok),
-                View.OnClickListener {
-                    Toaster.snackBar.dismiss()
-                }).show()
+                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+            ).show()
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
@@ -2544,6 +2559,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
 
     }
+
     private fun onGoToLinkASGCProductDetail(link: String, shopId: String, activityId: String) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {
@@ -2920,7 +2936,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (applink?.contains("shop") == true && position == 0) {
             eventAction = CLICK_CEK_SEKARANG
-            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+            val eventLabelcek = "${cpmData.cpm.cpmShop.id}"
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabelcek, userSession.userId)
         } else if (applink?.contains("shop") == true && position == 1) {
             eventAction = CLICK_SHOP_TOPADS
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)

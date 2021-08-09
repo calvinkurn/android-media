@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.chooseaccount.R
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.chooseaccount.di.ChooseAccountComponent
@@ -15,6 +15,7 @@ import com.tokopedia.chooseaccount.view.base.BaseChooseAccountFragment
 import com.tokopedia.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +24,7 @@ import javax.inject.Named
 
 class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
-    var validateToken: String = ""
+    private var validateToken: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -53,12 +54,6 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
-        if(validateToken.isEmpty()) {
-            NetworkErrorHelper.showEmptyState(context, view, "Terjadi kesalahan") {
-                showLoadingProgress()
-                activity?.finish()
-            }
-        }
     }
 
     override fun initObserver() {
@@ -92,14 +87,18 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getFingerprintAccounts()
+        if(validateToken.isEmpty()) {
+            activity?.setResult(Activity.RESULT_CANCELED)
+            activity?.finish()
+        } else {
+            getFingerprintAccounts()
+        }
     }
 
     private fun getFingerprintAccounts() {
         showLoadingProgress()
         viewModel.getAccountListFingerprint(validateToken)
     }
-
 
     private fun onSuccessGetFingerprintAccounts(accountListDataModel: AccountListDataModel) {
         if (accountListDataModel.userDetailDataModels.size == 1) {
@@ -115,7 +114,7 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
     private fun onErrorGetFingerprintAccounts(throwable: Throwable) {
         dismissLoadingProgress()
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
+        showToaster(errorMessage) {
             showLoadingProgress()
             getFingerprintAccounts()
         }
@@ -128,6 +127,22 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
         }
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun showToaster(message: String?, action: () -> Unit = {}) {
+        if(context != null) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    message ?: getString(R.string.error_default_fp_choose_account),
+                    Toaster.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR,
+                    "Coba lagi",
+                ) {
+                    action.invoke()
+                }.show()
+            }
+        }
     }
 
     companion object {

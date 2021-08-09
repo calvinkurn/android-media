@@ -43,7 +43,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    //Support Libs Dependencies
+    implementation project(rootProject.ext.libraries.track)
 
     //Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -55,6 +55,7 @@ dependencies {
 
     //Debug Tools
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     //Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
