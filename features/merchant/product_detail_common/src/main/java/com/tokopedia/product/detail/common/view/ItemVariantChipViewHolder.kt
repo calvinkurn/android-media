@@ -59,10 +59,10 @@ class ItemVariantChipViewHolder(val view: View,
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_disabled)
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                 view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked()
+                    listener.onVariantEmptyAndSelectedClicked(element.currentState, element)
                 }
             }
-            VariantConstant.STATE_SELECTED -> {
+            VariantConstant.STATE_SELECTED, VariantConstant.STATE_SELECTED_EMPTY -> {
                 if (context.isDarkMode()) {
                     containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_dark)
                 } else {
@@ -70,7 +70,7 @@ class ItemVariantChipViewHolder(val view: View,
                 }
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked()
+                    listener.onVariantEmptyAndSelectedClicked(element.currentState)
                 }
             }
             VariantConstant.STATE_UNSELECTED -> {

@@ -218,7 +218,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 layoutId?.let { layoutId -> putString(ProductDetailConstant.ARG_LAYOUT_ID, layoutId) }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 putBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, isAffiliate)
-                query?.let {qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry)}
+                query?.let { qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry) }
             }
         }
     }
@@ -736,7 +736,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onCategoryCarouselImageClicked(url: String, categoryTitle:String, categoryId:String, componentTrackDataModel: ComponentTrackDataModel?) {
+    override fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?) {
         DynamicProductDetailTracking.Click.onImageCategoryCarouselClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel, categoryTitle, categoryId)
         goToApplink(url)
     }
@@ -908,7 +908,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     pageSource = "tokonow",
                     isTokoNow = true,
                     shopId = recomItem.shopId.toString(),
-                    startActivitResult = { data,_ ->
+                    startActivitResult = { data, _ ->
                         startActivity(data)
                     }
             )
@@ -1006,7 +1006,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val listOfImageReview: List<String> = listOfImage.map {
                 it.imageUrlLarge ?: ""
             }
-            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position, viewModel.getDynamicProductInfoP1?.basic?.productID ?: "", imageCount)
+            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position, viewModel.getDynamicProductInfoP1?.basic?.productID
+                    ?: "", imageCount)
         }
     }
 
@@ -1338,8 +1339,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun observeTopAdsIsChargeData() {
-        viewLifecycleOwner.observe(viewModel.topAdsRecomChargeData) {data ->
-            data.doSuccessOrFail({topAdsData ->
+        viewLifecycleOwner.observe(viewModel.topAdsRecomChargeData) { data ->
+            data.doSuccessOrFail({ topAdsData ->
                 if (!isTopadsDynamicsSlottingAlreadyCharged) {
                     context?.let {
                         TopAdsUrlHitter(it).hitImpressionUrl(
@@ -1359,9 +1360,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     }
                 }
             },
-            {
-                logException(it)
-            })
+                    {
+                        logException(it)
+                    })
         }
     }
 
@@ -1410,8 +1411,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 if (it.data.isNotEmpty()) {
                     view?.showToasterSuccess(it.data)
                 }
-            },{
-                view?.showToasterError(it.message?: "", ctaText = getString(R.string.label_oke_pdp))
+            }, {
+                view?.showToasterError(it.message
+                        ?: "", ctaText = getString(R.string.label_oke_pdp))
                 logException(it)
             })
         }
@@ -1421,7 +1423,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewLifecycleOwner.observe(viewModel.atcRecomTokonowSendTracker) { data ->
             data.doSuccessOrFail({
                 DynamicProductDetailTracking.Click.eventClickRecomAddToCart(it.data, viewModel.userId, it.data.minOrder)
-            },{})
+            }, {})
         }
     }
 
@@ -1997,7 +1999,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
             DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(viewModel.userId,
-                viewModel.getDynamicProductInfoP1, getPPTitleName())
+                    viewModel.getDynamicProductInfoP1, getPPTitleName())
         } else {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
         }
@@ -2118,7 +2120,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onVariantEmptyAndSelectedClicked() {
+    override fun onVariantEmptyAndSelectedClicked(state: Int, variantOptions: VariantOptionWithAttribute?) {
         goToAtcVariant()
     }
 
@@ -3302,11 +3304,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun getErrorMessage(throwable: Throwable): String {
         return context?.let {
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
-        } ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        }
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun getErrorMessage(errorMessage: String?): String {
-        return errorMessage ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        return errorMessage
+                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun hideProgressDialog() {

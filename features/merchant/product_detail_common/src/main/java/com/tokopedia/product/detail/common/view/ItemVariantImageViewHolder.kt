@@ -49,14 +49,14 @@ class ItemVariantImageViewHolder(val view: View,
                 overlayVariantImgContainer.show()
                 imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_unselected)
                 view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked()
+                    listener.onVariantEmptyAndSelectedClicked(element.currentState, element)
                 }
             }
-            VariantConstant.STATE_SELECTED -> {
+            VariantConstant.STATE_SELECTED, VariantConstant.STATE_SELECTED_EMPTY -> {
                 overlayVariantImgContainer.hide()
                 imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_selected)
                 view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked()
+                    listener.onVariantEmptyAndSelectedClicked(element.currentState)
                 }
             }
             VariantConstant.STATE_UNSELECTED -> {

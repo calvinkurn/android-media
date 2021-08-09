@@ -395,8 +395,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
                 shopType = shopType,
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
-                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
-                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
+                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted()
+                        ?: "",
+                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted()
+                        ?: "",
                 bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "",
                 cdListName = aggregatorParams?.trackerCdListName ?: "")
@@ -471,6 +473,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         }
 
         viewModel.deleteProductInCart(productId)
+    }
+
+    override fun onVariantEmptyAndSelectedClicked(state: Int, variantOptions: VariantOptionWithAttribute?) {
+        if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY || variantOptions == null) return
+
+        onVariantClicked(variantOptions)
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
@@ -572,7 +580,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             viewModel.hitAtc(buttonAction,
                     sharedData?.shopId?.toIntOrZero() ?: 0,
-                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
+                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted()
+                            ?: "",
                     userSessionInterface.userId,
                     sharedData?.minimumShippingPrice ?: 0.0,
                     sharedData?.trackerAttribution ?: "",
@@ -603,14 +612,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         } ?: return false
     }
 
-    private fun goToHomePage(){
+    private fun goToHomePage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         activity?.finish()
     }
 
-    private fun goToChooseAddress(errorCode:Int) {
+    private fun goToChooseAddress(errorCode: Int) {
         if (errorCode == ProductDetailCommonConstant.SHIPPING_ERROR_WEIGHT) {
             goToTopChat()
         } else {
