@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -725,22 +726,26 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun setupSearchBar(view: View) {
         searchBar = view.findViewById(R.id.search_bar_product_manage)
-        searchBar?.clearFocus()
+        searchBar?.run {
+            clearFocus()
 
-        searchBar?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                showLoadingProgress()
-                getProductList()
-                searchBar?.clearFocus()
-                true
-            } else {
-                false
+            // Set fitsSystemWindows to false to avoid removed padding after changing systemUiVisibility
+            (searchBarTextField.parent as? View)?.fitsSystemWindows = false
+
+            searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    showLoadingProgress()
+                    getProductList()
+                    clearFocus()
+                    true
+                } else {
+                    false
+                }
             }
-        }
-
-        searchBar?.clearListener =  {
-            clearSearchBarInput()
-            loadInitialData()
+            clearListener = {
+                clearSearchBarInput()
+                loadInitialData()
+            }
         }
     }
 
