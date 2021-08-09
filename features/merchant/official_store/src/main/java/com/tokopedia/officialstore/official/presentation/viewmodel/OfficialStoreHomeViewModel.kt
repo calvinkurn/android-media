@@ -260,7 +260,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
                         channelModel = featuredShopDataModel.channelModel.copy(
                                 channelGrids = data.mappingTopAdsHeaderToChannelGrid()
                         ),
-                        state = FeaturedShopDataModel.STATE_READY)
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page)
                 )
             }
         }){

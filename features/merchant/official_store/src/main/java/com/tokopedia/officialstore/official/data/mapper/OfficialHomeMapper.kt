@@ -132,7 +132,9 @@ class OfficialHomeMapper (
                         }
                         DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP -> {
                             views.add(FeaturedShopDataModel(
-                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                                    channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position),
+                                    state = FeaturedShopDataModel.STATE_LOADING,
+                                    page = FeaturedShopDataModel.PAGE_OS))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
                     }

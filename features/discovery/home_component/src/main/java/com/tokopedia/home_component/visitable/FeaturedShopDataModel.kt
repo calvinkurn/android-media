@@ -10,9 +10,14 @@ import com.tokopedia.home_component.model.ChannelModel
 
 data class FeaturedShopDataModel(
         val channelModel: ChannelModel,
-        val state: Int = STATE_LOADING
+        val state: Int = STATE_LOADING,
+        val page: Int = PAGE_HOME
 ) : HomeComponentVisitable {
-    override fun visitableId(): String = channelModel.id
+    override fun visitableId(): String = when(page) {
+        PAGE_HOME -> channelModel.id
+        PAGE_OS -> String.format("%s%s", state.hashCode(),channelModel.hashCode())
+        else -> channelModel.id
+    }
 
     override fun equalsWith(b: Any?): Boolean = isEqualWith(b)
 
@@ -39,5 +44,8 @@ data class FeaturedShopDataModel(
         const val STATE_LOADING = 0
         const val STATE_READY = 1
         const val STATE_FAILED = 2
+
+        const val PAGE_HOME = 1
+        const val PAGE_OS = 2
     }
 }
