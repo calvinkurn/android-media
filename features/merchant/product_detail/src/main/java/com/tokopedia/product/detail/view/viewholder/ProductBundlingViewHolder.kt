@@ -20,7 +20,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
-import java.util.*
 
 class ProductBundlingViewHolder(
     private val view: View,
@@ -32,6 +31,8 @@ class ProductBundlingViewHolder(
 
         private const val BUNDLE_TYPE_SINGLE = "SINGLE"
         private const val BUNDLE_TYPE_MULTIPLE = "MULTIPLE"
+        private const val BUNDLE_ITEM_MINIMUM_COUNT_SINGLE = 1
+        private const val BUNDLE_ITEM_MINIMUM_COUNT_MULTIPLE = 2
     }
 
     private val weakContext: WeakReference<Context> = WeakReference(view.context)
@@ -72,28 +73,22 @@ class ProductBundlingViewHolder(
     private val multiGroup1: Group by lazy { view.findViewById(R.id.product_bundling_group_1) }
     private val multiGroup2: Group by lazy { view.findViewById(R.id.product_bundling_group_2) }
     private val multiGroup3: Group by lazy { view.findViewById(R.id.product_bundling_group_3) }
-    private val multiGroupDiscountSlash1: Group by lazy { view.findViewById(R.id.product_bundling_group_discount_slash_1) }
-    private val multiGroupDiscountSlash2: Group by lazy { view.findViewById(R.id.product_bundling_group_discount_slash_2) }
-    private val multiGroupDiscountSlash3: Group by lazy { view.findViewById(R.id.product_bundling_group_discount_slash_3) }
 
     override fun bind(element: ProductBundlingDataModel) {
 
-        val bundle = element.bundleInfo
+        val bundle = element.bundleInfo ?: return showComponent(false)
 
-        if (bundle == null) {
-            showComponent(false)
-            return
-        } else showComponent(true)
+        val bundleItems = bundle.bundleItems
+        val bundleType = bundle.type
+        if (checkBundleItems(bundleType, bundleItems)) showComponent(true)
+        else return showComponent(false)
 
         componentTrackDataModel = getComponentTrackData(element)
 
         val bundleId = bundle.bundleId
-        val bundleItems = bundle.bundleItems
-        val bundleType = bundle.type
         when (bundleType) {
             BUNDLE_TYPE_SINGLE -> showSingleBundle(bundleItems.firstOrNull())
             BUNDLE_TYPE_MULTIPLE -> showMultiBundle(bundle)
-            else -> return
         }
 
         val context = weakContext.get()
@@ -153,11 +148,6 @@ class ProductBundlingViewHolder(
         val viewDiscounts = listOf(multiDiscount1, multiDiscount2, multiDiscount3)
         val viewSlashes = listOf(multiSlash1, multiSlash2, multiSlash3)
         val viewGroups = listOf(multiGroup1, multiGroup2, multiGroup3)
-        val viewDiscountSlashGroups = listOf(
-            multiGroupDiscountSlash1,
-            multiGroupDiscountSlash2,
-            multiGroupDiscountSlash3
-        )
 
         val unusedGroups = viewGroups.toMutableList()
         items.forEachIndexed { index, item ->
@@ -175,10 +165,12 @@ class ProductBundlingViewHolder(
 
             val discount = item.discountPercentage
             if (discount.isBlank()) {
-                viewDiscountSlashGroups[index].gone()
+                viewSlash.gone()
+                viewDiscount.gone()
                 viewPrice.text = item.originalPrice
             } else {
-                viewDiscountSlashGroups[index].show()
+                viewDiscount.show()
+                viewSlash.show()
                 viewPrice.text = item.bundlePrice
                 viewDiscount.text = discount
                 viewSlash.apply {
@@ -202,6 +194,22 @@ class ProductBundlingViewHolder(
         unusedGroups.forEach { group ->
             group.invisible()
         }
+    }
+
+    private fun checkBundleItems(
+        bundleType: String,
+        bundleItems: List<BundleInfo.BundleItem>
+    ): Boolean {
+
+        val minimumItemCount = when (bundleType) {
+            BUNDLE_TYPE_SINGLE -> BUNDLE_ITEM_MINIMUM_COUNT_SINGLE
+            BUNDLE_TYPE_MULTIPLE -> BUNDLE_ITEM_MINIMUM_COUNT_MULTIPLE
+            else -> return false
+        }
+
+        if (bundleItems.size < minimumItemCount) return false
+
+        return true
     }
 
     private fun showComponent(isShow: Boolean) {
