@@ -18,7 +18,7 @@
 
         <include
             android:id="@+id/loading_view"
-            layout="@layout/layoutshimmering_grid_list_horizontal"
+            layout="@layout/layout_shimmering_grid_list_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
