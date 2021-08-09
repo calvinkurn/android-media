@@ -182,6 +182,14 @@ public class MainParentActivity extends BaseActivity implements
 
 
     private static final String OS_KEY_MOBILE = "mobile";
+    public static final String PAGE_OS_HOMEPAGE = "OS Homepage";
+    public static final String PAGE_FEED = "Feed";
+    public static final String PAGE_DAFTAR_TRANSAKSI = "Daftar Transaksi";
+    public static final String PAGE_WISHLIST = "Wishlist";
+    public static final int RANK_SHOP_SHORTCUT = 3;
+    public static final int RANK_DIGITAL_SHORTCUT = 2;
+    public static final int RANK_WISHLIST_SHORTCUT = 1;
+    public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -557,10 +565,8 @@ public class MainParentActivity extends BaseActivity implements
 
         //make full transparent statusBar
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        if (Build.VERSION.SDK_INT >= 21) {
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+        setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     private void selectFragment(Fragment fragment) {
@@ -729,7 +735,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
 
             Bundle bundle = new Bundle();
-            bundle.putString("source_filter", "");
+            bundle.putString(UOH_SOURCE_FILTER_KEY, "");
             bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);
             fragmentList.add(UohListFragment.newInstance(bundle));
         }
@@ -1060,7 +1066,7 @@ public class MainParentActivity extends BaseActivity implements
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                 .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_wishlist_shortcut))
                                 .setIntents(new Intent[]{intentHome, wishlistIntent})
-                                .setRank(1)
+                                .setRank(RANK_WISHLIST_SHORTCUT)
                                 .build();
                         shortcutInfos.add(wishlistShortcut);
                     }
@@ -1074,7 +1080,7 @@ public class MainParentActivity extends BaseActivity implements
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
-                            .setRank(2)
+                            .setRank(RANK_DIGITAL_SHORTCUT)
                             .build();
                     shortcutInfos.add(digitalShortcut);
 
@@ -1096,7 +1102,7 @@ public class MainParentActivity extends BaseActivity implements
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
-                                .setRank(3)
+                                .setRank(RANK_SHOP_SHORTCUT)
                                 .build();
                         shortcutInfos.add(shopShortcut);
                     }
@@ -1223,13 +1229,14 @@ public class MainParentActivity extends BaseActivity implements
                 if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
                     pageName = "/";
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
-                    pageName = "OS Homepage";
+                    pageName = PAGE_OS_HOMEPAGE;
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
                    globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
-                    pageName = "Feed";
-                }
-                else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
-                    pageName = "Daftar Transaksi";
+                    pageName = PAGE_FEED;
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
+                    pageName = PAGE_DAFTAR_TRANSAKSI;
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
+                    pageName = PAGE_WISHLIST;
                 }
                 globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {

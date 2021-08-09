@@ -99,7 +99,7 @@
                     android:layout_height="@dimen/dp_14"/>
 
                 <EditText
-                    android:enabled="false"
+                    android:focusable="false"
                     android:layout_gravity="center"
                     app:typographyType="body_2"
                     android:id="@+id/et_search"

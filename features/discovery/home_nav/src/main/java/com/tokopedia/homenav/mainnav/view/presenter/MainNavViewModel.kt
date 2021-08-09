@@ -258,11 +258,6 @@ class MainNavViewModel @Inject constructor(
                         addWidgetList(result, it)
                     }
                 }
-
-                onlyForNonLoggedInUser {
-                    delay(1000)
-                    _allProcessFinished.postValue(Event(true))
-                }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
                 //then error state is not needed
@@ -280,10 +275,6 @@ class MainNavViewModel @Inject constructor(
                     updateWidget(ErrorStateBuDataModel(),
                             _mainNavListVisitable.indexOf(it)
                     )
-                }
-                onlyForNonLoggedInUser {
-                    delay(1000)
-                    _allProcessFinished.postValue(Event(true))
                 }
                 e.printStackTrace()
             }

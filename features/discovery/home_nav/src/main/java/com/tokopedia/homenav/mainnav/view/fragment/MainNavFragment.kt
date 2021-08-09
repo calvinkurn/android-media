@@ -598,7 +598,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
         this.add(
                 CoachmarkItemReyclerViewConfig(
-                        (viewModel.mainNavLiveData.value?.dataList?.size?:0)-1, viewModel.findAllTransactionModelPosition())
+                        0, viewModel.findAllTransactionModelPosition())
         )
         this.add(
                 CoachmarkItemReyclerViewConfig(

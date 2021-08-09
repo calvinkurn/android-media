@@ -7,8 +7,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.custom_search_view.view.*
 import java.util.concurrent.TimeUnit
 
 class CustomSearchView : FrameLayout {
@@ -29,6 +31,8 @@ class CustomSearchView : FrameLayout {
     private var searchHint: String? = null
     private var delayTextChanged: Long = 0
     private var listener: Listener? = null
+    private var wishlistTvCount: Typography? = null
+    private var wishlistTvCountLoader: LoaderUnify? = null
 
     fun setListener(listener: Listener?) {
         this.listener = listener
@@ -42,10 +46,12 @@ class CustomSearchView : FrameLayout {
 
     fun setWishlistCount(count: Int) {
         if (count > 0) {
-            wishlist_tv_count.text = String.format(
+            wishlistTvCount?.text = String.format(
                 context.getString(R.string.label_wishlist_count),
                 count.toString()
             )
+            wishlistTvCountLoader?.gone()
+            wishlistTvCount?.visible()
         }
     }
 
@@ -75,7 +81,9 @@ class CustomSearchView : FrameLayout {
 
     private fun init() {
         view = View.inflate(context, getLayout(), this)
-        textManage = view?.findViewById<Typography>(textManageResourceId) as Typography
+        wishlistTvCount = view?.findViewById(R.id.wishlist_tv_count)
+        wishlistTvCountLoader = view?.findViewById(R.id.wishlist_tv_count_loader)
+        textManage = view?.findViewById(textManageResourceId) as Typography
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED
         textManage?.setOnClickListener {
             (it as? Typography)?.text?.let { text ->

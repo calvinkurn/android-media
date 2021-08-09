@@ -99,7 +99,7 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
         app:toolbarAlwaysShowShadow="false"
-        app:toolbarPageName="/"
+        app:toolbarPageName="@string/page_name_wishlist"
         app:toolbarInitialFillColor="filled"
         app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light"

@@ -323,8 +323,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                        editorActionCallback: ((hint: String) -> Unit)? = null
 
     ) {
-        showSearchbar()
-
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
         navSearchBarController = NavSearchbarController(

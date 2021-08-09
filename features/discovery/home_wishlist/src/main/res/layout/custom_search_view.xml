@@ -20,11 +20,19 @@
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="heading_4"
             tools:text="Test"
+            android:visibility="gone"
             android:id="@+id/wishlist_tv_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_16"/>
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/wishlist_tv_count_loader"
+            app:loader_type="line"
+            android:visibility="visible"
+            android:layout_marginStart="16dp"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifycomponents.UnifyImageButton
             android:contentDescription="@string/content_desc_close_text_search"
