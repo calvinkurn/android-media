@@ -326,13 +326,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 showLoading()
                 loadInitialData()
                 val message = data?.getStringExtra(EXTRA_ADD_BILLS_MESSAGE)
+                val category = data?.getStringExtra(EXTRA_ADD_BILLS_CATEGORY)
                 message?.let { message ->
                     view?.let {
                         Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
-
+                category?.let {
+                    smartBillsAnalytics.clickViewShowToasterTelcoAddBills(category)
+                }
             }
         } else if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
     }
@@ -781,6 +784,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
         const val REQUEST_CODE_ADD_BILLS= 2030
         const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
+        const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"

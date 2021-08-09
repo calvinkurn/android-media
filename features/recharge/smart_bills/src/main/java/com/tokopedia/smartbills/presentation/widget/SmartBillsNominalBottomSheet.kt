@@ -104,6 +104,7 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        getNominalCallback.onCloseNominal()
         super.onDismiss(dialog)
     }
 

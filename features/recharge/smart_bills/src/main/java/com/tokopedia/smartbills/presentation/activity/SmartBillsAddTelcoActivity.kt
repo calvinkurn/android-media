@@ -55,6 +55,11 @@ class SmartBillsAddTelcoActivity: BaseSimpleActivity(), HasComponent<SmartBillsC
         return R.id.sbm_add_telco_toolbar
     }
 
+    override fun onBackPressed() {
+        (fragment as SmartBillsAddTelcoFragment).onBackPressed()
+        super.onBackPressed()
+    }
+
     fun getTemplateTelco(): String = templateTelco
 
     fun getCategoryId(): String = categoryID
