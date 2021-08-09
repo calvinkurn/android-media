@@ -44,15 +44,15 @@ class SearchPageViewModelTest {
 
     @Test
     fun `Get Auto Complete List Success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
-        searchPageViewModel.getAutoCompleteList("Jakarta")
+        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
+        searchPageViewModel.getAutoCompleteList("Jakarta", "")
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Auto Complete List Fail`() {
-        coEvery { repo.getAutoComplete(any()) } throws defaultThrowable
-        searchPageViewModel.getAutoCompleteList("Jakarta")
+        coEvery { repo.getAutoComplete(any(), any()) } throws defaultThrowable
+        searchPageViewModel.getAutoCompleteList("Jakarta", "")
         verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
     }
 }

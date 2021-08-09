@@ -6,6 +6,8 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -25,7 +27,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_text_input.textFieldInput.clearFocus()
 
         cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
-        cc_text_input.setSecondIcon(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
+        cc_text_input.textFieldIcon2.setImageDrawable(getIconUnifyDrawable(context, IconUnify.CLEAR))
         cc_text_input.textFieldIcon2.visibility = View.GONE
 
         setLengthMaxTextField()
@@ -52,7 +54,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                                 enableBtnNext()
                             }
                         } else {
-                            if (it.length > 7) {
+                            if (it.length > MIN_VALID_LENGTH) {
                                 listener.onCheckPrefix(inputDigit)
                             } else {
                                 cc_text_input.setFirstIcon("")
@@ -107,7 +109,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     fun setImageIcon(urlImg: String) {
         cc_text_input.setFirstIcon(urlImg)
-        cc_text_input.textFieldIcon1.layoutParams.width = 150
+        cc_text_input.textFieldIcon1.layoutParams.width = IMAGE_ICON_WIDTH
         cc_text_input.textFieldIcon1.requestLayout()
         cc_text_input.textFieldIcon1.adjustViewBounds = true
         cc_text_input.textFieldIcon1.visibility = View.VISIBLE
@@ -140,5 +142,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         private const val DIVIDER_MODULO = 5
         private const val DIVIDER_POSITION = DIVIDER_MODULO - 1
         private const val DIVIDER = ' '
+        private const val MIN_VALID_LENGTH = 7
+        private const val IMAGE_ICON_WIDTH = 150
     }
 }

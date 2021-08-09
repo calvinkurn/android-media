@@ -55,6 +55,7 @@ dependencies {
 
     //Debug Tools
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     //Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
