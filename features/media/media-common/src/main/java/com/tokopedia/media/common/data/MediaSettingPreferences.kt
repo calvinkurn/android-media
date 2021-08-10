@@ -2,31 +2,37 @@ package com.tokopedia.media.common.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
-class MediaSettingPreferences constructor(val context: Context?) {
-
-    private fun pref(): SharedPreferences? {
-        return context?.getSharedPreferences(MEDIA_QUALITY_PREF, Context.MODE_PRIVATE)
-    }
+class MediaSettingPreferences constructor(
+    context: Context?
+) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
     fun qualitySettings(): Int {
-        return if (isExist(KEY_QUALITY_SETTING)) pref()?.getInt(KEY_QUALITY_SETTING, 0)?: 0 else 0
+        return getInt(KEY_QUALITY_SETTING)?: 0
     }
 
     fun toasterVisibility(): Boolean {
-        return if (isExist(KEY_MEDIA_TOASTER)) pref()?.getBoolean(KEY_MEDIA_TOASTER, false)?: false else false
+        return getBoolean(KEY_MEDIA_TOASTER)?: false
+    }
+
+    fun glideMigration(): Boolean {
+        return getBoolean(KEY_GLIDE_CLEAR_CACHE)?: false
     }
 
     fun setQualitySettings(value: Int) {
-        pref()?.edit()?.putInt(KEY_QUALITY_SETTING, value)?.apply()
+        putInt(KEY_QUALITY_SETTING, value)
+        applyEditor()
     }
 
-    fun setToasterVisibilityFlag(value: Boolean) {
-        pref()?.edit()?.putBoolean(KEY_MEDIA_TOASTER, value)?.apply()
+    fun hasShowToaster(value: Boolean) {
+        putBoolean(KEY_MEDIA_TOASTER, value)
+        applyEditor()
     }
 
-    private fun isExist(key: String): Boolean {
-        return pref()?.contains(key)?: false
+    fun hasGlideMigration(value: Boolean) {
+        putBoolean(KEY_GLIDE_CLEAR_CACHE, value)
+        applyEditor()
     }
 
     fun getQualitySetting(index: Int): String {
@@ -39,9 +45,9 @@ class MediaSettingPreferences constructor(val context: Context?) {
     }
 
     companion object {
-        private const val MEDIA_QUALITY_PREF = "media_image_quality"
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
         private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
+        private const val KEY_GLIDE_CLEAR_CACHE = "medialoader_clear_disk_cache"
     }
 
 }
