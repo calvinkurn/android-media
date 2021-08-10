@@ -9,9 +9,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.view.fragment.NewAttachProductFragment.Companion.newInstance
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
-import com.tokopedia.unifyprinciples.R
 import java.util.*
 
 class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.Activity {
@@ -22,7 +22,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     private var _isSeller = false
     private var source: String = ""
     var maxChecked = MAX_CHECKED_DEFAULT
-    private var hiddenProducts: ArrayList<String>? = null
+    private var hiddenProducts: ArrayList<String> = arrayListOf()
 
     companion object {
         const val MAX_CHECKED_DEFAULT = 3
