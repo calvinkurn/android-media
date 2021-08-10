@@ -59,7 +59,9 @@ public class ConsumerSplashScreen extends SplashScreen {
     public void onCreate(Bundle savedInstanceState) {
         SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
+        boolean defaultInteraction = false;
         NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
+                .withDefaultInteractions(defaultInteraction)
                 .start(this.getApplication());
         setUserIdNewRelic();
         executeInBackground();
