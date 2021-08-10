@@ -28,12 +28,12 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
         title.text = item.productName
         ivItemImage.urlSrc = item.imageUrl
         bundleName.text = item.bundleName
-        discountViewItem.price = item.price
+        discountViewItem.price = item.price.toString()
         discountViewItem.discountAmount = "${item.discount}%"
-        discountViewItem.slashPrice = item.slashPrice
+        discountViewItem.slashPrice = item.slashPrice.toString()
         spinnerItemVariant.isVisible = item.productVariant != null
+        spinnerItemVariant.text = item.selectedVariantText
 
         radioItem.isChecked = selectedItem.isSelected
-        spinnerItemVariant.text = selectedItem.selectedVariantText
     }
 }

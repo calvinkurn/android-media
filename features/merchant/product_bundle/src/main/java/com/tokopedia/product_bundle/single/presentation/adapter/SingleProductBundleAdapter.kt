@@ -3,6 +3,7 @@ package com.tokopedia.product_bundle.single.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -26,6 +27,9 @@ class SingleProductBundleAdapter(
             viewHolder.radioItem.isChecked = true
             selectedData.forEachIndexed { index, selectedItem ->
                 selectedItem.isSelected = (index == viewHolder.adapterPosition)
+            }
+            data.getOrNull(viewHolder.adapterPosition)?.apply {
+                listener.onBundleItemSelected(price, slashPrice, quantity)
             }
             notifyDataSetChanged()
         }
@@ -55,8 +59,14 @@ class SingleProductBundleAdapter(
     fun setSelectedVariant(selectedProductId: String, selectedVariantText: String) {
         selectedData.forEachIndexed { index, selectedItem ->
             if (selectedItem.isSelected) {
+                val variant = data[index].getVariantChildFromProductId(selectedProductId)
+                data[index].discount = variant?.campaign?.discountedPercentage?.toInt().orZero()
+                data[index].price = variant?.finalMainPrice.orZero()
+                data[index].slashPrice = variant?.finalPrice.orZero()
+                data[index].selectedVariantText = selectedVariantText
+                listener.onBundleItemSelected(data[index].price, data[index].slashPrice, data[index].quantity)
+
                 selectedItem.productId = selectedProductId
-                selectedItem.selectedVariantText = selectedVariantText
                 notifyItemChanged(index)
                 return@forEachIndexed
             }

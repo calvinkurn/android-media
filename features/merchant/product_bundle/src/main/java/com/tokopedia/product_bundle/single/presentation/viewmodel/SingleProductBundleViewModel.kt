@@ -8,11 +8,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_bundle.common.data.model.response.*
-import com.tokopedia.product_bundle.single.presentation.model.BundleInfoToSingleProductBundleMapper
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleUiModel
+import com.tokopedia.product_bundle.common.util.DiscountUtil
+import com.tokopedia.product_bundle.single.presentation.model.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SingleProductBundleViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers
@@ -21,6 +20,10 @@ class SingleProductBundleViewModel @Inject constructor(
     private val mSingleProductBundleUiModel = MutableLiveData<SingleProductBundleUiModel>()
     val singleProductBundleUiModel: LiveData<SingleProductBundleUiModel>
         get() = mSingleProductBundleUiModel
+
+    private val mTotalAmountUiModel = MutableLiveData<TotalAmountUiModel>()
+    val totalAmountUiModel: LiveData<TotalAmountUiModel>
+        get() = mTotalAmountUiModel
 
     private val mToasterError = MutableLiveData<Throwable>()
     val toasterError: LiveData<Throwable>
@@ -33,6 +36,15 @@ class SingleProductBundleViewModel @Inject constructor(
     fun setBundleInfo(context: Context, bundleInfo: BundleInfo) {
         mSingleProductBundleUiModel.value = BundleInfoToSingleProductBundleMapper
             .mapToSingleProductBundle(context, bundleInfo)
+    }
+
+    fun updateTotalAmount(price: Double, slashPrice: Double, quantity: Int) {
+        mTotalAmountUiModel.value = TotalAmountUiModel(
+            price = (price * quantity).toString(),
+            slashPrice = (slashPrice * quantity).toString(),
+            discount = DiscountUtil.getDiscountPercentage(price, slashPrice),
+            priceGap = (abs(price - slashPrice) * quantity).toString()
+        )
     }
 
     fun checkout(selectedData: List<SingleProductBundleSelectedItem>) {
@@ -58,25 +70,6 @@ class SingleProductBundleViewModel @Inject constructor(
     /*
     Begin of Dummy model function generator
     */
-
-    fun getBundleData() {
-        mSingleProductBundleUiModel.value = SingleProductBundleUiModel(
-                "50 Tahun",
-                List(10) { SingleProductBundleItem(
-                        "Paket isi 3",
-                        "Women’s Breathable Low-cut Short Socks Cotton Blend",
-                        "Rp300.000",
-                        "Rp200.000",
-                        45,
-                        "https://placekitten.com/200/300"
-                )},
-                emptyList(),
-                "Rp100.000",
-                "Rp90.000",
-                "Rp10.000",
-                10
-        )
-    }
 
     fun generateBundleInfo() = BundleInfo(
         name = "Singel bundle",

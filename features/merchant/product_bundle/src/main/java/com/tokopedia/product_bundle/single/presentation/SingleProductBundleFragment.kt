@@ -59,6 +59,7 @@ class SingleProductBundleFragment(
         setupTotalAmount(view)
 
         observeSingleProductBundleUiModel()
+        observeTotalAmountUiModel()
         observeToasterError()
     }
 
@@ -85,11 +86,20 @@ class SingleProductBundleFragment(
         }
     }
 
+    override fun onBundleItemSelected(originalPrice: Double, slashPrice: Double, quantity: Int) {
+        viewModel.updateTotalAmount(originalPrice, slashPrice, quantity)
+    }
+
     private fun observeSingleProductBundleUiModel() {
         viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
             swipeRefreshLayout?.isRefreshing = false
             updateTotalPO(it.preorderDurationWording)
             adapter.setData(it.items, it.selectedItems)
+        })
+    }
+
+    private fun observeTotalAmountUiModel() {
+        viewModel.totalAmountUiModel.observe(viewLifecycleOwner, {
             updateTotalAmount(it.price, it.discount, it.slashPrice, it.priceGap)
         })
     }
@@ -114,9 +124,6 @@ class SingleProductBundleFragment(
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout?.isEnabled = false
-        swipeRefreshLayout?.setOnRefreshListener {
-            viewModel.getBundleData()
-        }
     }
 
     private fun setupTotalAmount(view: View) {
