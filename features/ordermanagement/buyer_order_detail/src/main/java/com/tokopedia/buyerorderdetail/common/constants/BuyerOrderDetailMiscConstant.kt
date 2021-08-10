@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorderdetail.common.constants
 
+import android.util.Xml
+
 object BuyerOrderDetailMiscConstant {
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
@@ -14,4 +16,6 @@ object BuyerOrderDetailMiscConstant {
     const val RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED = 0
     const val RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_TOASTER = 1
     const val RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_DIALOG = 3
+
+    const val ENCODING_UTF_8 = "UTF-8"
 }

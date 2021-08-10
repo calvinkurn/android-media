@@ -21,6 +21,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
         private val activity: Activity,
@@ -78,8 +79,9 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
+        val decodedUrl = URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
         val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
-                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId)
