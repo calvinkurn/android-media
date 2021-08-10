@@ -68,7 +68,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
         private const val OFFSET_TO_SHADOW = 100
-        private const val COACHMARK_SAFE_DELAY = 200
+        private const val COACHMARK_SAFE_DELAY = 200L
     }
 
     private var mainNavDataFetched: Boolean = false

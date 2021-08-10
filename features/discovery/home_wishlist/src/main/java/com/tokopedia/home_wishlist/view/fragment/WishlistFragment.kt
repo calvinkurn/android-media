@@ -471,7 +471,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                 swipeToRefresh?.isEnabled = false
             } else {
                 containerDelete?.hide()
-
+                searchView?.resetLabelState()
                 showSearchView()
                 val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
                 (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)

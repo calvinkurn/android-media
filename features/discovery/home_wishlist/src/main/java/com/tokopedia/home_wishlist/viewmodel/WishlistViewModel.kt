@@ -747,6 +747,7 @@ open class WishlistViewModel @Inject constructor(
         val isPartiallyFailed = listForBulkRemoveCandidate.isNotEmpty()
 
         updatedList.addAll(newWishlistDataValue)
+        updateTotalCountAfterSuccessfulRemove(deletedIds.size)
         return Triple(updatedList, deletedIds, isPartiallyFailed)
     }
 
@@ -826,6 +827,7 @@ open class WishlistViewModel @Inject constructor(
 
         val updatedList = mutableListOf<WishlistDataModel>()
         updatedList.addAll(newWishlistDataValue)
+        updateTotalCountAfterSuccessfulRemove()
         return updatedList
     }
 
@@ -996,6 +998,11 @@ open class WishlistViewModel @Inject constructor(
                     tempSelectedPositionInPdp!!,
                     wishlistState)
         }
+    }
+
+    private fun updateTotalCountAfterSuccessfulRemove(removedProductCount: Int = 1) {
+        val currentCountData = wishlistCountData.value
+        wishlistCountData.value = currentCountData - removedProductCount
     }
 
     private fun removeLoadMore(): List<WishlistDataModel>{

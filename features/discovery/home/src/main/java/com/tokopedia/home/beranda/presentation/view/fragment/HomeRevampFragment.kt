@@ -1306,7 +1306,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeSearchHint() {
         if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers()) {
-            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
+            getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder ->
+                if (userVisibleHint) {
+                    setHint(data)
+                }
+            })
         }
     }
 

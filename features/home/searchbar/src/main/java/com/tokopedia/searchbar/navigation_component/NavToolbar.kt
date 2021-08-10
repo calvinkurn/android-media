@@ -657,8 +657,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun showSearchbar(hints: List<HintData>? = null) {
         hideToolbarContent(hideSearchbar = false)
         showToolbarContent(showSearchbar = true)
-
-        hints?.let { setupSearchbar(hints = hints) }
     }
 
     private fun showCustomView() {

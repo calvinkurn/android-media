@@ -100,6 +100,11 @@ class CustomSearchView : FrameLayout {
         }
     }
 
+    fun resetLabelState() {
+        val labelManage = context.resources.getString(R.string.label_delete_wishlist_manage)
+        setTextManageWording(labelManage)
+    }
+
     private val closeImageButtonResourceId: Int
         get() = R.id.image_button_close
 
