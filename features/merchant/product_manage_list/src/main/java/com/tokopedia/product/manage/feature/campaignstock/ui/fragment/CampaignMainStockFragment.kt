@@ -192,14 +192,15 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
     }
 
     private fun observeVariantStock() {
-        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner, Observer { isAllStockEmpty ->
-            val shouldShowWarning = isAllStockEmpty && isVariant
-            showVariantWarningTickerWithCondition(shouldShowWarning)
-        })
+        mViewModel.shouldDisplayVariantStockWarningLiveData.observe(viewLifecycleOwner,
+            { isAllStockEmpty ->
+                val shouldShowWarning = isAllStockEmpty && isVariant
+                showVariantWarningTickerWithCondition(shouldShowWarning)
+            })
     }
 
     private fun observeStockInfo() {
-        mViewModel.showStockInfo.observe(viewLifecycleOwner, Observer { showStockInfo ->
+        mViewModel.showStockInfo.observe(viewLifecycleOwner, { showStockInfo ->
             showHideStockInfo(showStockInfo)
         })
     }
