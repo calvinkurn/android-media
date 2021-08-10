@@ -16,14 +16,8 @@ buildscript {
         }
         gradlePluginPortal()
         google()
-        maven { url "https://maven.google.com" }
-        jcenter()
         mavenLocal()
-        maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://central.maven.org/maven2/' }
         mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
@@ -73,12 +67,6 @@ apply from: 'buildproj.gradle'
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 
 subprojects {
-    project.afterEvaluate {
-        def isLibrary = project.plugins.hasPlugin("com.android.library")
-        if (isLibrary) {
-            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
-        }
-    }
     plugins.withType(com.android.build.gradle.BasePlugin) {
         project.apply plugin: "org.gradle.android.cache-fix"
     }
