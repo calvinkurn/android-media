@@ -27,8 +27,8 @@ import kotlinx.android.synthetic.main.shc_widget_table.view.*
  */
 
 class TableViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<TableWidgetUiModel>(itemView) {
 
     companion object {
@@ -80,6 +80,9 @@ class TableViewHolder(
                     shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
                         listener.sendTableImpressionEvent(element, position, maxPosition, isEmpty)
                     }
+                    shcTableView.setOnSwipeListener { position, maxPosition, isEmpty ->
+                        listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
+                    }
                     shcTableView?.addOnHtmlClickListener { url, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
@@ -103,11 +106,14 @@ class TableViewHolder(
 
     private fun setOnTableEmpty(element: TableWidgetUiModel) = with(itemView) {
         if (element.emptyState.imageUrl.isNotBlank() && element.emptyState.title.isNotBlank() &&
-                element.emptyState.description.isNotBlank() && element.emptyState.ctaText.isNotBlank() &&
-                element.emptyState.appLink.isNotBlank()) {
+            element.emptyState.description.isNotBlank() && element.emptyState.ctaText.isNotBlank() &&
+            element.emptyState.appLink.isNotBlank()
+        ) {
             imgShcTableEmpty.run {
                 visible()
-                ImageHandler.loadImageWithoutPlaceholderAndError(this, element.emptyState.imageUrl.takeIf { it.isNotBlank() })
+                ImageHandler.loadImageWithoutPlaceholderAndError(
+                    this,
+                    element.emptyState.imageUrl.takeIf { it.isNotBlank() })
             }
             tvShcTableEmptyTitle.run {
                 text = element.emptyState.title
@@ -155,11 +161,15 @@ class TableViewHolder(
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
 
-        ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+        ImageHandler.loadImageWithId(
+            imgWidgetOnError,
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        )
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
-        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && !element.data?.dataSet.isNullOrEmpty()
+        val isCtaVisible =
+            element.appLink.isNotBlank() && element.ctaText.isNotBlank() && !element.data?.dataSet.isNullOrEmpty()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         with(itemView) {
             btnTableCta.visibility = ctaVisibility
@@ -216,7 +226,8 @@ class TableViewHolder(
 
     private fun setupTooltip(element: TableWidgetUiModel) = with(itemView) {
         val tooltip = element.tooltip
-        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        val shouldShowTooltip =
+            (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
             tvTableWidgetTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvTableWidgetTitle.setOnClickListener {
@@ -229,7 +240,22 @@ class TableViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendTableImpressionEvent(model: TableWidgetUiModel, slidePosition: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {}
+        fun sendTableImpressionEvent(
+            model: TableWidgetUiModel,
+            slidePosition: Int,
+            maxSlidePosition: Int,
+            isSlideEmpty: Boolean
+        ) {
+        }
+
+        fun sendTableOnSwipeEvent(
+            element: TableWidgetUiModel,
+            slidePosition: Int,
+            maxSlidePosition: Int,
+            isSlideEmpty: Boolean
+        ) {
+        }
+
         fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
