@@ -168,7 +168,7 @@ class ShopScoreMapper @Inject constructor(
                 }
                 //PM PRO Section
                 powerMerchantResponse?.pmTier == PMTier.PRO -> {
-                    if(powerMerchantResponse.status == PMStatusConst.ACTIVE) {
+                    if (powerMerchantResponse.status == PMStatusConst.ACTIVE) {
                         add(ItemStatusPMProUiModel())
                         return@apply
                     } else if (powerMerchantResponse.status == PMStatusConst.IDLE) {
@@ -194,7 +194,9 @@ class ShopScoreMapper @Inject constructor(
                                         }
                                         isEligiblePM == true -> {
                                             add(
-                                                mapToItemCurrentStatusRMUiModel(isNewSellerProjection)
+                                                mapToItemCurrentStatusRMUiModel(
+                                                    isNewSellerProjection
+                                                )
                                             )
                                             return@apply
                                         }
@@ -651,19 +653,15 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToItemRecommendationPMUiModel(recommendationTools: List<GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools.RecommendationTool>?): SectionShopRecommendationUiModel {
         return SectionShopRecommendationUiModel(
-            recommendationShopList = mutableListOf<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>().apply {
-                recommendationTools?.forEach {
-                    add(
-                        SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
-                            iconRecommendationUrl = it.imageUrl,
-                            appLinkRecommendation = it.relatedLinkAppLink,
-                            descRecommendation = it.text,
-                            titleRecommendation = it.title,
-                            identifier = it.identifier
-                        )
-                    )
-                }
-            })
+            recommendationTools?.map {
+                SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
+                    iconRecommendationUrl = it.imageUrl,
+                    appLinkRecommendation = it.relatedLinkAppLink,
+                    descRecommendation = it.text,
+                    titleRecommendation = it.title,
+                    identifier = it.identifier
+                )
+            } ?: emptyList())
     }
 
     private fun mapToSectionRMEligibleToPMPro(): SectionRMPotentialPMProUiModel {
@@ -684,59 +682,37 @@ class ShopScoreMapper @Inject constructor(
     }
 
     private fun mapToItemPMProBenefit(): List<ItemParentBenefitUiModel> {
-        val itemPotentialPMBenefitList =
-            mutableListOf<ItemParentBenefitUiModel>()
-        itemPotentialPMBenefitList.apply {
-            add(
-                ItemParentBenefitUiModel(
-                    iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_1,
-                    titleResources = R.string.title_item_benefit_1_pm_pro
-                )
+        return listOf(
+            ItemParentBenefitUiModel(
+                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_1,
+                titleResources = R.string.title_item_benefit_1_pm_pro
+            ),
+            ItemParentBenefitUiModel(
+                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_2,
+                titleResources = R.string.title_item_benefit_2_pm_pro
+            ),
+            ItemParentBenefitUiModel(
+                iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_3,
+                titleResources = R.string.title_item_benefit_3_pm_pro
             )
-
-            add(
-                ItemParentBenefitUiModel(
-                    iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_2,
-                    titleResources = R.string.title_item_benefit_2_pm_pro
-                )
-            )
-
-            add(
-                ItemParentBenefitUiModel(
-                    iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_3,
-                    titleResources = R.string.title_item_benefit_3_pm_pro
-                )
-            )
-        }
-        return itemPotentialPMBenefitList
+        )
     }
 
     private fun mapToItemPotentialBenefit(): List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
-        val itemPotentialPMBenefitList =
-            mutableListOf<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>()
-        itemPotentialPMBenefitList.apply {
-            add(
-                SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
-                    titlePotentialPM = R.string.title_item_rm_section_pm_benefit_1
-                )
+        return listOf(
+            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                iconPotentialPMUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
+                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_1
+            ),
+            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                iconPotentialPMUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
+                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_2
+            ),
+            SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                iconPotentialPMUrl = ShopScoreConstant.IC_PROMOTION_BENEFIT_URL,
+                titlePotentialPM = R.string.title_item_rm_section_pm_benefit_3
             )
-
-            add(
-                SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
-                    titlePotentialPM = R.string.title_item_rm_section_pm_benefit_2
-                )
-            )
-
-            add(
-                SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = ShopScoreConstant.IC_PROMOTION_BENEFIT_URL,
-                    titlePotentialPM = R.string.title_item_rm_section_pm_benefit_3
-                )
-            )
-        }
-        return itemPotentialPMBenefitList
+        )
     }
 
     private fun mapToItemCurrentStatusRMUiModel(isNewSellerProjection: Boolean)
@@ -755,36 +731,28 @@ class ShopScoreMapper @Inject constructor(
     }
 
     private fun mapToCardTooltipLevel(level: Long = 0): List<CardTooltipLevelUiModel> {
-        return mutableListOf<CardTooltipLevelUiModel>().apply {
-            add(
-                CardTooltipLevelUiModel(
-                    R.string.title_level_1,
-                    R.string.desc_level_1,
-                    SHOP_SCORE_LEVEL_ONE == level
-                )
+        return listOf(
+            CardTooltipLevelUiModel(
+                R.string.title_level_1,
+                R.string.desc_level_1,
+                SHOP_SCORE_LEVEL_ONE == level
+            ),
+            CardTooltipLevelUiModel(
+                R.string.title_level_2,
+                R.string.desc_level_2,
+                SHOP_SCORE_LEVEL_TWO == level
+            ),
+            CardTooltipLevelUiModel(
+                R.string.title_level_3,
+                R.string.desc_level_3,
+                SHOP_SCORE_LEVEL_THREE == level
+            ),
+            CardTooltipLevelUiModel(
+                R.string.title_level_4,
+                R.string.desc_level_4,
+                SHOP_SCORE_LEVEL_FOUR == level
             )
-            add(
-                CardTooltipLevelUiModel(
-                    R.string.title_level_2,
-                    R.string.desc_level_2,
-                    SHOP_SCORE_LEVEL_TWO == level
-                )
-            )
-            add(
-                CardTooltipLevelUiModel(
-                    R.string.title_level_3,
-                    R.string.desc_level_3,
-                    SHOP_SCORE_LEVEL_THREE == level
-                )
-            )
-            add(
-                CardTooltipLevelUiModel(
-                    R.string.title_level_4,
-                    R.string.desc_level_4,
-                    SHOP_SCORE_LEVEL_FOUR == level
-                )
-            )
-        }
+        )
     }
 
     private fun mapToItemFaqUiModel(isOfficialStore: Boolean): List<ItemFaqUiModel> {
@@ -854,29 +822,23 @@ class ShopScoreMapper @Inject constructor(
     }
 
     private fun mapToItemParameterFaq(): List<ItemParameterFaqUiModel> {
-        return mutableListOf<ItemParameterFaqUiModel>().apply {
-            add(
-                ItemParameterFaqUiModel(
-                    title = context?.getString(R.string.title_parameter_shop_score_1).orEmpty(),
-                    desc = context?.getString(R.string.desc_parameter_shop_score_1).orEmpty(),
-                    score = context?.getString(R.string.score_parameter_shop_score_1).orEmpty()
-                )
+        return listOf(
+            ItemParameterFaqUiModel(
+                title = context?.getString(R.string.title_parameter_shop_score_1).orEmpty(),
+                desc = context?.getString(R.string.desc_parameter_shop_score_1).orEmpty(),
+                score = context?.getString(R.string.score_parameter_shop_score_1).orEmpty()
+            ),
+            ItemParameterFaqUiModel(
+                title = context?.getString(R.string.title_parameter_shop_score_2).orEmpty(),
+                desc = context?.getString(R.string.desc_parameter_shop_score_2).orEmpty(),
+                score = context?.getString(R.string.score_parameter_shop_score_2).orEmpty()
+            ),
+            ItemParameterFaqUiModel(
+                title = context?.getString(R.string.title_parameter_shop_score_3).orEmpty(),
+                desc = context?.getString(R.string.desc_parameter_shop_score_3).orEmpty(),
+                score = context?.getString(R.string.score_parameter_shop_score_3).orEmpty()
             )
-            add(
-                ItemParameterFaqUiModel(
-                    title = context?.getString(R.string.title_parameter_shop_score_2).orEmpty(),
-                    desc = context?.getString(R.string.desc_parameter_shop_score_2).orEmpty(),
-                    score = context?.getString(R.string.score_parameter_shop_score_2).orEmpty()
-                )
-            )
-            add(
-                ItemParameterFaqUiModel(
-                    title = context?.getString(R.string.title_parameter_shop_score_3).orEmpty(),
-                    desc = context?.getString(R.string.desc_parameter_shop_score_3).orEmpty(),
-                    score = context?.getString(R.string.score_parameter_shop_score_3).orEmpty()
-                )
-            )
-        }
+        )
     }
 
     private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean)
