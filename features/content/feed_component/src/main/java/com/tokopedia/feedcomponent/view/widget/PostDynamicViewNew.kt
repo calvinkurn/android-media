@@ -1197,45 +1197,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
         imageItem?.run {
             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
+            val videoParent = this.findViewById<Typography>(R.id.video_tagging_parent)
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             if (!productTagText.isVisible && products.isNotEmpty()) {
                 handlerAnim?.postDelayed({
-                    productTagText.apply {
-                        val pulseFade: Animation =
-                            AnimationUtils.loadAnimation(
-                                context,
-                                R.anim.anim_move_forward
-                            )
-                        pulseFade.setAnimationListener(object :
-                            Animation.AnimationListener {
-                            override fun onAnimationStart(animation: Animation) {
-                                productTagText.visible()
-                            }
-
-                            override fun onAnimationEnd(animation: Animation) {
-                            }
-
-                            override fun onAnimationRepeat(animation: Animation) {}
-                        })
-                        productTagText.visible()
-                        video_tagging_parent.startAnimation(pulseFade)
-                    }
-                }, TIME_SECOND)
-            }
-            if (handlerHide == null)
-                handlerHide = Handler(Looper.getMainLooper())
-            handlerHide?.postDelayed({
-                productTagText.apply {
-                    val pulseFade: Animation =
+                    val anim: Animation =
                         AnimationUtils.loadAnimation(
                             context,
-                            R.anim.anim_move_backward
+                            R.anim.anim_move_forward
                         )
-                    pulseFade.setAnimationListener(object :
+                    anim.setAnimationListener(object :
                         Animation.AnimationListener {
                         override fun onAnimationStart(animation: Animation) {
-                            productTagText.gone()
+                            productTagText.visible()
                         }
 
                         override fun onAnimationEnd(animation: Animation) {
@@ -1243,9 +1218,29 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                         override fun onAnimationRepeat(animation: Animation) {}
                     })
-                    productTagText.visible()
-                    video_tagging_parent.startAnimation(pulseFade)
-                }
+                    videoParent.startAnimation(anim)
+                }, TIME_SECOND)
+            }
+            if (handlerHide == null)
+                handlerHide = Handler(Looper.getMainLooper())
+            handlerHide?.postDelayed({
+                val anim: Animation =
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.anim_move_backward
+                    )
+                anim.setAnimationListener(object :
+                    Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) {
+                        productTagText.gone()
+                    }
+
+                    override fun onAnimationEnd(animation: Animation) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation) {}
+                })
+                videoParent.startAnimation(anim)
             }, TIME_FOUR_SEC)
         }
     }
