@@ -198,7 +198,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
             productId = it.getString(PRODUCT_ID_REVIEW, "")
@@ -208,6 +207,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
             feedbackId = it.getString(ReviewConstants.PARAM_FEEDBACK_ID, "")
             utmSource = it.getString(ReviewConstants.PARAM_SOURCE, "")
         }
+
+        CreateReviewTracking.openScreen(screenName, productId, reputationId, utmSource)
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
             reviewClickAt = CreateReviewActivity.DEFAULT_PRODUCT_RATING

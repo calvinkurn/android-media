@@ -44,6 +44,7 @@ object CreateReviewTrackingConstants {
     const val KEY_BUSINESS_UNIT = "businessUnit"
     const val KEY_CURRENT_SITE = "currentSite"
     const val KEY_PRODUCT_ID = "productId"
+    const val KEY_DEEPLINK = "deeplink"
 
     const val BUSINESS_UNIT = "product detail page"
     const val CURRENT_SITE = "tokopediamarketplace"
