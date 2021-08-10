@@ -217,6 +217,11 @@ android {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
         manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
+        javaCompileOptions {
+            room {
+                schemaLocationDir.set(file("roomSchemas"))
+            }
+        }
     }
 
     dexOptions {

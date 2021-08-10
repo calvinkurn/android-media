@@ -119,5 +119,4 @@ subprojects {
             project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
     }
-
 }
