@@ -675,7 +675,7 @@ class PlayAnalytic(
                     "ecommerce" to hashMapOf(
                         "currencyCode" to "IDR",
                         "add" to hashMapOf(
-                            "products" to convertProductToHashMap(product, cartId, "varian page")
+                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
                         )
                     )
                 ),
