@@ -147,4 +147,12 @@
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>
     <string name="sprint_product_item">Sprint Product Item</string>
+
+    <string name="tag_home_nav_toolbar">home_navigation_toolbar</string>
+    <string name="tag_balance_widget">drawerItemType %s</string>
+
+    <!--Test Setup Options-->
+    <string name="host_home_setting" translatable="false">home-setting</string>
+    <string name="path_home_dev_opt" translatable="false">/opt</string>
+
 </resources>

@@ -881,7 +881,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         } else if (addressState.errorCode == AddressState.ERROR_CODE_OPEN_ANA) {
             showLayoutNoAddress()
-        } else {
+        } else if (addressState.address.addressId > 0) {
             updateLocalCacheAddressData(addressState.address)
         }
     }
@@ -1033,7 +1033,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onPurchaseProtectionInfoClicked(url: String) {
         PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-        orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId, "", viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
+        orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId,
+            viewModel.orderProduct.purchaseProtectionPlanData.protectionPricePerProduct, viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
     }
 
     override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {

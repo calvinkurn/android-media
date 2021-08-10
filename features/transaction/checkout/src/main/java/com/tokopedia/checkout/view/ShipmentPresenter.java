@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.authentication.AuthHelper;
@@ -72,7 +73,6 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
@@ -588,9 +588,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         this.campaignTimer = cartShipmentAddressFormData.getCampaignTimerUi();
 
-        if (cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
+        List<String> ppImpressionData = cartShipmentAddressFormData.getGetAvailablePurchaseProtection();
+        if (!ppImpressionData.isEmpty()) {
             isPurchaseProtectionPage = true;
-            mTrackerPurchaseProtection.eventImpressionOfProduct();
+            mTrackerPurchaseProtection.eventImpressionOfProduct(userSessionInterface.getUserId(), ppImpressionData);
         }
 
         EgoldAttributeModel egoldAttributes = cartShipmentAddressFormData.getEgoldAttributes();
@@ -925,6 +926,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().setHasRunningApiCall(false);
                 getView().showToastError(errorMessage);
                 processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
+                getView().logOnErrorCheckout(e, checkoutRequest.toString());
             }
 
             @Override
@@ -934,10 +936,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!checkoutData.isError()) {
                     getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId(), deviceModel, devicePrice, diagnosticId);
                     if (isPurchaseProtectionPage) {
-                        mTrackerPurchaseProtection.eventClickOnBuy(
-                                checkoutRequest.isHavingPurchaseProtectionEnabled() ?
-                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
-                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
+                        mTrackerPurchaseProtection.eventClickOnBuy(userSessionInterface.getUserId(), checkoutRequest.getProtectionAnalyticsData());
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter().getEligible()) {
@@ -951,8 +950,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().hideLoading();
                     if (!checkoutData.getErrorMessage().isEmpty()) {
                         getView().renderCheckoutCartError(checkoutData.getErrorMessage());
+                        getView().logOnErrorCheckout(new MessageErrorException(checkoutData.getErrorMessage()), checkoutRequest.toString());
                     } else {
-                        getView().renderCheckoutCartError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
+                        String defaultErrorMessage = getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
+                        getView().renderCheckoutCartError(defaultErrorMessage);
+                        getView().logOnErrorCheckout(new MessageErrorException(defaultErrorMessage), checkoutRequest.toString());
                     }
                     processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
                 }

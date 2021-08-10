@@ -146,6 +146,10 @@ class SuggestionFragment :
         presenter.onSuggestionItemClicked(item)
     }
 
+    override fun onChipClicked(item: BaseSuggestionDataView.ChildItem) {
+        presenter.onSuggestionChipClicked(item)
+    }
+
     override fun onItemImpressed(item: BaseSuggestionDataView) {
         presenter.onSuggestionItemImpressed(item)
     }
@@ -241,6 +245,10 @@ class SuggestionFragment :
 
     override fun trackTokoNowEventClickKeyword(eventLabel: String) {
         AutocompleteTracking.eventClickTokoNowKeyword(eventLabel)
+    }
+
+    override fun trackClickChip(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickChipSuggestion(eventLabel, dimension90)
     }
 
     override fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String) {

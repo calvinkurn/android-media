@@ -30,9 +30,10 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
     private var carouselEmptyState: LocalLoad? = null
+    private var errorHolder: FrameLayout = itemView.findViewById(R.id.filter_error_view)
 
     init {
-        linearLayoutManager.initialPrefetchItemCount = 4
+        linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mDiscoveryRecycleAdapter.setHasStableIds(true)
@@ -48,6 +49,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         }
         mProductCarouselRecyclerView.show()
         carouselEmptyState?.hide()
+        errorHolder.gone()
         addDefaultItemDecorator()
         handleCarouselPagination()
     }
@@ -150,7 +152,22 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 }
                 carouselEmptyState?.visible()
                 mProductCarouselRecyclerView.gone()
+                errorHolder.gone()
             }
+        } else if (mProductCarouselComponentViewModel.getProductList()?.isEmpty() == true
+            && mProductCarouselComponentViewModel.areFitterApplied()) {
+            if (errorHolder.childCount > 0) {
+                errorHolder.removeAllViews()
+            }
+            errorHolder.addView(
+                CustomViewCreator.getCustomViewObject(
+                    itemView.context, ComponentsList.ProductListEmptyState,
+                    mProductCarouselComponentViewModel.getErrorStateComponent(), fragment
+                )
+            )
+            errorHolder.show()
+            carouselEmptyState?.gone()
+            mProductCarouselRecyclerView.gone()
         }
     }
 
@@ -163,5 +180,9 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
 
     override fun getInnerRecycleView(): RecyclerView {
         return mProductCarouselRecyclerView
+    }
+
+    companion object{
+        const val PREFETCH_ITEM_COUNT = 4
     }
 }
