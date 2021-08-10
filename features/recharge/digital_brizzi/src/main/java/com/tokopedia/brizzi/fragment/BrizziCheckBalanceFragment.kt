@@ -12,9 +12,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -50,7 +47,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     fun initiateViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactories)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactories)
             brizziBalanceViewModel = viewModelProvider.get(BrizziBalanceViewModel::class.java)
         }
     }
