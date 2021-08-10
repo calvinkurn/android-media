@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -1018,6 +1019,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         textAreaTitle?.setCustomTouchListener()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun View.setCustomTouchListener() {
         this.setOnTouchListener { v, event ->
             clearFocusAndHideSoftInput(view)
