@@ -240,13 +240,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
-    /**
-     * ItemStatusPowerMerchantProListener
-     */
-    override fun onItemClickedPMProPage() {
-        goToPowerMerchantSubscribe(PARAM_PM_PRO)
-    }
-
     override fun onItemClickedGoToPMProActivation() {
         goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }

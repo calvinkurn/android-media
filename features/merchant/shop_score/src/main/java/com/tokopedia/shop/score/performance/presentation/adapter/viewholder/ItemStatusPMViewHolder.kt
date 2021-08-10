@@ -52,6 +52,9 @@ class ItemStatusPMViewHolder(view: View,
             ic_pm_reputation_right?.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
             }
+            potentialPowerMerchantWidget?.setOnClickListener {
+                itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
+            }
             if (ic_pm_reputation_right?.isVisible == true) {
                 itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }
