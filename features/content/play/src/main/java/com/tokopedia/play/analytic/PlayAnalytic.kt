@@ -572,7 +572,7 @@ class PlayAnalytic(
             "quantity" to product.minQty,
             "shop_id" to shopInfo.id,
             "shop_name" to shopInfo.name,
-            "shop_type" to shopInfo.type
+            "shop_type" to shopInfo.type.value
         )
     }
 
