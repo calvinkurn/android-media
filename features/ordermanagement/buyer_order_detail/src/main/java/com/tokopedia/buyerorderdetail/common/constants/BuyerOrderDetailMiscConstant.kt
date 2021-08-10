@@ -1,7 +1,5 @@
 package com.tokopedia.buyerorderdetail.common.constants
 
-import android.util.Xml
-
 object BuyerOrderDetailMiscConstant {
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
