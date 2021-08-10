@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
@@ -84,7 +85,9 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         if (isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
-        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
+        if(isABTestPromo()){
+            promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
+        }
     }
 
     override fun initInjector() {
@@ -96,10 +99,18 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         super.onDestroyView()
     }
 
+    fun isABTestPromo(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
+        .getString(PROMO_DIGITAL_AB_TEST_KEY, PROMO_DIGITAL_AB_TEST_TICKER)
+            == PROMO_DIGITAL_AB_TEST_COUPON)
+
     companion object {
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
 
         private val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
+
+        private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo"
+        private const val PROMO_DIGITAL_AB_TEST_TICKER = "Promo_Ticker"
+        private const val PROMO_DIGITAL_AB_TEST_COUPON = "Promo_Coupon"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
