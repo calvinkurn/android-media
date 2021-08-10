@@ -366,8 +366,6 @@ class OrderSummaryPageActivityMultiProductTest {
                     tickerMessage = null
             )
 
-            Thread.sleep(10000)
-
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
 
             assertPaymentButtonEnable(false)
@@ -475,8 +473,6 @@ class OrderSummaryPageActivityMultiProductTest {
                     productVariant = "hitam, putih",
                     tickerMessage = "Yaah, barang ini sudah tidak tersedia. Move on ke barang lainnya, yuk!"
             )
-
-            Thread.sleep(10000)
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
 
