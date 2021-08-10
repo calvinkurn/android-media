@@ -67,6 +67,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
+        private const val OFFSET_TO_SHADOW = 100
+        private const val COACHMARK_SAFE_DELAY = 200L
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -135,7 +137,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val offset = recyclerView.computeVerticalScrollOffset()
-                if (offset > 100) {
+                if (offset > OFFSET_TO_SHADOW) {
                     navToolbar?.showShadow(lineShadow = true)
                 } else {
                     navToolbar?.hideShadow(lineShadow = true)
@@ -253,12 +255,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
-        if (homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH) {
+        if (validateTargetMenu(homeNavMenuDataModel)) {
             activity?.onBackPressed()
             return true
         }
         return false
     }
+
+    private fun validateTargetMenu(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
+        return validateHomeUohPage(homeNavMenuDataModel) || validateHomeWishlistPage(homeNavMenuDataModel)
+    }
+
+    private fun validateHomeUohPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
+        homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+
+    private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
+        homeNavMenuDataModel.id == ID_WISHLIST_MENU && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
         when(homeNavMenuDataModel.id) {
@@ -523,7 +535,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                                 coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                             }
                         }
-                    },200)
+                    }, COACHMARK_SAFE_DELAY)
                 }
             })
         }
@@ -588,7 +600,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
         this.add(
                 CoachmarkItemReyclerViewConfig(
-                        (viewModel.mainNavLiveData.value?.dataList?.size?:0)-1, viewModel.findAllTransactionModelPosition())
+                        0, viewModel.findAllTransactionModelPosition())
         )
         this.add(
                 CoachmarkItemReyclerViewConfig(

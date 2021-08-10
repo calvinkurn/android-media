@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -84,6 +85,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val TYPE_CLICK = 0
             const val TYPE_EDITABLE = 1
         }
+        private const val MAX_BACKGROUND_ALPHA = 225f
     }
 
     //public variable
@@ -263,7 +265,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             shadowApplied = true
 
             if (lineShadow) {
-                setBackgroundAlpha(225f)
+                setBackgroundAlpha(MAX_BACKGROUND_ALPHA)
                 divider?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {
@@ -322,8 +324,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                        editorActionCallback: ((hint: String) -> Unit)? = null
 
     ) {
-        showSearchbar()
-
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
         navSearchBarController = NavSearchbarController(
@@ -336,12 +336,25 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 navSearchbarInterface = navSearchbarInterface,
                 editorActionCallback = editorActionCallback
         )
-        if (searchbarType == SearchBarType.TYPE_CLICK) {
-            navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
-        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
-            val hint = hints.getOrNull(0)
-            navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+        searchbarTypeValidation(
+            searchbarType = searchbarType,
+            ifClickSearchbarType = {
+                navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
+            },
+            ifEditableSearchbarType = {
+                val hint = hints.getOrNull(0)
+                navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+            }
+        )
+    }
 
+    fun searchbarTypeValidation(searchbarType: Int,
+                                ifClickSearchbarType: () -> Unit = {},
+                                ifEditableSearchbarType: () -> Unit = {}) {
+        if (searchbarType == SearchBarType.TYPE_CLICK) {
+            ifClickSearchbarType.invoke()
+        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
+            ifEditableSearchbarType.invoke()
         }
     }
 
@@ -480,6 +493,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun applyNotification() {
         viewModel?.applyNotification()
+    }
+
+    fun hideKeyboard() {
+        navSearchBarController.etSearch?.clearFocus()
+        val `in` = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
+    }
+
+    fun getCurrentSearchbarText(): String {
+        return navSearchBarController.etSearch?.text?.toString()?:""
     }
 
     private fun applyStatusBarPadding() {
@@ -634,8 +657,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun showSearchbar(hints: List<HintData>? = null) {
         hideToolbarContent(hideSearchbar = false)
         showToolbarContent(showSearchbar = true)
-
-        hints?.let { setupSearchbar(hints = hints) }
     }
 
     private fun showCustomView() {
