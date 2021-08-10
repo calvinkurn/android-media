@@ -139,7 +139,6 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
                         isPushStarted = true
                     }
                 }
-                configureMirrorFrontCamera()
             }
             Streamer.CONNECTION_STATE.DISCONNECTED -> {
                 if (lastState is PlayLivePusherState.Paused) return // ignore and just call resume()
