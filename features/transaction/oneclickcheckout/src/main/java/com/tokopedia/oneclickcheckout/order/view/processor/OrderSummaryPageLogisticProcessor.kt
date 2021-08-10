@@ -144,12 +144,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 if (param == null) {
                     // overweight
                     return@withContext ResultRates(
-                            orderShipment = OrderShipment(
+                            orderShipment = orderShipment.copy(
                                     isLoading = false,
-                                    serviceName = orderProfile.shipment.serviceName,
-                                    serviceDuration = orderProfile.shipment.serviceDuration,
-                                    serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
-                                    shippingRecommendationData = null
+                                    serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE
                             ),
                             overweight = overweight
                     )

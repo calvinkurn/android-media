@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
-import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
@@ -49,7 +48,7 @@ data class OrderProduct(
 
         // Analytics
         var hasTriggerViewErrorProductLevelTicker: Boolean = false
-) : OrderItem {
+) {
 
     fun hasParentId(): Boolean {
         return parentId.isNotEmpty() && parentId != "0"

@@ -1,14 +1,12 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
-import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
-
 data class OccOnboarding(
         val isForceShowCoachMark: Boolean = false,
         val isShowOnboardingTicker: Boolean = false,
         val coachmarkType: Int = 0,
         val onboardingTicker: OccOnboardingTicker = OccOnboardingTicker(),
         val onboardingCoachMark: OccOnboardingCoachMark = OccOnboardingCoachMark()
-) : OrderItem {
+) {
     companion object {
         internal const val COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE = 5
     }

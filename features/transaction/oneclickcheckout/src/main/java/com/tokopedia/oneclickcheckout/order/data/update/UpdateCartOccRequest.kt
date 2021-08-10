@@ -18,6 +18,8 @@ data class UpdateCartOccRequest(
 ) {
         companion object {
                 const val SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+                const val SOURCE_UPDATE_OCC_ADDRESS = "update_occ_address"
+                const val SOURCE_UPDATE_OCC_PAYMENT = "update_occ_payment"
         }
 }
 
