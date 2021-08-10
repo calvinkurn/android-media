@@ -41,6 +41,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         setClicks()
 
         mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
+        mvcAnimationHandler.checkToCancelTimer()
     }
 
     private fun initViews() {
@@ -81,12 +82,14 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
             if (animatedInfos.size == 1) {
                 isTokomember = false
+                mvcAnimationHandler.isTokomember = isTokomember
                 val animatedInfo = animatedInfos.first()
                 animatedInfo?.let {
                     mvcTextContainerFirst.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
                 }
             } else {
                 isTokomember = true
+                mvcAnimationHandler.isTokomember = isTokomember
                 mvcAnimationHandler.startTimer()
             }
         }

@@ -24,6 +24,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     private var isAnimationStarted = false
     private var animatorSet:AnimatorSet?=null
     private var timer:Timer?=null
+    var isTokomember = false
 
     private val animListener = object :Animator.AnimatorListener{
         override fun onAnimationStart(animation: Animator?) {
@@ -42,20 +43,25 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
         }
     }
 
-    fun checkToCancelTimer(){
-        firstContainer.get()?.addOnAttachStateChangeListener(object :View.OnAttachStateChangeListener{
-            override fun onViewAttachedToWindow(v: View?) {
+    private val onAttachListener = object :View.OnAttachStateChangeListener{
+        override fun onViewAttachedToWindow(v: View?) {
+            if (isTokomember){
                 startTimer()
             }
+        }
 
-            override fun onViewDetachedFromWindow(v: View?) {
-                timer?.cancel()
+        override fun onViewDetachedFromWindow(v: View?) {
+            if (isTokomember) {
+                stopAnimation()
             }
-        })
+        }
+    }
+
+    fun checkToCancelTimer(){
+        firstContainer.get()?.addOnAttachStateChangeListener(onAttachListener)
     }
 
     private fun animateView() {
-        checkToCancelTimer()
         isAnimationStarted = true
 
         setDataIntoViews()
