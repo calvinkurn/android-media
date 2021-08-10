@@ -175,33 +175,30 @@ class ShopScoreMapper @Inject constructor(
                             if (shopAge >= SHOP_AGE_SIXTY) {
                                 if (isNewSellerProjection) {
                                     add(
-                                        mapToItemCurrentStatusRMUiModel(
-                                            isNewSellerProjection
-                                        )
+                                        mapToItemCurrentStatusRMUiModel(isNewSellerProjection)
                                     )
                                     return@apply
                                 } else {
-                                    if (isEligiblePMPro == true) {
-                                        add(mapToSectionRMEligibleToPMPro())
-                                        return@apply
-                                    }
-                                    else if (isEligiblePM == true) {
-                                        add(
-                                            mapToItemCurrentStatusRMUiModel(
-                                                isNewSellerProjection
+                                    when {
+                                        isEligiblePMPro == true -> {
+                                            add(mapToSectionRMEligibleToPMPro())
+                                            return@apply
+                                        }
+                                        isEligiblePM == true -> {
+                                            add(
+                                                mapToItemCurrentStatusRMUiModel(isNewSellerProjection)
                                             )
-                                        )
-                                        return@apply
-                                    } else {
-                                        add(
-                                            mapToCardPotentialBenefitNonEligible()
-                                        )
-                                        return@apply
+                                            return@apply
+                                        }
+                                        else -> {
+                                            add(mapToCardPotentialBenefitNonEligible())
+                                            return@apply
+                                        }
                                     }
                                 }
                             }
                         }
-                        (powerMerchantResponse.status == PMStatusConst.ACTIVE || powerMerchantResponse.status == PMStatusConst.IDLE)
+                        (powerMerchantResponse.status == PMStatusConst.ACTIVE)
                                 && !isOfficialStore -> {
                             if (shopAge >= SHOP_AGE_SIXTY) {
                                 when (isEligiblePMPro) {
@@ -215,6 +212,10 @@ class ShopScoreMapper @Inject constructor(
                                     }
                                 }
                             }
+                        }
+                        else -> {
+                            add(mapToCardPotentialBenefitNonEligible())
+                            return@apply
                         }
                     }
                 }
@@ -238,15 +239,19 @@ class ShopScoreMapper @Inject constructor(
                     this.showCardNewSeller = true
                     val nextSellerDays = SHOP_AGE_SIXTY - shopAge
                     val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
-                    val dateNewSellerProjection = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
-                    descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
-                            ?: ""
+                    val dateNewSellerProjection =
+                        format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
+                    descHeaderShopService = context?.getString(
+                        R.string.desc_new_seller_level_0,
+                        dateNewSellerProjection
+                    )
+                        ?: ""
                 }
                 shopScore < 0 || shopLevel < 0 -> {
                     titleHeaderShopService = context?.getString(R.string.title_performance_below)
-                            ?: ""
+                        ?: ""
                     descHeaderShopService = context?.getString(R.string.desc_performance_below)
-                            ?: ""
+                        ?: ""
                 }
                 shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
                     when {
@@ -584,13 +589,13 @@ class ShopScoreMapper @Inject constructor(
 
     private fun sortItemDetailPerformanceFormatted(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?): List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail> {
         val identifierFilter = hashMapOf(
-                ORDER_SUCCESS_RATE_KEY to ORDER_SUCCESS_RATE_INDEX,
-                CHAT_DISCUSSION_REPLY_SPEED_KEY to CHAT_DISCUSSION_REPLY_SPEED_INDEX,
-                SPEED_SENDING_ORDERS_KEY to SPEED_SENDING_ORDERS_INDEX,
-                CHAT_DISCUSSION_SPEED_KEY to CHAT_DISCUSSION_SPEED_INDEX,
-                PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to PRODUCT_REVIEW_WITH_FOUR_STARS_INDEX,
-                TOTAL_BUYER_KEY to TOTAL_BUYER_INDEX,
-                OPEN_TOKOPEDIA_SELLER_KEY to OPEN_TOKOPEDIA_SELLER_INDEX
+            ORDER_SUCCESS_RATE_KEY to ORDER_SUCCESS_RATE_INDEX,
+            CHAT_DISCUSSION_REPLY_SPEED_KEY to CHAT_DISCUSSION_REPLY_SPEED_INDEX,
+            SPEED_SENDING_ORDERS_KEY to SPEED_SENDING_ORDERS_INDEX,
+            CHAT_DISCUSSION_SPEED_KEY to CHAT_DISCUSSION_SPEED_INDEX,
+            PRODUCT_REVIEW_WITH_FOUR_STARS_KEY to PRODUCT_REVIEW_WITH_FOUR_STARS_INDEX,
+            TOTAL_BUYER_KEY to TOTAL_BUYER_INDEX,
+            OPEN_TOKOPEDIA_SELLER_KEY to OPEN_TOKOPEDIA_SELLER_INDEX
         )
 
         val compareIdentifier =
@@ -652,14 +657,16 @@ class ShopScoreMapper @Inject constructor(
     }
 
     private fun mapToSectionRMEligibleToPMPro(): SectionRMPotentialPMProUiModel {
-        val potentialPMProPMBenefitList = mapToItemPMProBenefit() as? List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>
+        val potentialPMProPMBenefitList =
+            mapToItemPMProBenefit() as? List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>
         return SectionRMPotentialPMProUiModel(
             potentialPMProPMBenefitList = potentialPMProPMBenefitList
         )
     }
 
     private fun mapToSectionPMEligibleToPMPro(): SectionPMPotentialPMProUiModel {
-        val potentialPMProPMBenefitList = mapToItemPMProBenefit() as? List<SectionPMPotentialPMProUiModel.ItemPMProBenefitUIModel>
+        val potentialPMProPMBenefitList =
+            mapToItemPMProBenefit() as? List<SectionPMPotentialPMProUiModel.ItemPMProBenefitUIModel>
 
         return SectionPMPotentialPMProUiModel(
             potentialPMProPMBenefitList = potentialPMProPMBenefitList

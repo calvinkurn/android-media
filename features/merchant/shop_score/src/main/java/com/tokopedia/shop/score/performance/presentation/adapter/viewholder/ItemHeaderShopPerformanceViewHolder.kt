@@ -20,6 +20,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
+        const val SHOP_SCORE_NULL = -1
     }
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
@@ -44,7 +45,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            val shopScore = element?.shopScore.toIntOrZero()
+            val shopScore = element?.shopScore?.toInt() ?: SHOP_SCORE_NULL
             if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY || shopScore < 0) {
                 progressBarNewSeller?.show()
                 progressBarScorePerformance?.hide()
