@@ -12,8 +12,7 @@ data class VariantComponentDataModel(
         val position: Long = 0,
         var listOfVariantCategory: List<VariantCategory>? = null,
         var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
-        var isEmptyStock: Boolean = false,
-        var isTokoCabang: Boolean = false
+        var isEmptyStock: Boolean = false
 ) : AtcVariantVisitable {
 
     override fun uniqueId(): Long = position
@@ -22,8 +21,7 @@ data class VariantComponentDataModel(
         return if (newData is VariantComponentDataModel) {
             mapOfSelectedVariant == newData.mapOfSelectedVariant &&
                     listOfVariantCategory == newData.listOfVariantCategory &&
-                    isEmptyStock == newData.isEmptyStock &&
-                    isTokoCabang == newData.isTokoCabang
+                    isEmptyStock == newData.isEmptyStock
         } else {
             false
         }

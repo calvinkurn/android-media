@@ -110,24 +110,18 @@ object AtcCommonMapper {
      *
      * auto select will run if there is only 1 child left buyable
      */
-    fun determineSelectedOptionIds(isParent: Boolean, variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
+    fun determineSelectedOptionIds(variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
         val shouldAutoSelect = variantData?.autoSelectedOptionIds() ?: listOf()
         return when {
-            isParent -> {
+            shouldAutoSelect.isNotEmpty() -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+            }
+            else -> {
                 if (selectedChild == null) {
                     AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
                 } else {
                     AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
                 }
-            }
-            selectedChild?.isBuyable == true -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-            }
-            shouldAutoSelect.isNotEmpty() -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-            }
-            else -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
             }
         }
     }
@@ -190,6 +184,7 @@ object AtcCommonMapper {
                        selectedProductFulfillment: Boolean,
                        totalStock: Int,
                        selectedQuantity: Int,
+                       variantTitle: List<String>,
                        shouldShowDeleteButton: Boolean): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
@@ -202,6 +197,8 @@ object AtcCommonMapper {
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
                         productImage = headerData.first,
+                        variantTitle = variantTitle,
+                        isTokoCabang = selectedProductFulfillment,
                         headerData = headerData.second)
         ).also {
             idCounter += 1
@@ -212,8 +209,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = (totalStock == 0 || (selectedChild?.isBuyable == false) && !selectedChild.isInactive),
-                        isTokoCabang = selectedProductFulfillment)
+                        isEmptyStock = (totalStock == 0 || (selectedChild?.isBuyable == false) && !selectedChild.isInactive))
         ).also {
             idCounter += 1
         }
@@ -255,6 +251,7 @@ object AtcCommonMapper {
                         selectedProductFulfillment: Boolean,
                         isTokoNow: Boolean,
                         selectedQuantity: Int,
+                        variantTitle: List<String>,
                         shouldShowDeleteButton: Boolean): List<AtcVariantVisitable> {
 
         return oldList.map {
@@ -263,8 +260,7 @@ object AtcCommonMapper {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
                                     ?: mutableMapOf(),
-                            isEmptyStock = selectedVariantChild?.isBuyable == false && !selectedVariantChild.isInactive,
-                            isTokoCabang = selectedProductFulfillment)
+                            isEmptyStock = selectedVariantChild?.isBuyable == false && !selectedVariantChild.isInactive)
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
@@ -282,7 +278,7 @@ object AtcCommonMapper {
                     } else {
                         val headerData = generateHeaderDataModel(selectedVariantChild)
                         it.copy(productImage = headerData.first, productId = selectedVariantChild?.productId
-                                ?: "", headerData = headerData.second)
+                                ?: "", headerData = headerData.second, isTokoCabang = selectedProductFulfillment, variantTitle = variantTitle)
                     }
                 }
                 else -> {

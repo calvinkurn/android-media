@@ -141,7 +141,6 @@ abstract class BaseAtcVariantViewModelTest {
                     Assert.assertEquals(currentSelectedLevelTwo, expectedSelectedOptionIdsLevelTwo)
                     Assert.assertTrue(it.mapOfSelectedVariant.values.toList().containsAll(expectedSelectedOptionIds))
                     Assert.assertEquals(it.isEmptyStock, isEmptyStock)
-                    Assert.assertEquals(it.isTokoCabang, false)
                 }
                 is VariantQuantityDataModel -> {
                     Assert.assertEquals(it.quantity, expectedQuantity)

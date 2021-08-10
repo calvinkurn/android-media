@@ -90,10 +90,6 @@ class AtcVariantViewModel @Inject constructor(
     val addWishlistResult: LiveData<Result<Boolean>>
         get() = _addWishlistResult
 
-    private val _titleVariantName = MutableLiveData<String>()
-    val titleVariantName: LiveData<String>
-        get() = _titleVariantName
-
     private var isShopOwner: Boolean = false
 
     fun getActivityResultData(): ProductVariantResult = variantActivityResult
@@ -127,7 +123,7 @@ class AtcVariantViewModel @Inject constructor(
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
             val selectedQuantity = getSelectedQuantity(selectedVariantChild?.productId ?: "")
-
+            val variantTitle = AtcVariantMapper.getSelectedVariantName(processedVariant, selectedVariantChild)
             //We update visitable to re-render selected variant and header
             val list = AtcCommonMapper.updateVisitable(
                     oldList = (_initialData.value as Success).data,
@@ -139,10 +135,10 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     isTokoNow = isTokoNow,
                     selectedQuantity = selectedQuantity,
+                    variantTitle = variantTitle,
                     shouldShowDeleteButton = shouldShowDeleteButton)
 
             _initialData.postValue(list.asSuccess())
-            _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedVariantChild))
 
             if (!isPartiallySelected) {
                 // if user only select 1 of 2 variant, no need to update the button
@@ -205,9 +201,7 @@ class AtcVariantViewModel @Inject constructor(
 
             //Get selected child by product id, if product parent auto select first child
             //If parent just update the header and ignore the variant selection
-            val pairIsParentAndChild = aggregatorData?.variantData?.autoSelectChildIfGivenIdIsParent(aggregatorParams.productId)
-            val isParent = pairIsParentAndChild?.first ?: false
-            val selectedChild = pairIsParentAndChild?.second
+            val selectedChild = aggregatorData?.variantData?.autoSelectIfParent(aggregatorParams.productId)
 
             //Get cart redirection , and warehouse by selected product id to render button and toko cabang
             val selectedMiniCart = minicartData?.get(selectedChild?.productId ?: "")
@@ -215,12 +209,13 @@ class AtcVariantViewModel @Inject constructor(
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             //generate variant component and data, initial render need to determine selected option
-            val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, aggregatorData?.variantData, selectedChild)
+            val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(aggregatorData?.variantData, selectedChild)
             val processedVariant = AtcVariantMapper.processVariant(aggregatorData?.variantData, initialSelectedOptionIds)
 
             assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
             val selectedQuantity = getSelectedQuantity(selectedChild?.productId ?: "")
             val shouldShowDeleteButton = minicartData?.get(selectedChild?.productId ?: "") != null
+            val variantTitle = AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild)
 
             //Generate visitables
             val visitables = AtcCommonMapper.mapToVisitable(
@@ -231,10 +226,10 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     totalStock = aggregatorData?.variantData?.totalStockChilds ?: 0,
                     selectedQuantity = selectedQuantity,
+                    variantTitle = variantTitle,
                     shouldShowDeleteButton = shouldShowDeleteButton)
 
             if (visitables != null) {
-                _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild))
                 _initialData.postValue(visitables.asSuccess())
                 updateActivityResult(
                         selectedProductId = selectedChild?.productId ?: "",

@@ -32,9 +32,15 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
     private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
     private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
 
+    private val labelVar1 = view.findViewById<Label>(R.id.lbl_variant_name_1)
+    private val labelVar2 = view.findViewById<Label>(R.id.lbl_variant_name_2)
+    private val txtTokoCabang = view.findViewById<Typography>(R.id.txt_var_warehouse)
+
     override fun bind(element: VariantHeaderDataModel) {
         loadImage(element.productImage)
         loadDescription(element.headerData)
+        renderVariantName(element.variantTitle)
+        renderTokoCabang(element.isTokoCabang)
     }
 
     override fun bind(element: VariantHeaderDataModel, payloads: MutableList<Any>) {
@@ -43,6 +49,8 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
             return
         }
 
+        renderVariantName(element.variantTitle)
+        renderTokoCabang(element.isTokoCabang)
         when (payloads[0] as Int) {
             PAYLOAD_UPDATE_IMAGE_ONLY -> {
                 loadImage(element.productImage)
@@ -51,7 +59,22 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
                 loadDescription(element.headerData)
             }
         }
+    }
 
+    private fun renderTokoCabang(isTokoCabang: Boolean) = with(view) {
+        txtTokoCabang.shouldShowWithAction(isTokoCabang) {
+            txtTokoCabang.text = context.getString(R.string.atc_variant_tokocabang)
+        }
+    }
+
+    private fun renderVariantName(listName: List<String>) = with(view) {
+        labelVar1?.shouldShowWithAction(listName.getOrNull(0)?.isNotEmpty() == true) {
+            labelVar1.text = listName.getOrNull(0) ?: ""
+        }
+
+        labelVar2?.shouldShowWithAction(listName.getOrNull(1)?.isNotEmpty() == true) {
+            labelVar2.text = listName.getOrNull(1) ?: ""
+        }
     }
 
     private fun loadDescription(headerData: ProductHeaderData) = with(view) {

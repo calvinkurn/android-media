@@ -15,11 +15,11 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 object AtcVariantMapper {
 
-    fun getSelectedVariantName(listOfVariantCategory: List<VariantCategory>?, selectedChild: VariantChild?): String {
-        val selected = listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }?.joinToString()
-                ?: ""
+    fun getSelectedVariantName(listOfVariantCategory: List<VariantCategory>?, selectedChild: VariantChild?): List<String> {
+        val selected = listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }
+                ?: listOf()
         return if (selected.isEmpty()) {
-            selectedChild?.name?.split("- ")?.lastOrNull() ?: ""
+            selectedChild?.name?.split("- ")?.lastOrNull()?.split(',') ?: listOf()
         } else {
             selected
         }

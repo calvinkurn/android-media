@@ -13,6 +13,8 @@ data class VariantHeaderDataModel(
         val position: Long = 0,
         val productImage: String = "",
         val productId: String = "",
+        val variantTitle: List<String> = listOf(),
+        val isTokoCabang: Boolean = false,
         val headerData: ProductHeaderData = ProductHeaderData()
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
@@ -20,7 +22,9 @@ data class VariantHeaderDataModel(
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
         return if (newData is VariantHeaderDataModel) {
             productImage == newData.productImage &&
-                    headerData == newData.headerData
+                    headerData == newData.headerData &&
+                    variantTitle.hashCode() == newData.variantTitle.hashCode() &&
+                    isTokoCabang == newData.isTokoCabang
         } else {
             false
         }

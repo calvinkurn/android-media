@@ -24,7 +24,6 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     private var variantContainerAdapter: AtcVariantContainerAdapter? = AtcVariantContainerAdapter(listener)
     private var rvVariant: RecyclerView? = view.findViewById(R.id.rv_variant_viewholder)
     private var txtEmptyStock: Typography? = view.findViewById(R.id.txt_variant_empty_stock)
-    private var txtTokoCabang: Typography? = view.findViewById(R.id.txt_variant_tokocabang)
 
     override fun bind(element: VariantComponentDataModel) {
         element.listOfVariantCategory?.let {
@@ -45,7 +44,6 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
     }
 
     private fun renderTxt(element: VariantComponentDataModel) = with(view) {
-        txtTokoCabang?.showWithCondition(element.isTokoCabang)
         val textColor = getHexColor(com.tokopedia.unifyprinciples.R.color.Unify_R600)
         txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label, textColor)).spannedString
         txtEmptyStock?.showWithCondition(element.isEmptyStock)

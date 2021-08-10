@@ -131,7 +131,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         isHideable = true
         clearContentPadding = true
 
-        updateBottomSheetTitle(getString(R.string.title_bottomsheet_choose_atc_variant))
+        setTitle(context?.getString(R.string.title_activity_atc_variant) ?: "")
 
         setShowListener {
             bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -172,15 +172,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         startActivity(intent)
     }
 
-    private fun updateBottomSheetTitle(value: String) {
-        val strings = if (value.isEmpty()) {
-            getString(R.string.title_bottomsheet_choose_atc_variant)
-        } else {
-            value
-        }
-        setTitle(context?.getString(R.string.title_bottomsheet_atc_variant, strings) ?: "")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
@@ -197,7 +188,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         })
 
         observeInitialVisitablesData()
-        observeTitleChanged()
         observeButtonState()
         observeCart()
         observeDeleteCart()
@@ -236,12 +226,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     logException(it.throwable)
                 }
             }
-        })
-    }
-
-    private fun observeTitleChanged() {
-        viewModel.titleVariantName.observe(viewLifecycleOwner, {
-            updateBottomSheetTitle(it)
         })
     }
 
@@ -381,6 +365,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         val selectedChild = variantAggregatorData?.variantData?.getChildByProductId(productId)
         val shopType = if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) ProductDetailCommonConstant.VALUE_TOKONOW else variantAggregatorData?.shopType
                 ?: ""
+        val variantTitle = adapter.getHeaderDataModel()?.variantTitle?.joinToString(separator = ", ") ?: ""
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -391,7 +376,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 productName = selectedChild?.name ?: "",
                 productPrice = selectedChild?.finalPrice ?: 0.0,
                 quantity = selectedQuantity,
-                variantName = viewModel.titleVariantName.value ?: "",
+                variantName = variantTitle,
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
                 shopType = shopType,
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
