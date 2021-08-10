@@ -6,11 +6,7 @@ import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
-import com.tokopedia.mediauploader.util.getFileExtension
-import com.tokopedia.mediauploader.util.trackToTimber
-import com.tokopedia.mediauploader.util.isMaxFileSize
-import com.tokopedia.mediauploader.util.isMaxBitmapResolution
-import com.tokopedia.mediauploader.util.isMinBitmapResolution
+import com.tokopedia.mediauploader.util.*
 import java.io.File
 
 class UploaderManager constructor(
@@ -99,8 +95,8 @@ class UploaderManager constructor(
     * common error tracker and expose to user
     * */
     fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
-        trackToTimber(fileToUpload, sourceId, message)
-        return UploadResult.Error(message.first())
+        trackToTimber(fileToUpload, sourceId, message.map { it.addPrefix() })
+        return UploadResult.Error(message.first().addPrefix())
     }
 
 }
