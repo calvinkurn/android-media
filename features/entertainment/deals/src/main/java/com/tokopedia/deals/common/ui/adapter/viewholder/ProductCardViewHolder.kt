@@ -28,13 +28,19 @@ class ProductCardViewHolder(itemView: View, private val productCardListener: Pro
             txt_product_card_title.text = productCardDataView.title
 
             if (productCardDataView.discount.isNotEmpty() && !productCardDataView.discount.startsWith(ZERO_PERCENT)) {
+                label_product_card_discount.show()
                 label_product_card_discount.setLabel(productCardDataView.discount)
+            } else {
+                label_product_card_discount.hide()
+            }
+
+            if(productCardDataView.oldPrice.isNotEmpty() && productCardDataView.oldPrice != productCardDataView.price){
+                txt_product_card_old_price.show()
                 txt_product_card_old_price.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     text = productCardDataView.oldPrice
                 }
             } else {
-                label_product_card_discount.hide()
                 txt_product_card_old_price.hide()
             }
 
