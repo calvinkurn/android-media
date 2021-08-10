@@ -29,7 +29,7 @@ class SingleProductBundleAdapter(
                 selectedItem.isSelected = (index == viewHolder.adapterPosition)
             }
             data.getOrNull(viewHolder.adapterPosition)?.apply {
-                listener.onBundleItemSelected(price, slashPrice, quantity)
+                listener.onBundleItemSelected(originalPrice, discountedPrice, quantity)
             }
             notifyDataSetChanged()
         }
@@ -56,15 +56,17 @@ class SingleProductBundleAdapter(
         notifyDataSetChanged()
     }
 
-    fun setSelectedVariant(selectedProductId: String, selectedVariantText: String) {
+    fun setSelectedVariant(selectedProductId: String, variantText: String) {
         selectedData.forEachIndexed { index, selectedItem ->
             if (selectedItem.isSelected) {
-                val variant = data[index].getVariantChildFromProductId(selectedProductId)
-                data[index].discount = variant?.campaign?.discountedPercentage?.toInt().orZero()
-                data[index].price = variant?.finalMainPrice.orZero()
-                data[index].slashPrice = variant?.finalPrice.orZero()
-                data[index].selectedVariantText = selectedVariantText
-                listener.onBundleItemSelected(data[index].price, data[index].slashPrice, data[index].quantity)
+                data.getOrNull(index)?.apply {
+                    val variant = getVariantChildFromProductId(selectedProductId)
+                    discount = variant?.campaign?.discountedPercentage?.toInt().orZero()
+                    originalPrice = variant?.finalMainPrice.orZero()
+                    discountedPrice = variant?.finalPrice.orZero()
+                    selectedVariantText = variantText
+                    listener.onBundleItemSelected(originalPrice, discountedPrice, quantity)
+                }
 
                 selectedItem.productId = selectedProductId
                 notifyItemChanged(index)

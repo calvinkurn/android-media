@@ -13,6 +13,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -28,10 +29,10 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
         title.text = item.productName
         ivItemImage.urlSrc = item.imageUrl
         bundleName.text = item.bundleName
-        discountViewItem.price = item.price.toString()
+        discountViewItem.price = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.discountedPrice, false)
         discountViewItem.discountAmount = "${item.discount}%"
-        discountViewItem.slashPrice = item.slashPrice.toString()
-        spinnerItemVariant.isVisible = item.productVariant != null
+        discountViewItem.slashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(item.originalPrice, false)
+        spinnerItemVariant.isVisible = item.hasVariant
         spinnerItemVariant.text = item.selectedVariantText
 
         radioItem.isChecked = selectedItem.isSelected

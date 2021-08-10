@@ -54,7 +54,7 @@ object AtcVariantMapper {
                     url100 = it.picURL
                 ),
                 campaign = VariantCampaign(
-                    isActive = true,
+                    isActive = originalPrice != discountedPrice,
                     originalPrice = originalPrice,
                     discountedPrice = discountedPrice,
                     discountedPercentage = discountedPercentage.toFloat(),

@@ -44,8 +44,8 @@ object BundleInfoToSingleProductBundleMapper {
             quantity = it.minOrder,
             bundleName = context.getString(R.string.bundle_item_title_prefix, it.minOrder),
             productName = it.name,
-            price = it.bundlePrice.toDouble(),
-            slashPrice = it.originalPrice.toDouble(),
+            originalPrice = it.originalPrice.toDouble(),
+            discountedPrice = it.bundlePrice.toDouble(),
             discount = DiscountUtil.getDiscountPercentage(it.originalPrice.toDouble(), it.bundlePrice.toDouble()),
             imageUrl = it.picURL,
             productVariant = if (productVariant.hasVariant) productVariant else null

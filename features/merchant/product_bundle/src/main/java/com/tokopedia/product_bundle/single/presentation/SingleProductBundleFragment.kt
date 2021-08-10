@@ -86,8 +86,8 @@ class SingleProductBundleFragment(
         }
     }
 
-    override fun onBundleItemSelected(originalPrice: Double, slashPrice: Double, quantity: Int) {
-        viewModel.updateTotalAmount(originalPrice, slashPrice, quantity)
+    override fun onBundleItemSelected(originalPrice: Double, discountedPrice: Double, quantity: Int) {
+        viewModel.updateTotalAmount(originalPrice, discountedPrice, quantity)
     }
 
     private fun observeSingleProductBundleUiModel() {

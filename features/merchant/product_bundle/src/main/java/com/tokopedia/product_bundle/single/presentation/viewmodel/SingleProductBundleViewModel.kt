@@ -9,7 +9,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.util.DiscountUtil
-import com.tokopedia.product_bundle.single.presentation.model.*
+import com.tokopedia.product_bundle.single.presentation.model.BundleInfoToSingleProductBundleMapper
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleUiModel
+import com.tokopedia.product_bundle.single.presentation.model.TotalAmountUiModel
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -38,12 +42,12 @@ class SingleProductBundleViewModel @Inject constructor(
             .mapToSingleProductBundle(context, bundleInfo)
     }
 
-    fun updateTotalAmount(price: Double, slashPrice: Double, quantity: Int) {
+    fun updateTotalAmount(originalPrice: Double, discountedPrice: Double, quantity: Int) {
         mTotalAmountUiModel.value = TotalAmountUiModel(
-            price = (price * quantity).toString(),
-            slashPrice = (slashPrice * quantity).toString(),
-            discount = DiscountUtil.getDiscountPercentage(price, slashPrice),
-            priceGap = (abs(price - slashPrice) * quantity).toString()
+            price = CurrencyFormatUtil.convertPriceValueToIdrFormat(discountedPrice * quantity, false),
+            slashPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice * quantity, false),
+            discount = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice),
+            priceGap = CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(originalPrice - discountedPrice) * quantity, false)
         )
     }
 
