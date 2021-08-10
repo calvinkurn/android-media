@@ -1202,18 +1202,49 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (!productTagText.isVisible && products.isNotEmpty()) {
                 handlerAnim?.postDelayed({
                     productTagText.apply {
-                        visible()
-                        animate().alpha(1f).start()
-                    }
+                        val pulseFade: Animation =
+                            AnimationUtils.loadAnimation(
+                                context,
+                                R.anim.anim_move_forward
+                            )
+                        pulseFade.setAnimationListener(object :
+                            Animation.AnimationListener {
+                            override fun onAnimationStart(animation: Animation) {
+                                productTagText.visible()
+                            }
 
+                            override fun onAnimationEnd(animation: Animation) {
+                            }
+
+                            override fun onAnimationRepeat(animation: Animation) {}
+                        })
+                        productTagText.visible()
+                        video_tagging_parent.startAnimation(pulseFade)
+                    }
                 }, TIME_SECOND)
             }
             if (handlerHide == null)
                 handlerHide = Handler(Looper.getMainLooper())
             handlerHide?.postDelayed({
                 productTagText.apply {
-                    gone()
-                    animate().alpha(0f).start()
+                    val pulseFade: Animation =
+                        AnimationUtils.loadAnimation(
+                            context,
+                            R.anim.anim_move_backward
+                        )
+                    pulseFade.setAnimationListener(object :
+                        Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation) {
+                            productTagText.gone()
+                        }
+
+                        override fun onAnimationEnd(animation: Animation) {
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation) {}
+                    })
+                    productTagText.visible()
+                    video_tagging_parent.startAnimation(pulseFade)
                 }
             }, TIME_FOUR_SEC)
         }
