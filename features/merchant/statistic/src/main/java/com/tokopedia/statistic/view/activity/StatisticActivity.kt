@@ -222,7 +222,6 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                     coachMarkItems.add(it)
                 }
             }
-            adapter.notifyDataSetChanged()
         }
 
         showCoachMark(coachMarkItems)
