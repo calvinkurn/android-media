@@ -32,10 +32,12 @@ import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -52,6 +54,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
+    abstract fun getTopAdsView(): TopAdsView?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -228,6 +231,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 }
             }
         })
+
+        thanksPageDataViewModel.topAdsDataLiveData.observe(viewLifecycleOwner) {
+            addDataToTopAdsView(it)
+        }
+
     }
 
     private fun updateLocalizingAddressData(data: GetDefaultChosenAddressResponse) {
@@ -291,6 +299,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             } else {
                 getFeatureListingContainer()?.gone()
             }
+        }
+    }
+    private fun addDataToTopAdsView(data: TopAdsRequestParams) {
+        if (!data.topAdsUIModelList.isNullOrEmpty()) {
+            getTopAdsView()?.visible()
+            getTopAdsView()?.addData(data)
+        } else {
+            getTopAdsView()?.gone()
         }
     }
 
