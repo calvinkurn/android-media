@@ -118,17 +118,17 @@
             android:id="@+id/iv_giveaway"
             android:layout_width="@dimen/play_giveaway_icon_size"
             android:layout_height="@dimen/play_giveaway_icon_size"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:background="@drawable/bg_play_widget_giveaway_badge"
             android:padding="@dimen/spacing_lvl1"
-            android:layout_marginBottom="@dimen/spacing_lvl3"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="GIFT"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible"
-            android:layout_marginStart="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"
             app:layout_constraintStart_toEndOf="@id/play_widget_badge_promo"
+            tools:ignore="RtlSymmetry"
+            tools:visibility="visible"
             />
 
         <LinearLayout
