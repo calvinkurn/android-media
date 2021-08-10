@@ -967,14 +967,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
-        if (isFeedPageShown) {
+        if (isFeedPageShown)
             isUserEventTrackerDoneOnResume = true
-            playWidgetOnVisibilityChanged(isViewResumed = false)
-            super.onPause()
-            unRegisterNewFeedReceiver()
-            analytics.sendPendingAnalytics()
-            feedAnalytics.sendPendingAnalytics()
-        }
+        playWidgetOnVisibilityChanged(isViewResumed = false)
+        super.onPause()
+        unRegisterNewFeedReceiver()
+        analytics.sendPendingAnalytics()
+        feedAnalytics.sendPendingAnalytics()
+    }
 
     private fun registerNewFeedReceiver() {
         if (activity != null && requireActivity().applicationContext != null) {
