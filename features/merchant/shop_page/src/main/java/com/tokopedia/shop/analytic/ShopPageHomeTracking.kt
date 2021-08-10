@@ -20,6 +20,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ATC_RECOMMENDA
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_FILTER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DEACTIVATE_REMINDER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_CHIP
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_PRICE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_RATING
@@ -128,6 +129,7 @@ import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.view.model.NotifyMeAction
+import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -561,6 +563,36 @@ class ShopPageHomeTracking(
                                 shopName,
                                 horizontalPosition,
                                 actionFieldList
+                        ))
+                )
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun clickShowcaseListWidgetItem(
+            showcaseItem: ShopHomeShowcaseListItemUiModel,
+            showcasePosition: Int,
+            showcaseId: String,
+            customDimensionShopPage: CustomDimensionShopPage,
+            userId: String,
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to PROMO_CLICK,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to CLICK_ETALASE_NAVIGATION_BANNER,
+                EVENT_LABEL to "widget type - to be filled",
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_CLICK to mutableMapOf(
+                        PROMOTIONS to mutableListOf(mutableMapOf(
+                                CREATIVE to showcaseItem.imageUrl,
+                                ID to showcaseId,
+                                NAME to showcaseItem.name,
+                                POSITION to showcasePosition
                         ))
                 )
         )

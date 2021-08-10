@@ -1026,7 +1026,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onShowcaseListWidgetItemClicked(showcaseId: String) {
+    override fun onShowcaseListWidgetItemClicked(showcaseItem: ShopHomeShowcaseListItemUiModel, showcaseId: String, position: Int) {
+        shopPageHomeTracking.clickShowcaseListWidgetItem(
+                showcaseItem,
+                position,
+                showcaseId,
+                customDimensionShopPage,
+                userId
+        )
         val intent = ShopProductListResultActivity.createIntent(
                 activity,
                 shopId,

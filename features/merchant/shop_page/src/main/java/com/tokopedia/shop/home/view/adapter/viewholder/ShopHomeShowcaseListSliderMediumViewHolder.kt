@@ -47,7 +47,7 @@ class ShopHomeShowcaseListSliderMediumViewHolder (
 
         itemView.setOnClickListener {
             val showcaseId = ShopHomeShowcaseListWidgetAdapter.getShowcaseIdFromApplink(element.appLink)
-            itemWidgetListener.onShowcaseListWidgetItemClicked(showcaseId)
+            itemWidgetListener.onShowcaseListWidgetItemClicked(element, showcaseId, adapterPosition)
         }
     }
 }
