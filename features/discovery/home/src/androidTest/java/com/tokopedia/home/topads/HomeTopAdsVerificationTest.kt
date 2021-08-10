@@ -4,6 +4,11 @@ import android.Manifest
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -14,6 +19,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
+import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
+import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
@@ -38,6 +45,7 @@ import org.junit.*
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class HomeTopAdsVerificationTest {
+    private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
 
     @get:Rule
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -56,14 +64,27 @@ class HomeTopAdsVerificationTest {
     private var topAdsCount = 0
     private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
 
+    @Before
+    fun setupEnvironment() {
+        val recyclerView: RecyclerView =
+            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
+            recyclerView = recyclerView,
+            limitCountToIdle = 0
+        )
+        IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
+        activityRule.deleteHomeDatabase()
+    }
+
     @After
     fun deleteDatabase() {
         topAdsAssertion.after()
+        IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
     @Test
     fun testTopAdsHome() {
-        waitForData()
+        Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(isDisplayed()))
 
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount?:0
