@@ -567,7 +567,7 @@ class PlayAnalytic(
             "brand" to "",
             "category" to "",
             "variant" to "",
-            "list" to dimension39,
+            "dimension39" to dimension39,
             "category_id" to "",
             "quantity" to product.minQty,
             "shop_id" to shopInfo.id,
