@@ -493,6 +493,7 @@ class PlayBottomSheetFragment @Inject constructor(
                         analytic.clickProductAction(data.product, data.cartId, data.action, data.bottomInsetsType, playViewModel.latestCompleteChannelData.partnerInfo)
                     }
                     else {
+                        analytic.clickProductAction(data.product, data.cartId, data.action, data.bottomInsetsType, playViewModel.latestCompleteChannelData.partnerInfo)
                         doShowToaster(
                                 bottomSheetType = data.bottomInsetsType,
                                 toasterType = Toaster.TYPE_ERROR,

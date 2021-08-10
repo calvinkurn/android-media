@@ -609,7 +609,7 @@ class PlayAnalytic(
                     "ecommerce" to hashMapOf(
                         "currencyCode" to "IDR",
                         "add" to hashMapOf(
-                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                            "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
                         )
                     )
                 ),
@@ -642,7 +642,7 @@ class PlayAnalytic(
                     "ecommerce" to hashMapOf(
                         "currencyCode" to "IDR",
                         "add" to hashMapOf(
-                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                            "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
                         )
                     )
                 ),
@@ -675,7 +675,7 @@ class PlayAnalytic(
                     "ecommerce" to hashMapOf(
                         "currencyCode" to "IDR",
                         "add" to hashMapOf(
-                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                            "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
                         )
                     )
                 ),
@@ -708,7 +708,7 @@ class PlayAnalytic(
                     "ecommerce" to hashMapOf(
                         "currencyCode" to "IDR",
                         "add" to hashMapOf(
-                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                            "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
                         )
                     )
                 ),
