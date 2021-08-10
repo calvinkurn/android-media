@@ -217,6 +217,7 @@ class ProductTabFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
             putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, arguments?.getString(TopAdsDashboardConstant.GROUP_STRATEGY))
+            putExtra(ParamObject.ISWHITELISTEDUSER, isWhiteListedUser)
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_PRODUK, "")

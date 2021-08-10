@@ -18,6 +18,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
@@ -101,7 +102,23 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
         group_name?.textFieldInput?.setText(data.groupName)
-        data?.bidSettings?.get(0)?.priceBid?.toInt()?.let { sharedViewModel.setBudget(it) }
+        var bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf<TopAdsBidSettingsModel>()
+        data?.bidSettings?.forEach {
+            var topAdsBidSettingsModel: TopAdsBidSettingsModel = TopAdsBidSettingsModel()
+            topAdsBidSettingsModel.bidType = it.bidType
+            topAdsBidSettingsModel.priceBid = it.priceBid
+            bidSettingsList.add(topAdsBidSettingsModel)
+        }
+        sharedViewModel.setBidSettings(bidSettingsList)
+//        data?.bidSettings?.forEach {
+//            if(it.bidType.equals("product_search")) {
+//                it.priceBid?.toInt()?.let { it1 -> sharedViewModel.setBudget(it1) }
+//            } else if(it.bidType.equals("product_browse")){
+//                it.priceBid?.toInt()?.let { it1 -> sharedViewModel.setRekomendedBudget(it1) }
+//            }
+//        }
+//        data?.bidSettings?.get(0)?.priceBid?.toInt()?.let { sharedViewModel.setBudget(it) }
+//        data?.bidSettings?.get(1)?.priceBid?.toInt()?.let { sharedViewModel.setRekomendedBudget(it) }
         priceDaily = data.daiyBudget
         if (priceDaily != 0.0F) {
             toggle?.isChecked = true

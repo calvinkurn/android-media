@@ -32,6 +32,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var name = ""
     private var fromEdit = 99
     private var fromDetail = false
+    private var dailyBudget = ""
     private var userID: String = ""
     private var groupId: String = ""
     var onSaved: ((bid: String, pos: Int) -> Unit)? = null
@@ -96,6 +97,8 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
         fromDetail = arguments?.getBoolean(FROM_DETAIL) ?: false
+        dailyBudget = arguments?.getString(DAILY_BUDGET) ?: suggestedBid
+
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
@@ -120,7 +123,9 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), position)
             dismiss()
         }
-        if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
+        if(fromDetail) {
+            budget.textFieldInput.setText(dailyBudget)
+        } else if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
             budget.textFieldInput.setText(minBid)
         } else {
             budget.textFieldInput.setText(suggestedBid)
@@ -138,6 +143,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         private const val FROM_EDIT = "fromEdit"
         private const val GROUP_ID = "group_id"
         private const val FROM_DETAIL = "fromDetail"
+        private const val DAILY_BUDGET = "daily_budget"
 
         fun createInstance(data: Bundle): TopAdsEditKeywordBidSheet {
             return TopAdsEditKeywordBidSheet().apply {

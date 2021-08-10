@@ -24,12 +24,14 @@ import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -455,12 +457,22 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         bundle.putString(MAX_BID, maxSuggestKeyword)
         bundle.putString(MIN_BID, minSuggestKeyword)
         bundle.putString(SUGGESTION_BID, suggestedBid)
-        if(forRekomenDasi)
-            bundle.putString(KEYWORD_NAME, getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_rekomendasi))
-        else
-            bundle.putString(KEYWORD_NAME, getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian))
+        if(forRekomenDasi) {
+            bundle.putString(
+                KEYWORD_NAME,
+                getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_rekomendasi)
+            )
+            bundle.putString(DAILY_BUDGET, budgetPerClick_rekomendasi.text.toString().removeCommaRawString())
+        }
+        else {
+            bundle.putString(
+                KEYWORD_NAME,
+                getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
+            )
+            bundle.putString(DAILY_BUDGET, budgetPerClick.text.toString().removeCommaRawString())
+        }
         bundle.putBoolean(FROM_DETAIL, true)
-        bundle.putString(ParamObject.GROUPID, groupId.toString())
+        bundle.putString(GROUPID, groupId.toString())
         return bundle
     }
 

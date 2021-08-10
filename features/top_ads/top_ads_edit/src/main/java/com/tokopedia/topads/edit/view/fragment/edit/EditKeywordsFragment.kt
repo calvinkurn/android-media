@@ -221,10 +221,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.getBudget().observe(viewLifecycleOwner, {
-            budgetInput.textFieldInput.setText(it.toString())
-            budgetInputRekomendasi.textFieldInput.setText(it.toString())
-        })
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
             productIds = it.joinToString(",")
             productId = it
@@ -235,6 +231,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             getBidForKeywords()
 
+        })
+        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
+            if(it.isEmpty() && productIds.isNotEmpty()) {
+                viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+            }
         })
         sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
             groupId = it
@@ -633,6 +634,22 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             onAddKeyword()
         }
 
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
+            it.forEach {
+                if(it.bidType.equals("product_search")) {
+                    budgetInput.textFieldInput.setText(it.priceBid.toString())
+                } else if(it.bidType.equals("product_browse")) {
+                    budgetInputRekomendasi.textFieldInput.setText(it.priceBid.toString())
+                }
+            }
+        })
+//        sharedViewModel.getBudget().observe(viewLifecycleOwner, {
+//
+//        })
+//        sharedViewModel.getRekomendedBudget().observe(viewLifecycleOwner, {
+//
+//        })
+
         if(budgetInput.textFiedlLabelText.text.isEmpty()) {
             budgetInput.setError(true)
             budgetInput.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
@@ -642,27 +659,31 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             budgetInputRekomendasi.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
         }
 
+        budgetInput.textFieldInput.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                CLICK_DAILY_BUDGET_BOX, "")
+        }
         budgetInput.textFieldInput.addTextChangedListener(object :
             NumberTextWatcher(budgetInput.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 sharedViewModel.setDailyBudget(result)
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
-                    CLICK_DAILY_BUDGET_BOX, "")
                 checkForbidValidity(result)
             }
         })
 
 
+        budgetInputRekomendasi.textFieldInput.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
+                CLICK_DAILY_BUDGET_REKOMENDASI_BOX, "")
+        }
         budgetInputRekomendasi.textFieldInput.addTextChangedListener(object :
             NumberTextWatcher(budgetInputRekomendasi.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
                 sharedViewModel.setRekomendedBudget(result)
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(
-                    CLICK_DAILY_BUDGET_REKOMENDASI_BOX, "")
                 checkForRekommendedBid(result)
             }
         })
