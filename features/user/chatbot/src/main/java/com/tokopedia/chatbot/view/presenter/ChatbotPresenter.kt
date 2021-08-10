@@ -32,6 +32,7 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -438,17 +439,20 @@ class ChatbotPresenter @Inject constructor(
                     reqParam)
 
             uploadImageUseCase.execute(params,
-                    object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
-                        override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
-                            t.dataResultImageUpload.data?.run {
-                                sendUploadedImageToWebsocket(SendWebsocketParam
-                                        .generateParamSendImage(messageId,
-                                                this.picSrc,
-                                                it.startTime,
-                                                opponentId))
-                            }
-                            isUploading = false
+                object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
+                    override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
+                        t.dataResultImageUpload.data?.run {
+                            sendUploadedImageToWebsocket(
+                                ChatbotSendWebsocketParam
+                                    .generateParamSendImage(
+                                        messageId,
+                                        this.picSrc,
+                                        this.picObj,
+                                        it.startTime,
+                                        opponentId))
                         }
+                        isUploading = false
+                    }
 
                         override fun onCompleted() {
 
