@@ -11,11 +11,6 @@ class YouTubeViewViewModel(val application: Application, private val components:
 
     private val videoData = MutableLiveData<DataItem>()
 
-    override fun onAttachToViewHolder() {
-        super.onAttachToViewHolder()
-        components.shouldRefreshComponent = null
-    }
-
     fun getVideoId(): MutableLiveData<DataItem> {
         videoData.value = components.data?.get(0)
         return videoData

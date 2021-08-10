@@ -100,7 +100,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun showVideoInWebView() {
-        if(youtubeWebView?.youtubeJSInterface==null) {
+        if (youtubeWebView?.youtubeJSInterface == null) {
             youtubeWebView?.setUpEventListeners(
                 youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this,
                 youtubeEventVideoEnded = this, youtubeEventVideoCued = this, playerReady = this
