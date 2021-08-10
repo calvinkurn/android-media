@@ -1197,6 +1197,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         imageItem?.run {
             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
+            productTagText.gone()
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
             if (!productTagText.isVisible && products.isNotEmpty()) {
