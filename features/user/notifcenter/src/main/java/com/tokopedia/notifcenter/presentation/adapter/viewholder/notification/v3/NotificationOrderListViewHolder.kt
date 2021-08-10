@@ -1,54 +1,47 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
-import android.graphics.drawable.Drawable
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.orderlist.Card
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadOrderList
 import com.tokopedia.notifcenter.util.view.ShadowGenerator
 import com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
 
+// TODO: Retain state when user scroll back
+// TODO: Compare cache and network response, update necessary item only
+// TODO: Fix this instrumentation test
 class NotificationOrderListViewHolder constructor(
-        itemView: View?,
-        private val notificationItemListener: NotificationItemListener?
+    itemView: View?,
+    notificationItemListener: NotificationItemListener?
 ) : AbstractViewHolder<NotifOrderListUiModel>(itemView) {
 
-    private val firstCard: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_first_card)
-    private val secondCard: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_second_card)
-    private val titleWithIconMargin = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_4
-    )
-    private val titleWithoutIconMargin = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
-    )
-    private val bgFirst = ShadowGenerator.generateBackgroundWithShadow(
-            firstCard,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            R.color.notifcenter_dms_order_list_card_shadow,
-            R.dimen.notif_dp_6,
-            R.dimen.notif_dp_6
-    )
-    private val bgSecond = ShadowGenerator.generateBackgroundWithShadow(
-            secondCard,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            R.color.notifcenter_dms_order_list_card_shadow,
-            R.dimen.notif_dp_6,
-            R.dimen.notif_dp_6
-    )
+    private val rv: RecyclerView? = itemView?.findViewById(R.id.rv_order_list)
+    private val typeFactory = DefaultOrderListTypeFactory(notificationItemListener)
+    private val rvAdapter = OrderListAdapter(typeFactory)
+
+    init {
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        rv?.apply {
+            setHasFixedSize(true)
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(
+                itemView.context, LinearLayoutManager.HORIZONTAL, false
+            )
+            adapter = rvAdapter
+        }
+    }
 
     override fun bind(element: NotifOrderListUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -60,61 +53,105 @@ class NotificationOrderListViewHolder constructor(
     }
 
     override fun bind(element: NotifOrderListUiModel) {
-        bindCard(element, 0, firstCard)
-        bindCardBackground(firstCard, bgFirst)
-        bindCardTitleMargin(firstCard)
-        bindCardWidthRatio(firstCard, 6.75f)
-        bindCard(element, 1, secondCard)
-        bindCardBackground(secondCard, bgSecond)
-        bindCardTitleMargin(secondCard)
-        bindCardWidthRatio(secondCard, 3.25f)
+        updateListData(element)
     }
 
-    private fun bindCardWidthRatio(
-            cardLayout: ItemOrderListLinearLayout?,
-            buyerWidthRatio: Float
-    ) {
-        val horizontalWeight = if (notificationItemListener?.amISeller() == true) {
-            5.0f
-        } else {
-            buyerWidthRatio
-        }
-        val cardLp = cardLayout?.layoutParams as? ConstraintLayout.LayoutParams ?: return
-        cardLp.horizontalWeight = horizontalWeight
-        cardLayout.layoutParams = cardLp
-    }
-
-    private fun bindCard(
-            element: NotifOrderListUiModel,
-            cardIndex: Int,
-            cardLayout: ItemOrderListLinearLayout?
-    ) {
-        val order = element.list.getOrNull(cardIndex)
-        if (order == null) {
-            cardLayout?.hide()
-        } else {
-            cardLayout?.show()
-            cardLayout?.bindItem(order) {
-                notificationItemListener?.trackClickOrderListItem(order)
-            }
-        }
-    }
-
-    private fun bindCardBackground(cardLayout: ItemOrderListLinearLayout?, drawable: Drawable?) {
-        if (cardLayout?.isVisible == true) {
-            cardLayout.background = drawable
-        }
-    }
-
-    private fun bindCardTitleMargin(cardLayout: ItemOrderListLinearLayout?) {
-        if (cardLayout?.hasVisibleIcon() == true) {
-            cardLayout.setTitleMarginStart(titleWithIconMargin)
-        } else {
-            cardLayout?.setTitleMarginStart(titleWithoutIconMargin)
-        }
+    private fun updateListData(element: NotifOrderListUiModel) {
+        rvAdapter.updateData(element.list)
     }
 
     companion object {
         val LAYOUT = R.layout.item_notification_order_list
+    }
+
+    /**
+     * other class specific to this viewholder
+     */
+
+    interface OrderListTypeFactory : AdapterTypeFactory {
+        fun type(card: Card): Int
+    }
+
+    class DefaultOrderListTypeFactory(
+        private val notificationItemListener: NotificationItemListener?
+    ) : BaseAdapterTypeFactory(), OrderListTypeFactory {
+        override fun type(card: Card): Int {
+            return OrderItemViewHolder.LAYOUT
+        }
+
+        override fun createViewHolder(
+            parent: View?,
+            type: Int
+        ): AbstractViewHolder<out Visitable<*>> {
+            return when (type) {
+                OrderItemViewHolder.LAYOUT -> OrderItemViewHolder(
+                    parent, notificationItemListener
+                )
+                else -> super.createViewHolder(parent, type)
+            }
+        }
+    }
+
+    class OrderListAdapter(
+        adapterTypeFactory: OrderListTypeFactory?
+    ) : BaseAdapter<OrderListTypeFactory>(adapterTypeFactory) {
+        fun updateData(list: List<Card>) {
+            visitables.clear()
+            visitables.addAll(list)
+            notifyDataSetChanged()
+        }
+    }
+
+    class OrderItemViewHolder(
+        itemView: View?,
+        private val notificationItemListener: NotificationItemListener?
+    ) : AbstractViewHolder<Card>(itemView) {
+
+        private val card: ItemOrderListLinearLayout? = itemView?.findViewById(R.id.ll_card_uoh)
+        private val bg = ShadowGenerator.generateBackgroundWithShadow(
+            card,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+            R.color.notifcenter_dms_order_list_card_shadow,
+            R.dimen.notif_dp_6,
+            R.dimen.notif_dp_6
+        )
+        private val titleWithIconMargin = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_4
+        )
+        private val titleWithoutIconMargin = itemView?.context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+        )
+
+        override fun bind(element: Card) {
+            bindCardContent(element)
+            bindCardBackground(element)
+            bindTitleMargin(element)
+        }
+
+        private fun bindCardBackground(element: Card) {
+            card?.background = bg
+        }
+
+        private fun bindCardContent(element: Card) {
+            card?.bindItem(element) {
+                notificationItemListener?.trackClickOrderListItem(element)
+            }
+        }
+
+        private fun bindTitleMargin(element: Card) {
+            if (card?.hasVisibleIcon() == true) {
+                card.setTitleMarginStart(titleWithIconMargin)
+            } else {
+                card?.setTitleMarginStart(titleWithoutIconMargin)
+            }
+        }
+
+        companion object {
+            val LAYOUT = R.layout.item_order_list_uoh
+        }
     }
 }
