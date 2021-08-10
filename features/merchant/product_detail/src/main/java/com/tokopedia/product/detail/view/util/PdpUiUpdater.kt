@@ -425,10 +425,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
-                productBundlingData?.run {
-                    val bundleInfo = it.bundleInfo.find { bundleInfo -> bundleInfo.productId == productId }
-                    this.bundleInfo = bundleInfo
-                }
+                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
         }
     }
@@ -800,9 +797,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
         if (p2Data == null || productId == null) return
-        val bundleInfo = p2Data.bundleInfo.find { it.productId == productId }
-        updateData(ProductDetailConstant.PRODUCT_BUNDLING){
-            productBundlingData?.bundleInfo = bundleInfo
+        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
         }
     }
 

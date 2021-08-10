@@ -50,7 +50,7 @@ data class ProductInfoP2UiData(
         var helpfulReviews: List<Review>? = null,
         var miniCart: MutableMap<String, MiniCartItem>? = null,
         var alternateCopy: List<AlternateCopy> = listOf(),
-        var bundleInfo: List<BundleInfo> = emptyList()
+        var bundleInfoMap: Map<String, BundleInfo> = emptyMap()
 ) {
     fun getTotalStockMiniCartByParentId(parentId: String): Int {
         if (parentId == "0" || parentId.isEmpty()) return 0

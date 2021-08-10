@@ -2090,7 +2090,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
 
-        if(it.bundleInfo.isEmpty()) {
+        if (it.bundleInfoMap.isEmpty()) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
         }
 
@@ -3762,7 +3762,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         componentTrackDataModel: ComponentTrackDataModel?
     ) {
         DynamicProductDetailTracking.ProductBundling.eventImpressionProductBundling(
-            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel
+            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, trackingQueue
         )
     }
 
@@ -3771,8 +3771,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel?
     ) {
+        // TODO vindo - pass the productId to bundle page
+        val productInfoP1 = viewModel.getDynamicProductInfoP1
         DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
-            bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel
+            bundleId, bundleType, productInfoP1, componentTrackDataModel
         )
     }
 

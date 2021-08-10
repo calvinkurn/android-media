@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -107,9 +107,9 @@ class ProductBundlingViewHolder(
             )
         }
 
-        listener.onImpressionProductBundling(
-            bundleId, bundleType, componentTrackDataModel
-        )
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressionProductBundling(bundleId, bundleType, componentTrackDataModel)
+        }
     }
 
     private fun showSingleBundle(item: BundleInfo.BundleItem?) {
@@ -159,8 +159,8 @@ class ProductBundlingViewHolder(
 
             val discount = item.discountPercentage
             if (discount.isBlank()) {
-                viewSlash.gone()
-                viewDiscount.gone()
+                viewSlash.hide()
+                viewDiscount.hide()
                 viewPrice.text = item.originalPrice
             } else {
                 viewDiscount.show()

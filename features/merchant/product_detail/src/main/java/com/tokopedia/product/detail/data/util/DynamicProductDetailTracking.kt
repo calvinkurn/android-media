@@ -2110,7 +2110,8 @@ object DynamicProductDetailTracking {
             bundleId: String,
             bundleType: String,
             productInfo: DynamicProductInfoP1?,
-            componentTrackDataModel: ComponentTrackDataModel?
+            componentTrackDataModel: ComponentTrackDataModel?,
+            trackingQueue: TrackingQueue
         ) {
             val action = ProductTrackingConstant.Action.IMPRESSION_PRODUCT_BUNDLING
             val mapEvent = TrackAppUtils.gtmData(
@@ -2123,7 +2124,12 @@ object DynamicProductDetailTracking {
                     bundleType.toLowerCase(Locale.ROOT)
                 )
             )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = if (componentTrackDataModel != null)
+                "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${action};cpos:${componentTrackDataModel.adapterPosition};"
+            else ""
+            trackingQueue.putEETracking(HashMap(mapEvent))
         }
 
         fun eventClickMultiBundleProduct(

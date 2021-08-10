@@ -132,7 +132,7 @@ data class ProductInfoP2Data(
 
         @SerializedName("bundleInfo")
         @Expose
-        var bundleInfo: List<BundleInfo> = emptyList()
+        var bundleInfoList: List<BundleInfo> = emptyList()
 ) {
     data class Response(
             @SerializedName("pdpGetData")
