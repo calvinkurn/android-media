@@ -110,7 +110,6 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
         private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo"
         private const val PROMO_DIGITAL_AB_TEST_TICKER = "Promo_Ticker"
-        private const val PROMO_DIGITAL_AB_TEST_COUPON = "Control_variant"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
