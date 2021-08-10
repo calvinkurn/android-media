@@ -241,7 +241,7 @@ class TopupBillsFavoriteNumberFragment :
             CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
         val throwable = MessageErrorException(getString(R.string.common_topup_fav_number_failed_undo_delete))
         showErrorToaster(throwable, Toaster.LENGTH_SHORT,
-            getString(R.string.common_topup_fav_number_refresh)) { getSeamlessFavoriteNumber() }
+            getString(R.string.common_topup_fav_number_retry)) { getSeamlessFavoriteNumber() }
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
@@ -289,6 +289,7 @@ class TopupBillsFavoriteNumberFragment :
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
+                binding?.commonTopupbillsFavoriteNumberClue?.hide()
             }
         }
     }

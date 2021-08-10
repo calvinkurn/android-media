@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.aggregator
 
+import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
@@ -49,13 +50,12 @@ data class ProductVariantAggregatorUiData(
         return result
     }
 
-
-    fun getIsFreeOngkirByBoType(productId: String): Boolean {
+    fun getBebasOngkirStringType(productId: String): String {
         val boType = boData.boProduct.firstOrNull {
             it.productId == productId
         }?.boType ?: ProductDetailCommonConstant.NO_BEBAS_ONGKIR
 
-        return boType != ProductDetailCommonConstant.NO_BEBAS_ONGKIR
+        return ProductCartHelper.getBoTrackerString(boType)
     }
 
     fun getIsFreeOngkirImageUrl(productId: String): String {
