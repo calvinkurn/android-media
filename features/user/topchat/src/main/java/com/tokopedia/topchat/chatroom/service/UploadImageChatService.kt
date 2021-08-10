@@ -199,7 +199,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
             }
         }
 
-        private fun findDummy(dummy: Visitable<*>): Int? {
+        fun findDummy(dummy: Visitable<*>): Int? {
             for(i in 0 until dummyMap.size) {
                 val temp = (dummyMap[i].visitable as SendableViewModel)
                 if (temp.startTime == (dummy as SendableViewModel).startTime

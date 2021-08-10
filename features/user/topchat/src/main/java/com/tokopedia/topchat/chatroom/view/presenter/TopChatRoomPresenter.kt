@@ -428,9 +428,13 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     protected open fun addDummyToService(image: ImageUploadViewModel) {
+        val dummyPosition = UploadImageChatService.findDummy(image)
+        if(dummyPosition == null) {
+            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+            UploadImageChatService.dummyMap.add(uploadImageDummy)
+        }
         view?.addDummyMessage(image)
-        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-        UploadImageChatService.dummyMap.add(uploadImageDummy)
+
     }
 
     protected open fun startUploadImageWithService(image: ImageUploadViewModel) {
