@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.cassava.debugger
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,11 +17,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.cassava.di.DaggerCassavaComponent
-import com.tokopedia.analyticsdebugger.cassava.injector.DebuggerViewModelFactory
 import com.tokopedia.analyticsdebugger.cassava.throttleFirst
 import com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity
 import com.tokopedia.analyticsdebugger.cassava.validator.Utils
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.design.text.SearchInputView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -49,10 +49,6 @@ class AnalyticsDebuggerFragment : Fragment() {
         }
     }
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var swipeLayout: SwipeRefreshLayout
-    private lateinit var searchView: TextInputEditText
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -68,12 +64,10 @@ class AnalyticsDebuggerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        swipeLayout = view.findViewById(R.id.swipe_refresh_layout)
-        searchView = view.findViewById(R.id.search_input_view)
+        val swipeLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
         val query = savedInstanceState?.getString(LAST_SEARCH_QUERY) ?: ""
-        initSearch(query)
-        initRecyclerView()
+        initSearch(query, view)
+        initRecyclerView(view)
         swipeLayout.setOnRefreshListener {
             updateRepoListFromInput()
         }
@@ -102,32 +96,36 @@ class AnalyticsDebuggerFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(LAST_SEARCH_QUERY, searchView.text?.trim().toString())
+        outState.putString(LAST_SEARCH_QUERY, view?.findViewById<TextInputEditText>(R.id.search_input_view)?.text?.trim().toString())
     }
 
-    private fun initSearch(query: String) {
-        searchView.setText(query)
+    private fun initSearch(query: String, view: View) {
+        with(view.findViewById<TextInputEditText>(R.id.search_input_view)) {
+            setText(query)
 
-        searchView.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                updateRepoListFromInput()
-                true
-            } else {
-                false
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    updateRepoListFromInput()
+                    true
+                } else {
+                    false
+                }
+            }
+            setOnKeyListener { _, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    updateRepoListFromInput()
+                    true
+                } else {
+                    false
+                }
             }
         }
-        searchView.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                updateRepoListFromInput()
-                true
-            } else {
-                false
-            }
-        }
+
     }
 
-    private fun initRecyclerView() {
-        with(recyclerView) {
+    private fun initRecyclerView(view: View) {
+        val rv = view.findViewById<RecyclerView>(R.id.recycler_view)
+        with(rv) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
@@ -135,7 +133,7 @@ class AnalyticsDebuggerFragment : Fragment() {
         }
         lifecycleScope.launchWhenStarted {
             callbackFlow<Int> {
-                val lm = recyclerView.layoutManager as LinearLayoutManager
+                val lm = rv.layoutManager as LinearLayoutManager
                 val cb = object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
@@ -147,8 +145,8 @@ class AnalyticsDebuggerFragment : Fragment() {
                         }
                     }
                 }
-                recyclerView.addOnScrollListener(cb)
-                awaitClose { recyclerView.clearOnScrollListeners() }
+                rv.addOnScrollListener(cb)
+                awaitClose { rv.clearOnScrollListeners() }
             }.throttleFirst(1000).collect {
                 Timber.d("initRecyclerView: firing requetsmore")
                 viewModel.listScrolled()
@@ -157,8 +155,8 @@ class AnalyticsDebuggerFragment : Fragment() {
     }
 
     private fun updateRepoListFromInput() {
-        searchView.text?.trim()?.let {
-            recyclerView.scrollToPosition(0)
+        view?.findViewById<TextInputEditText>(R.id.search_input_view)?.text?.trim()?.let {
+            view?.findViewById<RecyclerView>(R.id.recycler_view)?.scrollToPosition(0)
             viewModel.searchLogs(it.toString())
         }
     }

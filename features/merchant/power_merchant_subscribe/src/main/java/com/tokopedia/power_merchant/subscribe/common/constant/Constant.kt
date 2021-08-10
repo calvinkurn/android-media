@@ -6,6 +6,9 @@ package com.tokopedia.power_merchant.subscribe.common.constant
 
 object Constant {
 
+    const val DATE_FORMAT_HH_MM = "HH:mm"
+    const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
+
     const val OLD_POWER_MERCHANT_CHARGING = "1%"
     const val REGULAR_MERCHANT_CHARGING = "0,5%"
     const val POWER_MERCHANT_CHARGING = "1,25%"
@@ -22,6 +25,7 @@ object Constant {
 
     object Image {
         const val PM_BG_UPSALE_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_upsale_pm_pro.png"
+        const val PM_BG_REGISTRATION_PM = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm.png"
         const val PM_BG_REGISTRATION_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm_pro.png"
     }
 }

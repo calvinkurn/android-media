@@ -23,7 +23,8 @@ object InboxAnalyticCommon {
             userId: String? = null,
             isLoggedInStatus: Boolean? = null,
             screenName: String? = null,
-            userRole: String? = null
+            userRole: String? = null,
+            additionalAttribute: Map<String, String>? = null
     ): Map<String, String> {
         val mapTrack: MutableMap<String, String> =  mutableMapOf()
         event?.let {
@@ -55,6 +56,9 @@ object InboxAnalyticCommon {
         }
         userRole?.let {
             mapTrack[KEY_USER_ROLE] = it
+        }
+        additionalAttribute?.let {
+            mapTrack.putAll(it)
         }
         return mapTrack
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.util.mapper
 
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.PRODUCT
@@ -309,7 +310,7 @@ object ShopPageHomeMapper {
                 id = it.id
                 name = it.name
                 displayedPrice = it.discountedPrice
-                originalPrice = it.price
+                originalPrice = it.displayedPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
@@ -396,7 +397,8 @@ object ShopPageHomeMapper {
                 header.ctaLink,
                 header.cover,
                 header.ratio,
-                header.isAtc
+                header.isAtc,
+                header.etalaseId
         )
     }
 
@@ -412,7 +414,7 @@ object ShopPageHomeMapper {
                 originalPrice = it.originalPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
-                rating = it.rating
+                rating = it.rating.toDoubleOrZero()
                 isPo = it.isPO
                 isWishList = false
                 productUrl = it.productUrl
@@ -451,7 +453,7 @@ object ShopPageHomeMapper {
                 imageUrl = response.imageUrl
                 imageUrl300 = ""
                 totalReview = response.totalReview
-                rating = (response.rating / 20).roundToInt().toDouble()
+                rating = (response.rating.toDoubleOrZero() / 20)
                 isPo = response.isPO
                 isWishList = false
                 productUrl = response.productUrl

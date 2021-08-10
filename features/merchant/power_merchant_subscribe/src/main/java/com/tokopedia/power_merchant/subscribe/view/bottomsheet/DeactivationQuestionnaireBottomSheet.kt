@@ -20,7 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.QuestionnaireAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
@@ -124,7 +124,7 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
     }
 
     private fun observeQuestions() {
-        getDeactivationQuestionnaire()
+        getDeactivationQuestionnaire(true)
         mViewModel.pmCancellationQuestionnaireData.observe(viewLifecycleOwner, Observer {
             hideProgress()
             when (it) {
@@ -133,7 +133,7 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     val ctaText = getString(R.string.error_cancellation_tryagain)
                     showToaster(errorMessage, ctaText, Snackbar.LENGTH_INDEFINITE) {
-                        getDeactivationQuestionnaire()
+                        getDeactivationQuestionnaire(false)
                     }
                     logLoCrashlytic(it.throwable, PowerMerchantErrorLogger.PM_DEACTIVATION_QUESTIONNAIRE_ERROR)
                 }
@@ -183,10 +183,10 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
         childView?.progressPmDeactivation?.gone()
     }
 
-    private fun getDeactivationQuestionnaire() {
+    private fun getDeactivationQuestionnaire(isFirstLoad: Boolean) {
         childView?.progressPmDeactivation?.visible()
         val pmTireType = getPmTireType()
-        mViewModel.getPMCancellationQuestionnaireData(pmTireType)
+        mViewModel.getPMCancellationQuestionnaireData(pmTireType, isFirstLoad)
     }
 
     private fun getCurrentPmTireType(): Int {
@@ -259,7 +259,7 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
             val errorMessage = getString(R.string.pm_all_questionnaire_must_be_answered)
             val ctaText = getString(R.string.power_merchant_ok_label)
             showToaster(errorMessage, ctaText, Snackbar.LENGTH_LONG) {
-                getDeactivationQuestionnaire()
+                getDeactivationQuestionnaire(false)
             }
             isNoAnswer = false
             return

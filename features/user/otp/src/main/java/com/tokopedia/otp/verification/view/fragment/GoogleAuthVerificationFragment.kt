@@ -7,7 +7,7 @@ import android.view.View
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 
-class GoogleAuthVerificationFragment : VerificationFragment() {
+open class GoogleAuthVerificationFragment : VerificationFragment() {
 
     override fun setFooterText(spannable: Spannable?) {
         context?.let {

@@ -3,6 +3,7 @@ package com.tokopedia.seller.menu.presentation.util
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.AdminFeature
@@ -60,24 +61,24 @@ object SellerMenuList {
                 SettingTitleUiModel(sectionTitle, R.dimen.spacing_lvl4),
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_review),
-                        R.drawable.ic_star_setting,
                         type = MenuItemType.REVIEW,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW) {
+                        eventActionSuffix = SettingTrackingConstant.REVIEW,
+                        iconUnify = IconUnify.STAR) {
                     checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.REVIEW)
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_discussion),
-                        R.drawable.ic_setting_discussion,
                         type = MenuItemType.DISCUSSION,
-                        eventActionSuffix = SettingTrackingConstant.DISCUSSION) {
+                        eventActionSuffix = SettingTrackingConstant.DISCUSSION,
+                        iconUnify = IconUnify.DISCUSSION) {
                     checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.DISCUSSION)
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_complaint),
-                        R.drawable.ic_complaint,
-                        null,
+                        clickApplink = null,
                         type = MenuItemType.COMPLAIN,
-                        eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
+                        eventActionSuffix = SettingTrackingConstant.COMPLAINT,
+                        iconUnify = IconUnify.PRODUCT_INFO) {
                     checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.COMPLAINT)
                 }
         )
@@ -94,24 +95,24 @@ object SellerMenuList {
                 sectionTitle,
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_seller_education_center),
-                        R.drawable.ic_seller_edu,
                         type = MenuItemType.SELLER_EDU,
-                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
+                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
+                        iconUnify = IconUnify.SHOP_INFO) {
                     val intent = RouteManager.getIntent(context, sellerEduApplink)
                     context.startActivity(intent)
                 },
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_tokopedia_care),
-                        R.drawable.ic_icon_tokopedia_care,
-                        ApplinkConst.CONTACT_US_NATIVE,
+                        clickApplink = ApplinkConst.CONTACT_US_NATIVE,
                         type = MenuItemType.TOKOPEDIA_CARE,
-                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
+                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
+                        iconUnify = IconUnify.CALL_CENTER),
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_shop_setting),
-                        R.drawable.ic_pengaturan_toko,
-                        null,
+                        clickApplink = null,
                         type = MenuItemType.SHOP_SETTINGS,
-                        eventActionSuffix = SettingTrackingConstant.SETTINGS) {
+                        eventActionSuffix = SettingTrackingConstant.SETTINGS,
+                        iconUnify = IconUnify.SETTING) {
                     checkAccessPermissionIfNotShopOwner(context, isShopOwner, mapper, AdminFeature.MANAGE_SHOP)
                 }
         )

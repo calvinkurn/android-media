@@ -7,7 +7,7 @@ package com.tokopedia.digital_checkout.data
 object DigitalCheckoutQueries {
 
     fun getGetCartQuery() = """
-        query (${'$'}categoryId: Int!) {
+        query rechargeGetCart(${'$'}categoryId: Int!) {
           rechargeGetCart(CategoryID: ${'$'}categoryId) {
             id
             product_id
@@ -118,9 +118,12 @@ object DigitalCheckoutQueries {
     """.trimIndent()
 
     fun getCancelVoucherCartQuery() = """
-        mutation {
-          clearCacheAutoApplyV2(serviceID: "819380128012836") {
+        mutation clearCacheAutoApplyStack(${'$'}serviceID: String!, ${'$'}promoCode:[String], ${'$'}isOCC: Boolean) {
+          clearCacheAutoApplyStack(serviceID:${'$'}serviceID, promoCode: ${'$'}promoCode, isOCC: ${'$'}isOCC) { 
             Success
+            ticker_message
+            default_empty_promo_message
+            error
           }
         }
     """.trimIndent()

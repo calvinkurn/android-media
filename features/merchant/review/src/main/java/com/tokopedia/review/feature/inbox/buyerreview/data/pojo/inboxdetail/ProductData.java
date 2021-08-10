@@ -8,7 +8,7 @@ public class ProductData {
 
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private long productId;
     @SerializedName("product_name")
     @Expose
     private String productName;
@@ -25,7 +25,7 @@ public class ProductData {
     @Expose
     private int productStatus;
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 

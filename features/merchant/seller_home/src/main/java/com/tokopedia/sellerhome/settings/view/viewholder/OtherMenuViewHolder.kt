@@ -8,7 +8,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
+import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -19,8 +22,10 @@ import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
@@ -35,7 +40,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import java.lang.StringBuilder
 import java.util.*
 
@@ -58,113 +62,204 @@ class OtherMenuViewHolder(private val itemView: View,
         private const val TAB_PM_PRO = "pm_pro"
     }
 
-    fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
-        with(uiModel) {
-            with(itemView) {
-                when {
-                    partialResponseStatus.first && partialResponseStatus.second -> {
-                        setupSuccessLayout()
-                        shopStatusUiModel?.let { setShopStatusType(it) }
-                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-                        shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let {
-                            setShopTotalFollowers(it)
-                            setDotVisibility(it.shopFollowers)
-                        }
+    private var shopStatusHeader: AppCompatImageView? = null
+    private var shopStatusHeaderIcon: AppCompatImageView? = null
 
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.gone()
-                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
-                    }
-                    partialResponseStatus.first -> {
-                        setupSuccessLayout()
-                        shopStatusUiModel?.let { setShopStatusType(it) }
-                        shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let {
-                            setShopTotalFollowers(it)
-                            setDotVisibility(it.shopFollowers)
-                        }
+    private var successHeaderGroup: Group? = null
 
-                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
-                            setup()
-                            visible()
-                        }
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.gone()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.gone()
-                    }
-                    partialResponseStatus.second -> {
-                        setupSuccessLayout()
-                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+    private var shopAvatarImage: ImageUnify? = null
+    private var shopNameText: Typography? = null
+    private var shopNextButton: AppCompatImageView? = null
 
-                        findViewById<Typography>(R.id.dot)?.gone()
-                        findViewById<LinearLayout>(R.id.shopStatus)?.gone()
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
-                            setup()
-                            visible()
-                        }
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
-                    }
-                    else -> {
-                        onErrorGetSettingShopInfoData()
-                    }
-                }
+    private var shopBadgeFollowersShimmer: LinearLayout? = null
+    private var shopBadgeFollowersError: ConstraintLayout? = null
+    private var shopBadgeFollowersDot: Typography? = null
+    private var shopBadgeImage: AppCompatImageView? = null
+    private var shopBadgeShimmer: LoaderTextView? = null
+    private var shopBadgeErrorLayout: ConstraintLayout? = null
+    private var shopFollowersText: Typography? = null
+    private var shopFollowersShimmer: LoaderTextView? = null
+    private var shopFollowersErrorLayout: ConstraintLayout? = null
+
+    private var allErrorLocalLoad: LocalLoad? = null
+    private var balanceErrorLocalLoad: LocalLoad? = null
+
+    private var shopStatusContainer: LinearLayout? = null
+
+    private var freeShippingLayout: FrameLayout? = null
+    private var freeShippingGroup: Group? = null
+
+    private var operationalHourView: View? = null
+    private var operationalHourText: Typography? = null
+    private var operationalHourLabel: Label? = null
+    private var operationalHourImage: ImageView? = null
+    private var operationalHourShimmer: LoaderTextView? = null
+    private var operationalErrorLayout: ConstraintLayout? = null
+
+    private var saldoLayout: Group? = null
+    private var saldoShimmer: LoaderTextView? = null
+    private var saldoBalanceText: Typography? = null
+    private var saldoErrorLayout: ConstraintLayout? = null
+
+    private var topAdsLayout: Group? = null
+    private var topAdsShimmer: LoaderTextView? = null
+    private var topAdsBalanceText: Typography? = null
+    private var topAdsTooltipImage: AppCompatImageView? = null
+    private var topAdsErrorLayout: ConstraintLayout? = null
+
+    fun setupInitialLayout() {
+        initLayoutComponents()
+
+        shopNameText?.setShopName(userSession.shopName)
+        shopAvatarImage?.setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
+        setupShopNextButton()
+    }
+
+    private fun initLayoutComponents() {
+        itemView.run {
+            shopStatusHeader = findViewById(R.id.iv_sah_other_status_header)
+            shopStatusHeaderIcon = findViewById(R.id.iv_sah_other_status_icon)
+
+            successHeaderGroup = findViewById(R.id.group_sah_other_header_success)
+
+            shopAvatarImage = findViewById(R.id.shopImage)
+            shopNameText = findViewById(R.id.shopName)
+            shopNextButton = findViewById(R.id.settingShopNext)
+
+            allErrorLocalLoad = findViewById(R.id.localLoadOthers)
+            balanceErrorLocalLoad = findViewById(R.id.local_load_sah_others_balance)
+
+            shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
+            shopBadgeFollowersError = findViewById(R.id.layout_sah_other_badge_followers_error)
+            shopBadgeFollowersDot = findViewById(R.id.dot)
+            shopBadgeImage = findViewById(R.id.shopBadges)
+            shopBadgeShimmer = findViewById(R.id.shimmer_sah_other_badge)
+            shopBadgeErrorLayout = findViewById(R.id.layout_sah_other_badge_error)
+            shopFollowersText = findViewById(R.id.shopFollowers)
+            shopFollowersShimmer = findViewById(R.id.shimmer_sah_other_followers)
+            shopFollowersErrorLayout = findViewById(R.id.layout_sah_other_followers_error)
+
+            shopStatusContainer = findViewById(R.id.shopStatus)
+
+            freeShippingLayout = findViewById(R.id.freeShippingLayout)
+            freeShippingGroup = findViewById(R.id.group_sah_other_free_shipping)
+
+            operationalHourView = findViewById(R.id.shopOperationalHour)
+            operationalHourText = findViewById(R.id.textOperationalHour)
+            operationalHourLabel = findViewById(R.id.labelShopStatus)
+            operationalHourImage = findViewById(R.id.imageOperationalHour)
+            operationalHourShimmer = findViewById(R.id.shimmer_sah_other_shop_operational)
+            operationalErrorLayout = findViewById(R.id.layout_sah_other_operational_failed)
+
+            saldoLayout = findViewById(R.id.group_sah_other_saldo)
+            saldoShimmer = findViewById(R.id.shimmer_shc_balance)
+            saldoBalanceText = findViewById(R.id.balanceValue)
+            saldoErrorLayout = findViewById(R.id.layout_shc_other_balance_failed)
+
+            topAdsLayout = findViewById(R.id.group_sah_other_topads)
+            topAdsShimmer = findViewById(R.id.shimmer_sah_other_topads)
+            topAdsBalanceText = findViewById(R.id.tv_sah_other_topads_balance)
+            topAdsTooltipImage = findViewById(R.id.iv_sah_other_topads_tooltip)
+            topAdsErrorLayout = findViewById(R.id.layout_sah_other_topads_failed)
+        }
+    }
+
+    fun setBadgeFollowersLoading(isLoading: Boolean) {
+        shopBadgeFollowersShimmer?.showWithCondition(isLoading)
+        if (isLoading) {
+            hideBadgeFollowersLayout()
+            shopBadgeFollowersError?.gone()
+        }
+    }
+
+    fun setBadgeFollowersError(isError: Boolean) {
+        shopBadgeFollowersError?.run {
+            showWithCondition(isError)
+            setOnClickListener {
+                listener.onRefreshData()
+                listener.onShopBadgeFollowersRefresh()
             }
         }
-    }
-
-    fun onLoadingGetSettingShopInfoData() {
-        val loadingLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_loading, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(loadingLayout)
+        if (isError) {
+            hideBadgeFollowersLayout()
+            shopBadgeFollowersShimmer?.gone()
         }
     }
 
-    fun onErrorGetSettingShopInfoData() {
-        val errorLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_error, null, false)
-        errorLayout?.run {
-            findViewById<LocalLoad>(R.id.settingLocalLoad)?.setup()
-            findViewById<Typography>(R.id.dot)?.gone()
-        }
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(errorLayout)
-            setOnClickAction()
-        }
-        setShopName(userSession.shopName)
-        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
-    }
-
-    private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
-        itemView.shopInfoLayout.findViewById<AppCompatImageView>(R.id.shopBadges)?.run {
+    fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
+        shopBadgeShimmer?.gone()
+        shopBadgeErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
+        shopBadgeImage?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
                 listener.onShopBadgeClicked()
                 shopBadgeUiModel.sendSettingShopInfoClickTracking()
             }
+            show()
         }
     }
 
+    fun setShopBadgeLoading() {
+        shopBadgeShimmer?.show()
+        shopBadgeImage?.gone()
+        shopBadgeErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
+    }
+
+    fun setShopBadgeError() {
+        shopBadgeErrorLayout?.run {
+            show()
+            setOnClickListener {
+                listener.onRefreshData()
+                listener.onShopBadgeRefresh()
+            }
+        }
+        shopBadgeImage?.gone()
+        shopBadgeShimmer?.gone()
+        shopBadgeFollowersDot?.visible()
+    }
+
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        shopFollowersShimmer?.gone()
+        shopFollowersErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
+        shopFollowersText?.run {
             visibility = followersVisibility
             text = StringBuilder("${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}")
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 listener.onFollowersCountClicked()
             }
+            show()
         }
     }
 
+    fun setShopTotalFollowersLoading() {
+        shopFollowersShimmer?.show()
+        shopFollowersText?.gone()
+        shopFollowersErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
+    }
+
+    fun setShopTotalFollowersError() {
+        shopFollowersErrorLayout?.run {
+            show()
+            setOnClickListener {
+                listener.onRefreshData()
+                listener.onShopTotalFollowersRefresh()
+            }
+        }
+        shopFollowersText?.gone()
+        shopFollowersShimmer?.gone()
+        shopBadgeFollowersDot?.visible()
+    }
+
     fun setupFreeShippingLayout() {
-        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.apply {
+        freeShippingGroup?.show()
+        freeShippingLayout?.run {
             setOnClickListener {
                 listener.onFreeShippingClicked()
                 freeShippingTracker.trackFreeShippingClick()
@@ -176,117 +271,227 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun hideFreeShippingLayout() {
-        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
+        freeShippingGroup?.hide()
     }
 
     fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
-        itemView.findViewById<View>(R.id.shopOperationalHour)?.run {
-            val timeLabel = shopOperational.timeLabel
-            val shopOperationalStatus = itemView.context.getString(shopOperational.status)
+        setupOperationalHourText(shopOperational)
 
-            findViewById<Typography>(R.id.textOperationalHour)?.text = if(timeLabel != null) {
+        val shopOperationalStatus = itemView.context.getString(shopOperational.status)
+        setupOperationalHourLabel(shopOperationalStatus, shopOperational)
+        setupOperationalHourClick(shopOperationalStatus, shopOperational)
+        setupOperationalHourImage(shopOperational)
+
+        operationalHourShimmer?.gone()
+        operationalErrorLayout?.gone()
+    }
+
+    private fun hideBadgeFollowersLayout() {
+        shopBadgeErrorLayout?.gone()
+        shopFollowersErrorLayout?.gone()
+        shopBadgeImage?.gone()
+        shopBadgeFollowersDot?.gone()
+        shopFollowersText?.gone()
+    }
+
+    private fun setupOperationalHourText(shopOperational: ShopOperationalUiModel) {
+        val timeLabel = shopOperational.timeLabel
+        operationalHourText?.run {
+            text = if(timeLabel != null) {
                 context.getString(timeLabel)
             } else {
                 shopOperational.time
             }
-            findViewById<Label>(R.id.labelShopStatus)?.apply {
-                text = shopOperationalStatus
-                setLabelType(shopOperational.labelType)
-            }
-            findViewById<ImageView>(R.id.imageOperationalHour)?.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
-            }
+            show()
+        }
+    }
 
-            if (shopOperational.hasShopSettingsAccess) {
+    private fun setupOperationalHourLabel(shopOperationalStatus: String, shopOperational: ShopOperationalUiModel) {
+        operationalHourLabel?.run {
+            text = shopOperationalStatus
+            setLabelType(shopOperational.labelType)
+            show()
+        }
+    }
+
+    private fun setupOperationalHourClick(shopOperationalStatus: String, shopOperational: ShopOperationalUiModel) {
+        if (shopOperational.hasShopSettingsAccess) {
+            operationalHourView?.run {
                 setOnClickListener {
                     shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
                     RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
                 }
             }
-
-            visibility = View.VISIBLE
         }
     }
 
-    private fun setDotVisibility(shopFollowers: Long) {
-        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
-        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        val tvDot = itemView.shopInfoLayout.findViewById<Typography>(R.id.dot)
-        tvDot?.visibility = dotVisibility
-    }
-
-    private fun setupSuccessLayout() {
-        val successLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_success, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(successLayout)
-            setOnClickAction()
-        }
-        setShopName(userSession.shopName)
-        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
-    }
-
-    private fun setShopName(shopName: String) {
-        itemView.run {
-            shopInfoLayout.findViewById<Typography>(R.id.shopName)?.run {
-                text = MethodChecker.fromHtml(shopName)
-                setOnClickListener {
-                    listener.onShopInfoClicked()
-                    sendClickShopNameTracking()
-                }
-            }
+    private fun setupOperationalHourImage(shopOperational: ShopOperationalUiModel) {
+        operationalHourImage?.run {
+            setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
+            show()
         }
     }
 
-    private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
-        itemView.shopInfoLayout.findViewById<ImageUnify>(R.id.shopImage)?.run {
-            urlSrc = shopAvatarUiModel.shopAvatarUrl
-            sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
+    fun showOperationalHourLayoutLoading() {
+        operationalHourShimmer?.show()
+        operationalErrorLayout?.gone()
+        operationalHourText?.gone()
+        operationalHourImage?.gone()
+        operationalHourLabel?.gone()
+    }
+
+    fun showOperationalHourLayoutError() {
+        operationalErrorLayout?.run {
+            show()
             setOnClickListener {
-                listener.onShopInfoClicked()
-                shopAvatarUiModel.sendSettingShopInfoClickTracking()
+                listener.onRefreshData()
+                listener.onOperationalHourRefresh()
             }
+        }
+        operationalHourShimmer?.gone()
+        operationalHourText?.gone()
+        operationalHourImage?.gone()
+        operationalHourLabel?.gone()
+    }
+
+    private fun Typography.setShopName(shopName: String) {
+        text = MethodChecker.fromHtml(shopName)
+        setOnClickListener {
+            listener.onShopInfoClicked()
+            sendClickShopNameTracking()
         }
     }
 
-    private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.saldoBalance).run {
-            findViewById<Typography>(R.id.balanceTitle)?.text = context.resources.getString(R.string.setting_balance)
-            findViewById<Typography>(R.id.balanceValue)?.text = saldoBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            findViewById<Typography>(R.id.balanceValue)?.setOnClickListener {
+    private fun ImageUnify.setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
+        urlSrc = shopAvatarUiModel.shopAvatarUrl
+        sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
+        setOnClickListener {
+            listener.onShopInfoClicked()
+            shopAvatarUiModel.sendSettingShopInfoClickTracking()
+        }
+    }
+
+    private fun setupShopNextButton() {
+        shopNextButton?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
+        }
+    }
+
+    fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
+        saldoBalanceText?.run {
+            text = saldoBalanceUiModel.balanceValue
+            setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
             }
+            show()
         }
+        saldoShimmer?.gone()
+        saldoErrorLayout?.gone()
+        saldoLayout?.sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
     }
 
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
-            findViewById<Typography>(R.id.topadsBalanceTitle)?.text = context.resources.getString(R.string.setting_topads_credits)
-            findViewById<Typography>(R.id.topadsBalanceValue)?.text = topadsBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            findViewById<Typography>(R.id.topadsBalanceValue)?.setOnClickListener {
+    fun setSaldoBalanceLoading() {
+        saldoShimmer?.show()
+        saldoBalanceText?.gone()
+        saldoErrorLayout?.gone()
+    }
+
+    fun setSaldoBalanceError() {
+        saldoErrorLayout?.run {
+            show()
+            setOnClickListener {
+                listener.onRefreshData()
+                listener.onSaldoBalanceRefresh()
+            }
+        }
+        saldoShimmer?.gone()
+        saldoBalanceText?.gone()
+    }
+
+    fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
+        topAdsLayout?.sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
+        setupKreditTopadsBalanceText(topadsBalanceUiModel)
+        topAdsBalanceText?.show()
+        topAdsShimmer?.gone()
+        topAdsErrorLayout?.gone()
+    }
+
+    private fun setupKreditTopadsBalanceText(topadsBalanceUiModel: TopadsBalanceUiModel) {
+        topAdsBalanceText?.run {
+            text = topadsBalanceUiModel.balanceValue
+            setOnClickListener {
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
             }
-            val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
+        }
+    }
+
+    fun setupKreditTopadsBalanceTooltip(isTopAdsUser: Boolean?) {
+        if (isTopAdsUser == null) {
+            topAdsTooltipImage?.gone()
+        } else {
             val topAdsTooltipDrawable =
                     if (isTopAdsUser) {
                         ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
                     } else {
                         ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
                     }
-            findViewById<AppCompatImageView>(R.id.topAdsStatusTooltip)?.run {
+            topAdsTooltipImage?.run {
                 setImageDrawable(topAdsTooltipDrawable)
                 setOnClickListener {
                     listener.onTopAdsTooltipClicked(isTopAdsUser)
                 }
+                show()
             }
         }
     }
 
-    private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
+    fun setKreditTopadsBalanceLoading() {
+        topAdsShimmer?.show()
+        topAdsBalanceText?.gone()
+        topAdsErrorLayout?.gone()
+    }
+
+    fun setKreditTopadsBalanceError() {
+        topAdsErrorLayout?.run {
+            show()
+            setOnClickListener {
+                listener.onRefreshData()
+                listener.onKreditTopAdsRefresh()
+            }
+        }
+        topAdsShimmer?.gone()
+        topAdsBalanceText?.gone()
+    }
+
+    fun setShopStatusError() {
+        shopStatusContainer?.run {
+            val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)?.apply {
+                setOnClickListener {
+                    listener.onRefreshData()
+                    listener.onUserInfoRefresh()
+                }
+            }
+            removeAllViews()
+            shopStatusLayout?.let { view ->
+                addView(view)
+            }
+        }
+    }
+
+    fun setShopStatusLoading() {
+        shopStatusContainer?.run {
+            val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_loading, this, false)
+            removeAllViews()
+            shopStatusLayout?.let { view ->
+                addView(view)
+            }
+        }
+    }
+
+    fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
         showShopStatusHeader(shopType)
         val layoutInflater = shopType?.shopTypeLayoutRes?.let { LayoutInflater.from(context).inflate(it, null, false) }
@@ -356,10 +561,22 @@ class OtherMenuViewHolder(private val itemView: View,
             }
             else -> null
         }
-        (itemView.findViewById(R.id.shopStatus) as LinearLayout).run {
+        shopStatusContainer?.run {
             removeAllViews()
-            addView(shopStatusLayout)
+            shopStatusLayout?.let { view ->
+                addView(view)
+            }
         }
+    }
+
+    fun setAllErrorLocalLoad(isAllError: Boolean) {
+        allErrorLocalLoad?.run {
+            if (isAllError) {
+                setup()
+            }
+            showWithCondition(isAllError)
+        }
+        successHeaderGroup?.showWithCondition(!isAllError)
     }
 
     private fun goToPowerMerchantSubscribe(tab: String) {
@@ -382,16 +599,9 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType?) {
-        shopType?.let { itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, it.shopTypeHeaderRes)) }
-        itemView.shopStatusHeaderIcon?.run {
-            if (shopType !is RegularMerchant) {
-                visibility = View.VISIBLE
-                shopType?.shopTypeHeaderIconRes?.let { iconRes ->
-                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
-                }
-            } else {
-                visibility = View.GONE
-            }
+        shopType?.let {
+            shopStatusHeader?.setImageResource(it.shopTypeHeaderRes)
+            shopStatusHeaderIcon?.loadImageWithoutPlaceholder(it.shopTypeHeaderIconUrl)
         }
     }
 
@@ -400,10 +610,11 @@ class OtherMenuViewHolder(private val itemView: View,
         val powerMerchantStatusTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantText)
         val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+        val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.show()
+                    upgradePMTextView.showWithCondition(isNewSeller == false)
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }
@@ -433,23 +644,17 @@ class OtherMenuViewHolder(private val itemView: View,
             }
         }
 
-        val thresholdTransaction  = 110
-        val maxTransaction = 100
         val totalTransaction = userShopInfo?.totalTransaction ?: 0
-        if (totalTransaction >= thresholdTransaction) {
+        if (totalTransaction >= Constant.ShopStatus.THRESHOLD_TRANSACTION) {
             hideTransactionSection()
         } else {
             if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
                 showTransactionSection()
-                if (totalTransaction > maxTransaction) {
+                if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                     txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
-                    if (userShopInfo.isBeforeOnDate) {
-                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
-                    } else {
-                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
-                    }
+                    txStatsRM.setupStatsWordingRM(userShopInfo)
                     txTotalStatsRM.show()
                     txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
                 }
@@ -458,6 +663,18 @@ class OtherMenuViewHolder(private val itemView: View,
             }
         }
         return this
+    }
+
+    private fun Typography.setupStatsWordingRM(userShopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
+        text = if(userShopInfo.dateCreated.isBlank()) {
+            context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+        } else {
+            if (userShopInfo.isBeforeOnDate) {
+                context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+            } else {
+                context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
+            }
+        }
     }
 
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
@@ -486,20 +703,12 @@ class OtherMenuViewHolder(private val itemView: View,
                 powerMerchantProStatusText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
             }
         }
-        val roundedRadius = 16F
         ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
                 .toBuilder()
-                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, Constant.ShopStatus.ROUNDED_RADIUS)
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
-    }
-
-    private fun View.setOnClickAction() {
-        findViewById<AppCompatImageView>(R.id.settingShopNext)?.setOnClickListener {
-            listener.onShopInfoClicked()
-            sendShopInfoClickNextButtonTracking()
-        }
     }
 
     private fun LocalLoad.setup() {
@@ -520,6 +729,14 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onFreeShippingClicked()
+        fun onRefreshData()
+        fun onShopBadgeRefresh()
+        fun onShopTotalFollowersRefresh()
+        fun onShopBadgeFollowersRefresh()
+        fun onUserInfoRefresh()
+        fun onOperationalHourRefresh()
+        fun onSaldoBalanceRefresh()
+        fun onKreditTopAdsRefresh()
     }
 
 }

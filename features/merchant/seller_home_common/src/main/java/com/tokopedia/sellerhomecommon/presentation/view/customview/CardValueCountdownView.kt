@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -43,8 +44,8 @@ class CardValueCountdownView: FrameLayout {
         if (previousValue != nextValue) {
             nextTypography?.alpha = START_ALPHA
             previousTypography?.alpha = MAX_ALPHA
-            previousTypography?.text = previousValue
-            nextTypography?.text = nextValue
+            previousTypography?.text = previousValue.parseAsHtml()
+            nextTypography?.text = nextValue.parseAsHtml()
 
             previousTypography
                     ?.animate()

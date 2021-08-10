@@ -21,7 +21,7 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
                     productrevFeedbackHistory(searchQuery:${'$'}searchQuery, limit: ${'$'}limit, page: ${'$'}page) {
                       list {
                         product {
-                          productID
+                          productIDStr
                           productName
                           productVariantName
                         }
@@ -34,7 +34,7 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
                           anonymous
                         }
                         review {
-                          feedbackID
+                          feedbackIDStr
                           userName
                           rating
                           reviewText

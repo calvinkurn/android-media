@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatViewModel
@@ -91,17 +92,13 @@ class ChatbotImageUploadViewHolder(itemView: View?,
                         .load(url)
                         .fitCenter()
                         .dontAnimate()
-                        .placeholder(R.drawable.chatbot_image_placeloader)
+                        .placeholder(com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader)
                         .error(com.tokopedia.abstraction.R.drawable.error_drawable)
                         .into(imageview)
             }
         } catch (e: Exception) {
             if (imageview.context != null) {
-                Glide.with(imageview.context)
-                        .asBitmap()
-                        .load(R.drawable.chatbot_image_placeloader)
-                        .dontAnimate()
-                        .into(imageview)
+                imageview.setImageDrawable(ContextCompat.getDrawable(imageview.context, com.tokopedia.resources.common.R.drawable.chatbot_image_placeloader))
             }
         }
     }

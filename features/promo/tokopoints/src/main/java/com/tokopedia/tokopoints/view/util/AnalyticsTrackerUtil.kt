@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import timber.log.Timber
-import kotlin.collections.HashMap
 
 object AnalyticsTrackerUtil {
 
@@ -108,116 +108,120 @@ object AnalyticsTrackerUtil {
     }
 
     fun clickProductRecomItem(productId: String,
-                              recommendationType: String,
                               productPositionIndex: Int,
+                              recommendationType: String,
+                              isTopads: Boolean,
+                              isFreeOngkir: Boolean,
                               productBrand: String,
                               itemCategory: String,
                               productName: String,
                               productVariant: String,
                               productPrice: String,
-                              isTopAds: Boolean
     ) {
         val map = mutableMapOf<String, Any>()
+        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
         map[EventKeys.EVENT] = EventKeys.EVENT_CLICK_RECOM
         map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
         map[EventKeys.EVENT_ACTION] = ActionKeys.CLICK_RECOM_ACTION
         map[EventKeys.EVENT_LABEL] = ""
         map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
         map[EventKeys.EVENT_CURRENTSITE]=EcommerceKeys.CURRENTSITE
-
-        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
-        map[EcommerceKeys.ITEMS] = getItemsMapList(productId,
-            productPositionIndex,
-            productBrand,
-            itemCategory,
-            productName,
-            productVariant,
-            price
-        )
-
-        try {
-            getTracker().sendEnhanceEcommerceEvent(EventKeys.EVENT_CLICK_RECOM, convertToBundle(map))
-        } catch (th: Throwable) {
-            Timber.e(th)
-        }
+        map[EcommerceKeys.CURRENCY_CODE] = EcommerceKeys.IDR
+        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType,isTopads)
+        map[EventKeys.ECOMMERCE] = DataLayer.mapOf(
+            EcommerceKeys.CLICK, DataLayer.mapOf(EcommerceKeys.ACTION_FIELD,
+                DataLayer.mapOf(EcommerceKeys.LIST,EcommerceKeys.NONE),
+                EcommerceKeys.PRODUCTS, DataLayer.listOf(getItemsMapList(productId,
+                    productPositionIndex,
+                    recommendationType,
+                    isTopads,
+                    isFreeOngkir,
+                    productBrand,
+                    itemCategory,
+                    productName,
+                    productVariant,
+                    price)
+                )
+            ))
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     private fun getItemsMapList(productId: String,
                                 productPositionIndex: Int,
+                                recommendationType: String,
+                                isTopads: Boolean,
+                                isFreeOngkir: Boolean,
                                 productBrand: String,
                                 itemCategory: String,
                                 productName: String,
                                 productVariant: String,
-                                productPrice: Int): List<Map<String, Any>> {
+                                productPrice: Int): Map<String, Any> {
 
         val itemsMap = HashMap<String, Any>()
-        itemsMap["index"] = productPositionIndex
-        itemsMap["item_brand"] = productBrand
-        itemsMap["item_category"] = itemCategory
-        itemsMap["item_id"] = productId
-        itemsMap["item_name"] = productName
-        itemsMap["item_variant"] = productVariant
-        itemsMap["price"] = productPrice
-        return arrayListOf<Map<String, Any>>(itemsMap)
+        itemsMap[EcommerceKeys.INDEX] = productPositionIndex + 1
+        itemsMap[EcommerceKeys.ITEM_BRAND] = productBrand
+        itemsMap[EcommerceKeys.ITEM_CATEGORY] = itemCategory
+        itemsMap[EcommerceKeys.ITEM_ID] = productId
+        itemsMap[EcommerceKeys.ITEM_NAME] = productName
+        itemsMap[EcommerceKeys.ITEM_VARIANT] = productVariant
+        itemsMap[EcommerceKeys.PRICE] = productPrice
+        itemsMap[EcommerceKeys.DIMENSION39] = getItemList(recommendationType,isTopads)
+
+        var list = ""
+        if (isFreeOngkir){
+            list = EcommerceKeys.FREEONGKIR
+        }
+        itemsMap[EcommerceKeys.DIMENSION73] = list
+        return itemsMap
     }
 
     fun impressionProductRecomItem(productId: String,
-                                   recommendationType: String,
                                    productPositionIndex: Int,
+                                   recommendationType: String,
+                                   isTopads: Boolean,
+                                   isFreeOngkir: Boolean,
                                    productBrand: String,
                                    itemCategory: String,
                                    productName: String,
                                    productVariant: String,
                                    productPrice: String,
-                                   isTopAds: Boolean) {
+                                   trackingQueue: TrackingQueue) {
         val map = mutableMapOf<String, Any>()
+        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
         map[EventKeys.EVENT] = EventKeys.EVENT_VIEW_RECOM
         map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
         map[EventKeys.EVENT_ACTION] = ActionKeys.IMPRESSION_RECOM_ACTION
         map[EventKeys.EVENT_LABEL] = ""
-        map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
-        map[EventKeys.EVENT_CURRENTSITE]= EcommerceKeys.CURRENTSITE
-
-        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
-
-            map[EcommerceKeys.ITEMS] = getItemsMapList(productId,
-            productPositionIndex,
-            productBrand,
-            itemCategory,
-            productName,
-            productVariant,
-            price)
-
-        try {
-            getTracker().sendEnhanceEcommerceEvent(EventKeys.EVENT_VIEW_RECOM, convertToBundle(map))
-        } catch (th: Throwable) {
-            Timber.e(th)
-        }
+        map[EventKeys.EVENT_BUSINESSUNIT] = EcommerceKeys.BUSINESSUNIT
+        map[EventKeys.EVENT_CURRENTSITE] = EcommerceKeys.CURRENTSITE
+        map[EcommerceKeys.CURRENCY_CODE] = EcommerceKeys.IDR
+        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType,isTopads)
+        map[EventKeys.ECOMMERCE] = DataLayer.mapOf(
+            EcommerceKeys.ITEMS,
+            DataLayer.listOf(getItemsMapList(productId,
+                productPositionIndex,
+                recommendationType,
+                isTopads,
+                isFreeOngkir,
+                productBrand,
+                itemCategory,
+                productName,
+                productVariant,
+                price)
+            )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    private fun convertToBundle(data: Map<String, Any>): Bundle {
-        val bundle = Bundle()
-        for (entry in data.entries) {
-            when (val value = entry.value) {
-                is String -> bundle.putString(entry.key, value)
-                is Boolean -> bundle.putBoolean(entry.key, value)
-                is Int -> bundle.putInt(entry.key, value)
-                is Long -> bundle.putLong(entry.key, value)
-                is Double -> bundle.putDouble(entry.key, value)
-                is List<*> -> {
-                    val list = ArrayList<Bundle>(
-                        value.map {
-                            (it as? Map<String, Any>)?.let { map ->
-                                return@map convertToBundle(map)
-                            }
-                            null
-                        }.filterNotNull()
-                    )
-                    bundle.putParcelableArrayList(entry.key, list)
-                }
-            }
+    private fun getItemList(recommendationType: String, isTopads: Boolean): String {
+        var list: String = String.format(
+            EcommerceKeys.ITEM_LIST_V2,
+            recommendationType
+        )
+        if (isTopads) {
+            list += EcommerceKeys.VALUE_PRODUCT_TOPADS
         }
-        return bundle
+        return list
     }
 
     interface EventKeys {
@@ -315,8 +319,8 @@ object AnalyticsTrackerUtil {
             const val CLICK_PRODUCT_CARD = "click product card"
             const val VIEW_HOMEPAGE = "view homepage"
 
-            const val IMPRESSION_RECOM_ACTION = "impression - product"
-            const val CLICK_RECOM_ACTION = "click - product"
+            const val IMPRESSION_RECOM_ACTION = "impression - products"
+            const val CLICK_RECOM_ACTION = "click - products"
 
         }
     }
@@ -331,7 +335,26 @@ object AnalyticsTrackerUtil {
             const val BUSINESSUNIT = " buyer growth platform"
             const val CURRENTSITE = " tokopediamarketplace"
             const val ITEM_LIST = "item_list"
-            const val ITEMS = "items"
+            const val ITEMS = "impressions"
+            const val CURRENCY_CODE = "currencyCode"
+            const val IDR = "IDR"
+            const val ACTION_FIELD = "actionField"
+            const val CLICK = "click"
+            const val LIST = "list"
+            const val PRODUCTS = "products"
+            const val NONE = "none / other"
+            const val ITEM_LIST_V2 = "/rewards page - rekomendasi untuk anda - %s"
+            const val VALUE_PRODUCT_TOPADS = " - product topads"
+            const val DIMENSION39 = "dimension39"
+            const val DIMENSION73 = "dimension73"
+            const val INDEX  = "index"
+            const val ITEM_BRAND= "item_brand"
+            const val ITEM_CATEGORY = "item_category"
+            const val ITEM_ID = "item_id"
+            const val ITEM_NAME= "item_name"
+            const val ITEM_VARIANT="item_variant"
+            const val PRICE = "price"
+            const val FREEONGKIR = "bebas ongkir"
         }
     }
 

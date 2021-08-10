@@ -15,9 +15,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -28,12 +28,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
-import com.tokopedia.gm.common.constant.END_PERIOD
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
-import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
@@ -42,18 +39,17 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
+import com.tokopedia.sellerhome.settings.view.customview.FireworksLottieView
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -62,18 +58,17 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_other_menu.*
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
         private const val APPLINK_FORMAT = "%s?url=%s"
+        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
@@ -85,8 +80,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
-        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
+        private const val SHOP_BADGE = "shop badge"
+        private const val SHOP_FOLLOWERS = "shop followers"
+        private const val SHOP_INFO = "shop info"
+        private const val OPERATIONAL_HOUR = "operational hour"
+        private const val SALDO_BALANCE = "saldo balance"
+        private const val TOPADS_BALANCE = "topads balance"
+        private const val TOPADS_AUTO_TOPUP = "topads auto topup"
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -99,8 +99,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
     @Inject
-    lateinit var sellerHomeConfig: SellerHomeRemoteConfig
-    @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
     @Inject
     lateinit var shopOperationalTracker: SettingShopOperationalTracker
@@ -108,6 +106,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     @Inject lateinit var settingPerformanceTracker: SettingPerformanceTracker
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
+
+    private var multipleErrorSnackbar: Snackbar? = null
 
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
@@ -142,14 +142,23 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private var statusHeaderImage: AppCompatImageView? = null
+    private var statusIconImage: AppCompatImageView? = null
+    private var whiteBackgroundView: View? = null
+    private var recyclerView: RecyclerView? = null
+    private var statusBarBackgroundView: View? = null
+    private var scrollView: NestedScrollView? = null
+    private var fireworksLottieView: FireworksLottieView? = null
+
     override fun onResume() {
         super.onResume()
-        getAllShopInfoData()
+        otherMenuViewModel.getAllOtherMenuData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
+        otherMenuViewModel.setErrorStateMapDefaultValue()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -159,6 +168,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOffset()
+        initView(view)
         setupView(view)
         observeLiveData()
         observeShopPeriod()
@@ -212,8 +222,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onRefreshShopInfo() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getAllOtherMenuData()
         otherMenuViewModel.getShopPeriodType()
     }
 
@@ -251,6 +260,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun setCurrentFragmentType(fragmentType: Int) {
         currentFragmentType = fragmentType
+        if (fragmentType == FragmentType.OTHER) {
+            fireworksLottieView?.animateFireworks()
+        } else {
+            multipleErrorSnackbar?.dismiss()
+        }
     }
 
     override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
@@ -268,6 +282,38 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         if (isActivityResumed()) {
             freeShippingBottomSheet.show(childFragmentManager)
         }
+    }
+
+    override fun onRefreshData() {
+        otherMenuViewModel.onReloadErrorData()
+    }
+
+    override fun onShopBadgeRefresh() {
+        otherMenuViewModel.getShopBadge()
+    }
+
+    override fun onShopTotalFollowersRefresh() {
+        otherMenuViewModel.getShopTotalFollowers()
+    }
+
+    override fun onShopBadgeFollowersRefresh() {
+        otherMenuViewModel.getShopBadgeAndFollowers()
+    }
+
+    override fun onUserInfoRefresh() {
+        otherMenuViewModel.getUserShopInfo()
+    }
+
+    override fun onOperationalHourRefresh() {
+        otherMenuViewModel.getShopOperational()
+    }
+
+    override fun onSaldoBalanceRefresh() {
+        otherMenuViewModel.getBalanceInfo()
+    }
+
+    override fun onKreditTopAdsRefresh() {
+        otherMenuViewModel.getKreditTopAds()
     }
 
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
@@ -295,26 +341,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        with(otherMenuViewModel) {
-            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
-                    is Success -> {
-                        showSettingShopInfoState(result.data)
-                        otherMenuViewModel.getFreeShippingStatus()
-                        otherMenuViewModel.getShopOperational()
-                    }
-                    is Fail -> {
-                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
-                        showSettingShopInfoState(SettingResponseState.SettingError)
-                    }
-                }
-            })
-            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
-                canShowErrorToaster = !isToasterAlreadyShown
-            })
-        }
-        observeFreeShippingStatus()
+        observeIsAllError()
+        observeMultipleErrorToaster()
+        observeShopBadge()
+        observeShopTotalFollowers()
+        observeShopBadgeFollowersLoading()
+        observeShopBadgeFollowersError()
+        observeShopStatus()
         observeShopOperationalHour()
+        observeSaldoBalance()
+        observeKreditTopAds()
+        observeFreeShippingStatus()
+        observeIsTopAdsAutoTopup()
+        observeToasterAlreadyShown()
     }
 
     private fun observeFreeShippingStatus() {
@@ -331,7 +370,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observe(otherMenuViewModel.shopPeriodType) {
             when (it) {
                 is Success -> {
-                    setPerformanceMenu(it.data)
+                    setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
                 is Fail -> {}
             }
@@ -339,53 +378,206 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getShopPeriodType()
     }
 
-    private fun setPerformanceMenu(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        if (shopInfoPeriodUiModel.periodType.isNotBlank()) {
-            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD || shopInfoPeriodUiModel.periodType == END_PERIOD) {
-                val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                    it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
-                }
+    private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {
+        val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+        }
+        if (shopPerformanceData != null) {
+            settingPerformanceTracker.impressItemEntryPointPerformance(isNewSeller)
+        }
+        shopPerformanceData?.clickSendTracker = {
+            settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
+    }
 
-                if (shopPerformanceData != null) {
-                    return
-                } else {
-                    val promotionItem = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                        it.onClickApplink == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+    private fun observeIsAllError() {
+        otherMenuViewModel.shouldShowAllError.observe(viewLifecycleOwner) {
+            otherMenuViewHolder?.setAllErrorLocalLoad(it)
+        }
+    }
+
+    private fun observeMultipleErrorToaster() {
+        otherMenuViewModel.shouldShowMultipleErrorToaster.observe(viewLifecycleOwner) { shouldShowError ->
+            if (shouldShowError) {
+                showMultipleErrorToaster()
+            } else {
+                multipleErrorSnackbar?.dismiss()
+            }
+        }
+    }
+
+    private fun observeShopBadgeFollowersLoading() {
+        otherMenuViewModel.shopBadgeFollowersShimmerLiveData.observe(viewLifecycleOwner) {
+            otherMenuViewHolder?.setBadgeFollowersLoading(it)
+        }
+    }
+
+    private fun observeShopBadgeFollowersError() {
+        otherMenuViewModel.shopBadgeFollowersErrorLiveData.observe(viewLifecycleOwner) {
+            otherMenuViewHolder?.setBadgeFollowersError(it)
+        }
+    }
+
+    private fun observeShopBadge() {
+        otherMenuViewModel.shopBadgeLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setShopBadge(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setShopBadgeLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onShopBadgeRefresh()
                     }
-                    val promotionIndex = adapter.list.indexOfFirst { it == promotionItem }
-                    val performanceData = MenuItemUiModel(
-                            resources.getString(R.string.setting_menu_performance),
-                            null,
-                            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
-                            eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                            iconUnify = IconUnify.PERFORMANCE,
+                    otherMenuViewHolder?.setShopBadgeError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            context?.getString(R.string.setting_header_error_message, SHOP_BADGE).orEmpty()
                     )
-                    performanceData.clickSendTracker = {
-                        settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                    if (promotionIndex != -1) {
-                        adapter.addElement(promotionIndex + 1, performanceData)
-                        adapter.notifyItemRangeInserted(promotionIndex, 1)
-                        settingPerformanceTracker.impressItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
                 }
             }
-        } else return
+        }
+    }
+
+    private fun observeShopTotalFollowers() {
+        otherMenuViewModel.shopTotalFollowersLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setShopTotalFollowers(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setShopTotalFollowersLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onShopTotalFollowersRefresh()
+                    }
+                    otherMenuViewHolder?.setShopTotalFollowersError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            context?.getString(R.string.setting_header_error_message, SHOP_FOLLOWERS).orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeShopStatus() {
+        otherMenuViewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setShopStatusType(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setShopStatusLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onRefreshShopInfo()
+                    }
+                    otherMenuViewHolder?.setShopStatusError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            context?.getString(R.string.setting_header_error_message, SHOP_INFO).orEmpty()
+                    )
+                }
+            }
+        }
     }
 
     private fun observeShopOperationalHour() {
-        otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
+        otherMenuViewModel.shopOperationalLiveData.observe(viewLifecycleOwner) {
             when(it) {
-                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
-                is Fail -> {
-                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-                    SellerHomeErrorHandler.logExceptionToCrashlytics(
-                        it.throwable,
-                        ERROR_GET_SHOP_OPERATIONAL_HOUR
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.showOperationalHourLayout(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.showOperationalHourLayoutLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onOperationalHourRefresh()
+                    }
+                    otherMenuViewHolder?.showOperationalHourLayoutError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            context?.getString(R.string.setting_header_error_message, OPERATIONAL_HOUR).orEmpty()
                     )
                 }
             }
-        })
+        }
+    }
+
+    private fun observeSaldoBalance() {
+        otherMenuViewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setSaldoBalance(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setSaldoBalanceLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onSaldoBalanceRefresh()
+                    }
+                    otherMenuViewHolder?.setSaldoBalanceError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            context?.getString(R.string.setting_header_error_message, SALDO_BALANCE).orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeKreditTopAds() {
+        otherMenuViewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setKreditTopadsBalance(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setKreditTopadsBalanceLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onKreditTopAdsRefresh()
+                    }
+                    otherMenuViewHolder?.setKreditTopadsBalanceError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            context?.getString(R.string.setting_header_error_message, TOPADS_BALANCE).orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeIsTopAdsAutoTopup() {
+        otherMenuViewModel.isTopAdsAutoTopupLiveData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    otherMenuViewHolder?.setupKreditTopadsBalanceTooltip(result.data)
+                }
+                is Fail -> {
+                    showErrorToaster(result.throwable)
+                    otherMenuViewHolder?.setupKreditTopadsBalanceTooltip(null)
+                    SellerHomeErrorHandler.logException(
+                            result.throwable,
+                            context?.getString(R.string.setting_header_error_message, TOPADS_AUTO_TOPUP).orEmpty()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeToasterAlreadyShown() {
+        otherMenuViewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
+            canShowErrorToaster = !isToasterAlreadyShown
+        }
     }
 
     private fun populateAdapterData() {
@@ -396,28 +588,30 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
                         iconUnify = IconUnify.GRAPH),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        null,
-                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+                        title = resources.getString(R.string.setting_menu_ads_and_shop_promotion),
+                        clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
                         iconUnify = IconUnify.PROMO_ADS),
+                MenuItemUiModel(
+                        title = resources.getString(R.string.setting_menu_performance),
+                        clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
+                        iconUnify = IconUnify.PERFORMANCE,
+                ),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_discussion),
-                        null,
-                        ApplinkConst.TALK,
+                        title = resources.getString(R.string.setting_menu_discussion),
+                        clickApplink = ApplinkConst.TALK,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION,
                         iconUnify = IconUnify.DISCUSSION),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        null,
-                        ApplinkConst.REPUTATION,
+                        title = resources.getString(R.string.setting_menu_review),
+                        clickApplink = ApplinkConst.REPUTATION,
                         eventActionSuffix = SettingTrackingConstant.REVIEW,
                         iconUnify = IconUnify.STAR),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_complaint),
-                        null,
-                        null,
+                        title = resources.getString(R.string.setting_menu_complaint),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT,
                         iconUnify = IconUnify.PRODUCT_INFO
                 ) {
@@ -427,20 +621,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 },
                 DividerUiModel(),
                 PrintingMenuItemUiModel(
-                        resources.getString(R.string.setting_menu_product_package),
-                        IconUnify.PACKAGE
+                        title = resources.getString(R.string.setting_menu_product_package),
+                        iconUnify = IconUnify.PACKAGE
                 ) { goToPrintingPage() },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_finance_service),
-                        null,
+                        title = resources.getString(R.string.setting_menu_finance_service),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
                         iconUnify = IconUnify.FINANCE
                 ) {
                     RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
                 },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_seller_education_center),
-                        null,
+                        title = resources.getString(R.string.setting_menu_seller_education_center),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
                         iconUnify = IconUnify.SHOP_INFO
                 ) {
@@ -449,16 +643,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_tokopedia_care),
-                        null,
-                        ApplinkConst.CONTACT_US_NATIVE,
+                        title = resources.getString(R.string.setting_menu_tokopedia_care),
+                        clickApplink = ApplinkConst.CONTACT_US_NATIVE,
                         eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
                         iconUnify = IconUnify.CALL_CENTER),
                 DividerUiModel(DividerType.THIN_PARTIAL),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_setting),
-                        null,
-                        null,
+                        title = resources.getString(R.string.setting_menu_setting),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.SETTINGS,
                         iconUnify = IconUnify.SETTING
                 ) {
@@ -470,55 +662,50 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         renderList(settingList)
     }
 
-    private fun getAllShopInfoData() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo()
-    }
-
-    private fun showAllLoadingShimmering() {
-        showSettingShopInfoState(SettingResponseState.SettingLoading)
-    }
-
-    private fun showSettingShopInfoState(settingResponseState: SettingResponseState) {
-        when(settingResponseState) {
-            is SettingSuccess -> {
-                if (settingResponseState is SettingShopInfoUiModel) {
-                    otherMenuViewHolder?.onSuccessGetSettingShopInfoData(settingResponseState)
-                }
-            }
-            is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
-            is SettingResponseState.SettingError -> {
-                val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
-                if (canShowToaster) {
-                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
-                }
-                otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-            }
+    private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
+        otherMenuViewModel.onCheckDelayErrorResponseTrigger()
+        val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
+        if (canShowToaster) {
+            val errorMessage = context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            } ?: resources.getString(R.string.setting_toaster_error_message)
+            view?.showToasterError(errorMessage, onRetryAction)
         }
     }
 
-    private fun retryFetchAfterError() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
+    private fun showMultipleErrorToaster() {
+        multipleErrorSnackbar =
+                view?.run {
+                    Toaster.build(
+                            this,
+                            context?.getString(R.string.setting_header_multiple_error_message).orEmpty(),
+                            Snackbar.LENGTH_INDEFINITE,
+                            Toaster.TYPE_NORMAL,
+                            context?.getString(R.string.setting_toaster_error_retry).orEmpty())
+                    {
+                        otherMenuViewModel.reloadErrorData()
+                        otherMenuViewModel.onReloadErrorData()
+                    }
+                }
+        multipleErrorSnackbar?.show()
     }
 
-    private fun View.showToasterError(errorMessage: String) {
+    private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {
         Toaster.build(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 resources.getString(R.string.setting_toaster_error_retry)
         ) {
-            retryFetchAfterError()
+            onRetryAction()
         }.show()
     }
 
     private fun setupView(view: View) {
-        view.run {
-            statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
-        }
+        statusBarBackgroundView?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
+        fireworksLottieView?.loadAnimationFromUrl()
         populateAdapterData()
-        recycler_view.layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
         context?.let {
             otherMenuViewHolder = OtherMenuViewHolder(
                 itemView = view,
@@ -530,6 +717,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 userSession = userSession
             )
         }
+        otherMenuViewHolder?.setupInitialLayout()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
@@ -538,6 +726,18 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             }
         }
         observeRecyclerViewScrollListener()
+    }
+
+    private fun initView(view: View) {
+        with(view) {
+            statusHeaderImage = findViewById(R.id.iv_sah_other_status_header)
+            statusIconImage = findViewById(R.id.iv_sah_other_status_icon)
+            whiteBackgroundView = findViewById(R.id.bg_white_other_menu)
+            statusBarBackgroundView = findViewById(R.id.view_sah_other_status_bar_background)
+            recyclerView = findViewById(R.id.recycler_view)
+            scrollView = findViewById(R.id.sv_sah_other_menu)
+            fireworksLottieView = findViewById(R.id.lottie_anniv_fireworks)
+        }
     }
 
     private fun setupOffset() {
@@ -551,7 +751,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeRecyclerViewScrollListener() {
-        this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
+        scrollView?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
             calculateSearchBarView(scrollView.scrollY)
         })
     }
@@ -568,17 +768,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 setDarkStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
-            shopStatusHeader?.gone()
-            shopStatusHeaderIcon?.gone()
-            bg_white_other_menu?.gone()
+            statusHeaderImage?.gone()
+            statusIconImage?.gone()
+            whiteBackgroundView?.gone()
+            fireworksLottieView?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
-            shopStatusHeader?.visible()
-            shopStatusHeaderIcon?.visible()
-            bg_white_other_menu?.visible()
+            statusHeaderImage?.visible()
+            statusIconImage?.visible()
+            whiteBackgroundView?.visible()
+            fireworksLottieView?.visible()
         }
     }
 
@@ -588,7 +790,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 activity?.requestStatusBarLight()
             }
             setStatusBarStateInitialIsLight(true)
-            statusBarBackground?.hide()
+            statusBarBackgroundView?.hide()
         }
     }
 
@@ -596,7 +798,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarStateInitialIsLight(false)
             activity?.requestStatusBarDark()
-            statusBarBackground?.show()
+            statusBarBackgroundView?.show()
         }
     }
 
@@ -616,7 +818,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun goToPrintingPage() {
         val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, url)
+        val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         RouteManager.getIntent(context, applink)?.let {
             context?.startActivity(it)
         }

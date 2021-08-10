@@ -1,9 +1,9 @@
 package com.tokopedia.saldodetails.view.ui
 
 import android.content.Context
-import androidx.viewpager.widget.ViewPager
 import android.util.AttributeSet
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 
 class HeightWrappingViewPager : ViewPager {
 

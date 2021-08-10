@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.domain.data.notification
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.inbox.common.InboxFragmentType
 
 abstract class BaseNotification {
 
@@ -44,7 +45,38 @@ abstract class BaseNotification {
     @SerializedName("total_int")
     var totalInt: Int = 0
 
+    @Transient
+    @InboxFragmentType
+    private var page: Int = InboxFragmentType.NONE
+    @Transient
+    private var isShowBottomNav: Boolean = true
+
+    fun setCounterAdjuster(page: Int, isShowBottomNav: Boolean) {
+        this.page = page
+        this.isShowBottomNav = isShowBottomNav
+        updateTotal()
+    }
+
     private fun updateTotal() {
-        totalInt = chatInt + notifcenterInt + talkInt + reviewInt
+        totalInt = 0
+        if (eligibleToOpen(InboxFragmentType.CHAT)) {
+            totalInt += chatInt
+        }
+        if (eligibleToOpen(InboxFragmentType.NOTIFICATION)) {
+            totalInt += notifcenterInt
+        }
+        if (eligibleToOpen(InboxFragmentType.DISCUSSION)) {
+            totalInt += talkInt
+        }
+        if (eligibleToOpen(InboxFragmentType.REVIEW)) {
+            totalInt += reviewInt
+        }
+    }
+
+    private fun eligibleToOpen(
+        @InboxFragmentType
+        pageToOpen: Int
+    ): Boolean {
+        return isShowBottomNav || page == pageToOpen
     }
 }

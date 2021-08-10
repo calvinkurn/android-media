@@ -908,7 +908,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                     if (getArguments() != null) {
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     }
@@ -996,8 +996,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
+                        if (getArguments() != null) {
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                        }
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getTitle());
@@ -1015,8 +1017,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
+                        if (getArguments() != null) {
+                            buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
+                        }
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_TITLE_CANCEL_REQUESTED, actionButton.getActionButtonPopUp().getTitle());
@@ -1031,8 +1035,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
                         orderListAnalytics.sendActionButtonClickEvent(CLICK_TRACK);
 
-                        String routingAppLink;
-                        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
+                        String routingAppLink = "";
+                        if (getArguments() != null) {
+                            routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
+                        }
 
                         String trackingUrl;
                         Uri uri = Uri.parse(actionButton.getUri());
@@ -1058,7 +1064,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String applink = "tokopedia://topchat/askseller/" + shopId;
             Intent intent = RouteManager.getIntent(getContext(), applink);
             if (orderDetails != null) {
-                intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderDetails.getInvoiceId());
+                if (getArguments() != null) {
+                    intent.putExtra(ApplinkConst.Chat.INVOICE_ID, getArguments().getString(KEY_ORDER_ID));
+                }
                 intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, orderDetails.getInvoiceCode());
                 intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, orderDetails.getProductName());
                 intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, orderDetails.getBoughtDate());
@@ -1268,7 +1276,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             RouteManager.route(getContext(), applink);
         });
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status, userSessionInterface.getUserId(), getArguments().getString(KEY_ORDER_ID)));
+        if (getArguments() != null) {
+            itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status, userSessionInterface.getUserId(), getArguments().getString(KEY_ORDER_ID)));
+        }
     }
 
     @Override

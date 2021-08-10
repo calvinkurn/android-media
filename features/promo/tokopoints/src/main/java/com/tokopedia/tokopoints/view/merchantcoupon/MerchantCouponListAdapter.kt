@@ -37,6 +37,7 @@ import kotlin.collections.HashSet
 class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback: AdapterCallback, context: Context?) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null
     private var adIdImpression = HashSet<String>()
+    val REWARDS_MVC_SOURCE = 3
 
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
 
@@ -136,7 +137,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
 
         if (isDarkMode(vh.itemView.context)) {
             vh.parentContainer.background.colorFilter = PorterDuffColorFilter(MethodChecker.getColor(vh.parentContainer.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), PorterDuff.Mode.SRC_IN)
+                    com.tokopedia.unifyprinciples.R.color.dark_N75), PorterDuff.Mode.SRC_IN)
         }
 
         vh.tvShopName.setOnClickListener {
@@ -162,7 +163,7 @@ class MerchantCouponListAdapter(val viewmodel: MerchantCouponViewModel, callback
             val shopApplink = item?.shopInfo?.appLink
             val shopId = item?.shopInfo?.id
             if (shopName != null && shopApplink != null && shopId != null) {
-                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, 0, shopApplink, shopName))
+                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, REWARDS_MVC_SOURCE, shopApplink, shopName))
             }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
         }

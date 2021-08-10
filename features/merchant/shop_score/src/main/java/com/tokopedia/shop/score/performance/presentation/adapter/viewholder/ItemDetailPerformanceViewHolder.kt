@@ -1,13 +1,14 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
-import android.graphics.Color
+import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.asUpperCase
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreColorUtils
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
@@ -16,6 +17,8 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerform
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
+import timber.log.Timber
+import java.util.*
 
 class ItemDetailPerformanceViewHolder(view: View,
                                       private val itemShopPerformanceListener: ItemShopPerformanceListener)
@@ -25,6 +28,7 @@ class ItemDetailPerformanceViewHolder(view: View,
         val LAYOUT = R.layout.item_detail_shop_performance
         const val PERCENT = "%"
         const val MINUS_SIGN = "-"
+        const val START_INDEX_HEX_STRING = 2
     }
 
     override fun bind(element: ItemDetailPerformanceUiModel?) {
@@ -65,11 +69,11 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            cardItemDetailShopPerformance?.setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
+            setContainerBackground()
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {
-                cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                setCardItemDetailPerformanceBackground()
                 cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
             } else {
                 cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
@@ -91,17 +95,56 @@ class ItemDetailPerformanceViewHolder(view: View,
         }
     }
 
+    private fun setContainerBackground() {
+        try {
+            with(itemView) {
+                context?.let {
+                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
+                }
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun setCardItemDetailPerformanceBackground() {
+        try {
+            with(itemView) {
+                context?.let {
+                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                }
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
     private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
-        when (colorValueDetailPerformance) {
-            ShopScoreColorUtils.RED -> {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+        try {
+            when (colorValueDetailPerformance) {
+                getColorHexString(R.color.shop_score_item_parameter_dms_red) -> {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                }
+                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                }
+                getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                }
             }
-            ShopScoreColorUtils.GREY -> {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-            }
-            ShopScoreColorUtils.GREEN -> {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun Typography.getColorHexString(idColor: Int): String {
+        return try {
+            val colorHexInt = ContextCompat.getColor(context, idColor)
+            val colorToHexString = Integer.toHexString(colorHexInt).toUpperCase(Locale.getDefault()).substring(START_INDEX_HEX_STRING)
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
         }
     }
 }

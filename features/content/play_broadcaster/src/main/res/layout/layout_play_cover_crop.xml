@@ -68,7 +68,6 @@
             android:layout_height="@dimen/play_button_medium_height"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:text="@string/play_change"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -54,6 +54,7 @@
     <string name="som_title">Seller Order Management</string>
 
     <string name="user_identification_common_title">Verifikasi Data Diri</string>
+    <string name="user_identification_info_simple">Dokumen Data Diri</string>
     <string name="talk_title">Diskusi Produk</string>
 
     <string name="title_topchat">Chat</string>
@@ -61,7 +62,7 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
-    <string name="title_loginphone">Login Phone</string>
+    <string name="title_choose_account">Choose Account</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>
@@ -106,6 +107,10 @@
     <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
     <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
 
+    <!-- Payment Withdraw-->
+    <string name="payment_title_withdraw">Penarikan Saldo</string>
+    <string name="payment_title_auto_withdraw">Pengaturan Saldo</string>
+
 
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
@@ -130,4 +135,6 @@
 
     <string name="title_image_picker">Image Picker</string>
 
+    <!--Revamped Buyer Order Detail-->
+    <string name="title_revamped_buyer_order_detail">Detail Pesanan</string>
 </resources>

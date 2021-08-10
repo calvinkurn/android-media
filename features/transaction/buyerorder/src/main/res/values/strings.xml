@@ -234,5 +234,6 @@ Anda di sini.</string>
     <string name="uoh_review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="uoh_review_oke">Oke</string>
     <string name="uoh_review_create_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
+    <string name="error_message_buyer_request_cancel_reason_should_not_contains_special_chars">Hindari penggunaan karakter spesial (@#$%^*)</string>
 
 </resources>

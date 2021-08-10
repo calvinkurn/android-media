@@ -481,6 +481,6 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     private void setChevronDownImage() {
-        replyArrow.setImageDrawable(getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)));
+        replyArrow.setImageDrawable(getIconUnifyDrawable(context, IconUnify.CHEVRON_DOWN, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)));
     }
 }

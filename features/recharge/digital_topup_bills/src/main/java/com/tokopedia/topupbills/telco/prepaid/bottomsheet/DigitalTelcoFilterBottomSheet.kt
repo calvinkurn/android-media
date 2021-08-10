@@ -78,8 +78,13 @@ class DigitalTelcoFilterBottomSheet : BottomSheetUnify(),
 
     private fun initAdapter() {
         val typeFactory = TelcoFilterAdapterTypeFactory(this)
-        adapter = BaseListCheckableAdapter<FilterTagDataCollection,
-                BaseListCheckableTypeFactory<FilterTagDataCollection>>(typeFactory, this)
+        adapter = object : BaseListCheckableAdapter<FilterTagDataCollection,
+                BaseListCheckableTypeFactory<FilterTagDataCollection>>(typeFactory, this) {
+            override fun getItemId(position: Int): Long {
+                return position.toLong()
+            }
+        }
+        adapter.setHasStableIds(true)
     }
 
     private fun initView() {

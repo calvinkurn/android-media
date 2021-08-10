@@ -23,7 +23,8 @@ data class SectionWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var isNeedToBeRemoved: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var emptyState: WidgetEmptyStateUiModel,
+        var shouldShow: Boolean = true
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

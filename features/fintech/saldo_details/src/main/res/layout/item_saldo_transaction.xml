@@ -4,73 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="@dimen/unify_space_8">
 
-
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/transaction_image_view"
-        android:layout_width="@dimen/dp_26"
-        android:layout_height="@dimen/dp_26"
+        android:layout_width="@dimen/sd_dp_26"
+        android:layout_height="@dimen/sd_dp_26"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="@dimen/dp_14"
-        android:layout_marginLeft="@dimen/dp_14"
-        android:layout_marginTop="@dimen/dp_10"
-        app:srcCompat="@drawable/ic_info_icon_green" />
+        android:layout_marginStart="@dimen/sd_dp_14"
+        android:layout_marginTop="@dimen/sd_dp_10"
+        app:unify_image_corner_radius="0" />
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/transaction_image_view"
-        android:layout_toRightOf="@+id/transaction_image_view"
-        android:padding="@dimen/dp_10">
+        android:padding="@dimen/sd_dp_10">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/transaction_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="normal"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_2"
             tools:text="Transaction Heading" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/saldo_transaction_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/transaction_heading"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="@dimen/dp_10"
-            android:textColor="@color/sp_time_color"
-            android:textSize="@dimen/sp_12" />
+            android:layout_marginTop="@dimen/sd_dp_10"
+            android:textColor="@color/Unify_N700_32"
+            app:typographyType="body_3"
+            tools:text="13 Apr 2021"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/nominal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/saldo_transaction_date"
-            android:layout_marginTop="@dimen/dp_10" />
+            android:layout_marginTop="@dimen/sd_dp_10"
+            app:typographyType="body_2"
+            tools:text="- Rp5.000"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/nominal"
-            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:background="@android:drawable/list_selector_background"
-            android:textColor="@color/black_36"
-            android:textSize="@dimen/sp_14" />
+            android:textColor="@color/Unify_N700_32"
+            app:typographyType="body_2" />
 
     </RelativeLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_below="@+id/header"
-        android:background="@color/greyish_bg" />
+        android:layout_height="@dimen/unify_space_2"
+        android:layout_below="@+id/header" />
 </RelativeLayout>

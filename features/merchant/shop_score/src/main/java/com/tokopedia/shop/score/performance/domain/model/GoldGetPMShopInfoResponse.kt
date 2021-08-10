@@ -21,6 +21,6 @@ data class GoldGetPMShopInfoResponse(
                 val isNewSeller: Boolean = false,
                 @Expose
                 @SerializedName("shop_age")
-                val shopAge: Int = 0
+                val shopAge: Long = 0
         )
 }

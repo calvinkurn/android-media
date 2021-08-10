@@ -31,8 +31,11 @@
     <string name="stc_shop">Toko</string>
     <string name="stc_product">Produk</string>
     <string name="stc_buyer">Pembeli</string>
+    <string name="stc_operational">Operasional</string>
     <string name="stc_give_suggestions">Beri Saran</string>
     <string name="stc_learn_more">Pelajari Selengkapnya</string>
     <string name="stc_product_coachmark_title">Pantau statistik produkmu dulu, yuk!</string>
     <string name="stc_product_coachmark_desc">Cek dan lihat perkembangan Performa produk tokomu di sini, ya.</string>
+    <string name="stc_operational_coachmark_title">Yuk, pantau operasional tokomu!</string>
+    <string name="stc_operational_coachmark_desc">Cek dan lihat perkembangan performa operasional tokomu di sini, ya.</string>
 </resources>

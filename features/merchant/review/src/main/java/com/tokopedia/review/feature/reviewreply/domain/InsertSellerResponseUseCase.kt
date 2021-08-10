@@ -20,8 +20,8 @@ class InsertSellerResponseUseCase @Inject constructor(
         private const val RESPONSE_MESSAGE = "responseMessage"
         const val INSERT_REVIEW_MUTATION_CLASS_NAME = "InsertReview"
         const val INSERT_REVIEW_MUTATION = """
-            mutation insert_review_reply(${'$'}reviewId: Int!, ${'$'}productId: Int!, ${'$'}shopId: Int!, ${'$'}responseMessage: String!) {
-                  inboxReviewInsertReviewResponse(reviewId: ${'$'}reviewId, productId: ${'$'}productId, shopId: ${'$'}shopId,
+            mutation insert_review_reply(${'$'}reviewId: String!, ${'$'}productId: String!, ${'$'}shopId: String!, ${'$'}responseMessage: String!) {
+                  inboxReviewInsertReviewResponseV2(reviewId: ${'$'}reviewId, productId: ${'$'}productId, shopId: ${'$'}shopId,
                     responseMessage: ${'$'}responseMessage) {
                         isSuccesss
                   }
@@ -29,7 +29,7 @@ class InsertSellerResponseUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(reviewId: Int, productId: Int, shopId: Int, responseMessage: String): Map<String, Any> =
+        fun createParams(reviewId: String, productId: String, shopId: String, responseMessage: String): Map<String, Any> =
                 mapOf(REVIEW_ID to reviewId, PRODUCT_ID to productId, SHOP_ID to shopId, RESPONSE_MESSAGE to responseMessage)
     }
 

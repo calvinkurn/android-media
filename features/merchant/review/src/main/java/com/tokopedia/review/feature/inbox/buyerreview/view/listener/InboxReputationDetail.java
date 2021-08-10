@@ -51,7 +51,7 @@ public interface InboxReputationDetail {
 
         Context getContext();
 
-        void onGoToReportReview(int shopId, String reviewId);
+        void onGoToReportReview(long shopId, String reviewId);
 
         void onSuccessSendSmiley(int score);
 
@@ -77,9 +77,9 @@ public interface InboxReputationDetail {
 
         void onSmoothScrollToReplyView(int adapterPosition);
 
-        void onGoToProfile(int reviewerId);
+        void onGoToProfile(long reviewerId);
 
-        void onGoToShopInfo(int shopId);
+        void onGoToShopInfo(long shopId);
 
         UserSessionInterface getUserSession();
 
@@ -99,7 +99,7 @@ public interface InboxReputationDetail {
         void deleteReviewResponse(String reviewId, String productId, String shopId, String
                 reputationId);
 
-        void sendReplyReview(int reputationId, String productId, int shopId,
+        void sendReplyReview(long reputationId, String productId, long shopId,
                              String reviewId, String replyReview);
     }
 }

@@ -12,8 +12,8 @@ import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistor
 class ReviewAttachedImagesAdapter(private val imageClickListener: ReviewAttachedImagesClickListener,
                                   private val productName: String,
                                   private val reviewHistoryItemListener: ReviewHistoryItemListener? = null,
-                                  private val productId: Int? = null,
-                                  private val feedbackId: Int? = null) : RecyclerView.Adapter<ReviewAttachedProductViewHolder>() {
+                                  private val productId: String? = null,
+                                  private val feedbackId: String? = null) : RecyclerView.Adapter<ReviewAttachedProductViewHolder>() {
 
     private var attachedImages: List<String> = listOf()
     private var fullSizeImages: List<String> = listOf()

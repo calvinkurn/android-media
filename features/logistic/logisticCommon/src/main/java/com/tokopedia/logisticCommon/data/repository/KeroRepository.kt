@@ -1,22 +1,24 @@
 package com.tokopedia.logisticCommon.data.repository
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
-import com.tokopedia.logisticCommon.data.response.AddressResponse
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.request.AddAddressParam
+import com.tokopedia.logisticCommon.data.response.*
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
-class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
+class KeroRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
 
-    suspend fun getAutoComplete(keyword: String): AutoCompleteResponse {
-        val param = mapOf("param" to keyword)
-        val request = GraphqlRequest(KeroLogisticQuery.autoComplete,
-                AutoCompleteResponse::class.java, param)
+    suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
+        val param = mapOf("param" to keyword, "latlng" to latlng)
+        val request = GraphqlRequest(
+            KeroLogisticQuery.autoComplete,
+            AutoCompleteResponse::class.java, param
+        )
         return gql.getResponse(request)
     }
 
@@ -24,6 +26,20 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
         val param = mapOf("param" to placeId)
         val request = GraphqlRequest(KeroLogisticQuery.placesGetDistrict,
                 GetDistrictResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
+    suspend fun getDefaultAddress(source: String): GetDefaultAddressResponse {
+        val param = mapOf("source" to source)
+        val request = GraphqlRequest(KeroLogisticQuery.kero_addr_get_default,
+                GetDefaultAddressResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
+    suspend fun getDistrictBoundaries(districtId: Int): GetDistrictBoundaryResponse {
+        val param = mapOf("districtId" to districtId)
+        val request = GraphqlRequest(KeroLogisticQuery.kero_district_boundary,
+                GetDistrictBoundaryResponse::class.java, param)
         return gql.getResponse(request)
     }
 
@@ -55,6 +71,18 @@ class KeroRepository @Inject constructor(private val gql: GraphqlRepository) {
         val request = GraphqlRequest(KeroLogisticQuery.keroMapsAutofill,
                 AutoFillResponse::class.java, param)
         return gql.getResponse(request)
+    }
+
+    suspend fun saveAddress(model: SaveAddressDataModel): AddAddressResponse {
+        val param = AddAddressParam(
+                model.addressName, model.receiverName, model.address1, model.address2,
+                model.postalCode, model.phone, model.provinceId.toString(), model.cityId.toString(),
+                model.districtId.toString(), model.latitude, model.longitude, model.isAnaPositive)
+        val gqlParam = mapOf("input" to param.toMap())
+        val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
+                AddAddressResponse::class.java, gqlParam)
+        return gql.getResponse(request)
+
     }
 
 

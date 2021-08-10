@@ -344,7 +344,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun goToLiveTrackingPage(model: TrackOrderModel) {
         mAnalytics.eventClickOrderTrackingClickButtonLiveTracking()
         var trackingUrl = mTrackingUrl
-        if (trackingUrl?.isEmpty() == true) {
+        if (trackingUrl.isNullOrEmpty()) {
             trackingUrl = model.detail.trackingUrl
         }
         val intent = context?.let { LiveTrackingActivity.createIntent(it, trackingUrl) }

@@ -8,11 +8,11 @@ import android.os.Handler
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -25,11 +25,11 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
 import com.tokopedia.sellerhome.analytic.NavigationTracking
@@ -48,7 +48,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
-import com.tokopedia.sellerhome.common.exception.SellerHomeException
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
@@ -107,6 +107,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val TOAST_DURATION = 5000L
 
         private const val DEFAULT_HEIGHT_DP = 720f
+
+        private const val ANNIV_ILLUSTRATION_OS = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_os.png"
+        private const val ANNIV_ILLUSTRATION_PM = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_pm.png"
+        private const val ANNIV_ILLUSTRATION_RM = "https://images.tokopedia.net/img/android/seller_home/tokopedia_seller_anniv_home_rm.png"
     }
 
     @Inject
@@ -165,6 +169,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var recommendationWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
+    private var anniversaryIllustrationImage: AppCompatImageView? = null
     private var isEligibleShowRecommendationCoachMark: Boolean = false
     private val coachMark: CoachMark2? by lazy {
         context?.let {
@@ -313,6 +318,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    override fun getIsShouldRemoveWidget(): Boolean = true
+
+    override fun onRemoveWidget(position: Int) {}
+
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey,
                 model.data?.state.orEmpty(), model.data?.value ?: "0")
@@ -335,6 +344,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickCarouselCtaEvent(dataKey)
     }
 
+    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
+
     override fun sendDescriptionImpressionEvent(descriptionTitle: String) {
         SellerHomeTracking.sendImpressionDescriptionEvent(descriptionTitle)
     }
@@ -344,11 +355,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
-        SellerHomeTracking.sendImpressionLineGraphEvent(model.dataKey, model.data?.header.orEmpty())
+        SellerHomeTracking.sendImpressionLineGraphEvent(model)
     }
 
     override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
         SellerHomeTracking.sendClickLineGraphEvent(dataKey, chartValue)
+    }
+
+    override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
+        SellerHomeTracking.sendClickEmptyCtaLineGraphEvent(model)
     }
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
@@ -429,6 +444,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun setupView() = view?.run {
         emptyState = findViewById(R.id.empty_state_seller_home)
+        anniversaryIllustrationImage = findViewById(R.id.iv_sah_home_thematic)
 
         val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -652,9 +668,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
     }
 
+    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        SellerHomeTracking.sendPieChartEmptyStateCtaClickEvent(model)
+    }
+
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
+    }
+
+    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
+        SellerHomeTracking.sendBarChartEmptyStateCtaClickEvent(element)
     }
 
     override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
@@ -914,7 +938,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.swipeRefreshLayout?.isRefreshing = false
         setProgressBarVisibility(false)
 
-        logToCrashlytics(throwable, ERROR_LAYOUT)
+        SellerHomeErrorHandler.logException(
+                throwable = throwable,
+                message = ERROR_LAYOUT,
+                errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
+                deviceId = userSession.deviceId.orEmpty())
     }
 
     private fun showErrorViewByException(throwable: Throwable) = view?.run {
@@ -998,7 +1026,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
                 is Fail -> {
                     stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE, false)
-                    logToCrashlytics(it.throwable, ERROR_TICKER)
+                    SellerHomeErrorHandler.logException(
+                            throwable = it.throwable,
+                            message = ERROR_TICKER,
+                            errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
+                            deviceId = userSession.deviceId.orEmpty())
                     view?.relTicker?.gone()
                 }
             }
@@ -1020,9 +1052,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
-            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            isOfficialStore -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+                anniversaryIllustrationImage?.loadImageWithoutPlaceholder(ANNIV_ILLUSTRATION_OS)
+            }
+            isPowerMerchant -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+                anniversaryIllustrationImage?.loadImageWithoutPlaceholder(ANNIV_ILLUSTRATION_PM)
+            }
+            else -> {
+                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+                anniversaryIllustrationImage?.loadImageWithoutPlaceholder(ANNIV_ILLUSTRATION_RM)
+            }
         }
     }
 
@@ -1035,7 +1076,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     is Fail -> {
                         stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
                         stopPltMonitoringIfNotCompleted(fromCache = false)
-                        logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
                 }
@@ -1141,6 +1181,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 widget
             }
         }
+
+        // Log error to crashlytics and scalyr.
+        // We define layoutId value as joined list of error layout id. Ex: (100, 150)
+        // The extras will be defined as widget type + layout id as JSON object.
+        // Ex: ({"widget_type": "lineGraph", "layout_id": "100, 150"})
+        val layoutId = adapter.data.mapNotNull {
+            if (it.widgetType == widgetType) it.id else null
+        }.joinToString(", ")
+        val widgetErrorExtraMap = mapOf(
+                SellerHomeErrorHandler.WIDGET_TYPE_KEY to widgetType,
+                SellerHomeErrorHandler.LAYOUT_ID_KEY to layoutId)
+        SellerHomeErrorHandler.logException(
+                throwable = this,
+                message = "$ERROR_WIDGET $widgetType",
+                errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
+                deviceId = userSession.deviceId.orEmpty(),
+                extras = widgetErrorExtraMap)
+
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         showErrorToaster()
         view?.addOneTimeGlobalLayoutListener {
@@ -1152,8 +1210,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Suppress("UNCHECKED_CAST")
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
         val newWidgetList = adapter.data.map {
-            if (it.dataKey == widget.dataKey && it.widgetType == widget.widgetType) widget
-            else it
+            return@map if (it.dataKey == widget.dataKey && it.widgetType == widget.widgetType) {
+                widget
+            } else {
+                it
+            }
         }
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         checkLoadingWidgets()
@@ -1197,19 +1258,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             isOfficialStore -> "OS"
             isPowerMerchant -> "PM"
             else -> "RM"
-        }
-    }
-
-    private fun logToCrashlytics(throwable: Throwable, message: String) {
-        if (!BuildConfig.DEBUG) {
-            val exceptionMessage = "$message - ${throwable.localizedMessage}"
-
-            FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
-                    message = exceptionMessage,
-                    cause = throwable
-            ))
-        } else {
-            throwable.printStackTrace()
         }
     }
 

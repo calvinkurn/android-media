@@ -105,11 +105,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                    /* no-op */
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    /* no-op */
                 }
             }
             tfNote?.textFieldInput?.addTextChangedListener(noteTextWatcher)
@@ -159,11 +159,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+                    /* no-op */
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    /* no-op */
                 }
             }
             qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)

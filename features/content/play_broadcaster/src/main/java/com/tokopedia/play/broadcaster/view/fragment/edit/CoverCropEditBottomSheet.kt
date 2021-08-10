@@ -19,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import javax.inject.Inject
 

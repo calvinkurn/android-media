@@ -179,10 +179,11 @@
                     android:paddingEnd="@dimen/dp_topchat_14"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
+                <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
                     android:id="@+id/rv_srw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/unify_space_12"
                     android:visibility="gone"
                     tools:layout_height="50dp"
                     tools:visibility="visible" />
@@ -195,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_8"
-                android:paddingEnd="@dimen/spacing_lvl4">
+                android:paddingEnd="@dimen/unify_space_12">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/send_but"

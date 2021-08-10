@@ -1,23 +1,28 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel
-import com.tokopedia.logisticaddaddress.data.RetrofitInteractor
-import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
-import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticaddaddress.data.RetrofitInteractor
+import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
+import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
 import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.verifyOrder
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import rx.Observable
 
-object GeolocationPresenterTest : Spek({
+class GeolocationPresenterTest {
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
     lateinit var presenter: GeolocationPresenter
     val retrofitImpl: RetrofitInteractorImpl = mockk(relaxUnitFun = true)
@@ -29,96 +34,82 @@ object GeolocationPresenterTest : Spek({
     val mapFragment: GoogleMapFragment = mockk(relaxed = true)
     val geoMapper = GeolocationMapper()
 
-    beforeEachTest {
-        presenter = GeolocationPresenter(
-                retrofitImpl,
-                userSession,
-                revGeocode,
-                mapFragment,
-                geoMapper
-        )
+    @Before
+    fun setup() {
+        presenter = GeolocationPresenter(retrofitImpl, userSession, revGeocode, mapFragment, geoMapper)
     }
 
-    Feature("geocoding") {
-        Scenario("success") {
-            val res = CoordinateUiModel().apply {
-                coordinate = LatLng(12.0, 12.0)
-            }
-            Given("success response") {
-                every { retrofitImpl.generateLatLng(any(), any()) } answers {
-                    secondArg<RetrofitInteractor.GenerateLatLongListener>().onSuccess(res)
-                }
-            }
-            When("executed") {
-                presenter.geoCode("123")
-            }
-            Then("view moves to map") {
-                verify { mapFragment.moveMap(res.coordinate) }
-            }
+    @Test
+    fun `geocoding success`() {
+        val res = CoordinateUiModel().apply {
+            coordinate = LatLng(12.0, 12.0)
         }
-        Scenario("error") {
-            val err = "error msg"
-            Given("success response") {
-                every { retrofitImpl.generateLatLng(any(), any()) } answers {
-                    secondArg<RetrofitInteractor.GenerateLatLongListener>().onError(err)
-                }
-            }
-            When("executed") {
-                presenter.geoCode("123")
-            }
-            Then("view moves to map") {
-                verify { mapFragment.toastMessage(err) }
-            }
+
+        every { retrofitImpl.generateLatLng(any(), any())
+        } answers {
+            secondArg<RetrofitInteractor.GenerateLatLongListener>().onSuccess(res)
+        }
+
+        presenter.geoCode("123")
+
+        verifyOrder {
+            mapFragment.moveMap(res.coordinate)
         }
     }
 
-    Feature("reverse geocode") {
-        Scenario("success") {
-            val testFormatted = "Jl Senang"
-            val res = KeroMapsAutofill(data = Data(
-                    formattedAddress = testFormatted
-            ))
-            Given("success response") {
-                every { revGeocode.execute(any()) } returns Observable.just(res)
-            }
-            When("executed") {
-                presenter.getReverseGeoCoding("99", "99")
-            }
-            Then("view is called") {
-                verify {
-                    mapFragment.setLoading(true)
-                    mapFragment.setLoading(false)
-                    mapFragment.setValuePointer(testFormatted)
-                    mapFragment.setNewLocationPass(any())
-                }
-            }
+    @Test
+    fun `geocoing error`() {
+        val err = "error msg"
+
+        every { retrofitImpl.generateLatLng(any(), any())
+        } answers {
+            secondArg<RetrofitInteractor.GenerateLatLongListener>().onError(err)
+        }
+
+        presenter.geoCode("123")
+
+        verifyOrder {
+            mapFragment.toastMessage(err)
         }
     }
 
-    Feature("get interactor") {
-        Scenario("called") {
-            var i: Any? = null
-            When("on destroy is called") {
-                i = presenter.interactor
-            }
-            Then("unsubscribed") {
-                assertTrue(i is RetrofitInteractor)
-            }
+    @Test
+    fun `reverse geocode success`() {
+        val testFormatted = "Jl Senang"
+        val res = KeroMapsAutofill(data = Data(
+                formattedAddress = testFormatted
+        ))
+
+        every {
+            revGeocode.execute(any())
+        } returns Observable.just(res)
+
+        presenter.getReverseGeoCoding("99", "99")
+
+        verifyOrder {
+            mapFragment.setLoading(true)
+            mapFragment.setLoading(false)
+            mapFragment.setValuePointer(testFormatted)
+            mapFragment.setNewLocationPass(any())
         }
     }
 
-    Feature("on destroy") {
-        Scenario("called") {
-            When("on destroy is called") {
-                presenter.onDestroy()
-            }
-            Then("unsubscribed") {
-                verify {
-                    retrofitImpl.unSubscribe()
-                    revGeocode.unsubscribe()
-                }
-            }
-        }
+    @Test
+    fun `get interactor`() {
+        var i: Any? = null
+
+        i = presenter.interactor
+
+        Assert.assertTrue(i is RetrofitInteractor)
     }
 
-})
+    @Test
+    fun `on destroy`() {
+        presenter.onDestroy()
+
+        verifyOrder {
+            retrofitImpl.unSubscribe()
+            revGeocode.unsubscribe()
+        }
+    }
+}

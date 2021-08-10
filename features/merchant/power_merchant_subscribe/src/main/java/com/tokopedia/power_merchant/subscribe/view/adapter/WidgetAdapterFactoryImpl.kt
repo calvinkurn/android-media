@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.*
 import com.tokopedia.power_merchant.subscribe.view.model.*
 
@@ -35,11 +35,7 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(model: WidgetNextShopGradeUiModel): Int = NextShopGradeWidget.RES_LAYOUT
 
-    override fun type(model: WidgetNextUpdateUiModel): Int = NextUpdateInfoWidget.RES_LAYOUT
-
     override fun type(model: WidgetPMDeactivateUiModel): Int = PMDeactivateWidget.RES_LAYOUT
-
-    override fun type(model: WidgetErrorStateUiModel): Int = ErrorStateWidget.RES_LAYOUT
 
     override fun type(model: WidgetTickerUiModel): Int = TickerWidget.RES_LAYOUT
 
@@ -47,16 +43,14 @@ class WidgetAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent, widgetListener, powerMerchantTracking)
+            RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent, powerMerchantTracking)
             CancelDeactivationSubmissionWidget.RES_LAYOUT -> CancelDeactivationSubmissionWidget(parent, widgetListener)
-            NextUpdateInfoWidget.RES_LAYOUT -> NextUpdateInfoWidget(parent)
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(parent, widgetListener)
-            ErrorStateWidget.RES_LAYOUT -> ErrorStateWidget(parent, widgetListener)
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(parent, widgetListener, powerMerchantTracking)
-            ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent, powerMerchantTracking)
+            ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent, widgetListener, powerMerchantTracking)
             PotentialWidget.RES_LAYOUT -> PotentialWidget(parent)
             SingleCtaWidget.RES_LAYOUT -> SingleCtaWidget(parent)
             DividerWidget.RES_LAYOUT -> DividerWidget(parent)

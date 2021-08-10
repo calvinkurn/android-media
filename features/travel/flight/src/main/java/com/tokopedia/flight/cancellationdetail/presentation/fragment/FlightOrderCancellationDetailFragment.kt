@@ -16,12 +16,12 @@ import com.tokopedia.flight.cancellationdetail.presentation.adapter.*
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.viewholder.FlightOrderCancellationDetailJourneyViewHolder
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.fragment_flight_cancellation_detail.*
 import java.util.*
 
@@ -47,7 +47,9 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderView()
+        if(::cancellationDetail.isInitialized){
+            renderView()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,8 +99,9 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     private fun renderView() {
         cancellation_status.requestFocus()
         cancellation_status.text = cancellationDetail.cancellationDetail.statusStr
-        cancellation_date.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+        cancellation_date.text = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.DEFAULT_VIEW_FORMAT,
                 cancellationDetail.cancellationDetail.createTime)
 
         // journey detail
@@ -182,7 +185,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
         }
     }
 
-    private fun generateSimpleViewModel(items: List<OrderDetailCancellation.OrderDetailRefundKeyValue>): List<SimpleModel> {
+    private fun generateSimpleViewModel(items: List<OrderDetailCancellation.OrderDetailRefundKeyValue>): MutableList<SimpleModel> {
         val datas: MutableList<SimpleModel> = ArrayList()
         for (item in items) {
             datas.add(SimpleModel(item.key, item.value))
@@ -201,7 +204,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     private fun hidePassengerInfo() {
         isPassengerInfoShowed = false
         recycler_view_data_passenger.visibility = View.GONE
-        image_expendable_passenger.rotation = 180f
+        image_expendable_passenger.rotation = IMAGE_ROTATION
     }
 
     private fun showPassengerInfo() {
@@ -214,6 +217,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
 
         private const val JOURNEY_TITLE_FONT_SIZE = 16F
         private const val NOTES_MAX_LINES = 5
+        private const val IMAGE_ROTATION = 180f
 
         fun createInstance(savedInstanceCacheManagerId: String): FlightOrderCancellationDetailFragment =
                 FlightOrderCancellationDetailFragment().also {

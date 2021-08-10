@@ -554,6 +554,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_enable_branch_valid_campaign_logging</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_enable_xiaomi_pai_tracking</key>
         <value>true</value>
     </entry>
@@ -571,10 +575,26 @@
     </entry>
     <entry>
         <key>app_enable_branch_utm_only_branch_link</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_enable_custom_sharing</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_screenshot_sharing</key>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_branch_callback_timeout_key</key>
         <value>5000</value>
+    </entry>
+    <entry>
+        <key>android_enable_seller_global_feedback</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_tokopedia_now</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

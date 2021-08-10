@@ -56,6 +56,9 @@ data class DataItem(
         @SerializedName("code")
         val code: String? = "",
 
+        @SerializedName("dep_id")
+        val depID:String? = "",
+
         @SerializedName("mobile_url")
         val mobileUrl: String? = "",
 
@@ -83,7 +86,7 @@ data class DataItem(
         @SerializedName("image_url_dynamic_mobile")
         val imageUrlDynamicMobile: String? = "",
 
-        @SerializedName("applinks", alternate = ["applink", "appLink"])
+        @SerializedName("applinks", alternate = ["applink", "appLink", "timer_applink"])
         var applinks: String? = "",
 
         @SerializedName("name", alternate = ["text"])
@@ -135,7 +138,7 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
-        val  fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
+        val  fontColor: String? = "",
 
         @SerializedName("button_text")
         var buttonText: String? = "",

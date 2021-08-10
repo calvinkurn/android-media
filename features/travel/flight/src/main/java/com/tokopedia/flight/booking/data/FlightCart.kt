@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.data
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -213,6 +214,7 @@ data class FlightCart(
             @Expose
             val label: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -222,8 +224,8 @@ data class FlightCart(
             val priceNumeric: Int = 0,
 
             val priceDetailId: String = ""
-    ): Parcelable {
-            fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
+    ) : Parcelable {
+        fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
     }
 
     data class Amenity(
@@ -239,6 +241,7 @@ data class FlightCart(
             @Expose
             val type: Int = 0,
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -273,13 +276,14 @@ data class FlightCart(
             @Expose
             val id: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
 
             @SerializedName("priceNumeric")
             @Expose
-            val priceNumeric: Int = 0,
+            val priceNumeric: Long = 0,
 
             @SerializedName("description")
             @Expose
@@ -323,7 +327,7 @@ data class FlightCart(
             @SerializedName("benefits")
             @Expose
             val benefits: List<Benefit>
-    ): Parcelable
+    ) : Parcelable
 
     data class Voucher(
             @SerializedName("enableVoucher")
@@ -398,7 +402,7 @@ data class FlightCart(
             @SerializedName("icon")
             @Expose
             val icon: String = ""
-    ): Parcelable
+    ) : Parcelable
 
     data class Journey(
             @SerializedName("id")
@@ -651,6 +655,7 @@ data class FlightCart(
             @Expose
             val type: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",

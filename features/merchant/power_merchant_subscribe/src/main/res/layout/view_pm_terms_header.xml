@@ -29,7 +29,7 @@
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingBottom="@dimen/spacing_lvl1"
         android:text="@string/pm_terms_eligible"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/pm_static_g500_dms"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvPmHeaderTitle"

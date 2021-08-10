@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHoldInfoAdapter
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
@@ -26,7 +25,7 @@ class SaldoHoldInfoFragment : Fragment() {
     var saveInstanceCacheManager: SaveInstanceCacheManager? = null
     var saveInstanceCacheManagerId: String? = null
     var type: Int? = 0
-    var transactionType  = ""
+    var transactionType = ""
 
     val saldoHoldInfoAdapter: SaldoHoldInfoAdapter by lazy { SaldoHoldInfoAdapter(ArrayList()) }
 
@@ -75,7 +74,7 @@ class SaldoHoldInfoFragment : Fragment() {
             title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
         }
 
-        title_saldo_value.text = resultAmount?.let { CurrencyUtils.convertToCurrencyString(it)}
+        title_saldo_value.text = resultAmount?.let { CurrencyUtils.convertToCurrencyString(it) }
         rv_container.layoutManager = LinearLayoutManager(context)
         rv_container.adapter = saldoHoldInfoAdapter
 

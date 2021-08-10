@@ -191,9 +191,13 @@ open class TopChatViewStateImpl constructor(
     override fun onKeyboardClosed() {
         if (chatMenu?.isKeyboardOpened == true) {
             chatMenu?.isKeyboardOpened = false
-            showChatMenu()
             fragmentView?.expandSrw()
+            showChatMenu()
         }
+    }
+
+    override fun isKeyboardOpen(): Boolean {
+        return chatMenu?.isKeyboardOpened == true
     }
 
     override fun hideChatMenu() {
@@ -233,7 +237,8 @@ open class TopChatViewStateImpl constructor(
         attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
         hideProductPreviewLayout()
-        fragmentView?.updateSrwState()
+        fragmentView?.updateSrwPreviewState()
+        fragmentView?.expandSrwBubble()
     }
 
     override fun hideProductPreviewLayout() {
@@ -617,15 +622,25 @@ open class TopChatViewStateImpl constructor(
     }
 
     override fun hasProductPreviewShown(): Boolean {
-        return attachmentPreviewContainer.isVisible && attachmentPreviewAdapter.isShowingProduct()
+        return hasVisibleSendablePreview() && attachmentPreviewAdapter.isShowingProduct()
     }
 
-    override fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean) {
+    override fun hasVisibleSendablePreview(): Boolean {
+        return attachmentPreviewContainer.isVisible
+    }
+
+    override fun showTemplateChatIfReady(
+        lastMessageBroadcast: Boolean,
+        lastMessageSrwBubble: Boolean,
+        amIBuyer: Boolean
+    ) {
         val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
         if (!templateRecyclerView.isVisible &&
-                templateAdapter.hasTemplateChat() &&
-                !isLastMsgFromBroadcastAndIamBuyer &&
-                fragmentView?.shouldShowSrw() == false) {
+            templateAdapter.hasTemplateChat() &&
+            !isLastMsgFromBroadcastAndIamBuyer &&
+            fragmentView?.shouldShowSrw() == false &&
+            !lastMessageSrwBubble
+        ) {
             showTemplateChat()
         }
     }

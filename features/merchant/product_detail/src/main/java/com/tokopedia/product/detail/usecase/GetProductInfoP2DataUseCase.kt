@@ -9,12 +9,11 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -35,16 +34,18 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest): RequestParams =
+        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, affiliateUUIDRequest : AffiliateUIIDRequest?): RequestParams =
                 RequestParams.create().apply {
                     putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                     putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
                     putString(ProductDetailCommonConstant.PARAM_DEVICE_ID, deviceId)
                     putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
+                    if(affiliateUUIDRequest!=null)
+                        putObject(ProductDetailCommonConstant.PARAM_AFFILIATE_UUID, affiliateUUIDRequest)
                 }
 
-        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation) {
-          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: pdpAffiliate) {
+          pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, affiliate: ${'$'}affiliate) {
             error {
               Code
               Message
@@ -162,40 +163,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               badgeURL
               shopTier
             }
-            merchantVoucher {
-                vouchers {
-                  voucher_id
-                  voucher_name
-                  voucher_type {
-                    voucher_type
-                    identifier
-                  }
-                  voucher_code
-                  amount {
-                    amount
-                    amount_type
-                  }
-                  minimum_spend
-                  owner {
-                    owner_id
-                    identifier
-                  }
-                  valid_thru
-                  tnc
-                  banner {
-                    desktop_url
-                    mobile_url
-                  }
-                  status {
-                    status
-                    identifier
-                  }
-                  in_use_expiry
-                  restricted_for_liquid_product
-                }
-                 error_message_title
-                 error_message
-               }
             nearestWarehouse {
               product_id
               warehouse_info {
@@ -288,9 +255,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             cartRedirection {
               status
               error_message
+              alternate_copy {
+                 text
+                 cart_type
+                 color
+              }
               data{
                 product_id
-                config_name
                 available_buttons {
                   text
                   color
@@ -513,8 +484,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
             p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
             p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
-            p2UiData.vouchers = merchantVoucher.vouchers?.map { MerchantVoucherViewModel(it) }?.filter { it.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE }
-                    ?: listOf()
             p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
             p2UiData.productFinancingCalculationData = productFinancingCalculationData
             p2UiData.ratesEstimate = ratesEstimate
@@ -524,6 +493,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.alternateCopy = cartRedirection.alternateCopy
         }
         return p2UiData
     }

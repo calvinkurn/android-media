@@ -440,5 +440,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         const val statusDeleted = 0
         const val statusActive = 1
         const val statusWarehouse = 3
+
+        const val NO_PRODUCT_ID = "0"
     }
 }

@@ -99,6 +99,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
+    private val coachMark by lazy { CoachMark2(requireContext()) }
+    private val coachMarks = arrayListOf<CoachMark2Item>()
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -172,8 +175,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             when (it) {
                 is Fail -> renderErrorMessage(it.throwable)
                 is Success -> {
-                    if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
-                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
+                    if (detailPassData.clientNumber != null && detailPassData.clientNumber?.isNotEmpty() == true) {
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber
+                                ?: ""))
                     } else if (emoneyCardNumber.isNotEmpty()) {
                         renderClientNumber(TopupBillsFavNumberItem(emoneyCardNumber))
                     } else {
@@ -216,9 +220,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     navigateToCart(it.data)
                 }
                 is Fail -> {
-                    if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
-                        navigateToLoginPage()
-                    } else renderErrorMessage(it.throwable)
+                    renderErrorMessage(it.throwable)
                     emoneyFullPageLoadingLayout.hide()
                 }
             }
@@ -250,11 +252,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             var lastOffset = -1
             var lastIsCollapsed = false
 
-            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-                if (lastOffset == verticalOffSet) return
+            override fun onOffsetChanged(layoutAppBar: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet || layoutAppBar == null) return
 
                 lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                if (abs(verticalOffSet) >= layoutAppBar.totalScrollRange && !lastIsCollapsed) {
                     //Collapsed
                     lastIsCollapsed = true
                     (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = true
@@ -262,6 +264,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     //Expanded
                     lastIsCollapsed = false
                     (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = false
+                    showCoachMark(true)
+                } else {
+                    showCoachMark(false)
                 }
             }
         })
@@ -399,6 +404,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     }
                 }
 
+                REQUEST_CODE_CART_DIGITAL -> {
+                    if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
+                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                        if (!message.isNullOrEmpty()) renderErrorMessage(MessageErrorException(message))
+                    }
+                }
+
+
                 REQUEST_CODE_LOGIN -> {
                     proceedAddToCart(emoneyPdpViewModel.digitalCheckoutPassData)
                 }
@@ -421,17 +434,23 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun renderErrorMessage(error: Throwable) {
         var errorThrowable = error
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
-            errorThrowable = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+            errorThrowable = MessageErrorException(getString(
+                com.tokopedia.common_digital.R.string.digital_common_grpc_toaster))
         }
-        Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG).show()
+        Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR).show()
     }
 
     private fun renderFullPageError(throwable: Throwable) {
-        emoneyGlobalError.showUnifyError(throwable, { loadData() })
+        emoneyGlobalError.show()
+        emoneyGlobalError.showUnifyError(throwable, { loadData() }, {
+            emoneyGlobalError.hide()
+            renderErrorMessage(throwable)
+            emoneyPdpShimmeringLayout.hide()
+        })
         emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
             gravity = Gravity.CENTER
         }
-        emoneyGlobalError.show()
     }
 
     override fun onClickCheckBalance() {
@@ -455,6 +474,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onRemoveNumberIconClick() {
         EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId)
+        showCoachMark(false)
         emoneyCardNumber = ""
         showRecentNumberAndPromo()
     }
@@ -472,7 +492,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
         startActivityForResult(
                 TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
-                        ClientNumberType.TYPE_INPUT_NUMERIC, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
+                        ClientNumberType.TYPE_INPUT_NUMERIC.value, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
     }
 
@@ -483,9 +503,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
-        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance.isNotEmpty()) {
-            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber,
-                    detailPassData.additionalETollBalance)
+        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance?.isNotEmpty() == true) {
+            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber
+                    ?: "",
+                    detailPassData.additionalETollBalance ?: "")
         } else {
             emoneyPdpHeaderView.configureCheckBalanceView()
         }
@@ -496,8 +517,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         showProducts()
         emoneyPdpProductWidget.showShimmering()
         emoneyBuyWidgetLayout.hide()
-        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero()
-                , prefix.key)
+        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero(), prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
@@ -528,6 +548,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     override fun onClickProduct(product: CatalogProduct, position: Int) {
         //atc
         emoneyPdpViewModel.setSelectedProduct(product)
+        coachMark.dismissCoachMark()
 
         if (product.attributes.price.isNotEmpty()) {
             emoneyBuyWidget.setTotalPrice(product.attributes.price)
@@ -556,8 +577,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
-        addToCartViewModel.addToCart(digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams())
+        if (userSession.isLoggedIn) {
+            addToCartViewModel.addToCart(digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                    DigitalSubscriptionParams())
+        } else {
+            navigateToLoginPage()
+        }
     }
 
     private fun navigateToCart(categoryId: String) {
@@ -576,22 +601,18 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun showOnBoarding() {
         context?.run {
-            val coachMarkHasShown = localCacheHandler.getBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, false)
-            if (coachMarkHasShown) return
-
+            if (getCoachMarkHasShown()) return
             emoneyPdpProductWidget.emoneyProductListRecyclerView.let { rv ->
                 rv.post {
                     try {
                         (rv.findViewHolderForAdapterPosition(0) as EmoneyPdpProductViewHolder)
                                 .itemView.emoneyProductPrice?.let { firstNominalView ->
-                                    val coachMarks = ArrayList<CoachMark2Item>()
                                     coachMarks.add(CoachMark2Item(firstNominalView,
                                             getString(R.string.recharge_pdp_emoney_coachmark_title),
                                             getString(R.string.recharge_pdp_emoney_coachmark_subtitle),
                                             CoachMark2.POSITION_BOTTOM))
 
-                                    val coachMark = CoachMark2(requireContext())
-                                    coachMark.showCoachMark(coachMarks)
+                                    showCoachMark(true)
 
                                     localCacheHandler.apply {
                                         putBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, true)
@@ -604,6 +625,24 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     }
                 }
             }
+        }
+    }
+
+    private fun getCoachMarkHasShown(): Boolean {
+        return localCacheHandler.getBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, false)
+    }
+
+    private fun showCoachMark(show: Boolean) {
+        try {
+            if (coachMarks.isNotEmpty()) {
+                if (show) {
+                    coachMark.showCoachMark(coachMarks)
+                } else {
+                    coachMark.hideCoachMark()
+                }
+            }
+        } catch (e: Throwable) {
+            //do nothing. don't show coachmark.
         }
     }
 

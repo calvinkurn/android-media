@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.common.presenter.activities
 import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
+import android.print.PrintJob
 import android.print.PrintManager
 import android.view.Menu
 import android.webkit.JavascriptInterface
@@ -34,6 +35,7 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
         )
     }
 
+    private var printJob: PrintJob? = null
     private var webView: TkpdWebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,24 +67,26 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
 
     private fun doPrint(mediaSizeId: String = "") {
         runOnUiThread {
-            webView?.run {
-                val printManager = ContextCompat.getSystemService(context, PrintManager::class.java)
-                val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    createPrintDocumentAdapter(PRINT_JOB_NAME)
-                } else {
-                    createPrintDocumentAdapter()
-                }
-                val builder = PrintAttributes.Builder()
-                if (mediaSizeId.isNotEmpty()) {
-                    builder.setMediaSize(mediaSizeId.toPrintAttributeMediaSize())
-                } else {
-                    builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                }
-                if (!isFinishing) {
-                    try {
-                        printManager?.print(PRINT_JOB_NAME, printAdapter, builder.build())
-                    } catch (e: Throwable) {
-                        Toaster.build(this, getString(R.string.som_print_awb_error_message), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            if (printJob == null || printJob?.isCompleted == true || printJob?.isFailed == true || printJob?.isCancelled == true) {
+                webView?.run {
+                    val printManager = ContextCompat.getSystemService(context, PrintManager::class.java)
+                    val printAdapter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        createPrintDocumentAdapter(PRINT_JOB_NAME)
+                    } else {
+                        createPrintDocumentAdapter()
+                    }
+                    val builder = PrintAttributes.Builder()
+                    if (mediaSizeId.isNotEmpty()) {
+                        builder.setMediaSize(mediaSizeId.toPrintAttributeMediaSize())
+                    } else {
+                        builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                    }
+                    if (!isFinishing) {
+                        try {
+                            printJob = printManager?.print(PRINT_JOB_NAME, printAdapter, builder.build())
+                        } catch (e: Throwable) {
+                            showToaster(getString(R.string.som_print_awb_error_message))
+                        }
                     }
                 }
             }
@@ -91,6 +95,12 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
 
     private fun String.toPrintAttributeMediaSize(): PrintAttributes.MediaSize {
         return MEDIA_SIZES[this] ?: PrintAttributes.MediaSize.UNKNOWN_PORTRAIT
+    }
+
+    private fun showToaster(message: String) {
+        webView?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
     }
 
     private inner class SomPrintAwbJavascriptInterface {

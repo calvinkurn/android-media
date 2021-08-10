@@ -1,0 +1,39 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 66961,
+    "from": "Seller Testing",
+    "from_uid": 17235411,
+    "from_user_name": "Seller Testing",
+    "from_role": "Shop Owner",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/143252780/user_thumbnail/desktop",
+    "is_opposite": true,
+    "to_uid": 143252780,
+    "message": {
+      "censored_reply": "Uploaded Image",
+      "original_reply": "Uploaded Image",
+      "timestamp": "2021-06-16T11:28:35.324812292+07:00",
+      "timestamp_fmt": "16 June 2021, 11:28 WIB",
+      "timestamp_unix": 1623817715324,
+      "timestamp_unix_nano": 1623817715324812000
+    },
+    "start_time": "2021-06-16T04:28:33.792Z",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "image_url": "https://images.tokopedia.net/img/LUZQDL/2021/6/16/7bc884bd-6221-45ed-9876-8cd15dd85b42.jpg",
+        "image_url_thumbnail": "https://images.tokopedia.net/img/cache/100-square/LUZQDL/2021/6/16/7bc884bd-6221-45ed-9876-8cd15dd85b42.jpg"
+      },
+      "fallback_attachment": {
+        "html": "<div>Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.</div>",
+        "message": "Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar."
+      },
+      "id": 1,
+      "type": 2
+    },
+    "show_rating": false,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
+}

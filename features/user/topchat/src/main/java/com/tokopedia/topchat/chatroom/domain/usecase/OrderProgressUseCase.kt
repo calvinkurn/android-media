@@ -23,6 +23,7 @@ open class OrderProgressUseCase @Inject constructor(
             execute({ result ->
                 onSuccess(result)
             }, { error ->
+                error.printStackTrace()
                 onError(error)
             })
         }

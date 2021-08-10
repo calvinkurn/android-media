@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="@string/multi_line_empty_state_title" />
+            tools:text="@string/shc_data_empty_state_title" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvLineGraphEmptyStateDescription"
@@ -31,7 +31,7 @@
             app:typographyType="body_3"
             android:textColor="@color/Unify_N700_68"
             app:typographyWeight="reguler"
-            tools:text="@string/multi_line_empty_state_description" />
+            tools:text="@string/shc_empty_state_description" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcMultiLineEmptyStateCta"
@@ -41,7 +41,7 @@
             android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="@string/multi_line_empty_state_cta" />
+            tools:text="@string/shc_empty_state_cta" />
     </LinearLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

@@ -18,6 +18,8 @@ interface PromoCheckoutTypeFactory {
 
     fun type(uiModel: PromoEmptyStateUiModel): Int
 
+    fun type(uiModel: PromoErrorStateUiModel): Int
+
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
 }

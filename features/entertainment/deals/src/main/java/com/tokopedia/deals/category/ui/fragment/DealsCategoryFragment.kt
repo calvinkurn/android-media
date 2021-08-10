@@ -255,8 +255,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
         }
 
         sort_filter_deals_category.run {
+            var selectedChips = 0
             filterItems.forEachIndexed { index, sortFilterItem ->
                 if (chips[index].isSelected) {
+                    selectedChips++
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 }
 
@@ -283,7 +285,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     onFilterChipClicked(chips)
                 }
             }
-
+            indicatorCounter = selectedChips
             selectFilterFromChipsData()
         }
     }
@@ -304,11 +306,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 sortFilter.indicatorCounter -= additionalSelectedFilterCount
                 additionalSelectedFilterCount = 0
                 if (chips.size > chipItems.size) {
-                    for (i in 0 until chips.size) {
+                    for (i in chipItems.size until chips.size) {
                         if (chips[i].isSelected) additionalSelectedFilterCount++
                     }
                 }
-                sortFilter.indicatorCounter = additionalSelectedFilterCount
+                sortFilter.indicatorCounter += additionalSelectedFilterCount
             }
         }
     }

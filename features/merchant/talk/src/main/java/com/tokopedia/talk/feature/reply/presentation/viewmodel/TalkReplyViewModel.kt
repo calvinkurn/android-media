@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
@@ -201,7 +202,7 @@ class TalkReplyViewModel @Inject constructor(
 
     fun reportTalk(questionId: String) {
         launchCatchError(block = {
-            talkReportTalkUseCase.setParams(questionId.toIntOrZero())
+            talkReportTalkUseCase.setParams(questionId.toLongOrZero(), TalkReportTalkUseCase.SELLER_REPORT_REASON)
             val response = talkReportTalkUseCase.executeOnBackground()
             if (response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _reportTalkResult.postValue(Success(response))
@@ -215,7 +216,7 @@ class TalkReplyViewModel @Inject constructor(
 
     fun reportComment(commentId: String) {
         launchCatchError(block = {
-            talkReportCommentUseCase.setParams(commentId.toIntOrZero())
+            talkReportCommentUseCase.setParams(commentId.toLongOrZero(), TalkReportTalkUseCase.SELLER_REPORT_REASON)
             val response = talkReportCommentUseCase.executeOnBackground()
             if (response.talkReportComment.data.isSuccess == MUTATION_SUCCESS) {
                 _reportCommentResult.postValue(Success(response))

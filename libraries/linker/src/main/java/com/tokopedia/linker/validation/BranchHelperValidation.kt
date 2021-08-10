@@ -109,6 +109,20 @@ class BranchHelperValidation {
         }
     }
 
+    fun logValidCampaignData(utmSource: String, utmMedium: String, utmCampaign: String, clickTime: String, isFirstOpen: Boolean, isBranchLink: Boolean){
+        try {
+            val clientId = TrackApp.getInstance().gtm.clientIDString
+            val messageMap = mapOf("type" to "validation", "reason" to "BranchCallBackValidUTM", "utm_medium" to utmMedium,
+                "utm_source" to utmSource, "campaign" to utmCampaign, "click_time" to clickTime, "client_id" to clientId,"is_first_open" to (isFirstOpen).toString(),
+                "is_branch_link" to (isBranchLink).toString())
+            logging(messageMap)
+        }catch (e: Exception){
+            e.printStackTrace()
+            val messageMap = mapOf("type" to "error", "reason" to "exception_branchCallBackValidUtm", "data" to "logValidBranchCallBackUtm", "ex" to Log.getStackTraceString(e))
+            logging(messageMap)
+        }
+    }
+
     private fun validatePaymentId(paymentId: String) {
         if (paymentId.isNullOrBlank()) {
             val messageMap = mapOf("type" to "validation", "reason" to "paymentId_blank", "data" to "")

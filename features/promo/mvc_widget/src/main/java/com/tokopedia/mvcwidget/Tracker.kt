@@ -3,7 +3,11 @@ package com.tokopedia.mvcwidget
 import androidx.annotation.IntDef
 import com.tokopedia.mvcwidget.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.MvcSource.Companion.PDP
+import com.tokopedia.mvcwidget.MvcSource.Companion.REWARDS
 import com.tokopedia.mvcwidget.MvcSource.Companion.SHOP
+import com.tokopedia.mvcwidget.Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT
+import com.tokopedia.mvcwidget.Tracker.Constants.TOKOMEMBER_BUSINESSUNIT
+import com.tokopedia.mvcwidget.Tracker.Constants.TOKOPOINT_BUSINESSUNIT
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -28,6 +32,8 @@ object Tracker {
         const val CURRENT_SITE = "currentSite"
         const val TOKOPOINT_BUSINESSUNIT = "tokopoints"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val TOKOMEMBER_BUSINESSUNIT = "tokomember"
+        const val PHYSICALGOODS_BUSINESSUNIT = "physical goods"
     }
 
     object Event {
@@ -42,6 +48,7 @@ object Tracker {
         const val MERCHANT_VOUCHER = "merchant voucher"
         const val SHOP_PAGE_BUYER = "shop page - buyer"
         const val REWARDS_CATEGORY = "kupon toko"
+        const val MERCHANT_VOUCHER_CLOSE = "merchant voucher closed"
     }
 
     object Action {
@@ -63,15 +70,20 @@ object Tracker {
         const val VIEW_MEMBERSHIP_COUPON = "view membership coupon"
         const val VIEW_REGULAR_COUPON = "view regular coupon"
         const val CLICK_CEK_TOKO = "click cek toko"
+        const val CLICK_LIHAT_SELENGKAPNYA = "click lihat selengkapnya"
+        const val CLICK_MULAI_BELANJA = "click mulai belanja"
     }
 
     object Label {
         const val PDP_VIEW = "pdp view"
         const val SHOP_PAGE = "shop page"
+        const val MVC_CLOSE_VIEW_SELEGKAPANYA = "mvc_closed_lihat_selengkapnya"
+        const val MVC_CLOSE_VIEW_MULAIBELANJA = "mvc_closed_mulai_belanja"
+        const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
     }
 
-    fun fillCommonItems(map: MutableMap<String, Any>, userId: String?) {
-        map[Constants.BUSINESS_UNIT] = "physical goods"
+    fun fillCommonItems(map: MutableMap<String, Any>, userId: String? , businessUnit : String) {
+        map[Constants.BUSINESS_UNIT] = businessUnit
         map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
         userId?.let {
             map[Constants.USER_ID] = userId
@@ -98,7 +110,7 @@ object Tracker {
 
             }
         }
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId,PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -121,7 +133,7 @@ object Tracker {
 
         map[Constants.EVENT_ACTION] = Action.CLICK_FOLLOW_WIDGET
 
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -148,7 +160,7 @@ object Tracker {
             map[Constants.EVENT_ACTION] = Action.VIEW_TOASTER_FOLLOW_ERROR
         }
 
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -179,7 +191,7 @@ object Tracker {
                 map[Constants.EVENT_ACTION] = Action.VIEW_REGULAR_COUPON
             }
         }
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
 //        getTracker().sendGeneralEvent(map)
     }
 
@@ -205,8 +217,11 @@ object Tracker {
             FollowWidgetType.MEMBERSHIP_OPEN -> {
                 map[Constants.EVENT_ACTION] = Action.VIEW_MEMBERSHIP_WIDGET
             }
+            FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                map[Constants.EVENT_ACTION] = Action.VIEW_MEMBERSHIP_WIDGET
+            }
         }
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -228,7 +243,7 @@ object Tracker {
         }
 
         map[Constants.EVENT_ACTION] = Action.CLICK_JADI_MEMBER
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -255,7 +270,7 @@ object Tracker {
             map[Constants.EVENT_ACTION] = Action.VIEW_TOASTER_JADI_MEMBER_ERROR
         }
 
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -277,7 +292,18 @@ object Tracker {
         }
 
         map[Constants.EVENT_ACTION] = Action.CLICK_CEK_INFO
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun clickCekInfoButtonClose(shopId: String,userId: String?,@MvcSource source: Int){
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.CLICK_MV
+        map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER
+        map[Constants.EVENT_LABEL] = "${Label.MVC_CLOSE_CEK_INFO} $shopId"
+        map[Constants.EVENT_ACTION] = Action.CLICK_CEK_INFO
+
+        fillCommonItems(map, userId, TOKOMEMBER_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -299,7 +325,7 @@ object Tracker {
         }
 
         map[Constants.EVENT_ACTION] = Action.VIEW_TM_INFO
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -321,7 +347,7 @@ object Tracker {
         }
         map[Constants.EVENT_ACTION] = Action.CLICK_DAFTAR
 
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
@@ -344,35 +370,60 @@ object Tracker {
 
         map[Constants.EVENT_ACTION] = Action.CLOSE_BOTTOMSHEET
 
-        fillCommonItems(map, userId)
+        fillCommonItems(map, userId, PHYSICALGOODS_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
     //Outside MVC - entryPoint
     //35,36,37,38,39,40,41,42,43
 
+
+   //MVC close memberhsip GTM
+    fun clickLihatExpand(shopId: String, userId: String?, @MvcSource source: Int) {
+       val map = mutableMapOf<String, Any>()
+       map[Constants.EVENT] = Event.CLICK_MV
+       map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER_CLOSE
+       map[Constants.EVENT_LABEL] = "${Label.MVC_CLOSE_VIEW_SELEGKAPANYA} $shopId"
+       map[Constants.EVENT_ACTION] = Action.CLICK_LIHAT_SELENGKAPNYA
+
+       fillCommonItems(map, userId, TOKOMEMBER_BUSINESSUNIT)
+       getTracker().sendGeneralEvent(map)
+   }
+
+    fun  clickMulaiBelanjaButton(shopId: String, userId: String?, @MvcSource source: Int){
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.CLICK_MV
+        map[Constants.EVENT_CATEGORY] = Category.MERCHANT_VOUCHER_CLOSE
+        map[Constants.EVENT_LABEL] = "${Label.MVC_CLOSE_VIEW_MULAIBELANJA} $shopId"
+        map[Constants.EVENT_ACTION] = Action.CLICK_MULAI_BELANJA
+
+        fillCommonItems(map, userId, TOKOMEMBER_BUSINESSUNIT)
+        getTracker().sendGeneralEvent(map)
+    }
+
     //Reward GTM for Bottomsheet CTA
-    fun userClickBottomSheetCTA(label: String) {
+    fun userClickBottomSheetCTA(label: String, userId: String) {
         val map = mutableMapOf<String, Any>()
         map[Constants.EVENT] = Event.CLICK_KUPON
         map[Constants.EVENT_CATEGORY] = Category.REWARDS_CATEGORY
         map[Constants.EVENT_ACTION] = Action.CLICK_CEK_TOKO
         map[Constants.EVENT_LABEL] = label
-        map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
-        map[Constants.BUSINESS_UNIT] = Constants.TOKOPOINT_BUSINESSUNIT
 
+        fillCommonItems(map, userId, TOKOPOINT_BUSINESSUNIT)
         getTracker().sendGeneralEvent(map)
     }
 
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(DEFAULT, SHOP, PDP)
+@IntDef(DEFAULT, SHOP, PDP, REWARDS)
 annotation class MvcSource {
 
     companion object {
         const val DEFAULT = 0
         const val SHOP = 1
         const val PDP = 2
+        const val REWARDS = 3
+
     }
 }

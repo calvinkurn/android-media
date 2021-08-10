@@ -104,7 +104,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
     fun getAttachments(): List<FlightCancellationAttachmentModel> = attachmentModelList
 
     fun onSuccessChangeAttachment(filePath: String) {
-        if (validateAttachment(filePath)) {
+        if (validateAttachment(filePath) && attachmentModelList.isNotEmpty() && attachmentModelList.size > editedAttachmentPosition) {
             val attachmentModel = attachmentModelList[editedAttachmentPosition]
             attachmentModel.filepath = filePath
             attachmentModel.filename = Uri.parse(filePath).lastPathSegment ?: ""
@@ -191,7 +191,8 @@ class FlightCancellationReasonViewModel @Inject constructor(
             for (passenger in cancellation.passengerModelList) {
                 val passengerAttachmentModel = FlightCancellationPassengerAttachmentModel(
                         passenger.passengerId, getPassengerName(passenger), passenger.relationId)
-                if (!uniquePassenger.contains(passengerAttachmentModel) && passenger.type == FlightBookingPassenger.ADULT) {
+                if (!uniquePassenger.contains(passengerAttachmentModel) &&
+                        passenger.type == FlightBookingPassenger.ADULT.value) {
                     uniquePassenger.add(passengerAttachmentModel)
                 }
             }
@@ -267,7 +268,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
         for (cancellation in cancellationWrapperModel.cancellationList) {
             for (passenger in cancellation.passengerModelList) {
                 if (!uniquePassenger.contains(passenger.passengerId) &&
-                        passenger.type == FlightBookingPassenger.ADULT) {
+                        passenger.type == FlightBookingPassenger.ADULT.value) {
                     uniquePassenger.add(passenger.passengerId)
                 }
             }

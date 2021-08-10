@@ -195,7 +195,7 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
 
     /**
      * Set a single text color for all states
-     * @param color Color value such as [Color.WHITE] or [Color.argb]
+     * @param color Color value such as [androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)] or [Color.argb]
      */
     fun setTextColor(color: Int) {
         setTextColor(ColorStateList.valueOf(color))

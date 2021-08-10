@@ -95,13 +95,19 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         splitCompatInstall()
 
-        val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
-        bottomInfo = view.findViewById(R.id.bottom_info)
-        progressBar = view.findViewById(R.id.progress_bar)
-        mainContent = view.findViewById(R.id.main_content)
-        textName = view.findViewById(R.id.et_name)
-        btnNext = view.findViewById(R.id.btn_continue)
-        return view
+        return try {
+            val view = inflater.inflate(com.tokopedia.profilecompletion.R.layout.fragment_add_name_register, container, false)
+            bottomInfo = view.findViewById(R.id.bottom_info)
+            progressBar = view.findViewById(R.id.progress_bar)
+            mainContent = view.findViewById(R.id.main_content)
+            textName = view.findViewById(R.id.et_name)
+            btnNext = view.findViewById(R.id.btn_continue)
+            view
+        } catch (e: Throwable) {
+            e.printStackTrace();
+            null
+        }
+
     }
 
     private fun splitCompatInstall() {

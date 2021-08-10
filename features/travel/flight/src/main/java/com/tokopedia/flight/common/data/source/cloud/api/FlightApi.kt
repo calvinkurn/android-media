@@ -1,7 +1,7 @@
 package com.tokopedia.flight.common.data.source.cloud.api
 
 import com.tokopedia.flight.cancellation.data.CancellationAttachmentUploadEntity
-import com.tokopedia.flight.common.constant.FlightUrl
+import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_CANCELLATION_UPLOAD
 import com.tokopedia.network.data.model.response.DataResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -12,12 +12,12 @@ import retrofit2.http.Part
 import retrofit2.http.PartMap
 
 /**
- * Created by alvarisi on 10/30/17.
+ * Created by Furqan on 06/10/2021.
  */
 interface FlightApi {
 
     @Multipart
-    @POST(FlightUrl.FLIGHT_CANCELLATION_UPLOAD)
+    @POST(FLIGHT_CANCELLATION_UPLOAD)
     suspend fun uploadCancellationAttachmentCoroutine(@PartMap params: Map<String, @JvmSuppressWildcards RequestBody>,
                                                       @Part docFile: MultipartBody.Part)
             : Response<DataResponse<CancellationAttachmentUploadEntity>>

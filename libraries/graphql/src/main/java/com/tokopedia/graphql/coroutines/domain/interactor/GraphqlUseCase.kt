@@ -92,8 +92,9 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
             return response.getData(tClass)
         } else {
             val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
-            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOfRequest.toString() ,errorMessage)
-            throw MessageErrorException(errorMessage)
+            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOfRequest.toString()
+                    ,errorMessage, response.httpStatusCode.toString())
+            throw MessageErrorException(errorMessage, response.httpStatusCode.toString())
         }
     }
 }

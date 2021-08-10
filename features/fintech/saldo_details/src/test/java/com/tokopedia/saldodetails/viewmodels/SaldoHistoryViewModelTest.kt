@@ -2,7 +2,6 @@ package com.tokopedia.saldodetails.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.response.model.DepositActivityResponse
@@ -13,7 +12,6 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -244,7 +242,7 @@ class SaldoHistoryViewModelTest {
 
         every { saldoHistoryContract.getEndDate() } returns endDate
         
-        every { saldoDatePicker.DatePickerCalendar (any()) } just Runs
+        every { saldoDatePicker.datePickerCalendar (any()) } just Runs
         
         every { saldoDatePicker.setDate(any(),any(),any()) } just Runs
         
@@ -252,7 +250,7 @@ class SaldoHistoryViewModelTest {
         
         verify(ordering = Ordering.ORDERED) {
             saldoDatePicker.setDate(any(), any(), any())
-            saldoDatePicker.DatePickerCalendar(any())
+            saldoDatePicker.datePickerCalendar(any())
         }
     }
     @Test
@@ -266,7 +264,7 @@ class SaldoHistoryViewModelTest {
 
         every { saldoHistoryContract.getStartDate() } returns startDate
 
-        every { saldoDatePicker.DatePickerCalendar (any()) } just Runs
+        every { saldoDatePicker.datePickerCalendar (any()) } just Runs
 
         every { saldoDatePicker.setDate(any(),any(),any()) } just Runs
 
@@ -274,7 +272,7 @@ class SaldoHistoryViewModelTest {
 
         verify(ordering = Ordering.ORDERED) {
             saldoDatePicker.setDate(any(), any(), any())
-            saldoDatePicker.DatePickerCalendar(any())
+            saldoDatePicker.datePickerCalendar(any())
         }
     }
 
@@ -288,7 +286,7 @@ class SaldoHistoryViewModelTest {
 
         every { saldoHistoryContract.getEndDate() } returns endDate
 
-        every { saldoDatePicker.DatePickerCalendar (any()) } just Runs
+        every { saldoDatePicker.datePickerCalendar (any()) } just Runs
 
         every { saldoDatePicker.setDate(any(),any(),any()) } just Runs
 
@@ -296,7 +294,7 @@ class SaldoHistoryViewModelTest {
 
         verify(exactly = 0) {
             saldoDatePicker.setDate(any(), any(), any())
-            saldoDatePicker.DatePickerCalendar(any())
+            saldoDatePicker.datePickerCalendar(any())
         }
     }
 
@@ -310,7 +308,7 @@ class SaldoHistoryViewModelTest {
 
         every { saldoHistoryContract.getEndDate() } returns endDate
 
-        every { saldoDatePicker.DatePickerCalendar (any()) } just Runs
+        every { saldoDatePicker.datePickerCalendar (any()) } just Runs
 
         every { saldoDatePicker.setDate(any(),any(),any()) } just Runs
 
@@ -318,7 +316,7 @@ class SaldoHistoryViewModelTest {
 
         verify(ordering = Ordering.ORDERED) {
             saldoDatePicker.setDate(any(), any(), any())
-            saldoDatePicker.DatePickerCalendar(any())
+            saldoDatePicker.datePickerCalendar(any())
         }
     }
 

@@ -103,6 +103,15 @@ class EmoneyAnalytics {
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
+    fun onShowErrorTrackingNFCNotSupproted(userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.FAILED_UPDATE_BALANCE_NFC_NOT_SUPPORT,
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
     //---------------------------------------------------------------------------------------------------------
     // OLD ANALYTICS
 
@@ -181,6 +190,7 @@ class EmoneyAnalytics {
             const val CHECK_STEP_2 = "check step - 2"
             const val CARD_IS_NOT_SUPPORTED = "card not supported"
             const val FAILED_UPDATE_BALANCE = "failed update saldo"
+            const val FAILED_UPDATE_BALANCE_NFC_NOT_SUPPORT = "failed nfc"
             const val SUCCESS_CHECK_BALANCE = "success check saldo"
 
             const val CLICK_TOPUP = "click top up now"
@@ -188,6 +198,7 @@ class EmoneyAnalytics {
             const val CLICK_CLOSE_INITAL_PAGE = "click x button initial"
             const val SUCCESS_CLICK_CLOSE_PAGE = "click x button success"
             const val FAILED_CLICK_CLOSE_PAGE = "click x button failed"
+            const val FAILED_CLICK_CLOSE_PAGE_NFC_NOT_SUPPORTED = "click x button failed nfc"
         }
     }
 

@@ -25,10 +25,10 @@ data class ShopScoreLevelResponse(
         data class Result(
                 @Expose
                 @SerializedName("shopLevel")
-                val shopLevel: Int = 0,
+                val shopLevel: Long = 0,
                 @Expose
                 @SerializedName("shopScore")
-                val shopScore: Int = 0,
+                val shopScore: Long = 0,
                 @Expose
                 @SerializedName("period")
                 val period: String = "",

@@ -294,7 +294,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun canNavigateNextPage(): Boolean {
-        return swipeContainerView.hasNextPage()
+        return swipeContainerView.hasNextPage() && orientation.isPortrait
     }
 
     fun getViewModelFactory(): ViewModelProvider.Factory {

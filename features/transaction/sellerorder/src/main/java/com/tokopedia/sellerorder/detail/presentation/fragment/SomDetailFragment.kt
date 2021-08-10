@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
@@ -58,7 +57,6 @@ import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.ATTRIBUTE_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
@@ -130,7 +128,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         SomBottomSheetRejectOrderAdapter.ActionListener,
         SomDetailAdapter.ActionListener,
         SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener {
+        SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener, SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -150,6 +148,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
     private lateinit var somDetailAdapter: SomDetailAdapter
     private var refreshHandler: RefreshHandler? = null
+    private var pendingAction: SomPendingAction? = null
 
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
@@ -160,8 +159,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var bottomSheetCourierProblems: SomBottomSheetCourierProblem? = null
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
+    private var bottomSheetChangeAwb: SomOrderEditAwbBottomSheet? = null
 
-    private var pendingAction: SomPendingAction? = null
+    protected var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
     protected var orderId = ""
     protected var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
@@ -220,14 +220,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun goToAskBuyer() {
-        val urlInvoice = detailResponse?.invoiceUrl.orEmpty()
-        val invoiceUri = Uri.parse(urlInvoice)
-        val invoiceId = invoiceUri.getQueryParameter(ATTRIBUTE_ID)
+        val orderId = orderId.takeIf { it.isNotBlank() } ?: getOrderIdExtra()
         val intent = RouteManager.getIntent(activity,
                 ApplinkConst.TOPCHAT_ASKBUYER,
                 detailResponse?.customer?.id.orEmpty(), "",
                 PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image).apply {
-            putExtra(ApplinkConst.Chat.INVOICE_ID, invoiceId)
+            putExtra(ApplinkConst.Chat.INVOICE_ID, orderId) // it's actually require the id of the order
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
 
             if (detailResponse?.listProduct?.isNotEmpty() == true) {
@@ -247,7 +245,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         getActivityPltPerformanceMonitoring()
         if (arguments != null) {
-            orderId = arguments?.getString(PARAM_ORDER_ID).toString()
+            orderId = getOrderIdExtra()
             somDetailLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
             checkUserRole()
         }
@@ -285,12 +283,22 @@ open class SomDetailFragment : BaseDaggerFragment(),
         connectionMonitor?.end()
     }
 
+    override fun onFragmentBackPressed(): Boolean {
+        return dismissBottomSheets()
+    }
+
     override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
         showBuyerRequestCancelBottomSheet(it)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         som_detail_toolbar?.addCustomRightContent(chatIcon)
+    }
+
+    override fun doSetDelivered(receiverName: String) {
+        val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
+        setLoadingIndicator(true)
+        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverName)
     }
 
     private fun checkUserRole() {
@@ -370,7 +378,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (acceptOrderResponse.success == 1) {
                         onSuccessAcceptOrder()
                     } else {
-                        showToasterError(acceptOrderResponse.listMessage.first(), view)
+                        showToaster(acceptOrderResponse.listMessage.first(), view, TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -423,6 +431,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
                     it.throwable.showErrorToaster()
+                    bottomSheetSetDelivered?.onFailedSetDelivered()
                 }
             }
         })
@@ -677,9 +686,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 shape = GradientDrawable.RECTANGLE
                 setColor(ContextCompat.getColor(context, android.R.color.transparent))
                 cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+                setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
             }
-            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+            setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
         }
     }
 
@@ -722,36 +731,20 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showSetDeliveredDialog() {
-        secondaryBottomSheet?.dismiss()
-        context?.let { ctx ->
-            val dialog = DialogUnify(ctx, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                if (DeviceScreenInfo.isTablet(context)) {
-                    dialogMaxWidth = getScreenWidth() / 2
-                }
+    private fun showSetDeliveredBottomSheet() {
+        view.let {
+            if (it is ViewGroup) {
+                val setDeliveredBottomSheet = bottomSheetSetDelivered ?: initSetDeliveredBottomSheet()
+                bottomSheetSetDelivered = setDeliveredBottomSheet
+                bottomSheetSetDelivered?.init(it)
+                bottomSheetSetDelivered?.show()
             }
-            val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
+        }
+    }
 
-            val dialogView = View.inflate(ctx, R.layout.dialog_set_delivered, null).apply {
-                val receiverEditText = findViewById<TextInputEditText>(R.id.et_receiver)
-                findViewById<View>(R.id.btn_cancel).setOnClickListener { dialog.dismiss() }
-                findViewById<View>(R.id.btn_ok).setOnClickListener {
-                    val name = receiverEditText.text.toString()
-                    if (name.isBlank()) {
-                        receiverEditText.error = ctx.getString(R.string.et_empty_error)
-                    } else {
-                        dialog.dismiss()
-                        setLoadingIndicator(true)
-                        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverEditText.text.toString())
-                    }
-                }
-            }
-
-            with(dialog) {
-                setUnlockVersion()
-                setChild(dialogView)
-                show()
-            }
+    private fun initSetDeliveredBottomSheet(): SomBottomSheetSetDelivered? {
+        return context?.let { context ->
+            SomBottomSheetSetDelivered(context, this)
         }
     }
 
@@ -855,23 +848,26 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onBottomSheetItemClick(key: String) {
-        detailResponse?.button?.forEach {
-            if (key.equals(it.key, true)) {
-                eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse?.statusCode.toString(), detailResponse?.statusText.orEmpty())
-                when {
-                    key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
-                    key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
-                    key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
-                    key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
-                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
-                    key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
-                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
-                    key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
-                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
-                    key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
+        secondaryBottomSheet?.setOneTimeOnDismiss {
+            detailResponse?.button?.forEach {
+                if (key.equals(it.key, true)) {
+                    eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse?.statusCode.toString(), detailResponse?.statusText.orEmpty())
+                    when {
+                        key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
+                        key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
+                        key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
+                        key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
+                        key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
+                        key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                        key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
+                        key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                        key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredBottomSheet()
+                        key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
+                    }
                 }
             }
         }
+        secondaryBottomSheet?.dismiss()
     }
 
     private fun setActionChangeCourier() {
@@ -901,23 +897,27 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionUbahNoResi() {
+        bottomSheetChangeAwb = bottomSheetChangeAwb ?: initSomOrderEditAwbBottomSheet()
         view?.let {
             if (it is ViewGroup) {
-                SomOrderEditAwbBottomSheet(it.context).apply {
-                    setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
-                        override fun onEditAwbButtonClicked(cancelNotes: String) {
-                            doEditAwb(cancelNotes)
-                        }
-                    })
+                bottomSheetChangeAwb?.apply {
                     init(it)
-                    hideKnob()
-                    showCloseButton()
                     show()
                 }
-                return
             }
         }
-        showErrorToaster("Terjadi kesalahan, silahkan coba lagi.")
+    }
+
+    private fun initSomOrderEditAwbBottomSheet(): SomOrderEditAwbBottomSheet? {
+        return context?.let { context ->
+            SomOrderEditAwbBottomSheet(context).apply {
+                setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                    override fun onEditAwbButtonClicked(cancelNotes: String) {
+                        doEditAwb(cancelNotes)
+                    }
+                })
+            }
+        }
     }
 
     private fun doEditAwb(shippingRef: String) {
@@ -932,14 +932,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
                         onSuccessEditAwb()
                     } else {
-                        showToasterError(getString(R.string.global_error), view)
+                        showToaster(getString(R.string.global_error), view, TYPE_ERROR)
                     }
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if (failEditAwbResponse.message.isNotEmpty()) {
-                        showToasterError(failEditAwbResponse.message, view)
+                        showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
                         it.throwable.showErrorToaster()
                     }
@@ -994,13 +994,16 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        when (rejectReason.reasonCode) {
-            1 -> setProductEmpty(rejectReason)
-            4 -> setShopClosed(rejectReason)
-            7 -> setCourierProblems(rejectReason)
-            15 -> setBuyerNoResponse(rejectReason)
-            14 -> setOtherReason(rejectReason)
+        somRejectReasonBottomSheet?.setOneTimeOnDismiss {
+            when (rejectReason.reasonCode) {
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_PRODUCT_EMPTY -> setProductEmpty(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_SHOP_CLOSED -> setShopClosed(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_COURIER_PROBLEMS -> setCourierProblems(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_BUYER_NO_RESPONSE -> setBuyerNoResponse(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_OTHER_REASON -> setOtherReason(rejectReason)
+            }
         }
+        somRejectReasonBottomSheet?.dismiss()
     }
 
     override fun onTextCopied(label: String, str: String, readableDataName: String) {
@@ -1190,20 +1193,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun showCommonToaster(message: String) {
-        view?.run {
-            if (this@SomDetailFragment.somToaster?.isShown == true)
-                this@SomDetailFragment.somToaster?.dismiss()
-
-            this@SomDetailFragment.somToaster = Toaster.build(
-                    this,
-                    message,
-                    LENGTH_SHORT,
-                    TYPE_NORMAL)
-            this@SomDetailFragment.somToaster?.show()
-        }
-    }
-
     override fun onDialPhone(strPhoneNo: String) {
         val intent = Intent(Intent.ACTION_DIAL)
         val phone = "tel:$strPhoneNo"
@@ -1230,26 +1219,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         btn_primary?.isLoading = false
-        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
-                    })
-                    activity?.finish()
-                }
-            }
-        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
-                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
-                    })
-                    activity?.finish()
-                }
-            }
+        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP) {
+            handleRequestPickUpResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING || requestCode == SomNavigator.REQUEST_CHANGE_COURIER) {
+            handleChangeCourierAndConfirmShippingResult(resultCode, data)
         }
     }
 
@@ -1329,6 +1302,20 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorToaster(getString(R.string.som_error_message_server_fault))
     }
 
+    protected fun showCommonToaster(message: String) {
+        view?.run {
+            if (this@SomDetailFragment.somToaster?.isShown == true)
+                this@SomDetailFragment.somToaster?.dismiss()
+
+            this@SomDetailFragment.somToaster = Toaster.build(
+                    this,
+                    message,
+                    LENGTH_SHORT,
+                    TYPE_NORMAL)
+            this@SomDetailFragment.somToaster?.show()
+        }
+    }
+
     protected fun showLoading() {
         progressBarSom?.show()
         rv_detail?.hide()
@@ -1349,6 +1336,26 @@ open class SomDetailFragment : BaseDaggerFragment(),
         containerBtnDetail?.hide()
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    protected open fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+            val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+            })
+            activity?.finish()
+        }
+    }
+
+    protected open fun handleChangeCourierAndConfirmShippingResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+            val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
+            })
+            activity?.finish()
+        }
     }
 
     private fun showSuccessState() {
@@ -1396,7 +1403,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedValidateOrder() {
-        showToasterError(getString(R.string.som_error_validate_order), view)
+        showToaster(getString(R.string.som_error_validate_order), view, TYPE_ERROR)
     }
 
     private fun onSuccessValidateOrder(valid: Boolean) {
@@ -1416,6 +1423,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    private fun getOrderIdExtra(): String {
+        return arguments?.getString(PARAM_ORDER_ID)?.takeIf { it.isNotBlank() } ?: SomConsts.DEFAULT_INVALID_ORDER_ID
     }
 
     protected open fun onGoToOrderDetailButtonClicked() {
@@ -1446,39 +1457,55 @@ open class SomDetailFragment : BaseDaggerFragment(),
             })
             activity?.finish()
         } else {
-            showToasterError(rejectOrderData.message.first(), view)
+            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, TYPE_ERROR)
         }
     }
 
     protected open fun onSuccessSetDelivered(deliveredData: SetDelivered) {
-        val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() }
-                ?: getString(R.string.global_error)
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(RESULT_SET_DELIVERED, message)
-        })
-        activity?.finish()
+        if (deliveredData.success == SomConsts.SOM_SET_DELIVERED_SUCCESS_CODE) {
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
+            })
+            activity?.finish()
+        } else {
+            val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() }
+                    ?: getString(R.string.global_error)
+            showToaster(message, view, TYPE_ERROR, "")
+            bottomSheetSetDelivered?.onFailedSetDelivered()
+        }
     }
 
     protected open fun showBackButton(): Boolean = true
 
-    protected fun dismissBottomSheets() {
+    protected fun dismissBottomSheets(): Boolean {
+        var bottomSheetDismissed = false
         (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
-            if (it.isVisible) it.dismiss()
+            if (it.isVisible) {
+                it.dismiss()
+                bottomSheetDismissed = true
+            }
         }
-        secondaryBottomSheet?.dismiss()
-        orderRequestCancelBottomSheet?.dismiss()
-        somRejectReasonBottomSheet?.dismiss()
-        somProductEmptyBottomSheet?.dismiss()
-        somShopClosedBottomSheet?.dismiss()
-        bottomSheetCourierProblems?.dismiss()
-        bottomSheetBuyerNoResponse?.dismiss()
-        bottomSheetBuyerOtherReason?.dismiss()
+        bottomSheetDismissed = secondaryBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somRejectReasonBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somProductEmptyBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somShopClosedBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetCourierProblems?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetBuyerNoResponse?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetBuyerOtherReason?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetSetDelivered?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetChangeAwb?.dismiss() == true || bottomSheetDismissed
+        return bottomSheetDismissed
     }
 
-    protected fun showToasterError(message: String, view: View?) {
+    protected fun showToaster(message: String, view: View?, type: Int, action: String = ACTION_OK) {
         val toasterError = Toaster
         view?.let { v ->
-            toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+            if (action.isBlank()) {
+                toasterError.build(v, message, LENGTH_SHORT, type).show()
+            } else {
+                toasterError.build(v, message, LENGTH_SHORT, type, action).show()
+            }
         }
     }
 }

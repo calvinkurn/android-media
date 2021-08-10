@@ -19,6 +19,5 @@ data class HomeData(
     var homeFlag: HomeFlag = HomeFlag(),
     var token: String = "",
     var atfData: HomeAtfData? = HomeAtfData(),
-    var atfErrorString: String = "",
     var isProcessingDynamicChannel: Boolean = false
 )

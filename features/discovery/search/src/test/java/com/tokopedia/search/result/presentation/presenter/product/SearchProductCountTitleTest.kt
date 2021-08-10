@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -37,8 +37,8 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
     private fun `Given AB Test return navigation revamp`() {
         every {
-            productListView.abTestRemoteConfig?.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-        }.answers { AbTestPlatform.NAVIGATION_VARIANT_REVAMP }
+            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+        }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP }
     }
 
     private fun `Given visitable list will be captured`() {

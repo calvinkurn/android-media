@@ -15,8 +15,8 @@ import javax.inject.Inject
  * Created by Pika on 6/11/20.
  */
 private const val KEYWORD_SUGGESTION: String = """
-               query topAdsGetKeywordSuggestionV3(${'$'}product_ids : String!,${'$'}group_id : Int,${'$'}shop_id : Int!,${'$'}type : Int) {
-                 topAdsGetKeywordSuggestionV3(product_ids : ${'$'}product_ids, group_id : ${'$'}group_id, shop_id  : ${'$'}shop_id, type : ${'$'}type) {
+               query topAdsGetKeywordSuggestionV3_1(${'$'}product_ids : String!,${'$'}group_id : Int,${'$'}shop_id : String!,${'$'}type : Int) {
+                 topAdsGetKeywordSuggestionV3_1(product_ids : ${'$'}product_ids, group_id : ${'$'}group_id, shop_id  : ${'$'}shop_id, type : ${'$'}type) {
                    data {
                      min_bid
                      product_id
@@ -45,7 +45,7 @@ class SuggestionKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRep
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.PRODUCT_IDS] = productIds
         queryMap[ParamObject.GROUP_ID] = groupId
-        queryMap[ParamObject.SHOP_id] = userSession.shopId.toIntOrZero()
+        queryMap[ParamObject.SHOP_id] = userSession.shopId
         queryMap[ParamObject.TYPE] = type
         setRequestParams(queryMap)
     }

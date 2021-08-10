@@ -38,16 +38,19 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
                 channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name, channel.pageName)
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
                 MixTopTracking.getMixTopView(
-                        listOf(product),
-                        adapterPosition.toString()
+                        grid = channelGrid,
+                        products = listOf(product),
+                        headerName = channel.channelHeader.name,
+                        positionOnWidgetHome = adapterPosition.toString()
                 ) as HashMap<String, Any>)
         
         //iris
         homeCategoryListener.putEEToIris(MixTopTracking.getMixTopViewIris(
-                listOf(product),
-                channel.channelHeader.name,
-                channel.id,
-                adapterPosition.toString()
+                grid = channelGrid,
+                products = listOf(product),
+                headerName = channel.channelHeader.name,
+                channelId = channel.id,
+                positionOnWidgetHome = adapterPosition.toString()
         ) as java.util.HashMap<String, Any>)
 
     }
@@ -56,11 +59,12 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
         val product = MixTopTracking.mapGridToProductTrackerComponent(
                 channelGrid, channel.id, position+1, channel.trackingAttributionModel.persoType, channel.trackingAttributionModel.categoryId, channel.channelHeader.name, channel.pageName)
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
-                listOf(product),
-                channel.channelHeader.name,
-                channel.id,
-                adapterPosition.toString(),
-                channel.trackingAttributionModel.campaignCode
+                grid = channelGrid,
+                products = listOf(product),
+                headerName = channel.channelHeader.name,
+                channelId = channel.id,
+                positionOnWidgetHome = adapterPosition.toString(),
+                campaignCode = channel.trackingAttributionModel.campaignCode
         ) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
     }

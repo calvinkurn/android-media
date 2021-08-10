@@ -53,10 +53,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         const val SCORE_ZERO = 0
         const val SCORE_MAX = 2
 
-        fun createNewInstance(feedbackId: Long) : ReviewDetailFragment{
+        fun createNewInstance(feedbackId: String) : ReviewDetailFragment{
             return ReviewDetailFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(KEY_FEEDBACK_ID, feedbackId)
+                    putString(KEY_FEEDBACK_ID, feedbackId)
                 }
             }
         }
@@ -182,7 +182,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun getDataFromArguments() {
         arguments?.let {
-            viewModel.setFeedbackId(it.getLong(KEY_FEEDBACK_ID))
+            viewModel.setFeedbackId(it.getString(KEY_FEEDBACK_ID) ?: "")
         }
     }
 
@@ -239,7 +239,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: Long) {
+    private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: String) {
         with(product) {
             reviewDetailProductCard.setOnClickListener {
                 ReviewDetailTracking.eventClickProductCard(productId, feedbackId, viewModel.getUserId())
@@ -423,10 +423,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun goToEditForm() {
         with((viewModel.reviewDetails.value as Success).data) {
-            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputation.reputationId.toString(), product.productId.toString())
+            val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputation.reputationId, product.productId)
             val intent = RouteManager.getIntent(context, Uri.parse(uri).buildUpon()
                     .appendQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE, ReviewConstants.EDIT_MODE.toString())
-                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId.toString()).build().toString())
+                    .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId).build().toString())
             startActivityForResult(intent, EDIT_FORM_REQUEST_CODE)
         }
     }
@@ -446,7 +446,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         startActivity(context?.let { ImagePreviewSliderActivity.getCallingIntent(it, productName, attachedImages, attachedImages, position) })
     }
 
-    private fun goToPdp(productId: Long) {
+    private fun goToPdp(productId: String) {
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 

@@ -2,9 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
@@ -25,6 +23,7 @@ import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.io.File
@@ -61,11 +60,6 @@ class PlayCoverSetupViewModel @Inject constructor(
             }
         }
 
-    val savedCoverTitle: String
-        get() {
-            return observableCoverTitle.value.orEmpty()
-        }
-
     val source: CoverSource
         get() {
             return when (val currentCropState = observableCropState.value) {
@@ -80,13 +74,9 @@ class PlayCoverSetupViewModel @Inject constructor(
         it.croppedCover
     }
 
-    val observableCoverTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
-            it.title
-        }
-
-    val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
-        dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) }
-    }
+    val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = setupDataStore.getObservableSelectedProducts()
+            .map { dataList -> dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) } }
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     val observableUploadCoverEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadCoverEvent
@@ -113,10 +103,10 @@ class PlayCoverSetupViewModel @Inject constructor(
         }
     }
 
-    fun uploadCover(coverTitle: String) {
+    fun uploadCover() {
         _observableUploadCoverEvent.value = NetworkResult.Loading
         launchCatchError(block = {
-            uploadImageAndUpdateCoverState(coverTitle)
+            uploadImageAndUpdateCoverState()
 
             val result = setupDataStore.uploadSelectedCover(channelId)
             if (result is NetworkResult.Success) _observableUploadCoverEvent.value = result.map { Event(Unit) }
@@ -163,11 +153,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         )
     }
 
-    fun saveCover(coverTitle: String) {
-        setupDataStore.updateCoverTitle(coverTitle)
-    }
-
-    private suspend fun uploadImageAndUpdateCoverState(coverTitle: String) {
+    private suspend fun uploadImageAndUpdateCoverState() {
         val currentCropState = cropState
         if (currentCropState is CoverSetupState.Cropped.Draft) {
             val validatedImageUri = validateImageMinSize(currentCropState.coverImage)
@@ -179,7 +165,6 @@ class PlayCoverSetupViewModel @Inject constructor(
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Draft(validatedImageUri, source),
-                                title = coverTitle,
                                 state = SetupDataState.Draft
                         )
                 )
@@ -190,7 +175,6 @@ class PlayCoverSetupViewModel @Inject constructor(
                 setupDataStore.setFullCover(
                         PlayCoverUiModel(
                                 croppedCover = CoverSetupState.Cropped.Uploaded(validatedImageUri, uploadedImageUri, source),
-                                title = coverTitle,
                                 state = SetupDataState.Draft
                         )
                 )
@@ -220,17 +204,4 @@ class PlayCoverSetupViewModel @Inject constructor(
     private fun getImagePathFromBitmap(bitmap: Bitmap): Uri {
         return coverImageUtil.getImagePathFromBitmap(bitmap)
     }
-
-    companion object {
-        private const val PARAM_ID = "id"
-        private const val PARAM_WEB_SERVICE = "web_service"
-        private const val PARAM_RESOLUTION = "param_resolution"
-        private const val DEFAULT_RESOLUTION = "100-square"
-        private const val DEFAULT_WEB_SERVICE = "1"
-        private const val DEFAULT_UPLOAD_PATH = "/upload/attachment"
-        private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
-        private const val TEXT_PLAIN = "text/plain"
-        private const val RESOLUTION_700 = "700"
-    }
-
 }
