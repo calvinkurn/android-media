@@ -175,8 +175,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             when (it) {
                 is Fail -> renderErrorMessage(it.throwable)
                 is Success -> {
-                    if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
-                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
+                    if (detailPassData.clientNumber != null && detailPassData.clientNumber?.isNotEmpty() == true) {
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber
+                                ?: ""))
                     } else if (emoneyCardNumber.isNotEmpty()) {
                         renderClientNumber(TopupBillsFavNumberItem(emoneyCardNumber))
                     } else {
@@ -491,7 +492,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
         startActivityForResult(
                 TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
-                        ClientNumberType.TYPE_INPUT_NUMERIC, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
+                        ClientNumberType.TYPE_INPUT_NUMERIC.value, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
     }
 
@@ -502,9 +503,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
-        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance.isNotEmpty()) {
-            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber,
-                    detailPassData.additionalETollBalance)
+        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance?.isNotEmpty() == true) {
+            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber
+                    ?: "",
+                    detailPassData.additionalETollBalance ?: "")
         } else {
             emoneyPdpHeaderView.configureCheckBalanceView()
         }
@@ -515,8 +517,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         showProducts()
         emoneyPdpProductWidget.showShimmering()
         emoneyBuyWidgetLayout.hide()
-        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero()
-                , prefix.key)
+        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero(), prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
