@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.chatlist.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
 
@@ -17,17 +16,18 @@ class MiniCartChatListDiffUtilCallback(private val oldList: List<Any>,
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return when {
-            oldItem is MiniCartChatProductUiModel && newItem is MiniCartChatProductUiModel -> oldItem.size == newItem.size
-            oldItem is MiniCartChatUnavailableReasonUiModel && newItem is MiniCartChatUnavailableReasonUiModel -> oldItem == newItem
-            else -> false
-        }
+        return false
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return false
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return when {
+            oldItem is MiniCartChatProductUiModel && newItem is MiniCartChatProductUiModel -> oldItem == newItem
+            oldItem is MiniCartChatUnavailableReasonUiModel && newItem is MiniCartChatUnavailableReasonUiModel -> oldItem == newItem
+            else -> false
+        }
     }
 
 }

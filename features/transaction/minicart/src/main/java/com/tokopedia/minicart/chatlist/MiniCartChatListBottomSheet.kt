@@ -15,9 +15,9 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.minicart.cartlist.MiniCartListDecoration
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactory
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapter
@@ -31,7 +31,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartChatListBottomSheet @Inject constructor(
-    private var miniCartListDecoration: MiniCartListDecoration
+    private var miniCartChatProductDecoration: MiniCartChatListDecoration
 ) : MiniCartChatProductViewHolder.ChatProductListener {
 
     companion object {
@@ -123,6 +123,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
             setOnDismissListener {
                 resetObserver()
                 elements.clear()
+                this@MiniCartChatListBottomSheet.viewBinding?.cardView?.gone()
                 this@MiniCartChatListBottomSheet.viewBinding = null
             }
             setChild(viewBinding.root)
@@ -141,7 +142,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         adapter = MiniCartChatListAdapter(adapterTypeFactory)
         viewBinding.rvMiniCartChatList.adapter = adapter
         viewBinding.rvMiniCartChatList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
-        viewBinding.rvMiniCartChatList.addItemDecoration(miniCartListDecoration)
+        viewBinding.rvMiniCartChatList.addItemDecoration(miniCartChatProductDecoration)
     }
 
     private fun initializeCartData(viewModel: MiniCartViewModel) {
@@ -195,7 +196,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
 
     private fun setButton(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         mContext?.apply {
-            viewBinding.btnContent.show()
+            viewBinding.cardView.show()
             viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, R.color.Unify_NN0)))
             viewBinding.btnChat.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
             viewBinding.btnChat.setOnClickListener {
@@ -225,7 +226,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 dropPercentage = "${element.productCashbackPercentage}%",
                 remainingStock = element.productQtyLeft.toIntOrZero(),
                 priceBeforeInt = element.productInitialPriceBeforeDrop.toDouble(),
-                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
+                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false),
             )
             productPreviews.add(productPreview)
         }
