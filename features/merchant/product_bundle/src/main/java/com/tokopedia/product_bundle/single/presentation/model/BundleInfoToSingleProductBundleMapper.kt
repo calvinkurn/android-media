@@ -6,6 +6,7 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.PreOrder
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
+import com.tokopedia.product_bundle.common.util.DiscountUtil
 
 object BundleInfoToSingleProductBundleMapper {
 
@@ -16,7 +17,8 @@ object BundleInfoToSingleProductBundleMapper {
 
     fun mapToSingleProductBundle (context: Context, bundleInfo: BundleInfo) = SingleProductBundleUiModel(
         preorderDurationWording = getPreorderWording(context, bundleInfo.preorder),
-        items = mapToBundleItem(context, bundleInfo.bundleItems)
+        items = mapToBundleItem(context, bundleInfo.bundleItems),
+        selectedItems = mapToSelectedItem(bundleInfo.bundleItems)
     )
 
     private fun getPreorderWording(context: Context, preorder: PreOrder): String? {
@@ -39,13 +41,18 @@ object BundleInfoToSingleProductBundleMapper {
     }.map {
         val productVariant = AtcVariantMapper.mapToProductVariant(it)
         SingleProductBundleItem(
+            quantity = it.minOrder,
             bundleName = context.getString(R.string.bundle_item_title_prefix, it.minOrder),
             productName = it.name,
-            price = it.bundlePrice.toString(),
-            slashPrice = it.originalPrice.toString(),
-            discount = 0,
+            price = it.bundlePrice.toDouble(),
+            slashPrice = it.originalPrice.toDouble(),
+            discount = DiscountUtil.getDiscountPercentage(it.originalPrice.toDouble(), it.bundlePrice.toDouble()),
             imageUrl = it.picURL,
             productVariant = if (productVariant.hasVariant) productVariant else null
         )
+    }
+
+    private fun mapToSelectedItem(bundleItems: List<BundleItem>) = bundleItems.map {
+        SingleProductBundleSelectedItem(productId = if (it.hasVariant) "" else it.productID.toString())
     }
 }
