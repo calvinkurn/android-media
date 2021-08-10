@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class ShippingDurationUiModel() : Parcelable, RatesViewModelType {
     var serviceData: ServiceData = ServiceData()
-    var shippingCourierViewModelList: List<ShippingCourierUiModel>? = null
+    var shippingCourierViewModelList: List<ShippingCourierUiModel> = emptyList()
     var isSelected: Boolean = false
     var isShowShowCase: Boolean = false
     var errorMessage: String? = null

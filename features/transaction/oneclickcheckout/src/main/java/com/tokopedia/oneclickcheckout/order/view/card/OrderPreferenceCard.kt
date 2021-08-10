@@ -153,7 +153,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
-                    val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels!!)
+                    val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
                     val logisticPromo = shippingRecommendationData.logisticPromo
                     if (logisticPromo != null) {
                         list.add(0, logisticPromo)
@@ -241,7 +241,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
-                    val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels!!)
+                    val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
                     val logisticPromo = shippingRecommendationData.logisticPromo
                     if (logisticPromo != null) {
                         list.add(0, logisticPromo)
@@ -274,12 +274,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
                     val list: ArrayList<RatesViewModelType> = ArrayList()
-                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels!!) {
+                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                         if (shippingDurationViewModel.isSelected) {
-                            if (shippingDurationViewModel.shippingCourierViewModelList!!.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList!![0].productData.shipperId)) {
+                            if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
                                 list.add(NotifierModel())
                             }
-                            list.addAll(shippingDurationViewModel.shippingCourierViewModelList!!)
+                            list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
                             break
                         }
                     }
@@ -300,12 +300,12 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
                     val list: ArrayList<RatesViewModelType> = ArrayList()
-                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels!!) {
+                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                         if (shippingDurationViewModel.isSelected) {
-                            if (shippingDurationViewModel.shippingCourierViewModelList!!.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList!![0].productData.shipperId)) {
+                            if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
                                 list.add(NotifierModel())
                             }
-                            list.addAll(shippingDurationViewModel.shippingCourierViewModelList!!)
+                            list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
                             break
                         }
                     }
@@ -344,7 +344,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingErrorMessage.setOnClickListener {
                 val shippingRecommendationData = shipment.shippingRecommendationData
                 if (shippingRecommendationData != null) {
-                    val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels!!)
+                    val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
                     val logisticPromo = shippingRecommendationData.logisticPromo
                     if (logisticPromo != null) {
                         list.add(0, logisticPromo)

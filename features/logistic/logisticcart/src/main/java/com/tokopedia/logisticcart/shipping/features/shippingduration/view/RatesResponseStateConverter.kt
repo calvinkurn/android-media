@@ -1,10 +1,9 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.purchase_platform.common.utils.Utils
 import javax.inject.Inject
 
 
@@ -13,8 +12,8 @@ class RatesResponseStateConverter @Inject constructor() {
     fun fillState(response: ShippingRecommendationData, shopShipments: List<ShopShipment>,
                   selectedSpId: Int, selectedServiceId: Int): ShippingRecommendationData {
         val isPromoApplied = isPromoStackingApplied(response.logisticPromo)
-        response.shippingDurationViewModels?.forEach { duration ->
-            duration.shippingCourierViewModelList?.forEach { courier ->
+        response.shippingDurationViewModels.forEach { duration ->
+            duration.shippingCourierViewModelList.forEach { courier ->
                 if (selectedSpId != 0 && !isPromoApplied) {
                     if (selectedSpId == courier.productData.shipperProductId) {
                         courier.isSelected = true
