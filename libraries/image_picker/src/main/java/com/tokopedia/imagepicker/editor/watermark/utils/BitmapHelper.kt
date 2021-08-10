@@ -171,7 +171,7 @@ object BitmapHelper {
     fun Bitmap.combineBitmapWithPadding(other: Bitmap): Bitmap {
         var thisPadding = 0f;
         var otherPadding = 0f
-        val thresholdSpace = 200 // space between first bitmap to other bitmap
+        val thresholdSpace = 300 // space between first bitmap to other bitmap
         val otherBitmap = other.addPadding(left = thresholdSpace, right = thresholdSpace)
 
 
@@ -302,10 +302,10 @@ object BitmapHelper {
      * otherwise, the scaling will be 0.15 from the mainBitmap
      */
     fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
-        var scaleValue = 0.15f
+        var scaleValue = 0.25f
 
         if (textLength > 13) {
-            scaleValue = 0.12f
+            scaleValue = 0.2f
         }
 
         val inWidth = this.width
