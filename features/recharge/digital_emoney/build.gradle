@@ -27,13 +27,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.firebase.crashlytics
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
