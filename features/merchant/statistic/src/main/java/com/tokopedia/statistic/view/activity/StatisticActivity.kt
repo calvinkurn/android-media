@@ -45,7 +45,11 @@ import javax.inject.Inject
 // Internal applink : ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
 
 class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
-        FragmentListener, StatisticPerformanceMonitoringListener {
+    FragmentListener, StatisticPerformanceMonitoringListener {
+
+    companion object {
+        private const val FIRST_TAB_INDEX = 0
+    }
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -86,8 +90,8 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     override fun getComponent(): StatisticComponent {
         return DaggerStatisticComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -130,18 +134,18 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
         return listOf(
-                StatisticPageHelper.getShopStatistic(this, userSession),
-                StatisticPageHelper.getProductStatistic(this, userSession),
-                StatisticPageHelper.getOperationalStatistic(this, userSession),
-                StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, userSession),
+            StatisticPageHelper.getProductStatistic(this, userSession),
+            StatisticPageHelper.getOperationalStatistic(this, userSession),
+            StatisticPageHelper.getBuyerStatistic(this, userSession)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
         return listOf(
-                StatisticPageHelper.getShopStatistic(this, userSession),
-                StatisticPageHelper.getProductStatistic(this, userSession),
-                StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, userSession),
+            StatisticPageHelper.getProductStatistic(this, userSession),
+            StatisticPageHelper.getBuyerStatistic(this, userSession)
         )
     }
 
@@ -165,9 +169,14 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             val shouldLoadDataOnCreate = if (selectedPageSource.isNotBlank()) {
                 page.pageSource == selectedPageSource
             } else {
-                index == 0
+                index == FIRST_TAB_INDEX
             }
-            viewPagerAdapter?.addFragment(StatisticFragment.newInstance(page, shouldLoadDataOnCreate), page.pageTitle)
+            viewPagerAdapter?.addFragment(
+                StatisticFragment.newInstance(
+                    page,
+                    shouldLoadDataOnCreate
+                ), page.pageTitle
+            )
         }
 
         viewPagerAdapter?.let {
@@ -200,8 +209,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                 tabStatistic.tabLayout.removeAllTabs()
             }
             setTabMode(adapter.titles.size)
-            adapter.titles.forEach { title ->
-                val tab = tabStatistic.addNewTab(title)
+            tabStatistic.tabLayout.removeAllTabs()
+            adapter.titles.forEachIndexed { index, title ->
+                val isFirstIndex = index == FIRST_TAB_INDEX
+                val tab = tabStatistic.addNewTab(title, isFirstIndex)
                 sendTabImpressionEvent(tab.view, title)
 
                 getOperationalInsightCoachMark(title, tab.view)?.let {
@@ -211,6 +222,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                     coachMarkItems.add(it)
                 }
             }
+            adapter.notifyDataSetChanged()
         }
 
         showCoachMark(coachMarkItems)
@@ -294,9 +306,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         if (getIsProductInsightTab(title)) {
             if (!CoachMarkPreference.hasShown(this, Const.SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY)) {
                 return CoachMark2Item(
-                        itemView,
-                        getString(R.string.stc_product_coachmark_title),
-                        getString(R.string.stc_product_coachmark_desc)
+                    itemView,
+                    getString(R.string.stc_product_coachmark_title),
+                    getString(R.string.stc_product_coachmark_desc)
                 )
             }
         }
@@ -305,11 +317,15 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getOperationalInsightCoachMark(title: String, view: View): CoachMark2Item? {
         if (getIsOperationalInsightTab(title)) {
-            if (!CoachMarkPreference.hasShown(this, Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY)) {
+            if (!CoachMarkPreference.hasShown(
+                    this,
+                    Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY
+                )
+            ) {
                 return CoachMark2Item(
-                        view,
-                        getString(R.string.stc_operational_coachmark_title),
-                        getString(R.string.stc_operational_coachmark_desc)
+                    view,
+                    getString(R.string.stc_operational_coachmark_title),
+                    getString(R.string.stc_operational_coachmark_desc)
                 )
             }
         }
