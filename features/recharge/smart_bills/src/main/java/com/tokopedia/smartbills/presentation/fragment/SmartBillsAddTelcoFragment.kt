@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -41,9 +42,9 @@ import com.tokopedia.smartbills.presentation.widget.SmartBillsNominalBottomSheet
 import com.tokopedia.smartbills.util.SmartBillsGlobalError.errorSBMHandlerGlobalError
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_smart_bills_add_telco.*
@@ -257,17 +258,15 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     }, isFromHtml = true))
         }
         context?.run {
-            val tickerAdapter = TickerPagerAdapter(this, messages)
-            tickerAdapter.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.route(context, linkUrl.toString())
-                }
-
-                override fun onDismiss() {
-                    smartBillsAnalytics.clickCloseTickerTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+            val tickerAdapter = TickerPagerAdapter(context, messages)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
                 }
             })
-
+            tickerAdapter.onDismissListener = {
+                smartBillsAnalytics.clickCloseTickerTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+            }
             ticker_sbm_add_telco.addPagerView(tickerAdapter, messages)
         }
     }

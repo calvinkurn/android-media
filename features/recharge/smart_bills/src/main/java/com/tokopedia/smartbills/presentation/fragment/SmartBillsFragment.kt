@@ -296,6 +296,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     val message = it.data.rechargeSBMDeleteBill.message
                     if (!message.isNullOrEmpty()) {
                         view?.let { view ->
+                            smartBillsAnalytics.viewDeleteBillSuccess()
                             Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
@@ -586,9 +587,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun onDeleteClicked(bill: RechargeBills) {
         fragmentManager?.let {
+            smartBillsAnalytics.clickKebab(bill.categoryName)
             val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet(object :
                     SmartBillsDeleteBottomSheet.DeleteProductSBMListener{
                 override fun onDeleteProductClicked() {
+                    smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
                     showDeleteDialog(bill)
                 }
             })
@@ -606,11 +609,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 setSecondaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_no))
 
                 setPrimaryCTAClickListener{
+                    smartBillsAnalytics.clickConfirmHapusTagihan()
                     dismiss()
                     viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)))
                 }
 
                 setSecondaryCTAClickListener{
+                    smartBillsAnalytics.clickBatalHapusTagihan()
                     dismiss()
                 }
 
