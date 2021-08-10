@@ -166,14 +166,15 @@ class ShopScoreMapper @Inject constructor(
                 isOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
                     add(SectionFaqUiModel(mapToItemFaqUiModel(isOfficialStore)))
                 }
-                powerMerchantResponse?.pmTier == PMTier.PRO &&
-                        powerMerchantResponse.status == PMStatusConst.ACTIVE -> {
-                    add(ItemStatusPMProUiModel())
-                }
-                powerMerchantResponse?.pmTier == PMTier.PRO &&
-                        powerMerchantResponse.status == PMStatusConst.IDLE -> {
-                    add(mapToCardPotentialBenefitNonEligible())
-                    return@apply
+                //PM PRO Section
+                powerMerchantResponse?.pmTier == PMTier.PRO -> {
+                    if(powerMerchantResponse.status == PMStatusConst.ACTIVE) {
+                        add(ItemStatusPMProUiModel())
+                        return@apply
+                    } else if (powerMerchantResponse.status == PMStatusConst.IDLE) {
+                        add(mapToCardPotentialBenefitNonEligible())
+                        return@apply
+                    }
                 }
                 powerMerchantResponse?.pmTier == PMTier.REGULAR -> {
                     when {
