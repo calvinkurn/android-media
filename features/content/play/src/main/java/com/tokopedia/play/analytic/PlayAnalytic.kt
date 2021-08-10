@@ -547,7 +547,7 @@ class PlayAnalytic(
     }
 
     private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): MutableList<HashMap<String, Any>> {
-        return arrayListOf(
+        return mutableListOf(
             hashMapOf(
                 "index" to position,
                 "item_brand" to "",
