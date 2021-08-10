@@ -236,7 +236,12 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet"
                 ),
                 hashMapOf (
-                    "items" to convertProductToHashMapWithList(product, position)
+                    "ecommerce" to hashMapOf(
+                        "click" to hashMapOf(
+                            "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
+                            "products" to  listOf(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                        )
+                    )
                 ),
                 hashMapOf(
                     KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
@@ -442,13 +447,18 @@ class PlayAnalytic(
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
-                        "select_content",
-                        KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_TRACK_CLICK,
-                        "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
+                    "select_content",
+                    KEY_TRACK_GROUP_CHAT_ROOM,
+                    KEY_TRACK_CLICK,
+                    "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
                 ),
                 hashMapOf(
-                        "items" to convertProductToHashMapWithList(featuredProduct, position)
+                    "ecommerce" to hashMapOf(
+                        "click" to hashMapOf(
+                            "actionField" to hashMapOf( "list" to "/groupchat - featured product"),
+                            "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                        )
+                    )
                 ),
                 hashMapOf(
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
@@ -546,42 +556,23 @@ class PlayAnalytic(
         )
     }
 
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int): MutableList<HashMap<String, Any>> {
-        return mutableListOf(
-            hashMapOf(
-                "index" to position,
-                "item_brand" to "",
-                "item_category" to "",
-                "item_id" to product.id,
-                "item_name" to product.title,
-                "item_variant" to "",
-                "price" to when(product.price) {
-                    is DiscountedPrice -> product.price.discountedPriceNumber
-                    is OriginalPrice -> product.price.priceNumber
-                }
-            )
-        )
-    }
-
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): MutableList<HashMap<String, Any>> {
-        return mutableListOf(
-            hashMapOf(
-                "category_id" to "", // TODO: from where?
-                "dimension39" to dimension39,
-                "item_brand" to "", // TODO: from where?
-                "item_category" to "", // TODO: from where?
-                "item_id" to product.id,
-                "item_name" to product.title,
-                "item_variant" to "", // TODO: from where?
-                "price" to when(product.price) {
-                    is DiscountedPrice -> product.price.discountedPriceNumber
-                    is OriginalPrice -> product.price.priceNumber
-                },
-                "quantity" to product.minQty,
-                "shop_id" to shopInfo.id,
-                "shop_name" to shopInfo.name,
-                "shop_type" to shopInfo.type
-            )
+    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+        return hashMapOf(
+            "name" to product.title,
+            "id" to product.id,
+            "price" to when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            },
+            "brand" to "",
+            "category" to "",
+            "variant" to "",
+            "list" to dimension39,
+            "category_id" to "",
+            "quantity" to product.minQty,
+            "shop_id" to shopInfo.id,
+            "shop_name" to shopInfo.name,
+            "shop_type" to shopInfo.type
         )
     }
 
@@ -615,7 +606,12 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
-                        "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                    "ecommerce" to hashMapOf(
+                        "currencyCode" to "IDR",
+                        "add" to hashMapOf(
+                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                        )
+                    )
                 ),
                 hashMapOf(
                     KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
@@ -643,7 +639,12 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
-                    "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                    "ecommerce" to hashMapOf(
+                        "currencyCode" to "IDR",
+                        "add" to hashMapOf(
+                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet")
+                        )
+                    )
                 ),
                 hashMapOf(
                     KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
@@ -671,7 +672,12 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
-                    "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                    "ecommerce" to hashMapOf(
+                        "currencyCode" to "IDR",
+                        "add" to hashMapOf(
+                            "products" to convertProductToHashMap(product, cartId, "varian page")
+                        )
+                    )
                 ),
                 hashMapOf(
                     KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
@@ -699,7 +705,12 @@ class PlayAnalytic(
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
                 ),
                 hashMapOf (
-                    "items" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                    "ecommerce" to hashMapOf(
+                        "currencyCode" to "IDR",
+                        "add" to hashMapOf(
+                            "products" to convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page")
+                        )
+                    )
                 ),
                 hashMapOf(
                     KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
