@@ -230,7 +230,7 @@ class PlayAnalytic(
                      position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
-                        "select_content",
+                        "productClick",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_TRACK_CLICK,
                         "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet"
@@ -447,7 +447,7 @@ class PlayAnalytic(
     fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
         trackingQueue.putEETracking(
                 EventModel(
-                    "select_content",
+                    "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
                     KEY_TRACK_CLICK,
                     "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
@@ -774,7 +774,7 @@ class PlayAnalytic(
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_CLICK_BACK = "clickBack"
-        private const val KEY_TRACK_ADD_TO_CART = "add_to_cart"
+        private const val KEY_TRACK_ADD_TO_CART = "addToCart"
         private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT_IRIS = "viewGroupChatIris"
