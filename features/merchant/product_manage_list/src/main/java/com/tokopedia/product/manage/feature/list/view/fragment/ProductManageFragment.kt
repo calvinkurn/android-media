@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -1261,9 +1260,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
-                        5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spanText.setSpan(ForegroundColorSpan(backgroundColor),
-                        5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 val cs = object : ClickableSpan() {
                     override fun onClick(v: View) {
@@ -1271,7 +1270,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         activity.finish()
                     }
                 }
-                spanText.setSpan(cs, 5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spanText.setSpan(cs, START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 txtTipsTrick.movementMethod = LinkMovementMethod.getInstance()
                 txtTipsTrick.text = spanText
                 return dialog
@@ -2450,6 +2449,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         private const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
+
+        private const val START_SPAN_INDEX = 5
     }
 
 }
