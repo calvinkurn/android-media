@@ -6,6 +6,9 @@ apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
 apply from: "buildconfig/aar/local-aar-config.gradle"
 apply from: "buildconfig/aar/local-aar.gradle"
+plugins {
+    id "org.gradle.android.cache-fix" version "2.4.0" apply false
+}
 
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
@@ -77,6 +80,9 @@ subprojects {
         if (isLibrary) {
             project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
+    }
+    plugins.withType(com.android.build.gradle.BasePlugin) {
+        project.apply plugin: "org.gradle.android.cache-fix"
     }
 }
 
