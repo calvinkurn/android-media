@@ -2104,7 +2104,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shippingDurationBottomsheet.show(activity, getFragmentManager(), this,
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shipmentCartItemModel.getShopShipmentList(),
                         recipientAddressModel, cartPosition, codHistory,
-                        shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
+                        shipmentCartItemModel.isLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
                         isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(),
                         shipmentCartItemModel.getShipmentCartData().getPreOrderDuration(), shipmentPresenter.generateRatesMvcParam(shipmentCartItemModel.getCartString()));

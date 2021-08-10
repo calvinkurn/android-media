@@ -20,11 +20,11 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         this.data = shippingCourierUiModels.toMutableList()
         if (preOrderModel?.display == true) {
             preOrderModel?.let { this.data.add(0, it) }
-            if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(1, NotifierModel())
-            if (shippingCourierUiModels[0].serviceData.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(1, NotifierModelSameDay())
+            if (shippingCourierUiModels[0].serviceData?.serviceName == INSTAN_VIEW_TYPE) this.data.add(1, NotifierModel())
+            if (shippingCourierUiModels[0].serviceData?.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(1, NotifierModelSameDay())
         } else {
-            if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(0, NotifierModel())
-            if (shippingCourierUiModels[0].serviceData.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(0, NotifierModelSameDay())
+            if (shippingCourierUiModels[0].serviceData?.serviceName == INSTAN_VIEW_TYPE) this.data.add(0, NotifierModel())
+            if (shippingCourierUiModels[0].serviceData?.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(0, NotifierModelSameDay())
         }
         notifyDataSetChanged()
     }

@@ -45,7 +45,7 @@ public class RatesDataConverter {
         }
         shipmentDetailData.setTotalQuantity(totalQuantity);
         shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
-        shipmentDetailData.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
+        shipmentDetailData.setBlackbox(shipmentCartItemModel.isBlackbox());
         if (recipientAddressModel.getSelectedTabIndex() == 1 && recipientAddressModel.getLocationDataModel() != null) {
             shipmentDetailData.setAddressId(recipientAddressModel.getLocationDataModel().getAddrId());
         } else {
