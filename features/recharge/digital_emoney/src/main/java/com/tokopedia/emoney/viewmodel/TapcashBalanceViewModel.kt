@@ -273,7 +273,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         const val CARD_DATA = "cardData"
 
         private const val TAPCASH_TAG = "TAPCASH"
-        private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
+        private const val TRANSCEIVE_TIMEOUT_IN_SEC = 7000
 
         private const val MAX_WRITE_RESULT_SIZE = 100
         private const val MAX_WRITE_RESULT_SIZE_V6 = 52
