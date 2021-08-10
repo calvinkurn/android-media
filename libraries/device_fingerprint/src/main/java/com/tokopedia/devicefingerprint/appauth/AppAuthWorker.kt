@@ -83,7 +83,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         var hasSuccessSendInt = 0 // 1 assumed it already running, means this feature is disabled.
         var lastSuccessTimestamp = -1L
         const val THRES_TOKEN_VALID = 2_592_000_000 // 1 month to submit new device data
-        var PREF = "app_auth"
+        var PREF = "app_sec"
         var KEY_SUCCESS = "scs"
         var KEY_SUCCESS_TS = "ts_scs"
         var KEY_TS = "ts"
