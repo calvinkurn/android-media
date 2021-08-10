@@ -980,6 +980,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
 
             LocalBroadcastManager
                 .getInstance(requireActivity().applicationContext)
