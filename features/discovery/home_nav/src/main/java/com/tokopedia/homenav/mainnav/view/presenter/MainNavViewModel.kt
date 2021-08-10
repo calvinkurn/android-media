@@ -68,6 +68,7 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
 
         private const val SOURCE = "dave_home_nav"
+        private const val MAX_ORDER_TO_SHOW = 6
     }
 
 
@@ -368,7 +369,7 @@ class MainNavViewModel @Inject constructor(
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                val othersTransactionCount = orderList.size - 6
+                val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)

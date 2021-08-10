@@ -83,7 +83,6 @@ open class WishlistViewModel @Inject constructor(
 
     private val recommendationPositionInPage = 4
     private val maxItemInPage = 21
-    private val newMinItemRegularRule = 24
 
     private var keywordSearch: String = ""
 
@@ -360,7 +359,7 @@ open class WishlistViewModel @Inject constructor(
             withContext(wishlistCoroutineDispatcherProvider.io){
                 try{
                     if (wishlistVisitable.isNotEmpty()) {
-                        val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
+                        val recommendationPositionInPreviousPage = ((currentPage - RECOMMENDATION_TRESHOLD_ON_CURRENT_PAGE) * maxItemInPage) + recommendationPositionInPage
                         var pageToken = ""
                         if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
                             pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
@@ -368,10 +367,10 @@ open class WishlistViewModel @Inject constructor(
                         val topadsResult = topAdsImageViewUseCase.getImageData(
                                 topAdsImageViewUseCase.getQueryMap(
                                         "",
-                                        "6",
+                                    WISHLIST_SOURCE,
                                         pageToken,
-                                        1,
-                                        3,
+                                    WISHLIST_ADS_COUNT,
+                                    WISHLIST_DIMEN_ID,
                                         ""
                                 )
                         )
@@ -451,7 +450,7 @@ open class WishlistViewModel @Inject constructor(
         return withContext(wishlistCoroutineDispatcherProvider.io){
             try{
                 if(wishlistVisitable.isNotEmpty()) {
-                    val recommendationPositionInPreviousPage = ((currentPage - 3) * maxItemInPage) + recommendationPositionInPage
+                    val recommendationPositionInPreviousPage = ((currentPage - RECOMMENDATION_TRESHOLD_ON_CURRENT_PAGE) * maxItemInPage) + recommendationPositionInPage
                     var pageToken = ""
                     if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is BannerTopAdsDataModel){
                         pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as BannerTopAdsDataModel).topAdsDataModel.nextPageToken ?: ""
@@ -459,10 +458,10 @@ open class WishlistViewModel @Inject constructor(
                     val results = topAdsImageViewUseCase.getImageData(
                             topAdsImageViewUseCase.getQueryMap(
                                     "",
-                                    "6",
+                                    WISHLIST_SOURCE,
                                     pageToken,
-                                    1,
-                                    3,
+                                    WISHLIST_ADS_COUNT,
+                                    WISHLIST_DIMEN_ID,
                                     ""
                             )
                     )
@@ -739,7 +738,7 @@ open class WishlistViewModel @Inject constructor(
         }
 
         //bring back carousel
-        var recomIndex = 4
+        var recomIndex = CAROUEL_INSTANCE_IN_PAGE
         recommendationCarouselDataModels.forEach {
             newWishlistDataValue.add(recomIndex, it)
             recomIndex+=maxItemInPage
@@ -809,7 +808,7 @@ open class WishlistViewModel @Inject constructor(
         val recommendationCarouselDataModels = mutableListOf<WishlistDataModel>()
 
         //save carousel instance temporarily
-        for(i in 4 until newWishlistDataValue.size-1 step maxItemInPage) {
+        for(i in CAROUEL_INSTANCE_IN_PAGE until newWishlistDataValue.size-1 step maxItemInPage) {
             if (newWishlistDataValue[i] is RecommendationCarouselDataModel) {
                 recommendationCarouselDataModels.add(newWishlistDataValue[i])
                 newWishlistDataValue.removeAt(i)
@@ -819,7 +818,7 @@ open class WishlistViewModel @Inject constructor(
         newWishlistDataValue.remove(selectedVisitable)
 
         //bring back carousel
-        var recomIndex = 4
+        var recomIndex = CAROUEL_INSTANCE_IN_PAGE
         recommendationCarouselDataModels.forEach {
             newWishlistDataValue.add(recomIndex, it)
             recomIndex+=maxItemInPage
@@ -1010,5 +1009,11 @@ open class WishlistViewModel @Inject constructor(
     companion object{
         private const val DEFAULT_PARENT_POSITION_EMPTY_RECOM = -1
         private const val WISHLIST_PAGE_NAME = "wishlist"
+        private const val newMinItemRegularRule = 24
+        private const val RECOMMENDATION_TRESHOLD_ON_CURRENT_PAGE = 3
+        private const val WISHLIST_DIMEN_ID = 3
+        private const val WISHLIST_ADS_COUNT = 1
+        private const val WISHLIST_SOURCE = "6"
+        private const val CAROUEL_INSTANCE_IN_PAGE = 4
     }
 }

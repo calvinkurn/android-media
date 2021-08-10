@@ -143,6 +143,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
         private const val CACHE_CART = "CART"
         private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
         private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
+        private const val COACHMARK_SAFE_DELAY = 100L
         const val PARAM_LAUNCH_WISHLIST = "launch_source_wishlist"
         const val PARAM_HOME = "home"
         @JvmStatic
@@ -751,7 +752,7 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
                         )
                         coachMark.show(activity, "wishlist", coachMarkItems)
                     }
-                }, 100)
+                }, COACHMARK_SAFE_DELAY)
         }
         }
     }

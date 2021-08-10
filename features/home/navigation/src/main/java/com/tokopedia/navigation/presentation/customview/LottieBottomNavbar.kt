@@ -449,13 +449,8 @@ class LottieBottomNavbar : LinearLayout {
     fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
 
     fun getAnimationScale(context: Context): Float {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Settings.Global.getFloat(context.contentResolver,
-                    Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
-        } else {
-            Settings.System.getFloat(context.contentResolver,
-                    Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
-        }
+        return Settings.System.getFloat(context.contentResolver,
+            Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
     }
 }
 

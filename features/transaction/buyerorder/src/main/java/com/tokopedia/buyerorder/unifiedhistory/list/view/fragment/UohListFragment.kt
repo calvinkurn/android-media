@@ -233,8 +233,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
-    private val REQUEST_CODE_LOGIN = 288
-    private val MIN_KEYWORD_CHARACTER_COUNT = 3
     private var activityOrderHistory = ""
     private var searchQuery = ""
 
@@ -271,6 +269,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val LABEL_3 = 3
         const val STATUS_600 = 600
         const val STATUS_200 = 200
+        private const val MIN_30_DAYS = -30
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1400,7 +1399,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
                             tempEndDate = endDate

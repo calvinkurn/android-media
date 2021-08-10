@@ -85,6 +85,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val TYPE_CLICK = 0
             const val TYPE_EDITABLE = 1
         }
+        private const val MAX_BACKGROUND_ALPHA = 225f
     }
 
     //public variable
@@ -264,7 +265,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             shadowApplied = true
 
             if (lineShadow) {
-                setBackgroundAlpha(225f)
+                setBackgroundAlpha(MAX_BACKGROUND_ALPHA)
                 divider?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {

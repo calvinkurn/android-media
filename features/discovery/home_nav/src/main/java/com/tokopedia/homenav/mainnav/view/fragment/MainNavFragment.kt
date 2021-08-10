@@ -67,6 +67,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
+        private const val OFFSET_TO_SHADOW = 100
+        private const val COACHMARK_SAFE_DELAY = 200
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -135,7 +137,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val offset = recyclerView.computeVerticalScrollOffset()
-                if (offset > 100) {
+                if (offset > OFFSET_TO_SHADOW) {
                     navToolbar?.showShadow(lineShadow = true)
                 } else {
                     navToolbar?.hideShadow(lineShadow = true)
@@ -533,7 +535,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                                 coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                             }
                         }
-                    },200)
+                    }, COACHMARK_SAFE_DELAY)
                 }
             })
         }
