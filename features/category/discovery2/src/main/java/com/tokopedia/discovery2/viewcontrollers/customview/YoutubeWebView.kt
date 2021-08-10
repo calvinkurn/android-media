@@ -129,6 +129,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
             loadUrl("javascript:playVideo()")
     }
 
+    fun pause() {
+        if(isPlayerReady)
+            loadUrl("javascript:pauseVideo()")
+    }
+
     private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
         val height = (ASPECT_RATIO*width).toInt()
         return "<html>\n" +
@@ -174,6 +179,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      }\n" +
                 "      function playVideo() {\n" +
                 "         player.playVideo();\n" +
+                "      }\n"+
+                "      function pauseVideo() {\n" +
+                "         player.pauseVideo();\n" +
                 "      }\n"+
                 "      function mute() {\n" +
                 "         player.mute();\n" +

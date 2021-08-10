@@ -1,30 +1,27 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview
 
-import com.tokopedia.discovery2.datamapper.getComponent
+import androidx.lifecycle.MutableLiveData
 
 class AutoPlayController {
     val videoIdSet: LinkedHashSet<String> = LinkedHashSet()
     var isAutoPlayEnabled = true
-    var currentlyAutoPlaying:String? = null
+    var currentlyAutoPlaying:MutableLiveData<String> = MutableLiveData()
 
     constructor(componentId: String){
-        currentlyAutoPlaying = componentId
+        currentlyAutoPlaying.value = componentId
         videoIdSet.add(componentId)
     }
 
-    fun autoPlayNext(componentId: String, pageEndPoint: String): Boolean {
+    fun autoPlayNext(componentId: String) {
         if (!isAutoPlayEnabled)
-            return false
+            return
         var valueFound = false
         var count = 0
         videoIdSet.forEach { key ->
             count++
             if (valueFound) {
-                currentlyAutoPlaying = key
-                getComponent(key, pageEndPoint)?.let {
-                    it.shouldRefreshComponent = true
-                }
-                return true
+                currentlyAutoPlaying.value = key
+                return
             }
             if (key == componentId) {
                 if (count == videoIdSet.size) {
@@ -33,21 +30,23 @@ class AutoPlayController {
                 valueFound = true
             }
         }
-        return false
     }
 
-    fun pauseAutoPlayedVideo(pageEndPoint: String) :Boolean {
-        if(isAutoPlayEnabled){
-            isAutoPlayEnabled = false
-            currentlyAutoPlaying?.let { id ->
-                getComponent(id, pageEndPoint)?.let{
-                    it.shouldRefreshComponent = true
-                    return true
-                }
-            }
+    fun pauseAutoPlayedVideo(currentId: String) {
+        if(isAutoPlayEnabled && currentId != currentlyAutoPlaying.value){
+            currentlyAutoPlaying.value = currentId
         }
-        return false
     }
+
+    fun shouldAutoPlay(currentId: String):Boolean{
+        return (isAutoPlayEnabled && currentId == currentlyAutoPlaying.value)
+    }
+
+    fun shouldPause(currentId: String):Boolean{
+        return (isAutoPlayEnabled && currentId != currentlyAutoPlaying.value)
+    }
+
+
 
     companion object{
         const val AUTOPLAY_ID = "autoplay"

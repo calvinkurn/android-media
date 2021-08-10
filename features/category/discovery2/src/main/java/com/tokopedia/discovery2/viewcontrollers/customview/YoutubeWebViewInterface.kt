@@ -3,7 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.customview
 import android.webkit.JavascriptInterface
 
 private const val VIDEO_ENDED = 0
-private const val VIDEO_PLAYING = 1
+const val VIDEO_PLAYING = 1
 const val VIDEO_PAUSED = 2
 private const val VIDEO_BUFFERING = 3
 private const val VIDEO_CUED = 5

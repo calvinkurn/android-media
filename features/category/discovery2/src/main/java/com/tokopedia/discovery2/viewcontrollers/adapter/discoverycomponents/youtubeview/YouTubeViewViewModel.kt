@@ -6,15 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 
 class YouTubeViewViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private val videoData = MutableLiveData<DataItem>()
-    private val _shouldResync = SingleLiveEvent<Boolean>()
-
-    val shouldResync: LiveData<Boolean>
-            get() = _shouldResync
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -27,15 +22,17 @@ class YouTubeViewViewModel(val application: Application, private val components:
     }
 
     fun shouldAutoPlay(): Boolean {
-        return (components.autoPlayController?.isAutoPlayEnabled ?: false &&
-                components.autoPlayController?.currentlyAutoPlaying == components.id)
+        return components.autoPlayController?.shouldAutoPlay(components.id) ?: false
+    }
+
+    fun shouldPause(): Boolean {
+        return components.autoPlayController?.shouldPause(components.id) ?: false
     }
 
     fun autoPlayNext() {
-        _shouldResync.value =
-            components.autoPlayController?.autoPlayNext(components.id, components.pageEndPoint)
-                ?: false
+        components.autoPlayController?.autoPlayNext(components.id)
     }
+
     fun isAutoPlayEnabled():Boolean{
         return components.autoPlayController?.isAutoPlayEnabled?:false
     }
@@ -45,10 +42,10 @@ class YouTubeViewViewModel(val application: Application, private val components:
     }
 
     fun pauseOtherVideos() {
-        if (components.autoPlayController?.currentlyAutoPlaying != components.id) {
-            _shouldResync.value =
-                components.autoPlayController?.pauseAutoPlayedVideo(components.pageEndPoint)
-                    ?: false
-        }
+        components.autoPlayController?.pauseAutoPlayedVideo(components.id)
+    }
+
+    fun currentlyAutoPlaying():LiveData<String>?{
+        return components.autoPlayController?.currentlyAutoPlaying
     }
 }

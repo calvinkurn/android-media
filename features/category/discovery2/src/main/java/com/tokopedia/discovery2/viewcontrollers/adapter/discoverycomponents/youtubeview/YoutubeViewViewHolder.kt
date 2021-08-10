@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.VIDEO_PAUSED
+import com.tokopedia.discovery2.viewcontrollers.customview.VIDEO_PLAYING
 import com.tokopedia.discovery2.viewcontrollers.customview.YoutubeWebView
 import com.tokopedia.discovery2.viewcontrollers.customview.YoutubeWebViewEventListener
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
@@ -36,6 +37,17 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
             R.dimen.disco_youtube_horizontal_padding
         ))) / Resources.getSystem().displayMetrics.density).toInt()
     private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
+
+    private val autoPlayObserver = Observer<String> {
+        if (youtubeWebView?.youtubeJSInterface?.currentState == VIDEO_PLAYING
+            && youTubeViewViewModel.shouldPause()
+        ) {
+            youTubeViewViewModel.disableAutoplay()
+            youtubeWebView?.pause()
+        } else {
+            onVideoCued()
+        }
+    }
 
     init {
         youtubeWebView?.customViewInterface = this
@@ -76,18 +88,14 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
             videoName = it.name ?: ""
             showVideoInWebView()
         })
-        youTubeViewViewModel.shouldResync.observe(fragment.viewLifecycleOwner, Observer {
-            if (it) {
-                (fragment as? DiscoveryFragment)?.reSync()
-            }
-        })
+        youTubeViewViewModel.currentlyAutoPlaying()?.observe(fragment.viewLifecycleOwner,autoPlayObserver)
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
             youTubeViewViewModel.getVideoId().removeObservers(it)
-            youTubeViewViewModel.shouldResync.removeObservers(it)
+            youTubeViewViewModel.currentlyAutoPlaying()?.removeObserver(autoPlayObserver)
         }
     }
 

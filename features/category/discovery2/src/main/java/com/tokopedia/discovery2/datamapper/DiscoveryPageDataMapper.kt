@@ -137,22 +137,23 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
 
     private fun addAutoPlayController(component: ComponentsItem) {
         if (component.autoPlayController == null) {
-            val autoplayComponent: ComponentsItem =
-                getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) ?: run {
-                    ComponentsItem().apply {
-                        autoPlayController = AutoPlayController(component.id)
-                        setComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint, this)
-                    }
-                }
-            if (autoplayComponent.autoPlayController?.videoIdSet?.contains(component.id) == false) {
-                autoplayComponent.autoPlayController?.videoIdSet?.add(component.id)
-            }
+            val autoplayComponent: ComponentsItem = getAutoPlayComponent(component)
+            autoplayComponent.autoPlayController?.videoIdSet?.add(component.id)
             component.autoPlayController = autoplayComponent.autoPlayController
         } else if (getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) == null) {
             setComponent(
                 AutoPlayController.AUTOPLAY_ID,
                 component.pageEndPoint,
                 ComponentsItem().also { component.autoPlayController })
+        }
+    }
+
+    private fun getAutoPlayComponent(component: ComponentsItem): ComponentsItem {
+        return getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) ?: run {
+            ComponentsItem().apply {
+                autoPlayController = AutoPlayController(component.id)
+                setComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint, this)
+            }
         }
     }
 
