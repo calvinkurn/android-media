@@ -173,11 +173,12 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     override fun onVideoCued() {
-        if (youTubeViewViewModel.shouldAutoPlay())
-            mainThreadHandler.post {
+        mainThreadHandler.post {
+            if (youTubeViewViewModel.shouldAutoPlay()) {
                 youtubeWebView?.play()
                 youtubeWebView?.mute()
             }
+        }
     }
 
     companion object{
