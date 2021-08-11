@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.provider.MediaStore
 import android.util.Log
 import android.util.SparseArray
+import com.tokopedia.imagepicker_insta.fragment.MainFragment
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
@@ -15,7 +16,9 @@ import org.json.JSONObject
 import java.io.IOException
 
 class PhotoImporter {
-
+companion object{
+    const val ALL = "All"
+}
     fun importPhotos(context: Context): PhotosImporterData {
         val photoNames = SparseArray<String>()
         val photoCursor = CursorUtil.getPhotoCursor(context,"",null)
@@ -113,7 +116,7 @@ class PhotoImporter {
             }
         }
         val tempFoldersList = ArrayList(folders)
-        tempFoldersList.add(0, ALL)
+        tempFoldersList.add(0, PhotoImporter.ALL)
         return PhotosImporterData(tempFoldersList,photosList,null)
     }
 

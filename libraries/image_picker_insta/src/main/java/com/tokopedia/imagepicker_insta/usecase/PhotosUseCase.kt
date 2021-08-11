@@ -1,6 +1,7 @@
-package com.tokopedia.imagepicker_insta
+package com.tokopedia.imagepicker_insta.usecase
 
 import android.content.Context
+import com.tokopedia.imagepicker_insta.PhotoImporter
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import javax.inject.Inject
 

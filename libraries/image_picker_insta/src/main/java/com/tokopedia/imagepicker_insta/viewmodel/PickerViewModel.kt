@@ -1,10 +1,12 @@
-package com.tokopedia.imagepicker_insta
+package com.tokopedia.imagepicker_insta.viewmodel
 
 import android.app.Application
 import android.content.ContentValues
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.imagepicker_insta.LiveDataResult
+import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.PhotosImporterData
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -33,7 +35,7 @@ class PickerViewModel @Inject constructor(
                 photosLiveData.postValue(LiveDataResult.error(Exception("No Images found")))
             }else{
                 val tempList = photosImporterData!!.assets.filter { it.folder == folderName }
-                photosLiveData.postValue(LiveDataResult.success(PhotosImporterData(photosImporterData!!.folders,ArrayList(tempList),folderName)))
+                photosLiveData.postValue(LiveDataResult.success(PhotosImporterData(photosImporterData!!.folders, ArrayList(tempList), folderName)))
             }
 
         },onError = {

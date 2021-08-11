@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta
+package com.tokopedia.imagepicker_insta.views
 
 import android.content.Context
 import android.util.AttributeSet

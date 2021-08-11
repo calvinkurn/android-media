@@ -1,12 +1,8 @@
-package com.tokopedia.imagepicker_insta
+package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,18 +15,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imagepicker_insta.*
+import com.tokopedia.imagepicker_insta.activity.MainActivity
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.module.AppModule
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.util.CameraUtil
+import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
+import com.tokopedia.imagepicker_insta.views.AssetImageView
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-const val ALL = "All"
+
 class MainFragment: Fragment() {
 
     lateinit var viewModel: PickerViewModel
@@ -38,11 +39,11 @@ class MainFragment: Fragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var rv:RecyclerView
-    lateinit var selectedImage:AssetImageView
+    lateinit var selectedImage: AssetImageView
     lateinit var recentSection:LinearLayout
     lateinit var tvSelectedFolder:AppCompatTextView
 
-    lateinit var imageAdapter:ImageAdapter
+    lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<Asset>()
     val folders = arrayListOf<String>()
 
@@ -56,7 +57,7 @@ class MainFragment: Fragment() {
 
     fun handleCameraPermissionCallback(){
         if(activity is MainActivity){
-            (activity as MainActivity).cameraPermissionCallback = {hasAllPermission->
+            (activity as MainActivity).cameraPermissionCallback = { hasAllPermission->
                 if(hasAllPermission){
                     openCamera()
                 }else{
@@ -132,9 +133,8 @@ class MainFragment: Fragment() {
     }
 
     fun handleOnCameraIconTap(){
-
         if(activity is MainActivity){
-            (activity as MainActivity).requestCameraAndWritePermission()
+                PermissionUtil.requestCameraAndWritePermission(activity as MainActivity)
         }
     }
 
@@ -157,7 +157,7 @@ class MainFragment: Fragment() {
                         //update folders
                         if(!it.data.folders.isNullOrEmpty()){
                             folders.addAll(it.data.folders)
-                            tvSelectedFolder.text = it.data.selectedFolder ?: ALL
+                            tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
                         }
 
                         Toast.makeText(context,"List updated",Toast.LENGTH_SHORT).show()

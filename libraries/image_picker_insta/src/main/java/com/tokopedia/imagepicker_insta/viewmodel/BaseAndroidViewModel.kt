@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta
+package com.tokopedia.imagepicker_insta.viewmodel
 
 import android.app.Application
 import androidx.annotation.VisibleForTesting

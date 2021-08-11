@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.imagepicker_insta.AssetImageView
+    <com.tokopedia.imagepicker_insta.views.AssetImageView
         android:scaleType="centerCrop"
         android:id="@+id/src_image"
         android:layout_width="match_parent"

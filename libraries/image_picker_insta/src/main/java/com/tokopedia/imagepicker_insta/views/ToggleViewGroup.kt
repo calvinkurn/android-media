@@ -7,9 +7,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.imagepicker_insta.AssetImageView
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.toPx
@@ -20,7 +18,7 @@ class ToggleViewGroup @JvmOverloads constructor(
 
     lateinit var maskImageView:ToggleImageView
     lateinit var toggleImageView:ToggleImageView
-    lateinit var assetImageView:AssetImageView
+    lateinit var assetImageView: AssetImageView
 
     var clipPath = Path()
     var clipRectF = RectF()
