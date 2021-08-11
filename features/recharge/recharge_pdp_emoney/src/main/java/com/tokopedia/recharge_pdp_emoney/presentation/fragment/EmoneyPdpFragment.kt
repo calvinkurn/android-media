@@ -251,11 +251,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             var lastOffset = -1
             var lastIsCollapsed = false
 
-            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-                if (lastOffset == verticalOffSet) return
+            override fun onOffsetChanged(layoutAppBar: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet || layoutAppBar == null) return
 
                 lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                if (abs(verticalOffSet) >= layoutAppBar.totalScrollRange && !lastIsCollapsed) {
                     //Collapsed
                     lastIsCollapsed = true
                     (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = true
@@ -433,7 +433,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun renderErrorMessage(error: Throwable) {
         var errorThrowable = error
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
-            errorThrowable = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+            errorThrowable = MessageErrorException(getString(
+                com.tokopedia.common_digital.R.string.digital_common_grpc_toaster))
         }
         Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()

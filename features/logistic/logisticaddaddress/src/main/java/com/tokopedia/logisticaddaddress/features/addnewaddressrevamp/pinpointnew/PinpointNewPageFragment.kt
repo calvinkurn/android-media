@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -45,7 +44,6 @@ import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
@@ -56,11 +54,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageFragment
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -113,6 +107,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var isFromAddressForm: Boolean = false
     private var districtId: Int? = null
     private var currentKotaKecamatan: String? = ""
+    private var currentPostalCode: String? = ""
 
     private var isPolygon: Boolean = false
 
@@ -264,8 +259,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun initData() {
         arguments?.let {
             currentPlaceId = it.getString(EXTRA_PLACE_ID)
-            currentLat = it.getDouble(EXTRA_LATITUDE)
-            currentLong = it.getDouble(EXTRA_LONGITUDE)
+            currentLat = it.getDouble(EXTRA_LAT)
+            currentLong = it.getDouble(EXTRA_LONG)
             saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
@@ -276,6 +271,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
+            currentPostalCode = it.getString(EXTRA_POSTAL_CODE)
             isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM)
         }
 
@@ -394,7 +390,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        if (data.postalCode.isEmpty() || data.districtId == 0) {
+        if ((data.postalCode.isEmpty() && currentPostalCode.isNullOrEmpty()) || data.districtId == 0) {
             currentLat = data.latitude.toDouble()
             currentLong = data.longitude.toDouble()
             moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
@@ -818,8 +814,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             return PinpointNewPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
-                    putDouble(EXTRA_LATITUDE, extra.getDouble(EXTRA_LATITUDE))
-                    putDouble(EXTRA_LONGITUDE, extra.getDouble(EXTRA_LONGITUDE))
+                    putDouble(EXTRA_LAT, extra.getDouble(EXTRA_LAT))
+                    putDouble(EXTRA_LONG, extra.getDouble(EXTRA_LONG))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                     putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
@@ -827,6 +823,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
                     putInt(EXTRA_DISTRICT_ID, extra.getInt(EXTRA_DISTRICT_ID))
+                    putString(EXTRA_POSTAL_CODE, extra.getString(EXTRA_POSTAL_CODE))
                 }
             }
         }

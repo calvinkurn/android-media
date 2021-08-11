@@ -9,12 +9,16 @@ import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 public class DomainModelToViewModelConverter {
     public static AttachProductItemUiModel convertProductDomainModel(DataProductResponse product) {
-        return new AttachProductItemUiModel(product.getProductUrl(),
+        return new AttachProductItemUiModel(
+                product.getProductUrl(),
                 product.getProductName(),
                 product.getProductId(),
                 product.getProductImageFull(),
                 product.getProductImage(),
                 product.getProductPrice(),
-                product.getShop().getShopName());
+                product.getShop().getShopName(),
+                product.getOriginalPrice(),
+                product.getDiscountPercentage()
+        );
     }
 }

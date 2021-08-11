@@ -23,6 +23,7 @@ object DynamicProductDetailMapper {
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
      * except info type
+     * If data already complete at P1 call, assign the value here.
      */
     fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
@@ -67,9 +68,6 @@ object DynamicProductDetailMapper {
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
                 }
-                ProductDetailConstant.SHOP_VOUCHER -> {
-                    listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
                         listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
@@ -111,8 +109,22 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                        BestSellerInfoDataModel(type = component.type, name = component.componentName)
+                        OneLinersDataModel(type = component.type, name = component.componentName)
                     )
+                }
+                ProductDetailConstant.CATEGORY_CAROUSEL -> {
+                    //all data already provided in here (P1), so fill the data
+                    val carouselData = component.componentData.firstOrNull()
+
+                    if (carouselData?.categoryCarouselList?.isNotEmpty() == true) {
+                        listOfComponent.add(
+                                ProductCategoryCarouselDataModel(type = component.type,
+                                        name = component.componentName,
+                                        titleCarousel = carouselData.titleCarousel,
+                                        linkText = carouselData.linkText,
+                                        applink = carouselData.applink,
+                                        categoryList = carouselData.categoryCarouselList))
+                    }
                 }
             }
         }
@@ -133,32 +145,41 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        val bestSellerComponent = data.components.find {
-            it.componentName == ProductDetailConstant.BEST_SELLER
-        }?.componentData?.map {
-            BestSellerInfoContent (
-                productID = it.productId,
-                content = it.oneLinerContent,
-                linkText = it.linkText,
-                color = it.color,
-                applink = it.applink,
-                separator = it.separator,
-                icon = it.icon,
-                isVisible = it.isVisible
-            )
-        }?.associateBy { it.productID }
+        val bestSellerComponent = mapToOneLinersComponent(ProductDetailConstant.BEST_SELLER, data)
+        val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-            layoutName = data.generalName,
-            basic = data.basicInfo,
-            data = newDataWithMedia,
-            pdpSession = data.pdpSession,
-            bestSellerContent = bestSellerComponent
+                layoutName = data.generalName,
+                basic = data.basicInfo,
+                data = newDataWithMedia,
+                pdpSession = data.pdpSession,
+                bestSellerContent = bestSellerComponent,
+                stockAssuranceContent = stockAssuranceComponent
         )
+    }
+
+    private fun mapToOneLinersComponent(
+            componentName: String,
+            data: PdpGetLayout
+    ): Map<String, OneLinersContent>? {
+        return data.components.find {
+            it.componentName == componentName
+        }?.componentData?.map {
+            OneLinersContent(
+                    productID = it.productId,
+                    content = it.oneLinerContent,
+                    linkText = it.linkText,
+                    color = it.color,
+                    applink = it.applink,
+                    separator = it.separator,
+                    icon = it.icon,
+                    isVisible = it.isVisible
+            )
+        }?.associateBy { it.productID }
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>) {
@@ -197,7 +218,7 @@ object DynamicProductDetailMapper {
             null
         } else {
             data.map {
-                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value.toFloat())
+                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value)
             }
         }
     }
@@ -258,7 +279,7 @@ object DynamicProductDetailMapper {
             } ?: return@forEach
             result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, it.uriThumbnail,
-                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt))
+                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
         }
 
         return ImageReview(result, data.detail?.imageCount ?: "")
@@ -288,13 +309,13 @@ object DynamicProductDetailMapper {
     }
 
     fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
-        return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
+        return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
     fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {
         val shouldAutoSelect = variantData.autoSelectedOptionIds()
         val isParent = selectedChild == null
-        val selectedOptionIds =  when {
+        val selectedOptionIds = when {
             isParent -> {
                 if (shouldAutoSelect.isNotEmpty()) {
                     //if product parent and able to auto select, do auto select
