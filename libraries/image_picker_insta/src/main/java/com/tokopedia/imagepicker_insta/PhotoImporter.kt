@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
@@ -48,6 +49,7 @@ companion object{
                             val name = cur.getString(path)
                             val numBytes = cur.getLong(bytes)
                             val numBytesKB = numBytes / 1024 // skip photos below 10 KB in size
+                            val index = cur.getLong(id)
 
                             //Set default values
                             item.put("nw_st", "")
@@ -64,12 +66,12 @@ companion object{
                                     }
                                 }
                                 if (dateLong != 0L) {
-                                    val index = cur.getInt(id)
+
 //                                    item.put("sa", TimeUtil.getISODate(dateLong))
                                     item.put("i", cur.getInt(id))
                                     item.put("b", numBytes)
-                                    photosOnPhone.put(index, item)
-                                    photoNames.put(index, name)
+                                    photosOnPhone.put(index.toInt(), item)
+                                    photoNames.put(index.toInt(), name)
                                     val isOther: Boolean = Photo.isOther(name)
                                     if (isOther) {
                                         item.put("_ne", States.networkType.others.value())
@@ -102,6 +104,10 @@ companion object{
                             val photosData = PhotosData(filePath = name,
                             folderName = folderName,
                             mediaType = item["mt"] as String,
+                                uri =  ContentUris.withAppendedId(
+                                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                    index
+                                )
                             )
                             folders.add(folderName)
                             photosList.add(photosData)

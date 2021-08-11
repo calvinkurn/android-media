@@ -11,9 +11,16 @@ class AssetImageView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
     fun loadAsset(asset: Asset){
-        val path = asset.assetPath
         Glide.with(this)
-            .load(path)
+            .load(asset.contentUri)
+            .into(this)
+    }
+
+    fun loadAssetThumbnail(asset: Asset){
+        Glide.with(this)
+            .load(asset.contentUri)
+            .thumbnail(0.33f)
+            .centerCrop()
             .into(this)
     }
 

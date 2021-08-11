@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.imagepicker_insta.PhotosViewHolder
 import com.tokopedia.imagepicker_insta.R
 
 class FolderChooserViewHolder(listItemView: View):RecyclerView.ViewHolder(listItemView) {
