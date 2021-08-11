@@ -2,6 +2,7 @@ package com.tokopedia.shop.home
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
@@ -10,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.ViewGroup
-
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -23,7 +23,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.*
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
@@ -31,7 +34,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import java.io.File
-import java.lang.Exception
 import java.net.URI
 import java.util.*
 
@@ -258,7 +260,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         Glide.with(context).asGif().load(drawable).into(this)
     }
 
-    fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false) {
+    fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false, isNpl: Boolean = false) {
         if(!context.isValidGlideContext()) return
         this.post {
             heightRatio?.let {
@@ -289,13 +291,21 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     loadGif(url, placeholderHeight)
                 }
                 false -> {
-                    loadImage(url, placeholderHeight, isSkipCache)
+                    if (isNpl) {
+                        loadImageTileMode(url)
+                    } else {
+                        loadImage(url, placeholderHeight, isSkipCache)
+                    }
                 }
                 else -> {
                     if (ext.isNotEmpty() && (ext == "gif" || ext == "gifv")) {
                         loadGif(url, placeholderHeight)
                     } else {
-                        loadImage(url, placeholderHeight, isSkipCache)
+                        if (isNpl) {
+                            loadImageTileMode(url)
+                        } else {
+                            loadImage(url, placeholderHeight, isSkipCache)
+                        }
                     }
                 }
             }
@@ -334,7 +344,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
 
         if (isLoadError || (!hasImageUrl && placeholder == 0)) {
             if (measuredWidth.toDp() <= 256 || measuredHeight.toDp() <= 256) {
-                if (!isRetryable) {
+                if (!isRetryable && !DeviceScreenInfo.isTablet(context)) {
                     prevScaleType = scaleType
                     scaleType = ScaleType.FIT_CENTER
                 }
@@ -401,6 +411,25 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     }
                 })
                 .into(this)
+    }
+
+    private fun loadImageTileMode(url: String) {
+        if(!context.isValidGlideContext()) return
+
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap?>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap?>?
+                ) {
+                    val bitmapDrawable = BitmapDrawable(context.resources, resource)
+                    bitmapDrawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                    this@ShopCarouselBannerImageUnify.setImageDrawable(bitmapDrawable)
+                }
+            })
     }
 
     private fun loadImage(url: String, placeholderHeight: Int?, isSkipCache: Boolean) {

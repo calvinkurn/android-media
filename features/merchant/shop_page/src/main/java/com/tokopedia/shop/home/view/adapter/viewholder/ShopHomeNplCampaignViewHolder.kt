@@ -22,6 +22,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiMode
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.unifycomponents.toPx
@@ -180,7 +181,11 @@ class ShopHomeNplCampaignViewHolder(
         itemView.banner_background?.apply {
             try {
                 if(context.isValidGlideContext())
-                    setImageUrl(bannerUrl, heightRatio = 1f)
+                    if (DeviceScreenInfo.isTablet(context)) {
+                        setImageUrl(bannerUrl, heightRatio = null, isNpl = true)
+                    } else {
+                        setImageUrl(bannerUrl, heightRatio = 1f, isNpl = true)
+                    }
             } catch (e: Exception) { }
         }
     }

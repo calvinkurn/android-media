@@ -9,4 +9,6 @@
     <integer name="header_text_first_line_size">8</integer>
     <integer name="header_text_second_line_size">9</integer>
     <integer name="header_button_shop_note_icon_size">16</integer>
+
+    <item name="wrap_content" format="integer" type="dimen">-2</item>
 </resources>
