@@ -171,7 +171,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     var coachMark2: CoachMark2? = null
 
     fun showSaleTabCoachMark() {
-        val delayInCoachMark = 1000L
+        val delayInCoachMark = 500L
         val penjualanTab = getPenjualanTabView()
         penjualanTab?.let {
             it.postDelayed({

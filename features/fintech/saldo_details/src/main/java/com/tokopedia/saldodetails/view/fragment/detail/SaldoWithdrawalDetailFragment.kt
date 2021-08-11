@@ -117,7 +117,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
 
     }
     private fun setFeeDetailBreakup(data: WithdrawalInfoData) {
-        llWithdrawalDetail.setData(data.feeDetailData)
+        llWithdrawalDetail.setData(data.feeDetailData, context?.getString(R.string.saldo_withdrawal_info_details))
     }
 
     private fun setWithdrawalStatusData(data: WithdrawalInfoData) {

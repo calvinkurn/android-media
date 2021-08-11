@@ -89,7 +89,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.totalAmount, false)
         tvInvoiceNumber.text = data.invoiceNumber
         tvWithdrawalDate.text = data.createdTime
-        llWithdrawalDetail.setData(data.depositDetail)
+        llWithdrawalDetail.setData(data.depositDetail, context?.getString(R.string.saldo_sales_info_details))
     }
 
     private fun onError(throwable: Throwable) {
@@ -120,7 +120,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     private fun openInvoiceDetailPage() {
        val invoiceUrl = viewModel?.getInvoiceDetailUrl()
         if (invoiceUrl?.isNotEmpty() == true)
-            RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, invoiceUrl)
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, invoiceUrl)
     }
 
     private fun copyToClipboard(copiedContent: String) {

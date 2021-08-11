@@ -66,10 +66,10 @@ class SaldoHoldInfoFragment : Fragment() {
     fun initView() {
 
         var resultAmount: Long? = null
-        if (transactionType.equals(FOR_BUYER)) {
+        if (transactionType == FOR_BUYER) {
             resultAmount = buyerAmount
             title_saldo.text = resources.getString(R.string.saldo_total_balance_buyer)
-        } else if (transactionType.equals(FOR_SELLER)) {
+        } else if (transactionType == FOR_SELLER) {
             resultAmount = sellerAmount
             title_saldo.text = resources.getString(R.string.saldo_total_balance_seller)
         }

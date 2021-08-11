@@ -8,7 +8,7 @@ data class SaldoHoldDepositHistory(
 	val sellerData: ArrayList<SaldoHoldInfoItem?>? = null,
 
 	@SerializedName("total")
-	val total: Int? = null,
+	val total: Double? = null,
 
 	@SerializedName("code")
 	val code: Int? = null,

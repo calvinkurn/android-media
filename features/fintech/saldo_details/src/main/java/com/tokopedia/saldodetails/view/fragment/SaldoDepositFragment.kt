@@ -224,7 +224,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 val list = buildCoachMark() ?: return
                 updateBalanceCoachMarkShown()
                 coachMark.setOnDismissListener {
-                    if (coachMark.currentIndex == 1) {
+                    if (coachMark.currentIndex == 2) {
                         showPenjualanCoachMark()
                     }
                 }
@@ -467,11 +467,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         setWithdrawButtonState(totalBalance != 0L)
 
         val holdBalance =
-            (saldo.buyerHold + saldo.sellerHold).toFloat()
+            (saldo.buyerHold + saldo.sellerHold).toDouble()
         if (holdBalance > 0) {
             showHoldWarning(
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    holdBalance.toDouble(),
+                    holdBalance,
                     false
                 )
             )

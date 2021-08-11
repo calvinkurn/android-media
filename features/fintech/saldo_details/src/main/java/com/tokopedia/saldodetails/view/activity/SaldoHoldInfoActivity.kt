@@ -41,7 +41,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     var arrayListBuyer: ArrayList<SaldoHoldInfoItem>? = null
     var sellerAmount: Long = 0
     var buyerAmount: Long = 0
-    var item: ArrayList<SaldoHistoryTabItem>? = null
+    var item: ArrayList<SaldoHistoryTabItem> = arrayListOf()
     lateinit var tabLayout: TabsUnify
     val SALDO_SELLER_AMOUNT = "SALDO_SELLER_AMOUNT"
     val SALDO_BUYER_AMOUNT = "SALDO_BUYER_AMOUNT"
@@ -139,7 +139,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     }
 
     private fun setUpViewPager(sellerListSize: Int?, buyerListSize: Int?) {
-        item = ArrayList()
         if (sellerListSize == 0 && buyerListSize != 0) {
 
             val bundleBuyer = Bundle()
@@ -159,7 +158,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             val saldoHistoryTabItemBuyer = SaldoHistoryTabItem()
             saldoHistoryTabItemBuyer.fragment = SaldoHoldInfoFragment.createInstance(bundleBuyer)
             saldoHistoryTabItemBuyer.title = resources.getString(R.string.saldo_total_balance_buyer) + "(" + buyerListSize + ")"
-            item?.add(saldoHistoryTabItemBuyer)
+            item.add(saldoHistoryTabItemBuyer)
 
         } else if (buyerListSize == 0 && sellerListSize != 0) {
 
@@ -180,7 +179,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             val saldoHistoryTabItemSeller = SaldoHistoryTabItem()
             saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundleSeller)
             saldoHistoryTabItemSeller.title = resources.getString(R.string.saldo_total_balance_seller) + "(" + sellerListSize + ")"
-            item?.add(saldoHistoryTabItemSeller)
+            item.add(saldoHistoryTabItemSeller)
 
         } else if (buyerListSize != 0 && sellerListSize != 0) {
 
@@ -221,8 +220,13 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             saldoHistoryTabItemSeller.fragment = SaldoHoldInfoFragment.createInstance(bundleSeller)
             saldoHistoryTabItemSeller.title = resources.getString(R.string.saldo_total_balance_seller) + "(" + sellerListSize + ")"
 
-            item?.add(0, saldoHistoryTabItemSeller)
-            item?.add(1, saldoHistoryTabItemBuyer)
+            item.add(0, saldoHistoryTabItemSeller)
+            item.add(1, saldoHistoryTabItemBuyer)
+            tabLayout.run {
+                getUnifyTabLayout().removeAllTabs()
+                for(tabItem in item)
+                    addNewTab(tabItem.title)
+            }
 
         }
         if (buyerListSize == 0 || sellerListSize == 0) {

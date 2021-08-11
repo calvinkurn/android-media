@@ -41,7 +41,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
+        //setSecureWindowFlag()
     }
 
     private fun setSecureWindowFlag() {

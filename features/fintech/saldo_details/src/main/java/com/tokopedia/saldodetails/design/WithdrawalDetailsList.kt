@@ -30,8 +30,8 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         this.orientation = VERTICAL
     }
 
-    fun setData(feeDetailData: ArrayList<FeeDetailData>) {
-        inflateTitle()
+    fun setData(feeDetailData: ArrayList<FeeDetailData>, title: String?) {
+        inflateTitle(title)
         inflateDetailList(feeDetailData)
         inflateDivider()
         inflateAmount(feeDetailData.getOrNull(feeDetailData.size - 1))
@@ -41,7 +41,7 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         addView(getLayout(VIEW_TYPE_SEPARATOR))
     }
 
-    private fun inflateTitle() {
+    private fun inflateTitle(title: String?) {
         val layoutParams = LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -51,7 +51,7 @@ class WithdrawalDetailsList @JvmOverloads constructor(
         val heading = Typography(context)
         heading.setType(Typography.HEADING_4)
         heading.setWeight(Typography.BOLD)
-        heading.text = context.getString(R.string.saldo_withdrawal_info_details)
+        heading.text = title ?: ""
         heading.layoutParams = layoutParams
         addView(heading)
     }

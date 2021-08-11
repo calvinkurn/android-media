@@ -62,7 +62,7 @@
 
         <activity android:name=".view.activity.detail.SaldoSalesDetailActivity"
             android:screenOrientation="portrait"
-            android:label="@string/saldo_withdrawal_detail_title"
+            android:label="@string/saldo_sales_detail_title"
             android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>
