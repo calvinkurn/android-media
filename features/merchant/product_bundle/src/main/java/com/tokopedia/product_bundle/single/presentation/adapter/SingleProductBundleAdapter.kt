@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -77,5 +78,10 @@ class SingleProductBundleAdapter(
 
     fun getSelectedData(): List<SingleProductBundleSelectedItem> {
         return selectedData
+    }
+
+    fun getSelectedProductVariant(): ProductVariant? {
+        val index = selectedData.indexOfFirst { it.isSelected }
+        return data.getOrNull(index)?.productVariant
     }
 }

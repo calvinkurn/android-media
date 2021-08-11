@@ -66,7 +66,8 @@ class SingleProductBundleFragment(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-           adapter.setSelectedVariant(this.selectedProductId, this.selectedProductId)
+            val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
+           adapter.setSelectedVariant(selectedProductId, viewModel.getVariantText(selectedProductVariant, selectedProductId))
         }
     }
 

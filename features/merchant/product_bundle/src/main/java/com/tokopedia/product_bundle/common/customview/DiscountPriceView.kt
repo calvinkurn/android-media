@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product_bundle.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
@@ -79,5 +80,9 @@ class DiscountPriceView : BaseCustomView {
         tvItemPrice?.text = price
         tvItemSlashPrice?.text = slashPrice
         labelItemDiscount?.text = discountAmount
+
+        val isDiscounted = price != slashPrice
+        labelItemDiscount?.isVisible = isDiscounted
+        tvItemSlashPrice?.isVisible = isDiscounted
     }
 }

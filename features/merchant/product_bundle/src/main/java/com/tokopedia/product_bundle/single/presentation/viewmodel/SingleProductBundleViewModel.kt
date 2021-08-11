@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_bundle.single.presentation.model.BundleInfoToSingleProductBundleMapper
@@ -40,6 +42,31 @@ class SingleProductBundleViewModel @Inject constructor(
     fun setBundleInfo(context: Context, bundleInfo: BundleInfo) {
         mSingleProductBundleUiModel.value = BundleInfoToSingleProductBundleMapper
             .mapToSingleProductBundle(context, bundleInfo)
+    }
+
+    fun getVariantText(selectedProductVariant: ProductVariant, selectedProductId: String): String {
+        var resultText = ""
+        val variant = selectedProductVariant.variants
+        val variantChild = selectedProductVariant.getChildByProductId(selectedProductId)
+
+        if (variantChild != null) {
+            resultText = getVariantText(variant, variantChild.optionIds)
+        }
+
+        return resultText
+    }
+
+    fun getVariantText(productVariant: List<Variant>, optionIds: List<String>): String {
+        val resultText = mutableListOf<String?>()
+        optionIds.forEachIndexed { index, optionId ->
+            val option = productVariant[index].options.find {
+                it.id == optionId
+            }
+            if (option != null) {
+                resultText.add(option.value)
+            }
+        }
+        return resultText.joinToString(", ")
     }
 
     fun updateTotalAmount(originalPrice: Double, discountedPrice: Double, quantity: Int) {

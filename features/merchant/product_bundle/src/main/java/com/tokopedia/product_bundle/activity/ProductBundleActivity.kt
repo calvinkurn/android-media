@@ -156,6 +156,59 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 bundlePrice = 2000,
                 originalPrice = 2300,
                 status = "SHOW"
+            ),
+            BundleItem(
+                productID = 123453L,
+                name = "Bundle 3",
+                picURL = "https://placekitten.com/200/300",
+                minOrder = 2,
+                bundlePrice = 2000,
+                originalPrice = 2300,
+                status = "SHOW",
+                selections = listOf(
+                    Selection(
+                        productVariantID = 6000,
+                        variantID = 29,
+                        name = "ukuran",
+                        identifier = "size",
+                        options = listOf(
+                            VariantOption(
+                                10,
+                                10,
+                                "S",
+                                ""
+                            ),
+                            VariantOption(
+                                11,
+                                10,
+                                "M",
+                                ""
+                            ),
+                        ),
+                    )
+                ),
+                children = listOf(
+                    Child(
+                        productID = 123451L,
+                        originalPrice = 10000,
+                        bundlePrice = 10000,
+                        stock = 10,
+                        minOrder = 1,
+                        optionIds = listOf(10),
+                        name = "child 1",
+                        picURL = "https://placekitten.com/200/300"
+                    ),
+                    Child(
+                        productID = 123452L,
+                        originalPrice = 10000,
+                        bundlePrice = 300,
+                        stock = 10,
+                        minOrder = 1,
+                        optionIds = listOf(11),
+                        name = "child 2",
+                        picURL = "https://placekitten.com/200/200"
+                    )
+                )
             )
         )
     )

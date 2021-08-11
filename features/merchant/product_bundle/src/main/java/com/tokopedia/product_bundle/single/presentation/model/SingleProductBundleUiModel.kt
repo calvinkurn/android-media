@@ -28,6 +28,8 @@ data class SingleProductBundleItem (
 ) {
         val hasVariant: Boolean = (productVariant != null)
 
+        fun getProductVariant() = productVariant?.variants.orEmpty()
+
         fun getVariantChildFromProductId(productId: String) = productVariant?.children?.find {
                 it.productId == productId
         }
