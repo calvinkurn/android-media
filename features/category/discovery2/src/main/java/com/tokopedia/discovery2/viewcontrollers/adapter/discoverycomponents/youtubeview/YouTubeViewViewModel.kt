@@ -36,8 +36,8 @@ class YouTubeViewViewModel(val application: Application, private val components:
         components.autoPlayController?.isAutoPlayEnabled = false
     }
 
-    fun pauseOtherVideos() {
-        components.autoPlayController?.pauseAutoPlayedVideo(components.id)
+    fun pauseOtherVideos():Boolean {
+        return components.autoPlayController?.pauseAutoPlayedVideo(components.id)?:false
     }
 
     fun currentlyAutoPlaying():LiveData<String>?{

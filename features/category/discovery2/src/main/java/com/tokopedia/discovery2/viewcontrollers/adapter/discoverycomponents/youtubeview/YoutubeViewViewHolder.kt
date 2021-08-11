@@ -131,7 +131,9 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) :
             ?.trackClickVideo(videoId, videoName, time.toString())
         mainThreadHandler.post {
             if (youTubeViewViewModel.isAutoPlayEnabled()) {
-                youTubeViewViewModel.pauseOtherVideos()
+                if(youTubeViewViewModel.pauseOtherVideos()){
+                    youtubeWebView?.unMute()
+                }
             } else {
                 youtubeWebView?.unMute()
             }

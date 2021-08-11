@@ -32,10 +32,12 @@ class AutoPlayController {
         }
     }
 
-    fun pauseAutoPlayedVideo(currentId: String) {
-        if(isAutoPlayEnabled && currentId != currentlyAutoPlaying.value){
+    fun pauseAutoPlayedVideo(currentId: String):Boolean {
+        return if(isAutoPlayEnabled && currentId != currentlyAutoPlaying.value){
             currentlyAutoPlaying.value = currentId
-        }
+            true
+        }else
+            false
     }
 
     fun shouldAutoPlay(currentId: String):Boolean{
