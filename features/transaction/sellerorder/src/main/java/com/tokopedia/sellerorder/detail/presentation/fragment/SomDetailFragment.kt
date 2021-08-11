@@ -793,7 +793,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse?.orderId.orEmpty())
         val uriBuilder = Uri.Builder()
-        val decodedUrl = URLDecoder.decode(buttonResp.url, SomConsts.ENCODING_UTF_8)
+        val decodedUrl = if (buttonResp.url.startsWith(SomConsts.PREFIX_HTTPS)) {
+            buttonResp.url
+        } else {
+            URLDecoder.decode(buttonResp.url, SomConsts.ENCODING_UTF_8)
+        }
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
         routingAppLink += uriBuilder.toString()

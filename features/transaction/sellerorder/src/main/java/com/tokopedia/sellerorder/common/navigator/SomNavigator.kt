@@ -42,7 +42,11 @@ object SomNavigator {
         context?.run {
             var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId)
             val uriBuilder = Uri.Builder()
-            val decodedUrl = URLDecoder.decode(url, SomConsts.ENCODING_UTF_8)
+            val decodedUrl = if (url.startsWith(SomConsts.PREFIX_HTTPS)) {
+                url
+            } else {
+                URLDecoder.decode(url, SomConsts.ENCODING_UTF_8)
+            }
             uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
             uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, SomConsts.PARAM_SELLER)
             routingAppLink += uriBuilder.toString()

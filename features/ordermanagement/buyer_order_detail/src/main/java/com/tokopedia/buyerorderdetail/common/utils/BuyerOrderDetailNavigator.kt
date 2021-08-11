@@ -32,6 +32,7 @@ class BuyerOrderDetailNavigator(
         private const val KEY_URL = "url"
         private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
+        private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
     }
@@ -79,7 +80,11 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
-        val decodedUrl = URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
+        val decodedUrl = if (trackingUrl.startsWith(PREFIX_HTTPS)) {
+            trackingUrl
+        } else {
+            URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
+        }
         val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
                 .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
                 .build()
