@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
@@ -291,15 +292,25 @@ internal fun renderLabelBestSeller(
 
     if (isShow) {
         labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
-        if(isShowCategoryBottom) {
-            labelCategoryBottom?.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
-        }
-        else if(isShowCategorySide) {
-            labelCategorySide?.initLabelCategorySide(productCardModel.getLabelCategorySide())
+        when {
+            isShowCategoryBottom -> {
+                labelCategoryBottom?.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
+                labelCategorySide?.initLabelCategorySide(null)
+            }
+            isShowCategorySide -> {
+                labelCategorySide?.initLabelCategorySide(productCardModel.getLabelCategorySide())
+                labelCategoryBottom?.initLabelCategoryBottom(null)
+            }
+            else -> {
+                labelCategorySide?.initLabelCategorySide(null)
+                labelCategoryBottom?.initLabelCategoryBottom(null)
+            }
         }
     }
     else {
         labelBestSeller.initLabelBestSeller(null)
+        labelCategorySide?.initLabelCategorySide(null)
+        labelCategoryBottom?.initLabelCategoryBottom(null)
     }
 }
 
