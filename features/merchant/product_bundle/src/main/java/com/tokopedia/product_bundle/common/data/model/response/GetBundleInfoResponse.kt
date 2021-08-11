@@ -115,7 +115,7 @@ data class Child(
         @SerializedName("originalPrice")
         val originalPrice: Double = 0.0,
         @SerializedName("stock")
-        val stock: Long = 0,
+        val stock: Int = 0,
         @SerializedName("optionID")
         val optionIds: List<Long> = listOf()
 )

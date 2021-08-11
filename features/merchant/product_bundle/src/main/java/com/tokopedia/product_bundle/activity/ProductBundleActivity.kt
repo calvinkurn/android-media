@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
@@ -29,6 +30,12 @@ class ProductBundleActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         initInjector()
         intent.data?.run {
+            val pathSegments = this.pathSegments
+            val productId = pathSegments.firstOrNull() ?: "0"
+
+            // call getBundleInfo
+            viewModel.getBundleInfo(productId.toLongOrZero())
+
             val uri = this.toString()
             val params = UriUtil.uriQueryParamsToMap(uri)
             if (params.isNotEmpty()) {

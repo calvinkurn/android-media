@@ -27,7 +27,6 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -87,15 +86,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
         // simulate get bundle info api call
         val productBundleMasters = viewModel.getProductBundleMasters()
-        // render product bundle master chips
-        productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
-        // simulate get the first bundle information
-        val recommendedBundleId = viewModel.getRecommendedProductBundleId(viewModel.getProductBundleMasters())
 
-        // get recommended product bundle info
-        viewModel.getBundleInfo(recommendedBundleId)
+//        // render product bundle master chips
+//        productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
+//        // simulate get the first bundle information
+//        val recommendedBundleId = viewModel.getRecommendedProductBundleId(viewModel.getProductBundleMasters())
+//        // get recommended product bundle info
+//        viewModel.getBundleInfo(recommendedBundleId)
 
-        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+//        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
 
         // observe data from view model
         subscribeToProductBundleInfo()
@@ -109,7 +108,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     override fun initInjector() {
         DaggerMultipleProductBundleComponent.builder()
                 .productBundleComponent(ProductBundleComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
-                .productBundleModule(ProductBundleModule())
                 .build()
                 .inject(this)
     }
@@ -149,9 +147,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.setTitleText(totalDiscountText, totalBundlePriceText)
         productBundleOverView?.amountView?.text = totalPriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
-        productBundleOverView?.amountCtaView?.setOnClickListener {
-            viewModel.addProductBundleToCart()
-        }
+//        productBundleOverView?.amountCtaView?.setOnClickListener {
+//            viewModel.addProductBundleToCart()
+//        }
     }
 
     private fun subscribeToProductBundleInfo() {
