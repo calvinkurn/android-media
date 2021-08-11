@@ -34,7 +34,6 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_ID
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_TYPE
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
@@ -65,14 +64,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.destinationType = it.getString(EXTRA_DESTINATION_TYPE) ?: ""
             globalSearchModel.destinationType
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
-                    ?: DateUtil.getCurrentDate()
-                            .addTimeToSpesificDate(Calendar.DATE, SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY)
-                            .toString(DateUtil.YYYY_MM_DD)
+                    ?: DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD)
             globalSearchModel.checkInDateFmt = it.getString(EXTRA_CHECK_IN_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
-                    ?: DateUtil.getCurrentDate()
-                            .addTimeToSpesificDate(Calendar.DATE, SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY)
-                            .toString(DateUtil.YYYY_MM_DD)
+                    ?: DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2).toString(DateUtil.YYYY_MM_DD)
             globalSearchModel.checkOutDateFmt = it.getString(EXTRA_CHECK_OUT_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
