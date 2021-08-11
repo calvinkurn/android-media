@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
@@ -104,7 +103,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goTo() {
-        RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_PAGE, "2454039")
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
