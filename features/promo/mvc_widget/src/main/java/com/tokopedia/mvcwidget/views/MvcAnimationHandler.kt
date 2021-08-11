@@ -62,10 +62,12 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     }
 
     private fun animateView() {
-        isAnimationStarted = true
+        if(isTokomember){
+            isAnimationStarted = true
 
-        setDataIntoViews()
-        animateTwoViews(visibleContainer,invisibleContainer)
+            setDataIntoViews()
+            animateTwoViews(visibleContainer,invisibleContainer)
+        }
     }
 
     private fun setDataIntoViews(){
@@ -104,6 +106,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     }
 
     private fun afterAnimationComplete(){
+        if(!isTokomember) return
         if (!::animatedInfoList.isInitialized) return
 
         //switch container reference
