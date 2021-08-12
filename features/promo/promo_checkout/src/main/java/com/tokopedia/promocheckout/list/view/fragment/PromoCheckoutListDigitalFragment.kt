@@ -85,6 +85,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         if (isCouponActive && isABTestPromo()) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }else{
+            hideLoading()
             promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
         }
     }
