@@ -253,6 +253,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val ANIMATED_IMAGE_FILLED = 1.0f
         const val ANIMATED_SCALE_HALF = 0.5f
         const val ANIMATED_SCALE_FULL = 1.0f
+        const val IMAGE_ANIMATION_DURATION = 1250L
         const val COORDINATE_HEIGHT_DIVISOR = 3
 
         @JvmStatic
@@ -3046,7 +3047,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         AnimatorSet().let {
             it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
             it.interpolator = DecelerateInterpolator()
-            it.duration = 1250
+            it.duration = IMAGE_ANIMATION_DURATION
             it.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {}
                 override fun onAnimationEnd(animation: Animator) {
