@@ -188,8 +188,7 @@ open class PageLoadTimePerformanceCallback(
         if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
-                    Timber.i("PLTCallback: startMethodTracing  ==> "+traceName)
-                    Timber.i("PLTCallback: startMethodTracing ==> " +traceName)
+                    Log.i("PLTCallback", "startMethodTracing ==> " +traceName)
                     Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
                     break
                 }

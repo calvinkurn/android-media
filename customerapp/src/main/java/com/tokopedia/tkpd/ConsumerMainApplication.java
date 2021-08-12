@@ -1,11 +1,19 @@
 package com.tokopedia.tkpd;
 
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.preference.PreferenceManager;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
@@ -62,7 +70,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         generateConsumerAppNetworkKeys();
     }
 
-    public String getOriginalPackageApp(){
+    public String getOriginalPackageApp() {
         return new String(new char[]{
                 99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
                 100, 105, 97, 46
@@ -100,14 +108,34 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void onCreate() {
+        CheckAndTraceAppStartIfEnabled();
         setupAppScreenMode();
         Embrace.getInstance().start(this);
         super.onCreate();
         setGrantPermissionSlice();
+
+
     }
 
-    public void setGrantPermissionSlice(){
-        if(getSliceRemoteConfig()) {
+    public void CheckAndTraceAppStartIfEnabled() {
+        if (BuildConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && BuildConfig.DEBUG_TRACE_NAME.contains(AppStartPerformanceTracker.APP_START_COLD)) {
+            initConfigValues();
+            AppStartPerformanceTracker.startMonitoring();
+
+            //track first launch of activity
+            ProcessLifecycleOwner.get().getLifecycle().addObserver(new LifecycleObserver() {
+                @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+                public void connectListener() {
+                    AppStartPerformanceTracker.stopMonitoring();
+                    ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
+                }
+            });
+        }
+    }
+
+    public void setGrantPermissionSlice() {
+        if (getSliceRemoteConfig()) {
             SlicePermission slicePermission = new SlicePermission();
             slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
             slicePermission.initPermission(this, TRAVEL_SLICE_AUTHORITY);
