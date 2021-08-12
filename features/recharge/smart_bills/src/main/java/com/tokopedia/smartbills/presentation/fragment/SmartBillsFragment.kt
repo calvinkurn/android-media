@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -109,7 +108,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         activity?.let {
             (it as BaseSimpleActivity).updateTitle(getString(R.string.smart_bills_action_bar_title))
 
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SmartBillsViewModel::class.java)
             localCacheHandler = LocalCacheHandler(context, SMART_BILLS_PREF)
         }
@@ -194,6 +193,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         smart_bills_checkout_view.setVisibilityLayout(false)
                         adapter.renderEmptyState()
                     }
+                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
                 }
                 is Fail -> {
                     var throwable = it.throwable
@@ -210,7 +210,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
                     if (it.data.attributes.allSuccess) {
-                        smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size)
+                        smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size, totalPrice)
 
                         val paymentPassData = PaymentPassData()
                         paymentPassData.convertToPaymenPassData(it.data)
@@ -287,7 +287,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
-            smartBillsAnalytics.eventOpenScreen()
 
             context?.let { context ->
                 // Setup ticker
@@ -436,8 +435,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 }
 
                 // Get first viewholder item for coach marks
-                rv_smart_bills_items.post {
-                    val billItemView = (rv_smart_bills_items.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
+                rv_smart_bills_items?.post {
+                    val billItemView = (rv_smart_bills_items?.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
                     val coachMarks = ArrayList<CoachMark2Item>()
                     coachMarks.add(
                             CoachMark2Item(
@@ -507,7 +506,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
             checkout_loading_view.show()
             viewModel.runMultiCheckout(
-                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession)
+                    viewModel.createMultiCheckoutParams(adapter.checkedDataList, userSession), userSession.userId
             )
         }
     }

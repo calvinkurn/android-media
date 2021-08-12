@@ -14,11 +14,13 @@ import android.widget.Toast
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -266,10 +268,18 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun getWhiteListedDomains() {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
-        val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
-        if(whiteListedDomainsCsv.isNotBlank()) {
-            whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+        try {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(this.applicationContext)
+            val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+            if(whiteListedDomainsCsv.isNotBlank()) {
+                whiteListedDomains = Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+            }
+        } catch (e: Exception) {
+            whiteListedDomains = WhiteListedDomains()
+
+            if (!GlobalConfig.isAllowDebuggingTools()) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
         }
     }
 

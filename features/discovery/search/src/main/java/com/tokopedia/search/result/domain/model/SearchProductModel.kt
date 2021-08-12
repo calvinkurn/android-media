@@ -654,9 +654,13 @@ data class SearchProductModel(
             @Expose
             val identifier: String = "",
 
+            @SerializedName("meta")
+            @Expose
+            val meta: String = "",
+
             @SerializedName("product")
             @Expose
-            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
+            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf(),
     )
 
     data class InspirationCarouselProduct (
@@ -728,7 +732,17 @@ data class SearchProductModel(
             @SerializedName("shop")
             @Expose
             val shop: InspirationCarouselProductShop = InspirationCarouselProductShop(),
-    )
+
+            @SerializedName("freeOngkir")
+            @Expose
+            val freeOngkir: InspirationCarouselProductFreeOngkir = InspirationCarouselProductFreeOngkir(),
+
+            @SerializedName("ads")
+            @Expose
+            val ads: ProductAds = ProductAds(),
+    ) {
+        fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
+    }
 
     data class InspirationCarouselProductBadge(
             @SerializedName("title")
@@ -745,9 +759,22 @@ data class SearchProductModel(
     )
 
     data class InspirationCarouselProductShop(
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
             @SerializedName("city")
             @Expose
             val city: String = ""
+    )
+
+    data class InspirationCarouselProductFreeOngkir(
+        @SerializedName("isActive")
+        @Expose
+        val isActive: Boolean = false,
+
+        @SerializedName("image_url")
+        @Expose
+        val imageUrl: String = ""
     )
 
     data class SearchInspirationWidget(

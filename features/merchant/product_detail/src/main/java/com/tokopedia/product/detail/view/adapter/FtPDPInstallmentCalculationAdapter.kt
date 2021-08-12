@@ -15,10 +15,14 @@ import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerDat
 import com.tokopedia.product.detail.data.model.financing.FtTncData
 import kotlin.math.roundToLong
 
-class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
+class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                                          var isOfficialStore: Boolean,
                                          var partnerDataList: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        const val DURATION_ANIMATE_INSTALLMENT = 300L
+    }
 
 
     private var expandedPosition = -1
@@ -78,7 +82,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                         tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_min_installment_amount),
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
-                        if (installmentData.maximumAmount == 0) {
+                        if (installmentData.maximumAmount == 0.0) {
                             tvInstallmentMinimumPriceExt.hide()
                             tvInstallmentPriceExt.show()
                             priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
@@ -103,10 +107,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
             }
 
             if (item.expandLayout) {
-                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.show()
             } else {
-                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.hide()
             }
 
@@ -114,10 +118,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 item.expandLayout = !item.expandLayout
 
                 if (item.expandLayout) {
-                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.show()
                 } else {
-                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.hide()
                 }
 

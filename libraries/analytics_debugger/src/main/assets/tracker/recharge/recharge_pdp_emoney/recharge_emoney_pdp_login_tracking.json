@@ -3,6 +3,20 @@
   "mode": "exact",
   "query": [
     {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".+",
+      "shopId": ".*",
+      "screenName": "/digital/Uang Elektronik",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "theme": ".+"
+    },
+    {
       "businessUnit": "recharge",
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",

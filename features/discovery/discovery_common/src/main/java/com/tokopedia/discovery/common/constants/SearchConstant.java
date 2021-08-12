@@ -18,6 +18,8 @@ public interface SearchConstant {
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
+    int CPM_TEMPLATE_ID = 4;
+    int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
     interface RecyclerView {
         int VIEW_LIST = 3;
@@ -172,6 +174,8 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
         String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
+        String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
     }
 
     interface TopAdsComponent {

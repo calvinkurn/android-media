@@ -6,14 +6,14 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.suggestion.SuggestionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_without_image_item.view.*
 
 class SuggestionDoubleLineWithoutImageViewHolder(
         itemView: View,
-        private val clickListener: SuggestionClickListener
+        private val listener: SuggestionListener
 ) : AbstractViewHolder<SuggestionDoubleLineWithoutImageDataDataView>(itemView) {
 
     companion object {
@@ -52,7 +52,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
     private fun bindListener(item: SuggestionDoubleLineWithoutImageDataDataView) {
         if (item.hasApplinkUrl()) {
             itemView.autocompleteDoubleLineWithoutImageItem?.setOnClickListener {
-                clickListener.onItemClicked(item)
+                listener.onItemClicked(item)
             }
         }
     }

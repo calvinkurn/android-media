@@ -3,6 +3,9 @@ package com.tokopedia.smartbills.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,16 +16,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.smartbills.data.DataRechargeMultiCheckoutResponse
-import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -112,9 +111,9 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun runMultiCheckout(request: MultiCheckoutRequest?) {
+    fun runMultiCheckout(request: MultiCheckoutRequest?, userId: String) {
         if (request != null) {
-            val idempotencyKey = request.attributes.identifier.userId?.generateRechargeCheckoutToken() ?: ""
+            val idempotencyKey = userId.generateRechargeCheckoutToken()
             val mapParam: HashMap<String, String> = hashMapOf()
             mapParam[IDEMPOTENCY_KEY] = idempotencyKey
             mapParam[CONTENT_TYPE] = "application/json"

@@ -1,37 +1,34 @@
 package com.tokopedia.feedplus.view.adapter
 
-import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
-import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-
-import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadListener: OnLoadListener) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
+class FeedPlusAdapter(
+    private val typeFactory: FeedPlusTypeFactory,
+    val loadListener: OnLoadListener
+) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
     private var list: MutableList<Visitable<*>> = mutableListOf()
-    private val emptyModel: EmptyModel
-    private val emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel
-    private val loadingMoreModel: LoadingMoreModel
-    private val retryModel: RetryModel
+    private val emptyModel: EmptyModel = EmptyModel()
+    private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+    private val retryModel: RetryModel = RetryModel()
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
     var itemTreshold = 5
@@ -48,21 +45,33 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
         override fun onScroll(lastVisiblePosition: Int) {
             if (loadListener is OnScrollListener)
-                (loadListener as OnScrollListener).onScroll(lastVisiblePosition)
+                loadListener.onScroll(lastVisiblePosition)
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemDetach(
+                holder.itemView.context, list[holder.adapterPosition]
+            )
         }
     }
 
     val isLoading: Boolean
         get() = this.list.contains(loadingMoreModel)
 
-    init {
-        this.emptyModel = EmptyModel()
-        this.loadingMoreModel = LoadingMoreModel()
-        this.retryModel = RetryModel()
-        this.emptyFeedBeforeLoginModel = EmptyFeedBeforeLoginModel()
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>>  {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<Visitable<*>> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
 
@@ -76,12 +85,15 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
         return data.type(typeFactory)
     }
-    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>> , position: Int) {
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
         holder.bind(list[position])
     }
 
-    override fun onBindViewHolder(holder:  AbstractViewHolder<Visitable<*>> , position: Int,
-                                  payloads: List<Any>) {
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<Visitable<*>>, position: Int,
+        payloads: List<Any>
+    ) {
         if (!payloads.isEmpty()) {
             holder.bind(list[position], payloads)
         } else {
@@ -94,7 +106,7 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
     }
 
     private fun add(visitable: Visitable<*>) {
-       addList(mutableListOf(visitable))
+        addList(mutableListOf(visitable))
     }
 
     fun addList(newLists: List<Visitable<*>>) {
@@ -160,7 +172,7 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         setEndlessScrollListener()
     }
 
-    override fun onViewRecycled(holder:  AbstractViewHolder<Visitable<*>> ) {
+    override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()
     }
@@ -180,7 +192,6 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
         list.clear()
         list.addAll(newList)
-
         diffResult.dispatchUpdatesTo(this)
     }
 
@@ -197,9 +208,14 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         updateList(newList)
     }
 
+    fun showShimmer() {
+        val shimmerItems: ArrayList<ShimmerUiModel> = ArrayList()
+        repeat(5) { shimmerItems.add(ShimmerUiModel()) }
+        updateList(shimmerItems)
+    }
+
     interface OnLoadListener {
         fun onLoad(totalCount: Int)
-
     }
 
     interface OnScrollListener : OnLoadListener {
