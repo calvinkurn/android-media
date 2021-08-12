@@ -361,8 +361,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         binding?.ivHotelSearchMapNoResult?.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
         trackingHotelUtil.viewHotelSearchMap(context,
-                searchDestinationName,
                 searchDestinationType,
+                searchDestinationName,
                 hotelSearchMapViewModel.searchParam,
                 SEARCH_SCREEN_NAME)
     }
@@ -441,12 +441,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                     lastHorizontalTrackingPositionSent = cardListPosition
                     trackingHotelUtil.hotelViewHotelListMapImpression(context,
-                            searchDestinationName,
                             searchDestinationType,
+                            searchDestinationName,
                             hotelSearchMapViewModel.searchParam,
-                            listOf(adapterCardList.data[cardListPosition]),
-                            cardListPosition,
-                            SEARCH_SCREEN_NAME)
+                                listOf(adapterCardList.data[cardListPosition]),
+                                cardListPosition,
+                                SEARCH_SCREEN_NAME)
                 }
             }
         }
@@ -479,18 +479,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
                 trackingHotelUtil.chooseHotelFromMap(
                         context,
-                        searchDestinationName,
                         searchDestinationType,
-                        this,
+                        searchDestinationName,
+                    this,
                         property,
                         position,
                         SEARCH_SCREEN_NAME)
             } else {
                 trackingHotelUtil.chooseHotel(
                         context,
-                        searchDestinationName,
                         searchDestinationType,
-                        this,
+                        searchDestinationName,
+                    this,
                         property,
                         position,
                         SEARCH_SCREEN_NAME)
@@ -820,12 +820,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
                     lastHorizontalTrackingPositionSent = currentPosition
                     trackingHotelUtil.hotelViewHotelListMapImpression(context,
-                            searchDestinationName,
                             searchDestinationType,
+                            searchDestinationName,
                             hotelSearchMapViewModel.searchParam,
-                            listOf(adapterCardList.data[currentPosition]),
-                            currentPosition,
-                            SEARCH_SCREEN_NAME)
+                                listOf(adapterCardList.data[currentPosition]),
+                                currentPosition,
+                                SEARCH_SCREEN_NAME)
 
                 }
             }
@@ -1068,12 +1068,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         context?.let {
             val searchParam = hotelSearchMapViewModel.searchParam
             trackingHotelUtil.hotelViewHotelListImpression(it,
-                    searchDestinationName,
                     searchDestinationType,
+                    searchDestinationName,
                     searchParam,
-                    data.properties,
-                    adapter.dataSize,
-                    SEARCH_SCREEN_NAME)
+                        data.properties,
+                        adapter.dataSize,
+                        SEARCH_SCREEN_NAME)
         }
 
         hideLoader()
@@ -1495,8 +1495,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun showErrorNoResult() {
         trackingHotelUtil.searchHotelNotFound(context,
-                searchDestinationName,
                 searchDestinationType,
+                searchDestinationName,
                 SEARCH_SCREEN_NAME)
 
         binding?.containerEmptyResultState?.visible()
