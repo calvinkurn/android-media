@@ -16,6 +16,7 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
@@ -47,6 +48,8 @@ class MiniCartChatListBottomSheet @Inject constructor(
     private var mContext: Context? = null
     private var miniCartListUiModel: MiniCartListUiModel? = null
     private var elements: ArrayList<MiniCartChatProductUiModel> = arrayListOf()
+    private var layoutManager: LinearLayoutManager? = null
+    private var scrollPosition = 0
 
     override fun onClickProduct(element: MiniCartChatProductUiModel, isChecked: Boolean) {
         mContext?.apply {
@@ -140,8 +143,9 @@ class MiniCartChatListBottomSheet @Inject constructor(
     private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         val adapterTypeFactory = MiniCartChatListAdapterTypeFactory(this)
         adapter = MiniCartChatListAdapter(adapterTypeFactory)
+        layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
         viewBinding.rvMiniCartChatList.adapter = adapter
-        viewBinding.rvMiniCartChatList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
+        viewBinding.rvMiniCartChatList.layoutManager = layoutManager
         viewBinding.rvMiniCartChatList.addItemDecoration(miniCartChatProductDecoration)
     }
 
@@ -157,8 +161,12 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 elements.add(element)
                 if (elements.size == MAX_PRODUCT_SIZE) {
                     resetModelData(element)
+                    scrollPosition = layoutManager?.findLastVisibleItemPosition().orZero()
                     miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
                         adapter?.updateList(it)
+                    }
+                    viewBinding?.rvMiniCartChatList?.post {
+                        viewBinding?.rvMiniCartChatList?.scrollToPosition(scrollPosition)
                     }
                 }
             }
@@ -174,8 +182,12 @@ class MiniCartChatListBottomSheet @Inject constructor(
             } else {
                 viewBinding?.btnChat?.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label_ask_product, elements.size)
                 resetModelData(element)
+                scrollPosition = layoutManager?.findLastVisibleItemPosition().orZero()
                 miniCartListUiModel?.chatVisitables?.toMutableList()?.let {
                     adapter?.updateList(it)
+                }
+                viewBinding?.rvMiniCartChatList?.post {
+                    viewBinding?.rvMiniCartChatList?.scrollToPosition(scrollPosition)
                 }
             }
         }
