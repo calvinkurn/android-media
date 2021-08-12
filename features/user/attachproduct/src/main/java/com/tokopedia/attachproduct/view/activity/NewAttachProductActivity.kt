@@ -22,7 +22,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     private var _isSeller = false
     private var source: String = ""
     var maxChecked = MAX_CHECKED_DEFAULT
-    private var hiddenProducts: ArrayList<String> = arrayListOf()
+    private var hiddenProducts: ArrayList<String>? = arrayListOf()
 
     companion object {
         const val MAX_CHECKED_DEFAULT = 3

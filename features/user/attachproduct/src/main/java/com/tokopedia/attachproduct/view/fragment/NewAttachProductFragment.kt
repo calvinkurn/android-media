@@ -136,6 +136,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
                 searchBar.clearFocus()
                 val `in` = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 `in`.hideSoftInputFromWindow(searchBar.getWindowToken(), 0)
+
                 onSearchSubmitted()
                 return@setOnEditorActionListener true
             }
@@ -156,7 +157,10 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         sendButton = view.findViewById(R.id.send_button_attach_product)
         sendButton.setOnClickListener { sendButtonClicked() }
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        swipeRefreshLayout.setOnRefreshListener{ loadInitialData() }
+        swipeRefreshLayout.setOnRefreshListener{
+            loadInitialData()
+            viewModel.clearCache()
+        }
         updateButtonBasedOnChecked(0)
         return view
     }
@@ -172,11 +176,17 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
     private fun onSearchSubmitted() {
         KeyboardHandler.DropKeyboard(activity, view)
-        loadInitialData()
+        if (searchBar.searchBarTextField.text.toString().isNotEmpty()) {
+            loadInitialData()
+        }
     }
 
     private fun onSearchTextChanged(text: String) {
-        if (TextUtils.isEmpty(text)) loadInitialData()
+        if (TextUtils.isEmpty(text)) {
+            adapter.clearAllElements()
+            recyclerViewLayoutManager.scrollToPosition(0)
+            addProductToList(viewModel.cacheList, viewModel.cacheHasNext)
+        }
     }
 
     private fun initObserver() {
@@ -185,13 +195,14 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
                 is Success -> {
                     hideAllLoadingIndicator()
                     var hasNext = false
-                    if (result.data.size >= AttachProductGetProductListSubscriber.DEFAULT_ROWS) {
+                    var listData = result.data.toMutableList()
+                    if (listData.size >= AttachProductViewModel.DEFAULT_ROWS) {
                         hasNext = true
-                        result.data.toMutableList().removeAt(result.data.size - 1)
+                        listData.removeAt(result.data.size - 1)
                     }
-                    addProductToList(result.data, hasNext)
+                    addProductToList(listData, hasNext)
                     if (result.data.isNotEmpty()) {
-                        setShopName(result.data.first().shopName)
+                        setShopName(listData.first().shopName)
                     }
                 }
                 is Fail -> {
@@ -210,11 +221,22 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
     override fun loadData(page: Int) {
         if (activityContract != null) {
-            viewModel.loadProductData(
-                searchBar.searchBarTextField.text.toString(),
+            if (searchBar.searchBarTextField.text.toString().isEmpty()
+                    && viewModel.cacheList.isNotEmpty()) {
+                val page = (viewModel.cacheList.size / 10) + 1
+                viewModel.loadProductData(
+                    "",
+                    activityContract!!.shopId,
+                    page, warehouseId
+                )
+            }
+            else {
+                viewModel.loadProductData(
+                        searchBar.searchBarTextField.text.toString(),
                 activityContract!!.shopId,
                 page, warehouseId
-            )
+                )
+            }
         } else if (activity != null) {
             requireActivity().finish()
         }
