@@ -609,6 +609,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun loadInitialData() {
         isLoadingInitialData = true
+        reviewHeader?.setIsProductReview(isProductReview)
         adapter.clearAllElements()
         hideError()
         showFullPageLoading()
