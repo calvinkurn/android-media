@@ -79,10 +79,10 @@ object ReviewGalleryTracking {
         return mapOf(
                 ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReviewTrackingConstant.EVENT_ACTION to eventAction,
-                ReviewTrackingConstant.EVENT_CATEGORY to "",
+                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY_SHOP_REVIEW,
                 ReviewTrackingConstant.EVENT_LABEL to eventLabel,
-                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
-                ReadReviewTrackingConstants.KEY_CURRENT_SITE to "",
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.PHYSICAL_GOODS,
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
                 ReadReviewTrackingConstants.KEY_SHOP_ID to shopId
         )
     }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -25,6 +26,7 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -75,6 +77,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val INDEX_KEY = "Index"
         const val SHOP_ID_KEY = "ShopId"
         const val PRODUCT_ID_KEY = "ProductId"
+        const val IS_PRODUCT_REVIEW_KEY = "isProductReview"
         const val EMPTY_FILTERED_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/others/review-reading-filtered-empty.png"
         const val GALLERY_ACTIVITY_CODE = 420
@@ -223,8 +226,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             }
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                val firstCompletelyVisibleItemPosition = (getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition().orZero()
                 currentScrollPosition += dy
-                if(currentScrollPosition == 0) {
+                if(currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0) {
                     goToTopFab?.hide()
                 } else {
                     goToTopFab?.show()
@@ -364,7 +368,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             )
         } else {
             ReadReviewTracking.trackOnFilterShopReviewClicked(
-                    context?.getString(R.string.review_reading_filter_with_attachment) ?: "",
+                    topicFilterTitle,
                     isActive,
                     viewModel.getProductId()
             )
@@ -393,7 +397,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             )
         } else {
             ReadReviewTracking.trackOnFilterShopReviewClicked(
-                    context?.getString(R.string.review_reading_filter_with_attachment) ?: "",
+                    ratingFilterTitle,
                     isActive,
                     viewModel.getProductId()
             )
@@ -427,11 +431,18 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                     viewModel.getProductId()
             )
         } else {
-            ReadReviewTracking.trackOnShopReviewApplyFilterClicked(
-                    filterName,
-                    selectedFilter.joinToString { it.listTitleText },
-                    viewModel.getShopId()
-            )
+            when(filterName){
+                context?.getString(R.string.review_reading_rating_filter_title) -> ReadReviewTracking.trackOnShopReviewApplyRatingFilter(
+                        filterName,
+                        selectedFilter.joinToString { it.listTitleText },
+                        viewModel.getShopId()
+                )
+                context?.getString(R.string.review_reading_topic_filter_title) -> ReadReviewTracking.trackOnShopReviewApplyTopicFilter(
+                        filterName,
+                        selectedFilter.joinToString { it.listTitleText },
+                        viewModel.getShopId()
+                )
+            }
         }
         viewModel.setFilter(selectedFilter, filterType)
         showListOnlyLoading()
@@ -522,8 +533,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             cacheManager.put(SHOP_ID_KEY, shopId)
             if(isProductReview)
                 cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
-            else
+            else {
                 cacheManager.put(PRODUCT_ID_KEY, productReview.shopProductId)
+                cacheManager.put(IS_PRODUCT_REVIEW_KEY, isProductReview)
+            }
             startActivityForResult(
                 ReviewGalleryActivity.getIntent(
                     it, cacheManager.id

@@ -42,6 +42,8 @@ object ReadReviewTrackingConstants {
     const val EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE = "positive_review:%s;rating:%d;ulasan:%d;"
     const val EVENT_LABEL_CLICK_FILTER = "filter_name:%s;is_active:%s;"
     const val EVENT_LABEL_CLICK_APPLY_FILTER = "filter_name:%s;filter_value:%s;"
+    const val EVENT_LABEL_CLICK_SHOP_APPLY_FILTER_RATING = "filter_name:%s;is_active:%s;"
+    const val EVENT_LABEL_CLICK_SHOP_APPLY_FILTER_TOPIC = "filter_name:%s;filter_value:%s;is_active:%s;"
     const val EVENT_LABEL_CLICK_APPLY_SORT = "sort_value:%s;"
     const val EVENT_LABEL_CLICK_PRODUCT_ON_REVIEW_CARD = "feedback_id: %s"
     const val EVENT_LABEL_CLICK_PRODUCT_INFO_THREE_DOTS = "feedback_id: %s"

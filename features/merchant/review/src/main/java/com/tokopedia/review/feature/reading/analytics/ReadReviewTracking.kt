@@ -243,11 +243,22 @@ object ReadReviewTracking {
         ))
     }
 
-    fun trackOnShopReviewApplyFilterClicked(filterName: String, filterValue: String, shopId: String) {
+    fun trackOnShopReviewApplyRatingFilter(filterName: String, filterValue: String, shopId: String) {
+        val isFilterActive = filterValue.isNotEmpty()
         tracker.sendGeneralEvent(getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
-                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_APPLY_FILTER, filterName, filterValue),
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_SHOP_APPLY_FILTER_RATING, filterName, isFilterActive.toString()),
+                shopId
+        ))
+    }
+
+    fun trackOnShopReviewApplyTopicFilter(filterName: String, filterValue: String, shopId: String) {
+        val isFilterActive = filterValue.isNotEmpty()
+        tracker.sendGeneralEvent(getShopReviewTrackEventMap(
+                ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
+                ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_SHOP_APPLY_FILTER_TOPIC, filterName, filterValue, isFilterActive.toString()),
                 shopId
         ))
     }
@@ -299,7 +310,7 @@ object ReadReviewTracking {
     }
 
     fun trackOnShopReviewSeeFullReviewClicked(feedbackId: String, shopId: String) {
-        tracker.sendGeneralEvent(getTrackEventMap(
+        tracker.sendGeneralEvent(getShopReviewTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
                 String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_SEE_ALL, feedbackId),
