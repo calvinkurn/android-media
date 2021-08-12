@@ -158,8 +158,10 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
         sendButton.setOnClickListener { sendButtonClicked() }
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout.setOnRefreshListener{
+            if (searchBar.searchBarTextField.text.toString().isEmpty()) {
+                viewModel.clearCache()
+            }
             loadInitialData()
-            viewModel.clearCache()
         }
         updateButtonBasedOnChecked(0)
         return view
