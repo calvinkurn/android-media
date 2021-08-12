@@ -30,7 +30,10 @@ data class ReviewImage(
     val feedbackId: String = "",
     @SerializedName("ImageSiblings")
     @Expose
-    val imageSiblings: List<String> = listOf()
+    val imageSiblings: List<String> = listOf(),
+    @SerializedName("imageNumber")
+    @Expose
+    val imageNumber: Int = 0,
 )
 
 data class Detail(
@@ -39,7 +42,7 @@ data class Detail(
     val reviewDetail: List<ReviewDetail> = listOf(),
     @SerializedName("image")
     @Expose
-    val images: List<Image> = listOf(),
+    val reviewGalleryImages: List<ReviewGalleryImage> = listOf(),
     @SerializedName("imageCountFmt")
     @Expose
     val imageCountFmt: String = "",
@@ -93,10 +96,10 @@ data class ReviewDetail(
     val totalLike: Long = 0L,
 )
 
-data class Image(
+data class ReviewGalleryImage(
     @SerializedName("attachmentID")
     @Expose
-    val attachmentID: String = "",
+    val attachmentId: String = "",
     @SerializedName("thumbnailURL")
     @Expose
     val thumbnailURL: String = "",
@@ -109,9 +112,6 @@ data class Image(
     @SerializedName("feedbackID")
     @Expose
     val feedbackId: String = "",
-    @SerializedName("imageNumber")
-    @Expose
-    val imageNumber: Int = 0,
 )
 
 data class ReviewerUserInfo(

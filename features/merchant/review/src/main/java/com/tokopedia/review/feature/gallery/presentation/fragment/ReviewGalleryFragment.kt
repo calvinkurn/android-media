@@ -25,8 +25,8 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
-import com.tokopedia.review.feature.gallery.data.ReviewDetail
 import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
@@ -253,32 +253,49 @@ class ReviewGalleryFragment :
 
     private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
         val reviewImages = mutableListOf<ReviewGalleryUiModel>()
-        productrevGetReviewImage.detail.images.forEachIndexed { index, images ->
-            val ratingAndVariant = getRatingAndVariantBasedOnFeedbackID(
-                productrevGetReviewImage.detail.reviewDetail,
-                images.feedbackId
-            )
+        productrevGetReviewImage.reviewImages.forEachIndexed { index, reviewImage ->
             reviewImages.add(
-                ReviewGalleryUiModel(
-                    images.thumbnailURL,
-                    ratingAndVariant?.first ?: 0,
-                    ratingAndVariant?.second ?: "",
-                    images.feedbackId,
-                    images.fullsizeURL
+                getReviewGalleryUiModelBasedOnDetail(
+                    productrevGetReviewImage.detail,
+                    reviewImage.feedbackId,
+                    reviewImage.imageId,
+                    reviewImage.imageNumber
                 )
             )
         }
         return reviewImages
     }
 
-    private fun getRatingAndVariantBasedOnFeedbackID(
-        reviews: List<ReviewDetail>,
-        feedbackId: String
-    ): Pair<Int, String>? {
-        reviews.firstOrNull { it.feedbackId == feedbackId }?.apply {
-            return Pair(rating, variantName)
+    private fun getReviewGalleryUiModelBasedOnDetail(
+        detail: Detail,
+        feedbackId: String,
+        attachmentId: String,
+        imageNumber: Int
+    ): ReviewGalleryUiModel {
+        var reviewGalleryUiModel = ReviewGalleryUiModel()
+        detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
+            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+                rating = this.rating,
+                variantName = this.variantName,
+                reviewerName = this.user.fullName,
+                isLiked = this.isLiked,
+                totalLiked = this.totalLike,
+                review = this.review,
+                reviewTime = this.createTimestamp,
+                isReportable = this.isReportable
+            )
         }
-        return null
+        detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
+            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+                imageUrl = this.thumbnailURL,
+                fullImageUrl = this.fullsizeURL
+            )
+        }
+        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            feedbackId = feedbackId,
+            imageNumber = imageNumber
+        )
+        return reviewGalleryUiModel
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
@@ -320,7 +337,9 @@ class ReviewGalleryFragment :
                 viewModel.getProductId(),
                 currentPage,
                 viewModel.getImageCount(),
-                viewModel.getReviewDataBasedOnFeedbackId(reviewGalleryUiModel.fullImageUrl, reviewGalleryUiModel.feedbackId)
+                adapter.data,
+                reviewGalleryUiModel.imageNumber,
+                viewModel.getShopId()
             ))
             startActivity(ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true))
         }

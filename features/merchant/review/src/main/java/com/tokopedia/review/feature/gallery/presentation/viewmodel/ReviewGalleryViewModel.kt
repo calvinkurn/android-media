@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.domain.usecase.GetProductRatingUseCase
 import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
-import com.tokopedia.review.feature.gallery.presentation.uimodel.SelectedReview
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -33,6 +33,9 @@ class ReviewGalleryViewModel @Inject constructor(
     val reviewImages: LiveData<Result<ProductrevGetReviewImage>>
         get() = _reviewImages
 
+    private val allReviewDetail = mutableListOf<Detail>()
+    private var shopId = ""
+
     init {
         _rating.addSource(productId) {
             getRating(it)
@@ -50,29 +53,12 @@ class ReviewGalleryViewModel @Inject constructor(
         return this.productId.value ?: ""
     }
 
-    fun setPage(page: Int) {
-        currentPage.value = page
+    fun getShopId(): String {
+        return shopId
     }
 
-    fun getReviewDataBasedOnFeedbackId(fullImageUrl: String, feedbackId: String): SelectedReview{
-        (_reviewImages.value as? Success)?.data?.let { response ->
-            val reviewData = response.detail.reviewDetail.firstOrNull {
-                it.feedbackId == feedbackId
-            } ?: return SelectedReview()
-            with(reviewData) {
-                return SelectedReview(
-                    fullImageUrl,
-                    user.fullName,
-                    rating,
-                    isLiked,
-                    totalLike,
-                    review,
-                    createTimestamp,
-                    isReportable
-                )
-            }
-        }
-        return SelectedReview()
+    fun setPage(page: Int) {
+        currentPage.value = page
     }
 
     fun getImageCount(): Long {
@@ -97,6 +83,8 @@ class ReviewGalleryViewModel @Inject constructor(
             )
             val data = getReviewImagesUseCase.executeOnBackground()
             _reviewImages.postValue(Success(data.productrevGetReviewImage))
+            allReviewDetail.add(data.productrevGetReviewImage.detail)
+            shopId = data.productrevGetReviewImage.detail.reviewDetail.firstOrNull()?.shopId ?: ""
         }) {
             _reviewImages.postValue(Fail(it))
         }

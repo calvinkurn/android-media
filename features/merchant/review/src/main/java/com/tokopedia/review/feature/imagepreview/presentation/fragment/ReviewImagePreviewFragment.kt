@@ -49,12 +49,16 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImagePreviewComponent>, ReviewReportBottomSheetListener,
-        ReviewImagePreviewSwipeListener, ReviewImagePreviewListener, OnBackPressedListener {
+class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImagePreviewComponent>,
+    ReviewReportBottomSheetListener,
+    ReviewImagePreviewSwipeListener, ReviewImagePreviewListener, OnBackPressedListener {
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
-        fun newInstance(cacheManagerId: String, isFromGallery: Boolean): ReviewImagePreviewFragment {
+        fun newInstance(
+            cacheManagerId: String,
+            isFromGallery: Boolean
+        ): ReviewImagePreviewFragment {
             return ReviewImagePreviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewImagePreviewActivity.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
@@ -86,6 +90,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private var galleryRoutingData: ReviewGalleryRoutingUiModel = ReviewGalleryRoutingUiModel()
     private var isFromGallery = false
 
+    private var currentRecyclerViewPosition = 0
+
     override fun getScreenName(): String {
         return ""
     }
@@ -97,15 +103,17 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     override fun getComponent(): ReviewImagePreviewComponent? {
         return activity?.run {
             DaggerReviewImagePreviewComponent.builder()
-                    .reviewComponent(ReviewInstance.getComponent(application))
-                    .build()
+                .reviewComponent(ReviewInstance.getComponent(application))
+                .build()
         }
     }
 
     override fun onImageSwiped(previousIndex: Int, index: Int) {
         if (index != RecyclerView.NO_POSITION) {
-            ReviewImagePreviewTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
-            reviewImagePreviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size.toLong())
+            trackOnSwipeImage(index, previousIndex)
+            adjustPhotoCount(index)
+            currentRecyclerViewPosition = index + 1
+            updateReviewDetailByPosition()
         }
     }
 
@@ -114,7 +122,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         getDataFromArguments()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_review_image_preview, container, false)
     }
 
@@ -123,10 +135,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         bindViews(view)
         setupCloseButton()
         setupThreeDots()
-        if(isFromGallery) {
+        setupRecyclerView()
+        if (isFromGallery) {
             setupReviewDetailFromGallery()
+            setAdapterDataFromGallery()
         } else {
-            setupRecyclerView()
+            setAdapterDataFromReading()
             setupReviewDetail()
         }
         observeToggleLikeReviewResult()
@@ -145,15 +159,22 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     override fun disableScroll() {
-        (imagesRecyclerView?.layoutManager as? ReviewImagePreviewLayoutManager)?.setScrollEnabled(false)
+        (imagesRecyclerView?.layoutManager as? ReviewImagePreviewLayoutManager)?.setScrollEnabled(
+            false
+        )
     }
 
     override fun enableScroll() {
-        (imagesRecyclerView?.layoutManager as? ReviewImagePreviewLayoutManager)?.setScrollEnabled(true)
+        (imagesRecyclerView?.layoutManager as? ReviewImagePreviewLayoutManager)?.setScrollEnabled(
+            true
+        )
     }
 
     override fun onImageLoadFailed(index: Int) {
-        showErrorToaster(getString(R.string.review_reading_connection_error), getString(R.string.review_refresh)) {
+        showErrorToaster(
+            getString(R.string.review_reading_connection_error),
+            getString(R.string.review_refresh)
+        ) {
             adapter.reloadImageAtIndex(index)
         }
     }
@@ -171,7 +192,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun getDataFromArguments() {
         arguments?.let {
-            val cacheManagerId = it.getString(ReviewImagePreviewActivity.EXTRA_CACHE_MANAGER_ID) ?: ""
+            val cacheManagerId =
+                it.getString(ReviewImagePreviewActivity.EXTRA_CACHE_MANAGER_ID) ?: ""
             isFromGallery = it.getBoolean(ReviewImagePreviewActivity.EXTRA_IS_FROM_GALLERY)
             if (isFromGallery) {
                 setImagesDataFromCacheManager(cacheManagerId)
@@ -186,7 +208,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             with(SaveInstanceCacheManager(context, cacheManagerId)) {
                 galleryRoutingData = get(
                     ReviewGalleryFragment.KEY_REVIEW_GALLERY_ROUTING_DATA,
-                    ReviewGalleryRoutingUiModel::class.java) ?: ReviewGalleryRoutingUiModel()
+                    ReviewGalleryRoutingUiModel::class.java
+                ) ?: ReviewGalleryRoutingUiModel()
             }
         }
     }
@@ -221,7 +244,15 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun setupThreeDots() {
-        menuButton?.setOnClickListener { activity?.supportFragmentManager?.let { ReviewReportBottomSheet.newInstance(productReview.feedbackID, shopId, this).show(it, ReviewReportBottomSheet.TAG) } }
+        menuButton?.setOnClickListener {
+            activity?.supportFragmentManager?.let {
+                ReviewReportBottomSheet.newInstance(
+                    productReview.feedbackID,
+                    shopId,
+                    this
+                ).show(it, ReviewReportBottomSheet.TAG)
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -230,9 +261,21 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             layoutManager = ReviewImagePreviewLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
         addPagerSnapHelperToRecyclerView()
+    }
+
+    private fun setAdapterDataFromReading() {
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
-        if (index != 0) {
-            imagesRecyclerView?.scrollToPosition(index - 1)
+        setRecyclerViewCurrentItem()
+    }
+
+    private fun setAdapterDataFromGallery() {
+        adapter.setData(galleryRoutingData.loadedReviews.map { it.fullImageUrl })
+        setRecyclerViewCurrentItem(galleryRoutingData.currentPosition)
+    }
+
+    private fun setRecyclerViewCurrentItem(position: Int = index) {
+        if (position != 0) {
+            imagesRecyclerView?.scrollToPosition(position - 1)
         }
     }
 
@@ -242,23 +285,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         imagesRecyclerView?.addOnScrollListener(SnapPagerScrollListener(helper, this))
     }
 
-    private fun setupReviewDetailFromGallery(){
-        with(galleryRoutingData) {
-            reviewImagePreviewDetail?.apply {
-                setPhotoCount(index, totalImageCount)
-                setRating(selectedReview.rating)
-                setReviewerName(selectedReview.reviewerName)
-                setTimeStamp(selectedReview.reviewTime)
-                setReviewMessage(selectedReview.review) { openExpandedReviewBottomSheet() }
-                setLikeCount(selectedReview.totalLiked.toString())
-                setLikeButtonClickListener {
-                    ReviewImagePreviewTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
-                    viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
-                }
-                setLikeButtonImage(selectedReview.isLiked)
-            }
-            setThreeDotsVisibility(selectedReview.isReportable)
-        }
+    private fun setupReviewDetailFromGallery() {
+        updateReviewDetailByPosition(true)
     }
 
     private fun setupReviewDetail() {
@@ -271,8 +299,17 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
-                    ReviewImagePreviewTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
-                    viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
+                    ReviewImagePreviewTracking.trackOnLikeReviewClicked(
+                        productReview.feedbackID,
+                        isLiked(productReview.likeDislike.likeStatus),
+                        productId
+                    )
+                    viewModel.toggleLikeReview(
+                        productReview.feedbackID,
+                        shopId,
+                        productId,
+                        productReview.likeDislike.likeStatus
+                    )
                 }
                 setLikeButtonImage(likeDislike.isLiked())
             }
@@ -336,7 +373,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
@@ -361,18 +399,35 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun openExpandedReviewBottomSheet() {
         ReviewImagePreviewTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
         if (expandedReviewBottomSheet == null) {
-            if(isFromGallery) {
-                with(galleryRoutingData.selectedReview) {
-                    expandedReviewBottomSheet = ReviewImagePreviewExpandedReviewBottomSheet.createInstance(rating, reviewTime, reviewerName, review)
+            if (isFromGallery) {
+                galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
+                    expandedReviewBottomSheet =
+                        ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
+                            it.rating,
+                            it.reviewTime,
+                            it.reviewerName,
+                            it.review
+                        )
                 }
             } else {
                 with(productReview) {
-                    expandedReviewBottomSheet = ReviewImagePreviewExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
+                    expandedReviewBottomSheet =
+                        ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
+                            productRating,
+                            reviewCreateTimestamp,
+                            user.fullName,
+                            message
+                        )
                 }
             }
             configBottomSheet()
         }
-        activity?.supportFragmentManager?.let { expandedReviewBottomSheet?.show(it, ReviewImagePreviewExpandedReviewBottomSheet.REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG) }
+        activity?.supportFragmentManager?.let {
+            expandedReviewBottomSheet?.show(
+                it,
+                ReviewImagePreviewExpandedReviewBottomSheet.REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG
+            )
+        }
     }
 
     private fun configBottomSheet() {
@@ -392,9 +447,20 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         }
     }
 
-    private fun showErrorToaster(message: String, actionText: String = "", onClickListener: View.OnClickListener = View.OnClickListener {  }) {
+    private fun showErrorToaster(
+        message: String,
+        actionText: String = "",
+        onClickListener: View.OnClickListener = View.OnClickListener { }
+    ) {
         coordinatorLayout?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, actionText, onClickListener).show()
+            Toaster.build(
+                it,
+                message,
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR,
+                actionText,
+                onClickListener
+            ).show()
         }
     }
 
@@ -414,5 +480,57 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         } else {
             throwable.printStackTrace()
         }
+    }
+
+    private fun updateReviewDetailByPosition(isFirstTimeUpdate: Boolean = false) {
+        with(galleryRoutingData) {
+            this.loadedReviews.firstOrNull {
+                it.imageNumber == if (isFirstTimeUpdate) currentPosition
+                else currentRecyclerViewPosition
+            } ?.let { selectedReview ->
+                    reviewImagePreviewDetail?.apply {
+                        if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
+                        setRating(selectedReview.rating)
+                        setReviewerName(selectedReview.reviewerName)
+                        setTimeStamp(selectedReview.reviewTime)
+                        setReviewMessage(selectedReview.review) { openExpandedReviewBottomSheet() }
+                        setLikeCount(selectedReview.totalLiked.toString())
+                        setLikeButtonClickListener {
+                            ReviewImagePreviewTracking.trackOnLikeReviewClicked(
+                                selectedReview.feedbackId,
+                                selectedReview.isLiked,
+                                productId
+                            )
+//                            viewModel.toggleLikeReview(
+//                                selectedReview.feedbackId,
+//                                shopId,
+//                                productId,
+//                                productReview.likeDislike.likeStatus
+//                            )
+                        }
+                        setLikeButtonImage(selectedReview.isLiked)
+                    }
+                    setThreeDotsVisibility(selectedReview.isReportable)
+                }
+        }
+    }
+
+    private fun trackOnSwipeImage(index: Int, previousIndex: Int) {
+        ReviewImagePreviewTracking.trackSwipeImage(
+            if (isFromGallery) productReview.feedbackID else galleryRoutingData.getSelectedReview(
+                index
+            )?.feedbackId ?: "",
+            previousIndex,
+            index,
+            productReview.imageAttachments.size,
+            productId
+        )
+    }
+
+    private fun adjustPhotoCount(index: Int) {
+        reviewImagePreviewDetail?.setPhotoCount(
+            index + 1,
+            if (isFromGallery) galleryRoutingData.totalImageCount else productReview.imageAttachments.size.toLong()
+        )
     }
 }
