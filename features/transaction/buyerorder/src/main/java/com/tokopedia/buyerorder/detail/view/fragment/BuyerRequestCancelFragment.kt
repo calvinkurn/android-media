@@ -19,13 +19,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.constants.BuyerOrderIntentCode
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
@@ -182,7 +182,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
+        activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
         observingRequestCancel()
@@ -653,7 +653,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
         intent.putExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL, popupTitle)
         intent.putExtra(RESULT_POPUP_BODY_INSTANT_CANCEL, popupBody)
-        activity?.setResult(MarketPlaceDetailFragment.INSTANT_CANCEL_BUYER_REQUEST, intent)
+        activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_INSTANT_CANCEL_BUYER, intent)
         activity?.finish()
     }
 
@@ -697,7 +697,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
             intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().totalPrice)
-            intent.putExtra(ApplinkConst.Chat.SOURCE, MarketPlaceDetailFragment.TX_ASK_SELLER)
+            intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
             startActivity(intent)
         }
     }
@@ -717,7 +717,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+                activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
                 activity?.finish()
         }
         dialog?.show()
