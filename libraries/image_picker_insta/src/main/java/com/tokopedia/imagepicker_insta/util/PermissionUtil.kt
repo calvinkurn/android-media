@@ -36,7 +36,14 @@ object PermissionUtil {
     }
 
     fun requestReadPermission(activity: AppCompatActivity){
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE)
+        if(!isReadPermissionGranted(activity)){
+            ActivityCompat.requestPermissions(activity, arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    fun isReadPermissionGranted(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
     fun requestCameraAndWritePermission(activity: AppCompatActivity) {

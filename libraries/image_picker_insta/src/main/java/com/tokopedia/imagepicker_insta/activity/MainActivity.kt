@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (CursorUtil.isStoragePermissionGranted(this)) {
+        if (PermissionUtil.isReadPermissionGranted(this)) {
             renderUi()
         } else {
             PermissionUtil.requestReadPermission(this)

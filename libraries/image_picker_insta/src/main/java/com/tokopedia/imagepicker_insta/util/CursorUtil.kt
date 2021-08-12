@@ -18,15 +18,11 @@ object CursorUtil {
         )
         val images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-        if (isStoragePermissionGranted(context)) {
+        if (PermissionUtil.isReadPermissionGranted(context)) {
             return context.contentResolver
                 .query(images, projection, query, args, SORT_ORDER);
         }
         return null
-    }
-
-    fun isStoragePermissionGranted(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
     fun getVideoCursor(context: Context, query: String?, args: Array<String?>?): Cursor? {
@@ -36,7 +32,7 @@ object CursorUtil {
         )
         val videos = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
 
-        if (isStoragePermissionGranted(context)) {
+        if (PermissionUtil.isReadPermissionGranted(context)) {
             return context.contentResolver
                 .query(videos, projection, query, args, SORT_ORDER);
         }
@@ -49,7 +45,7 @@ object CursorUtil {
             MediaStore.Video.Media.DATA, MediaStore.Video.Media.SIZE
         )
 
-        if (isStoragePermissionGranted(context) && uri != null) {
+        if (PermissionUtil.isReadPermissionGranted(context) && uri != null) {
             return context.contentResolver
                 .query(uri, projection, query, args, SORT_ORDER);
         }
