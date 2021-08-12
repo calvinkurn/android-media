@@ -7,9 +7,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Channel(
-        @Expose @SerializedName("header") val header: Header?,
-        @Expose @SerializedName("hero") val hero: Hero?,
-        @Expose @SerializedName("banner") val banner: Banner?,
+        @Expose @SerializedName("header") val header: Header? = null,
+        @Expose @SerializedName("hero") val hero: Hero? = null,
+        @Expose @SerializedName("banner") val banner: Banner? = null,
         @Expose @SerializedName("id") val id: String = "",
         @Expose @SerializedName("name") val name: String = "",
         @Expose @SerializedName("layout") val layout: String = "",
