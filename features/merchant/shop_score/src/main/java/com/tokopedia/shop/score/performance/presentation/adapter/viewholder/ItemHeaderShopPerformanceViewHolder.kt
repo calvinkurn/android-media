@@ -22,6 +22,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
         const val SHOP_SCORE_NULL = -1
+        const val ROUNDED_RADIUS = 16F
     }
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
@@ -120,11 +121,10 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setBackgroundRadiusHeader() {
         with(itemView) {
-            val roundedRadius = 16F
             containerHeaderShopPerformance.shapeAppearanceModel = containerHeaderShopPerformance.shapeAppearanceModel
                     .toBuilder()
-                    .setTopRightCorner(CornerFamily.ROUNDED, roundedRadius)
-                    .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                    .setTopRightCorner(CornerFamily.ROUNDED, ROUNDED_RADIUS)
+                    .setTopLeftCorner(CornerFamily.ROUNDED, ROUNDED_RADIUS)
                     .build()
         }
     }
