@@ -10,6 +10,10 @@ import com.tokopedia.config.GlobalConfig
 import io.embrace.android.embracesdk.Embrace
 import timber.log.Timber
 
+private const val COOKIE_PREPARE_PAGE = 11;
+private const val COOKIE_NETWORK_REQUEST = 22;
+private const val COOKIE_RENDER_PAGE = 33;
+
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
         val tagNetworkRequestDuration: String,
@@ -75,7 +79,7 @@ open class PageLoadTimePerformanceCallback(
 
     override fun startPreparePagePerformanceMonitoring() {
         if (preparePageDuration == 0L) {
-            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",COOKIE_PREPARE_PAGE)
             preparePageDuration = System.currentTimeMillis()
         }
     }
@@ -85,13 +89,13 @@ open class PageLoadTimePerformanceCallback(
             preparePageDuration = System.currentTimeMillis() - preparePageDuration
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
-            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",COOKIE_PREPARE_PAGE)
         }
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
         if (requestNetworkDuration == 0L) {
-            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",COOKIE_NETWORK_REQUEST)
             requestNetworkDuration = System.currentTimeMillis()
         }
 
@@ -108,13 +112,13 @@ open class PageLoadTimePerformanceCallback(
             requestNetworkDuration = System.currentTimeMillis() - requestNetworkDuration
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
-            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",COOKIE_NETWORK_REQUEST)
         }
     }
 
     override fun startRenderPerformanceMonitoring() {
         if (renderDuration == 0L) {
-            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName", COOKIE_RENDER_PAGE)
             renderDuration = System.currentTimeMillis()
         }
 
@@ -131,7 +135,7 @@ open class PageLoadTimePerformanceCallback(
             renderDuration = System.currentTimeMillis() - renderDuration
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
-            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",COOKIE_RENDER_PAGE)
         }
     }
 
