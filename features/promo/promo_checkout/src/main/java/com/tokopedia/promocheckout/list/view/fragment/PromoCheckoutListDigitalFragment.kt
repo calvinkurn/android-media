@@ -82,10 +82,9 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     override fun loadData(page: Int) {
-        if (isCouponActive) {
+        if (isCouponActive && isABTestPromo()) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-        }
-        if(isABTestPromo()){
+        }else{
             promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
         }
     }
@@ -100,8 +99,8 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     fun isABTestPromo(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
-        .getString(PROMO_DIGITAL_AB_TEST_KEY, PROMO_DIGITAL_AB_TEST_TICKER)
-            == PROMO_DIGITAL_AB_TEST_TICKER)
+        .getString(PROMO_DIGITAL_AB_TEST_KEY, PROMO_DIGITAL_AB_TEST_COUPON)
+            == PROMO_DIGITAL_AB_TEST_COUPON)
 
     companion object {
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
@@ -109,7 +108,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         private val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
 
         private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo"
-        private const val PROMO_DIGITAL_AB_TEST_TICKER = "Promo_Ticker"
+        private const val PROMO_DIGITAL_AB_TEST_COUPON = "Control_variant"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
