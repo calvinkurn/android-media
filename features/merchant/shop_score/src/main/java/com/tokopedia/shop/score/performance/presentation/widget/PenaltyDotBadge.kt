@@ -19,9 +19,9 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
     private var willDraw = false
 
     companion object {
-        const val DIVIDE_TWO = 2
-        const val PLUS_CENTER_Y = 10
-        const val MINUS_CENTER_X = 20F
+        private const val DIVIDE_TWO = 2
+        private const val PLUS_CENTER_Y = 10
+        private const val MINUS_CENTER_X = 20F
     }
 
     init {
