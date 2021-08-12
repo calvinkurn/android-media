@@ -19,7 +19,12 @@ sealed class ShowToasterEvent : PlayViewerNewUiEvent() {
 }
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
+
+/**
+ * Real Time Notification
+ */
 data class ShowRealTimeNotificationEvent(val notification: RealTimeNotificationUiModel) : PlayViewerNewUiEvent()
+object HideRealTimeNotificationEvent : PlayViewerNewUiEvent()
 
 
 //---------------------

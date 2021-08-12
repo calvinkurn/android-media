@@ -43,6 +43,14 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
         setBackgroundColor(bgColor)
     }
 
+    fun setIconUrl(url: String) {
+        imageNotif.setImageUrl(url)
+    }
+
+    fun setText(text: String) {
+        tvNotifCopy.text = text
+    }
+
     private fun setupView(view: View) {
         setCornerRadius(
                 resources.getDimensionPixelSize(R.dimen.play_real_time_notif_radius).toFloat()

@@ -65,6 +65,7 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
+import com.tokopedia.play.view.viewcomponent.realtimenotif.RealTimeNotificationViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -129,6 +130,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
 
     /**
      * Interactive
@@ -846,9 +848,18 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowToasterEvent -> handleToasterEvent(event)
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is ShowRealTimeNotificationEvent -> {
-                        view?.findViewById<RealTimeNotificationBubbleView>(R.id.view_real_time_notification)?.apply {
-                            setNotification(event.notification)
+                        val rtnView = this@PlayUserInteractionFragment.rtnView ?: return@collect
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            rtnView.rootView.awaitPreDraw()
+                            val height = rtnView.rootView.measuredHeight
+                            chatListView?.animateCutHeight(height.toFloat() + offset8)
                         }
+                        rtnView.setNotification(event.notification)
+                        rtnView.showAnimated()
+                    }
+                    is HideRealTimeNotificationEvent -> {
+                        chatListView?.animateCutHeight(MASK_NO_CUT_HEIGHT)
+                        rtnView?.hideAnimated()
                     }
                 }
             }
@@ -1544,5 +1555,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val FADE_TRANSITION_DELAY = 3000L
 
         private const val AUTO_SWIPE_DELAY = 500L
+
+        private const val MASK_NO_CUT_HEIGHT = 0f
     }
 }
