@@ -657,6 +657,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun bindViews(view: View) {
         reviewReadingCoordinatorLayout = view.findViewById(R.id.read_review_coordinator_layout)
         reviewHeader = view.findViewById(R.id.read_review_header)
+        reviewHeader?.setIsProductReview(isProductReview)
         loadingView = view.findViewById(R.id.read_review_loading)
         listOnlyLoading = view.findViewById(R.id.read_review_list_only_loading)
         globalError = view.findViewById(R.id.read_review_network_error)
