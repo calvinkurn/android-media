@@ -39,6 +39,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     companion object {
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
+        const val DEFAULT_PERCENTAGE = 100.0
+        const val DEFAULT_WEIGHT = 1000.0f
     }
 
     // Global Data
@@ -544,7 +546,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                             else -> visitable.productPrice
                         }
                 totalPrice += visitable.productQty * price
-                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / 100.0 * price).toLong()
+                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
                 val originalPrice =
                         when {
                             visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice
@@ -642,7 +644,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
             val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
                     ?: ""
-            val overWeight = (totalWeight - maxWeight) / 1000.0f
+            val overWeight = (totalWeight - maxWeight) / DEFAULT_WEIGHT
             if (tickerWarning == null) {
                 tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
                 tickerWarning.let {

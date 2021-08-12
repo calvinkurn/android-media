@@ -42,6 +42,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                                                   var analytics: MiniCartAnalytics)
     : MiniCartListActionListener {
 
+    companion object {
+        private const val LONG_DELAY = 500L
+        private const val SHORT_DELAY = 200L
+    }
+
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
     private var viewModel: MiniCartViewModel? = null
     private var bottomSheet: BottomSheetUnify? = null
@@ -359,7 +364,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun adjustRecyclerViewPaddingBottom(viewBinding: LayoutBottomsheetMiniCartListBinding) {
         measureRecyclerViewPaddingDebounceJob?.cancel()
         measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(500)
+            delay(LONG_DELAY)
             with(viewBinding) {
                 if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1)) {
                     rvMiniCartList.setPadding(0, 0, 0, rvMiniCartList.resources?.getDimensionPixelOffset(R.dimen.dp_64)
@@ -446,7 +451,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun updateCart() {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(500)
+            delay(LONG_DELAY)
             viewModel?.updateCart(isForCheckout = false, observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
         }
     }
@@ -454,7 +459,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun calculateProduct() {
         calculationDebounceJob?.cancel()
         calculationDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(200)
+            delay(SHORT_DELAY)
             viewModel?.calculateProduct()
         }
     }

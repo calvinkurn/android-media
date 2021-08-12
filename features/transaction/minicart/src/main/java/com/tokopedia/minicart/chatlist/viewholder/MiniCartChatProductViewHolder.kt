@@ -35,29 +35,33 @@ class MiniCartChatProductViewHolder(
 
     private fun setProductDisabled(element: MiniCartChatProductUiModel) {
         with(viewBinding) {
+            var alpha: Float
             if (element.isProductDisabled) {
-                iuProduct.alpha = 0.5f
-                tpTitle.alpha = 0.5f
-                tpPrice.alpha = 0.5f
-                divider.alpha = 0.5f
+                alpha = 0.5f
+                iuProduct.alpha = alpha
+                tpTitle.alpha = alpha
+                tpPrice.alpha = alpha
+                divider.alpha = alpha
                 cbProduct.hide()
             } else {
                 if (!element.isChecked && element.size == 3) {
-                    iuProduct.alpha = 0.5f
-                    tpTitle.alpha = 0.5f
-                    tpPrice.alpha = 0.5f
-                    divider.alpha = 0.5f
-                    cbProduct.alpha = 0.5f
+                    alpha = 0.5f
+                    iuProduct.alpha = alpha
+                    tpTitle.alpha = alpha
+                    tpPrice.alpha = alpha
+                    divider.alpha = alpha
+                    cbProduct.alpha = alpha
                     cbProduct.show()
                     cbProduct.isChecked = element.isChecked
                     cbProduct.isEnabled = false
                     containerProduct.isEnabled = false
                 } else {
-                    iuProduct.alpha = 1f
-                    tpTitle.alpha = 1f
-                    tpPrice.alpha = 1f
-                    divider.alpha = 1f
-                    cbProduct.alpha = 1f
+                    alpha = 1f
+                    iuProduct.alpha = alpha
+                    tpTitle.alpha = alpha
+                    tpPrice.alpha = alpha
+                    divider.alpha = alpha
+                    cbProduct.alpha = alpha
                     cbProduct.show()
                     cbProduct.isChecked = element.isChecked
                     cbProduct.isEnabled = true
