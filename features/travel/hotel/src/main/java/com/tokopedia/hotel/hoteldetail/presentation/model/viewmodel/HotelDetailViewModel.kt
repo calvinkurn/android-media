@@ -121,13 +121,22 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     }
 
     private suspend fun getRoomList(rawQuery: String, searchParam: HotelHomepageModel) {
-        roomListResult.postValue(useCase.execute(rawQuery, HotelRoomListPageModel(
-                propertyId = searchParam.locId,
-                checkIn = searchParam.checkInDate,
-                checkOut = searchParam.checkOutDate,
-                adult = searchParam.adultCount,
-                child = 0,
-                room = searchParam.roomCount)))
+        try{
+            val hotelRoomListData = async {
+                val data = withContext(dispatcher.io){
+                    useCase.execute(rawQuery, HotelRoomListPageModel(
+                        propertyId = searchParam.locId,
+                        checkIn = searchParam.checkInDate,
+                        checkOut = searchParam.checkOutDate,
+                        adult = searchParam.adultCount,
+                        child = 0,
+                        room = searchParam.roomCount))                }
+                data
+            }
+            roomListResult.postValue(hotelRoomListData.await())
+        } catch (t: Throwable) {
+            roomListResult.postValue(Fail(t))
+        }
     }
 
     companion object {
