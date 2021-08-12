@@ -26,7 +26,6 @@ buildscript {
 }
 
 dependencies {
-    implementation project(path: ':libraries:graphql')
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
