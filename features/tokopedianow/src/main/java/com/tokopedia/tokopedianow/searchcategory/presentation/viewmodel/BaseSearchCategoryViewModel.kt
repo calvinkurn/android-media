@@ -405,7 +405,7 @@ abstract class BaseSearchCategoryViewModel(
 
         headerList.add(chooseAddressDataView)
         headerList.add(createBannerDataView(headerDataView))
-        headerList.add(TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton))
+        headerList.add(createTitleDataView(headerDataView))
 
         processCategoryFilter(headerList, headerDataView.categoryFilterDataValue)
 
@@ -416,6 +416,8 @@ abstract class BaseSearchCategoryViewModel(
 
         return headerList
     }
+
+    protected abstract fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView
 
     protected open fun processCategoryFilter(
             headerList: MutableList<Visitable<*>>,
@@ -1234,7 +1236,6 @@ abstract class BaseSearchCategoryViewModel(
 
     protected class HeaderDataView(
             val title: String = "",
-            val hasSeeAllCategoryButton: Boolean = false,
             val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
             categoryFilterDataValue: DataValue = DataValue(),
             quickFilterDataValue: DataValue = DataValue(),

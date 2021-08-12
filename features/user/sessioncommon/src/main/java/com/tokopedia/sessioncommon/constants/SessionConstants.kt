@@ -15,6 +15,9 @@ object SessionConstants {
         const val ROLLOUT_REGISTER_ENCRYPTION_SELLER = "enf_reg_seller"
         const val ROLLOUT_LOGIN_FINGERPRINT = "android_login_biom"
         const val ROLLOUT_SETTING_FINGERPRINT = "android_biometrics"
+
+        const val ROLLOUT_LOGIN_FINGERPRINT_11 = "biom_login_11"
+        const val ROLLOUT_SETTING_FINGERPRINT_11 = "biom_setting_11"
     }
 
     object FirebaseConfig {

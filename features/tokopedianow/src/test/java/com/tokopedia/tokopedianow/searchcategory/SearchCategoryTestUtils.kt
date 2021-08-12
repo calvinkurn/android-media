@@ -20,7 +20,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCount
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import org.hamcrest.CoreMatchers.instanceOf
@@ -50,14 +49,6 @@ fun Visitable<*>.assertChooseAddressDataView() {
 
 fun Visitable<*>.assertBannerDataView() {
     assertThat(this, instanceOf(BannerDataView::class.java))
-}
-
-fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boolean) {
-    assertThat(this, instanceOf(TitleDataView::class.java))
-
-    val titleDataView = this as TitleDataView
-    assertThat(titleDataView.title, shouldBe(title))
-    assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(hasSeeAllCategoryButton))
 }
 
 fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue) {

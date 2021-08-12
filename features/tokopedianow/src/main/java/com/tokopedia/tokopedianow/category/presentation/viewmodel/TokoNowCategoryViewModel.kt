@@ -22,6 +22,8 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -135,7 +137,6 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val headerDataView = HeaderDataView(
                 title = categoryModel.categoryDetail.data.name,
-                hasSeeAllCategoryButton = true,
                 aceSearchProductHeader = categoryModel.searchProduct.header,
                 categoryFilterDataValue = categoryModel.categoryFilter,
                 quickFilterDataValue = categoryModel.quickFilter,
@@ -147,6 +148,13 @@ class TokoNowCategoryViewModel @Inject constructor (
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView)
+    }
+
+    override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
+        return TitleDataView(
+                titleType = CategoryTitle(headerDataView.title),
+                hasSeeAllCategoryButton = true,
+        )
     }
 
     override fun createFooterVisitableList() = listOf(
