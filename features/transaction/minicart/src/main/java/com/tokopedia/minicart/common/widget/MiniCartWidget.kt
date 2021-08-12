@@ -356,7 +356,7 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to show mini cart chat bottom sheet
     * */
-    fun showMiniCartChatListBottomSheet(fragment: Fragment) {
+    private fun showMiniCartChatListBottomSheet(fragment: Fragment) {
         viewModel?.let {
             miniCartChatListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, it)
         }
@@ -476,6 +476,7 @@ class MiniCartWidget @JvmOverloads constructor(
         val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         totalAmount?.setAdditionalButton(chatIcon)
         totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+            analytics.eventClickChatOnMiniCart()
             showMiniCartChatListBottomSheet(fragment)
         }
         this.chatIcon?.setImageDrawable(chatIcon)

@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.chatlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
@@ -10,7 +9,6 @@ import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiMo
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
-import kotlin.math.min
 
 class MiniCartChatListUiModelMapper @Inject constructor() {
 
@@ -83,12 +81,7 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
                 val miniCartChatProductUiModels = mutableListOf<MiniCartChatProductUiModel>()
                 availableGroup.cartDetails.forEach { cartDetail ->
                     weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
-                    val miniCartChatProductUiModel = mapChatProductUiModel(
-                        cartDetail = cartDetail,
-                        shop = availableGroup.shop,
-                        shipmentInformation = availableGroup.shipmentInformation,
-                        action = availableSection.action,
-                        notesLength = miniCartData.data.maxCharNote)
+                    val miniCartChatProductUiModel = mapChatProductUiModel(cartDetail)
                     miniCartChatProductUiModels.add(miniCartChatProductUiModel)
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartChatProductUiModels)
@@ -109,14 +102,7 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartChatProductUiModel>()
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val miniCartProductUiModel = mapChatProductUiModel(
-                        cartDetail = cartDetail,
-                        shop = unavailableGroup.shop,
-                        shipmentInformation = unavailableGroup.shipmentInformation,
-                        action = unavailableSection.action,
-                        isDisabled = true,
-                        unavailableActionId = unavailableSection.selectedUnavailableActionId,
-                        unavailableReason = unavailableSection.title)
+                    val miniCartProductUiModel = mapChatProductUiModel(cartDetail, true)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -136,63 +122,16 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
         return visitables
     }
 
-    private fun mapChatProductUiModel(cartDetail: CartDetail,
-                                      shop: Shop,
-                                      shipmentInformation: ShipmentInformation,
-                                      action: List<Action>,
-                                      isDisabled: Boolean = false,
-                                      unavailableActionId: String = "",
-                                      unavailableReason: String = "",
-                                      notesLength: Int = 0): MiniCartChatProductUiModel {
+    private fun mapChatProductUiModel(cartDetail: CartDetail, isDisabled: Boolean = false): MiniCartChatProductUiModel {
         return MiniCartChatProductUiModel().apply {
-            cartId = cartDetail.cartId
             productId = cartDetail.product.productId
-            parentId = cartDetail.product.parentId
             productImageUrl = cartDetail.product.productImage.imageSrc100Square
             productName = cartDetail.product.productName
-            productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
             productSlashPriceLabel = cartDetail.product.slashPriceLabel
             productOriginalPrice = cartDetail.product.productOriginalPrice
-            productWholeSalePrice = 0
-            productInitialPriceBeforeDrop = cartDetail.product.initialPrice
             productPrice = cartDetail.product.productPrice
             productInformation = cartDetail.product.productInformation
-            productNotes = cartDetail.product.productNotes
-            productQty = cartDetail.product.productQuantity
-            productWeight = cartDetail.product.productWeight
-            productMinOrder = cartDetail.product.productMinOrder
-            productMaxOrder = if (cartDetail.product.productSwitchInvenage == 0) {
-                cartDetail.product.productMaxOrder
-            } else {
-                min(cartDetail.product.productMaxOrder, cartDetail.product.productInvenageValue)
-            }
-            productActions = action
-            wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
-            maxNotesLength = notesLength
-            campaignId = cartDetail.product.campaignId
-            attribution = cartDetail.product.productTrackerData.attribution
-            warehouseId = cartDetail.product.warehouseId
-            categoryId = cartDetail.product.categoryId
-            category = cartDetail.product.category
-            shopId = shop.shopId
-            shopName = shop.shopName
-            shopType = shop.shopTypeInfo.titleFmt
-            freeShippingType =
-                if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                else ""
-            errorType = unavailableReason
-            if (isDisabled) {
-                selectedUnavailableActionId = unavailableActionId
-                selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
-            } else {
-                productQtyLeft = cartDetail.product.productWarningMessage
-            }
-            productCashbackPercentage = cartDetail.product.productCashback
-                .replace(" ", "")
-                .replace("%", "")
-                .toIntOrZero()
         }
     }
 }

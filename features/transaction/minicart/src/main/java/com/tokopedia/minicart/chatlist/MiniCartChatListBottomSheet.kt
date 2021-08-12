@@ -52,13 +52,10 @@ class MiniCartChatListBottomSheet @Inject constructor(
     private var scrollPosition = 0
 
     override fun onClickProduct(element: MiniCartChatProductUiModel, isChecked: Boolean) {
-        mContext?.apply {
-            element.isChecked = isChecked
-            if (isChecked) {
-                updateDataWhenAdding(element)
-            } else {
-                updateDataWhenRemoving(element)
-            }
+        if (isChecked) {
+            updateDataWhenAdding(element)
+        } else {
+            updateDataWhenRemoving(element)
         }
     }
 
@@ -237,7 +234,6 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 name = element.productName,
                 price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
                 dropPercentage = element.productSlashPriceLabel.removeSuffix("%"),
-                remainingStock = element.productQtyLeft.toIntOrZero(),
                 priceBeforeInt = element.productOriginalPrice.toDouble(),
                 priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false),
             )

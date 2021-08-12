@@ -18,8 +18,6 @@ class MiniCartChatProductViewHolder(
         val LAYOUT = R.layout.item_mini_cart_chat_product
     }
 
-    private var isChecked = false
-
     override fun bind(element: MiniCartChatProductUiModel) {
         renderProduct(element)
     }
@@ -51,8 +49,7 @@ class MiniCartChatProductViewHolder(
                     divider.alpha = 0.5f
                     cbProduct.alpha = 0.5f
                     cbProduct.show()
-                    isChecked = element.isChecked
-                    cbProduct.isChecked = isChecked
+                    cbProduct.isChecked = element.isChecked
                     cbProduct.isEnabled = false
                     containerProduct.isEnabled = false
                 } else {
@@ -62,8 +59,7 @@ class MiniCartChatProductViewHolder(
                     divider.alpha = 1f
                     cbProduct.alpha = 1f
                     cbProduct.show()
-                    isChecked = element.isChecked
-                    cbProduct.isChecked = isChecked
+                    cbProduct.isChecked = element.isChecked
                     cbProduct.isEnabled = true
                     containerProduct.isEnabled = true
                 }
@@ -82,8 +78,8 @@ class MiniCartChatProductViewHolder(
     private fun setCheckBox(element: MiniCartChatProductUiModel) {
         with(viewBinding) {
             cbProduct.setOnClickListener {
-                isChecked = cbProduct.isChecked
-                chatProductListener?.onClickProduct(element, isChecked)
+                element.isChecked = cbProduct.isChecked
+                chatProductListener?.onClickProduct(element, element.isChecked)
             }
         }
     }
@@ -92,9 +88,9 @@ class MiniCartChatProductViewHolder(
         with(viewBinding) {
             containerProduct.setOnClickListener {
                 if (cbProduct.isShown) {
-                    isChecked = !isChecked
-                    cbProduct.isChecked = isChecked
-                    chatProductListener?.onClickProduct(element, isChecked)
+                    cbProduct.isChecked = !cbProduct.isChecked
+                    element.isChecked = cbProduct.isChecked
+                    chatProductListener?.onClickProduct(element, element.isChecked)
                 }
             }
         }
