@@ -31,18 +31,20 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
+class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFactory>, CampaignStockAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(isVariant: Boolean,
-                           sellableProductUIList: ArrayList<SellableStockProductUIModel>,
-                           isActive: Boolean,
-                           stock: Int,
-                           isCampaign: Boolean,
-                           access: ProductManageAccess,
-                           source: String,
-                           campaignStockListener: CampaignStockListener,): CampaignMainStockFragment {
+        fun createInstance(
+                isVariant: Boolean,
+                sellableProductUIList: ArrayList<SellableStockProductUIModel>,
+                isActive: Boolean,
+                stock: Int,
+                isCampaign: Boolean,
+                access: ProductManageAccess,
+                source: String,
+                campaignStockListener: CampaignStockListener,
+        ): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
@@ -207,15 +209,17 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun showHideStockInfo(showStockInfo: Boolean) {
         adapter.apply {
-            data.filterIsInstance<SellableStockProductUIModel>().forEach {
-                val index = data.indexOf(it)
-                data[index] = if (showStockInfo) {
-                    it.copy(isAllStockEmpty = false)
-                } else {
-                    it.copy(isAllStockEmpty = true)
+            getRecyclerView(view)?.post {
+                data.filterIsInstance<SellableStockProductUIModel>().forEach {
+                    val index = data.indexOf(it)
+                    data[index] = if (showStockInfo) {
+                        it.copy(isAllStockEmpty = false)
+                    } else {
+                        it.copy(isAllStockEmpty = true)
+                    }
                 }
+                notifyDataSetChanged()
             }
-            notifyDataSetChanged()
         }
     }
 
@@ -226,11 +230,13 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun updateStockEditorItem(totalStock: Int) {
         adapter.apply {
-            data.firstOrNull { it is TotalStockEditorUiModel }?.let {
-                val item = TotalStockEditorUiModel(totalStock, isCampaign, access, sellableProductList.firstOrNull()?.campaignTypeList)
-                val index = data.indexOf(it)
-                data[index] = item
-                notifyItemChanged(index)
+            getRecyclerView(view)?.post {
+                data.firstOrNull { it is TotalStockEditorUiModel }?.let {
+                    val item = TotalStockEditorUiModel(totalStock, isCampaign, access, sellableProductList.firstOrNull()?.campaignTypeList)
+                    val index = data.indexOf(it)
+                    data[index] = item
+                    notifyItemChanged(index)
+                }
             }
         }
     }
@@ -254,16 +260,19 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private fun showVariantWarningTickerWithCondition(shouldShowWarning: Boolean) {
         with(adapter) {
-            val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
-            val tickerUiModel = createTickerUiModel(shouldShowWarning)
+            getRecyclerView(view)?.post {
+                val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
+                val tickerUiModel = createTickerUiModel(shouldShowWarning)
 
-            if(ticker == null) {
-                data.add(ITEM_TICKER_POSITION, tickerUiModel)
-                notifyItemInserted(ITEM_TICKER_POSITION)
-            } else {
-                val index = data.indexOf(ticker)
-                data[index] = tickerUiModel
-                notifyItemChanged(index)
+                if (ticker == null) {
+                    data.add(ITEM_TICKER_POSITION, tickerUiModel)
+                    notifyItemInserted(ITEM_TICKER_POSITION)
+
+                } else {
+                    val index = data.indexOf(ticker)
+                    data[index] = tickerUiModel
+                    notifyItemChanged(index)
+                }
             }
         }
     }

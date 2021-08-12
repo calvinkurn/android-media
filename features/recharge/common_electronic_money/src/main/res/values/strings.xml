@@ -20,7 +20,6 @@
     <string name="emoney_nfc_tap_card_button_label_error">Coba Lagi</string>
     <string name="emoney_nfc_tap_card_button_socket_label">Kembali ke Home</string>
 
-    <string name="emoney_nfc_grpc_timeout">grpc timeout</string>
     <string name="emoney_nfc_grpc_label_error">Oops, ada kendala koneksi.</string>
     <string name="emoney_nfc_device_not_support">Yaah, HP-mu nggak dukung fitur NFC</string>
     <string name="emoney_nfc_check_balance_problem_title">Maaf, cek saldo belum berhasil</string>

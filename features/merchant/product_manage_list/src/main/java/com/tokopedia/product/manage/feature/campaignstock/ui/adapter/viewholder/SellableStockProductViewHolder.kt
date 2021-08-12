@@ -96,6 +96,7 @@ class SellableStockProductViewHolder (itemView: View?,
             val stock = if(it.isNotEmpty()) {
                 getValue()
             } else {
+                editText.setText(EditProductConstant.MINIMUM_STOCK.getNumberFormatted())
                 EditProductConstant.MINIMUM_STOCK
             }
             itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element) || getInactivityByStatus())

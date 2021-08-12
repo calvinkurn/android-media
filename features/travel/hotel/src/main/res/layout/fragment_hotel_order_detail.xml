@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_order_detail_transaction_detail" />
+            <include android:id="@+id/layoutOrderDetailTransaction" layout="@layout/layout_order_detail_transaction_detail" />
 
             <include
                 android:id="@+id/order_hotel_detail"
@@ -32,6 +32,7 @@
                 tools:visibility="visible"/>
 
             <include
+                android:id="@+id/layoutOrderDetailPayment"
                 layout="@layout/layout_order_detail_payment_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
