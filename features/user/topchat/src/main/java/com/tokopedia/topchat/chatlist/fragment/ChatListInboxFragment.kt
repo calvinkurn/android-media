@@ -881,12 +881,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        ChatItemListViewHolder.currentActiveChat = ""
-        ChatItemListViewHolder.lastActivePosition = null
-    }
-
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
