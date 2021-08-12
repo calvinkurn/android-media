@@ -224,7 +224,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         userSession.logoutSession()
     }
 
-    fun checkForOvoResume(){
+    private fun checkForOvoResume(){
         if(isRegisterOvo){
             if(externalRegisterPreference.isNeedContinue()){
                 goToRegisterWithPhoneNumber(externalRegisterPreference.getPhone())
@@ -357,7 +357,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             registerButton.setOnClickListener {
                 TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL)
                 goToRegisterEmailPage()
-
             }
 
             initTermPrivacyView()
@@ -405,14 +404,12 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             }
         })
-
         registerInitialViewModel.checkOvoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessCheckOvoAcc(it.data)
                 is Fail -> onErrorCheckovoAcc(it.throwable)
             }
         })
-
         combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
                 .combineWith(registerInitialViewModel.validateToken) { loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
                     if (loginToken is Fail) {
@@ -469,7 +466,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToSecurityQuestionAfterRelogin()
         })
-
         registerInitialViewModel.dynamicBannerResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setDynamicBannerView(it.data)
@@ -671,7 +667,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
-        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
         if (profileInfoData.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
@@ -880,7 +875,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             } else if (requestCode == RegisterConstants.Request.REQUEST_CHANGE_NAME) {
                 onActivityResultChangeName(resultCode)
             } else if (data != null && requestCode == RegisterConstants.Request.REQUEST_OTP_VALIDATE) {
-                onActivityResultOtpValidate(requestCode, data)
+                onActivityResultOtpValidate(resultCode, data)
             } else if (data != null && requestCode == RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE) {
                 onActivityResultPendingOtpValidate(resultCode, data)
             } else if (requestCode == ExternalRegisterConstants.REQUEST_OVO_REGISTER && resultCode == Activity.RESULT_CANCELED) {
@@ -1057,6 +1052,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             showErrorToaster(message)
             return
         }
+
         if (enable2FA) {
             activityShouldEnd = false
             sendTrackingSuccessRegister()
@@ -1099,9 +1095,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun setDiscoverOnClickListener(discoverItemDataModel: DiscoverItemDataModel,
-                                           loginTextView: LoginTextView) {
-
+    private fun setDiscoverOnClickListener(discoverItemDataModel: DiscoverItemDataModel, loginTextView: LoginTextView) {
         when (discoverItemDataModel.id.toLowerCase()) {
             LoginConstants.DiscoverLoginId.FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
             LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
@@ -1529,6 +1523,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val TERM_AND_COND_END_SIZE = 54
         private const val PRIVACY_POLICY_START_SIZE = 61
         private const val PRIVACY_POLICY_END_SIZE = 78
+
+        private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         const val TOKOPEDIA_CARE_PATH = "help"
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
