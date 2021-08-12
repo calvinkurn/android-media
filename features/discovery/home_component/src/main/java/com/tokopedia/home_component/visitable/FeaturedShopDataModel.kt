@@ -15,7 +15,7 @@ data class FeaturedShopDataModel(
 ) : HomeComponentVisitable {
     override fun visitableId(): String = when(page) {
         PAGE_HOME -> channelModel.id
-        PAGE_OS -> String.format("%s%s", state.hashCode(),channelModel.hashCode())
+        PAGE_OS -> String.format(HASH_FORMAT, state.hashCode(),channelModel.hashCode())
         else -> channelModel.id
     }
 
@@ -47,5 +47,6 @@ data class FeaturedShopDataModel(
 
         const val PAGE_HOME = 1
         const val PAGE_OS = 2
+        const val HASH_FORMAT = "%s%s"
     }
 }

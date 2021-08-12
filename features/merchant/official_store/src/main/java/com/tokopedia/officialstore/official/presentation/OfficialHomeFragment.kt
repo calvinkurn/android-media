@@ -824,7 +824,9 @@ class OfficialHomeFragment :
             when(it) {
                 is Success -> {
                    //update UI
-                    officialHomeMapper.updateFeaturedShopDC(it.data, adapter)
+                    officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
+                        adapter?.submitList(newDataList)
+                    }
                 }
             }
         })
@@ -832,7 +834,9 @@ class OfficialHomeFragment :
 
     private fun observeFeaturedShopRemoveDC() {
         viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
-            officialHomeMapper.removeFeaturedShopDC(it, adapter)
+            officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
+                adapter?.submitList(newDataList)
+            }
         })
     }
 

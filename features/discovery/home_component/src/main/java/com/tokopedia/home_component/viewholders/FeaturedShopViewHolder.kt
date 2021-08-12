@@ -37,6 +37,7 @@ class FeaturedShopViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_featured_shop
+        const val SIZE_2 = 2
     }
 
     private lateinit var adapter: FeaturedShopAdapter
@@ -45,7 +46,7 @@ class FeaturedShopViewHolder(
         invokeState(element.state,{
             itemView.loading_view?.show()
         },{
-            if(element.channelModel.channelGrids.size < 2){
+            if(element.channelModel.channelGrids.size < SIZE_2){
                 itemView.content_container?.hide()
             } else {
                 itemView.content_container?.show()

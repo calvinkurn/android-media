@@ -250,7 +250,7 @@ class OfficialHomeMapper (
         actionOnFound.invoke(listFound)
     }
 
-    fun updateFeaturedShopDC(newData: FeaturedShopDataModel, adapter: OfficialHomeAdapter?) {
+    fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
         listOfficialStore.forEach {
             if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
@@ -258,16 +258,16 @@ class OfficialHomeMapper (
                 newList.add(newData.copy())
             } else newList.add(it)
         }
-        adapter?.submitList(newList.toMutableList())
+        action.invoke(newList.toMutableList())
     }
 
-    fun removeFeaturedShopDC(newData: FeaturedShopDataModel, adapter: OfficialHomeAdapter?) {
+    fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
         val newList = mutableListOf<Visitable<*>>()
         listOfficialStore.forEach {
             if (it !is FeaturedShopDataModel || ((it is FeaturedShopDataModel && it.channelModel.id != newData.channelModel.id)))  {
                 newList.add(it)
             }
         }
-        adapter?.submitList(newList.toMutableList())
+        action.invoke(newList.toMutableList())
     }
 }
