@@ -15,8 +15,6 @@ import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.digital.newcart.domain.mapper.CartMapperData
-import com.tokopedia.digital.newcart.domain.mapper.ICartMapperData
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -41,12 +39,6 @@ class DigitalModule {
     }
 
     //region REST API FOR DIGITAL PRODUCT MODULE ----------------------------------
-
-    @Provides
-    @DigitalScope
-    fun provideCartMapperData(): ICartMapperData {
-        return CartMapperData()
-    }
 
     @DigitalScope
     @Provides
