@@ -185,7 +185,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     private fun startMethodTracing(traceName: String){
-        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
                     Log.i("PLTCallback", "startMethodTracing ==> " +traceName)
@@ -197,7 +197,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     private fun stopMethodTracing(traceName: String){
-        if(GlobalConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if(GlobalConfig.ENABLE_DEBUG_TRACE){
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
                     Log.i("PLTCallback" , "stopMethodTracing ==> "+traceName)

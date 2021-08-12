@@ -118,8 +118,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
-        if (BuildConfig.ENABLE_DEBUG_TRACE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && BuildConfig.DEBUG_TRACE_NAME.contains(AppStartPerformanceTracker.APP_START_COLD)) {
+        if (BuildConfig.ENABLE_DEBUG_TRACE && BuildConfig.DEBUG_TRACE_NAME.contains(AppStartPerformanceTracker.APP_START_COLD)) {
             initConfigValues();
             AppStartPerformanceTracker.startMonitoring();
 
