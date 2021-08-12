@@ -1200,11 +1200,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingEventAppsFlyerViewListingSearch(
-            afProdIds: JSONArray?,
-            query: String?,
-            prodIdArray: ArrayList<String?>?,
+        afProdIds: JSONArray?,
+        query: String?,
+        prodIdArray: ArrayList<String?>?,
+        allProdIdArray: ArrayList<String?>?
     ) {
-        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!)
+        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!, allProdIdArray)
     }
 
     override fun sendTrackingEventMoEngageSearchAttempt(
