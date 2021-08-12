@@ -199,6 +199,10 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
                 }
             }
         })
+
+        viewModel.checkedList.observe(viewLifecycleOwner, { result ->
+            updateButtonBasedOnChecked(result.size)
+        })
     }
 
     override fun onItemClicked(newAttachProductItemUiModel: NewAttachProductItemUiModel) {}
@@ -254,7 +258,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
         adapter.itemChecked(isChecked, position)
-        viewModel.updateCheckedList(adapter.checkedDataList, ::updateButtonBasedOnChecked)
+        viewModel.updateCheckedList(adapter.checkedDataList)
         if (position != RecyclerView.NO_POSITION) {
             trackAction(source, adapter.data[position].productId)
         }

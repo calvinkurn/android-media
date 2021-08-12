@@ -23,7 +23,7 @@ interface NewAttachProductContract {
 
     interface Presenter {
         fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String)
-        fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>, onUpdated: (Int) -> Unit)
+        fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>)
         fun resetCheckedList()
         fun completeSelection(onFinish: (ArrayList<ResultProduct>) -> Unit)
     }

@@ -22,7 +22,8 @@ class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProduc
         if (holder is BaseCheckableViewHolder<*>) {
             holder.checkable.isChecked = isChecked(position)
             holder.itemView.isSelected = isChecked(position)
-        }    }
+        }
+    }
 
     private fun getDataRow(position: Int): NewAttachProductItemUiModel? {
         return if (position < 0 || position >= visitables.size) {

@@ -21,8 +21,13 @@ class AttachProductViewModel @Inject constructor
 
     private val _products = MutableLiveData<Result<List<NewAttachProductItemUiModel>>>()
     private val _checkedList = mutableListOf<NewAttachProductItemUiModel>()
+    private val _checkedListMutableLiveData = MutableLiveData<List<NewAttachProductItemUiModel>>()
+
+    val checkedList: LiveData<List<NewAttachProductItemUiModel>>
+        get() = _checkedListMutableLiveData
     val products: LiveData<Result<List<NewAttachProductItemUiModel>>>
         get() = _products
+
 
     override fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
@@ -37,12 +42,12 @@ class AttachProductViewModel @Inject constructor
     }
 
 
-    override fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>, onUpdated: (Int) -> Unit) {
+    override fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>) {
         if (_checkedList.isNotEmpty()) {
             resetCheckedList()
         }
         _checkedList.addAll(productNews)
-        onUpdated.invoke(_checkedList.size)
+        _checkedListMutableLiveData.value = _checkedList
     }
 
     override fun resetCheckedList() {
@@ -66,10 +71,10 @@ class AttachProductViewModel @Inject constructor
 
     private fun generateParam(query: String, shopId: String,
                               page: Int, warehouseId: String): HashMap<String, Any> {
-
+        val start = (page * ROW) - ROW
         return hashMapOf<String, Any>().apply {
             put(PARAM, "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
-                    "$shopId&start=${(page * ROW) - ROW}&user_warehouseId=$warehouseId")
+                    "$shopId&start=$start&user_warehouseId=$warehouseId")
         }
     }
 
