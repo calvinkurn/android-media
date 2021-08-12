@@ -20,6 +20,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
+const val SHIMMER_ITEMS_LIST_SIZE = 10
 var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
@@ -294,7 +295,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 })
                 component.needPagination = true
                 component.userAddressData = localCacheModel
-                listComponents.addAll(List(10) {
+                listComponents.addAll(List(SHIMMER_ITEMS_LIST_SIZE) {
                     ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
                         properties = component.properties
                     }
