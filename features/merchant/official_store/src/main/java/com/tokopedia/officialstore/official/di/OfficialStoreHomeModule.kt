@@ -12,8 +12,6 @@ import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
-import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -93,9 +91,4 @@ class OfficialStoreHomeModule {
     @Provides
     fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
 
-    @OfficialStoreHomeScope
-    @Provides
-    fun provideGetDisplayHeadlineAds(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DisplayHeadlineAdsEntity>): GetDisplayHeadlineAds {
-        return GetDisplayHeadlineAds(graphqlUseCase)
-    }
 }
