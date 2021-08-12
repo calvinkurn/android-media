@@ -115,7 +115,6 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:orientation="horizontal"
             android:visibility="gone"
-            android:layout_marginBottom="@dimen/dp_16"
             tools:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/featured_shop_product_total_count"
             app:layout_constraintHorizontal_chainStyle="packed"
