@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
 import javax.inject.Inject
 
 class MiniCartChatListDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
@@ -18,11 +19,18 @@ class MiniCartChatListDecoration @Inject constructor() : RecyclerView.ItemDecora
             context = parent.context
             noMargin = context?.resources?.getDimension(R.dimen.dp_0)?.toInt().orZero()
         }
-        setupOutRect(outRect, noMargin, noMargin)
+        when (parent.getChildViewHolder(view)) {
+            is MiniCartChatUnavailableReasonViewHolder -> setupOutRect(outRect, noMargin, noMargin)
+            else -> setupOutRect(outRect, noMargin, noMargin, )
+        }
+        setupOutRect(outRect, noMargin, noMargin, context?.resources?.getDimension(R.dimen.dp_16)?.toInt().orZero())
     }
 
-    private fun setupOutRect(outRect: Rect, left: Int, right: Int) {
+    private fun setupOutRect(outRect: Rect, left: Int, right: Int, top: Int? = null) {
         outRect.left = left
         outRect.right = right
+        top?.let {
+            outRect.top = it
+        }
     }
 }

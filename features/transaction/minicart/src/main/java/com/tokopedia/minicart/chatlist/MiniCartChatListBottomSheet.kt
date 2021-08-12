@@ -207,6 +207,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
                     openChatPage(shopId)
                 }
             }
+            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height)
         }
     }
 
@@ -223,10 +224,10 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 imageUrl = element.productImageUrl,
                 name = element.productName,
                 price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
-                dropPercentage = "${element.productCashbackPercentage}%",
+                dropPercentage = element.productSlashPriceLabel.removeSuffix("%"),
                 remainingStock = element.productQtyLeft.toIntOrZero(),
-                priceBeforeInt = element.productInitialPriceBeforeDrop.toDouble(),
-                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false),
+                priceBeforeInt = element.productOriginalPrice.toDouble(),
+                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false),
             )
             productPreviews.add(productPreview)
         }
