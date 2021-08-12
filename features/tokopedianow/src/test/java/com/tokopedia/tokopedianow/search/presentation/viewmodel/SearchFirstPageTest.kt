@@ -18,9 +18,11 @@ import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.assertProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.assertTitleDataView
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -67,10 +69,18 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
-        visitableList[2].assertTitleDataView(title = "", hasSeeAllCategoryButton = false)
+        visitableList[2].assertTitleDataView()
         visitableList[3].assertCategoryFilterDataView(searchModel.categoryFilter)
         visitableList[4].assertQuickFilterDataView(searchModel.quickFilter, mapParameter)
         visitableList[5].assertProductCountDataView(searchModel.searchProduct.header.totalDataText)
+    }
+
+    private fun Visitable<*>.assertTitleDataView() {
+        assertThat(this, instanceOf(TitleDataView::class.java))
+
+        val titleDataView = this as TitleDataView
+        assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(false))
+        assertThat(titleDataView.titleType, instanceOf(SearchTitle::class.java))
     }
 
     private fun `Then assert visitable list contents`(
