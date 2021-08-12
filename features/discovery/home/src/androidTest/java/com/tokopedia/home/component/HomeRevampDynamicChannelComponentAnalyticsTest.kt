@@ -1,5 +1,8 @@
 package com.tokopedia.home.component
 
+import android.app.Activity
+import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,6 +31,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.reflect.KClass
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.intent.rule.IntentsTestRule
+
 
 private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 /**
@@ -35,7 +42,7 @@ private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
  */
 class HomeRevampDynamicChannelComponentAnalyticsTest {
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
@@ -50,6 +57,12 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun resetAll() {
         disableCoachMark(context)
         gtmLogDBSource.deleteAll().subscribe()
+        intending(isInternal()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
     }
 
     @Test
@@ -230,7 +243,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         initTest()
 
         doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+            //close salam widget
             clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
+            //close digital widget
             clickCloseOnReminderWidget(viewHolder, i, homeRecycleView)
         }
 
@@ -246,7 +261,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         initTest()
 
         doActivityTest(ReminderWidgetViewHolder::class) { viewHolder: RecyclerView.ViewHolder, i: Int, homeRecycleView: RecyclerView ->
+            //click salam widget
             clickOnReminderWidget(viewHolder, i, homeRecycleView)
+            //click digital widget
             clickOnReminderWidget(viewHolder, i, homeRecycleView)
         }
 

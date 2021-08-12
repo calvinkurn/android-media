@@ -118,7 +118,7 @@ fun createLoadingState(): HomeLayoutListUiModel {
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
     mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
-            result = mutableList,
+            items = mutableList,
             state = TokoNowLayoutState.LOADING,
             isInitialLoad = true
     )
