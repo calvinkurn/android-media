@@ -814,7 +814,7 @@ abstract class BaseSearchCategoryFragment:
                 userId = userSession.userId,
                 eventLabel = getEventLabel(isOOC),
                 eventAction = getImpressionEventAction(isOOC),
-                listValue = getListValue(isOOC, recomItem)
+                listValue = getListValue(isOOC, recomItem),
             )
         )
     }
@@ -837,7 +837,7 @@ abstract class BaseSearchCategoryFragment:
                 userId = userSession.userId,
                 eventLabel = getEventLabel(isOOC),
                 eventAction = getClickEventAction(isOOC),
-                listValue = getListValue(isOOC, recomItem)
+                listValue = getListValue(isOOC, recomItem),
             )
         )
         RouteManager.route(
@@ -886,7 +886,9 @@ abstract class BaseSearchCategoryFragment:
                 headerTitle = "",
                 quantity = quantity,
                 cartId = cartId,
-                eventAction = getAtcEventAction(false)
+                eventAction = getAtcEventAction(false),
+                eventCategory = getEventCategory(false),
+                listValue = getListValue(false, recommendationItem),
             )
         )
     }

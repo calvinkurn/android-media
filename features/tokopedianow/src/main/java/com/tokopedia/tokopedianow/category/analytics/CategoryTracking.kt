@@ -103,6 +103,7 @@ object CategoryTracking {
         const val PRODUCT_ID = "productId"
         const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - %s"
         const val RECOM_LIST_PAGE = "clp_product"
+        const val RECOM_LIST_PAGE_NON_OOC = "/$RECOM_LIST_PAGE - tokonow - rekomendasi untuk anda"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
