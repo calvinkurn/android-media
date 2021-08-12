@@ -30,7 +30,9 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_S
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
@@ -304,7 +306,7 @@ class TokoNowSearchFragment:
     }
 
     override fun getEventCategory(isOOC: Boolean): String {
-        return TOKONOW_EMPTY_RESULT
+        return if (isOOC) TOKONOW_EMPTY_RESULT_PAGE else TOKONOW_EMPTY_RESULT
     }
 
     override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
@@ -316,9 +318,9 @@ class TokoNowSearchFragment:
                 if (recommendationItem.isTopAds) VALUE_TOPADS else ""
             )
         } else {
-            ProductRecommendationTracking.buildTokonowRecommendationList(
-                pageList = RECOM_LIST_PAGE,
-                pageRecommendationType = recommendationItem.recommendationType
+            String.format(
+                RECOM_LIST_PAGE_EMPTY_SEARCH,
+                recommendationItem.recommendationType
             )
         }
     }

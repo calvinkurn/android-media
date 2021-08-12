@@ -90,8 +90,8 @@ object CategoryTracking {
             "click product on tokonow clp product recommendation"
         const val CLICK_ATC_CLP_PRODUCT_TOKONOW =
             "click add to cart on tokonow clp product recommendation"
-        const val IMPRESSION_CLP_RECOM_OOC = "view product on recom widget on tokonow clp while the address is out of coverage (OOC)"
-        const val CLICK_CLP_RECOM_OOC = "click product on recom widget on tokonow clp while the address is out of coverage (OOC)"
+        const val IMPRESSION_CLP_RECOM_OOC = "view product on recom widget-tokonow-clp while the address is out of coverage (OOC)"
+        const val CLICK_CLP_RECOM_OOC = "click product on recom widget-tokonow-clp while the address is out of coverage (OOC)"
     }
 
     object Category {

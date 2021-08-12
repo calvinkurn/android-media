@@ -97,6 +97,8 @@ object SearchTracking {
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
         const val TOKONOW_EMPTY_RESULT =
             "tokonow empty search result"
+        const val TOKONOW_EMPTY_RESULT_PAGE =
+            "tokonow empty search result page"
     }
 
     object Misc {
@@ -104,6 +106,8 @@ object SearchTracking {
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
         const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
         const val RECOM_LIST_PAGE = "searchproduct"
+        const val RECOM_LIST_PAGE_EMPTY_SEARCH =
+            "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
