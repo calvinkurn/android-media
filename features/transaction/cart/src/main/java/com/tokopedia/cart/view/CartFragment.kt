@@ -245,6 +245,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
         const val TOOLBAR_VARIANT_BASIC = RollenceKey.NAVIGATION_VARIANT_OLD
         const val TOOLBAR_VARIANT_NAVIGATION = RollenceKey.NAVIGATION_VARIANT_REVAMP
+        const val HEIGHT_DIFF_CONSTRAINT = 100
+        const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
+        const val PROMO_ANIMATION_DURATION = 500L
+        const val DELAY_CHECK_BOX_GLOBAL = 500L
+        const val ANIMATED_IMAGE_ALPHA = 0.5f
+        const val ANIMATED_IMAGE_FILLED = 1.0f
+        const val COORDINATE_HEIGHT_DIVISOR = 3
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -291,7 +298,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             windowManager?.let {
                 windowManager.defaultDisplay.getMetrics(displayMetrics)
                 val heightDiffInDp = heightDiff.pxToDp(displayMetrics)
-                if (heightDiffInDp > 100) {
+                if (heightDiffInDp > HEIGHT_DIFF_CONSTRAINT) {
                     if (!isKeyboardOpened) {
                         binding?.bottomLayout?.gone()
                         binding?.llPromoCheckout?.gone()
@@ -754,10 +761,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             // Delay after recycler view idle, then show promo button
             delayShowPromoButtonJob?.cancel()
             delayShowPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
-                delay(750L)
+                delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
                 binding?.llPromoCheckout?.animate()
                         ?.y(initialPromoButtonPosition)
-                        ?.setDuration(500L)
+                        ?.setDuration(PROMO_ANIMATION_DURATION)
                         ?.start()
             }
         }
@@ -932,7 +939,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initTopLayout() {
         binding?.topLayout?.checkboxGlobal?.let {
             compositeSubscription.add(
-                    rxCompoundButtonCheckDebounce(it, 500L).subscribe(object : Subscriber<Boolean>() {
+                    rxCompoundButtonCheckDebounce(it, DELAY_CHECK_BOX_GLOBAL).subscribe(object : Subscriber<Boolean>() {
                         override fun onNext(isChecked: Boolean) {
                             handleCheckboxGlobalChangeEvent()
                         }
@@ -1716,16 +1723,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 val size = resources.getDimensionPixelOffset(R.dimen.dp_56)
                 layoutParams.width = size
                 layoutParams.width = size
-                alpha = 0.5f
+                alpha = ANIMATED_IMAGE_ALPHA
             } else {
                 val size = resources.getDimensionPixelOffset(R.dimen.dp_72)
                 layoutParams.width = size
                 layoutParams.width = size
-                alpha = 1.0f
+                alpha = ANIMATED_IMAGE_FILLED
             }
 
             x = xCoordinate.toFloat()
-            y = yCoordinate.toFloat() - (height / 3)
+            y = yCoordinate.toFloat() - (height / COORDINATE_HEIGHT_DIVISOR)
         }
     }
 
@@ -3008,6 +3015,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    @SuppressLint("Recycle")
     private fun animateProductImage(message: String) {
         val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
         var target: Pair<Int, Int>? = null
@@ -3055,7 +3063,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationCancel(animation: Animator) {}
                 override fun onAnimationRepeat(animation: Animator) {}
             })
-            it.start()
         }
     }
 
