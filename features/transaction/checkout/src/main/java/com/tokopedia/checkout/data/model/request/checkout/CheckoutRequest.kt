@@ -3,8 +3,10 @@ package com.tokopedia.checkout.data.model.request.checkout
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import kotlinx.android.parcel.Parcelize
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Parcelize
 data class CheckoutRequest(
@@ -29,18 +31,26 @@ data class CheckoutRequest(
         var leasingId: Int = 0
 ) : Parcelable {
 
-    val isHavingPurchaseProtectionEnabled: Boolean
+    val protectionAnalyticsData: ArrayList<String>
         get() {
+            val pppLabelList = arrayListOf<String>()
             data?.forEach { data ->
                 data.shopProducts?.forEach { shopProduct ->
                     shopProduct.productData?.forEach { productData ->
-                        if (productData.isPurchaseProtection) {
-                            return true
+                        if (productData.isProtectionAvailable) {
+                            if (productData.isPurchaseProtection) {
+                                pppLabelList.add("${productData.protectionTitle} - " +
+                                        "${ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP} - " +
+                                        "${productData.productCategoryId} - ${productData.protectionPricePerProduct} - ${productData.cartId}")
+                            } else
+                                pppLabelList.add("${productData.protectionTitle} - " +
+                                        "${ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP} - " +
+                                        "${productData.productCategoryId} - ${productData.protectionPricePerProduct} - ${productData.cartId}")
                         }
                     }
                 }
             }
-            return false
+            return pppLabelList
         }
 
 }

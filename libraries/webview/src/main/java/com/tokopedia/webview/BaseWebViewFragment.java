@@ -221,7 +221,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
         webView.setInitialScale(1);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);

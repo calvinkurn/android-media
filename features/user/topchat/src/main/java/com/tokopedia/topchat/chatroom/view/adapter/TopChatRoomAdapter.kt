@@ -110,6 +110,18 @@ class TopChatRoomAdapter constructor(
         }
     }
 
+    override fun removeErrorNetwork() {
+        handler.post {
+            super.removeErrorNetwork()
+        }
+    }
+
+    override fun showLoading() {
+        handler.post {
+            super.showLoading()
+        }
+    }
+
     private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
         val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = itemPair.first

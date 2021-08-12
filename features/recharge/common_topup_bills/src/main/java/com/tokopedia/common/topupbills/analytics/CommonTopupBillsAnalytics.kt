@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.*
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.EnhanceEccomerce.Companion.ECOMMERCE
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -119,6 +120,146 @@ class CommonTopupBillsAnalytics {
                         TrackAppUtils.EVENT_ACTION, Action.CLICK_PROCEED_TO_PAYMENT,
                         TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $isPromoUsedValue",
                         ECOMMERCE, clickPaymentEnhanceEccomerce
+                )
+        )
+    }
+
+    fun eventImpressionFavoriteNumberEmptyState(categoryName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_EMPTY_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_LABEL, categoryName,
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventImpressionFavoriteNumberCoachmark(categoryName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_COACHMARK,
+                        TrackAppUtils.EVENT_LABEL, categoryName,
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventClickFavoriteNumberContinue(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_CONTINUE,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventClickFavoriteNumberKebabMenu(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_KEBAB_MENU,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventImpressionEditBottomSheet(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_EDIT_BOTTOM_SHEET,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventClickFavoriteNumberSaveBottomSheet(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_SAVE_BOTTOM_SHEET,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventImpressionFavoriteNumberDeletePopUp(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_DELETION_POP_UP,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventClickFavoriteNumberConfirmDelete(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_CONFIRM_DELETE_POP_UP,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventImpressionFavoriteNumberSuccessDeleteToaster(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_DELETION_SUCCESS_TOASTER,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
+                )
+        )
+    }
+
+    fun eventImpressionFavoriteNumberFailedDeleteToaster(categoryName: String, operatorName: String, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                        TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                        TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_VIEW_DELETION_FAILED_TOASTER,
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                        DigitalTrackingConst.Label.USER_ID, userId
                 )
         )
     }
