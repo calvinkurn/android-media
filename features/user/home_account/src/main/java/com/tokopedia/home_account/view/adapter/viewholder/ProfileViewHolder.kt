@@ -17,15 +17,14 @@ import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
-import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
+import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.home_account_financial.view.*
+import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
 import kotlinx.android.synthetic.main.home_account_member.view.*
 import kotlinx.android.synthetic.main.home_account_profile.view.*
@@ -37,10 +36,10 @@ import kotlinx.android.synthetic.main.home_account_profile.view.*
  */
 
 class ProfileViewHolder(
-        itemView: View,
-        val listener: HomeAccountUserListener,
-        private val financialAdapter: HomeAccountFinancialAdapter?,
-        private val memberAdapter: HomeAccountMemberAdapter?
+    itemView: View,
+    val listener: HomeAccountUserListener,
+    private val balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter?,
+    private val memberAdapter: HomeAccountMemberAdapter?
 ) : BaseViewHolder(itemView) {
 
     fun bind(profile: ProfileDataView) {
@@ -51,13 +50,22 @@ class ProfileViewHolder(
             } else {
                 account_user_item_profile_phone?.hide()
                 account_user_item_profile_name?.run {
-                    account_user_item_profile_name?.setPadding(paddingLeft, 8, paddingRight, paddingBottom)
+                    account_user_item_profile_name?.setPadding(
+                        paddingLeft,
+                        8,
+                        paddingRight,
+                        paddingBottom
+                    )
                 }
             }
 
             if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
                 account_user_item_profile_icon_warning_name?.show()
-                account_user_item_profile_icon_warning_name?.setOnClickListener { listener.onIconWarningClicked(profile) }
+                account_user_item_profile_icon_warning_name?.setOnClickListener {
+                    listener.onIconWarningClicked(
+                        profile
+                    )
+                }
             } else account_user_item_profile_icon_warning_name?.hide()
 
             if (profile.phone != profile.email) {
@@ -69,20 +77,20 @@ class ProfileViewHolder(
             loadImage(account_user_item_profile_avatar, profile.avatar)
 
             setupMemberAdapter(itemView)
-            setupFinancialAdapter(itemView)
+            setupBalanceAndPointAdapter(itemView)
 
             setBackground(context, account_user_item_profile_container)
             listener.onItemViewBinded(adapterPosition, itemView, profile)
-            LetUtil.ifLet(financialAdapter, memberAdapter) { (financialAdapter, memberAdapter) ->
-                if (financialAdapter is HomeAccountFinancialAdapter &&
-                        memberAdapter is HomeAccountMemberAdapter) {
-                    listener.onProfileAdapterReady(financialAdapter, memberAdapter)
-                }
+            memberAdapter?.let { memberAdapter ->
+                listener.onProfileAdapterReady(memberAdapter)
             }
         }
     }
 
-    private fun setBackground(context: Context?, accountUserItemProfileContainer: ConstraintLayout?) {
+    private fun setBackground(
+        context: Context?,
+        accountUserItemProfileContainer: ConstraintLayout?
+    ) {
         val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
         when (mode) {
             Configuration.UI_MODE_NIGHT_YES -> {
@@ -102,32 +110,50 @@ class ProfileViewHolder(
         ImageUtils.loadImageCircleWithPlaceHolder(imageView.context, imageView, imageUrl)
     }
 
-    private fun setupFinancialAdapter(itemView: View) {
-        itemView.home_account_financial_layout_rv?.adapter = financialAdapter
-        itemView.home_account_financial_layout_rv?.layoutManager = SpanningLinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false, minWidth = 180)
+    private fun setupBalanceAndPointAdapter(itemView: View) {
+        itemView.home_account_balance_and_point_rv?.adapter = balanceAndPointAdapter
+        itemView.home_account_balance_and_point_rv?.layoutManager = SpanningLinearLayoutManager(
+            itemView.home_account_balance_and_point_rv?.context,
+            LinearLayoutManager.HORIZONTAL,
+            false,
+            minWidth = 180
+        )
     }
 
     private fun setupMemberAdapter(itemView: View) {
         itemView.home_account_member_layout_member_forward?.setOnClickListener {
             listener.onSettingItemClicked(
-                    CommonDataView(
-                            id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
-                            applink = ApplinkConst.TOKOPOINTS
-                    )
+                CommonDataView(
+                    id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
+                    applink = ApplinkConst.TOKOPOINTS
+                )
             )
         }
 
         itemView.home_account_member_layout_rv?.adapter = memberAdapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
-        val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
-        val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
+        val layoutManager = SpanningLinearLayoutManager(
+            itemView.home_account_member_layout_rv?.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        val verticalDivider =
+            ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
         if (itemView.context?.isDarkMode() == true) {
-            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dms_dark), PorterDuff.Mode.SRC_IN)
+            verticalDivider?.mutate()?.setColorFilter(
+                itemView.resources.getColor(R.color.vertical_divider_dms_dark),
+                PorterDuff.Mode.SRC_IN
+            )
         } else {
-            verticalDivider?.mutate()?.setColorFilter(itemView.resources.getColor(R.color.vertical_divider_dms_light), PorterDuff.Mode.SRC_IN)
+            verticalDivider?.mutate()?.setColorFilter(
+                itemView.resources.getColor(R.color.vertical_divider_dms_light),
+                PorterDuff.Mode.SRC_IN
+            )
         }
-        val dividerItemDecoration = DividerItemDecoration(itemView.home_account_member_layout_rv.context,
-                layoutManager.orientation)
+        val dividerItemDecoration = DividerItemDecoration(
+            itemView.home_account_member_layout_rv.context,
+            layoutManager.orientation
+        )
 
         verticalDivider?.run {
             dividerItemDecoration.setDrawable(this)

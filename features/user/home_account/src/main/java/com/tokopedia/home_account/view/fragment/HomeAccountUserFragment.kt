@@ -60,10 +60,7 @@ import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
-import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
-import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
-import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
-import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
+import com.tokopedia.home_account.view.adapter.*
 import com.tokopedia.home_account.view.custom.HomeAccountEndlessScrollListener
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
@@ -75,6 +72,7 @@ import com.tokopedia.home_account.view.adapter.viewholder.ErrorFinancialViewHold
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
+import com.tokopedia.home_account.view.listener.BalanceAndPointListener
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
@@ -111,7 +109,7 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
+class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener, BalanceAndPointListener {
 
     @Inject
     lateinit var mapper: DataViewMapper
@@ -146,7 +144,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private var isShowScreenRecorder = false
 
     var adapter: HomeAccountUserAdapter? = null
-    var financialAdapter: HomeAccountFinancialAdapter? = null
+    var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
     var memberAdapter: HomeAccountMemberAdapter? = null
     var commonAdapter: HomeAccountUserCommonAdapter? = null
     var isProfileSectionBinded = false
@@ -270,6 +268,17 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
                 is Fail -> {
                     onFailedGetUserPageAssetConfig()
+                }
+            }
+        })
+
+        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
                 }
             }
         })
@@ -508,7 +517,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             coachMark = CoachMark2(this)
         }
 
-        financialAdapter = HomeAccountFinancialAdapter(this)
+        balanceAndPointAdapter = HomeAccountBalanceAndPointAdapter(this)
         memberAdapter = HomeAccountMemberAdapter(this)
 
         adapter = HomeAccountUserAdapter(this, financialAdapter, memberAdapter, userSession)
@@ -572,7 +581,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun onRefresh() {
         showLoading()
         adapter?.clearAllItems()
-        financialAdapter?.list?.clear()
     }
 
     private fun showDialogClearCache() {
@@ -997,8 +1005,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
-    override fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter) {
-        this.financialAdapter = financialAdapter
+    override fun onProfileAdapterReady(memberAdapter: HomeAccountMemberAdapter) {
         this.memberAdapter = memberAdapter
         if (isNeedRefreshProfileItems) {
             getProfileData()
@@ -1329,6 +1336,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter) {
         if (position == 2)
             this.commonAdapter = commonAdapter
+    }
+
+    override fun onClickBalanceAndPoint(type: String) {
+        TODO("Not yet implemented")
     }
 
     companion object {

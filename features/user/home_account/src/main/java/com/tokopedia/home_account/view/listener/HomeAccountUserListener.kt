@@ -21,7 +21,7 @@ interface HomeAccountUserListener {
     fun onMemberItemClicked(applink: String, type: Int)
     fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify)
     fun onItemViewBinded(position: Int, itemView: View, data: Any)
-    fun onProfileAdapterReady(financialAdapter: HomeAccountFinancialAdapter, memberAdapter: HomeAccountMemberAdapter)
+    fun onProfileAdapterReady(memberAdapter: HomeAccountMemberAdapter)
     fun onCommonAdapterReady(position: Int, commonAdapter: HomeAccountUserCommonAdapter)
     fun onIconWarningClicked(profile: ProfileDataView)
 

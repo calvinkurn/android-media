@@ -15,6 +15,9 @@ import com.tokopedia.home_account.databinding.FundsAndInvestmentFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.adapter.HomeAccountFundsAndInvestmentAdapter
+import com.tokopedia.home_account.view.adapter.uimodel.SubtitleUiModel
+import com.tokopedia.home_account.view.adapter.uimodel.TitleUiModel
+import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
@@ -55,8 +58,23 @@ class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun initView() {
+        adapter = HomeAccountFundsAndInvestmentAdapter(this)
         binding?.fundsAndInvestmentRv?.layoutManager = LinearLayoutManager(context)
         binding?.fundsAndInvestmentRv?.adapter = adapter
+        addTitleView()
+        addSubtitleView()
+    }
+
+    private fun addTitleView() {
+        adapter?.addItemAndAnimateChanges(TitleUiModel(getString(R.string.funds_and_investment_balance_and_points)))
+    }
+
+    private fun addSubtitleView() {
+        adapter?.addItemAndAnimateChanges(SubtitleUiModel(getString(R.string.funds_and_investment_try_another)))
+    }
+
+    private fun addWalletView(walletUiModel: List<WalletUiModel>) {
+        adapter?.addItemsAndAnimateChanges(walletUiModel)
     }
 
     companion object {

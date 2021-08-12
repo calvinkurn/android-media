@@ -105,4 +105,9 @@
     <!-- Funds And Investment  -->
     <string name="funds_and_investment_balance_and_points">Saldo &amp; Points</string>
     <string name="funds_and_investment_try_another">Cobain ini juga, yuk</string>
+
+    <!--  Balance and Point  -->
+    <string name="home_account_balance_and_point_title">Saldo &amp; Points</string>
+    <string name="home_account_balance_and_point_view_more">Lihat Semua</string>
+
 </resources>

@@ -3,6 +3,7 @@ package com.tokopedia.home_account.view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
@@ -19,7 +20,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,8 +37,10 @@ class HomeAccountUserViewModel @Inject constructor(
         private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
         private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
         private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
+        private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
         private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
@@ -84,6 +86,10 @@ class HomeAccountUserViewModel @Inject constructor(
     val tokopointsDrawerList: LiveData<Result<TokopointsDrawerList>>
         get() = _tokopointsDrawerList
 
+    private val _centralizedUserAssetConfig = MutableLiveData<Result<CentralizedUserAssetConfig>>()
+    val centralizedUserAssetConfig: LiveData<Result<CentralizedUserAssetConfig>>
+        get() = _centralizedUserAssetConfig
+
     var internalBuyerData: UserAccountDataModel? = null
 
     fun setSafeMode(isActive: Boolean) {
@@ -121,7 +127,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
-            withContext(dispatcher) {
+            withContext(dispatcher.main) {
                 internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)
                 _buyerAccountData.value = Success(accountModel)
@@ -170,7 +176,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getUserPageAssetConfig() {
         launchCatchError(block = {
             val response = getUserPageAssetConfigUseCase.executeOnBackground()
-            withContext(dispatcher) {
+            withContext(dispatcher.main) {
                 _userPageAssetConfig.value = Success(response.data)
             }
         }, onError = {
@@ -181,7 +187,7 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getTokopoints() {
         launchCatchError(block = {
             val response = getHomeAccountTokopointsUseCase.executeOnBackground()
-            withContext(dispatcher) {
+            withContext(dispatcher.main) {
                 _tokopointsDrawerList.value = Success(response.data)
             }
         }, onError = {
@@ -192,11 +198,23 @@ class HomeAccountUserViewModel @Inject constructor(
     fun getSaldoBalance() {
         launchCatchError(block = {
             val response = getHomeAccountSaldoBalanceUseCase.executeOnBackground()
-            withContext(dispatcher) {
+            withContext(dispatcher.main) {
                 _saldoBalance.value = Success(response.data)
             }
         }, onError = {
             _saldoBalance.postValue(Fail(it))
+        })
+    }
+
+    fun getCentralizedUserAssetConfig() {
+        launchCatchError(block = {
+            val result = getCentralizedUserAssetConfigUseCase(Unit)
+
+            withContext(dispatcher.main) {
+                _centralizedUserAssetConfig.value = Success(result.data)
+            }
+        }, onError = {
+            _centralizedUserAssetConfig.value = Fail(it)
         })
     }
 
