@@ -38,19 +38,22 @@ data class CartShipmentAddressFormData(
         var errorTicker: String = ""
 ) : Parcelable {
 
-    val isAvailablePurchaseProtection: Boolean
+    val getAvailablePurchaseProtection: ArrayList<String>
         get() {
+            val pppList = arrayListOf<String>()
             val addresses = groupAddress
             for (address in addresses) {
                 for (groupShop in address.groupShop) {
                     for (product in groupShop.products) {
-                        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-                            return true
+                        product.purchaseProtectionPlanData.let { ppData ->
+                            if (ppData.isProtectionAvailable) {
+                                pppList.add("${ppData.protectionTitle} - ${ppData.protectionPricePerProduct} - ${product.productCatId}")
+                            }
                         }
                     }
                 }
             }
-            return false
+            return pppList
         }
 
     companion object {

@@ -370,7 +370,8 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                 showProgressBar()
                 moneyInHomeViewModel.getMaxPrice(laku6TradeIn)
             } else {
-                requestPermission()
+                showMessageWithAction(getString(R.string.tradein_requires_permission_for_diagnostic),
+                        getString(com.tokopedia.abstraction.R.string.title_ok)) { requestPermission() }
             }
         }
     }

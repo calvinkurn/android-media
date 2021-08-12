@@ -44,7 +44,7 @@ class AutoCompleteViewModelTest {
 
     @Test
     fun `When autocomplete Given success response Then livedata is changed to success`() {
-        coEvery { repo.getAutoComplete(any()) } returns AutoCompleteResponse()
+        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Success }) }
     }
@@ -52,7 +52,7 @@ class AutoCompleteViewModelTest {
     @Test
     fun `When autocomplete Given error response Then livedata is changed to fail`() {
         val testError = defaultThrowable
-        coEvery { repo.getAutoComplete(any()) } throws testError
+        coEvery { repo.getAutoComplete(any(), any()) } throws testError
         viewModel.getAutoCompleteList("")
         verify { autoCompleteObserver.onChanged(match { it is Fail }) }
     }
