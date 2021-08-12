@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.data.getcancellationreason
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -45,7 +46,15 @@ data class BuyerGetCancellationReasonData(
 
 				@SerializedName("ticker_info")
 				@Expose
-				val tickerInfo: TickerInfo = TickerInfo()) {
+				val tickerInfo: TickerInfo = TickerInfo(),
+
+				@SerializedName("have_product_bundle")
+				@Expose
+				val haveProductBundle: Boolean = false,
+
+				@SerializedName("bundle_detail")
+				@Expose
+				val bundleDetail: BundleDetail? = BundleDetail()) {
 
 			data class TickerInfo (
 					@SerializedName("text")
@@ -91,6 +100,50 @@ data class BuyerGetCancellationReasonData(
 						@Expose
 						val reason: String = ""
 				)
+			}
+
+			data class BundleDetail(
+					@SerializedName("bundle")
+					@Expose
+					val bundleList: List<Bundle> = listOf(),
+
+					@SerializedName("product_bundling_icon")
+					@Expose
+					val bundleIcon: String? = "",
+
+					@SerializedName("non_bundle")
+					@Expose
+					val nonBundleList: List<Bundle.OrderDetail> = listOf()
+			) {
+				data class Bundle(
+						@SerializedName("bundle_name")
+						@Expose
+						val bundleName: String = "",
+
+						@SerializedName("order_detail")
+						@Expose
+						val orderDetailList: List<OrderDetail> = listOf()
+				) {
+					data class OrderDetail(
+
+							@SuppressLint("Invalid Data Type")
+							@SerializedName("product_id")
+							@Expose
+							val productId: Long = 0,
+
+							@SerializedName("product_name")
+							@Expose
+							val productName: String = "",
+
+							@SerializedName("product_price")
+							@Expose
+							val productPrice: Double = 0.0,
+
+							@SerializedName("thumbnail")
+							@Expose
+							val thumbnail: String
+					)
+				}
 			}
 		}
 	}

@@ -49,9 +49,46 @@ class BuyerOrderDetailNavigator(
 
     private fun createProductPayload(it: ProductListUiModel.ProductUiModel): JsonObject {
         return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_ID, it.productId)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_TITLE, it.productName)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_PRICE, it.priceText)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_IMAGE_URL, it.productThumbnailUrl)
+        }
+    }
+
+    private fun createProductBundleListPayload(productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>?): String? {
+        return productBundlingList?.let { list ->
+            GsonSingleton.instance.toJson(JsonArray(list.size).apply {
+                list.forEach {
+                    add(createProductBundlePayload(it))
+                }
+            })
+        }
+    }
+
+    private fun createProductBundlePayload(model: ProductListUiModel.ProductBundlingUiModel): JsonObject {
+        return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_NAME, model.bundleName)
+            add(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ORDER_DETAIL, createProductBundleItemListPayload(model))
+        }
+    }
+
+    private fun createProductBundleItemListPayload(model: ProductListUiModel.ProductBundlingUiModel): JsonArray {
+        return model.bundleItemList.let { list ->
+            JsonArray(list.size).apply {
+                list.forEach {
+                    add(createProductBundleItemPayload(it))
+                }
+            }
+        }
+    }
+
+    private fun createProductBundleItemPayload(model: ProductListUiModel.ProductUiModel): JsonObject {
+        return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_ID, model.productId)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_NAME, model.productName)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_THUMBNAIL, model.productThumbnailUrl)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_PRICE, model.price)
         }
     }
 
@@ -116,10 +153,11 @@ class BuyerOrderDetailNavigator(
     ) {
         if (buyerOrderDetailData is Success) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
-            val payload: Map<String, Any> = mapOf(
+            val payload: Map<String, Any?> = mapOf(
                     BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
                     BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
                     BuyerRequestCancellationIntentParamKey.JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),
+                    BuyerRequestCancellationIntentParamKey.JSON_PRODUCT_BUNDLE to createProductBundleListPayload(buyerOrderDetailData.data.productListUiModel.productBundlingList),
                     BuyerOrderDetailCommonIntentParamKey.ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
                     BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
                     BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,

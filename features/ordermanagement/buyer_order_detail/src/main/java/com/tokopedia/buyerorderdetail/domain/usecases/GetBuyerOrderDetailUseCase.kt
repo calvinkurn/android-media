@@ -101,6 +101,77 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     }
                   }
                 }
+                have_product_bundle
+                bundle_detail {
+                  total_product
+                  product_bundling_icon
+                  bundle {
+                    bundle_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      order_id
+                      order_dtl_id
+                      product_id
+                      product_name
+                      quantity
+                      product_price
+                      subtotal_price
+                      notes
+                      thumbnail
+                      bundle_id
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
+                    }
+                  }
+                  non_bundle {
+                    order_id
+                    product_id
+                    product_name
+                    quantity
+                    product_price
+                    subtotal_price
+                    notes
+                    thumbnail
+                    bundle_id
+                    button {
+                      key
+                      display_name
+                      type
+                      variant
+                      url
+                      popup {
+                        title
+                        body
+                        action_button {
+                          key
+                          display_name
+                          color
+                          type
+                          uri
+                        }
+                      }
+                    }
+                  }
+                }
                 shipment {
                   shipping_name
                   shipping_product_name

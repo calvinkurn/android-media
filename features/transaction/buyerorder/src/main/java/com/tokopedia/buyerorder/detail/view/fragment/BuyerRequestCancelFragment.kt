@@ -19,7 +19,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -38,6 +37,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.BuyerUtils
+import com.tokopedia.buyerorder.common.util.BuyerUtils.toCurrencyFormatted
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
@@ -47,13 +47,16 @@ import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductItemDivider
+import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -64,6 +67,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -94,7 +98,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var statusInfo = ""
     private var listProductsSerializable : Serializable? = null
     private var listProductsJsonString : String? = null
+    private var listProductBundlesJsonString : String? = null
     private var listProduct = emptyList<Items>()
+    private var listBuyerProductBundlingUiModel: List<BuyerProductBundlingUiModel>? = null
+    private var listNormalProductBundlingUiModel: List<BuyerNormalProductUiModel>? = null
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -110,9 +117,16 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private val productListTypeToken by lazy {
         object : TypeToken<List<Items>>() {}.type
     }
+    private val productBundleListTypeToken by lazy {
+        object : TypeToken<List<BuyerProductBundlingUiModel>>() {}.type
+    }
 
     private val buyerCancellationViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
+    }
+
+    private val buyerProductBundlingAdapterFactory by lazy {
+        BuyerProductBundlingAdapterFactory()
     }
 
     companion object {
@@ -124,6 +138,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
                     putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT))
                     putString(BuyerConsts.PARAM_JSON_LIST_PRODUCT, bundle.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT))
+                    putString(BuyerConsts.PARAM_JSON_PRODUCT_BUNDLE, bundle.getString(BuyerConsts.PARAM_JSON_PRODUCT_BUNDLE))
                     putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
                     putString(BuyerConsts.PARAM_URI, bundle.getString(BuyerConsts.PARAM_URI))
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
@@ -148,9 +163,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
             listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT)
             listProductsJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT)
+            listProductBundlesJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_PRODUCT_BUNDLE)
             listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
                 GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
             } ?: emptyList()
+            listBuyerProductBundlingUiModel = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
+                GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<BuyerProductBundlingUiModel>
+            }
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
@@ -179,6 +198,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         getComponent(OrderDetailsComponent::class.java).inject(this)
     }
 
+    @ExperimentalCoroutinesApi
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -197,6 +217,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         label_shop_name?.text = shopName
         label_invoice?.text = invoiceNum
 
+        buyerCancellationViewModel.setHasNonBundleProducts(listProduct.isNotEmpty())
+
         if (listProduct.isNotEmpty()) {
             label_product_name?.text = listProduct.first().title
             label_price?.text = listProduct.first().price
@@ -209,6 +231,24 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             } else {
                 label_see_all_products?.gone()
             }
+        }
+
+        if (listBuyerProductBundlingUiModel != null) {
+            setNormalProductList()
+            label_see_all_products?.run {
+                val totalItems = listNormalProductBundlingUiModel?.count().orZero()
+                if (totalItems > 1) {
+                    text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
+                    setOnClickListener { showProductBundleBottomSheet() }
+                    show()
+                } else {
+                    gone()
+                }
+            }
+        }
+
+        if (listProduct.isEmpty() || listBuyerProductBundlingUiModel == null) {
+            observeBuyerNormalProducts()
         }
 
         when {
@@ -375,6 +415,32 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         val bottomSheet = BottomSheetUnify().apply {
+            setChild(viewBottomSheet)
+            setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
+            showCloseIcon = true
+            setCloseClickListener { dismiss() }
+        }
+
+        fragmentManager?.let { bottomSheet.show(it, getString(R.string.show_bottomsheet)) }
+    }
+
+    private fun showProductBundleBottomSheet() {
+        val buyerProductBundlingAdapter = BuyerProductBundlingBottomSheetAdapter(
+                normalProductItems = listNormalProductBundlingUiModel.orEmpty(),
+                adapterTypeFactory = buyerProductBundlingAdapterFactory
+        )
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null).apply {
+            rv_cancel?.run {
+                context?.let {
+                    layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
+                    adapter = buyerProductBundlingAdapter
+                    addItemDecoration(BuyerBundlingProductItemDivider(it))
+                }
+            }
+        }
+
+        val bottomSheet = BottomSheetUnify().apply {
+            clearContentPadding = true
             setChild(viewBottomSheet)
             setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
             showCloseIcon = true
@@ -578,7 +644,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     GraphqlHelper.loadRawString(resources, R.raw.buyer_request_cancel), it.userId, orderId, "$reasonCode", reasonCancel)
         }
     }
-    
+
     private fun observingRequestCancel() {
         buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -607,6 +673,25 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tf_choose_sub_reason_editable?.setError(it.isError)
             btn_req_cancel?.isEnabled = it.isButtonEnable
         })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeBuyerNormalProducts() {
+        buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.observe(viewLifecycleOwner) { normalProductList ->
+            normalProductList?.let {
+                setNormalProductList(it)
+                label_see_all_products?.run {
+                    val totalItems = listNormalProductBundlingUiModel?.count().orZero()
+                    if (totalItems > 1) {
+                        text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
+                        setOnClickListener { showProductBundleBottomSheet() }
+                        show()
+                    } else {
+                        gone()
+                    }
+                }
+            }
+        }
     }
 
     private fun submitInstantCancel() {
@@ -716,9 +801,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setImageDrawable(R.drawable.ic_terkirim)
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
-                activity?.finish()
+            dialog.dismiss()
+            activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+            activity?.finish()
         }
         dialog?.show()
     }
@@ -756,5 +841,55 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun showKeyboard(context: Context) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    private fun setNormalProductList(normalProductList: List<BuyerNormalProductUiModel> = listOf()) {
+        val productItems = normalProductList + listProduct.mapToNormalProductItems() +
+                listBuyerProductBundlingUiModel?.mapBundlingToNormalProductItems().orEmpty()
+        val filteredProductItems = productItems.filterSameIdAndPrice()
+        listNormalProductBundlingUiModel = filteredProductItems
+    }
+
+    private fun List<Items>.mapToNormalProductItems(): List<BuyerNormalProductUiModel> {
+        return map {
+            BuyerNormalProductUiModel(
+                    productId = it.id.orEmpty(),
+                    productName = it.title.orEmpty(),
+                    productPrice = it.price.orEmpty(),
+                    productThumbnailUrl = it.imageUrl.orEmpty()
+            )
+        }
+    }
+
+    private fun List<BuyerProductBundlingUiModel>.mapBundlingToNormalProductItems(): List<BuyerNormalProductUiModel> {
+        val listResult = mutableListOf<BuyerNormalProductUiModel>()
+        forEach { bundle ->
+            val bundleProducts = bundle.productList.map {
+                BuyerNormalProductUiModel(
+                        productId = it.productId.toString(),
+                        productName = it.productName,
+                        productPrice = it.productPrice.toCurrencyFormatted(),
+                        productThumbnailUrl = it.productThumbnailUrl
+                )
+            }
+            listResult.addAll(bundleProducts)
+        }
+        return listResult
+    }
+
+    /**
+     * Filter product ui model to have unique id + price combination.
+     * This means we can show the same product, only if the price are different
+     *
+     * @return  filtered list
+     */
+    private fun List<BuyerNormalProductUiModel>.filterSameIdAndPrice(): List<BuyerNormalProductUiModel> {
+        return distinctBy { it.productId to it.productPrice }
+    }
+
+    private fun List<BuyerProductBundlingUiModel>.getTotalItems(): Int {
+        var totalItems = 0
+        forEach { totalItems += it.productList.size }
+        return totalItems
     }
 }

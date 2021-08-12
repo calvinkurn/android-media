@@ -10,4 +10,6 @@ object SnapshotConsts {
     const val CREATED_TIME = "#createdTime"
     const val KONDISI_BARU = "1"
     const val KONDISI_BEKAS = "1"
+
+    const val BUNDLING_ICON_URL = "https://images.tokopedia.net/img/android/others/ic_product_bundling.png"
 }
