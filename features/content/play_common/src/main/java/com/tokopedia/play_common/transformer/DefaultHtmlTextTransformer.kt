@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.transformer
 
+import android.text.Spanned
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 
@@ -8,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
  */
 class DefaultHtmlTextTransformer : HtmlTextTransformer {
 
-    override fun transform(input: String): String = MethodChecker.fromHtml(input).toString()
+    override fun transform(input: String): String = transformWithStyle(input).toString()
 
+    override fun transformWithStyle(input: String): Spanned = MethodChecker.fromHtml(input)
 }

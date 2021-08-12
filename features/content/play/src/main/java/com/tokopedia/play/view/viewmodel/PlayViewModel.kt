@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -19,10 +20,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.domain.repository.PlayViewerCartRepository
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
+import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -88,10 +86,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
-        private val interactiveRepo: PlayViewerInteractiveRepository,
-        private val partnerRepo: PlayViewerPartnerRepository,
-        private val likeRepo: PlayViewerLikeRepository,
-        private val cartRepo: PlayViewerCartRepository,
+        private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
@@ -199,7 +194,7 @@ class PlayViewModel @Inject constructor(
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.takeWhile { isActive.get() }
+        get() = _uiEvent.filter { isActive.get() || it is AllowedWhenInactiveEvent }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -212,10 +207,7 @@ class PlayViewModel @Inject constructor(
             return channelStatus?.statusType ?: error("Not Possible")
         }
     val channelType: PlayChannelType
-        get() {
-            val channelInfo = _observableChannelInfo.value
-            return channelInfo?.channelType ?: PlayChannelType.Unknown
-        }
+        get() = _channelDetail.value.channelInfo.channelType
     val videoPlayer: PlayVideoPlayerUiModel
         get() {
             val videoPlayer = _observableVideoMeta.value?.videoPlayer
@@ -247,6 +239,9 @@ class PlayViewModel @Inject constructor(
 
     private var mChannelData: PlayChannelData? = null
 
+    private val channelId: String
+        get() = _channelDetail.value.channelInfo.id
+
     val latestCompleteChannelData: PlayChannelData
         get() {
             val channelData = mChannelData ?: error("Channel Data should not be null")
@@ -266,7 +261,6 @@ class PlayViewModel @Inject constructor(
             val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
 
             return channelData.copy(
-                    channelInfo = _observableChannelInfo.value ?: channelData.channelInfo,
                     partnerInfo = channelData.partnerInfo,
                     likeInfo = _likeInfo.value,
                     channelReportInfo = _channelReport.value,
@@ -435,7 +429,13 @@ class PlayViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            rtnFlow.collect(::onReceivedRealTimeNotification)
+            rtnFlow.filter {
+                this@PlayViewModel.isActive.get() &&
+                        channelType.isLive &&
+                        _status.value.isActive
+            }.collect {
+                onReceivedRealTimeNotification(it)
+            }
         }
     }
 
@@ -618,6 +618,7 @@ class PlayViewModel @Inject constructor(
 
     fun submitAction(action: PlayViewerNewAction) {
         when (action) {
+            SetChannelActiveAction -> handleSetChannelActive()
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
@@ -664,7 +665,7 @@ class PlayViewModel @Inject constructor(
         mChannelData = channelData
         handleChannelDetail(channelData.channelDetail)
         handleStatusInfo(channelData.statusInfo)
-        handleChannelInfo(channelData.channelInfo)
+        handleChannelInfo(channelData.channelDetail.channelInfo)
         handleOnboarding(channelData.videoMetaInfo)
         handleVideoMetaInfo(channelData.videoMetaInfo)
         handlePartnerInfo(channelData.partnerInfo)
@@ -687,11 +688,27 @@ class PlayViewModel @Inject constructor(
         checkLeaderboard(channelData.id)
 
 //        viewModelScope.launch {
-//            delay(3000)
-//            _uiEvent.emit(
-//                    ShowRealTimeNotificationEvent(RealTimeNotificationUiModel("", "eggy & 10 penonton lainnya follow toko ini", "#50BA47"))
-//            )
+//            while(true) {
+//                delay(3000)
+//                rtnFlow.emit(
+//                        RealTimeNotificationUiModel(
+//                                "",
+//                                MethodChecker.fromHtml("eggy & 5 penonton lainnya <b>follow toko<b> ini"),
+//                                "#50BA47"
+//                        )
+//                )
+//            }
 //        }
+//
+//        viewModelScope.launch {
+//            while(true) {
+//                delay(300)
+//                setNewChat(PlayChatUiModel("", "", "aku", "hola hola hola hola hola yeay lah log ini loh wong ini", false))
+//            }
+//        }
+
+//        setNewChat(PlayChatUiModel("", "", "aku", "hola hola hola hola hola yeay lah log ini loh wong ini", false))
+//        setNewChat(PlayChatUiModel("", "", "aku", "hola hola hola hola hola yeay lah log ini loh wong ini", false))
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -899,7 +916,7 @@ class PlayViewModel @Inject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = partnerRepo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                val isFollowing = repo.getIsFollowingPartner(partnerId = partnerInfo.id)
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
             }, onError = {
 
@@ -919,7 +936,7 @@ class PlayViewModel @Inject constructor(
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
                 val deferredIsLiked = async {
-                    likeRepo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
+                    repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
                 }
 
                 try {
@@ -945,7 +962,7 @@ class PlayViewModel @Inject constructor(
     private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
         if (cartInfo.shouldShow) {
             viewModelScope.launchCatchError(block = {
-                val cartItemCount = cartRepo.getItemCountInCart()
+                val cartItemCount = repo.getItemCountInCart()
                 _cartInfo.setValue { copy(itemCount = cartItemCount) }
             }, onError = {
 
@@ -1042,7 +1059,7 @@ class PlayViewModel @Inject constructor(
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = interactiveLeaderboard
         }) {}
     }
@@ -1052,7 +1069,7 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _interactive.value = PlayInteractiveUiState.Loading
 
-            val interactive = interactiveRepo.getCurrentInteractive(channelId)
+            val interactive = repo.getCurrentInteractive(channelId)
             handleInteractiveFromNetwork(interactive)
         }) {
             _interactive.value = PlayInteractiveUiState.Error
@@ -1070,20 +1087,20 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
         if (!isInteractiveAllowed) return
         val interactiveUiState = mapInteractiveToState(interactive)
-        interactiveRepo.setDetail(interactive.id.toString(), interactive)
+        repo.setDetail(interactive.id.toString(), interactive)
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
-            interactiveRepo.setActive(interactive.id.toString())
+            repo.setActive(interactive.id.toString())
         } else {
-            interactiveRepo.setFinished(interactive.id.toString())
+            repo.setFinished(interactive.id.toString())
         }
 
-        _interactive.value = if (interactiveRepo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
+        _interactive.value = if (repo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
 
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
             val channelId = mChannelData?.id ?: return
 
             try {
-                val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
                 _leaderboardInfo.value = interactiveLeaderboard
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
@@ -1220,12 +1237,12 @@ class PlayViewModel @Inject constructor(
      */
     private suspend fun onReceivedInteractiveAction(action: Unit) = withContext(dispatchers.io) {
         try {
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@withContext
-            if (interactiveRepo.hasJoined(activeInteractiveId)) return@withContext
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@withContext
+            if (repo.hasJoined(activeInteractiveId)) return@withContext
 
             val channelId = mChannelData?.id ?: return@withContext
-            val isSuccess = interactiveRepo.postInteractiveTap(channelId, activeInteractiveId)
-            if (isSuccess) interactiveRepo.setJoined(activeInteractiveId)
+            val isSuccess = repo.postInteractiveTap(channelId, activeInteractiveId)
+            if (isSuccess) repo.setJoined(activeInteractiveId)
         } catch (ignored: MessageErrorException) {}
     }
 
@@ -1233,8 +1250,10 @@ class PlayViewModel @Inject constructor(
      * Called when new RTN arrived
      */
     private suspend fun onReceivedRealTimeNotification(rtn: RealTimeNotificationUiModel) {
+        if (rtn.text.isBlank()) return
         _uiEvent.emit(ShowRealTimeNotificationEvent(rtn))
-        delay(2000)
+        delay(_channelDetail.value.rtnConfigInfo.lifespan)
+        _uiEvent.emit(HideRealTimeNotificationEvent)
     }
 
     private fun doFollowUnfollow(shouldForceFollow: Boolean): PartnerFollowAction? {
@@ -1248,7 +1267,7 @@ class PlayViewModel @Inject constructor(
         _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
 
         viewModelScope.launchCatchError(block = {
-            partnerRepo.postFollowStatus(
+            repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
             )
@@ -1257,13 +1276,20 @@ class PlayViewModel @Inject constructor(
         return followAction
     }
 
+    private fun handleSetChannelActive() {
+        viewModelScope.launch {
+            val welcomeFormat = _channelDetail.value.rtnConfigInfo.welcomeNotification
+            rtnFlow.emit(welcomeFormat)
+        }
+    }
+
     /**
      * When pre-start finished, interactive should be played (e.g. TapTap)
      */
     private fun handleInteractivePreStartFinished() {
         viewModelScope.launch {
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launch
-            val interactiveDetail = interactiveRepo.getDetail(activeInteractiveId) ?: return@launch
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launch
+            val interactiveDetail = repo.getDetail(activeInteractiveId) ?: return@launch
             if (!interactiveDetail.timeStatus.isScheduled()) return@launch
 
             _interactive.value = PlayInteractiveUiState.Ongoing(
@@ -1274,7 +1300,7 @@ class PlayViewModel @Inject constructor(
 
     private fun handleInteractiveOngoingFinished() {
         fun setInteractiveToFinished(interactiveId: String) {
-            interactiveRepo.setFinished(interactiveId)
+            repo.setFinished(interactiveId)
 
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_initial_text,
@@ -1296,7 +1322,7 @@ class PlayViewModel @Inject constructor(
             )
 
             val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
-            val deferredInteractiveLeaderboard = async { interactiveRepo.getInteractiveLeaderboard(channelId) }
+            val deferredInteractiveLeaderboard = async { repo.getInteractiveLeaderboard(channelId) }
 
             deferredDelay.await()
             val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
@@ -1321,9 +1347,8 @@ class PlayViewModel @Inject constructor(
         }
 
         viewModelScope.launchCatchError(block = {
-            val channelId = mChannelData?.id ?: return@launchCatchError
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
-            val isUserJoined = interactiveRepo.hasJoined(activeInteractiveId)
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+            val isUserJoined = repo.hasJoined(activeInteractiveId)
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
@@ -1339,8 +1364,7 @@ class PlayViewModel @Inject constructor(
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
 
-        val channelData = mChannelData ?: return
-        playAnalytic.clickWinnerBadge(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        playAnalytic.clickWinnerBadge(channelId = channelId, channelType = channelType)
     }
 
     private fun handleTapTapAction() {
@@ -1348,8 +1372,7 @@ class PlayViewModel @Inject constructor(
             interactiveFlow.emit(Unit)
         }
 
-        val channelData = mChannelData ?: return
-        playAnalytic.clickTapTap(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
+        playAnalytic.clickTapTap(channelId = channelId, channelType = channelType)
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -1362,9 +1385,8 @@ class PlayViewModel @Inject constructor(
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
         val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
-        val channelData = mChannelData ?: return@needLogin
-        val shopId = channelData.partnerInfo.id
-        playAnalytic.clickFollowShop(channelData.id, channelData.channelInfo.channelType, shopId.toString(), action.value)
+        val shopId = _partnerInfo.value.id
+        playAnalytic.clickFollowShop(channelId, channelType, shopId.toString(), action.value)
     }
 
     /**
@@ -1379,18 +1401,16 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        val channelData = mChannelData ?: return@needLogin
-        playAnalytic.clickFollowShopInteractive(channelData.id, channelData.channelInfo.channelType)
+        playAnalytic.clickFollowShopInteractive(channelId, channelType)
     }
 
     private fun handleClickPartnerName() {
         viewModelScope.launch {
-            val channelData = mChannelData ?: return@launch
-            val partnerInfo = channelData.partnerInfo
+            val partnerInfo = _partnerInfo.value
 
             when (partnerInfo.type) {
                 PartnerType.Shop -> {
-                    playAnalytic.clickShop(channelData.id, channelData.channelInfo.channelType, channelData.partnerInfo.id.toString())
+                    playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
                     _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
                 }
                 PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
@@ -1437,7 +1457,7 @@ class PlayViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            likeRepo.postLike(
+            repo.postLike(
                     contentId = likeInfo.contentId.toLongOrZero(),
                     contentType = likeInfo.contentType,
                     likeType = likeInfo.likeType,

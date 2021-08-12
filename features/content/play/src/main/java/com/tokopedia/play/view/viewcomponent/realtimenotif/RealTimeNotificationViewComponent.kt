@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
 import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
@@ -29,7 +30,10 @@ class RealTimeNotificationViewComponent(
         val bgColor = try {
             Color.parseColor(notification.bgColor)
         } catch (e: IllegalArgumentException) {
-            Color.parseColor("#AD009F92")
+            MethodChecker.getColor(
+                    rootView.context,
+                    R.color.play_dms_default_real_time_notif_bg
+            )
         }
         rtnBubbleView.setBackgroundColor(bgColor)
     }

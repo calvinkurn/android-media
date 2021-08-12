@@ -6,6 +6,8 @@ import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 /**
  * Created by jegul on 29/06/21
  */
+interface AllowedWhenInactiveEvent
+
 sealed class PlayViewerNewUiEvent
 
 data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
@@ -24,7 +26,7 @@ data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
  * Real Time Notification
  */
 data class ShowRealTimeNotificationEvent(val notification: RealTimeNotificationUiModel) : PlayViewerNewUiEvent()
-object HideRealTimeNotificationEvent : PlayViewerNewUiEvent()
+object HideRealTimeNotificationEvent : PlayViewerNewUiEvent(), AllowedWhenInactiveEvent
 
 
 //---------------------

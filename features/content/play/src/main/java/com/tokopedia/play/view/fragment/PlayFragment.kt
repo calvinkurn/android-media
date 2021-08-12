@@ -52,14 +52,18 @@ import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -271,6 +275,20 @@ class PlayFragment @Inject constructor(
         return when {
             isHandled -> isHandled
             else -> false
+        }
+    }
+
+    /**
+     * When viewpager is swiped to this fragment
+     */
+    fun setFragmentActive(position: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            /**
+             * Workaround because the first UI load is slower
+             */
+            if (position == 0) delay(500L)
+            viewLifecycleOwner.awaitResume()
+            playViewModel.submitAction(SetChannelActiveAction)
         }
     }
 

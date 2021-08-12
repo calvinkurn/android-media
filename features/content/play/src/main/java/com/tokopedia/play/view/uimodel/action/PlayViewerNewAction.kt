@@ -41,4 +41,9 @@ object ClickShareAction : PlayViewerNewAction()
  */
 object ClickCartAction : PlayViewerNewAction()
 
+/**
+ * Swipe
+ */
+object SetChannelActiveAction : PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

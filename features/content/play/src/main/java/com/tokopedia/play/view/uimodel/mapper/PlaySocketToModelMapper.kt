@@ -25,6 +25,7 @@ class PlaySocketToModelMapper @Inject constructor(
         private val chatMapper: PlayChatUiMapper,
         private val channelStatusMapper: PlayChannelStatusMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+        private val realTimeNotificationMapper: PlayRealTimeNotificationMapper,
 ) {
 
     fun mapTotalLike(input: TotalLike): Pair<Long, String> {
@@ -73,11 +74,7 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapRealTimeNotification(input: RealTimeNotification): RealTimeNotificationUiModel {
-        return RealTimeNotificationUiModel(
-                icon = input.icon,
-                text = input.copy,
-                bgColor = input.backgroundColor,
-        )
+        return realTimeNotificationMapper.mapRealTimeNotification(input)
     }
 
     private fun parseSendMessage(message: String, channelId: String): String {

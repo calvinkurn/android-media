@@ -2,6 +2,7 @@ package com.tokopedia.play.view.custom.realtimenotif
 
 import android.content.Context
 import android.graphics.Color
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.play.R
@@ -47,7 +48,7 @@ class RealTimeNotificationBubbleView : RoundedConstraintLayout {
         imageNotif.setImageUrl(url)
     }
 
-    fun setText(text: String) {
+    fun setText(text: Spanned) {
         tvNotifCopy.text = text
     }
 

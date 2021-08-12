@@ -259,12 +259,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="invisible"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintTop_toTopOf="@id/view_chat_list"
         app:layout_constraintWidth_max="@dimen/play_real_time_notif_width"
         app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
-        android:visibility="invisible"
         />
 
     <include

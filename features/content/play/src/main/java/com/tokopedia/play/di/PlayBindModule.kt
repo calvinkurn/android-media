@@ -4,14 +4,8 @@ import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalyticImpl
-import com.tokopedia.play.data.repository.PlayViewerCartRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerLikeRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerPartnerRepositoryImpl
-import com.tokopedia.play.domain.repository.PlayViewerCartRepository
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
+import com.tokopedia.play.data.repository.*
+import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
 import dagger.Binds
@@ -42,6 +36,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindCartRepository(repo: PlayViewerCartRepositoryImpl): PlayViewerCartRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindRepository(repo: PlayViewerRepositoryImpl): PlayViewerRepository
 
     /**
      * Analytic

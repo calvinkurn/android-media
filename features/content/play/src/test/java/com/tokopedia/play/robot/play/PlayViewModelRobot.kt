@@ -5,9 +5,7 @@ import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ReportSummaries
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
@@ -20,6 +18,7 @@ import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.ClickLikeAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -59,9 +58,7 @@ class PlayViewModelRobot(
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         playChannelWebSocket: PlayChannelWebSocket,
-        interactiveRepo: PlayViewerInteractiveRepository,
-        partnerRepo: PlayViewerPartnerRepository,
-        private val likeRepo: PlayViewerLikeRepository,
+        private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
 ) {
 
@@ -78,7 +75,6 @@ class PlayViewModelRobot(
                 getChannelStatusUseCase,
                 getSocketCredentialUseCase,
                 getReportSummariesUseCase,
-                getCartCountUseCase,
                 getProductTagItemsUseCase,
                 trackProductTagBroadcasterUseCase,
                 trackVisitChannelBroadcasterUseCase,
@@ -90,9 +86,7 @@ class PlayViewModelRobot(
                 playPreference,
                 videoLatencyPerformanceMonitoring,
                 playChannelWebSocket,
-                interactiveRepo,
-                partnerRepo,
-                likeRepo,
+                repo,
                 playAnalytic
         )
     }
@@ -110,7 +104,7 @@ class PlayViewModelRobot(
     }
 
     fun setMockResponseIsLike(response: Boolean) {
-        coEvery { likeRepo.getIsLiked(any(), any()) } returns response
+        coEvery { repo.getIsLiked(any(), any()) } returns response
     }
 
     fun setMockCartCountResponse(response: Int) {
@@ -193,11 +187,11 @@ class PlayViewModelRobot(
     }
 
     fun doLike() {
-        viewModel.changeLikeCount(true)
+        submitAction(ClickLikeAction)
     }
 
     fun doUnlike() {
-        viewModel.changeLikeCount(false)
+        submitAction(ClickLikeAction)
     }
 
     fun isPiPAllowed() = viewModel.isPiPAllowed
@@ -227,9 +221,7 @@ fun givenPlayViewModelRobot(
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
-        interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true),
-        partnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true),
-        likeRepo: PlayViewerLikeRepository = mockk(relaxed = true),
+        repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
@@ -253,9 +245,7 @@ fun givenPlayViewModelRobot(
             playPreference = playPreference,
             videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
             playChannelWebSocket = playChannelWebSocket,
-            interactiveRepo = interactiveRepo,
-            partnerRepo = partnerRepo,
-            likeRepo = likeRepo,
+            repo = repo,
             playAnalytic = playAnalytic
     ).apply(fn)
 }
