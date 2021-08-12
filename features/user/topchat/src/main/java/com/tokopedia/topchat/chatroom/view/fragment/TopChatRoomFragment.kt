@@ -1962,6 +1962,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showToasterError(errorMessage)
     }
 
+    private fun showToasterMsg(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     private fun showToasterConfirmation(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
@@ -2227,6 +2233,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun onAddressDataChanged() {
                 if (changeAddressStack.empty()) return
                 val attachment = changeAddressStack.pop() ?: return
+                val msg = context?.getString(
+                    com.tokopedia.localizationchooseaddress.R.string.toaster_success_chosen_address
+                ) ?: ""
+                showToasterMsg(msg)
                 initUserLocation()
                 sendSrwQuestion(attachment)
             }
