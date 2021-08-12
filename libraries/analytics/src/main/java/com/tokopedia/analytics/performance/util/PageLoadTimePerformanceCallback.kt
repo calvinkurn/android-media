@@ -13,7 +13,8 @@ import timber.log.Timber
 private const val COOKIE_PREPARE_PAGE = 11;
 private const val COOKIE_NETWORK_REQUEST = 22;
 private const val COOKIE_RENDER_PAGE = 33;
-
+private const val TRACING_BUFF_SIZE = 50 * 1024 * 1024;
+private const val TRACING_INTERVAL = 500;
 open class PageLoadTimePerformanceCallback(
         val tagPrepareDuration: String,
         val tagNetworkRequestDuration: String,
@@ -193,7 +194,7 @@ open class PageLoadTimePerformanceCallback(
             for(item in GlobalConfig.DEBUG_TRACE_NAME){
                 if(item.equals(traceName)){
                     Log.i("PLTCallback", "startMethodTracing ==> " +traceName)
-                    Debug.startMethodTracingSampling(traceName , 50 * 1024 * 1024 , 500);
+                    Debug.startMethodTracingSampling(traceName , TRACING_BUFF_SIZE , TRACING_INTERVAL);
                     break
                 }
             }
