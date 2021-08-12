@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
+import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -27,6 +30,7 @@ import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundl
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -62,6 +66,7 @@ class SingleProductBundleFragment(
         observeSingleProductBundleUiModel()
         observeTotalAmountUiModel()
         observeToasterError()
+        observeDialogError()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,11 +115,39 @@ class SingleProductBundleFragment(
     private fun observeToasterError() {
         viewModel.toasterError.observe(viewLifecycleOwner, { errorType ->
             val errorMessage = when (errorType) {
-                SingleProductBundleErrorEnum.ERROR_BUNDLE_NOT_SELECTED -> getString(R.string.single_bundle_error_bundle_not_selected)
-                SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED -> getString(R.string.single_bundle_error_variant_not_selected)
+                SingleProductBundleErrorEnum.ERROR_BUNDLE_NOT_SELECTED ->
+                    getString(R.string.single_bundle_error_bundle_not_selected)
+                SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED ->
+                    getString(R.string.single_bundle_error_variant_not_selected)
+                SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY ->
+                    getString(R.string.single_bundle_error_bundle_is_empty_long)
                 else -> getString(R.string.single_bundle_error_unknown)
             }
-            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(R.string.action_oke)).show()
+        })
+    }
+
+    private fun observeDialogError() {
+        viewModel.dialogError.observe(viewLifecycleOwner, { errorStruct ->
+            val dialog = DialogUnify(requireContext(), HORIZONTAL_ACTION, NO_IMAGE)
+            when (errorStruct.second) {
+                SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY -> {
+                    dialog.setTitle(getString(R.string.single_bundle_error_bundle_is_empty))
+                    dialog.setPrimaryCTAText(getString(R.string.action_select_another_bundle))
+                    dialog.setPrimaryCTAClickListener {
+                        //TODO("Add refresh page function")
+                    }
+                }
+                else -> dialog.setTitle(getString(R.string.single_bundle_error_unknown))
+            }
+            dialog.apply {
+                setDescription(errorStruct.first)
+                setSecondaryCTAText(getString(R.string.action_back))
+                dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                setSecondaryCTAClickListener { dismiss() }
+                show()
+            }
         })
     }
 

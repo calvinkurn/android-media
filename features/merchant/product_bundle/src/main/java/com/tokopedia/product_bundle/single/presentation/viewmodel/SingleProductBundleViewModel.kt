@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product_bundle.common.data.model.response.*
@@ -32,9 +31,9 @@ class SingleProductBundleViewModel @Inject constructor(
     val toasterError: LiveData<SingleProductBundleErrorEnum>
         get() = mToasterError
 
-    private val mPageError = MutableLiveData<SingleProductBundleErrorEnum>()
-    val pageError: LiveData<SingleProductBundleErrorEnum>
-        get() = mPageError
+    private val mDialogError = MutableLiveData<Pair<String, SingleProductBundleErrorEnum>>()
+    val dialogError: LiveData<Pair<String, SingleProductBundleErrorEnum>>
+        get() = mDialogError
 
     fun setBundleInfo(context: Context, bundleInfo: BundleInfo) {
         mSingleProductBundleUiModel.value = BundleInfoToSingleProductBundleMapper
@@ -80,6 +79,9 @@ class SingleProductBundleViewModel @Inject constructor(
             it.isSelected
         }
 
+        val remoteErrorMessage = "ouch" // TODO("TODO implemet api call")
+        val hasAnotherBundle = selectedData.size > 1 // TODO("Define as const")
+
         when {
             selectedProductId == null -> {
                 // data not selected
@@ -88,6 +90,17 @@ class SingleProductBundleViewModel @Inject constructor(
             selectedProductId.productId.isEmpty() -> {
                 // variant not selected
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
+            }
+            remoteErrorMessage.isNotEmpty() -> {
+                // displaying server error
+                if (hasAnotherBundle) {
+                    mDialogError.value = Pair(
+                        remoteErrorMessage,
+                        SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+                    )
+                } else {
+                    mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_IS_EMPTY
+                }
             }
             else -> {
                 Log.e("checkout", selectedProductId.toString())
