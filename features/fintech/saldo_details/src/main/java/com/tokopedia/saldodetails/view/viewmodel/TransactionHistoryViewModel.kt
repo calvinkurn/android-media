@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.di.DispatcherModule
-import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.domain.model.SalesTransactionListResponse
 import com.tokopedia.saldodetails.domain.usecase.GetAllTypeTransactionUseCase
 import com.tokopedia.saldodetails.domain.usecase.GetSalesTransactionListUseCase
 import com.tokopedia.saldodetails.domain.usecase.GetTypeTransactionsUseCase
-import com.tokopedia.saldodetails.response.model.DepositHistoryList
 import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse
 import com.tokopedia.saldodetails.response.model.GqlCompleteTransactionResponse
 import com.tokopedia.saldodetails.view.fragment.new.*
@@ -269,6 +268,29 @@ class TransactionHistoryViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         cancelTransactionLoading()
+    }
+
+    fun getEventLabelForTab(tabTitle: String): String {
+        return when (tabTitle) {
+            TransactionTitle.SALDO_REFUND -> SaldoDetailsConstants.Action.SALDO_REFUND_TAB_CLICK
+            TransactionTitle.SALDO_INCOME -> SaldoDetailsConstants.Action.SALDO_PENGHASILAN_TAB_CLICK
+            else -> ""
+        }
+    }
+
+    fun getEventLabelForDetail(detail: String): String {
+        return when (detail) {
+            TransactionTitle.SALDO_REFUND -> SaldoDetailsConstants.Action.SALDO_REFUND_DETAIL_CLICK
+            TransactionTitle.SALDO_INCOME -> SaldoDetailsConstants.Action.SALDO_PENGHASILAN_DETAIL_CLICK
+            TransactionTitle.SALDO_SALES -> SaldoDetailsConstants.Action.SALDO_SALES_DETAIL_CLICK
+            else -> ""
+        }
+    }
+
+    fun getEventLabelForList(transactionType: TransactionType): String {
+        return if (transactionType is SalesTransaction)
+            SaldoDetailsConstants.EventLabel.SALDO_FETCH_SALES_LIST
+        else SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_LIST
     }
 
 }

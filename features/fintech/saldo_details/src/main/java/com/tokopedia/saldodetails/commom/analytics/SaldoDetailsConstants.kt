@@ -18,10 +18,17 @@ object SaldoDetailsConstants {
 
     @JvmField
     val cacheDuration = TimeUnit.HOURS.toSeconds(1)
+    val KEY_CURRENT_SITE = "currentSite"
+    val VALUE_CURRENT_SITE = "tokopediamarketplace"
+    val KEY_BUSINESS_UNIT = "businessUnit"
+    val VALUE_BUSINESS_UNIT = "Payment"
+    val KEY_USER_ID = "userId"
 
     internal interface Event {
         companion object {
             val EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite"
+            val EVENT_CLICK_SALDO = "clickSaldo"
+            val EVENT_SALDO_IMPRESSION = "viewSaldoIris"
         }
     }
 
@@ -29,6 +36,7 @@ object SaldoDetailsConstants {
         companion object {
             val SALDO_MAIN_SCREEN = "fin - android main screen"
             val FIN_SALDO_PAGE = "fin - saldo page"
+            val SALDO_PAGE = "saldo page"
         }
     }
 
@@ -38,12 +46,25 @@ object SaldoDetailsConstants {
             val SALDO_MODAL_TOKO_IMP = "saldo - modaltoko impression"
             val SALDO_MODAL_TOKO_CLICK = "saldo - modaltoko click"
             val SALDO_MODAL_TOKO_ACTION_CLICK = "saldo - modaltoko %s click"
+            val SALDO_PENGHASILAN_TAB_CLICK = "click saldo penghasilan tab"
+            val SALDO_REFUND_TAB_CLICK = "click saldo refund tab"
+            val SALDO_PENGHASILAN_DETAIL_CLICK = "click detail penarikan saldo penghasilan"
+            val SALDO_REFUND_DETAIL_CLICK = "click detail penarikan saldo refund"
+            val SALDO_SALES_DETAIL_CLICK = "click detail hasil penjualan"
+            val SALDO_INVOICE_NUMBER_CLICK = "click invoice number"
+            val SALDO_INVOICE_DETAIL_CLICK = "click detail hasil pesanan"
+            val SALDO_API_FAILED = "API failed"
         }
     }
 
     interface EventLabel {
         companion object {
             val SALDO_PAGE = "saldo page"
+            val SALDO_FETCH_SALES_DETAIL = "fetch sales detail"
+            val SALDO_FETCH_SALES_LIST = "fetch sales list"
+            val SALDO_FETCH_WITHDRAWAL_DETAIL = "fetch withdrawal detail"
+            val SALDO_FETCH_WITHDRAWAL_LIST = "fetch withdrawal list"
+            val SALDO_FETCH_BALANCE = "fetch info saldo balance"
         }
     }
 

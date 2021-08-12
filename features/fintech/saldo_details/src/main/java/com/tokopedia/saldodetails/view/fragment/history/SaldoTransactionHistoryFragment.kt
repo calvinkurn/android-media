@@ -15,8 +15,10 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.utils.SaldoRollence
@@ -41,6 +43,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var analytics: SaldoDetailsAnalytics
 
     private val transactionHistoryViewModel: TransactionHistoryViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -145,6 +150,11 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     private fun initListeners() {
         cardUnifyDateContainer.setOnClickListener {
             openCalender()
+        }
+        saldoTransactionTabsUnify.tabLayout.onTabSelected {
+            transactionHistoryViewModel.getEventLabelForTab(it.getCustomText()).also { actionLabel ->
+                analytics.sendTransactionHistoryEvents(actionLabel)
+            }
         }
     }
 

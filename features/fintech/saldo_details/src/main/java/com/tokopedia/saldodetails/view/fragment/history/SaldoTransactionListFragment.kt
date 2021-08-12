@@ -13,6 +13,7 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoTransactionAdapter
 import com.tokopedia.saldodetails.adapter.listener.DataEndLessScrollListener
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.domain.model.SalesTransactionDetail
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
@@ -30,6 +31,9 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
     private val transactionHistoryViewModel: TransactionHistoryViewModel? by lazy(
         LazyThreadSafetyMode.NONE
@@ -104,9 +108,15 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         ) {
             when (it) {
                 is InitialLoadingError -> {
+                    saldoDetailsAnalytics.sendApiFailureEvents(
+                        transactionHistoryViewModel?.getEventLabelForList(transactionType) ?: ""
+                    )
                     adapter.showInitialLoadingFailed(it.throwable)
                 }
                 is LoadMoreError -> {
+                    saldoDetailsAnalytics.sendApiFailureEvents(
+                        transactionHistoryViewModel?.getEventLabelForList(transactionType) ?: ""
+                    )
                     showLoadMoreRetryToast()
                 }
                 LoadingMoreState -> adapter.showLoadingInAdapter()
@@ -145,6 +155,8 @@ class SaldoTransactionListFragment : BaseDaggerFragment() {
         )
 
     private fun openDetailPage(visitable: Visitable<*>) {
+        saldoDetailsAnalytics.sendTransactionHistoryEvents(
+            transactionHistoryViewModel?.getEventLabelForDetail(transactionType.title) ?: "")
         if (visitable is DepositHistoryList) {
             context?.let {
                 startActivity(

@@ -12,12 +12,13 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.adapter.SaldoWithdrawalStatusAdapter
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.WITHDRAWAL_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoData
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.view.viewmodel.WithdrawalDetailViewModel
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -30,6 +31,9 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
     private val viewModel: WithdrawalDetailViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         activity?.let {
@@ -81,6 +85,7 @@ class SaldoWithdrawalDetailFragment : BaseDaggerFragment() {
 
     private fun onErrorLoading(throwable: Throwable) {
         withdrawalProgress.gone()
+        saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_WITHDRAWAL_DETAIL)
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)

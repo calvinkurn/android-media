@@ -17,6 +17,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment
@@ -152,6 +153,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     override fun getTagFragment() = TAG
+    override fun getScreenName() = SaldoDetailsConstants.EventLabel.SALDO_PAGE
 
     companion object {
         private const val KEY_ROLLENCE_AUTO_WITHDRAWAL = "Auto_Withdrawal_RP"

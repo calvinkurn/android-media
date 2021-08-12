@@ -15,14 +15,18 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.DepositHistoryData
+import com.tokopedia.saldodetails.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.view.viewmodel.DepositHistoryInvoiceDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.saldo_fragment_sales_detail.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -32,6 +36,9 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
 
     private val viewModel: DepositHistoryInvoiceDetailViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         activity?.let {
@@ -83,16 +90,22 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSalesDetailLoaded(data: DepositHistoryData) {
+        val transDateStr = DateUtil.formatDate(
+            SaldoDateUtil.DATE_PATTERN_FROM_SERVER,
+            SaldoDateUtil.DATE_PATTERN_FOR_UI,
+            data.createdTime,
+        )
         dataGroup.visible()
         salesProgress.gone()
         tvWithdrawalAmount.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.totalAmount, false)
         tvInvoiceNumber.text = data.invoiceNumber
-        tvWithdrawalDate.text = data.createdTime
+        tvWithdrawalDate.text = context?.resources?.getString(R.string.sp_date_time_view, transDateStr) ?: ""
         llWithdrawalDetail.setData(data.depositDetail, context?.getString(R.string.saldo_sales_info_details))
     }
 
     private fun onError(throwable: Throwable) {
+        saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_SALES_DETAIL)
         salesProgress.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
@@ -112,12 +125,14 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     }
 
     private fun openOrderDetailPage() {
+        saldoDetailsAnalytics.sendTransactionHistoryEvents(SaldoDetailsConstants.Action.SALDO_INVOICE_DETAIL_CLICK)
         val orderUrl = viewModel?.getOrderDetailUrl()
         if (orderUrl?.isEmpty() == false)
             RouteManager.route(context, orderUrl)
     }
 
     private fun openInvoiceDetailPage() {
+        saldoDetailsAnalytics.sendTransactionHistoryEvents(SaldoDetailsConstants.Action.SALDO_INVOICE_NUMBER_CLICK)
        val invoiceUrl = viewModel?.getInvoiceDetailUrl()
         if (invoiceUrl?.isNotEmpty() == true)
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, invoiceUrl)
