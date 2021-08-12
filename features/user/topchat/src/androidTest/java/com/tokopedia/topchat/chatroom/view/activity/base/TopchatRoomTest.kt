@@ -484,6 +484,9 @@ abstract class TopchatRoomTest {
         ).check(matches(visibilityMatcher))
     }
 
+    /**
+     * assert unify snackbar/toaster
+     */
     protected fun assertSnackbarText(msg: String) {
         onView(withText(msg)).check(matches(isDisplayed()))
     }

@@ -5,6 +5,7 @@ import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.isSender
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
+import com.tokopedia.topchat.test.R
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -111,4 +112,18 @@ class SRWChangeAddressTest : TopchatRoomTest() {
         assertDividerHeaderContainer(0, not(isDisplayed()))
     }
 
+    @Test
+    fun should_show_success_toaster_when_success_change_address() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
+        TopChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
+        launchChatRoomActivity()
+        val expectedMsg = context.getString(R.string.toaster_success_chosen_address)
+
+        // When
+        clickCtaHeaderMsgAtBubblePosition(0)
+
+        // Then
+        assertSnackbarText(expectedMsg)
+    }
 }
