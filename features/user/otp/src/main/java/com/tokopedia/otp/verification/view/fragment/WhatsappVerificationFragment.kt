@@ -35,14 +35,30 @@ open class WhatsappVerificationFragment : VerificationFragment() {
 
     override fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
         if (otpRequestData.errorCode == WA_NOT_REGISTERED_ERROR_CODE &&
-                modeListData.modeText == OtpConstant.OtpMode.WA &&
-                otpRequestData.messageTitle.isNotEmpty() &&
-                otpRequestData.messageSubTitle.isNotEmpty() &&
-                otpRequestData.messageImgLink.isNotEmpty()) {
+            modeListData.modeText == OtpConstant.OtpMode.WA &&
+            otpRequestData.messageTitle.isNotEmpty() &&
+            otpRequestData.messageSubTitle.isNotEmpty() &&
+            otpRequestData.messageImgLink.isNotEmpty()
+        ) {
+            if (!isFirstSendOtp) {
+                if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
+                    analytics.trackFailedClickResendRegisterPhoneOtpButton(otpRequestData.errorMessage)
+                }
+                analytics.trackResendOtp(otpData, modeListData, false, otpRequestData.errorMessage)
+            } else {
+                analytics.trackGenerateOtp(
+                    otpData,
+                    modeListData,
+                    false,
+                    otpRequestData.errorMessage
+                )
+            }
+            isFirstSendOtp = false
+
             (activity as VerificationActivity).goToWhatsappNotRegistered(
-                    otpRequestData.messageTitle,
-                    otpRequestData.messageSubTitle,
-                    otpRequestData.messageImgLink
+                otpRequestData.messageTitle,
+                otpRequestData.messageSubTitle,
+                otpRequestData.messageImgLink
             )
         } else {
             super.onSuccessSendOtp(otpRequestData)

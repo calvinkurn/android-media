@@ -84,7 +84,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private lateinit var countDownTimer: CountDownTimer
 
     private var isRunningCountDown = false
-    private var isFirstSendOtp = true
+    internal var isFirstSendOtp = true
     protected var isMoreThanOneMethod = true
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
