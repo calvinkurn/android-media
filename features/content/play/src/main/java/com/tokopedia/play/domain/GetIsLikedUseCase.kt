@@ -46,7 +46,7 @@ class GetIsLikeUseCase @Inject constructor(
 
         const val query = """
            query GetIsLiked(${'$'}contentID: Int, ${'$'}contentType: Int) {
-                feedGetIsLikePost(contentID: $${'$'}contentID, contentType: ${'$'}contentType) {
+                feedGetIsLikePost(contentID: ${'$'}contentID, contentType: ${'$'}contentType) {
                     error
                     data {
                         isLike
