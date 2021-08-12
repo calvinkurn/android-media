@@ -154,11 +154,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListSimplifiedUseCase.execute(
                 onSuccess = {
                     _miniCartABTestData.value = MiniCartABTestData(
-                            // Todo : remove hardcode
-                            isOCCFlow = true,
-                            buttonBuyWording = "Beli Langsung"
-//                            isOCCFlow = it.miniCartWidgetData.isOCCFlow,
-//                            buttonBuyWording = it.miniCartWidgetData.buttonBuyWording
+                            isOCCFlow = it.miniCartWidgetData.isOCCFlow,
+                            buttonBuyWording = it.miniCartWidgetData.buttonBuyWording
                     )
                     _miniCartSimplifiedData.value = it
                 },
@@ -177,11 +174,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListUseCase.execute(
                 onSuccess = {
                     _miniCartABTestData.value = MiniCartABTestData(
-                            // Todo : remove hardcode
-                            isOCCFlow = true,
-                            buttonBuyWording = "Beli Langsung",
-//                            isOCCFlow = it.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC,
-//                            buttonBuyWording = it.data.beliButtonConfig.buttonWording
+                            isOCCFlow = it.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC,
+                            buttonBuyWording = it.data.beliButtonConfig.buttonWording
                     )
                     onSuccessGetCartList(it, isFirstLoad)
                 },
