@@ -175,6 +175,7 @@
     <!--Search Page-->
     <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
     <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
+    <string name="txt_message_ana_negative">Tidak ketemu? Isi alamat secara manual</string>
     <string name="txt_location_not_detected">Lokasi tidak terdeteksi</string>
     <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
 
