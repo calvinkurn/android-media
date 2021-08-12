@@ -22,6 +22,7 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
         private const val DIVIDE_TWO = 2
         private const val PLUS_CENTER_Y = 10
         private const val MINUS_CENTER_X = 20F
+        private const val DENSITY_PIXEL_16 = 16
     }
 
     init {
@@ -36,7 +37,7 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
     override fun draw(canvas: Canvas) {
         if (!willDraw) return
 
-        val dp16 = context.dpToPx(16)
+        val dp16 = context.dpToPx(DENSITY_PIXEL_16)
         val width: Float = dp16
         val height: Float = dp16
 
