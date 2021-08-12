@@ -646,13 +646,17 @@ class OfficialHomeFragment :
     }
 
     override fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String) {
-        RouteManager.route(requireContext(), applink)
+        goToApplink(applink)
     }
 
     override fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int) {
     }
 
     override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
+        goToApplink(applink)
+    }
+
+    override fun goToApplink(applink: String) {
         RouteManager.route(requireContext(), applink)
     }
 

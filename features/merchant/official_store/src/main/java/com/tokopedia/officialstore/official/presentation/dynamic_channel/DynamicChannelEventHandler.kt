@@ -54,6 +54,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String)
     fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int)
     fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String)
+    fun goToApplink(applink: String)
 
     fun getOSCategory(): Category?
     fun isLogin(): Boolean
