@@ -174,7 +174,37 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    override fun onProductInfoClicked(reviewId: String, shopId: String, productId: String) {
+    override fun onThreeDotsProductInfoClicked(reviewId: String, shopId: String) {
+        ReadReviewTracking.trackOnClickProductInfoThreeDots(reviewId, shopId)
+        activity?.supportFragmentManager?.let {
+            ReviewReportBottomSheet.newInstance(
+                    reviewId,
+                    shopId,
+                    this
+            ).show(it, ReviewReportBottomSheet.TAG)
+        }
+    }
+
+    override fun onProductInfoClicked(
+            reviewId: String,
+            shopName: String,
+            productName: String,
+            position: Int,
+            shopId: String,
+            productId: String
+    ) {
+        ReadReviewTracking.trackOnClickProductInfo(
+                reviewId,
+                shopName,
+                productName,
+                position,
+                "",
+                shopId,
+                productId,
+                viewModel.userId,
+                trackingQueue
+
+        )
         redirectToPDP(productId)
     }
 
@@ -222,6 +252,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onShopReviewLikeButtonClicked(reviewId: String, shopId: String, productId: String, likeStatus: Int, index: Int) {
+        if (!viewModel.isLoggedIn) {
+            goToLogin()
+            return
+        }
         ReadReviewTracking.trackOnShopReviewLikeClicked(
                 reviewId,
                 isLiked(likeStatus),
@@ -905,8 +939,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun getSatisfactionRate(): String {
         return if (isProductReview)
             (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate ?: ""
-        else
-            (viewModel.shopRatingAndTopic.value as? Success)?.data?.rating?.satisfactionRate ?: ""
+        else {
+            val satisfactionRateInt = (viewModel.shopRatingAndTopic.value as? Success)?.data?.rating?.satisfactionRate?.filter {
+                it.isDigit()
+            }.orEmpty()
+            val satisfactionStringFormat = "$satisfactionRateInt% pembeli puas belanja di toko ini"
+            satisfactionStringFormat
+        }
     }
 
     private fun getRatingAndTopics(): ProductrevGetProductRatingAndTopic {

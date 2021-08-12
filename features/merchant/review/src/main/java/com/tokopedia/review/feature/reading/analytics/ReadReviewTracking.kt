@@ -306,4 +306,67 @@ object ReadReviewTracking {
                 shopId
         ))
     }
+
+    fun trackOnClickProductInfo(
+            reviewId: String,
+            shopName: String,
+            productName: String,
+            position: Int,
+            productPrice: String, shopId: String, productId: String, userId: String,
+            trackingQueue: TrackingQueue
+    ) {
+        val eventLabel = String.format(
+                ReadReviewTrackingConstants.EVENT_LABEL_CLICK_PRODUCT_ON_REVIEW_CARD,
+                reviewId
+        )
+        val trackerEventMap = hashMapOf(
+                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PRODUCT_CLICK,
+                ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_PRODUCT_CLICK,
+                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY_SHOP_REVIEW,
+                ReviewTrackingConstant.EVENT_LABEL to eventLabel,
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.PHYSICAL_GOODS,
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+                ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
+                        ReadReviewTrackingConstants.CLICK to mapOf(
+                                ReadReviewTrackingConstants.ACTION_FIELD to mapOf(
+                                        ReadReviewTrackingConstants.LIST to ""
+                                ),
+                                ReadReviewTrackingConstants.PRODUCTS to listOf(
+                                        mapOf(
+                                                ReadReviewTrackingConstants.BRAND to shopName,
+                                                ReadReviewTrackingConstants.CATEGORY to ReadReviewTrackingConstants.NONE,
+                                                ReadReviewTrackingConstants.KEY_ID to productId,
+                                                ReadReviewTrackingConstants.KEY_NAME to productName,
+                                                ReadReviewTrackingConstants.KEY_POSITION to position,
+                                                ReadReviewTrackingConstants.PRICE to productPrice,
+                                                ReadReviewTrackingConstants.VARIANT to ReadReviewTrackingConstants.NONE
+                                        )
+                                )
+                        )
+//                        ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+//                                ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
+//                                        mapOf(
+//                                                ReadReviewTrackingConstants.KEY_ID to "",
+//                                                ReadReviewTrackingConstants.KEY_CREATIVE to "",
+//                                                ReadReviewTrackingConstants.KEY_NAME to "name",
+//                                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
+//                                        )
+//                                )
+//                        )
+                ),
+                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
+                ReadReviewTrackingConstants.KEY_SHOP_ID to shopId,
+                ReadReviewTrackingConstants.KEY_USER_ID to userId
+        )
+        trackingQueue.putEETracking(trackerEventMap)
+    }
+
+    fun trackOnClickProductInfoThreeDots(reviewId: String, shopId: String) {
+        tracker.sendGeneralEvent(getShopReviewTrackEventMap(
+                ReadReviewTrackingConstants.EVENT_CLICK_SHOP_PAGE,
+                ReadReviewTrackingConstants.EVENT_ACTION_CLICK_PRODUCT_INFO_THREE_DOTS,
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_PRODUCT_INFO_THREE_DOTS, reviewId),
+                shopId
+        ))
+    }
 }

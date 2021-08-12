@@ -50,9 +50,18 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         isProductReview = !element.isShopViewHolder
         shopId = element.shopId
         bindViews()
+//        productInfo?.hide()
         with(element.reviewData) {
             if (!isProductReview) {
-                setProductInfo(element.productId, element.productImage, element.productName, isReportable, feedbackID, element.shopId)
+                setProductInfo(
+                        element.productId,
+                        element.productImage,
+                        element.productName,
+                        isReportable,
+                        feedbackID,
+                        element.shopId,
+                        element.shopName
+                )
             }
             itemView.addOnImpressionListener(element.impressHolder) {
                 readReviewItemListener.onItemImpressed(feedbackID, adapterPosition, message.length, imageAttachments.size)
@@ -84,10 +93,27 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         sellerResponse = itemView.findViewById(R.id.read_review_seller_response)
     }
 
-    private fun setProductInfo(productId: String, productImageUrl: String, productName: String, isReportable: Boolean, reviewId: String, shopId: String) {
+    private fun setProductInfo(
+            productId: String,
+            productImageUrl: String,
+            productName: String,
+            isReportable: Boolean,
+            reviewId: String,
+            shopId: String,
+            shopName: String
+    ) {
         productInfo?.apply {
             setProductInfo(productImageUrl, productName)
-            setListener(isReportable, reviewId, shopId, productId, readReviewItemListener)
+            setListener(
+                    isReportable,
+                    reviewId,
+                    shopName,
+                    productName,
+                    adapterPosition,
+                    shopId,
+                    productId,
+                    readReviewItemListener
+            )
             show()
         }
     }

@@ -22,6 +22,7 @@ object ReadReviewTrackingConstants {
 
     const val EVENT_CLICK_PDP = "clickPDP"
     const val EVENT_CLICK_SHOP_PAGE = "clickShopPage"
+    const val EVENT_PRODUCT_CLICK = "productClick"
     const val EVENT_PROMO_VIEW = "promoView"
 
     const val EVENT_ACTION_CLICK_POSITIVE_REVIEW_PERCENTAGE = "click - positive review percentage"
@@ -35,11 +36,15 @@ object ReadReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_REPORT_REVIEW = "click - laporkan ulasan"
     const val EVENT_ACTION_CLICK_CLEAR_FILTER = "click - clear filter on review"
     const val EVENT_ACTION_IMPRESS_ITEM = "impression - review"
+    const val EVENT_ACTION_PRODUCT_CLICK = "click - product link on the review card"
+    const val EVENT_ACTION_CLICK_PRODUCT_INFO_THREE_DOTS = "click - 3 dots beside the product link on the review card"
 
     const val EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE = "positive_review:%s;rating:%d;ulasan:%d;"
     const val EVENT_LABEL_CLICK_FILTER = "filter_name:%s;is_active:%s;"
     const val EVENT_LABEL_CLICK_APPLY_FILTER = "filter_name:%s;filter_value:%s;"
     const val EVENT_LABEL_CLICK_APPLY_SORT = "sort_value:%s;"
+    const val EVENT_LABEL_CLICK_PRODUCT_ON_REVIEW_CARD = "feedback_id: %s"
+    const val EVENT_LABEL_CLICK_PRODUCT_INFO_THREE_DOTS = "feedback_id: %s"
     const val EVENT_LABEL_CLICK_SEE_ALL = "feedback_id:%s;"
     const val EVENT_LABEL_CLICK_LIKE_REVIEW = "feedback_id:%s;is_active:%s;"
     const val EVENT_LABEL_CLICK_SEE_REPLY = "feedback_id:%s;"
@@ -51,4 +56,13 @@ object ReadReviewTrackingConstants {
     const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"
 
     const val EE_NAME = "review_char:%d;count_image:%d;"
+    const val CLICK = "click"
+    const val ACTION_FIELD = "actionField"
+    const val LIST = "list"
+    const val PRODUCTS = "products"
+    const val BRAND = "brand"
+    const val CATEGORY = "category"
+    const val VARIANT = "variant"
+    const val PRICE = "price"
+    const val NONE = "none"
 }
