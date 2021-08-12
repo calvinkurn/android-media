@@ -113,7 +113,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setPreferenceData(shop, profile, shipment, payment)
             }
             is OrderInsuranceCard -> {
-                holder.setupInsurance(shipment)
+                holder.setupInsurance(shipment, profile)
             }
             is OrderPromoCard -> {
                 holder.setupButtonPromo(promo)
