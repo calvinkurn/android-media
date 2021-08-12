@@ -55,7 +55,7 @@ class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProduc
         val iterator = checkedList.iterator()
         while (iterator.hasNext()) {
             val itemViewModel = iterator.next()
-            if (itemViewModel.productId === productId) {
+            if (itemViewModel.productId == productId) {
                 iterator.remove()
                 return
             }

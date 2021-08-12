@@ -11,7 +11,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class NewAttachProductItemUiModel(
     val productUrl: String,
-    val productName: String, val productId: String,
+    val productName: String,
+    val productId: String,
     val productImageFull: String,
     val productImage: String,
     val productPrice: String, val shopName: String)

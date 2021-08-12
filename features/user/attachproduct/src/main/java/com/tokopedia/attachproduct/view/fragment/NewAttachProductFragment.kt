@@ -30,12 +30,10 @@ import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.NewAttachProductAnalytics
 import com.tokopedia.attachproduct.di.NewAttachProductModule
 import com.tokopedia.attachproduct.di.DaggerNewAttachProductComponent
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity.MAX_CHECKED_DEFAULT
 import com.tokopedia.attachproduct.view.activity.NewAttachProductActivity
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapter
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapterTypeFactory
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
-import com.tokopedia.attachproduct.view.subscriber.AttachProductGetProductListSubscriber
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
