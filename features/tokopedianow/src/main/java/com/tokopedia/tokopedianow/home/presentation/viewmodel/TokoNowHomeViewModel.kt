@@ -348,8 +348,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getMiniCartItem(productId: String): MiniCartItem? {
-        return miniCartSimplifiedData?.miniCartItems
-            ?.firstOrNull { it.productId == productId }
+        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        return items.firstOrNull { it.productId == productId }
     }
 
     fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
@@ -590,10 +590,11 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun trackRecentPurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
         val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeRecentPurchaseUiModel }
         val recentPurchase = homeItem?.layout as? HomeRecentPurchaseUiModel
-        val product = recentPurchase?.productList?.firstOrNull { it.productId == productId }
+        val productList = recentPurchase?.productList.orEmpty()
+        val product = productList.firstOrNull { it.productId == productId }
 
         product?.let {
-            val position = recentPurchase.productList.indexOf(it)
+            val position = productList.indexOf(it)
             val data = HomeAddToCartTracker(position, quantity,cartId, it)
             _homeAddToCartTracker.postValue(data)
         }
@@ -602,19 +603,22 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun trackRecentProductRecomAddToCart(productId: String, quantity: Int, cartId: String) {
         val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeProductRecomUiModel }
         val productRecom = homeItem?.layout as? HomeProductRecomUiModel
-        val product = productRecom?.recomWidget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId}
+        val recomWidget = productRecom?.recomWidget
+        val recommendationItemList = recomWidget?.recommendationItemList.orEmpty()
+        val product = recommendationItemList.firstOrNull { it.productId.toString() == productId}
 
         product?.let { item ->
-            val position = productRecom.recomWidget.recommendationItemList.indexOf(item)
+            val position = recommendationItemList.indexOf(item)
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
         }
     }
 
     private fun shouldLoadLayout(item: HomeLayoutItemUiModel): Boolean {
-        return item.state != HomeLayoutItemState.LOADING &&
-                item.state != HomeLayoutItemState.LOADED &&
-                item.layout.isNotStaticLayout()
+        val isLayoutNotStatic = item.layout.isNotStaticLayout()
+        val isLayoutNotLoading = item.state != HomeLayoutItemState.LOADING
+        val isLayoutNotLoaded = item.state != HomeLayoutItemState.LOADED
+        return isLayoutNotLoading && isLayoutNotLoaded && isLayoutNotStatic
     }
 
     private fun setItemStateToLoading(item: HomeLayoutItemUiModel) {
