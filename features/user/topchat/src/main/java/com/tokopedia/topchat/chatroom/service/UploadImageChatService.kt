@@ -186,7 +186,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
                 it.toString().matches("[(<]".toRegex())
             }.takeIf {
                 it > 0
-            }
+            }?: 0
 
         return if (!hasErrorCode.isZero()) {
             throwableMessage
