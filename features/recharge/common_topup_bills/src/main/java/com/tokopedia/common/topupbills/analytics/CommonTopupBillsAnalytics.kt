@@ -1,11 +1,23 @@
 package com.tokopedia.common.topupbills.analytics
 
+import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.INDEX
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEMS
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_BRAND
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_CATEGORY
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_ID
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_LIST
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_NAME
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_VARIANT
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.PRICE
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClick
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClickAddBills
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralViewAddBills
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addListBottomSheet
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.*
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.EnhanceEccomerce.Companion.ECOMMERCE
+import com.tokopedia.common.topupbills.data.RechargeAddBillsProductTrackData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -175,7 +187,19 @@ class CommonTopupBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    //#10 TODO LIST Bottom sheet
+    //#10
+    fun viewBottomSheetAddBills(userId:String, categoryName: String, dropdownName: String,
+                                products: List<RechargeAddBillsProductTrackData>){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click product")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, dropdownName))
+            putString(ITEM_LIST, "")
+            putParcelableArrayList(ITEMS, getProductFromMetaData(products))
+        }
+
+        eventDataLayer.addListBottomSheet(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.SELECT_CONTENT, eventDataLayer)
+    }
 
     //#12
     fun clickTambahTagihanTelcoAddBills(category: String) {
@@ -193,5 +217,40 @@ class CommonTopupBillsAnalytics {
                 TrackAppUtils.EVENT_LABEL, category)
         data.addGeneralViewAddBills()
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#21
+    fun clickOnCloseInquiry(category: String){
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x detail tagihan",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#22
+    fun clickAddInquiry(category: String){
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click tambah tagihan ini",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    private fun getProductFromMetaData(products: List<RechargeAddBillsProductTrackData>): ArrayList<Bundle>{
+        val list = arrayListOf<Bundle>()
+        products.forEach { it ->
+            val itemBundle = Bundle().apply {
+                putString(INDEX, it.index.toString())
+                putString(ITEM_BRAND, it.itemBrand)
+                putString(ITEM_CATEGORY, it.itemCategory)
+                putString(ITEM_ID, it.itemId)
+                putString(ITEM_NAME, it.itemName)
+                putString(ITEM_VARIANT, it.itemVariant)
+                putString(PRICE, it.price.toString())
+            }
+            list.add(itemBundle)
+        }
+        return list
     }
 }

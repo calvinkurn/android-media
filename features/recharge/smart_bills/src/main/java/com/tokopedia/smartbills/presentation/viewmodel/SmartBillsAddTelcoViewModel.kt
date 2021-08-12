@@ -200,6 +200,20 @@ class SmartBillsAddTelcoViewModel @Inject constructor(
         return mutableListRechargeProduct
     }
 
+    fun getProductTracker(productInputs: List<RechargeProduct>, categoryName: String, operatorName: String): List<RechargeAddBillsProductTrackData>{
+        return productInputs.mapIndexed{ index, product ->
+            RechargeAddBillsProductTrackData(
+                    index,
+                    operatorName,
+                    categoryName,
+                    product.id,
+                    product.attributes.desc,
+                    "",
+                    product.attributes.pricePlain.toString()
+            )
+        }
+    }
+
 
     companion object{
         const val PARAM_MENU_ID = "menuID"

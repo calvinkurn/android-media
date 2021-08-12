@@ -29,7 +29,13 @@ class SmartBillsDeleteBottomSheet(private val listener: DeleteProductSBMListener
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun dismiss() {
+        listener.onCloseBottomSheet()
+        super.dismiss()
+    }
+
     interface DeleteProductSBMListener{
         fun onDeleteProductClicked()
+        fun onCloseBottomSheet()
     }
 }

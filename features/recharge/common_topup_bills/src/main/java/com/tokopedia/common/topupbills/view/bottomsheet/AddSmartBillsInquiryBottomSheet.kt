@@ -47,6 +47,11 @@ class AddSmartBillsInquiryBottomSheet (private val getInquiryCallback: AddSmartB
         }
     }
 
+    override fun dismiss() {
+        getInquiryCallback.onInquiryClose()
+        super.dismiss()
+    }
+
     fun addSBMInquiry(sbmInquiryList: List<TopupBillsEnquiryMainInfo>){
         smartBillsInquiryAdapter.listInquiry = sbmInquiryList
     }

@@ -594,6 +594,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
                     showDeleteDialog(bill)
                 }
+
+                override fun onCloseBottomSheet() {
+                    smartBillsAnalytics.viewCloseBottomSheet()
+                }
             })
 
             smartBillsDeleteBottomSheet.show(it, "")

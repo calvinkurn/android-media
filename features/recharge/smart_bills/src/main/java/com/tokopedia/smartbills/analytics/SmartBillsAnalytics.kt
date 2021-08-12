@@ -350,6 +350,15 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    //#23
+    fun viewCloseBottomSheet() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x",
+                TrackAppUtils.EVENT_LABEL, "delete bottom sheet")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     companion object {
 
         const val CATEGORY_SMART_BILLS = "digital - smart bill management"

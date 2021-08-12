@@ -57,6 +57,7 @@ object SmartBillsQueries {
                             id
                             attributes {
                                 price
+                                price_plain
                                 detail
                                 info
                                 product_labels

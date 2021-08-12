@@ -31,7 +31,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
-import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.CategoryTelcoType
 import com.tokopedia.smartbills.data.RechargeCatalogProductInputMultiTabData
 import com.tokopedia.smartbills.data.RechargeProduct
@@ -48,6 +47,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_smart_bills_add_telco.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -59,10 +59,10 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     lateinit var viewModel: SmartBillsAddTelcoViewModel
 
     @Inject
-    lateinit var smartBillsAnalytics: SmartBillsAnalytics
+    lateinit var commonTopUpBillsAnalytic: CommonTopupBillsAnalytics
 
     @Inject
-    lateinit var commonTopUpBillsAnalytic: CommonTopupBillsAnalytics
+    lateinit var userSession: UserSessionInterface
 
     private var templateTelco: String? = null
     private var categoryId: String? = null
@@ -302,7 +302,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                         && !menuId.isNullOrEmpty()
                                 ) {
                                     val position = "1"
-                                    commonTopUpBillsAnalytic.clickDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldInput.text.toString(), position)
+                                    commonTopUpBillsAnalytic.clickDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldWrapper.hint.toString(), position)
                                     SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntOrZero(),
                                             categoryId.orEmpty(), operatorActive.id, getNumber(), object : SmartBillsGetNominalCallback {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
@@ -311,13 +311,18 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                             isDisableButton()
                                         }
 
-                                        override fun onNominalLoaded(isRequesting: Boolean, catalogProductRecharge: RechargeCatalogProductInputMultiTabData) {
+                                        override fun onNominalLoaded(isRequesting: Boolean, catalogProductRecharge: RechargeCatalogProductInputMultiTabData, products: List<RechargeProduct>) {
+                                            commonTopUpBillsAnalytic.viewBottomSheetAddBills(userSession.userId,
+                                                    CategoryTelcoType.getCategoryString(categoryId),
+                                                    textFieldWrapper.hint.toString(),
+                                                    viewModel.getProductTracker(products, operatorActive.attributes.name, CategoryTelcoType.getCategoryString(categoryId))
+                                            )
                                             isRequestNominal = isRequesting
                                             catalogProduct = catalogProductRecharge
                                         }
 
                                         override fun onCloseNominal() {
-                                            commonTopUpBillsAnalytic.clickCloseDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldInput.text.toString())
+                                            commonTopUpBillsAnalytic.clickCloseDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldWrapper.hint.toString())
                                         }
                                     }).show(childFragmentManager)
                                 } else validationNumber()
@@ -411,7 +416,12 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         val attribute = inquiry.enquiry.attributes
         val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
             override fun onInquiryClicked() {
+                commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
                 addBills(attribute.productId.toIntOrZero(), attribute.clientNumber)
+            }
+
+            override fun onInquiryClose() {
+                commonTopUpBillsAnalytic.clickOnCloseInquiry(CategoryTelcoType.getCategoryString(categoryId))
             }
         })
         inquiryBottomSheet.addSBMInquiry(attribute.mainInfoList)

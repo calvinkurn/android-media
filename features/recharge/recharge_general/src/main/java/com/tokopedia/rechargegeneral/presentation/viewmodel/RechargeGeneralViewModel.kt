@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.data.RechargeAddBillsProductTrackData
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.graphql.GraphqlConstant
@@ -17,6 +18,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.AddSmartBills
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
+import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -104,6 +106,21 @@ class RechargeGeneralViewModel @Inject constructor(
 
     fun createAddBillsParam(addBillRequest: RechargeSBMAddBillRequest): Map<String, Any> {
         return mapOf(PARAM_ADD_REQUEST to addBillRequest)
+    }
+
+    fun createProductAddBills(products: List<RechargeGeneralProductSelectData>,
+                              categoryName: String, operatorName: String): List<RechargeAddBillsProductTrackData>{
+        return products.mapIndexed{index, product ->
+            RechargeAddBillsProductTrackData(
+                    index,
+                    operatorName,
+                    categoryName,
+                    product.id,
+                    product.title,
+                    "",
+                    product.price
+            )
+        }
     }
 
     companion object {

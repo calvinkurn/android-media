@@ -593,7 +593,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             dropdownBottomSheet.setCloseClickListener {
                 dropdownBottomSheet.dismiss()
                 if(isAddSBM){
-                    commonTopupBillsAnalytics.clickCloseDropDownListTelcoAddBills(categoryName, field.getInputText())
+                    commonTopupBillsAnalytics.clickCloseDropDownListTelcoAddBills(categoryName, field.getLabel())
                 }
             }
 
@@ -611,6 +611,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             })
             dropdownView.dropdownData = data
             dropdownBottomSheet.setChild(dropdownView)
+            if(isAddSBM){
+                commonTopupBillsAnalytics.viewBottomSheetAddBills(userSession.userId,
+                        categoryName,
+                        field.getLabel(),
+                        viewModel.createProductAddBills(data, categoryName, operatorName)
+                )
+            }
             fragmentManager?.run { dropdownBottomSheet.show(this,"Product select dropdown bottom sheet") }
         }
     }
@@ -876,7 +883,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (productData != null) {
             if(isAddSBM){
                 val addPosition = 1
-                commonTopupBillsAnalytics.clickDropDownListTelcoAddBills(categoryName, field.getInputText(), (position+addPosition).toString())
+                commonTopupBillsAnalytics.clickDropDownListTelcoAddBills(categoryName, field.getLabel(), (position+addPosition).toString())
             }
             showProductSelectDropdown(field, productData, getString(R.string.product_select_label))
         } else if (enquiryData != null) {
@@ -1024,9 +1031,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderBottomSheetAddBillInquiry(data: TopupBillsEnquiry){
         val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
             override fun onInquiryClicked() {
+                commonTopupBillsAnalytics.clickAddInquiry(categoryName)
                 inputData[PARAM_CLIENT_NUMBER]?.let {
                     addBills(productId, it)
                 }
+            }
+
+            override fun onInquiryClose() {
+                commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
             }
         })
         inquiryBottomSheet.addSBMInquiry(data.attributes.mainInfoList)
