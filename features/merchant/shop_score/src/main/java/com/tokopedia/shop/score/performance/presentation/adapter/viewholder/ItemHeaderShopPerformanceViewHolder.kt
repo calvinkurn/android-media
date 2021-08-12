@@ -13,6 +13,7 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
+import java.lang.NumberFormatException
 
 class ItemHeaderShopPerformanceViewHolder(view: View,
                                           private val shopPerformanceListener: ShopPerformanceListener
@@ -45,7 +46,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
-            val shopScore = element?.shopScore?.toInt() ?: SHOP_SCORE_NULL
+            val shopScore = shopScoreFormatted(element?.shopScore)
             if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY || shopScore < 0) {
                 progressBarNewSeller?.show()
                 progressBarScorePerformance?.hide()
@@ -55,6 +56,14 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
                 progressBarScorePerformance?.setValue(shopScore)
                 setupProgressBarScoreColor(shopScore)
             }
+        }
+    }
+
+    private fun shopScoreFormatted(shopScore: String?): Int {
+        return try {
+            shopScore?.toInt() ?: SHOP_SCORE_NULL
+        } catch (e: NumberFormatException) {
+            SHOP_SCORE_NULL
         }
     }
 
