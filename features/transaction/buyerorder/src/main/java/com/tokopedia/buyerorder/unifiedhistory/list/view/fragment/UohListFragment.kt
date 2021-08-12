@@ -315,8 +315,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 val result = data?.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1)
                 if (result == RESULT_CODE_SUCCESS) {
                     if (resultMsg != null) {
+                        uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
                         showToaster(resultMsg, Toaster.TYPE_NORMAL)
-                        initialLoad()
+                        loadOrderHistoryList(orderIdNeedUpdated)
                     }
                 }
             } else {
@@ -1557,6 +1558,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
                 bottomSheetKebabMenu?.dismiss()
                 var helpLinkUrl = ""
+                currIndexNeedUpdate = index
+                orderIdNeedUpdated = orderData.orderUUID
                 orderData.metadata.dotMenus.forEach {
                     if (it.label.equals(LABEL_HELP_LINK)) {
                         helpLinkUrl = it.webURL
