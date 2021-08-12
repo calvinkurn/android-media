@@ -42,7 +42,8 @@ interface TopChatViewState : BaseChatViewState {
     fun showTemplateChatIfReady(
         lastMessageBroadcast: Boolean,
         lastMessageSrwBubble: Boolean,
-        amIBuyer: Boolean
+        amIBuyer: Boolean,
+        separatedTemplateVisible: Boolean
     )
 
     fun attachFragmentView(fragmentView: TopChatContract.View)

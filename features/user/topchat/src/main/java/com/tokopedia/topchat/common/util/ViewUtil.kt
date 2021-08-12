@@ -2,6 +2,7 @@ package com.tokopedia.topchat.common.util
 
 import android.content.Context
 import android.content.res.Resources
+import android.content.res.Resources.getSystem
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -285,5 +286,9 @@ object ViewUtil {
         val rect = Rect()
         window.decorView.getWindowVisibleDisplayFrame(rect)
         return rect.top
+    }
+
+    fun convertToPx(dp: Int): Int {
+        return (dp * getSystem().displayMetrics.density).toInt()
     }
 }

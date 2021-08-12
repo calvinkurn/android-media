@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
 import android.content.Intent
@@ -8,10 +7,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.StringRes
@@ -118,6 +114,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.custom.TopChatKeyboardHandler
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.TopChatSellerReviewHelper
 import com.tokopedia.topchat.common.util.Utils
@@ -206,6 +203,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var sendButtontextWatcher: SendButtonTextWatcher? = null
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
+    var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -263,17 +261,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initObserver() {
-        presenter.srw.observe(viewLifecycleOwner, {
+        presenter.srw.observe(viewLifecycleOwner) {
             rvSrw?.updateStatus(it)
             updateSrwPreviewState()
-        })
-        adapter.srwUiModel.observe(viewLifecycleOwner, {
+        }
+        adapter.srwUiModel.observe(viewLifecycleOwner) {
             if (it == null) {
                 showTemplateChatIfReady()
             } else {
                 getViewState().hideTemplateChat()
             }
-        })
+        }
     }
 
     override fun updateSrwPreviewState() {
@@ -289,7 +287,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun showTemplateChatIfReady() {
         getViewState().showTemplateChatIfReady(
             adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
-            !isSeller()
+            !isSeller(),
+            isSeparatedChatTemplateVisible()
         )
     }
 
@@ -421,6 +420,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         loadInitialData()
         initLoadMoreListener()
         onReplyBoxEmpty()
+        initKeyboardListener(view)
     }
 
     private fun setupBackground() {
@@ -1126,11 +1126,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
-        getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer)
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)
+        showSeparatedChatTemplateIfFlex()
+        getViewState().setTemplate(list, isLastMessageBroadcast, amIBuyer,
+            separatedTemplateVisible = isSeparatedChatTemplateVisible())
     }
 
     override fun onErrorGetTemplate() {
-        getViewState().setTemplate(null)
+        chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+        getViewState().setTemplate(null,
+            separatedTemplateVisible = isSeparatedChatTemplateVisible())
     }
 
     @OptIn(InternalCoroutinesApi::class)
@@ -2195,6 +2200,41 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         sendButton?.setOnClickListener {
             onSendButtonClicked()
         }
+    }
+
+    @OptIn(InternalCoroutinesApi::class)
+    private fun initKeyboardListener(view: View) { TopChatKeyboardHandler(view, object :
+            TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
+            override fun onKeyboardShow() {
+                showSeparatedChatTemplateIfFlex()
+            }
+
+            override fun onKeyboardHide() {
+                chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+            }
+        })
+    }
+
+    private fun isSeparatedChatTemplateVisible(): Boolean {
+        return chatRoomFlexModeListener?.getSeparatedTemplateChat()?.isVisible?: false
+    }
+
+    private fun showSeparatedChatTemplateIfFlex() {
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            chatRoomFlexModeListener?.getSeparatedTemplateChat()?.showSeparatedChatTemplate()
+        } else {
+            chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+        }
+    }
+
+    fun toggleTemplateChatWhenFlex(toggle: Boolean) {
+        try {
+            if(!toggle) {
+                getViewState().hideTemplateChat()
+            } else if(toggle && getViewState().allowedToShowTemplate){
+                getViewState().showTemplateChat()
+            }
+        } catch (ignored: Exception) {}
     }
 
     companion object {

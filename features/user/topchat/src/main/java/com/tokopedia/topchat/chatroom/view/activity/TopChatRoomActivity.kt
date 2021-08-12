@@ -1,10 +1,18 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.IdRes
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -13,9 +21,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,6 +41,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
+import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
+import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -56,6 +69,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private var currentActiveChatId: String = ""
     private var displayState: Int = 0
     private var messageId: String = "0"
+    private var chatTemplateSeparatedView: TopChatTemplateSeparatedView? = null
+    private var toolbarChatList: Toolbar? = null
 
     override fun getScreenName(): String {
         return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
@@ -82,6 +97,11 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         super.onCreate(null)
         setupFoldableSupport(savedInstanceState)
         initWindowBackground()
+        chatTemplateSeparatedView = findViewById(R.id.separated_chat_template)
+        chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
+
+        //variable toolbar is chatroom's toolbar
+        toolbarChatList = findViewById(R.id.toolbar_chatlist)
     }
 
     override fun getComponent(): ChatComponent {
@@ -113,8 +133,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun setupToolbar() {
-        super.setupToolbar()
-        decreaseToolbarElevation()
+        //Do Nothing
     }
 
     private fun decreaseToolbarElevation() {
@@ -232,6 +251,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 ?: ChatListInboxFragment.createFragment(role, currentActiveChatId)
         }
         chatListFragment.chatRoomFlexModeListener = this
+        chatRoomFragment.chatRoomFlexModeListener = this
     }
 
     private fun getChatFragment(@IdRes id: Int): Fragment? {
@@ -263,10 +283,15 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             )
             attachChatListFragment()
             attachChatRoomFragment()
+            chatRoomFragment.toggleTemplateChatWhenFlex(true)
         } else {
+            setupToolbar()
             frameLayoutChatList?.hide()
             attachChatRoomFragment()
+            chatTemplateSeparatedView?.hideSeparatedChatTemplate()
+            chatRoomFragment.toggleTemplateChatWhenFlex(false)
         }
+        setupToolbarWithFlex()
     }
 
     private fun saveDisplayState(displayFeatures: List<DisplayFeature>) {
@@ -279,10 +304,125 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onClickAnotherChat(msgId: String) {
-        if (displayState == FLAT_STATE || displayState == HALF_OPEN_STATE) {
+        hideKeyboard()
+        if (isFlexMode()) {
             messageId = msgId
             chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment.chatRoomFlexModeListener = this
+            chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
             attachChatRoomFragment()
+        }
+    }
+
+    override fun getSeparatedTemplateChat(): TopChatTemplateSeparatedView? {
+        return chatTemplateSeparatedView
+    }
+
+    override fun isFlexMode(): Boolean {
+        return displayState == FLAT_STATE || displayState == HALF_OPEN_STATE
+    }
+
+    private fun hideKeyboard() {
+        try {
+            this.currentFocus?.let { view ->
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+            chatTemplateSeparatedView?.hideSeparatedChatTemplate()
+        } catch (ignored: Exception) {
+            ignored.printStackTrace()
+        }
+    }
+
+    private fun setupToolbarWithFlex() {
+        if(isFlexMode()) {
+            toolbarChatList?.show()
+            setupToolbarFlexChatlist()
+            setupToolbarFlexChatroom()
+        } else {
+            toolbarChatList?.hide()
+            super.setupToolbar()
+        }
+        decreaseToolbarElevation()
+    }
+
+    private fun setupToolbarFlexChatroom() {
+        val mInflater = LayoutInflater.from(this)
+        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        toolbar.removeAllViews()
+        toolbar.addView(mCustomView)
+        toolbar.contentInsetStartWithNavigation = ViewUtil.convertToPx(16)
+        toolbar.contentInsetEndWithActions = 0
+    }
+
+    private fun setupToolbarFlexChatlist() {
+        setSupportActionBar(toolbarChatList)
+        supportActionBar?.run {
+            setBackgroundDrawable(
+                ColorDrawable(
+                    MethodChecker.getColor(
+                        this@TopChatRoomActivity,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                )
+            )
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            setHomeButtonEnabled(true)
+
+            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.chat_common.R.drawable.ic_action_back)
+            if (upArrow != null) {
+                upArrow.setColorFilter(
+                    MethodChecker.getColor(this@TopChatRoomActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+                this.setHomeAsUpIndicator(upArrow)
+            }
+            this.title = "Chat"
+            toolbar.contentInsetStartWithNavigation = 0
+            toolbar.contentInsetEndWithActions = 0
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return if(isFlexMode()) {
+            menu?.clear()
+            if (GlobalConfig.isSellerApp()) {
+                menuInflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
+            } else {
+                menuInflater.inflate(R.menu.chat_options_menu, menu)
+            }
+            menu?.findItem(R.id.menu_chat_search)?.isVisible = true
+            menu?.findItem(R.id.menu_chat_filter)?.isVisible = true
+            menu?.findItem(R.id.menu_chat_setting)?.isVisible = true
+            true
+        } else {
+            super.onCreateOptionsMenu(menu)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(isFlexMode()) {
+            return when (item.itemId) {
+                R.id.menu_chat_filter -> {
+                    true
+                }
+                R.id.menu_chat_setting -> {
+                    val intent = ChatSettingActivity.getIntent(this, (role == RoleType.SELLER))
+                    startActivity(intent)
+                    true
+                }
+                R.id.menu_chat_search -> {
+                    RouteManager.route(this, ApplinkConstInternalMarketplace.CHAT_SEARCH)
+                    true
+                }
+                android.R.id.home -> {
+                    onBackPressed()
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+        } else {
+            return super.onOptionsItemSelected(item)
         }
     }
 

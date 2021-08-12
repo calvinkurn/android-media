@@ -143,21 +143,11 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_template"
+            <include
+                layout="@layout/layout_chat_template"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingStart="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/unify_space_8"
-                android:paddingEnd="@dimen/spacing_lvl4"
-                android:visibility="gone"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_template_chat_layout"
-                tools:orientation="horizontal"
-                tools:scrollbars="horizontal"
-                tools:visibility="visible" />
+                android:layout_marginTop="@dimen/spacing_lvl3"/>
 
             <LinearLayout
                 android:id="@+id/cl_attachment_preview"
