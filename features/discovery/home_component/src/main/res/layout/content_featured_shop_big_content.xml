@@ -10,7 +10,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_16">
         <ImageView
             android:contentDescription="@string/content_desc_shop_product_image"
             android:id="@+id/featured_shop_product_image"
@@ -213,12 +214,12 @@
             android:textColor="@color/Unify_N300"
             app:typographyType="small"
             android:lines="1"
-            android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             app:layout_constraintWidth_default="wrap"
             tools:visibility="visible"
             tools:text="Surabaya asdada asdasd"
+            app:layout_goneMarginTop="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/featured_shop_product_location_icon"
             app:layout_constraintBottom_toBottomOf="parent"
