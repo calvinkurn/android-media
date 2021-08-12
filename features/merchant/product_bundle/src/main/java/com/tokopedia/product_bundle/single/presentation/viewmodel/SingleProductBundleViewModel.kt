@@ -11,10 +11,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.util.DiscountUtil
-import com.tokopedia.product_bundle.single.presentation.model.BundleInfoToSingleProductBundleMapper
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleUiModel
-import com.tokopedia.product_bundle.single.presentation.model.TotalAmountUiModel
+import com.tokopedia.product_bundle.single.presentation.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 import kotlin.math.abs
@@ -31,12 +28,12 @@ class SingleProductBundleViewModel @Inject constructor(
     val totalAmountUiModel: LiveData<TotalAmountUiModel>
         get() = mTotalAmountUiModel
 
-    private val mToasterError = MutableLiveData<Throwable>()
-    val toasterError: LiveData<Throwable>
+    private val mToasterError = MutableLiveData<SingleProductBundleErrorEnum>()
+    val toasterError: LiveData<SingleProductBundleErrorEnum>
         get() = mToasterError
 
-    private val mPageError = MutableLiveData<Throwable>()
-    val pageError: LiveData<Throwable>
+    private val mPageError = MutableLiveData<SingleProductBundleErrorEnum>()
+    val pageError: LiveData<SingleProductBundleErrorEnum>
         get() = mPageError
 
     fun setBundleInfo(context: Context, bundleInfo: BundleInfo) {
@@ -86,11 +83,11 @@ class SingleProductBundleViewModel @Inject constructor(
         when {
             selectedProductId == null -> {
                 // data not selected
-                mToasterError.value = MessageErrorException("Oops, pilih product dulu, ya.")
+                mToasterError.value = SingleProductBundleErrorEnum.ERROR_BUNDLE_NOT_SELECTED
             }
             selectedProductId.productId.isEmpty() -> {
                 // variant not selected
-                mToasterError.value = MessageErrorException("Oops, pilih varian dulu, ya.")
+                mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
             }
             else -> {
                 Log.e("checkout", selectedProductId.toString())

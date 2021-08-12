@@ -24,8 +24,10 @@ class SingleProductBundleAdapter(
     }
 
     private fun setupViewHolderOnClick(viewHolder: SingleProductBundleViewHolder) {
+        viewHolder.radioItem.setOnClickListener {
+            viewHolder.layoutItem.performClick()
+        }
         viewHolder.layoutItem.setOnClickListener {
-            viewHolder.radioItem.isChecked = true
             selectedData.forEachIndexed { index, selectedItem ->
                 selectedItem.isSelected = (index == viewHolder.adapterPosition)
             }

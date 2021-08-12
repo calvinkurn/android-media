@@ -23,6 +23,7 @@ import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
@@ -67,7 +68,8 @@ class SingleProductBundleFragment(
         super.onActivityResult(requestCode, resultCode, data)
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
-           adapter.setSelectedVariant(selectedProductId, viewModel.getVariantText(selectedProductVariant, selectedProductId))
+            adapter.setSelectedVariant(selectedProductId, viewModel.getVariantText(selectedProductVariant, selectedProductId))
+            Toaster.build(requireView(), getString(R.string.single_bundle_success_variant_added), Toaster.LENGTH_LONG).show()
         }
     }
 
@@ -106,10 +108,13 @@ class SingleProductBundleFragment(
     }
 
     private fun observeToasterError() {
-        viewModel.toasterError.observe(viewLifecycleOwner, { throwable ->
-            throwable.message?.let {
-                Toaster.build(requireView(), it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        viewModel.toasterError.observe(viewLifecycleOwner, { errorType ->
+            val errorMessage = when (errorType) {
+                SingleProductBundleErrorEnum.ERROR_BUNDLE_NOT_SELECTED -> getString(R.string.single_bundle_error_bundle_not_selected)
+                SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED -> getString(R.string.single_bundle_error_variant_not_selected)
+                else -> getString(R.string.single_bundle_error_unknown)
             }
+            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         })
     }
 

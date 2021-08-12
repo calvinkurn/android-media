@@ -15,5 +15,11 @@
     <string name="preorder_time_unit_month">bulan</string>
     <string name="bundle_item_title_prefix">Paket isi %1d</string>
 
+    <!-- single bundle messages wording -->
+    <string name="single_bundle_success_variant_added">Varian berhasil diubah</string>
+    <string name="single_bundle_error_bundle_not_selected">Oops, pilih product dulu, ya.</string>
+    <string name="single_bundle_error_variant_not_selected">Oops, pilih varian dulu, ya.</string>
+    <string name="single_bundle_error_unknown">Terjadi kesalahan!</string>
+
 
 </resources>
