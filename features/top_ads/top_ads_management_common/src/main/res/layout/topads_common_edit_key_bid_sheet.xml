@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Tentukan sendiri biaya iklan pencarian sesuai \n strategi beriklanmu."
+        android:text="Tentukan sendiri biaya iklan pencarian sesuai \nstrategi beriklanmu."
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
@@ -28,6 +28,17 @@
         app:text_field_label_static="true"
         app:text_field_prepend_text="Rp"
         tools:layout_height="@dimen/dp_200" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/min_suggested_bid"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/topads_common_recommended_bid_error"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/budget"
+        app:typographyType="body_3"
+        android:textColor="@color/unify_Y500"
+        android:visibility="gone"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSave"

@@ -50,20 +50,25 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val result = number.toInt()
                 when {
                     result < minBid.toDouble() -> {
+                        min_suggested_bid.visibility = View.GONE
                         setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                     }
                     (result >= minBid.toDouble() && result < suggestedBid.toDouble()) -> {
-                        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_recommended_bid_error), "", false)
+                        setMessageErrorField("", "", false)
+                        min_suggested_bid.visibility = View.VISIBLE
                     }
                     result > maxBid.toDouble() -> {
+                        min_suggested_bid.visibility = View.GONE
                         setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
                     }
 
                     result % 50 != 0 -> {
+                        min_suggested_bid.visibility = View.GONE
                         setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
                     }
 
                     else -> {
+                        min_suggested_bid.visibility = View.GONE
                         budget.setError(false)
                         budget.setMessage("")
                         btnSave.isEnabled = true

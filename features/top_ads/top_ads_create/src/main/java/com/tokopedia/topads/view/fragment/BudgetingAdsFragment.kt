@@ -157,6 +157,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
 
         addKeyword.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_ADDED_KEYWORD, "")
             val intent = Intent(context, KeywordSuggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
             intent.putExtra("model", stepperModel)

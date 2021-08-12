@@ -110,15 +110,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             bidSettingsList.add(topAdsBidSettingsModel)
         }
         sharedViewModel.setBidSettings(bidSettingsList)
-//        data?.bidSettings?.forEach {
-//            if(it.bidType.equals("product_search")) {
-//                it.priceBid?.toInt()?.let { it1 -> sharedViewModel.setBudget(it1) }
-//            } else if(it.bidType.equals("product_browse")){
-//                it.priceBid?.toInt()?.let { it1 -> sharedViewModel.setRekomendedBudget(it1) }
-//            }
-//        }
-//        data?.bidSettings?.get(0)?.priceBid?.toInt()?.let { sharedViewModel.setBudget(it) }
-//        data?.bidSettings?.get(1)?.priceBid?.toInt()?.let { sharedViewModel.setRekomendedBudget(it) }
         priceDaily = data.daiyBudget
         if (priceDaily != 0.0F) {
             toggle?.isChecked = true

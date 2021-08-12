@@ -383,11 +383,13 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             per_click_rekomendasi.visibility = View.VISIBLE
             budgetPerClick_rekomendasi.visibility = View.VISIBLE
             biaya_rekommendasi.visibility = View.VISIBLE
+            biaya_pencarian.text = getString(R.string.topads_dash_biaya_pencarian)
         } else {
             editRekomendasiBudget.visibility = View.GONE
             per_click_rekomendasi.visibility = View.GONE
             budgetPerClick_rekomendasi.visibility = View.GONE
             biaya_rekommendasi.visibility = View.GONE
+            biaya_pencarian.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
         }
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]

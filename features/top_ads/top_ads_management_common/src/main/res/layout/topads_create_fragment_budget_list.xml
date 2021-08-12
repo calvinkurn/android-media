@@ -90,12 +90,25 @@
                         app:text_field_prepend_text="Rp"
                         tools:layout_height="100dp" />
 
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/min_suggested_bid_pencerian"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:text="@string/topads_common_recommended_bid_error"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/budget"
+                        app:typographyType="body_3"
+                        android:textColor="@color/unify_Y500"
+                        android:visibility="gone"/>
+
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/biaya_rekomendasi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
-                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_32"
                         android:text="@string/topads_group_detail_budget_rekomendasi"
                         android:visibility="gone"
                         android:textColor="@color/topads_clr_7031353b"
@@ -119,12 +132,25 @@
                         app:text_field_prepend_text="Rp"
                         tools:layout_height="100dp" />
 
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/min_suggested_bid_rekomendasi"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/topads_common_recommended_bid_error"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/budgetRekomendasi"
+                        app:layout_constraintTop_toBottomOf="@+id/budgetRekomendasi"
+                        app:typographyType="body_3"
+                        android:textColor="@color/unify_Y500"
+                        android:visibility="gone"/>
+
                     <com.tokopedia.unifycomponents.DividerUnify
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_8"
                         android:layout_marginTop="@dimen/dp_10"
-                        app:layout_constraintTop_toBottomOf="@id/budget" />
+                        app:layout_constraintTop_toBottomOf="@id/min_suggested_bid_pencerian" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/selected_keyword"
