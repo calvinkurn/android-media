@@ -263,15 +263,22 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
             getRecyclerView(view)?.post {
                 val ticker = data.firstOrNull { it is CampaignStockTickerUiModel }
                 val tickerUiModel = createTickerUiModel(shouldShowWarning)
+                val isTickerEmpty = tickerUiModel.tickerList.isEmpty()
 
                 if (ticker == null) {
-                    data.add(ITEM_TICKER_POSITION, tickerUiModel)
-                    notifyItemInserted(ITEM_TICKER_POSITION)
-
+                    if (!isTickerEmpty) {
+                        data.add(ITEM_TICKER_POSITION, tickerUiModel)
+                        notifyItemInserted(ITEM_TICKER_POSITION)
+                    }
                 } else {
                     val index = data.indexOf(ticker)
-                    data[index] = tickerUiModel
-                    notifyItemChanged(index)
+                    if (isTickerEmpty) {
+                        data.removeAt(index)
+                        notifyItemRemoved(index)
+                    } else {
+                        data[index] = tickerUiModel
+                        notifyItemChanged(index)
+                    }
                 }
             }
         }
