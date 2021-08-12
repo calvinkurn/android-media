@@ -97,6 +97,15 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         lastDeletedProductItem = miniCartProductUiModel
     }
 
+    // Used for mocking miniCartABTestData value.
+    // Should only be called from unit test
+    fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
+        _miniCartABTestData.value = MiniCartABTestData(
+                isOCCFlow = isOCCFlow,
+                buttonBuyWording = buttonBuyWording
+        )
+    }
+
     // Setter & Getter
     // Some of setter & getter here added to reduce complexity (due to nullability) so we can increase unit test coverage
 
@@ -153,7 +162,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
         getMiniCartListSimplifiedUseCase.execute(
                 onSuccess = {
-                    _miniCartABTestData.value = MiniCartABTestData(
+                    setMiniCartABTestData(
                             isOCCFlow = it.miniCartWidgetData.isOCCFlow,
                             buttonBuyWording = it.miniCartWidgetData.buttonBuyWording
                     )
@@ -173,7 +182,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    _miniCartABTestData.value = MiniCartABTestData(
+                    setMiniCartABTestData(
                             isOCCFlow = it.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC,
                             buttonBuyWording = it.data.beliButtonConfig.buttonWording
                     )
