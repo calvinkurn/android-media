@@ -377,7 +377,7 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendTableFilterClick(model: TableWidgetUiModel) {
+    fun sendTableFilterClickEvent(model: TableWidgetUiModel) {
         val emptyStatus =
             if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         val selectedFilter = model.tableFilters.firstOrNull { it.isSelected }?.value.orEmpty()

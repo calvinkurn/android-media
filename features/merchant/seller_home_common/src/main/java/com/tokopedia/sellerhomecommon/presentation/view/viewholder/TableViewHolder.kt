@@ -204,7 +204,6 @@ class TableViewHolder(
                 setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
                 setOnClickListener {
                     listener.showTableFilter(element, adapterPosition)
-                    listener.sendTableFilterClick(element)
                 }
             }
         } else {
@@ -259,7 +258,6 @@ class TableViewHolder(
         fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
         fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
-        fun sendTableFilterClick(element: TableWidgetUiModel) {}
         fun sendTableFilterImpression(element: TableWidgetUiModel) {}
         fun sendTableSeeMoreClickEvent(element: TableWidgetUiModel, isEmpty: Boolean) {}
     }
