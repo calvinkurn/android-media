@@ -105,7 +105,8 @@ data class OrderPaymentCreditCardAdditionalData(
         val profileCode: String = "",
         val signature: String = "",
         val changeCcLink: String = "",
-        val callbackUrl: String = ""
+        val callbackUrl: String = "",
+        val totalProductPrice: String = ""
 ) : Parcelable
 
 data class OrderPaymentInstallmentTerm(

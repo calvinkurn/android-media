@@ -47,7 +47,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         initCalculator()
     }
 
-    private var resultOccData: ResultGetOccCart = ResultGetOccCart()
     var orderCart: OrderCart = OrderCart()
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
@@ -103,7 +102,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source)
-            resultOccData = result
             addressState.value = result.addressState
             orderCart = result.orderCart
             orderShop.value = orderCart.shop
@@ -258,7 +256,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment)
+            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
             updateOrderProducts.value = updatedProductIndex
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
@@ -629,7 +627,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.immediate) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value, resultOccData.totalProductPrice)
+                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
         }
     }
 
@@ -733,7 +731,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun adjustAdminFee() {
         globalEvent.value = OccGlobalEvent.Loading
         val param = cartProcessor.generateCreditCardTenorListRequest(orderPayment.value.creditCard,
-            userSession.userId, resultOccData.totalProductPrice, resultOccData.profileCode)
+            userSession.userId, orderTotal.value, orderCart)
         launch(executorDispatchers.immediate) {
             val (isSuccess, newGlobalEvent) = cartProcessor.doAdjustAdminFee(param)
             if (isSuccess) {

@@ -310,6 +310,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             card_type
             is_expired
             tnc_info
+            unix_timestamp
+            token_id
+            tenor_signature
+            is_afpb
           }
           error_message {
             message

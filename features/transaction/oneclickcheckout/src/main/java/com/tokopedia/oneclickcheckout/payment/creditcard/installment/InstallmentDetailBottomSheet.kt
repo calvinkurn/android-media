@@ -58,18 +58,26 @@ class InstallmentDetailBottomSheet {
             creditCardTenorListData.tenorList.forEach { tenor ->
                 if (tenor.type.equals(CC_TYPE_TENOR_FULL, true)) {
                     viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
-                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount, false).removeDecimalSuffix()
-                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = !tenor.disable
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount.toDouble(), false).removeDecimalSuffix()
                 } else {
                     viewInstallmentDetailItem.tvInstallmentDetailName.text = "${tenor.type}x Cicilan 0%"
-                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount, false).removeDecimalSuffix())
+                    viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.amount.toDouble(), false).removeDecimalSuffix())
                 }
-                viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.fee, false).removeDecimalSuffix())
-                viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(mapAfpbToInstallmentTerm(tenor))
-                    dismiss()
+
+                if (tenor.disable) {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = tenor.desc
+                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
+                    viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
+                    viewInstallmentDetailItem.root.alpha = 0.5f
+                } else {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(tenor.fee.toDouble(), false).removeDecimalSuffix())
+                    viewInstallmentDetailItem.rbInstallmentDetail.isChecked = creditCard.selectedTerm?.isSelected == true
+                    viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
+                        listener.onSelectInstallment(mapAfpbToInstallmentTerm(tenor))
+                        dismiss()
+                    }
+                    viewInstallmentDetailItem.root.alpha = 1.0f
                 }
-                viewInstallmentDetailItem.root.alpha = 1.0f
             }
         } else {
             val installmentDetails = creditCard.availableTerms
@@ -108,10 +116,9 @@ class InstallmentDetailBottomSheet {
 
     private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
         var intTerm = 0
-        if (!tenor.type.equals(CC_TYPE_TENOR_FULL)) intTerm = tenor.type.toInt()
+        if (tenor.type != CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
         return OrderPaymentInstallmentTerm(
             term = intTerm,
-            minAmount = MIN_AMOUNT_CC,
             isEnable = !tenor.disable,
             fee = tenor.fee.toDouble(),
             monthlyAmount = tenor.amount.toDouble()
@@ -192,6 +199,5 @@ class InstallmentDetailBottomSheet {
 
     companion object {
         private const val CC_TYPE_TENOR_FULL = "FULL"
-        private const val MIN_AMOUNT_CC = 500000L
     }
 }

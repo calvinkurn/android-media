@@ -4,12 +4,9 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
@@ -20,7 +17,6 @@ import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -241,7 +237,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 return@withContext true to OccGlobalEvent.AdjustAdminFeeSuccess(creditCardData)
             } catch (t: Throwable) {
                 Timber.d(t)
-                return@withContext false to OccGlobalEvent.AdjustAdminFeeError()
+                return@withContext false to OccGlobalEvent.AdjustAdminFeeError
             }
         }
         OccIdlingResource.decrement()
@@ -249,16 +245,23 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
     }
 
     fun generateCreditCardTenorListRequest(orderPaymentCreditCard: OrderPaymentCreditCard,
-                                           userId: String, totalAmount: String, profileCode: String): CreditCardTenorListRequest {
+                                           userId: String, orderTotal: OrderTotal, orderCart: OrderCart): CreditCardTenorListRequest {
         val cartDetailsItemList = ArrayList<CartDetailsItem>()
-        // TODO : map cartDetailsItemList
+        val paymentAmount = orderTotal.orderCost.totalItemPrice.toInt() + orderTotal.orderCost.shippingFee.toInt()
+        val cartDetailsItem = CartDetailsItem(shopType = orderCart.shop.shopTier, paymentAmount = paymentAmount)
+        cartDetailsItemList.add(cartDetailsItem)
+        val totalDiscount = orderTotal.orderCost.productDiscountAmount + orderTotal.orderCost.shippingDiscountAmount
+        val totalOtherAmount = orderTotal.orderCost.purchaseProtectionPrice + orderTotal.orderCost.insuranceFee.toInt()
         return CreditCardTenorListRequest(
             tokenId = orderPaymentCreditCard.tokenId,
             userId = userId,
-            totalAmount = totalAmount,
-            profileCode = profileCode,
+            totalAmount = orderPaymentCreditCard.additionalData.totalProductPrice,
+            profileCode = orderPaymentCreditCard.additionalData.profileCode,
             ccfeeSignature = orderPaymentCreditCard.tenorSignature,
-            timestamp = orderPaymentCreditCard.unixTimestamp
+            timestamp = orderPaymentCreditCard.unixTimestamp,
+            otherAmount = totalOtherAmount,
+            discountAmount = totalDiscount,
+            cartDetails = cartDetailsItemList
         )
     }
 }

@@ -1261,11 +1261,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                    override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                        viewModel.chooseInstallment(installment)
-                    }
-                })
+                creditCardTenorListData?.let {
+                    InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard,
+                        it, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                            override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+                                viewModel.chooseInstallment(installment)
+                            }
+                        })
+                }
             }
         }
 

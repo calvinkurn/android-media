@@ -345,7 +345,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData): OrderPaymentCreditCardAdditionalData {
         return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
                 data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature,
-                data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl)
+                data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl, data.totalProductPrice)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {
