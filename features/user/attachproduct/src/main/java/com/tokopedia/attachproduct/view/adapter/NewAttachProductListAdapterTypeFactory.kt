@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewH
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewholder.NewAttachProductEmptyResultViewHolder
 import com.tokopedia.attachproduct.view.viewholder.NewAttachProductListItemViewHolder
+import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
 
 class NewAttachProductListAdapterTypeFactory
     (private val checkableInteractionListener : CheckableInteractionListener)
@@ -30,7 +31,8 @@ class NewAttachProductListAdapterTypeFactory
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return if (type == NewAttachProductListItemViewHolder.LAYOUT) {
-            NewAttachProductListItemViewHolder(parent, checkableInteractionListener)
+            val listener = checkableInteractionListener as NewCheckableInteractionListenerWithPreCheckedAction
+            NewAttachProductListItemViewHolder(parent, listener, checkableInteractionListener)
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             NewAttachProductEmptyResultViewHolder(parent)
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {

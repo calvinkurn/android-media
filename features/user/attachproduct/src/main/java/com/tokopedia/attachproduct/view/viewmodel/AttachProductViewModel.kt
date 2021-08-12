@@ -9,7 +9,6 @@ import com.tokopedia.attachproduct.data.model.mapper.mapToListProduct
 import com.tokopedia.attachproduct.domain.model.mapper.toDomainModelMapper
 import com.tokopedia.attachproduct.domain.usecase.NewAttachProductUseCase
 import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
-import com.tokopedia.attachproduct.view.subscriber.AttachProductGetProductListSubscriber
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.usecase.coroutines.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -24,6 +23,10 @@ class AttachProductViewModel @Inject constructor
     private val _cacheList = mutableListOf<NewAttachProductItemUiModel>()
     private val _checkedList = mutableListOf<NewAttachProductItemUiModel>()
     private var _cacheHasNext = false
+    private val _checkedListMutableLiveData = MutableLiveData<List<NewAttachProductItemUiModel>>()
+
+    val checkedList: LiveData<List<NewAttachProductItemUiModel>>
+        get() = _checkedListMutableLiveData
     val products: LiveData<Result<List<NewAttachProductItemUiModel>>>
         get() = _products
 
@@ -53,12 +56,12 @@ class AttachProductViewModel @Inject constructor
     }
 
 
-    override fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>, onUpdated: (Int) -> Unit) {
+    override fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>) {
         if (_checkedList.isNotEmpty()) {
             resetCheckedList()
         }
         _checkedList.addAll(productNews)
-        onUpdated.invoke(_checkedList.size)
+        _checkedListMutableLiveData.value = _checkedList
     }
 
     override fun resetCheckedList() {
@@ -82,10 +85,10 @@ class AttachProductViewModel @Inject constructor
 
     private fun generateParam(query: String, shopId: String,
                               page: Int, warehouseId: String): HashMap<String, Any> {
-
+        val start = (page * ROW) - ROW
         return hashMapOf<String, Any>().apply {
             put(PARAM, "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
-                    "$shopId&start=${(page * ROW) - ROW}&user_warehouseId=$warehouseId")
+                    "$shopId&start=$start&user_warehouseId=$warehouseId")
         }
     }
 

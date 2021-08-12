@@ -8,6 +8,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
@@ -334,13 +335,14 @@ object DynamicProductDetailTracking {
 
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
                               cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
-                              productInfo: DynamicProductInfoP1?, isFreeOngkir: Boolean) {
+                              productInfo: DynamicProductInfoP1?, boType: Int) {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
             val productPrice = productInfo?.finalPrice.toString()
             val shopType = productInfo?.shopTypeString ?: ""
             val shopName = productInfo?.basic?.shopName ?: ""
+            val boTypeString = ProductCartHelper.getBoTrackerString(boType)
 
             val quantity = productInfo?.basic?.minOrder ?: 0
             val generateButtonActionString = when (actionButton) {
@@ -388,7 +390,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null",
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (isFreeOngkir) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_83, boTypeString,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_38, trackerAttribution
                     ))))))
         }
@@ -577,47 +579,6 @@ object DynamicProductDetailTracking {
                     "$etalaseId - $etalaseName")
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_ETALASE)
-        }
-
-        fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, shopId: String, position: Int,
-                                         productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_CLICK,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_USE_MERCHANT_VOUCHER,
-                    ""
-            )
-
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = mapOf(ProductTrackingConstant.Tracking.KEY_PROMO_ID to merchantVoucherViewModel.voucherId.toString())
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_CLICK, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, TrackingUtil.createMVCMap(listOf(merchantVoucherViewModel), shopId, position)))
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_USE_MERCHANT_VOUCHER)
-        }
-
-        fun eventClickMerchantVoucherSeeDetail(voucherId: Int, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_DETAIL_MERCHANT_VOUCHER,
-                    productInfo?.basic?.productID ?: ""
-            )
-
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = voucherId.toString()
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DETAIL_MERCHANT_VOUCHER)
-        }
-
-
-        fun eventClickMerchantVoucherSeeAll(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER,
-                    productInfo?.basic?.productID ?: ""
-            )
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER)
         }
 
         fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, trackingQueue: TrackingQueue?, type: String, imageUrl: String, position: Int) {
@@ -1112,30 +1073,6 @@ object DynamicProductDetailTracking {
                     productId
             )
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-        }
-
-        fun eventClickAtcAndBuyGoToVariant(buttonAction: Int, productId: String?) {
-            if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) {
-                eventClickAtcToVariantBottomSheet(productId)
-            } else {
-                eventClickBuyToVariantBottomSheet(productId)
-            }
-        }
-
-        fun eventClickBuyToVariantBottomSheet(productId: String?) {
-            if (productId.isNullOrEmpty()) {
-                return
-            }
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_VARIANT_BUY_BUTTON,
-                    ""
-            )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
-            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
@@ -1704,26 +1641,19 @@ object DynamicProductDetailTracking {
             trackingQueue?.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
         }
 
+        fun eventPurchaseProtectionAvailable(userId: String, productInfo: DynamicProductInfoP1?, insuranceBrand: String) {
+            val categoryIdLevel3 = productInfo?.basic?.category?.detail?.getOrNull(2)?.id ?: ""
 
-        fun eventImpressionMerchantVoucherUse(shopId: Int, merchantVoucherViewModelList: List<MerchantVoucherViewModel>,
-                                              productInfo: DynamicProductInfoP1?) {
-            if (merchantVoucherViewModelList.isNullOrEmpty()) return
-
-            val promoId = merchantVoucherViewModelList[0].voucherId
             val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.IMPRESSION_USE_MERCHANT_VOUCHER,
-                    productInfo?.basic?.productID ?: ""
+                ProductTrackingConstant.Action.PRODUCT_VIEW,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.ACTION_PP_INSURANCE,
+                "${productInfo?.basic?.productID ?: ""} - $categoryIdLevel3 - $insuranceBrand"
             )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
+            mapEvent[ProductTrackingConstant.Tracking.PRODUCT_PRICE] = productInfo?.data?.price?.value ?: ""
 
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = promoId.toString()
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_VIEW, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, TrackingUtil.createMvcListMap(merchantVoucherViewModelList, shopId, 0))
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_USE_MERCHANT_VOUCHER)
-
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
         fun eventTopAdsImageViewImpression(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName: String) {

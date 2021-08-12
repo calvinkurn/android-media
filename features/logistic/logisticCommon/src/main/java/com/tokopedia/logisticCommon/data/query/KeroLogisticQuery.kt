@@ -3,8 +3,8 @@ package com.tokopedia.logisticCommon.data.query
 object KeroLogisticQuery {
 
     val autoComplete = """
-        query KeroMapsAutoComplete(${'$'}param: String!) {
-          kero_maps_autocomplete(input: ${'$'}param) {
+        query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String) {
+          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng) {
             error_code
             data {
               predictions {

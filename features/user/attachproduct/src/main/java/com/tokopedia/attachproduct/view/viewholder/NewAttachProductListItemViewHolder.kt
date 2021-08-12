@@ -15,29 +15,27 @@ import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
  * Created by Hendri on 13/02/18.
  */
 class NewAttachProductListItemViewHolder
-    (private val itemView: View, checkableInteractionListener: CheckableInteractionListener)
+    (itemView: View,
+     private val newCheckableInteractionListener: NewCheckableInteractionListenerWithPreCheckedAction,
+     checkableInteractionListener: CheckableInteractionListener)
     : BaseCheckableViewHolder<NewAttachProductItemUiModel>(itemView, checkableInteractionListener),
         CompoundButton.OnCheckedChangeListener, View.OnClickListener {
-    private var imageView: ImageView? = null
-    private var nameTextView: TextView? = null
-    private var checkBox: CheckBox? = null
-    private var priceTextView: TextView? = null
-    private val newCheckableInteractionListener: NewCheckableInteractionListenerWithPreCheckedAction
-    private fun findAndAssignAllFields(itemView: View) {
-        imageView = itemView.findViewById(R.id.attach_product_item_image)
-        nameTextView = itemView.findViewById(R.id.attach_product_item_name)
-        checkBox = itemView.findViewById(R.id.attach_product_item_checkbox)
-        priceTextView = itemView.findViewById(R.id.attach_product_item_price)
-    }
+    private var imageView: ImageView = itemView.findViewById(R.id.attach_product_item_image)
+    private var nameTextView: TextView = itemView.findViewById(R.id.attach_product_item_name)
+    private var checkBox: CheckBox = itemView.findViewById(R.id.attach_product_item_checkbox)
+    private var priceTextView: TextView = itemView.findViewById(R.id.attach_product_item_price)
+
 
     override fun getCheckable(): CompoundButton {
-        return checkBox!!
+        return checkBox
     }
 
     override fun bind(element: NewAttachProductItemUiModel) {
-        ImageHandler.loadImageRounded2(imageView!!.context, imageView, element.productImage)
-        nameTextView!!.text = element.productName
-        priceTextView!!.text = element.productPrice
+        checkBox.isClickable = false
+        itemView.setOnClickListener(this)
+        ImageHandler.loadImageRounded2(imageView.context, imageView, element.productImage)
+        nameTextView.text = element.productName
+        priceTextView.text = element.productPrice
     }
 
     override fun setChecked(checked: Boolean) {
@@ -58,13 +56,5 @@ class NewAttachProductListItemViewHolder
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_product_attach
-    }
-
-    init {
-        findAndAssignAllFields(itemView)
-        checkBox!!.isClickable = false
-        itemView.setOnClickListener(this)
-        this.newCheckableInteractionListener =
-                checkableInteractionListener as NewCheckableInteractionListenerWithPreCheckedAction
     }
 }

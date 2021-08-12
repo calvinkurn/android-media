@@ -46,10 +46,8 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     override fun onCreate(savedInstanceState: Bundle?) {
         setupWarehouseId()
         super.onCreate(savedInstanceState)
-        if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
-            _shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
-                    ?: ""
-        }
+        _shopId = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY)
+                ?: ""
     }
 
 
@@ -58,7 +56,6 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
         return if (fragment != null) {
             fragment
         } else {
-            if (intent != null && intent.extras != null) {
                 _isSeller = intent.getBooleanExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,
                     false)
                 source = intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY)
@@ -66,8 +63,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
                 maxChecked = intent.getIntExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED,
                     AttachProductActivity.MAX_CHECKED_DEFAULT)
                 hiddenProducts =
-                        intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN)
-            }
+                        intent.getStringArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_HIDDEN) ?: arrayListOf()
             fragment = newInstance(
                 this, isSeller, source, maxChecked, hiddenProducts, warehouseId
             )
@@ -76,23 +72,18 @@ class NewAttachProductActivity : BaseSimpleActivity(), NewAttachProductContract.
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
-        title = getString(com.tokopedia.attachproduct.R.string.string_attach_product_activity_title)
         super.setupLayout(savedInstanceState)
-        if (supportActionBar != null) {
-            supportActionBar!!.setBackgroundDrawable(
+        supportActionBar?.let { supportActionBar ->
+            supportActionBar.setBackgroundDrawable(
                 resources.getDrawable(com.tokopedia.attachproduct.
                 R.drawable.bg_attach_product_white_toolbar_drop_shadow))
-            supportActionBar!!.setHomeAsUpIndicator(
+            supportActionBar.setHomeAsUpIndicator(
                 MethodChecker.getDrawable(this,
                     com.tokopedia.attachproduct.R.drawable.ic_attach_product_close_default))
         }
         shopName =
-                if (intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY)
-                        != null) {
-            intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) ?: ""
-        } else {
-            ""
-        }
+                intent.getStringExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) ?: ""
+
         toolbar.setBackgroundColor(MethodChecker.getColor(this, R.color.Unify_N0))
         toolbar.subtitle = shopName
     }
