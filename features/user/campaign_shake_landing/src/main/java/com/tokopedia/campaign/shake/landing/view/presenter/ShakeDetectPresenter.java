@@ -230,17 +230,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     @TestOnly
-    public UserSessionInterface getUserSession() {
-        return userSession;
-    }
-
-    @TestOnly
     public void changeRemoteConfig(RemoteConfig newRemoteConfig) {
         remoteConfig = newRemoteConfig;
-    }
-
-    @TestOnly
-    public RemoteConfig getRemoteConfig() {
-        return remoteConfig;
     }
 }
