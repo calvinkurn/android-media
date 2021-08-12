@@ -251,6 +251,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val ANIMATED_IMAGE_ALPHA = 0.5f
         const val ANIMATED_IMAGE_FILLED = 1.0f
+        const val ANIMATED_SCALE_HALF = 0.5f
+        const val ANIMATED_SCALE_FULL = 1.0f
         const val COORDINATE_HEIGHT_DIVISOR = 3
 
         @JvmStatic
@@ -3037,9 +3039,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
         val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
-        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", 1.0f, 0.0f)
-        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", 1.0f, 0.5f)
-        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", 1.0f, 0.5f)
+        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", ANIMATED_IMAGE_FILLED, ANIMATED_IMAGE_ALPHA)
+        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
 
         AnimatorSet().let {
             it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
