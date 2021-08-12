@@ -2,7 +2,6 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.media.loader.loadImage
@@ -12,7 +11,6 @@ import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.card_shop_score_total_penalty.view.*
 
 class ItemHeaderCardPenaltyViewHolder(
@@ -22,6 +20,7 @@ class ItemHeaderCardPenaltyViewHolder(
 
     companion object {
         val LAYOUT = R.layout.card_shop_score_total_penalty
+        const val ROUNDED_RADIUS = 8F
     }
 
     override fun bind(element: ItemCardShopPenaltyUiModel?) {
@@ -35,10 +34,9 @@ class ItemHeaderCardPenaltyViewHolder(
             }
             bgTotalPenalty?.loadImage(if (element?.hasPenalty == true) ShopScoreConstant.IC_HAS_PENALTY_URL else ShopScoreConstant.IC_NO_PENALTY_URL)
 
-            val roundedRadius = 8F
             bgTotalPenalty?.shapeAppearanceModel = bgTotalPenalty.shapeAppearanceModel
                 .toBuilder()
-                .setAllCornerSizes(roundedRadius)
+                .setAllCornerSizes(ROUNDED_RADIUS)
                 .build()
 
             if (element?.hasPenalty == true) {
