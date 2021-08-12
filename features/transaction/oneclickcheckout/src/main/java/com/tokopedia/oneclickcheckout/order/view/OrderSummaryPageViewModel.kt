@@ -18,6 +18,8 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -139,8 +141,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (!hasSentViewOspEe) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, orderProfile.value.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             for (product in orderCart.products) {
-                if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, "", product.purchaseProtectionPlanData.protectionTitle)
+                if (!product.isError && product.purchaseProtectionPlanData.isProtectionAvailable) {
+                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, product.purchaseProtectionPlanData.protectionPricePerProduct, product.purchaseProtectionPlanData.protectionTitle)
                 }
             }
             hasSentViewOspEe = true
@@ -264,7 +266,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearOldLogisticPromo(result.clearOldPromoCode)
         }
         if (result.autoApplyPromo != null) {
-            autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment)
+            autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment, result)
             return
         }
         orderShipment.value = result.orderShipment
@@ -311,12 +313,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, oldPromoCode)
     }
 
-    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
+    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment, ratesResult: ResultRates) {
         launch(executorDispatchers.immediate) {
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, shipping, orderPayment.value)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
+            orderShop.value = orderShop.value.copy(overweight = 0.0)
+            orderProfile.value = orderProfile.value.copy(enable = true)
             if (isApplied && resultValidateUse != null) {
                 val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                 if (newShipment != null) {
@@ -325,6 +329,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     globalEvent.value = OccGlobalEvent.Normal
                     updatePromoState(resultValidateUse.promoUiModel)
                     updateCart()
+                    sendViewOspEe()
+                    sendPreselectedCourierOption(ratesResult.preselectedSpId)
+                    configureForceShowOnboarding()
                     return@launch
                 }
             }
@@ -338,12 +345,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
                 updateCart()
+                sendViewOspEe()
+                sendPreselectedCourierOption(ratesResult.preselectedSpId)
+                configureForceShowOnboarding()
                 return@launch
             }
             clearAllPromoFromLastRequest()
             calculateTotal()
             globalEvent.value = newGlobalEvent
             updateCart()
+            sendViewOspEe()
+            sendPreselectedCourierOption(ratesResult.preselectedSpId)
+            configureForceShowOnboarding()
         }
     }
 
@@ -455,9 +468,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = param.profile.copy(
-                    addressId = addressModel.id
-            ), skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+            param = param.copy(profile = param.profile.copy(addressId = addressModel.id),
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    source = SOURCE_UPDATE_OCC_ADDRESS)
             val chosenAddress = ChosenAddress(
                     addressId = addressModel.id,
                     districtId = addressModel.destinationDistrictId,
@@ -499,7 +512,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
                 expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedInstallmentTerm.term.toString())
                 param = param.copy(profile = param.profile.copy(metadata = metadata.toString()),
-                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+                        skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                        source = SOURCE_UPDATE_OCC_PAYMENT)
             } catch (e: RuntimeException) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -534,7 +548,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata),
-                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value))
+                    skipShippingValidation = cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value),
+                    source = SOURCE_UPDATE_OCC_PAYMENT)
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {

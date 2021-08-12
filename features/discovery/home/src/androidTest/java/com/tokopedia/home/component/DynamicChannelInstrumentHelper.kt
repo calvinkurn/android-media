@@ -134,9 +134,8 @@ fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (logg
 
 fun clickOnProductHighlightItem() {
     try {
-//        Todo Unresolved reference: deals_product_card
-//        Espresso.onView(firstView(ViewMatchers.withId(R.id.deals_product_card)))
-//                .perform(ViewActions.click())
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.master_product_card_deals)))
+                .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }
