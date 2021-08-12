@@ -251,6 +251,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     val errorMessage = it.data.rechargeSBMAddBill.errorMessage
                     val message = it.data.rechargeSBMAddBill.message
                     if(!errorMessage.isNullOrEmpty()){
+                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
                         view?.let {
                             Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -258,6 +259,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     } else {
                         val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.SMART_BILLS)
                         intent.putExtra(EXTRA_ADD_BILLS_MESSAGE, message)
+                        intent.putExtra(EXTRA_ADD_BILLS_CATEGORY, categoryName)
                         activity?.setResult(Activity.RESULT_OK, intent)
                         activity?.finish()
 
@@ -266,6 +268,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
                 is Fail -> {
                     view?.let { v ->
+                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
                         Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -589,6 +592,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             dropdownBottomSheet.clearAction()
             dropdownBottomSheet.setCloseClickListener {
                 dropdownBottomSheet.dismiss()
+                if(isAddSBM){
+                    commonTopupBillsAnalytics.clickCloseDropDownListTelcoAddBills(categoryName, field.getInputText())
+                }
             }
 
             val dropdownView = RechargeGeneralProductSelectBottomSheet(context,
@@ -690,7 +696,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     }
 
                     override fun onDismiss() {
-
+                        if(isAddSBM) {
+                            commonTopupBillsAnalytics.clickCloseTickerTelcoAddBills(categoryName)
+                        }
                     }
                 })
             } else {
@@ -701,6 +709,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                             RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
                         }
                     })
+                    tickerAdapter.onDismissListener = {
+                        if(isAddSBM) {
+                            commonTopupBillsAnalytics.clickCloseTickerTelcoAddBills(categoryName)
+                        }
+                    }
                     recharge_general_ticker.addPagerView(tickerAdapter, messages)
                 }
             }
@@ -856,11 +869,20 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onCustomInputClick(field: TopupBillsInputFieldWidget,
                                     enquiryData: RechargeGeneralProductInput?,
-                                    productData: List<RechargeGeneralProductSelectData>?) {
+                                    productData: List<RechargeGeneralProductSelectData>?,
+                                    position: Int
+    ) {
         // If there is data open product select bottom sheet, else open favorite number activity
         if (productData != null) {
+            if(isAddSBM){
+                val addPosition = 1
+                commonTopupBillsAnalytics.clickDropDownListTelcoAddBills(categoryName, field.getInputText(), (position+addPosition).toString())
+            }
             showProductSelectDropdown(field, productData, getString(R.string.product_select_label))
         } else if (enquiryData != null) {
+            if(isAddSBM){
+                commonTopupBillsAnalytics.clickInputFieldTelcoAddBills(categoryName)
+            }
             showFavoriteNumbersPage(favoriteNumbers, enquiryData)
         }
     }
@@ -901,6 +923,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 if (!userSession.isLoggedIn) {
                     navigateToLoginPage()
                 } else {
+                    commonTopupBillsAnalytics.clickTambahTagihanTelcoAddBills(categoryName)
                     getEnquiry(operatorId.toString(), productId.toString(), inputData)
                 }
             }
@@ -1158,7 +1181,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     fun onBackPressed() {
-        rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
+        if(!isAddSBM) {
+            rechargeGeneralAnalytics.eventClickBackButton(categoryName, operatorName)
+        } else {
+            commonTopupBillsAnalytics.clickBackTelcoAddBills(categoryName)
+        }
     }
 
     private fun hideLoading() {
@@ -1185,6 +1212,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         const val EXTRA_PARAM_ENQUIRY_DATA = "EXTRA_PARAM_ENQUIRY_DATA"
         const val EXTRA_PARAM_IS_ADD_BILLS = "EXTRA_PARAM_IS_ADD_BILLS"
         const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
+        const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
 
         const val OPERATOR_TYPE_VISIBLE = "select_dropdown"
         const val OPERATOR_TYPE_HIDDEN = "hidden"

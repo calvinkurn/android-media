@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
@@ -59,6 +60,9 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
+
+    @Inject
+    lateinit var commonTopUpBillsAnalytic: CommonTopupBillsAnalytics
 
     private var templateTelco: String? = null
     private var categoryId: String? = null
@@ -103,7 +107,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     fun onBackPressed(){
-        smartBillsAnalytics.clickBackTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+        commonTopUpBillsAnalytic.clickBackTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
     }
 
     private fun loadData(){
@@ -212,7 +216,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             when(it){
                 is Fail -> {
                     val throwable = it.throwable
-                    smartBillsAnalytics.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+                    commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
                     view?.let {
                         Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -223,7 +227,6 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     val errorMessage = it.data.rechargeSBMAddBill.errorMessage
                     val message = it.data.rechargeSBMAddBill.message
                     if(!errorMessage.isNullOrEmpty()){
-                        smartBillsAnalytics.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
                         view?.let {
                             Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -265,7 +268,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 }
             })
             tickerAdapter.onDismissListener = {
-                smartBillsAnalytics.clickCloseTickerTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+                commonTopUpBillsAnalytic.clickCloseTickerTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
             }
             ticker_sbm_add_telco.addPagerView(tickerAdapter, messages)
         }
@@ -298,7 +301,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                         && !operatorActive.id.isNullOrEmpty()
                                         && !menuId.isNullOrEmpty()
                                 ) {
-                                    smartBillsAnalytics.clickDropDownList1TelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldInput.text.toString())
+                                    val position = "1"
+                                    commonTopUpBillsAnalytic.clickDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldInput.text.toString(), position)
                                     SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntOrZero(),
                                             categoryId.orEmpty(), operatorActive.id, getNumber(), object : SmartBillsGetNominalCallback {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
@@ -313,7 +317,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                         }
 
                                         override fun onCloseNominal() {
-                                            smartBillsAnalytics.clickCloseDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldInput.text.toString())
+                                            commonTopUpBillsAnalytic.clickCloseDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldInput.text.toString())
                                         }
                                     }).show(childFragmentManager)
                                 } else validationNumber()
@@ -334,7 +338,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         text_field_sbm_product_number.apply {
             show()
             setOnClickListener {
-                smartBillsAnalytics.clickInputFieldTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+                commonTopUpBillsAnalytic.clickInputFieldTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
             }
             textFieldInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -353,7 +357,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             isDisableButton()
             setOnClickListener {
                 hideKeyBoard()
-                smartBillsAnalytics.clickTambahTagihanTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+                commonTopUpBillsAnalytic.clickTambahTagihanTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
                 if(!isNumberValid()){
                     validationNumber()
                 } else if (isPostaid()) {

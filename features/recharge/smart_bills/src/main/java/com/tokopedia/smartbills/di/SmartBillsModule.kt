@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -59,6 +60,12 @@ class SmartBillsModule {
     @Provides
     fun provideAnalytics(): SmartBillsAnalytics {
         return SmartBillsAnalytics()
+    }
+
+    @SmartBillsScope
+    @Provides
+    fun provideAnalyticsCommon(): CommonTopupBillsAnalytics {
+        return CommonTopupBillsAnalytics()
     }
 
     @Provides

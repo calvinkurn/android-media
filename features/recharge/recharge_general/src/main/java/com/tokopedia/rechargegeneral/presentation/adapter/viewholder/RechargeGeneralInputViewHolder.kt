@@ -6,7 +6,6 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
-import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment.Companion.INPUT_TYPE_FAVORITE_NUMBER
 import java.util.regex.Pattern
 
 class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
@@ -38,7 +37,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
 
             // Setup favorite number input
             override fun onCustomInputClick() {
-                listener.onCustomInputClick(inputView, enquiryData)
+                listener.onCustomInputClick(inputView, enquiryData, position = position)
             }
 
             override fun onTextChangeInput() {
