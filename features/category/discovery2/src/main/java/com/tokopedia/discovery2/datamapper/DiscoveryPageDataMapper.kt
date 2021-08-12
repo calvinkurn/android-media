@@ -145,7 +145,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             setComponent(
                 AutoPlayController.AUTOPLAY_ID,
                 component.pageEndPoint,
-                ComponentsItem().also { component.autoPlayController })
+                ComponentsItem().apply { autoPlayController = component.autoPlayController })
         }
     }
 
