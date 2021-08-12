@@ -49,6 +49,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     companion object {
         private const val FIRST_TAB_INDEX = 0
+        private const val TAB_LIMIT = 3
     }
 
     @Inject
@@ -228,8 +229,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun setTabMode(numberOfTabs: Int) {
-        val tabLimit = 3
-        if (numberOfTabs <= tabLimit) {
+        if (numberOfTabs <= TAB_LIMIT) {
             tabStatistic.customTabMode = TabLayout.MODE_FIXED
         } else {
             tabStatistic.customTabMode = TabLayout.MODE_SCROLLABLE
