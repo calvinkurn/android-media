@@ -8,9 +8,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,10 +18,9 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.*
-import org.junit.Test
-
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import java.lang.reflect.Type
 
 class SmartBillsViewModelTest {
@@ -32,6 +31,7 @@ class SmartBillsViewModelTest {
     private val mapParams = mapOf<String, String>()
     private lateinit var gqlResponseFail: GraphqlResponse
     private var checkoutField = RechargeField("client_number", "0123456789")
+    private val userID = "123"
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
@@ -220,7 +220,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         //when
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -254,7 +254,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         //when
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -280,7 +280,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
 
         //when
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -297,9 +297,7 @@ class SmartBillsViewModelTest {
 
         //when
         smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(attributes = MultiCheckoutRequest.
-        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier().apply {
-            userId = "12345"
-        })))
+        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier())),  userId = userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -320,7 +318,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
 
         //when
-        smartBillsViewModel.runMultiCheckout(request)
+        smartBillsViewModel.runMultiCheckout(request, userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -345,7 +343,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         //when
-        smartBillsViewModel.runMultiCheckout(request)
+        smartBillsViewModel.runMultiCheckout(request, userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -355,7 +353,7 @@ class SmartBillsViewModelTest {
     @Test
     fun runMultiCheckout_Fail_NullRequest() {
         //when
-        smartBillsViewModel.runMultiCheckout(null)
+        smartBillsViewModel.runMultiCheckout(null, userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
