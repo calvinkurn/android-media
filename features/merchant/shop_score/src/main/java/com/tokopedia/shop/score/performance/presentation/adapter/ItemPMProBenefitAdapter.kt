@@ -11,7 +11,8 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemParentBenefit
 import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
 import kotlinx.android.synthetic.main.item_pm_pro_benefit.view.*
 
-class ItemPMProBenefitAdapter: RecyclerView.Adapter<ItemPMProBenefitAdapter.ItemPMProBenefitViewHolder>() {
+class ItemPMProBenefitAdapter :
+    RecyclerView.Adapter<ItemPMProBenefitAdapter.ItemPMProBenefitViewHolder>() {
 
     private val itemBenefitList = mutableListOf<ItemParentBenefitUiModel>()
 
@@ -23,7 +24,8 @@ class ItemPMProBenefitAdapter: RecyclerView.Adapter<ItemPMProBenefitAdapter.Item
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPMProBenefitViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_pm_pro_benefit, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_pm_pro_benefit, parent, false)
         return ItemPMProBenefitViewHolder(view)
     }
 
@@ -33,11 +35,12 @@ class ItemPMProBenefitAdapter: RecyclerView.Adapter<ItemPMProBenefitAdapter.Item
 
     override fun getItemCount(): Int = itemBenefitList.size
 
-    class ItemPMProBenefitViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class ItemPMProBenefitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(data: ItemParentBenefitUiModel) {
             with(itemView) {
                 iv_potential_pm_pro_benefit?.loadImage(data.iconUrl)
-                tv_potential_pm_pro_benefit?.text = MethodChecker.fromHtml(data.titleResources?.let { context.getString(it) })
+                tv_potential_pm_pro_benefit?.text =
+                    MethodChecker.fromHtml(data.titleResources?.let { context.getString(it) })
             }
         }
     }

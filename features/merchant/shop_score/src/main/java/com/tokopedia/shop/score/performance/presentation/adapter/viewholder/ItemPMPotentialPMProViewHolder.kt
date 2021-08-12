@@ -11,7 +11,10 @@ import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.*
 import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.tv_pm_reputation_value
 import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
 
-class ItemPMPotentialPMProViewHolder(view: View, private val itemStatusPMProListener: ItemPMPotentialPMProListener):
+class ItemPMPotentialPMProViewHolder(
+    view: View,
+    private val itemStatusPMProListener: ItemPMPotentialPMProListener
+) :
     AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
 
     companion object {
@@ -41,6 +44,10 @@ class ItemPMPotentialPMProViewHolder(view: View, private val itemStatusPMProList
                 adapter = itemPMProBenefitAdapter
             }
         }
-        element?.potentialPMProPMBenefitList?.let { itemPMProBenefitAdapter?.setPotentialPMProBenefit(it) }
+        element?.potentialPMProPMBenefitList?.let {
+            itemPMProBenefitAdapter?.setPotentialPMProBenefit(
+                it
+            )
+        }
     }
 }

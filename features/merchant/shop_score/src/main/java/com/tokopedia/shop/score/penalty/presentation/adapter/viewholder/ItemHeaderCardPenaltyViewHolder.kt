@@ -15,8 +15,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.card_shop_score_total_penalty.view.*
 
-class ItemHeaderCardPenaltyViewHolder(view: View,
-                                      private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener) : AbstractViewHolder<ItemCardShopPenaltyUiModel>(view) {
+class ItemHeaderCardPenaltyViewHolder(
+    view: View,
+    private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener
+) : AbstractViewHolder<ItemCardShopPenaltyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.card_shop_score_total_penalty
@@ -35,18 +37,20 @@ class ItemHeaderCardPenaltyViewHolder(view: View,
 
             val roundedRadius = 8F
             bgTotalPenalty?.shapeAppearanceModel = bgTotalPenalty.shapeAppearanceModel
-                    .toBuilder()
-                    .setAllCornerSizes(roundedRadius)
-                    .build()
+                .toBuilder()
+                .setAllCornerSizes(roundedRadius)
+                .build()
 
             if (element?.hasPenalty == true) {
                 tvCountTotalPenalty.text = element.totalPenalty.toString()
-                context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)?.let { tvCountTotalPenalty.setTextSize(TypedValue.COMPLEX_UNIT_PX, it) }
+                context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)
+                    ?.let { tvCountTotalPenalty.setTextSize(TypedValue.COMPLEX_UNIT_PX, it) }
             } else {
                 tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
                 tvCountTotalPenalty.setType(Typography.HEADING_3)
             }
-            tvTotalPointDeductions?.text = if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
+            tvTotalPointDeductions?.text =
+                if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
         }
     }
 }

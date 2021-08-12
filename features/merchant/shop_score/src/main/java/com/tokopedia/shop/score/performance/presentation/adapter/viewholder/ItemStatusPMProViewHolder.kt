@@ -9,8 +9,10 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPower
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
 import kotlinx.android.synthetic.main.item_status_power_merchant_pro.view.*
 
-class ItemStatusPMProViewHolder(view: View,
-                                private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener) : AbstractViewHolder<ItemStatusPMProUiModel>(view) {
+class ItemStatusPMProViewHolder(
+    view: View,
+    private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener
+) : AbstractViewHolder<ItemStatusPMProUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_status_power_merchant_pro

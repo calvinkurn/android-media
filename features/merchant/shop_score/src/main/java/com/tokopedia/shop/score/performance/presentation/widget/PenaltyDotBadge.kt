@@ -19,7 +19,10 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
     private var willDraw = false
 
     init {
-        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+        mBadgePaint.color = ContextCompat.getColor(
+            context.applicationContext,
+            com.tokopedia.unifyprinciples.R.color.Unify_R600
+        )
         mBadgePaint.isAntiAlias = true
         mBadgePaint.style = Paint.Style.FILL
     }

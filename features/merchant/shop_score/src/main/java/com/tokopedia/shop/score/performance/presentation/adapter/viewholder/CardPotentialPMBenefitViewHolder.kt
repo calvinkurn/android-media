@@ -9,8 +9,11 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemRegularMerc
 import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
 import kotlinx.android.synthetic.main.item_non_eligible_status_power_merchant.view.*
 
-class CardPotentialPMBenefitViewHolder(view: View, private val itemRegularMerchantListener: ItemRegularMerchantListener):
-        AbstractViewHolder<SectionRMPotentialPMBenefitUiModel>(view) {
+class CardPotentialPMBenefitViewHolder(
+    view: View,
+    private val itemRegularMerchantListener: ItemRegularMerchantListener
+) :
+    AbstractViewHolder<SectionRMPotentialPMBenefitUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_non_eligible_status_power_merchant
@@ -35,6 +38,10 @@ class CardPotentialPMBenefitViewHolder(view: View, private val itemRegularMercha
                 adapter = itemPotentialPMBenefitAdapter
             }
         }
-        element?.potentialPMBenefitList?.let { itemPotentialPMBenefitAdapter?.setPotentialPowerMerchantBenefit(it) }
+        element?.potentialPMBenefitList?.let {
+            itemPotentialPMBenefitAdapter?.setPotentialPowerMerchantBenefit(
+                it
+            )
+        }
     }
 }

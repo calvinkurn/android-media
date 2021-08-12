@@ -11,8 +11,10 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiMod
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
 
-class ItemStatusPMViewHolder(view: View,
-                             private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener) : AbstractViewHolder<ItemStatusPMUiModel>(view) {
+class ItemStatusPMViewHolder(
+    view: View,
+    private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener
+) : AbstractViewHolder<ItemStatusPMUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_status_power_merchant
@@ -38,9 +40,19 @@ class ItemStatusPMViewHolder(view: View,
                     itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
                 }
                 if (element.isNewSellerProjection) {
-                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    tv_desc_content_pm_section?.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        )
+                    )
                 } else {
-                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    tv_desc_content_pm_section?.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        )
+                    )
                 }
             }
             tv_title_content_pm_section?.showWithCondition(element?.isNewSellerProjection == false)

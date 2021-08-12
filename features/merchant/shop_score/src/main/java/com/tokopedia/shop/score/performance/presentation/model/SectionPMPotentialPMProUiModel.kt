@@ -14,5 +14,5 @@ class SectionPMPotentialPMProUiModel(
     data class ItemPMProBenefitUIModel(
         override val iconUrl: String = "",
         @StringRes override val titleResources: Int? = null
-    ): ItemParentBenefitUiModel()
+    ) : ItemParentBenefitUiModel()
 }

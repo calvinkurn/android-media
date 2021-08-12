@@ -9,8 +9,11 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemRMPotential
 import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
 import kotlinx.android.synthetic.main.item_potential_rm_to_pm_pro.view.*
 
-class ItemRMPotentialPMProViewHolder(view: View, private val itemStatusPMProListener: ItemRMPotentialPMProListener):
-        AbstractViewHolder<SectionRMPotentialPMProUiModel>(view) {
+class ItemRMPotentialPMProViewHolder(
+    view: View,
+    private val itemStatusPMProListener: ItemRMPotentialPMProListener
+) :
+    AbstractViewHolder<SectionRMPotentialPMProUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_potential_rm_to_pm_pro
@@ -38,6 +41,10 @@ class ItemRMPotentialPMProViewHolder(view: View, private val itemStatusPMProList
                 adapter = itemPMProBenefitAdapter
             }
         }
-        element?.potentialPMProPMBenefitList?.let { itemPMProBenefitAdapter?.setPotentialPMProBenefit(it) }
+        element?.potentialPMProPMBenefitList?.let {
+            itemPMProBenefitAdapter?.setPotentialPMProBenefit(
+                it
+            )
+        }
     }
 }

@@ -158,8 +158,11 @@ class ShopScoreMapper @Inject constructor(
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
             }
 
-            if (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools?.isNotEmpty() == true) {
-                add(mapToItemRecommendationPMUiModel(shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools))
+            val recommendationTools =
+                shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools
+            if (recommendationTools?.isNotEmpty() == true) {
+                add(mapToItemRecommendationPMUiModel
+                    (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools))
             }
 
             when {
@@ -467,7 +470,8 @@ class ShopScoreMapper @Inject constructor(
                 }
 
             this.scorePenalty =
-                shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToLong()
+                shopScoreLevelResponse?.shopScoreDetail?.find {
+                    it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToLong()
                     .orZero()
         }
         return headerShopPerformanceUiModel
@@ -651,7 +655,10 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemRecommendationPMUiModel(recommendationTools: List<GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools.RecommendationTool>?): SectionShopRecommendationUiModel {
+    private fun mapToItemRecommendationPMUiModel(
+        recommendationTools: List<GetRecommendationToolsResponse
+            .ValuePropositionGetRecommendationTools.RecommendationTool>?)
+    : SectionShopRecommendationUiModel {
         return SectionShopRecommendationUiModel(
             recommendationTools?.map {
                 SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
@@ -698,7 +705,8 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemPotentialBenefit(): List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
+    private fun mapToItemPotentialBenefit():
+            List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
         return listOf(
             SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
                 iconPotentialPMUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
@@ -873,7 +881,9 @@ class ShopScoreMapper @Inject constructor(
     private fun getNumberFormatted(valueResponse: Double): String {
         return try {
             val number = valueResponse.toString().split(".").getOrNull(0) ?: ""
-            val decimalNumber = valueResponse.toString().split(".").getOrNull(1)?.getOrNull(0) ?: ""
+            val decimalNumber =
+                valueResponse.toString().split(".").getOrNull(1)
+                    ?.getOrNull(0) ?: ""
             "$number.$decimalNumber"
         } catch (e: IndexOutOfBoundsException) {
             String.format("%.1f", valueResponse)
