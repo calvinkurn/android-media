@@ -32,7 +32,9 @@ class ItemHeaderCardPenaltyViewHolder(
             tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
                 itemHeaderCardPenaltyListener.onMoreInfoHelpPenaltyClicked()
             }
-            bgTotalPenalty?.loadImage(if (element?.hasPenalty == true) ShopScoreConstant.IC_HAS_PENALTY_URL else ShopScoreConstant.IC_NO_PENALTY_URL)
+            bgTotalPenalty?.loadImage(
+                if (element?.hasPenalty == true) ShopScoreConstant.IC_HAS_PENALTY_URL
+                else ShopScoreConstant.IC_NO_PENALTY_URL)
 
             bgTotalPenalty?.shapeAppearanceModel = bgTotalPenalty.shapeAppearanceModel
                 .toBuilder()

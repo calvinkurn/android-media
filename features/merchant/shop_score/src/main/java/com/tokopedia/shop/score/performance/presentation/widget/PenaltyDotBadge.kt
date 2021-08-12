@@ -18,6 +18,12 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
     private val mBadgePaint: Paint = Paint()
     private var willDraw = false
 
+    companion object {
+        const val DIVIDE_TWO = 2
+        const val PLUS_CENTER_Y = 10
+        const val MINUS_CENTER_X = 20F
+    }
+
     init {
         mBadgePaint.color = ContextCompat.getColor(
             context.applicationContext,
@@ -34,9 +40,9 @@ class PenaltyDotBadge(private val context: Context) : Drawable() {
         val width: Float = dp16
         val height: Float = dp16
 
-        val radius = max(width, height) / 2 / 2
-        val centerX = (bounds.right - bounds.left).minus(20f)
-        val centerY = radius.plus(10)
+        val radius = max(width, height) / DIVIDE_TWO / DIVIDE_TWO
+        val centerX = (bounds.right - bounds.left).minus(MINUS_CENTER_X)
+        val centerY = radius.plus(PLUS_CENTER_Y)
         canvas.drawCircle(centerX, centerY, radius, mBadgePaint)
     }
 
