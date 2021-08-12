@@ -1840,15 +1840,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun sendTrackingATC(cartId: String) {
         val boData = viewModel.getBebasOngkirDataByProductId()
-        DynamicProductDetailTracking.Click.eventEcommerceBuy(buttonActionType,
-                viewModel.buttonActionText,
-                viewModel.userId,
-                cartId,
-                trackerAttributionPdp ?: "",
-                viewModel.getMultiOriginByProductId().isFulfillment,
-                DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
+        DynamicProductDetailTracking.Click.eventEcommerceBuy(
+                actionButton = buttonActionType,
+                buttonText = viewModel.buttonActionText,
+                userId = viewModel.userId,
+                cartId = cartId,
+                trackerAttribution = trackerAttributionPdp ?: "",
+                multiOrigin = viewModel.getMultiOriginByProductId().isFulfillment,
+                variantString = DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
-                viewModel.getDynamicProductInfoP1, boData.imageURL.isNotEmpty())
+                productInfo = viewModel.getDynamicProductInfoP1,
+                boType = boData.boType)
     }
 
     private fun validateOvo(result: AddToCartDataModel) {
@@ -2006,7 +2008,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             pdpUiUpdater?.removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
-        if (!it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+        if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+            DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(viewModel.userId,
+                viewModel.getDynamicProductInfoP1, getPPTitleName())
+        } else {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
         }
 
@@ -2909,7 +2914,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ?: false
 
             if (isVariant && viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-                DynamicProductDetailTracking.Click.eventClickAtcAndBuyGoToVariant(buttonAction, viewModel.getDynamicProductInfoP1?.basic?.productID
+                DynamicProductDetailTracking.Click.eventClickAtcToVariantBottomSheet(viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: "")
                 goToAtcVariant()
                 return@let
@@ -3310,8 +3315,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun getErrorMessage(throwable: Throwable): String {
         return context?.let {
             ProductDetailErrorHandler.getErrorMessage(it, throwable)
-        }
-                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        } ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun getErrorMessage(errorMessage: String?): String {

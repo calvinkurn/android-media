@@ -16,14 +16,8 @@ buildscript {
         }
         gradlePluginPortal()
         google()
-        maven { url "https://maven.google.com" }
-        jcenter()
         mavenLocal()
-        maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://central.maven.org/maven2/' }
         mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
@@ -55,7 +49,7 @@ buildscript {
         classpath 'org.javassist:javassist:3.20.0-GA'
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
-        classpath "com.newrelic.agent.android:agent-gradle-plugin:5.28.1"
+        classpath "com.newrelic.agent.android:agent-gradle-plugin:$newRelicVersion"
         classpath "com.gradle:gradle-enterprise-gradle-plugin:3.6.3"
     }
 }
@@ -70,15 +64,6 @@ if (hasProperty('buildScan')) {
 apply from: 'buildproj.gradle'
 
 apply from: "$rootDir/tools/set_debug_tools.gradle"
-
-subprojects {
-    project.afterEvaluate {
-        def isLibrary = project.plugins.hasPlugin("com.android.library")
-        if (isLibrary) {
-            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
-        }
-    }
-}
 
 //Installing Git Hooks
 task installGitHooks {
