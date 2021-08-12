@@ -587,7 +587,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
-        homeRecyclerView?.itemAnimator?.moveDuration = ITEM_MOVE_DURATION
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
@@ -1913,9 +1912,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().removeChooseAddressWidget()
     }
 
-    private fun onNetworkRetry(forceRefresh: Boolean = false) { //on refresh most likely we already lay out many view, then we can reduce
-//animation to keep our performance
-//        homeRecyclerView?.itemAnimator = null
+    private fun onNetworkRetry(forceRefresh: Boolean = false) {
         resetFeedState()
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
