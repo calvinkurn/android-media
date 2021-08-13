@@ -117,9 +117,9 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         DialogUnify(context = this.requireContext(),
             actionType = DialogUnify.SINGLE_ACTION,
             imageType = DialogUnify.NO_IMAGE).apply {
-            setTitle("")
+            setTitle(getString(R.string.saldo_calendar_range_error_title))
             setDescription(getString(R.string.sp_title_max_day))
-            setPrimaryCTAText(getString(R.string.sp_btn_cancel))
+            setPrimaryCTAText(getString(R.string.saldo_btn_oke))
             setPrimaryCTAClickListener {
                 cancel()
             }

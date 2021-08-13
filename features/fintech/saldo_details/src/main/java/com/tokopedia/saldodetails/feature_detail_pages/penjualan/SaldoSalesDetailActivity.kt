@@ -25,7 +25,7 @@ class SaldoSalesDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDetails
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
+        //setSecureWindowFlag()
         saldoComponent.inject(this)
     }
 

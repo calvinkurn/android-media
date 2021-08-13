@@ -9,7 +9,6 @@ import java.util.*
 
 object SaldoDateUtil {
 
-
     val DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss"
     val DATE_PATTERN_FROM_PENJUALAN_SERVER = "dd MMM yyyy, HH:mm:ss"
     val DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm"

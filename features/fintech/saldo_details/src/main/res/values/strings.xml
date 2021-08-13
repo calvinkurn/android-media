@@ -35,7 +35,7 @@
     <string name="sp_goto_home">Belanja</string>
     <string name="sp_empty_state_error">Terjadi Kesalahan, Mohon ulangi beberapa saat lagi</string>
     <string name="sp_cancel">Tutup</string>
-    <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
+    <string name="sp_title_max_day">Kamu hanya dapat memilih rentang waktu maks. 31 hari.</string>
     <string name="sp_end_date">Tanggal Akhir</string>
     <string name="sp_start_date">Tanggal Awal</string>
     <string name="sp_transaction_history_heading">Riwayat Transaksi</string>
@@ -120,5 +120,7 @@
     <string name="saldo_balance_load_fail_title">Gagal menampilkan saldo</string>
     <string name="saldo_balance_load_fail_desc">Klik untuk memuat ulang</string>
     <string name="saldo_cetak">Cetak</string>
+    <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
+    <string name="saldo_btn_oke">Oke</string>
 
 </resources>
