@@ -124,7 +124,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         if (isSeller) {
             val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
                     .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if (isAutoWithdrawalPageEnable && isAutoWithRollenceActive()) {
+            if (isAutoWithdrawalPageEnable ) {
                 saldoToolbar.apply {
                     addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_setting)
                     rightIcons?.let {
