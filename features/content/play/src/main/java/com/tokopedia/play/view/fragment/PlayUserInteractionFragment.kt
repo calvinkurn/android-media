@@ -100,7 +100,8 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
-        PinnedVoucherViewComponent.Listener
+        PinnedVoucherViewComponent.Listener,
+        CastViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -122,7 +123,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
-    private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it) }
+    private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -409,6 +410,13 @@ class PlayUserInteractionFragment @Inject constructor(
         copyToClipboard(content = voucher.code)
         doShowToaster(message = getString(R.string.play_voucher_code_copied), actionText = getString(R.string.play_action_ok))
         analytic.clickHighlightedVoucher(voucher)
+    }
+
+    /**
+     * Cast View Component Listener
+     */
+    override fun onCastClicked() {
+        analytic.clickCast()
     }
     //endregion
 
@@ -784,20 +792,18 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
-        if(cast.isClick()) {
-            // Send Analytic Cast Clicked
-            analytic.clickCast()
-        }
-        else if(cast.previousState == PlayCastState.CONNECTING) {
-            // Send Analytic Casting Success / Failed
-            analytic.connectCast(cast.isSuccessConnect())
-        }
-        else if(cast.currentState == PlayCastState.CONNECTED) {
-            // Start Record Cast Duration
-        }
-        else if(cast.previousState == PlayCastState.CONNECTED) {
-            // Send Analytic Cast Duration
-            analytic.recordCastDuration(0)
+        when {
+            cast.previousState == PlayCastState.CONNECTING -> {
+                // Send Analytic Casting Success / Failed
+                analytic.connectCast(cast.currentState == PlayCastState.CONNECTED)
+            }
+            cast.currentState == PlayCastState.CONNECTED -> {
+                // Start Record Cast Duration
+            }
+            cast.previousState == PlayCastState.CONNECTED -> {
+                // Send Analytic Cast Duration
+                analytic.recordCastDuration(0)
+            }
         }
     }
 
