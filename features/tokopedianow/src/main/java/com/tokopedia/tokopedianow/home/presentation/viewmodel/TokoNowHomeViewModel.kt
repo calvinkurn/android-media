@@ -67,6 +67,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
 class TokoNowHomeViewModel @Inject constructor(
@@ -391,7 +392,7 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String, localCacheModel: LocalCacheModel?) {
         when (item) {
-            is HomeComponentVisitable -> getGlobalHomeComponent(item, localCacheModel) // Tokopedia Home Common Component
+            is HomeComponentVisitable -> getGlobalHomeComponentAsync(item, localCacheModel).await() // Tokopedia Home Common Component
             is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId, localCacheModel) // TokoNow Home Component
             is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
         }
@@ -404,11 +405,15 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param item TokopediaNOW Home component item
      */
-    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String, localCacheModel: LocalCacheModel?) {
+    private suspend fun getTokoNowHomeComponent(
+        item: HomeLayoutUiModel,
+        warehouseId: String,
+        localCacheModel: LocalCacheModel?
+    ) {
         when (item) {
-            is HomeTickerUiModel -> getTickerData(item)
-            is HomeProductRecomUiModel -> getHomeLayoutData(item, localCacheModel)
-            is HomeRecentPurchaseUiModel -> getRecentPurchaseData(item, warehouseId)
+            is HomeTickerUiModel -> getTickerDataAsync(item).await()
+            is HomeProductRecomUiModel -> getHomeLayoutDataAsync(item, localCacheModel).await()
+            is HomeRecentPurchaseUiModel -> getRecentPurchaseDataAsync(item, warehouseId).await()
         }
     }
 
@@ -421,8 +426,8 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param warehouseId Id obtained from choose address widget
      */
     private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
-        when (item) {
-            is TokoNowCategoryGridUiModel -> getCategoryGridData(item, warehouseId)
+        when(item) {
+            is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
         }
     }
 
@@ -433,30 +438,36 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param item Tokopedia Home component item
      */
-    private suspend fun getGlobalHomeComponent(item: HomeComponentVisitable, localCacheModel: LocalCacheModel?) {
-        asyncCatchError(block = {
+    private suspend fun getGlobalHomeComponentAsync(item: HomeComponentVisitable, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
+        return asyncCatchError(block = {
             val channelId = item.visitableId()
             val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
         }) {
             val id = item.visitableId().orEmpty()
             homeLayoutItemList.removeItem(id)
-        }.await()
+        }
     }
 
-    private suspend fun getHomeLayoutData(item: HomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
-        asyncCatchError(block = {
+    private suspend fun getHomeLayoutDataAsync(
+        item: HomeLayoutUiModel,
+        localCacheModel: LocalCacheModel?
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
             val channelId = item.visitableId
             val response = getHomeLayoutDataUseCase.execute(channelId, localCacheModel)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
         }) {
             val id = item.visitableId
             homeLayoutItemList.removeItem(id)
-        }.await()
+        }
     }
 
-    private suspend fun getRecentPurchaseData(item: HomeRecentPurchaseUiModel, warehouseId: String) {
-        asyncCatchError(block = {
+    private suspend fun getRecentPurchaseDataAsync(
+        item: HomeRecentPurchaseUiModel,
+        warehouseId: String
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
             val response = getRecentPurchaseUseCase.execute(warehouseId)
             if(response.products.isNotEmpty()) {
                 homeLayoutItemList.mapProductPurchaseData(item, response)
@@ -465,26 +476,29 @@ class TokoNowHomeViewModel @Inject constructor(
             }
         }) {
             homeLayoutItemList.removeItem(item.id)
-        }.await()
+        }
     }
 
-    private suspend fun getCategoryGridData(item: TokoNowCategoryGridUiModel, warehouseId: String) {
-        asyncCatchError(block = {
+    private suspend fun getCategoryGridDataAsync(
+        item: TokoNowCategoryGridUiModel,
+        warehouseId: String
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
             val response = getCategoryList(warehouseId)
             homeLayoutItemList.mapHomeCategoryGridData(item, response)
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, emptyList())
-        }.await()
+        }
     }
 
-    private suspend fun getTickerData(item: HomeTickerUiModel) {
-        asyncCatchError(block = {
+    private suspend fun getTickerDataAsync(item: HomeTickerUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
             val tickerList = getTickerUseCase.execute().ticker.tickerList
             val tickerData = TickerMapper.mapTickerData(tickerList)
             homeLayoutItemList.mapTickerData(item, tickerData)
         }) {
             homeLayoutItemList.removeItem(item.id)
-        }.await()
+        }
     }
 
     private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
