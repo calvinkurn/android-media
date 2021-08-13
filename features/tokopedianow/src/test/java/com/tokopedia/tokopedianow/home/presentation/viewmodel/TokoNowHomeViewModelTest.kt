@@ -352,6 +352,49 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when get category grid data error should map data with empty category list`() {
+        onGetHomeLayout_thenReturn(createHomeLayoutList())
+        onGetCategoryList_thenReturn(Exception())
+
+        viewModel.getHomeLayout(LocalCacheModel())
+        viewModel.getLayoutData(3, "1", 0, 3, LocalCacheModel())
+
+        val data = HomeLayoutListUiModel(
+            items = listOf(
+                HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
+                HomeLayoutItemUiModel(createDynamicLegoBannerDataModel(
+                    "34923",
+                    "",
+                    "Lego Banner"
+                ), HomeLayoutItemState.NOT_LOADED),
+                HomeLayoutItemUiModel(TokoNowCategoryGridUiModel(
+                    id="11111",
+                    title="Category Tokonow",
+                    categoryList = null,
+                    state= TokoNowLayoutState.HIDE
+                ), HomeLayoutItemState.LOADED),
+                HomeLayoutItemUiModel(createSliderBannerDataModel(
+                    "2222",
+                    "",
+                    "Banner Tokonow"
+                ), HomeLayoutItemState.NOT_LOADED)
+            ),
+            state = TokoNowLayoutState.SHOW,
+            nextItemIndex = 1,
+            isInitialLoad = false,
+            isLoadDataFinished = false
+        )
+        val expectedResult = Success(data)
+
+        verifyGetHomeLayoutUseCaseCalled()
+        verifyGetCategoryListUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
     fun `when getting moreLayoutData should not run and homeLayout livedata is null`() {
         val homeLayout = createHomeLayoutItemUiModelList()
 
@@ -1679,6 +1722,85 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeAddToCartTracker
             .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `when get banner data multiple times should add all banner to home layout list`() {
+        val firstBanner = HomeLayoutResponse(
+            id = "2222",
+            layout = "banner_carousel_v2",
+            header = Header(
+                name = "Banner Tokonow",
+                serverTimeUnix = 0
+            )
+        )
+
+        val secondBanner = HomeLayoutResponse(
+            id = "3333",
+            layout = "banner_carousel_v2",
+            header = Header(
+                name = "Banner Tokonow",
+                serverTimeUnix = 0
+            )
+        )
+
+        val homeLayoutResponse = listOf(firstBanner, secondBanner)
+
+        onGetHomeLayout_thenReturn(homeLayoutResponse)
+        onGetHomeLayoutData_thenReturn(firstBanner)
+
+        viewModel.getHomeLayout(LocalCacheModel())
+        viewModel.getLayoutData(2, "1", 0, 2, LocalCacheModel())
+        viewModel.getLayoutData(2, "1", 0, 2, LocalCacheModel())
+
+        onGetHomeLayoutData_thenReturn(secondBanner)
+
+        viewModel.getLayoutData(3, "1", 0, 3, LocalCacheModel())
+        viewModel.getLayoutData(3, "1", 0, 3, LocalCacheModel())
+
+        val layoutList = listOf(
+            HomeLayoutItemUiModel(HomeChooseAddressWidgetUiModel(id = "0"), HomeLayoutItemState.LOADED),
+            HomeLayoutItemUiModel(createHomeTickerDataModel(emptyList()), HomeLayoutItemState.NOT_LOADED),
+            HomeLayoutItemUiModel(
+                BannerDataModel(
+                    channelModel= ChannelModel(
+                        id="2222",
+                        groupId="",
+                        style= ChannelStyle.ChannelHome,
+                        channelHeader= ChannelHeader(name="Banner Tokonow"),
+                        channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
+                        layout="banner_carousel_v2")
+                ),
+                HomeLayoutItemState.LOADED
+            ),
+            HomeLayoutItemUiModel(
+                BannerDataModel(
+                    channelModel= ChannelModel(
+                        id="3333",
+                        groupId="",
+                        style= ChannelStyle.ChannelHome,
+                        channelHeader= ChannelHeader(name="Banner Tokonow"),
+                        channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
+                        layout="banner_carousel_v2")
+                ),
+                HomeLayoutItemState.LOADED
+            )
+        )
+
+        val expected = Success(
+            HomeLayoutListUiModel(
+                items = layoutList,
+                state = TokoNowLayoutState.SHOW,
+                isLoadDataFinished = true,
+                nextItemIndex = 1
+            )
+        )
+
+        verifyGetHomeLayoutUseCaseCalled()
+        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expected)
     }
 }
 
