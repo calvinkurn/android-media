@@ -30,7 +30,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_S
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT_PAGE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE_EMPTY_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
@@ -306,7 +306,7 @@ class TokoNowSearchFragment:
     }
 
     override fun getEventCategory(isOOC: Boolean): String {
-        return if (isOOC) TOKONOW_EMPTY_RESULT_PAGE else TOKONOW_EMPTY_RESULT
+        return if (isOOC) TOKOOW_SEARCH_RESULT_PAGE else TOKONOW_EMPTY_RESULT
     }
 
     override fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String {
