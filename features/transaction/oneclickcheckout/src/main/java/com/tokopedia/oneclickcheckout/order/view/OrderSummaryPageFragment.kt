@@ -647,12 +647,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccGlobalEvent.AdjustAdminFeeError ->  {
                     view?.let { v ->
-                        Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                        // Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(v, "ERROR GAN!", type = Toaster.TYPE_ERROR).show()
                     }
                 }
                 is OccGlobalEvent.AdjustAdminFeeSuccess -> {
                     creditCardTenorListData = it.ccData
 
+                    Toaster.build(v, "NAH SUKSES NIH", type = Toaster.TYPE_NORMAL).show()
                     // update total
                     // TODO: make sure apakah total yg dimaksud adalah total dari response
                     // TODO: update bottomsheet & summary transaction

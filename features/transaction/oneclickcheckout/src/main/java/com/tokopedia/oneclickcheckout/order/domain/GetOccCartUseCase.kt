@@ -580,6 +580,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           color
         }
       }
+      total_product_price
     }
   }
 }"""
