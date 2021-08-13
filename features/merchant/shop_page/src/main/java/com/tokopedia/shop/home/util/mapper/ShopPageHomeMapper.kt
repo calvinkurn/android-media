@@ -448,6 +448,7 @@ object ShopPageHomeMapper {
     ) : List<ShopHomeShowcaseListItemUiModel> {
         return data.map {
             ShopHomeShowcaseListItemUiModel().apply {
+                id = it.linkId.toString()
                 imageUrl = it.imageUrl
                 appLink = it.appLink
                 name = it.showcaseName

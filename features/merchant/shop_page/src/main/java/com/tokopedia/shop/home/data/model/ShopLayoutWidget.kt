@@ -69,6 +69,8 @@ data class ShopLayoutWidget(
                 val videoUrl: String = "",
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
+                @SerializedName("linkID")
+                val linkId: Long = 0,
                 @SerializedName("productID")
                 val productID: String = "",
                 @SerializedName("name")
