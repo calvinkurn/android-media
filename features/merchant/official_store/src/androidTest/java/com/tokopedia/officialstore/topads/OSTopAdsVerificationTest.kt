@@ -85,12 +85,12 @@ class OSTopAdsVerificationTest {
         waitForData()
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val itemAdapter: OfficialHomeAdapter = recyclerView.adapter as OfficialHomeAdapter
+
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
+        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
         Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
 
         IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
-        Espresso.onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
-
-        //swipe up to trigger os get recom data
 
         val itemList = itemAdapter.currentList
         topAdsCount = calculateTopAdsCount(itemList)
