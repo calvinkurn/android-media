@@ -259,6 +259,13 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <View
+                android:id="@+id/view_chat_box_padding"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
     </LinearLayout>

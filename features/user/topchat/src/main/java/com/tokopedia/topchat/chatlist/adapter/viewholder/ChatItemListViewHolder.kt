@@ -40,7 +40,7 @@ import com.tokopedia.utils.time.TimeHelper
  */
 class ChatItemListViewHolder constructor(
         itemView: View,
-        var listener: ChatListItemListener,
+        var listener: ChatListItemListener
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)

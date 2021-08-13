@@ -55,7 +55,9 @@ import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -203,7 +205,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var sendButtontextWatcher: SendButtonTextWatcher? = null
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
+
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
+    var chatBoxPadding: View? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getAnalytic(): TopChatAnalytics = analytics
@@ -391,6 +395,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
+        chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
     }
 
     private fun initStickerView() {
@@ -2207,10 +2212,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
             override fun onKeyboardShow() {
                 showSeparatedChatTemplateIfFlex()
+                if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                    chatBoxPadding?.show()
+                }
             }
 
             override fun onKeyboardHide() {
                 chatRoomFlexModeListener?.getSeparatedTemplateChat()?.hideSeparatedChatTemplate()
+                chatBoxPadding?.hide()
             }
         })
     }

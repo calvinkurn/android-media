@@ -32,6 +32,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.fragment.ChatListInboxFragment
 import com.tokopedia.topchat.chatroom.di.ChatComponent
@@ -59,6 +61,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private lateinit var windowInfoRepo: WindowInfoRepo
     private lateinit var chatRoomFragment: TopChatRoomFragment
     private lateinit var chatListFragment: ChatListInboxFragment
+
+    private var remoteConfig: RemoteConfig? = null
 
     private var constraintLayoutParent: ConstraintLayout? = null
     private var frameLayoutChatRoom: FrameLayout? = null
@@ -95,13 +99,9 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
-        setupFoldableSupport(savedInstanceState)
+        bindViews()
+        setupFragments(savedInstanceState)
         initWindowBackground()
-        chatTemplateSeparatedView = findViewById(R.id.separated_chat_template)
-        chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
-
-        //variable toolbar is chatroom's toolbar
-        toolbarChatList = findViewById(R.id.toolbar_chatlist)
     }
 
     override fun getComponent(): ChatComponent {
@@ -232,15 +232,30 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         layoutUpdatesJob?.cancel()
     }
 
-    private fun setupFoldableSupport(savedInstanceState: Bundle?) {
+    private fun bindViews() {
         constraintLayoutParent = findViewById(R.id.cl_parent)
         frameLayoutChatRoom = findViewById(R.id.chatroom_fragment)
         frameLayoutChatList = findViewById(R.id.chatlist_fragment)
+        chatTemplateSeparatedView = findViewById(R.id.separated_chat_template)
+
+        //variable toolbar is chatroom's toolbar
+        toolbarChatList = findViewById(R.id.toolbar_chatlist)
+
         windowInfoRepo = windowInfoRepository()
-        setupFragments(savedInstanceState)
     }
 
     private fun setupFragments(savedInstanceState: Bundle?) {
+        if(isAllowedFlexMode()) {
+            setupFlexModeFragments(savedInstanceState)
+        } else {
+            setupChatRoomOnlyToolbar()
+            decreaseToolbarElevation()
+            chatRoomFragment = newFragment as TopChatRoomFragment
+            handleNonFlexModeView()
+        }
+    }
+
+    private fun setupFlexModeFragments(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             chatRoomFragment = newFragment as TopChatRoomFragment
             chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChatId)
@@ -250,6 +265,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
             chatListFragment = (getChatFragment(R.id.chatlist_fragment) as ChatListInboxFragment?)
                 ?: ChatListInboxFragment.createFragment(role, currentActiveChatId)
         }
+        chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
         chatListFragment.chatRoomFlexModeListener = this
         chatRoomFragment.chatRoomFlexModeListener = this
     }
@@ -273,25 +289,30 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun changeLayout(windowLayoutInfo: WindowLayoutInfo) {
-        saveDisplayState(windowLayoutInfo.displayFeatures)
-        if (windowLayoutInfo.displayFeatures.isNotEmpty()) {
-            ViewUtil.alignViewToDeviceFeatureBoundaries(
-                resources, theme, window, windowLayoutInfo,
-                constraintLayoutParent,
-                R.id.chatlist_fragment, R.id.chatroom_fragment,
-                R.id.toolbar, R.id.device_feature
-            )
-            attachChatListFragment()
-            attachChatRoomFragment()
-            chatRoomFragment.toggleTemplateChatWhenFlex(true)
-        } else {
-            setupToolbar()
-            frameLayoutChatList?.hide()
-            attachChatRoomFragment()
-            chatTemplateSeparatedView?.hideSeparatedChatTemplate()
-            chatRoomFragment.toggleTemplateChatWhenFlex(false)
+        if(isAllowedFlexMode()) {
+            saveDisplayState(windowLayoutInfo.displayFeatures)
+            if (windowLayoutInfo.displayFeatures.isNotEmpty()) {
+                ViewUtil.alignViewToDeviceFeatureBoundaries(
+                    resources, theme, window, windowLayoutInfo,
+                    constraintLayoutParent,
+                    R.id.chatlist_fragment, R.id.chatroom_fragment,
+                    R.id.toolbar, R.id.device_feature
+                )
+                attachChatListFragment()
+                attachChatRoomFragment()
+                chatRoomFragment.toggleTemplateChatWhenFlex(true)
+            } else {
+                handleNonFlexModeView()
+            }
+            setupToolbarWithFlex()
         }
-        setupToolbarWithFlex()
+    }
+
+    private fun handleNonFlexModeView() {
+        frameLayoutChatList?.hide()
+        attachChatRoomFragment()
+        chatTemplateSeparatedView?.hideSeparatedChatTemplate()
+        chatRoomFragment.toggleTemplateChatWhenFlex(false)
     }
 
     private fun saveDisplayState(displayFeatures: List<DisplayFeature>) {
@@ -319,7 +340,8 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun isFlexMode(): Boolean {
-        return displayState == FLAT_STATE || displayState == HALF_OPEN_STATE
+        return displayState == FLAT_STATE && isAllowedFlexMode() ||
+                displayState == HALF_OPEN_STATE && isAllowedFlexMode()
     }
 
     private fun hideKeyboard() {
@@ -336,14 +358,22 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private fun setupToolbarWithFlex() {
         if(isFlexMode()) {
-            toolbarChatList?.show()
-            setupToolbarFlexChatlist()
-            setupToolbarFlexChatroom()
+            setupDoubleToolbar()
         } else {
-            toolbarChatList?.hide()
-            super.setupToolbar()
+            setupChatRoomOnlyToolbar()
         }
         decreaseToolbarElevation()
+    }
+
+    private fun setupDoubleToolbar() {
+        toolbarChatList?.show()
+        setupToolbarFlexChatlist()
+        setupToolbarFlexChatroom()
+    }
+
+    private fun setupChatRoomOnlyToolbar() {
+        toolbarChatList?.hide()
+        super.setupToolbar()
     }
 
     private fun setupToolbarFlexChatroom() {
@@ -424,6 +454,13 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         } else {
             return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun isAllowedFlexMode(): Boolean {
+        if(remoteConfig == null) {
+            remoteConfig = FirebaseRemoteConfigImpl(this)
+        }
+        return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true)?: true
     }
 
     companion object {
