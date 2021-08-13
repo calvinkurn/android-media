@@ -13,5 +13,7 @@ enum class PlaySocketType(var value: String) {
     EventBanned("BANNED"),
     EventFreeze("FREEZE"),
     ProductTag("PRODUCT_TAG"),
-    MerchantVoucher("MERCHANT_VOUCHERS")
+    MerchantVoucher("MERCHANT_VOUCHERS"),
+    ChannelInteractiveStatus("CHANNEL_INTERACTIVE_STATUS"),
+    ChannelInteractive("CHANNEL_INTERACTIVE"),
 }

@@ -311,9 +311,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun getClassById(classId: Int): FlightClassModel {
         return when (classId) {
-            1 -> FlightClassModel(1, "Ekonomi")
-            2 -> FlightClassModel(2, "Bisnis")
-            3 -> FlightClassModel(3, "Utama")
+            CLASS_ECONOMY -> FlightClassModel(CLASS_ECONOMY, "Ekonomi")
+            CLASS_BUSINESS -> FlightClassModel(CLASS_BUSINESS, "Bisnis")
+            CLASS_VIP -> FlightClassModel(CLASS_VIP, "Utama")
             else -> FlightClassModel(0, "")
         }
     }
@@ -359,7 +359,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
         text.setSpan(StyleSpan(Typeface.BOLD),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        text.setSpan(RelativeSizeSpan(1.25f),
+        text.setSpan(RelativeSizeSpan(RELATIVE_SPAN_SIZE),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text.setSpan(
                 ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)),
@@ -376,6 +376,11 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
         val shake = AnimationUtils.loadAnimation(context, R.anim.flight_rotate)
         imgFlightReverseAirport.startAnimation(shake)
+
+        listener?.onReverseAirportClicked(
+                flightSearchData.departureAirport,
+                flightSearchData.arrivalAirport
+        )
     }
 
     private fun onSaveSearch() {
@@ -427,6 +432,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onRoundTripSwitchChanged(isRoundTrip: Boolean)
         fun onDepartureAirportClicked()
         fun onDestinationAirportClicked()
+        fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel)
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
 
@@ -440,6 +446,12 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     companion object {
         const val DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY = 2
+
+        private const val CLASS_ECONOMY = 1
+        private const val CLASS_BUSINESS = 2
+        private const val CLASS_VIP = 3
+
+        private const val RELATIVE_SPAN_SIZE = 1.25f
     }
 
 }

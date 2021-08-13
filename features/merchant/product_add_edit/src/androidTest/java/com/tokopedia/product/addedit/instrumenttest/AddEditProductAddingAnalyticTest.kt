@@ -2,12 +2,9 @@ package com.tokopedia.product.addedit.instrumenttest
 
 import android.content.Intent
 import android.net.Uri
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
@@ -18,18 +15,16 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
-import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.stub.AddEditProductPreviewActivityStub
+import com.tokopedia.product.addedit.utils.InstrumentedTestUtil
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performDialogPrimaryClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performPressBack
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performReplaceText
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performScrollAndClick
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.test.application.espresso_component.CommonMatcher
-import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.trackingoptimizer.constant.Constant
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -59,10 +54,11 @@ class AddEditProductAddingAnalyticTest {
 
     }
 
-    @get:Rule
-    var activityRule: IntentsTestRule<AddEditProductPreviewActivity> = IntentsTestRule(AddEditProductPreviewActivity::class.java, false, false)
-    @get:Rule
-    var permissionRule = GrantPermissionRule.grant(
+    @Rule @JvmField
+    var activityRule: IntentsTestRule<AddEditProductPreviewActivityStub> = IntentsTestRule(
+        AddEditProductPreviewActivityStub::class.java, false, false)
+    @Rule @JvmField
+    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -86,6 +82,7 @@ class AddEditProductAddingAnalyticTest {
 
     @After
     fun afterTest() {
+        InstrumentedTestUtil.deleteAllDraft()
         gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
@@ -129,11 +126,9 @@ class AddEditProductAddingAnalyticTest {
 
     private fun testAddPhoto() {
         performScrollAndClick(R.id.tv_start_add_edit_product_photo)
-        Espresso.onView(getElementFromMatchAtPosition(withId(R.id.recycler_view), 1)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
-        )
         performClickNextOnImagePicker()
         performClickNextOnImagePicker()
+        Thread.sleep(500)
     }
 
     private fun testDetailProduct() {
@@ -163,7 +158,7 @@ class AddEditProductAddingAnalyticTest {
     private fun createIntentAddProduct(): Intent {
         val applink = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
 
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, AddEditProductPreviewActivity::class.java).also {
+        return Intent(InstrumentationRegistry.getInstrumentation().targetContext, AddEditProductPreviewActivityStub::class.java).also {
             it.data = applink
         }
     }

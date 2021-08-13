@@ -358,4 +358,42 @@
     <string name="kejar_ulasan_label">Kejar Ulasan</string>
     <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
     <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
+
+    <!-- Reading   -->
+    <string name="review_reading_title">Ulasan Pembeli</string>
+    <string name="review_reading_bottom_sheet_statistics_description">Dihitung dari jumlah rating positif (bintang 4 dan 5) dibagi dengan total rating.</string>
+    <string name="review_reading_rating_and_review_count">%s rating • %s ulasan</string>
+    <string name="review_reading_rating_only_count">%d rating (tanpa ulasan)</string>
+    <string name="review_reading_header_maximum_score">/5.0</string>
+    <string name="review_reading_sort_default">Urutkan</string>
+    <string name="review_reading_sort_most_helpful">Paling Membantu</string>
+    <string name="review_reading_sort_latest">Terbaru</string>
+    <string name="review_reading_sort_highest_rating">Rating Tertinggi</string>
+    <string name="review_reading_sort_lowest_rating">Rating Terendah</string>
+    <string name="review_reading_filter_with_attachment">Dengan Foto</string>
+    <string name="review_reading_filter_all_ratings">Semua Rating</string>
+    <string name="review_reading_filter_all_topics">Semua Topik</string>
+    <string name="review_reading_submit_filter">Terapkan Filter</string>
+    <string name="review_reading_reset_filter">Reset</string>
+    <string name="review_reading_report_option">Laporkan Ulasan</string>
+    <string name="review_reading_rating_filter_title">Rating dengan ulasan</string>
+    <string name="review_reading_topic_filter_title">Topik ulasan</string>
+    <string name="review_reading_sort_title">Urutkan</string>
+    <string name="review_reading_like">Membantu</string>
+    <string name="review_reading_like_count">%d orang terbantu</string>
+    <string name="review_reading_show_response">Lihat Balasan</string>
+    <string name="review_reading_seller_label">Penjual</string>
+    <string name="review_reading_hide_response">Tutup Balasan</string>
+    <string name="review_reading_empty_review">Tidak ada ulasan</string>
+    <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
+    <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
+    <string name="review_reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_reading_empty_filter_title">Oops, nggak ada ulasan yang sesuai filter</string>
+    <string name="review_reading_empty_filter_subtitle">Coba reset atau ubah filter kamu, ya.</string>
+    <string name="review_reading_success_submit_report">Kamu berhasil melaporkan ulasan ini.</string>
+    <string name="review_reading_collapse">&lt;a href="#"&gt;Tutup Ulasan&lt;/a&gt;</string>
+
+    <!-- Gallery    -->
+    <string name="review_gallery_image_count">%d/%d</string>
+
 </resources>
