@@ -53,10 +53,7 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
-import com.tokopedia.play.view.uimodel.PlayCastState
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -781,9 +778,28 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableCastState.observe(viewLifecycleOwner) {
             castViewOnStateChanged()
             pipViewOnStateChanged()
+            sendCastAnalytic(it)
         }
     }
     //endregion
+
+    private fun sendCastAnalytic(cast: PlayCastUiModel) {
+        if(cast.isClick()) {
+            // Send Analytic Cast Clicked
+            analytic.clickCast()
+        }
+        else if(cast.previousState == PlayCastState.CONNECTING) {
+            // Send Analytic Casting Success / Failed
+            analytic.connectCast(cast.isSuccessConnect())
+        }
+        else if(cast.currentState == PlayCastState.CONNECTED) {
+            // Start Record Cast Duration
+        }
+        else if(cast.previousState == PlayCastState.CONNECTED) {
+            // Send Analytic Cast Duration
+            analytic.recordCastDuration(0)
+        }
+    }
 
     private fun triggerImmersive(shouldImmersive: Boolean) {
         cancelAllAnimations()
