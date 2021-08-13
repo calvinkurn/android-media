@@ -12,6 +12,7 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by furqan on 22/04/19
@@ -35,7 +36,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null && uri.lastPathSegment!= null) {
-            propertyId = uri.lastPathSegment!!.toLong()
+            propertyId = uri.lastPathSegment.toLongOrZero()
             if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
             if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
             if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toInt() ?: 0

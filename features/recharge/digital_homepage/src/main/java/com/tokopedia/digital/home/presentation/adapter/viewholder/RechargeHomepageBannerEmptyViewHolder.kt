@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -43,6 +44,21 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
                     setMargins(leftMargin, marginTop, rightMargin, bottomMargin)
                     recharge_home_banner_empty_text_container.layoutParams = this
                 }
+
+                val vto = recharge_home_banner_empty_text_container.viewTreeObserver
+                vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        recharge_home_banner_empty_text_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                        val location = intArrayOf(0,0)
+                        recharge_home_banner_empty_text_container.getLocationOnScreen(location)
+
+                        iv_recharge_home_banner_empty.layoutParams.height = recharge_home_banner_empty_text_container.measuredHeight +
+                                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) +
+                                location[Y_COORDINATE_INDEX]
+                        iv_recharge_home_banner_empty.requestLayout()
+                    }
+                })
             }
         }
     }
@@ -51,5 +67,7 @@ class RechargeHomepageBannerEmptyViewHolder(itemView: View, val listener: Rechar
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_banner_empty
         const val CONTENT_MARGIN_TOP_DP = 56
+
+        private const val Y_COORDINATE_INDEX = 1
     }
 }

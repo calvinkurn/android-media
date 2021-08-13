@@ -23,6 +23,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -45,7 +47,7 @@ project.ext {
     artifactId = 'gallery'
     groupId = 'com.tokopedia.discovery'
     versionName = "0.0.2"
-    artifactName ="gallery-release"
+    artifactName = "gallery-release"
 }
 
 apply from: '../../../publish_local.gradle'

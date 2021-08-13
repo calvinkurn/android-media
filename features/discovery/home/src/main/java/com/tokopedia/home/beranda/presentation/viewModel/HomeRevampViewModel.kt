@@ -220,7 +220,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
-    private var useWalletApp: Boolean = true
+    private var useWalletApp: Boolean = false
     private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""

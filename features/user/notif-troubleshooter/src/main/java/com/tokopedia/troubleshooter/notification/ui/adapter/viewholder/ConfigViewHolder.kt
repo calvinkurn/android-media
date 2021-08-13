@@ -1,19 +1,17 @@
 package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
+import com.tokopedia.troubleshooter.notification.databinding.ItemNotificationConfigBinding
 import com.tokopedia.troubleshooter.notification.ui.listener.ConfigItemListener
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigState
 import com.tokopedia.troubleshooter.notification.ui.state.ConfigUIView
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable as drawable
 
 open class ConfigViewHolder(
@@ -21,16 +19,13 @@ open class ConfigViewHolder(
         view: View
 ): AbstractViewHolder<ConfigUIView>(view) {
 
-    private val pgLoader = view.findViewById<LoaderUnify>(R.id.pgLoader)
-    private val imgStatus = view.findViewById<ImageView>(R.id.imgStatus)
-    private val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
-    private val btnAction = view.findViewById<UnifyButton>(R.id.btnAction)
+    private val binding: ItemNotificationConfigBinding? by viewBinding()
     private val context by lazy { itemView.context }
 
     override fun bind(element: ConfigUIView?) {
         if (element == null) return
-        txtTitle?.text = context?.getString(element.title)
-        pgLoader?.show()
+        binding?.txtTitle?.text = context.getString(element.title)
+        binding?.pgLoader?.show()
 
         viewState(element)
     }
@@ -39,12 +34,12 @@ open class ConfigViewHolder(
         troubleshootStatus(element)
 
         if (element.state == ConfigState.Ringtone) {
-            btnAction?.show()
-            btnAction?.setOnClickListener {
+            binding?.btnAction?.show()
+            binding?.btnAction?.setOnClickListener {
                 element.ringtone?.let { listener.onRingtoneTest(it) }
             }
         } else {
-            btnAction?.hide()
+            binding?.btnAction?.hide()
         }
     }
 
@@ -61,15 +56,16 @@ open class ConfigViewHolder(
             is StatusState.Warning -> {
                 visibility(R.drawable.ic_ts_notif_warning)
             }
+            else -> {}
         }
 
-        txtTitle?.text = context.getString(message)
+        binding?.txtTitle?.text = context.getString(message)
     }
 
     private fun visibility(resource: Int) {
-        imgStatus?.setImageDrawable(drawable(context, resource))
-        imgStatus?.show()
-        pgLoader?.hide()
+        binding?.imgStatus?.setImageDrawable(drawable(context, resource))
+        binding?.imgStatus?.show()
+        binding?.pgLoader?.hide()
     }
 
     companion object {

@@ -95,7 +95,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 hasAction = shouldHaveActionMenu(channelType, item.partner.id),
                 channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
                 share = mapWidgetShare(item.share),
-                performanceSummaryLink = item.performanceSummaryPageLink
+                performanceSummaryLink = item.performanceSummaryPageLink,
+                hasGiveaway = promoLabelMapper.mapWidgetHasGiveaway(item.config.promoLabels)
         )
     }
 

@@ -73,7 +73,7 @@ private fun Map.Entry<String, Any>.isNotSortAndFilterEntry(): Boolean {
     return isNotFilterAndSortKey() || isPriceFilterWithZeroValue()
 }
 
-private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
+fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
     return nonFilterParameterKeyList.contains(key)
             || key.matchesWithNonFilterPrefix()
 }
