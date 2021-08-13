@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import android.util.Log
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -474,6 +475,21 @@ class PlayAnalytic(
     }
 
     fun getTrackingQueue() = trackingQueue
+
+    /**
+     * Cast
+     */
+    fun clickCast() {
+        Log.d("<LOG>", "clickCast")
+    }
+
+    fun connectCast(isSuccess: Boolean) {
+        Log.d("<LOG>", "connectCast : $isSuccess")
+    }
+
+    fun recordCastDuration(duration: Long) {
+        Log.d("<LOG>", "recordCastDuration : $duration")
+    }
 
     /**
      * Private methods
