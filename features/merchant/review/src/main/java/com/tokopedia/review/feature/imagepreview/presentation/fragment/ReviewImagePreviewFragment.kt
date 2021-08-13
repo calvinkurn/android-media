@@ -101,6 +101,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         component?.inject(this)
     }
 
+    override fun onLoadMore() {
+        currentPage++
+        viewModel.setPage(currentPage)
+    }
+
     override fun getComponent(): ReviewImagePreviewComponent? {
         return activity?.run {
             DaggerReviewImagePreviewComponent.builder()
@@ -550,11 +555,6 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             index + 1,
             if (isFromGallery) galleryRoutingData.totalImageCount else productReview.imageAttachments.size.toLong()
         )
-    }
-
-    override fun onLoadMore() {
-        currentPage++
-        viewModel.setPage(currentPage)
     }
 
     private fun updateHasNextPage(hasNextPage: Boolean) {

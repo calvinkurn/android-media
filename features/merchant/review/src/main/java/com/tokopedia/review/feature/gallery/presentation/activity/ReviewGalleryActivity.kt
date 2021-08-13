@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.gallery.presentation.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -14,11 +12,7 @@ import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryF
 class ReviewGalleryActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
     companion object {
-        fun getIntent(context: Context, productId: String): Intent {
-            return Intent(context, ReviewGalleryActivity::class.java).apply {
-                putExtra("productId", productId)
-            }
-        }
+        const val PRODUCT_ID_APPLINK_INDEX = 1
     }
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -91,11 +85,10 @@ class ReviewGalleryActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringL
     }
 
     private fun getDataFromApplink(): String {
-        return intent.getStringExtra("productId") ?: ""
-//        val uri = intent.data
-//        return if (uri != null) {
-//            val segments = uri.pathSegments
-//            ""
-//        } else ""
+        val uri = intent.data
+        return if (uri != null) {
+            val segments = uri.pathSegments
+            return segments[PRODUCT_ID_APPLINK_INDEX] ?: ""
+        } else ""
     }
 }
