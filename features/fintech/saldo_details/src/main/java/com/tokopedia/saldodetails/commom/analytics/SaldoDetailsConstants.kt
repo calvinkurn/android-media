@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.commom.analytics
+package com.tokopedia.saldodetails.commom.analytics.analytics
 
 import com.tokopedia.url.TokopediaUrl
 

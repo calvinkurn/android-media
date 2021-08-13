@@ -1,11 +1,10 @@
-package com.tokopedia.saldodetails.commom.analytics
+package com.tokopedia.saldodetails.commom.analytics.analytics
 
-import com.tokopedia.saldodetails.di.SaldoDetailsScope
+import com.tokopedia.saldodetails.commom.di.SaldoDetailsScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 @SaldoDetailsScope

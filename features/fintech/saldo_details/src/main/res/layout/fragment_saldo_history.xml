@@ -92,7 +92,7 @@
             app:tabSelectedTextColor="@color/Unify_G400"
             app:tabTextColor="@color/Unify_N700_44" />
 
-        <com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
+        <com.tokopedia.saldodetails.commom.design.HeightWrappingViewPager
             android:id="@+id/transactionHistoryViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

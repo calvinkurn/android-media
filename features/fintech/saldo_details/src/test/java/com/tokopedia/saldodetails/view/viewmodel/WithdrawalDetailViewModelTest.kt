@@ -1,8 +1,9 @@
 package com.tokopedia.saldodetails.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.saldodetails.domain.GetWithdrawalInfoUseCase
-import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoData
+import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.GetWithdrawalInfoUseCase
+import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalDetailViewModel
+import com.tokopedia.saldodetails.feature_detail_pages.withdrawal.WithdrawalInfoData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -10,7 +11,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

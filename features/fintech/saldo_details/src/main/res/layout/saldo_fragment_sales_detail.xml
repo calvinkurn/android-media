@@ -84,7 +84,7 @@
             android:layout_marginTop="@dimen/unify_space_16"
             app:layout_constraintTop_toBottomOf="@id/tvWithdrawalDate" />
 
-        <com.tokopedia.saldodetails.design.WithdrawalDetailsList
+        <com.tokopedia.saldodetails.commom.design.WithdrawalDetailsList
             android:id="@+id/llWithdrawalDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
