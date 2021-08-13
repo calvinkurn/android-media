@@ -8,15 +8,14 @@
 
     <View
         android:id="@+id/outerCircle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl8"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:background="@drawable/setting_image_circular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@id/settingShopGuidelineInfo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/shopScoreLayout"
-        app:layout_constraintWidth_percent="0.225" />
+        app:layout_constraintBottom_toTopOf="@id/shopScoreLayout" />
 
     <RelativeLayout
         android:id="@+id/innerCircle"
@@ -41,22 +40,23 @@
         android:id="@+id/shopName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@id/shopBadges"
-        app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        app:layout_constraintStart_toEndOf="@id/outerCircle"
         app:layout_constraintTop_toTopOf="@id/innerCircle"
         app:typographyType="heading_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Adeedast Naiki"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/setting_shop_badge_height"
         app:layout_constraintBottom_toBottomOf="@id/innerCircle"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        app:layout_constraintStart_toStartOf="@id/shopName"
         app:layout_constraintTop_toBottomOf="@id/shopName"
         app:srcCompat="@drawable/ic_power_merchant" />
 
@@ -94,7 +94,6 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="@id/settingShopGuidelineLeft"
         app:layout_constraintTop_toBottomOf="@id/outerCircle">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -133,26 +132,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             app:srcCompat="@drawable/ic_seller_menu_chevron_right"
             tools:ignore="ContentDescription" />
+
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/settingShopGuidelineLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.025" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/settingShopGuidelineRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/settingShopGuidelineInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
 </androidx.constraintlayout.widget.ConstraintLayout>
