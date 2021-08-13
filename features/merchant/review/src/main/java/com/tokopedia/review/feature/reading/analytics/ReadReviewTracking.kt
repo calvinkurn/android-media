@@ -354,16 +354,6 @@ object ReadReviewTracking {
                                         )
                                 )
                         )
-//                        ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
-//                                ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
-//                                        mapOf(
-//                                                ReadReviewTrackingConstants.KEY_ID to "",
-//                                                ReadReviewTrackingConstants.KEY_CREATIVE to "",
-//                                                ReadReviewTrackingConstants.KEY_NAME to "name",
-//                                                ReadReviewTrackingConstants.KEY_POSITION to position.toString()
-//                                        )
-//                                )
-//                        )
                 ),
                 ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
                 ReadReviewTrackingConstants.KEY_SHOP_ID to shopId,

@@ -50,7 +50,6 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         isProductReview = !element.isShopViewHolder
         shopId = element.shopId
         bindViews()
-//        productInfo?.hide()
         with(element.reviewData) {
             if (!isProductReview) {
                 setProductInfo(
