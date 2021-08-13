@@ -29,7 +29,10 @@ import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -105,7 +108,6 @@ class TokoNowSearchViewModel @Inject constructor (
 
         val headerDataView = HeaderDataView(
                 title = "",
-                hasSeeAllCategoryButton = false,
                 aceSearchProductHeader = searchProductHeader,
                 categoryFilterDataValue = searchModel.categoryFilter,
                 quickFilterDataValue = searchModel.quickFilter,
@@ -119,6 +121,16 @@ class TokoNowSearchViewModel @Inject constructor (
         onGetFirstPageSuccess(headerDataView, contentDataView)
 
         sendGeneralSearchTracking(searchProductHeader)
+    }
+
+    override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
+        val titleType = if (query.isEmpty()) AllProductTitle else SearchTitle
+        val hasSeeAllCategoryButton = query.isEmpty()
+
+        return TitleDataView(
+                titleType = titleType,
+                hasSeeAllCategoryButton = hasSeeAllCategoryButton,
+        )
     }
 
     override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {

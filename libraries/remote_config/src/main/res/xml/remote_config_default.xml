@@ -579,7 +579,7 @@
     </entry>
     <entry>
         <key>android_enable_screenshot_sharing</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_branch_callback_timeout_key</key>

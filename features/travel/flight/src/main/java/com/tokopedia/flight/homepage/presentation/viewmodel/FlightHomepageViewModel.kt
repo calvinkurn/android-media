@@ -180,6 +180,15 @@ class FlightHomepageViewModel @Inject constructor(
         }
     }
 
+    fun onReverseAirportChanged(newDepartureAirport: FlightAirportModel, newArrivalAirport: FlightAirportModel) {
+        homepageData.value?.let {
+            val newDashboardData = cloneViewModel(it)
+            newDashboardData.departureAirport = newDepartureAirport
+            newDashboardData.arrivalAirport = newArrivalAirport
+            mutableDashboardData.postValue(newDashboardData)
+        }
+    }
+
     fun onClassChanged(classModel: FlightClassModel) {
         flightAnalytics.eventClassClick(classModel.title)
         homepageData.value?.let {

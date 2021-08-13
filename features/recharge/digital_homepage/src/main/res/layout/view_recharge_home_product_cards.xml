@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
-            app:typographyType="heading_3" />
+            app:typographyType="heading_4" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recharge_home_product_cards"
