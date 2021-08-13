@@ -34,6 +34,10 @@ object AtcVariantMapper {
 
     private fun mapToVariantChildren(bundleItem: BundleItem) = bundleItem.children.map {
         try {
+            val originalPrice = it.originalPrice.toDouble()
+            val discountedPrice = it.bundlePrice.toDouble()
+            val discountedPercentage = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice)
+
             VariantChild(
                 productId = it.productID.toString(),
                 price = it.bundlePrice.toDouble(),
@@ -51,9 +55,9 @@ object AtcVariantMapper {
                 ),
                 campaign = VariantCampaign(
                     isActive = true,
-                    originalPrice = it.originalPrice.toDouble(),
-                    discountedPrice = it.bundlePrice.toDouble(),
-                    discountedPercentage = 10f,
+                    originalPrice = originalPrice,
+                    discountedPrice = discountedPrice,
+                    discountedPercentage = discountedPercentage.toFloat(),
                     stock = it.stock
                 )
             )

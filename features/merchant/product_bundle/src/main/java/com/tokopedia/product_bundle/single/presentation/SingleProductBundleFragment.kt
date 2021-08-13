@@ -5,27 +5,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.R
+import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
+import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
 import com.tokopedia.product_bundle.single.presentation.viewmodel.SingleProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class SingleProductBundleFragment : BaseDaggerFragment() {
+class SingleProductBundleFragment(
+    private var bundleInfo: BundleInfo
+) : BaseDaggerFragment(), BundleItemListener {
 
     @Inject
     lateinit var viewModel: SingleProductBundleViewModel
@@ -33,7 +39,12 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
     private var tvBundleSold: Typography? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var totalAmount: TotalAmount? = null
-    private var adapter = SingleProductBundleAdapter()
+    private var adapter = SingleProductBundleAdapter(this)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.setBundleInfo(requireContext(), bundleInfo)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -48,14 +59,14 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
         setupTotalAmount(view)
 
         observeSingleProductBundleUiModel()
-
-        AtcVariantNavigation.showVariantBottomSheet(this, viewModel.generateBundleItem())
+        observeTotalAmountUiModel()
+        observeToasterError()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
-           println(this.toString())
+           adapter.setSelectedVariant(this.selectedProductId, this.selectedProductId)
         }
     }
 
@@ -69,18 +80,41 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
                 .inject(this)
     }
 
+    override fun onVariantSpinnerClicked(selectedVariant: ProductVariant?) {
+        selectedVariant?.let {
+            AtcVariantNavigation.showVariantBottomSheet(this, it)
+        }
+    }
+
+    override fun onBundleItemSelected(originalPrice: Double, slashPrice: Double, quantity: Int) {
+        viewModel.updateTotalAmount(originalPrice, slashPrice, quantity)
+    }
+
     private fun observeSingleProductBundleUiModel() {
-        viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, Observer {
+        viewModel.singleProductBundleUiModel.observe(viewLifecycleOwner, {
             swipeRefreshLayout?.isRefreshing = false
-            updateTotalSold(it.itemsSoldCount)
-            adapter.setData(it.items)
+            updateTotalPO(it.preorderDurationWording)
+            adapter.setData(it.items, it.selectedItems)
+        })
+    }
+
+    private fun observeTotalAmountUiModel() {
+        viewModel.totalAmountUiModel.observe(viewLifecycleOwner, {
             updateTotalAmount(it.price, it.discount, it.slashPrice, it.priceGap)
+        })
+    }
+
+    private fun observeToasterError() {
+        viewModel.toasterError.observe(viewLifecycleOwner, { throwable ->
+            throwable.message?.let {
+                Toaster.build(requireView(), it, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
         })
     }
 
     private fun setupTotalSold(view: View) {
         tvBundleSold = view.findViewById(R.id.tv_bundle_sold)
-        updateTotalSold(0)
+        updateTotalPO(null)
     }
 
     private fun setupRecyclerViewItems(view: View) {
@@ -89,9 +123,7 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
         rvBundleItems.adapter = adapter
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        swipeRefreshLayout?.setOnRefreshListener {
-            viewModel.getBundleData()
-        }
+        swipeRefreshLayout?.isEnabled = false
     }
 
     private fun setupTotalAmount(view: View) {
@@ -99,11 +131,15 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
         totalAmount?.apply {
             setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
             updateTotalAmount("Rp0", 0, "Rp0", "Rp0")
+            amountCtaView.setOnClickListener {
+                viewModel.checkout(adapter.getSelectedData())
+            }
         }
     }
 
-    private fun updateTotalSold(totalSold: Int) {
-        tvBundleSold?.text = "Terjual $totalSold paket"
+    private fun updateTotalPO(totalPOWording: String?) {
+        tvBundleSold?.isVisible = totalPOWording != null
+        tvBundleSold?.text = "PO $totalPOWording"
     }
 
     private fun updateTotalAmount(price: String, discount: Int, slashPrice: String, priceGap: String) {
@@ -116,11 +152,6 @@ class SingleProductBundleFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                SingleProductBundleFragment().apply {
-                    arguments = Bundle().apply {
-
-                    }
-                }
+        fun newInstance(bundleInfo: BundleInfo) = SingleProductBundleFragment(bundleInfo)
     }
 }

@@ -4,18 +4,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product_bundle.common.data.model.request.ProductData
+import com.tokopedia.product_bundle.common.data.model.request.RequestData
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductBundleViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
     private val getBundleInfoUseCase: GetBundleInfoUseCase
-) : BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val PRODUCT_BUNDLE_STATUS_ACTIVE = 1
@@ -25,10 +34,8 @@ class ProductBundleViewModel @Inject constructor(
         private const val PRODUCT_BUNDLE_STATUS_OUT_OF_STOCK = -3
     }
 
-    private var productBundleMasters = listOf<ProductBundleMaster>()
-
-    private val getBundleInfoResultLiveData = MutableLiveData<BundleInfo>()
-    val getBundleInfoResult: LiveData<BundleInfo> get() = getBundleInfoResultLiveData
+    private val getBundleInfoResultLiveData = MutableLiveData<Result<GetBundleInfoResponse>>()
+    val getBundleInfoResult: LiveData<Result<GetBundleInfoResponse>> get() = getBundleInfoResultLiveData
 
     private val selectedProductBundleMasterLiveData = MutableLiveData<ProductBundleMaster>()
     val selectedProductBundleMaster: LiveData<ProductBundleMaster> get() = selectedProductBundleMasterLiveData
@@ -36,32 +43,21 @@ class ProductBundleViewModel @Inject constructor(
     private val isErrorLiveData = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> get() = isErrorLiveData
 
-    fun getProductBundleMasters(): List<ProductBundleMaster> {
-//        // will be replaced with product info models
-//        val productBundles = generateDummyBundles()
-//        val activeProductBundles = getActiveProductBundles(productBundles)
-//        productBundleMasters = productBundles.mapIndexed { index, bundleInfo ->
-//            val isRecommendation = index == 0
-//            ProductBundleMaster(
-//                isRecommendation = isRecommendation,
-//                bundleId = bundleInfo.bundleID,
-//                bundleName = bundleInfo.name,
-//                soldProductBundle = calculateSoldProductBundle(
-//                    bundleInfo.originalQuota,
-//                    bundleInfo.quota
-//                )
-//            )
-//        }
-        return productBundleMasters
-    }
-
     fun getBundleInfo(productId: Long) {
-        var bundleInfo = BundleInfo()
-        getBundleInfoResultLiveData.value = bundleInfo
-    }
-
-    fun getRecommendedProductBundleId(productBundleMasters: List<ProductBundleMaster>): Long {
-        return productBundleMasters.first().bundleId
+        launchCatchError(block = {
+            val result = withContext(Dispatchers.IO) {
+                getBundleInfoUseCase.setParams(
+                    squad = "minion ken",
+                    usecase = "getBundleInfo",
+                    requestData = RequestData(variantDetail = true, CheckCampaign = true, BundleGroup = true, Preorder = true),
+                    productData = ProductData(productID = productId.toString())
+                )
+                getBundleInfoUseCase.executeOnBackground()
+            }
+            getBundleInfoResultLiveData.value = Success(result)
+        }, onError = {
+            getBundleInfoResultLiveData.value = Fail(it)
+        })
     }
 
     fun setSelectedProductBundleMaster(productBundleMaster: ProductBundleMaster) {
@@ -71,6 +67,7 @@ class ProductBundleViewModel @Inject constructor(
     fun getSoldProductBundle(): Int {
         return this.selectedProductBundleMasterLiveData.value?.soldProductBundle ?: 0
     }
+
     fun addProductBundleToCart() {
         // simulate error response from the API
         isErrorLiveData.value = true

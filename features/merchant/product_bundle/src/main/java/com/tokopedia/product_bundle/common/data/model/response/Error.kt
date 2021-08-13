@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName
 
 data class Error(
         @Expose
-        @SerializedName("message")
-        val message: String = "",
+        @SerializedName("messages")
+        val messages: String = "",
         @Expose
         @SerializedName("reason")
         val reason: String = "",
         @Expose
-        @SerializedName("code")
-        val code: String = ""
+        @SerializedName("errorCode")
+        val errorCode: String = ""
 )

@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
-import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.Utility
@@ -28,6 +27,8 @@ import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMas
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -83,9 +84,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         setupProductBundleMasterView(view)
         setupProductBundleDetailView(view)
         setupProductBundleOverView(view)
-
-        // simulate get bundle info api call
-        val productBundleMasters = viewModel.getProductBundleMasters()
 
 //        // render product bundle master chips
 //        productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
@@ -153,27 +151,41 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToProductBundleInfo() {
-        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { bundleInfo ->
-            // render product bundle detail
-            val productBundleItems = bundleInfo.bundleItems
-            val productBundleDetails = viewModel.mapProductBundleItemsToProductBundleDetail(productBundleItems)
-            productBundleDetailAdapter?.setProductBundleDetails(productBundleDetails)
-            // render sold product bundle view
-            val soldProductBundle = viewModel.getSoldProductBundle()
-            soldProductBundleTextView?.text = String.format(getString(R.string.text_sold_product_bundle), soldProductBundle)
-            // render product bundle overview section
-            val totalPrice = viewModel.calculateTotalPrice(productBundleItems)
-            val totalBundlePrice = viewModel.calculateTotalBundlePrice(productBundleItems)
-            val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
-            val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
-            updateProductBundleOverView(
-                    productBundleOverView = productBundleOverView,
-                    totalDiscount = totalDiscount,
-                    totalBundlePrice = totalBundlePrice,
-                    totalPrice = totalPrice,
-                    totalSaving = totalSaving
-            )
+
+        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    val productBundleInfo = result.data
+
+                }
+                is Fail -> {
+
+                }
+            }
         })
+
+
+//        viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { bundleInfo ->
+//            // render product bundle detail
+//            val productBundleItems = bundleInfo.bundleItems
+//            val productBundleDetails = viewModel.mapProductBundleItemsToProductBundleDetail(productBundleItems)
+//            productBundleDetailAdapter?.setProductBundleDetails(productBundleDetails)
+//            // render sold product bundle view
+//            val soldProductBundle = viewModel.getSoldProductBundle()
+//            soldProductBundleTextView?.text = String.format(getString(R.string.text_sold_product_bundle), soldProductBundle)
+//            // render product bundle overview section
+//            val totalPrice = viewModel.calculateTotalPrice(productBundleItems)
+//            val totalBundlePrice = viewModel.calculateTotalBundlePrice(productBundleItems)
+//            val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
+//            val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
+//            updateProductBundleOverView(
+//                    productBundleOverView = productBundleOverView,
+//                    totalDiscount = totalDiscount,
+//                    totalBundlePrice = totalBundlePrice,
+//                    totalPrice = totalPrice,
+//                    totalSaving = totalSaving
+//            )
+//        })
     }
 
     private fun subscribeToErrorState() {
@@ -183,13 +195,13 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     override fun onProductBundleMasterItemClicked(adapterPosition: Int, productBundleMaster: ProductBundleMaster) {
-        // update selected bundle state to view model
-        viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
-        // deselect the rest of selection except the selected one
-        productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
-        // get product bundle detail
-        val bundleId = productBundleMaster.bundleId
-        viewModel.getBundleInfo(bundleId)
+//        // update selected bundle state to view model
+//        viewModel.setSelectedProductBundleMaster(viewModel.getProductBundleMasters()[adapterPosition])
+//        // deselect the rest of selection except the selected one
+//        productBundleMasterAdapter?.deselectUnselectedItems(adapterPosition)
+//        // get product bundle detail
+//        val bundleId = productBundleMaster.bundleId
+//        viewModel.getBundleInfo(bundleId)
     }
 
     override fun onProductVariantSpinnerClicked(productBundleItem: BundleItem) {

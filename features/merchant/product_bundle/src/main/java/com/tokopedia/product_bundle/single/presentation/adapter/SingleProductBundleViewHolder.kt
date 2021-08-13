@@ -3,10 +3,12 @@ package com.tokopedia.product_bundle.single.presentation.adapter
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.customview.DiscountPriceView
 import com.tokopedia.product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
+import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
@@ -22,13 +24,16 @@ class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(it
     var spinnerItemVariant: SpinnerView = itemView.findViewById(R.id.spinner_item_variant)
     var discountViewItem: DiscountPriceView = itemView.findViewById(R.id.discountview_item)
 
-    fun bindData(item: SingleProductBundleItem, isChecked: Boolean) {
+    fun bindData(item: SingleProductBundleItem, selectedItem: SingleProductBundleSelectedItem) {
         title.text = item.productName
-        radioItem.isChecked = isChecked
         ivItemImage.urlSrc = item.imageUrl
         bundleName.text = item.bundleName
-        discountViewItem.price = item.price
+        discountViewItem.price = item.price.toString()
         discountViewItem.discountAmount = "${item.discount}%"
-        discountViewItem.slashPrice = item.slashPrice
+        discountViewItem.slashPrice = item.slashPrice.toString()
+        spinnerItemVariant.isVisible = item.productVariant != null
+        spinnerItemVariant.text = item.selectedVariantText
+
+        radioItem.isChecked = selectedItem.isSelected
     }
 }

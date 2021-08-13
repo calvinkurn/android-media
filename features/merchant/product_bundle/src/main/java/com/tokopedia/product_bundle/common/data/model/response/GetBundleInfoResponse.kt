@@ -3,9 +3,14 @@ package com.tokopedia.product_bundle.common.data.model.response
 import com.google.gson.annotations.SerializedName
 
 data class GetBundleInfoResponse(
+        @SerializedName("GetBundleInfo")
+        val getBundleInfo: GetBundleInfo = GetBundleInfo()
+)
+
+data class GetBundleInfo(
         @SerializedName("error")
         val error: Error = Error(),
-        @SerializedName("data")
+        @SerializedName("bundleInfo")
         val bundleInfo: BundleInfo = BundleInfo()
 )
 
@@ -34,6 +39,8 @@ data class BundleInfo(
         val originalQuota: Int = 0,
         @SerializedName("maxOrder")
         val maxOrder: Int = 0,
+        @SerializedName("preorder")
+        val preorder: Preorder = Preorder(),
         @SerializedName("bundleItem")
         val bundleItems: List<BundleItem> = listOf()
 )
@@ -62,9 +69,7 @@ data class BundleItem(
         @SerializedName("originalPrice")
         val originalPrice: Double = 0.0,
         @SerializedName("productStatus")
-        val productStatus: String = "",
-        @SerializedName("preorder")
-        val preorder: Preorder = Preorder()
+        val productStatus: String = ""
 )
 
 data class Selection(
@@ -128,7 +133,7 @@ data class Preorder(
         @SerializedName("processType")
         val processType: String = "",
         @SerializedName("processTypeNum")
-        val processTypeNum: Long = 0L,
+        val processTypeNum: Int = 0,
         @SerializedName("startTime")
         val startTime: String = "",
         @SerializedName("endTime")
