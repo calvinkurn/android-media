@@ -279,7 +279,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
         isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
-        isTokonow = source.contains("tokonow", ignoreCase = true)
+        isTokonow = source.contains(TOKONOW, ignoreCase = true)
         viewModel.getChosenAddressList(source, isTokonow)
     }
 
@@ -522,6 +522,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val IS_LOCALIZATION = "is_localization"
         const val IS_SUCCESS = "success"
         const val IS_NOT_SUCCESS = "not success"
+        const val TOKONOW = "tokonow"
         const val REQUEST_CODE_ADD_ADDRESS = 199
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
