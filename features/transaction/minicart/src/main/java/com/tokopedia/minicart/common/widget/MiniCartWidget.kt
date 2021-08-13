@@ -26,6 +26,7 @@ import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
+import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
@@ -51,6 +52,9 @@ class MiniCartWidget @JvmOverloads constructor(
 
     @Inject
     lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
+
+    @Inject
+    lateinit var miniCartChatListBottomSheet: MiniCartChatListBottomSheet
 
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
@@ -144,6 +148,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
         hideProgressLoading()
         miniCartListBottomSheet.dismiss()
+        miniCartChatListBottomSheet.dismiss()
         val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
         if (message.isNotBlank()) {
             if (data?.isBulkDelete == true) {
@@ -275,6 +280,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
         miniCartListBottomSheet.dismiss()
+        miniCartChatListBottomSheet.dismiss()
         if (globalEvent.data != null && globalEvent.data is MiniCartData) {
             val outOfService = (globalEvent.data as MiniCartData).data.outOfService
             if (outOfService.id.isNotBlank() && outOfService.id != "0") {
@@ -332,6 +338,7 @@ class MiniCartWidget @JvmOverloads constructor(
             }
         }
         imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
+        initializeChatButton(fragment)
         validateTotalAmountView()
         initializeProgressDialog(fragment.context)
     }
@@ -358,6 +365,15 @@ class MiniCartWidget @JvmOverloads constructor(
     fun showMiniCartListBottomSheet(fragment: Fragment) {
         viewModel?.let {
             miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, it, this)
+        }
+    }
+
+    /*
+    * Function to show mini cart chat bottom sheet
+    * */
+    private fun showMiniCartChatListBottomSheet(fragment: Fragment) {
+        viewModel?.let {
+            miniCartChatListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, it)
         }
     }
 
@@ -506,19 +522,18 @@ class MiniCartWidget @JvmOverloads constructor(
         validateTotalAmountView()
     }
 
+    private fun initializeChatButton(fragment: Fragment) {
+        val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        totalAmount?.setAdditionalButton(chatIcon)
+        totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+            analytics.eventClickChatOnMiniCart()
+            showMiniCartChatListBottomSheet(fragment)
+        }
+        this.chatIcon?.setImageDrawable(chatIcon)
+    }
+
     private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            totalAmount?.setAdditionalButton(chatIcon)
-            totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
-                analytics.eventClickChatOnMiniCart()
-                val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
-                val intent = RouteManager.getIntent(
-                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
-                )
-                context.startActivity(intent)
-            }
-            this.chatIcon?.setImageDrawable(chatIcon)
             totalAmount?.enableAmountChevron(true)
             totalAmount?.amountChevronView?.setOnClickListener(miniCartChevronClickListener)
         }
