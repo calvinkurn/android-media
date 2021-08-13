@@ -51,6 +51,8 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
+        private const val DEFAULT_VALUE_INDEX = 0
+        private const val POSITION_INDEX_COUNTER = 1
         fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
             return ReviewGalleryFragment().apply {
                 arguments = Bundle().apply {
@@ -103,7 +105,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
             else
                 ReviewGalleryTracking.trackShopReviewSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, shopId)
-            reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+            reviewDetail?.setPhotoCount(index + POSITION_INDEX_COUNTER, productReview.imageAttachments.size)
         }
     }
 
@@ -169,7 +171,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 with(SaveInstanceCacheManager(context, it)) {
                     productReview = get(ReadReviewFragment.PRODUCT_REVIEW_KEY, ProductReview::class.java)
                             ?: ProductReview()
-                    index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
+                    index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: DEFAULT_VALUE_INDEX
                     shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
                     productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
                     isProductReview =get(ReadReviewFragment.IS_PRODUCT_REVIEW_KEY, Boolean::class.java) ?: true

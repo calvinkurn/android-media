@@ -31,6 +31,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         private const val MAX_CHAR = 140
         private const val ALLOW_CLICK = true
         private const val MAX_LINES_REVIEW = 3
+        private const val EMPTY_REVIEW_LIKE = 0
     }
 
     private var productInfo: ReadReviewProductInfo? = null
@@ -218,7 +219,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             readReviewItemListener.onShopReviewLikeButtonClicked(reviewId, shopId, productId, likeDislike.likeStatus, adapterPosition)
         }
         likeCount?.apply {
-            text = if (likeDislike.totalLike == 0) {
+            text = if (likeDislike.totalLike == EMPTY_REVIEW_LIKE) {
                 getString(R.string.review_reading_like)
             } else {
                 String.format(getString(R.string.review_reading_like_count), likeDislike.totalLike)
