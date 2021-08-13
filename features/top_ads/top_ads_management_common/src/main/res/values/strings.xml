@@ -212,7 +212,7 @@
 
     <string name="empty_bid_error_message">Tidak boleh kosong</string>
 
-    <string name="topads_common_recommended_bid_error">Iklanmu berpotensi kalah saing</string>
+    <string name="topads_common_recommended_bid_error">Iklanmu berpotensi kalah \nsaing</string>
 
     <string name="topads_edit_bid_pencerian">Tentukan sendiri biaya iklan pencarian sesuai \nstrategi beriklanmu.</string>
     <string name="topads_edit_bid_rekomendasi">Tentukan sendiri biaya iklan rekomendasi sesuai \nstrategi beriklanmu.</string>

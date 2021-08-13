@@ -32,9 +32,11 @@
         android:id="@+id/min_suggested_bid"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/topads_common_recommended_bid_error"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/budget"
+        app:layout_constraintBottom_toTopOf="@+id/btnSave"
         app:typographyType="body_3"
         android:textColor="@color/unify_Y500"
         android:visibility="gone"/>
