@@ -43,6 +43,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FROM_DETAIL
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FROM_REKOMENDASI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_ID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_NAME
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TOTAL
@@ -465,6 +466,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_rekomendasi)
             )
             bundle.putString(DAILY_BUDGET, budgetPerClick_rekomendasi.text.toString().removeCommaRawString())
+            bundle.putBoolean(FROM_REKOMENDASI, true)
         }
         else {
             bundle.putString(
@@ -472,6 +474,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
             )
             bundle.putString(DAILY_BUDGET, budgetPerClick.text.toString().removeCommaRawString())
+            bundle.putBoolean(FROM_REKOMENDASI, false)
         }
         bundle.putBoolean(FROM_DETAIL, true)
         bundle.putString(GROUPID, groupId.toString())

@@ -32,6 +32,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var name = ""
     private var fromEdit = 99
     private var fromDetail = false
+    private var fromRekomendasi = false
     private var dailyBudget = ""
     private var userID: String = ""
     private var groupId: String = ""
@@ -102,6 +103,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
         fromDetail = arguments?.getBoolean(FROM_DETAIL) ?: false
+        fromRekomendasi = arguments?.getBoolean(FROM_REKOMENDASI) ?: false
         dailyBudget = arguments?.getString(DAILY_BUDGET) ?: suggestedBid
 
     }
@@ -116,6 +118,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private fun initView() {
         if(fromDetail) {
             dailybudget_description.show()
+            if(fromRekomendasi) {
+                dailybudget_description.text = getString(R.string.topads_edit_bid_rekomendasi)
+            } else {
+                dailybudget_description.text = getString(R.string.topads_edit_bid_pencerian)
+            }
             budget.setMessage("Rekomendasi Rp$suggestedBid")
         } else {
             budget.textFiedlLabelText.text = "Biaya Kata kunci"
@@ -148,6 +155,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         private const val FROM_EDIT = "fromEdit"
         private const val GROUP_ID = "group_id"
         private const val FROM_DETAIL = "fromDetail"
+        private const val FROM_REKOMENDASI = "fromRekomendasi"
         private const val DAILY_BUDGET = "daily_budget"
 
         fun createInstance(data: Bundle): TopAdsEditKeywordBidSheet {

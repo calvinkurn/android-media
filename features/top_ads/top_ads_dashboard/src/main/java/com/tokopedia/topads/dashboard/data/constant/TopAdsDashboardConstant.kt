@@ -110,4 +110,5 @@ object TopAdsDashboardConstant {
     const val KEYWORD_NAME = "keywordName"
     const val FROM_EDIT = "fromEdit"
     const val FROM_DETAIL = "fromDetail"
+    const val FROM_REKOMENDASI = "fromRekomendasi"
 }

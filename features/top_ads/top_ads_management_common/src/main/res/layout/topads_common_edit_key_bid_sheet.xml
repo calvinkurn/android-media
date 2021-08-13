@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Tentukan sendiri biaya iklan pencarian sesuai \nstrategi beriklanmu."
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
