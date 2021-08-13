@@ -6,10 +6,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product_bundle.common.data.model.response.*
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
+import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ProductBundleActivity : BaseSimpleActivity() {
@@ -28,26 +32,48 @@ class ProductBundleActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        intent.data?.run {
+            val pathSegments = this.pathSegments
+            val productId = pathSegments.firstOrNull() ?: "0"
+            // call getBundleInfo
+            viewModel.getBundleInfo(productId.toLongOrZero())
+        }
+
+        observeGetBundleInfoResult()
     }
 
-    override fun getNewFragment(): Fragment? {
-        return SingleProductBundleFragment.newInstance(generateBundleInfo())
+    override fun getNewFragment(): Fragment {
+        return MultipleProductBundleFragment.newInstance()
     }
 
     private fun initInjector() {
         DaggerProductBundleComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    private fun observeGetBundleInfoResult() {
+        viewModel.getBundleInfoResult.observe(this, { result ->
+            when (result) {
+                is Success -> {
+                    val bundleInfo = result.data
+                    val bundleItems = bundleInfo.getBundleInfo.bundleInfo.bundleItems
+                    val fragment = MultipleProductBundleFragment.newInstance()
+                }
+                is Fail -> {
+                    // log and show error view
+                }
+            }
+        })
     }
 
     /*
-    Begin of Dummy model function generator
+        Begin of Dummy model function generator
     */
-
     fun generateBundleInfo() = BundleInfo(
         name = "Singel bundle",
-        preorder = PreOrder(
+        preorder = Preorder(
             status = "ACTIVE",
             processTypeNum = 1,
             processTime = 19
@@ -58,8 +84,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 name = "Bundle 1",
                 picURL = "https://placekitten.com/200/300",
                 minOrder = 2,
-                bundlePrice = 2000,
-                originalPrice = 2300,
+                bundlePrice = 2000.0,
+                originalPrice = 2300.0,
                 status = "SHOW",
                 selections = listOf(
                     Selection(
@@ -108,8 +134,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 children = listOf(
                     Child(
                         productID = 123451L,
-                        originalPrice = 10000,
-                        bundlePrice = 9000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 9000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(10, 1),
@@ -118,8 +144,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     ),
                     Child(
                         productID = 123452L,
-                        originalPrice = 10000,
-                        bundlePrice = 8000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 8000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(10, 2),
@@ -128,8 +154,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     ),
                     Child(
                         productID = 123453L,
-                        originalPrice = 10000,
-                        bundlePrice = 9000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 9000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(11, 1),
@@ -138,8 +164,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                     ),
                     Child(
                         productID = 123454L,
-                        originalPrice = 10000,
-                        bundlePrice = 8000,
+                        originalPrice = 10000.0,
+                        bundlePrice = 8000.0,
                         stock = 10,
                         minOrder = 1,
                         optionIds = listOf(11, 2),
@@ -153,8 +179,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 name = "Bundle 2",
                 picURL = "https://placekitten.com/200/200",
                 minOrder = 2,
-                bundlePrice = 2000,
-                originalPrice = 2300,
+                bundlePrice = 2000.0,
+                originalPrice = 2300.0,
                 status = "SHOW"
             )
         )

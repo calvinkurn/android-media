@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
-import com.tokopedia.product_bundle.common.data.model.response.PreOrder
+import com.tokopedia.product_bundle.common.data.model.response.Preorder
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 
@@ -21,7 +21,7 @@ object BundleInfoToSingleProductBundleMapper {
         selectedItems = mapToSelectedItem(bundleInfo.bundleItems)
     )
 
-    private fun getPreorderWording(context: Context, preorder: PreOrder): String? {
+    private fun getPreorderWording(context: Context, preorder: Preorder): String? {
         if (preorder.status == PREORDER_STATUS_ACTIVE) {
             return "${preorder.processTime} ${getTimeUnitWording(context, preorder.processTypeNum)}"
         }
@@ -53,6 +53,6 @@ object BundleInfoToSingleProductBundleMapper {
     }
 
     private fun mapToSelectedItem(bundleItems: List<BundleItem>) = bundleItems.map {
-        SingleProductBundleSelectedItem(productId = if (it.hasVariant) "" else it.productID.toString())
+        SingleProductBundleSelectedItem(productId = if (it.children.isNotEmpty()) "" else it.productID.toString())
     }
 }
