@@ -279,10 +279,23 @@ class TokoNowSearchFragment:
     override fun getRecyclerViewPool() = recycledViewPool
 
     override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+        val trackingQueue = trackingQueue ?: return
 
+        SearchTracking.sendBroadMatchImpressionEvent(
+            trackingQueue = trackingQueue,
+            broadMatchItemDataView = broadMatchItemDataView,
+            keyword = getViewModel().query,
+            userId = getUserId(),
+        )
     }
 
     override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
+        SearchTracking.sendBroadMatchClickEvent(
+            broadMatchItemDataView = broadMatchItemDataView,
+            keyword = getViewModel().query,
+            userId = getUserId(),
+        )
+
         RouteManager.route(context, broadMatchItemDataView.applink)
     }
 
@@ -295,6 +308,8 @@ class TokoNowSearchFragment:
     }
 
     override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.sendBroadMatchSeeAllClickEvent(broadMatchDataView, getViewModel().query)
+
         RouteManager.route(context, broadMatchDataView.applink)
     }
 
