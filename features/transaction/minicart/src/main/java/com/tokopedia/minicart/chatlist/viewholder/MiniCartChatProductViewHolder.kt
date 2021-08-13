@@ -16,6 +16,9 @@ class MiniCartChatProductViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_chat_product
+        private const val HALF_ALPHA = 0.5f
+        private const val FULL_ALPHA = 1f
+        private const val MAX_SIZE = 3
     }
 
     override fun bind(element: MiniCartChatProductUiModel) {
@@ -37,15 +40,15 @@ class MiniCartChatProductViewHolder(
         with(viewBinding) {
             val alpha: Float
             if (element.isProductDisabled) {
-                alpha = 0.5f
+                alpha = HALF_ALPHA
                 iuProduct.alpha = alpha
                 tpTitle.alpha = alpha
                 tpPrice.alpha = alpha
                 divider.alpha = alpha
                 cbProduct.hide()
             } else {
-                if (!element.isChecked && element.size == 3) {
-                    alpha = 0.5f
+                if (!element.isChecked && element.size == MAX_SIZE) {
+                    alpha = HALF_ALPHA
                     iuProduct.alpha = alpha
                     tpTitle.alpha = alpha
                     tpPrice.alpha = alpha
@@ -56,7 +59,7 @@ class MiniCartChatProductViewHolder(
                     cbProduct.isEnabled = false
                     containerProduct.isEnabled = false
                 } else {
-                    alpha = 1f
+                    alpha = FULL_ALPHA
                     iuProduct.alpha = alpha
                     tpTitle.alpha = alpha
                     tpPrice.alpha = alpha
