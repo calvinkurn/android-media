@@ -35,9 +35,7 @@ import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImag
 import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImagePreviewLayoutManager
 import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
-import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewImagePreviewListener
-import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewImagePreviewSwipeListener
-import com.tokopedia.review.feature.imagepreview.presentation.listener.SnapPagerScrollListener
+import com.tokopedia.review.feature.imagepreview.presentation.listener.*
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewDetailWidget
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewExpandedReviewBottomSheet
@@ -51,7 +49,8 @@ import javax.inject.Inject
 
 class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImagePreviewComponent>,
     ReviewReportBottomSheetListener,
-    ReviewImagePreviewSwipeListener, ReviewImagePreviewListener, OnBackPressedListener {
+    ReviewImagePreviewSwipeListener, ReviewImagePreviewListener,
+    OnBackPressedListener, ReviewImagePreviewLoadMoreListener {
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
@@ -91,6 +90,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private var isFromGallery = false
 
     private var currentRecyclerViewPosition = 0
+    private var currentPage = 0
+    private var endlessScrollListener: EndlessScrollListener? = null
 
     override fun getScreenName(): String {
         return ""
@@ -137,8 +138,11 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         setupThreeDots()
         setupRecyclerView()
         if (isFromGallery) {
+            viewModel.setProductId(galleryRoutingData.productId)
             setupReviewDetailFromGallery()
             setAdapterDataFromGallery()
+            setupEndlessScrollListener()
+            observeReviewImagesResult()
         } else {
             setAdapterDataFromReading()
             setupReviewDetail()
@@ -264,13 +268,20 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun setAdapterDataFromReading() {
-        adapter.setData(productReview.imageAttachments.map { it.imageUrl })
+        adapter.addData(productReview.imageAttachments.map { it.imageUrl })
         setRecyclerViewCurrentItem()
     }
 
     private fun setAdapterDataFromGallery() {
-        adapter.setData(galleryRoutingData.loadedReviews.map { it.fullImageUrl })
+        adapter.addData(galleryRoutingData.loadedReviews.map { it.fullImageUrl })
         setRecyclerViewCurrentItem(galleryRoutingData.currentPosition)
+    }
+
+    private fun setupEndlessScrollListener() {
+        (imagesRecyclerView?.layoutManager as? ReviewImagePreviewLayoutManager)?.let {
+            endlessScrollListener = EndlessScrollListener(this, it)
+            endlessScrollListener?.let { imagesRecyclerView?.addOnScrollListener(it) }
+        }
     }
 
     private fun setRecyclerViewCurrentItem(position: Int = index) {
@@ -286,6 +297,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun setupReviewDetailFromGallery() {
+        currentPage = galleryRoutingData.page
         updateReviewDetailByPosition(true)
     }
 
@@ -349,7 +361,13 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
-
+        adapter.addData(
+            productrevGetReviewImage.reviewImages.map { reviewImage ->
+                productrevGetReviewImage.detail.reviewGalleryImages.firstOrNull { it.attachmentId == reviewImage.imageId }?.fullsizeURL
+                    ?: ""
+            }
+        )
+        updateHasNextPage(productrevGetReviewImage.hasNext)
     }
 
     private fun onFailGetReviewImages(throwable: Throwable) {
@@ -487,31 +505,31 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             this.loadedReviews.firstOrNull {
                 it.imageNumber == if (isFirstTimeUpdate) currentPosition
                 else currentRecyclerViewPosition
-            } ?.let { selectedReview ->
-                    reviewImagePreviewDetail?.apply {
-                        if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
-                        setRating(selectedReview.rating)
-                        setReviewerName(selectedReview.reviewerName)
-                        setTimeStamp(selectedReview.reviewTime)
-                        setReviewMessage(selectedReview.review) { openExpandedReviewBottomSheet() }
-                        setLikeCount(selectedReview.totalLiked.toString())
-                        setLikeButtonClickListener {
-                            ReviewImagePreviewTracking.trackOnLikeReviewClicked(
-                                selectedReview.feedbackId,
-                                selectedReview.isLiked,
-                                productId
-                            )
+            }?.let { selectedReview ->
+                reviewImagePreviewDetail?.apply {
+                    if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
+                    setRating(selectedReview.rating)
+                    setReviewerName(selectedReview.reviewerName)
+                    setTimeStamp(selectedReview.reviewTime)
+                    setReviewMessage(selectedReview.review) { openExpandedReviewBottomSheet() }
+                    setLikeCount(selectedReview.totalLiked.toString())
+                    setLikeButtonClickListener {
+                        ReviewImagePreviewTracking.trackOnLikeReviewClicked(
+                            selectedReview.feedbackId,
+                            selectedReview.isLiked,
+                            productId
+                        )
 //                            viewModel.toggleLikeReview(
 //                                selectedReview.feedbackId,
 //                                shopId,
 //                                productId,
 //                                productReview.likeDislike.likeStatus
 //                            )
-                        }
-                        setLikeButtonImage(selectedReview.isLiked)
                     }
-                    setThreeDotsVisibility(selectedReview.isReportable)
+                    setLikeButtonImage(selectedReview.isLiked)
                 }
+                setThreeDotsVisibility(selectedReview.isReportable)
+            }
         }
     }
 
@@ -532,5 +550,14 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             index + 1,
             if (isFromGallery) galleryRoutingData.totalImageCount else productReview.imageAttachments.size.toLong()
         )
+    }
+
+    override fun onLoadMore() {
+        currentPage++
+        viewModel.setPage(currentPage)
+    }
+
+    private fun updateHasNextPage(hasNextPage: Boolean) {
+        endlessScrollListener?.setHasNextPage(hasNextPage)
     }
 }

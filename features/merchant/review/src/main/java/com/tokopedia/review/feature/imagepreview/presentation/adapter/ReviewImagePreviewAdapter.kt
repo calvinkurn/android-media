@@ -9,7 +9,7 @@ import com.tokopedia.review.feature.imagepreview.presentation.listener.ReviewIma
 
 class ReviewImagePreviewAdapter(private val imagePreviewListener: ReviewImagePreviewListener) : RecyclerView.Adapter<ReviewImagePreviewViewHolder>() {
 
-    private var images: List<String> = listOf()
+    private var images: MutableList<String> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewImagePreviewViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_review_image_preview, parent, false)
@@ -24,8 +24,8 @@ class ReviewImagePreviewAdapter(private val imagePreviewListener: ReviewImagePre
         holder.bind(images[position], imagePreviewListener)
     }
 
-    fun setData(images: List<String>) {
-        this.images = images
+    fun addData(images: List<String>) {
+        this.images.addAll(images)
     }
 
     fun reloadImageAtIndex(index: Int) {

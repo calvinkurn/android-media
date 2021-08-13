@@ -30,6 +30,23 @@ class ReviewImagePreviewViewModel @Inject constructor(
     val reviewImages: LiveData<Result<ProductrevGetReviewImage>>
         get() = _reviewImages
 
+    private val page = MutableLiveData<Int>()
+    private var productId = ""
+
+    init {
+        _reviewImages.addSource(page) {
+            getReviewImages(productId, it)
+        }
+    }
+
+    fun setProductId(productId: String) {
+        this.productId = productId
+    }
+
+    fun setPage(page: Int) {
+        this.page.value = page
+    }
+
     fun toggleLikeReview(reviewId: String, shopId: String, productId: String, likeStatus: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(
