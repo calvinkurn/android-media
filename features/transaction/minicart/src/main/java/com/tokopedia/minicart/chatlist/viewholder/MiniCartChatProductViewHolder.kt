@@ -35,7 +35,7 @@ class MiniCartChatProductViewHolder(
 
     private fun setProductDisabled(element: MiniCartChatProductUiModel) {
         with(viewBinding) {
-            var alpha: Float
+            val alpha: Float
             if (element.isProductDisabled) {
                 alpha = 0.5f
                 iuProduct.alpha = alpha
