@@ -349,7 +349,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                     viewModel.getProductId()
             )
         }
-        viewModel.setFilterWithImage(isActive)
+        viewModel.setFilterWithImage(isActive, isProductReview)
         reviewHeader?.updateFilterWithImage()
         showListOnlyLoading()
     }
@@ -380,7 +380,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 filterOptions,
                 this,
                 SortFilterBottomSheetType.TopicFilterBottomSheet,
-                viewModel.getSelectedTopicFilter(),
+                viewModel.getSelectedTopicFilter(isProductReview),
                 "",
                 index
             ).show(it, ReadReviewFilterBottomSheet.TAG)
@@ -444,7 +444,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 )
             }
         }
-        viewModel.setFilter(selectedFilter, filterType)
+        viewModel.setFilter(selectedFilter, filterType, isProductReview)
         showListOnlyLoading()
         reviewHeader?.updateFilter(selectedFilter, filterType, index)
     }
@@ -463,7 +463,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             )
         }
         reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
-        viewModel.setSort(selectedSort.listTitleText)
+        viewModel.setSort(selectedSort.listTitleText, isProductReview)
         showListOnlyLoading()
     }
 
@@ -504,7 +504,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         else
             ReadReviewTracking.trackOnShopReviewClearFilter(viewModel.getShopId())
         viewModel.clearFilters()
-        viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM)
+        viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM, isProductReview)
         viewModel.getSelectedRatingFilter()
         if(isProductReview) {
             with(getRatingAndTopics()) {
@@ -626,8 +626,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         adapter.clearAllElements()
         hideError()
         showFullPageLoading()
-        getProductIdFromArguments()
-        getShopIdFromArguments()
+        if(isProductReview)
+            getProductIdFromArguments()
+        else
+            getShopIdFromArguments()
         loadData(defaultInitialPage)
     }
 
@@ -687,7 +689,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun getProductReview(page: Int) {
-        viewModel.setPage(page)
+        viewModel.setPage(page, isProductReview)
     }
 
     private fun observeRatingAndTopics() {

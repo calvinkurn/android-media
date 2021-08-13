@@ -63,6 +63,7 @@ class ReadReviewViewModel @Inject constructor(
         get() = _toggleLikeReview
 
     private val currentPage = MutableLiveData<Int>()
+    private val currentPageShopReview = MutableLiveData<Int>()
 
     private var productId: MutableLiveData<String> = MutableLiveData()
     private var shopId: MutableLiveData<String> = MutableLiveData()
@@ -71,20 +72,16 @@ class ReadReviewViewModel @Inject constructor(
 
     init {
         _ratingAndTopics.addSource(productId) {
-            if (isProductReview())
-                getRatingAndTopics(it)
+            getRatingAndTopics(it)
         }
         _shopRatingAndTopics.addSource(shopId) {
-            if (!isProductReview())
-                getShopRatingAndTopics(it)
+            getShopRatingAndTopics(it)
         }
         _productReviews.addSource(currentPage) {
-            if (isProductReview())
-                getProductReviews(it)
+            getProductReviews(it)
         }
-        _shopReviews.addSource(currentPage) {
-            if (!isProductReview())
-                getShopReviews(it)
+        _shopReviews.addSource(currentPageShopReview) {
+            getShopReviews(it)
         }
     }
 
@@ -108,8 +105,11 @@ class ReadReviewViewModel @Inject constructor(
         return this.shopId.value ?: ""
     }
 
-    fun setPage(page: Int) {
-        currentPage.value = page
+    fun setPage(page: Int, isProductReview: Boolean) {
+        if(isProductReview)
+            currentPage.value = page
+        else
+            currentPageShopReview.value = page
     }
 
     fun mapProductReviewToReadReviewUiModel(
@@ -210,7 +210,7 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
-    fun setFilter(selectedFilters: Set<ListItemUnify>, type: SortFilterBottomSheetType) {
+    fun setFilter(selectedFilters: Set<ListItemUnify>, type: SortFilterBottomSheetType, isProductReview: Boolean) {
         if (type == SortFilterBottomSheetType.RatingFilterBottomSheet) {
             if (selectedFilters.isEmpty()) {
                 this.filter.rating = null
@@ -221,24 +221,24 @@ class ReadReviewViewModel @Inject constructor(
             if (selectedFilters.isEmpty()) {
                 this.filter.topic = null
             } else {
-                this.filter.topic = mapTopicFilterToFilterType(selectedFilters)
+                this.filter.topic = mapTopicFilterToFilterType(selectedFilters, isProductReview)
             }
         }
-        resetPage()
+        resetPage(isProductReview)
     }
 
-    fun setFilterWithImage(isActive: Boolean) {
+    fun setFilterWithImage(isActive: Boolean, isProductReview: Boolean) {
         if (isActive) {
             this.filter.withImage = null
         } else {
             this.filter.withImage = getFilterWithImageParam()
         }
-        resetPage()
+        resetPage(isProductReview)
     }
 
-    fun setSort(selectedSort: String) {
+    fun setSort(selectedSort: String, isProductReview: Boolean) {
         this.sort = mapSortOptionToSortParam(selectedSort)
-        resetPage()
+        resetPage(isProductReview)
     }
 
     fun getSelectedRatingFilter(): Set<String> {
@@ -246,9 +246,9 @@ class ReadReviewViewModel @Inject constructor(
         return selectedFilters.split(",").map { it.trim() }.toSet()
     }
 
-    fun getSelectedTopicFilter(): Set<String> {
+    fun getSelectedTopicFilter(isProductReview: Boolean): Set<String> {
         val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() } ?: return setOf()
-        val topicsMap = getTopicsMap()
+        val topicsMap = getTopicsMap(isProductReview)
         if (topicsMap.isEmpty()) return emptySet()
         var result = emptySet<String>()
         selectedFilters.forEach {
@@ -324,8 +324,8 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
-    private fun resetPage() {
-        setPage(INITIAL_PAGE)
+    private fun resetPage(isProductReview: Boolean) {
+        setPage(INITIAL_PAGE, isProductReview)
     }
 
     private fun mapSortOptionToSortParam(sort: String): String {
@@ -343,22 +343,19 @@ class ReadReviewViewModel @Inject constructor(
         return FilterType.FilterRating(selectedRatings)
     }
 
-    private fun mapTopicFilterToFilterType(topicFilters: Set<ListItemUnify>): FilterType.FilterTopic {
-        val topicsMap = getTopicsMap()
+    private fun mapTopicFilterToFilterType(topicFilters: Set<ListItemUnify>, isProductReview: Boolean): FilterType.FilterTopic {
+        val topicsMap = getTopicsMap(isProductReview)
         val selectedTopics = topicFilters.map {
             topicsMap[it.listTitleText] ?: ""
         }.joinToString(separator = ",") { it }
         return FilterType.FilterTopic(selectedTopics)
     }
 
-    private fun getTopicsMap(): Map<String, String> {
-        return if(isProductReview())
+    private fun getTopicsMap(isProductReview: Boolean): Map<String, String> {
+        return if(isProductReview)
             (_ratingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
         else
             (_shopRatingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
     }
 
-    private fun isProductReview(): Boolean {
-        return productId.value?.isNotEmpty() == true
-    }
 }

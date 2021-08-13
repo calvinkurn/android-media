@@ -78,7 +78,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setPage(page)
+        viewModel.setPage(page, true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
@@ -91,7 +91,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsFail_thenReturn(expectedResponse)
 
-        viewModel.setPage(page)
+        viewModel.setPage(page, true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsErrorEquals(Fail(expectedResponse))
@@ -173,7 +173,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setSort(sort)
+        viewModel.setSort(sort, true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
@@ -186,7 +186,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilterWithImage(isActive)
+        viewModel.setFilterWithImage(isActive, true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
@@ -238,7 +238,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         viewModel.clearFilters()
         val actualSelectedRating = viewModel.getSelectedRatingFilter()
-        val actualSelectedTopic = viewModel.getSelectedTopicFilter()
+        val actualSelectedTopic = viewModel.getSelectedTopicFilter(true)
 
         Assert.assertFalse(viewModel.isFilterSelected())
         Assert.assertEquals(expectedSelectedRating, actualSelectedRating)
@@ -265,8 +265,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         verifyGetProductRatingAndTopicsUseCaseExecuted()
         verifyRatingAndTopicErrorEquals(Fail(expectedRatingAndTopicResponse))
 
-        viewModel.setFilter(selectedFilters, type)
-        val actualTopicFilter = viewModel.getSelectedTopicFilter()
+        viewModel.setFilter(selectedFilters, type, true)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter(true)
 
         Assert.assertTrue(actualTopicFilter.isEmpty())
     }
@@ -278,8 +278,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilterWithImage(isActive)
-        viewModel.setFilterWithImage(isActive)
+        viewModel.setFilterWithImage(isActive, true)
+        viewModel.setFilterWithImage(isActive, true)
 
         Assert.assertFalse(viewModel.isFilterSelected())
         verifyGetProductReviewListUseCaseExecuted()
@@ -301,7 +301,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilter(selectedFilters, type)
+        viewModel.setFilter(selectedFilters, type, true)
         val actualRatingFilter = viewModel.getSelectedRatingFilter()
 
         verifyGetProductReviewListUseCaseExecuted()
@@ -344,8 +344,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilter(selectedFilters, type)
-        val actualTopicFilter = viewModel.getSelectedTopicFilter()
+        viewModel.setFilter(selectedFilters, type, true)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter(true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
@@ -361,7 +361,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilter(selectedFilters, type)
+        viewModel.setFilter(selectedFilters, type, true)
         val actualRatingFilter = viewModel.getSelectedRatingFilter()
 
         verifyGetProductReviewListUseCaseExecuted()
@@ -378,8 +378,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
 
-        viewModel.setFilter(selectedFilters, type)
-        val actualTopicFilter = viewModel.getSelectedTopicFilter()
+        viewModel.setFilter(selectedFilters, type, true)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter(true)
 
         verifyGetProductReviewListUseCaseExecuted()
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
