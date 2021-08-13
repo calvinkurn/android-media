@@ -111,6 +111,8 @@ class RecommendationCarouselViewHolder(
             recomItem: RecommendationItem,
             adapterPosition: Int,
     ) {
+        saveCarouselScrollPosition()
+
         recommendationCarouselListener.onAddVariantRecommendationCarouselItem(
                 recommendationCarouselDataView = recommendationCarouselDataView,
                 data = data,
