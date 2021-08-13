@@ -50,7 +50,7 @@ class UploaderManager constructor(
     * - source not sound
     * */
     suspend inline fun validate(
-        fileToUpload: File,
+        file: File,
         sourceId: String,
         onUpload: (sourcePolicy: SourcePolicy) -> UploadResult
     ): UploadResult {
@@ -58,7 +58,7 @@ class UploaderManager constructor(
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
         // file full path
-        val filePath = fileToUpload.path
+        val filePath = file.path
 
         // request policy by sourceId
         val sourcePolicy = requestPolicy(sourceId)
@@ -73,21 +73,26 @@ class UploaderManager constructor(
         val maxRes = sourcePolicy.imagePolicy.maximumRes
         val minRes = sourcePolicy.imagePolicy.minimumRes
 
-        return when {
-            !fileToUpload.exists() -> UploadResult.Error(FILE_NOT_FOUND)
-            !extensions.contains(getFileExtension(filePath)) -> UploadResult.Error(
-                formatNotAllowedMessage(sourcePolicy.imagePolicy.extension)
-            )
-            isMaxFileSize(filePath, maxFileSize) -> UploadResult.Error(
-                maxFileSizeMessage(maxFileSize)
-            )
-            isMaxBitmapResolution(filePath, maxRes.width, maxRes.height) -> UploadResult.Error(
-                maxResBitmapMessage(maxRes.width, maxRes.height)
-            )
-            isMinBitmapResolution(filePath, minRes.width, minRes.height) -> UploadResult.Error(
-                minResBitmapMessage(minRes.width, minRes.height)
-            )
-            else -> onUpload(sourcePolicy)
+        val onError = setError(listOf(
+            when {
+                !file.exists() ->
+                    FILE_NOT_FOUND
+                !extensions.contains(getFileExtension(filePath)) ->
+                    formatNotAllowedMessage(sourcePolicy.imagePolicy.extension)
+                isMaxFileSize(filePath, maxFileSize) ->
+                    maxFileSizeMessage(maxFileSize)
+                isMaxBitmapResolution(filePath, maxRes.width, maxRes.height) ->
+                    maxResBitmapMessage(maxRes.width, maxRes.height)
+                isMinBitmapResolution(filePath, minRes.width, minRes.height) ->
+                    minResBitmapMessage(minRes.width, minRes.height)
+                else -> ""
+            }
+        ), sourceId, file)
+
+        return if ((onError as UploadResult.Error).message.isNotEmpty()) {
+            onError
+        } else {
+            onUpload(sourcePolicy)
         }
     }
 
