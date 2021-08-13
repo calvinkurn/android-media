@@ -182,9 +182,9 @@ class ShopHomeNplCampaignViewHolder(
             try {
                 if(context.isValidGlideContext())
                     if (DeviceScreenInfo.isTablet(context)) {
-                        setImageUrl(bannerUrl, heightRatio = null, isNpl = true)
+                        setImageUrlTileMode(bannerUrl)
                     } else {
-                        setImageUrl(bannerUrl, heightRatio = 1f, isNpl = true)
+                        setImageUrl(bannerUrl, heightRatio = 1f)
                     }
             } catch (e: Exception) { }
         }

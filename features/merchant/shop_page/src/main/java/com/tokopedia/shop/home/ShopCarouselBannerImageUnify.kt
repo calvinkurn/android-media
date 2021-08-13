@@ -260,7 +260,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         Glide.with(context).asGif().load(drawable).into(this)
     }
 
-    fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false, isNpl: Boolean = false) {
+    fun setImageUrl(url: String, heightRatio: Float? = null, placeholderHeight: Int? = null, isSkipCache: Boolean = false) {
         if(!context.isValidGlideContext()) return
         this.post {
             heightRatio?.let {
@@ -291,25 +291,21 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
                     loadGif(url, placeholderHeight)
                 }
                 false -> {
-                    if (isNpl) {
-                        loadImageTileMode(url)
-                    } else {
-                        loadImage(url, placeholderHeight, isSkipCache)
-                    }
+                    loadImage(url, placeholderHeight, isSkipCache)
                 }
                 else -> {
                     if (ext.isNotEmpty() && (ext == "gif" || ext == "gifv")) {
                         loadGif(url, placeholderHeight)
                     } else {
-                        if (isNpl) {
-                            loadImageTileMode(url)
-                        } else {
-                            loadImage(url, placeholderHeight, isSkipCache)
-                        }
+                        loadImage(url, placeholderHeight, isSkipCache)
                     }
                 }
             }
         }
+    }
+
+    fun setImageUrlTileMode(url: String) {
+        loadImageTileMode(url)
     }
 
     private fun applyLoopingAnimatedVectorDrawable() {
