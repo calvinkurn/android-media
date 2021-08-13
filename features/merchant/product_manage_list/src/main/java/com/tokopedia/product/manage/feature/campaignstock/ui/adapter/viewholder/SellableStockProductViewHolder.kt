@@ -81,7 +81,7 @@ class SellableStockProductViewHolder (itemView: View?,
             }
             switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
         }
-        showHideInactiveLabelByStock(element)
+        showHideInactiveLabel(element)
     }
 
     private fun QuantityEditorUnify.setElement(element: SellableStockProductUIModel) {
@@ -141,8 +141,8 @@ class SellableStockProductViewHolder (itemView: View?,
         return itemView.switch_campaign_stock_variant_editor?.isChecked == false
     }
 
-    private fun showHideInactiveLabelByStock(element: SellableStockProductUIModel) {
-        itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element))
+    private fun showHideInactiveLabel(element: SellableStockProductUIModel) {
+        itemView.label_campaign_stock_inactive?.showWithCondition(getInactivityByStock(element) || getInactivityByStatus())
     }
 
     private fun setupStockEditor(element: SellableStockProductUIModel) {
