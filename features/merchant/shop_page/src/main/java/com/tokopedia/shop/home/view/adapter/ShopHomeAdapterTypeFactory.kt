@@ -49,7 +49,7 @@ class ShopHomeAdapterTypeFactory(
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
-    private var showcaseWidgetGridColumnSize = 0
+    private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         when (baseShopHomeWidgetUiModel.name) {

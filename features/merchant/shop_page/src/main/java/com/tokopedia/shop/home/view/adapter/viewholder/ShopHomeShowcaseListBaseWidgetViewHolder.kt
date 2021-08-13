@@ -29,9 +29,10 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_base_etalase_list_widget
 
-        const val LAYOUT_TYPE_LINEAR_HORIZONTAL = LinearLayoutManager.HORIZONTAL
-        const val LAYOUT_TYPE_GRID_HORIZONTAL = GridLayoutManager.HORIZONTAL
-        const val LAYOUT_TYPE_GRID_VERTICAL = GridLayoutManager.VERTICAL
+        const val LAYOUT_TYPE_LINEAR_HORIZONTAL = 100
+        const val LAYOUT_TYPE_GRID_HORIZONTAL = 200
+        const val LAYOUT_TYPE_GRID_VERTICAL = 300
+        const val LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE = 1
         const val LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE = 2
         const val LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE = 3
     }
@@ -57,11 +58,14 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
         recyclerView?.apply {
             setHasFixedSize(true)
             layoutManager = when (layoutManagerType) {
+                LAYOUT_TYPE_LINEAR_HORIZONTAL -> {
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                }
                 LAYOUT_TYPE_GRID_HORIZONTAL -> {
-                    GridLayoutManager(context, gridColumnSize, layoutManagerType, false)
+                    GridLayoutManager(context, gridColumnSize, GridLayoutManager.HORIZONTAL, false)
                 }
                 LAYOUT_TYPE_GRID_VERTICAL -> {
-                    object : GridLayoutManager(context, gridColumnSize, layoutManagerType, false) {
+                    object : GridLayoutManager(context, gridColumnSize, GridLayoutManager.VERTICAL, false) {
                         // disable scroll if vertical grid column type
                         override fun canScrollVertically(): Boolean {
                             return false
