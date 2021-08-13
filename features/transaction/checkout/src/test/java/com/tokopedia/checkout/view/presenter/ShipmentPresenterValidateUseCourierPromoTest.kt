@@ -202,18 +202,18 @@ class ShipmentPresenterValidateUseCourierPromoTest {
 
         val exception = ResponseErrorException()
         val mockContext = mockk<Activity>()
-        mockkStatic(ErrorHandler::class)
+        mockkObject(ErrorHandler.Companion)
         every { view.activityContext } returns mockContext
-        every { ErrorHandler.getErrorMessage(mockContext, exception) } returns errorMessage
+        every { ErrorHandler.Companion.getErrorMessage(any(), any(), any()) } returns errorMessage
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(exception)
 
         // When
         presenter.processCheckPromoCheckoutCodeFromSelectedCourier("code", position, noToast)
 
         // Then
-//        verify {
-//            view.showToastError(errorMessage)
-//        }
+        verify {
+            view.showToastError(errorMessage)
+        }
     }
 
     @Test
