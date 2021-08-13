@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
@@ -21,24 +22,22 @@ import javax.inject.Inject
  * Created by fwidjaja on 10/05/20.
  */
 class SomGetOrderDetailUseCase @Inject constructor(
-        private val graphQlRepository: GraphqlRepository
+    private val graphQlRepository: GraphqlRepository
 ) {
+    private fun createParamDynamicPrice(orderId: String): Map<String, SomDynamicPriceRequest> {
+        return mapOf(SomConsts.PARAM_INPUT to SomDynamicPriceRequest(order_id = orderId.toLongOrZero()))
+    }
 
-    private var params: RequestParams = RequestParams.EMPTY
-
-    fun setParamDynamicPrice(param: SomDynamicPriceRequest) {
-        params = RequestParams.create().apply {
-            putObject(SomConsts.PARAM_INPUT, param)
-        }
+    private fun createParamGetOrderDetail(orderId: String): Map<String, String> {
+        return mapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
     }
 
     suspend fun execute(orderId: String): Result<GetSomDetailResponse> {
-
         val getSomDetailResponse = GetSomDetailResponse()
-        val dynamicPriceParam = params.getObject(SomConsts.PARAM_INPUT) as SomDynamicPriceRequest
-        val somDynamicPriceParams = mapOf(SomConsts.PARAM_INPUT to dynamicPriceParam)
+        val somDynamicPriceParams = createParamDynamicPrice(orderId)
+        val somDetailRequestParam = createParamGetOrderDetail(orderId)
 
-        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder.Data::class.java, generateParam(orderId))
+        val somDetailRequest = GraphqlRequest(QUERY_SOM_DETAIL, SomDetailOrder.Data::class.java, somDetailRequestParam)
         val somDynamicPriceRequest = GraphqlRequest(QUERY_DYNAMIC_PRICE, SomDynamicPriceResponse::class.java, somDynamicPriceParams)
 
         val multipleRequest = mutableListOf(somDetailRequest, somDynamicPriceRequest)
@@ -52,10 +51,6 @@ class SomGetOrderDetailUseCase @Inject constructor(
             if (e is CancellationException) throw e
             Fail(e)
         }
-    }
-
-    private fun generateParam(orderId: String): HashMap<String, Any> {
-        return hashMapOf(VAR_PARAM_ORDERID to orderId, VAR_PARAM_LANG to PARAM_LANG_ID)
     }
 
     companion object {
@@ -76,22 +71,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   id
                   order_detail_id
                   name
-                  product_url
-                  snapshot_url
-                  currency_type
-                  currency_rate
                   thumbnail
-                  price
                   price_text
-                  weight
-                  weight_text
                   quantity
                   note
-                  free_return
-                  free_return_message
-                  purchase_protection_fee
-                  purchase_protection_fee_text
-                  purchase_protection_quantity
                 }
                 customer{
                   id
@@ -260,6 +243,34 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_text
                   action_key
                   action_url
+                }
+                have_product_bundle
+                bundle_detail {
+                  bundle {
+                    bundle_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      order_dtl_id
+                      product_id
+                      product_name
+                      quantity
+                      product_price
+                      notes
+                      thumbnail
+                    }
+                  }
+                  non_bundle {
+                    order_dtl_id
+                    product_id
+                    product_name
+                    quantity
+                    product_price
+                    notes
+                    thumbnail
+                  }
                 }
               }
             }

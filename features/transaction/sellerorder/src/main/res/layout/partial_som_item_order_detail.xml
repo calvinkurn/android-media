@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_product_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/dp_12"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginBottom="@dimen/dp_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Bonusin apa aja yak bang" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_product"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toTopOf="@+id/tv_product_notes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cv_product_img" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_product_img"
+        android:layout_width="@dimen/som_list_product_image_size"
+        android:layout_height="@dimen/som_list_product_image_size"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_6"
+        app:cardElevation="@dimen/dp_0"
+        app:layout_constraintBottom_toTopOf="@id/divider_product"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_product"
+            android:layout_width="@dimen/som_list_product_image_size"
+            android:layout_height="@dimen/som_list_product_image_size"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_name"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cv_product_img"
+        app:layout_constraintTop_toTopOf="@id/cv_product_img"
+        app:typographyType="heading_6"
+        tools:text="Fujifilm Instax Square Fujifilm Instax Square Fujifilm Instax Square" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/divider_product"
+        app:layout_constraintStart_toEndOf="@id/cv_product_img"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_name"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="1 x Rp 2.913.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

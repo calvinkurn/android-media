@@ -87,19 +87,68 @@ data class SomListOrderListResponse(
                     val tickerInfo: TickerInfo = TickerInfo(),
                     @SerializedName("button")
                     @Expose
-                    val buttons: List<Button> = emptyList()
+                    val buttons: List<Button> = emptyList(),
+                    @Expose
+                    @SerializedName("have_product_bundle")
+                    val haveProductBundle: Boolean = false,
+                    @Expose
+                    @SerializedName("bundle_detail")
+                    val bundleDetail: BundleDetail? = BundleDetail()
             ) {
+
+                data class BundleDetail(
+                        @Expose
+                        @SerializedName("total_product")
+                        val totalProduct: Int = 0,
+                        @Expose
+                        @SerializedName("bundle")
+                        val bundle: List<BundleProduct> = emptyList(),
+                        @Expose
+                        @SerializedName("non_bundle")
+                        val nonBundle: List<BundleProduct.OrderProductBundle> = emptyList()
+                ) {
+                    data class BundleProduct(
+                            @Expose
+                            @SerializedName("bundle_id")
+                            val bundleId: String = "0",
+                            @Expose
+                            @SerializedName("bundle_quantity")
+                            val bundleQuantity: Int = 1,
+                            @Expose
+                            @SerializedName("order_detail")
+                            val orderDetail: List<OrderProductBundle> = emptyList()
+                    ) {
+                        data class OrderProductBundle(
+                                @SerializedName("product_id")
+                                @Expose
+                                override val productId: String = "",
+                                @SerializedName("product_name")
+                                @Expose
+                                override val productName: String = "",
+                                @SerializedName("thumbnail")
+                                @Expose
+                                override val picture: String = "",
+                                @Expose
+                                @SerializedName("quantity")
+                                override val productQty: Int = 1
+                        ): Product
+                    }
+                }
+
                 data class OrderProduct(
                         @SerializedName("product_id")
                         @Expose
-                        val productId: String = "",
+                        override val productId: String = "",
                         @SerializedName("product_name")
                         @Expose
-                        val productName: String = "",
+                        override val productName: String = "",
                         @SerializedName("picture")
                         @Expose
-                        val picture: String = ""
-                )
+                        override val picture: String = "",
+                        @Expose
+                        @SerializedName("product_qty")
+                        override val productQty: Int = 1
+                ) : Product
 
                 data class Button(
                         @SerializedName("key")
@@ -118,6 +167,13 @@ data class SomListOrderListResponse(
                         @Expose
                         val popUp: PopUp = PopUp()
                 )
+
+                interface Product {
+                    val productId: String
+                    val productName: String
+                    val picture: String
+                    val productQty: Int
+                }
             }
         }
     }
