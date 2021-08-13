@@ -456,14 +456,14 @@ class TopAdsCreateAnalytics {
 
     fun sendKeywordAddEvent(eventAction: String, eventLabel: String, data: List<KeywordDataItem>) {
         val map = mapOf(
-            KEY_EVENT to KEY_PROMO_VIEW,
+            KEY_EVENT to KEY_PROMO_CLICK,
             KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_PRODUCT_CREATE,
             KEY_BUSINESS_UNIT_EVENT to "",
             KEY_CURRENT_SITE_EVENT to "",
             KEY_EVENT_ACTION to eventAction,
             KEY_EVENT_LABEL to eventLabel,
             KEY_ECOMMERCE_EVENT to mapOf(
-                KEY_PROMO_VIEW to mapOf(
+                KEY_PROMO_CLICK to mapOf(
                     KEY_PROMOTIONS to getAddedKeywordList(data)
                 )))
 
@@ -474,10 +474,10 @@ class TopAdsCreateAnalytics {
         var list = arrayListOf<Any>()
         data.forEachIndexed { index, it ->
             list.add(mapOf(
-                "id" to it.keyword,
+                "id" to "",
                 "name" to it.keyword,
-                "creative" to "${it.keyword} - ${it.totalSearch} - ${it.competition}",
-                "position" to index))
+                "creative" to it.totalSearch,
+                "position" to it.competition))
         }
 
         return list

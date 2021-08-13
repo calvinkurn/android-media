@@ -469,8 +469,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 if(it.bidSuggest == "0")
                     it.bidSuggest = minSuggestKeyword
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
-//                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(
-//                    CLICK_ADDED_KEYWORD, "${it.keyword} - ${it.totalSearch} - ${it.competition}")
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(CLICK_ADDED_KEYWORD, "",
                 stepperModel?.selectedKeywordStage!!
