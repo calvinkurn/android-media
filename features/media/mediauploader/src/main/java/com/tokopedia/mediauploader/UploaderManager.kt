@@ -87,9 +87,9 @@ class UploaderManager constructor(
                     minResBitmapMessage(minRes.width, minRes.height)
                 else -> ""
             }
-        ), sourceId, file)
+        ), sourceId, file) as UploadResult.Error
 
-        return if ((onError as UploadResult.Error).message.isNotEmpty()) {
+        return if (onError.message.isNotEmpty()) {
             onError
         } else {
             onUpload(sourcePolicy)
