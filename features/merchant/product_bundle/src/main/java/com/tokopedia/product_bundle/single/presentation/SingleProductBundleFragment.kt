@@ -35,7 +35,9 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class SingleProductBundleFragment(
-    private var bundleInfo: BundleInfo
+    private var bundleInfo: List<BundleInfo> = emptyList(),
+    private var bundleId: String = "",
+    private var selectedProductId: Long = 0L
 ) : BaseDaggerFragment(), BundleItemListener {
 
     @Inject
@@ -48,7 +50,7 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo)
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedProductId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -191,6 +193,7 @@ class SingleProductBundleFragment(
 
     companion object {
         @JvmStatic
-        fun newInstance(bundleInfo: BundleInfo) = SingleProductBundleFragment(bundleInfo)
+        fun newInstance(bundleInfo: List<BundleInfo>, bundleId: String = "", selectedProductId: Long = 0L) =
+            SingleProductBundleFragment(bundleInfo, bundleId, selectedProductId)
     }
 }

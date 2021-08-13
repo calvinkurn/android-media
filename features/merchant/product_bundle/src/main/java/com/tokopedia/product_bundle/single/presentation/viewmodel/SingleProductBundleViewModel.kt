@@ -35,9 +35,9 @@ class SingleProductBundleViewModel @Inject constructor(
     val dialogError: LiveData<Pair<String, SingleProductBundleErrorEnum>>
         get() = mDialogError
 
-    fun setBundleInfo(context: Context, bundleInfo: BundleInfo) {
+    fun setBundleInfo(context: Context, bundleInfo: List<BundleInfo>, selectedProductId: Long) {
         mSingleProductBundleUiModel.value = BundleInfoToSingleProductBundleMapper
-            .mapToSingleProductBundle(context, bundleInfo)
+            .mapToSingleProductBundle(context, bundleInfo, selectedProductId)
     }
 
     fun getVariantText(selectedProductVariant: ProductVariant, selectedProductId: String): String {

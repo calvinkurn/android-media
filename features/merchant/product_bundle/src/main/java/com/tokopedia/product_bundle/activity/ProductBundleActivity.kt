@@ -31,7 +31,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return SingleProductBundleFragment.newInstance(generateBundleInfo())
+        return SingleProductBundleFragment.newInstance(listOf(generateBundleInfo1(), generateBundleInfo2()))
     }
 
     private fun initInjector() {
@@ -45,8 +45,9 @@ class ProductBundleActivity : BaseSimpleActivity() {
     Begin of Dummy model function generator
     */
 
-    fun generateBundleInfo() = BundleInfo(
+    fun generateBundleInfo1() = BundleInfo(
         name = "Singel bundle",
+        status = "1",
         preorder = PreOrder(
             status = "ACTIVE",
             processTypeNum = 1,
@@ -149,15 +150,6 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 )
             ),
             BundleItem(
-                productID = 123451L,
-                name = "Bundle 2",
-                picURL = "https://placekitten.com/200/200",
-                minOrder = 2,
-                bundlePrice = 2000,
-                originalPrice = 2300,
-                status = "SHOW"
-            ),
-            BundleItem(
                 productID = 123453L,
                 name = "Bundle 3",
                 picURL = "https://placekitten.com/200/300",
@@ -209,6 +201,27 @@ class ProductBundleActivity : BaseSimpleActivity() {
                         picURL = "https://placekitten.com/200/200"
                     )
                 )
+            )
+        )
+    )
+
+    fun generateBundleInfo2() = BundleInfo(
+        name = "Singel bundle",
+        status = "1",
+        preorder = PreOrder(
+            status = "INACTIVE",
+            processTypeNum = 1,
+            processTime = 19
+        ),
+        bundleItems = listOf(
+            BundleItem(
+                productID = 123451L,
+                name = "Bundle 2",
+                picURL = "https://placekitten.com/200/200",
+                minOrder = 2,
+                bundlePrice = 2000,
+                originalPrice = 2300,
+                status = "SHOW"
             )
         )
     )
