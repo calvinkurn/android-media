@@ -13,7 +13,6 @@
     <string name="product_manage_failed_no_internet">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
     <string name="product_manage_refresh">Refresh</string>
     <string name="product_manage_dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
-    <string name="product_manage_campaign_count">%d Promosi</string>
     <string name="product_manage_campaign_bottom_sheet_title">Promosi yang berlangsung</string>
     <string name="product_manage_campaign_bottom_sheet_ticker">Promosi berikut ini memakai stok utama. Agar tidak terjadi pembatalan, pastikan stokmu cukup.</string>
 

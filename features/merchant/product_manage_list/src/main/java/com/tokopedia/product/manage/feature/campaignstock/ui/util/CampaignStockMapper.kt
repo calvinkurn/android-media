@@ -9,6 +9,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Re
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantCampaignTypeToProduct
 import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -78,16 +79,6 @@ object CampaignStockMapper {
                             campaignTypeList = mapVariantCampaignTypeToProduct(sellable.campaignTypeList)
                     )
                 }
-    }
-
-    private fun mapVariantCampaignTypeToProduct(campaignList: List<CampaignType>?): List<ProductCampaignType>? {
-        return campaignList?.map {
-            ProductCampaignType(
-                    id = it.id,
-                    iconUrl = it.iconUrl,
-                    name = it.name
-            )
-        }
     }
 
     private fun mapToParcellableReservedProduct(product: GetStockAllocationReservedProduct): ReservedStockProductModel =

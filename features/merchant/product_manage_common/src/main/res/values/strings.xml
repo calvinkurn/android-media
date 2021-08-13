@@ -32,4 +32,6 @@
 
     <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
     <string name="product_manage_campaign_label">Campaign</string>
+    <string name="product_manage_campaign_count">%d Promosi</string>
+
 </resources>

@@ -6,15 +6,14 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.android.synthetic.main.item_product_variant_stock.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +23,8 @@ import kotlinx.coroutines.delay
 
 class ProductVariantStockViewHolder(
     itemView: View,
-    private val listener: ProductVariantStockListener
+    private val listener: ProductVariantStockListener,
+    private val campaignListener: ProductCampaignInfoListener
 ): AbstractViewHolder<ProductVariant>(itemView) {
 
     companion object {
@@ -41,13 +41,15 @@ class ProductVariantStockViewHolder(
     private var onClickStatusSwitch: Job? = null
     private var textChangeListener: TextWatcher? = null
 
+    private val ongoingCampaignInfoText: Typography? = itemView.findViewById(R.id.tv_product_manage_variant_stock_count_variant)
+
     override fun bind(variant: ProductVariant) {
         setProductName(variant)
         setupStockQuantityEditor(variant)
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
         setupStockHint(variant)
-        setupCampaignLabel(variant)
+        setupCampaignInfo(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -106,8 +108,16 @@ class ProductVariantStockViewHolder(
         itemView.textTotalStockHint.showWithCondition(shouldShow)
     }
 
-    private fun setupCampaignLabel(variant: ProductVariant) {
-        itemView.labelCampaign.showWithCondition(variant.isCampaign)
+    private fun setupCampaignInfo(variant: ProductVariant) {
+        ongoingCampaignInfoText?.run {
+            ProductManageVariantMapper.mapVariantCampaignTypeToProduct(variant.campaignTypeList)?.let { campaignList ->
+                text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
+                setOnClickListener {
+                    campaignListener.onClickCampaignInfo(campaignList)
+                }
+            }
+            showWithCondition(variant.isCampaign)
+        }
     }
 
     private fun setStockMinMaxValue() {

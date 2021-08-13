@@ -7,14 +7,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCen
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
     view: View,
-    private val listener: ProductViewHolderView
+    private val listener: ProductViewHolderView,
+    private val campaignListener: ProductCampaignInfoListener
 ): AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {
@@ -178,7 +179,9 @@ class ProductViewHolder(
             if (shouldShowCampaignCount) {
                 text = String.format(getString(R.string.product_manage_campaign_count), product.campaignTypeList?.count().orZero())
                 setOnClickListener {
-                    listener.onClickCampaignInfo(product)
+                    product.campaignTypeList?.let {
+                        campaignListener.onClickCampaignInfo(it)
+                    }
                 }
             }
         }
@@ -209,6 +212,5 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
-        fun onClickCampaignInfo(product: ProductUiModel)
     }
 }

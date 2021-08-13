@@ -32,19 +32,6 @@
         app:labelTitle="@string/product_manage_inactive"
         tools:visibility="visible"/>
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelCampaign"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:labelTitle="@string/product_manage_campaign_label"
-        app:labelType="general_light_red"
-        app:layout_constraintBottom_toBottomOf="@id/switchStatus"
-        app:layout_constraintLeft_toRightOf="@id/labelInactive"
-        app:layout_constraintTop_toTopOf="@id/switchStatus"
-        tools:visibility="visible" />
-
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switchStatus"
         android:layout_width="wrap_content"
@@ -66,6 +53,19 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_variant_stock_count_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_G500"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:typographyType="heading_6"
+        app:layout_constraintStart_toStartOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textTotalStockLabel"
+        tools:text="3 promosi"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTotalStockHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
         android:gravity="center_vertical"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/textTotalStockLabel"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_manage_variant_stock_count_variant"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
