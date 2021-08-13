@@ -626,10 +626,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                                         enquiryData: RechargeGeneralProductInput) {
         if (favoriteNumbers.isNotEmpty()) {
             val clientNumberType = when (enquiryData.style) {
-                TopupBillsInputFieldWidget.INPUT_NUMERIC -> ClientNumberType.TYPE_INPUT_NUMERIC
-                TopupBillsInputFieldWidget.INPUT_ALPHANUMERIC -> ClientNumberType.TYPE_INPUT_ALPHANUMERIC
-                TopupBillsInputFieldWidget.INPUT_TELCO -> ClientNumberType.TYPE_INPUT_TEL
-                else -> ClientNumberType.TYPE_INPUT_NUMERIC
+                TopupBillsInputFieldWidget.INPUT_NUMERIC -> ClientNumberType.TYPE_INPUT_NUMERIC.value
+                TopupBillsInputFieldWidget.INPUT_ALPHANUMERIC -> ClientNumberType.TYPE_INPUT_ALPHANUMERIC.value
+                TopupBillsInputFieldWidget.INPUT_TELCO -> ClientNumberType.TYPE_INPUT_TEL.value
+                else -> ClientNumberType.TYPE_INPUT_NUMERIC.value
             }
 
             context?.run {
@@ -1204,6 +1204,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         recharge_general_swipe_refresh_layout.isEnabled = true
         recharge_general_swipe_refresh_layout.isRefreshing = false
         adapter.hideLoading()
+    }
+
+    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        // do nothing
+    }
+
+    override fun onSeamlessFavoriteNumbersError(error: Throwable) {
+        // do nothing
     }
 
     override fun getScreenName(): String {

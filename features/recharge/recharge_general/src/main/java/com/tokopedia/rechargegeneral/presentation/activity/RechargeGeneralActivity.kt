@@ -42,7 +42,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     }
 
     override fun onBackPressed() {
-        (fragment as RechargeGeneralFragment).onBackPressed()
+        (fragment as? RechargeGeneralFragment)?.onBackPressed()
         super.onBackPressed()
     }
 

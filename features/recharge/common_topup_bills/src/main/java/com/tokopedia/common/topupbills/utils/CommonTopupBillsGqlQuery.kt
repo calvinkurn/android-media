@@ -233,6 +233,25 @@ object CommonTopupBillsGqlQuery {
 
     """.trimIndent()
 
+    val rechargeFavoriteNumber = """
+        query rechargeFetchFavoriteNumber(${'$'}fields: RechargeFavoriteNumberListRequest!) {
+          rechargeFetchFavoriteNumber(fields:${'$'}fields) {
+            client_number
+            operator_id
+            product_id
+            category_id
+            list {
+              client_number
+              operator_id
+              product_id
+              category_id
+              label
+              icon_url
+            }
+          }
+        }
+    """.trimIndent()
+
 
     val ADD_BILL_QUERY by lazy {
         """

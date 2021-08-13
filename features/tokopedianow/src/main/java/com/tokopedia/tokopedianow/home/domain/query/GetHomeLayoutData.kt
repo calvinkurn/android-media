@@ -3,9 +3,9 @@ package com.tokopedia.tokopedianow.home.domain.query
 internal object GetHomeLayoutData {
 
     val QUERY = """
-       query getDynamicHomeChannel(${'$'}channelId: String) {
+       query getDynamicHomeChannel(${'$'}channelId: String, ${'$'}location: String) {
          dynamicHomeChannel {
-           channels(type:"tokonow", channelIDs:${'$'}channelId       ) {
+           channels(type:"tokonow", channelIDs:${'$'}channelId, location: ${'$'}location) {
              id
              group_id
              galaxy_attribution
@@ -62,6 +62,7 @@ internal object GetHomeLayoutData {
                  isActive
                  imageUrl
                }
+               recommendationType
                productViewCountFormatted
                isOutOfStock
                warehouseID

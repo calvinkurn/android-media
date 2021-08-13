@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -90,8 +91,20 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
-        if (!productCardModel.canShowQuantityEditor()) return
+        if (!productCardModel.canShowQuantityEditor())
+            removeQuantityEditorComponents()
+        else
+            showQuantityEditorComponent(productCardModel)
+    }
 
+    private fun removeQuantityEditorComponents() {
+        clear()
+
+        quantityEditorNonVariant?.gone()
+        buttonDeleteCart?.gone()
+    }
+
+    private fun showQuantityEditorComponent(productCardModel: ProductCardModel) {
         val shouldShowCartEditorComponent = productCardModel.shouldShowCartEditorComponent()
 
         configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
@@ -181,21 +194,35 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
+
         val quantity = nonVariant.quantity
         if (quantity > 0)
             this.setValue(quantity)
-
-        this.maxValue = nonVariant.maxQuantity
-        this.minValue = nonVariant.minQuantity
     }
 
     private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
+        safeguardQuantityEditorInput(nonVariant)
+
         val inputQuantity = editText.text.toString().toIntOrZero()
 
         addButton.isEnabled = inputQuantity < nonVariant.maxQuantity
         subtractButton.isEnabled = inputQuantity > nonVariant.minQuantity
 
         editorChangeQuantity(inputQuantity)
+    }
+
+    private fun QuantityEditorUnify.safeguardQuantityEditorInput(
+            nonVariant: ProductCardModel.NonVariant
+    ) {
+        val userQuantity = editText.text.toString().replace(".", "").toIntOrZero()
+        val quantityRange = nonVariant.minQuantity..nonVariant.maxQuantity
+        val coercedQuantity = userQuantity.coerceIn(quantityRange)
+        val coercedQuantityString = coercedQuantity.toString()
+
+        editText.setText(coercedQuantityString, TextView.BufferType.EDITABLE)
+        editText.setSelection(coercedQuantityString.length)
     }
 
     private fun editorChangeQuantity(inputQuantity: Int) {

@@ -137,10 +137,10 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun runMultiCheckout(request: MultiCheckoutRequest?) {
+    fun runMultiCheckout(request: MultiCheckoutRequest?, userId: String) {
         if (request != null) {
-            val idempotencyKey = request.attributes.identifier.userId?.generateRechargeCheckoutToken()
-                    ?: ""
+            val idempotencyKey = userId.generateRechargeCheckoutToken()
+
             val mapParam: HashMap<String, String> = hashMapOf()
             mapParam[IDEMPOTENCY_KEY] = idempotencyKey
             mapParam[CONTENT_TYPE] = "application/json"
