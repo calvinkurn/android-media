@@ -108,7 +108,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
-                        android:layout_marginEnd="@dimen/dp_32"
+                        android:layout_marginEnd="@dimen/dp_50"
                         android:text="@string/topads_group_detail_budget_rekomendasi"
                         android:visibility="gone"
                         android:textColor="@color/topads_clr_7031353b"
