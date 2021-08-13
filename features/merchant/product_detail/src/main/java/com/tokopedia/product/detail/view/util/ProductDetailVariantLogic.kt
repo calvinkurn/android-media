@@ -18,7 +18,7 @@ object ProductDetailVariantLogic {
                 ?: ""
 
         val listOfVariantLevelOne = mutableListOf<VariantOptionWithAttribute>()
-        val getVariantOptionsLevelOneByProductId = productVariant.children.firstOrNull{ it.productId == productId }?.optionIds?.firstOrNull()
+        val getVariantOptionsLevelOneByProductId = productVariant.children.firstOrNull { it.productId == productId }?.optionIds?.firstOrNull()
                 ?: ""
         val haveCustomImage = variantOptions.all {
             it.picture?.url100?.isNotEmpty() == true
@@ -30,17 +30,21 @@ object ProductDetailVariantLogic {
                 it.optionIds.firstOrNull() == i.id && it.isBuyable
             }
 
-            val isSelected = getVariantOptionsLevelOneByProductId == i.id && isBuyable
-            val currentState = if (isSelected) {
+            val isSelected = getVariantOptionsLevelOneByProductId == i.id
+            val currentState = if (isSelected && isBuyable) {
                 areAllVariantHaveSelectedChild = true
                 VariantConstant.STATE_SELECTED
+            } else if (isSelected && !isBuyable) {
+                areAllVariantHaveSelectedChild = true
+                VariantConstant.STATE_SELECTED_EMPTY
             } else if (!isBuyable) {
                 VariantConstant.STATE_EMPTY
             } else {
                 VariantConstant.STATE_UNSELECTED
             }
 
-            val isFlashSale = if (isSelected) productVariant.children.firstOrNull { it.productId == productId }?.isFlashSale ?: false else productVariant.isSelectedChildHasFlashSale(i.id
+            val isFlashSale = if (isSelected && isBuyable) productVariant.children.firstOrNull { it.productId == productId }?.isFlashSale
+                    ?: false else productVariant.isSelectedChildHasFlashSale(i.id
                     ?: "")
 
             listOfVariantLevelOne.add(VariantOptionWithAttribute(

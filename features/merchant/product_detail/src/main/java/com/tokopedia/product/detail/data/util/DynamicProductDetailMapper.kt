@@ -109,7 +109,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                        OneLinersDataModel(type = component.type, name = component.componentName)
+                            OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.CATEGORY_CAROUSEL -> {
@@ -325,14 +325,15 @@ object DynamicProductDetailMapper {
                     AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
                 }
             }
-            selectedChild?.isBuyable == true -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-            }
             shouldAutoSelect.isNotEmpty() -> {
                 AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
             }
             else -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                if (selectedChild == null) {
+                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                } else {
+                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
+                }
             }
         }
 

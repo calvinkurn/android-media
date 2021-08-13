@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.view
 
 import android.view.View
+import com.tokopedia.product.detail.common.VariantConstant.STATE_SELECTED
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 
 /**
@@ -14,7 +15,7 @@ interface AtcVariantListener {
     fun onSelectionChanged(view: View, position: Int) {}
     fun onVariantGuideLineHide(): Boolean = false
     fun onVariantImageClicked(url: String) {}
-    fun onVariantEmptyAndSelectedClicked(state: Int, variantOptions: VariantOptionWithAttribute? = null) {}
+    fun onVariantEmptyAndSelectedClicked(state: Int = STATE_SELECTED, variantOptions: VariantOptionWithAttribute? = null) {}
 
     fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {}
     fun onDeleteQuantityClicked(productId: String) {}

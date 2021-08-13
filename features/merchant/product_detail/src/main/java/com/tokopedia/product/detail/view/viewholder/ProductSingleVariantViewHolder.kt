@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.item_local_load_unify.view.*
  * Created by Yehezkiel on 02/06/21
  */
 class ProductSingleVariantViewHolder(val view: View,
-                                     variantListener: AtcVariantListener,
+                                     val variantListener: AtcVariantListener,
                                      val pdpListener: DynamicProductDetailListener) : AbstractViewHolder<ProductSingleVariantDataModel>(view), AtcVariantListener by variantListener {
 
 
@@ -55,6 +55,10 @@ class ProductSingleVariantViewHolder(val view: View,
                 rvSingleVariant.itemAnimator = null
                 rvSingleVariant.layoutManager = layoutManager
                 containerAdapter?.setData(it.variantOptions)
+
+                itemView.setOnClickListener {
+                    variantListener.onVariantEmptyAndSelectedClicked()
+                }
                 hideError()
             }
         }
