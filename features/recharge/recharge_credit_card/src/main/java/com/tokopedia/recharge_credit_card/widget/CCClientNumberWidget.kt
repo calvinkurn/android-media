@@ -41,7 +41,6 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
                 resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
             )
-            requestLayout()
         }
 
         setLengthMaxTextField()
