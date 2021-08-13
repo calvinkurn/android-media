@@ -19,18 +19,6 @@ class ShopHomeShowcaseListWidgetAdapter(
         private val showcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object {
-        /**
-         * Get showcase id from provided applink
-         * Example : tokopedia://shop/6551001/etalase/1428867
-         * @return : 1428867
-         */
-        fun getShowcaseIdFromApplink(applink: String): String {
-            val applinkSegments = applink.split("/")
-            return applinkSegments[applinkSegments.lastIndex]
-        }
-    }
-
     private var showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = showcaseListItemData
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

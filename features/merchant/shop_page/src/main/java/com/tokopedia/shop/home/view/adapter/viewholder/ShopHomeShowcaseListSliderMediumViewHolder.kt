@@ -3,9 +3,9 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -45,9 +45,11 @@ class ShopHomeShowcaseListSliderMediumViewHolder (
         }
         showcaseItemName?.text = element.name
 
+        itemView.addOnImpressionListener(element) {
+            itemWidgetListener.onShowcaseListWidgetItemImpression(element, (adapterPosition+1))
+        }
         itemView.setOnClickListener {
-            val showcaseId = ShopHomeShowcaseListWidgetAdapter.getShowcaseIdFromApplink(element.appLink)
-            itemWidgetListener.onShowcaseListWidgetItemClicked(element, showcaseId, adapterPosition)
+            itemWidgetListener.onShowcaseListWidgetItemClicked(element, (adapterPosition+1))
         }
     }
 }

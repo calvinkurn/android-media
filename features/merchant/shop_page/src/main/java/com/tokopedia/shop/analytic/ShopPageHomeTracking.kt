@@ -67,6 +67,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IDR
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSIONS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_PRODUCT_RECOMMENDATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_TOASTER_NOTIFY_ME
@@ -569,10 +570,38 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
+    fun onImpressionShowcaseListWidgetItem(
+            showcaseItem: ShopHomeShowcaseListItemUiModel,
+            showcasePosition: Int,
+            customDimensionShopPage: CustomDimensionShopPage,
+            userId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to PROMO_VIEW,
+                EVENT_CATEGORY to SHOP_PAGE_BUYER,
+                EVENT_ACTION to IMPRESSION_ETALASE_NAVIGATION_BANNER,
+                EVENT_LABEL to "widget type - to be filled",
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                USER_ID to userId
+        )
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
+                        PROMOTIONS to mutableListOf(mutableMapOf(
+                                CREATIVE to showcaseItem.imageUrl,
+                                ID to showcaseItem.id,
+                                NAME to showcaseItem.name,
+                                POSITION to showcasePosition
+                        ))
+                )
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
     fun clickShowcaseListWidgetItem(
             showcaseItem: ShopHomeShowcaseListItemUiModel,
             showcasePosition: Int,
-            showcaseId: String,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String,
     ) {
@@ -590,7 +619,7 @@ class ShopPageHomeTracking(
                 PROMO_CLICK to mutableMapOf(
                         PROMOTIONS to mutableListOf(mutableMapOf(
                                 CREATIVE to showcaseItem.imageUrl,
-                                ID to showcaseId,
+                                ID to showcaseItem.id,
                                 NAME to showcaseItem.name,
                                 POSITION to showcasePosition
                         ))
