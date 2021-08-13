@@ -3,6 +3,7 @@ package com.tokopedia.saldodetails.view.fragment.detail
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -21,12 +21,15 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailS
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.DepositHistoryData
 import com.tokopedia.saldodetails.utils.SaldoDateUtil
+import com.tokopedia.saldodetails.view.activity.detail.InvoiceDetailActivity
+import com.tokopedia.saldodetails.view.activity.detail.InvoiceDetailActivity.Companion.PARAM_INVOICE_NUMBER
 import com.tokopedia.saldodetails.view.viewmodel.DepositHistoryInvoiceDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.saldo_fragment_sales_detail.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -39,6 +42,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var saldoDetailsAnalytics: SaldoDetailsAnalytics
+    var salesDetailData: DepositHistoryData? = null
 
     private val viewModel: DepositHistoryInvoiceDetailViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         activity?.let {
@@ -90,6 +94,7 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSalesDetailLoaded(data: DepositHistoryData) {
+        salesDetailData = data
         val transDateStr = DateUtil.formatDate(
             SaldoDateUtil.DATE_PATTERN_FROM_SERVER,
             SaldoDateUtil.DATE_PATTERN_FOR_UI,
@@ -126,16 +131,21 @@ class SaldoSalesDetailFragment : BaseDaggerFragment() {
 
     private fun openOrderDetailPage() {
         saldoDetailsAnalytics.sendTransactionHistoryEvents(SaldoDetailsConstants.Action.SALDO_INVOICE_DETAIL_CLICK)
-        val orderUrl = viewModel?.getOrderDetailUrl()
+        val orderUrl = salesDetailData?.orderUrl
         if (orderUrl?.isEmpty() == false)
             RouteManager.route(context, orderUrl)
     }
 
     private fun openInvoiceDetailPage() {
         saldoDetailsAnalytics.sendTransactionHistoryEvents(SaldoDetailsConstants.Action.SALDO_INVOICE_NUMBER_CLICK)
-       val invoiceUrl = viewModel?.getInvoiceDetailUrl()
-        if (invoiceUrl?.isNotEmpty() == true)
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, invoiceUrl)
+        val invoiceUrl = salesDetailData?.invoiceUrl
+        if (invoiceUrl?.isNotEmpty() == true) {
+            Intent(context, InvoiceDetailActivity::class.java).apply {
+                putExtra(KEY_URL, invoiceUrl)
+                putExtra(PARAM_INVOICE_NUMBER, salesDetailData?.invoiceNumber)
+                startActivity(this)
+            }
+        }
     }
 
     private fun copyToClipboard(copiedContent: String) {

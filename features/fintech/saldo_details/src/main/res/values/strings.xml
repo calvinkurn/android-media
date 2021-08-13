@@ -50,14 +50,12 @@
     <string name="saldo_intro_goto_balance_page">Cek Halaman Saldo</string>
     <string name="title_saldo_detail">Detail Saldo</string>
     <string name="saldo_help">Pelajari</string>
-    <string name="saldo_buyer_title">Refund</string>
-    <string name="saldo_seller_title">Penghasilan</string>
     <string name="saldo_total_balance_buyer">Saldo Refund</string>
     <string name="saldo_total_balance_seller">Saldo Penghasilan</string>
     <string name="saldo_total_balance_text">Nilai Saldo</string>
     <string name="total_saldo_text">Total Saldo Aktif</string>
-    <string name="saldo_balance_buyer_desc">Berisi dana pengembalian  dari transaksi gagal dan hasil penjualan produk investasi. Dana digunakan kembali untuk melakukan pembelian di Tokopedia.</string>
-    <string name="saldo_balance_seller_desc">Berisi dana hasil penjualan. Saldo Penghasilan tidak dapat digunakan untuk pembelanjaan. Tetapi dapat digunakan untuk berlangganan Power Merchant dan Kredit TopAds.</string>
+    <string name="saldo_balance_buyer_desc">Saldo ini berasal dari transaksi yang dibatalkan. Kamu bisa gunakan Saldo Refund untuk bertransaksi lagi dan saldo bisa ditarik ke rekening bank.</string>
+    <string name="saldo_balance_seller_desc">Saldo yang menampung penghasilanmu di Tokopedia, dan tidak bisa dipakai untuk bertransaksi. Saldo Penghasilan berasal dari hasil penjualan produk (khusus Seller), dan penjualan hasil investasi seperti reksa dana dan emas. Saldo bisa ditarik ke rekening bank.</string>
     <string name="deposit_summary_title_seller">Riwayat Saldo Penghasilan</string>
     <string name="saldo_detail_intro_desc3">Pantau riwayat mutasi dana  dalam periode yang  ditentukan.</string>
     <string name="deposit_summary_title_buyer">Riwayat Saldo Refund</string>
@@ -121,4 +119,6 @@
     <string name="saldo_failed_to_load_more_transaction">Gagal menampilkan transaksi</string>
     <string name="saldo_balance_load_fail_title">Gagal menampilkan saldo</string>
     <string name="saldo_balance_load_fail_desc">Klik untuk memuat ulang</string>
+    <string name="cetak">Cetak</string>
+
 </resources>

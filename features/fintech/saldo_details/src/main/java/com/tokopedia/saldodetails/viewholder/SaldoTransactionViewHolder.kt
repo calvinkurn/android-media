@@ -31,6 +31,7 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
 
     override fun bind(element: DepositHistoryList) {
         val context = itemView.context
+        val isSaldoRollenceEnabled = SaldoRollence.isSaldoRevampEnabled()
         tvTitle.text = element.typeDescription
         tvNote.text = element.note
         if (element.amount > 0) {
@@ -51,17 +52,17 @@ class SaldoTransactionViewHolder(itemView: View, val onClick: (Visitable<*>) -> 
             DATE_PATTERN_FOR_UI,
             element.createTime,
         )
-        if(!element.withdrawalStatusString.isNullOrEmpty()){
+        if(!element.withdrawalStatusString.isNullOrEmpty() && isSaldoRollenceEnabled){
             labelTransactionStatus.visible()
             labelTransactionStatus.text = element.withdrawalStatusString
             labelTransactionStatus.setLabelType(getLocalLabelColor(element.withdrawalStatusColor))
-        }else {
+        } else {
             labelTransactionStatus.gone()
         }
-        if(element.haveDetail && SaldoRollence.isSaldoRevampEnabled()){
+        if(element.haveDetail && isSaldoRollenceEnabled){
             itemView.setOnClickListener { openDetailPage(element) }
             iconNext.visible()
-        }else{
+        } else{
             itemView.setOnClickListener {}
             iconNext.gone()
         }

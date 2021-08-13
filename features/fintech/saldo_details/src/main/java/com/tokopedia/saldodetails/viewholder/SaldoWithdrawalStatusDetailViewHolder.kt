@@ -7,6 +7,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.response.model.saldo_detail_info.WithdrawalInfoHistory
@@ -23,7 +24,7 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
     private fun setDetails(model: WithdrawalInfoHistory) {
         view.apply {
             tvStatusTitle.text = model.historyTitle
-            tvWithdrawalDetail.text = model.description
+            tvWithdrawalDetail.text = model.description.parseAsHtml()
             tvWithdrawalDate.text = model.createdTime
         }
     }

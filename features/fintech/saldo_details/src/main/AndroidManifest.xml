@@ -64,5 +64,9 @@
             android:screenOrientation="portrait"
             android:label="@string/saldo_sales_detail_title"
             android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name=".view.activity.detail.InvoiceDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>

@@ -748,10 +748,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                     it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer)
                 )
             }
-            bundle.putString(
-                UserStatusInfoBottomSheet.BUTTON_TEXT,
-                it.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button)
-            )
             UserStatusInfoBottomSheet.show(bundle, childFragmentManager)
         }
     }

@@ -187,7 +187,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/unify_space_2"
                                 android:layout_marginTop="@dimen/sd_dp_10"
-                                android:text="@string/saldo_buyer_title"
+                                android:text="@string/saldo_total_balance_buyer"
                                 android:textColor="@color/Unify_N700_68"
                                 app:typographyType="body_3" />
 
@@ -233,7 +233,7 @@
                                 android:layout_alignParentTop="true"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/unify_space_2"
-                                android:text="@string/saldo_seller_title"
+                                android:text="@string/saldo_total_balance_seller"
                                 android:textColor="@color/Unify_N700_68"
                                 app:typographyType="body_3" />
 

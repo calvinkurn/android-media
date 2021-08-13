@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -48,7 +49,8 @@ class UserStatusInfoBottomSheet : BottomSheetUnify() {
         actionButtonTV =
             view.findViewById(com.tokopedia.saldodetails.R.id.action_button_text_view) as UnifyButton
         bodyTV?.text = bodyText
-        actionButtonTV?.text = buttonText
+        if (buttonText.isNullOrEmpty()) actionButtonTV?.gone()
+        else actionButtonTV?.text = buttonText
     }
 
     private fun setDefaultParams() {
