@@ -188,7 +188,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelViewHotelListMapImpression(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
+    fun hotelViewHotelListMapImpression(context: Context?, destinationType: String, destination: String, searchParam: SearchParam,
                                         products: List<Property>, currentIndex: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
