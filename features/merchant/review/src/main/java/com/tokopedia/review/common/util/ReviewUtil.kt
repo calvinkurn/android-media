@@ -24,6 +24,8 @@ import kotlin.math.round
 
 object ReviewUtil {
 
+    const val ROUND_DECIMAL = 10
+
     fun setFilterJoinValueFormat(old: String, newValue: String = ""): String {
         return if (newValue.isNotEmpty()) {
             String.format("$old;$newValue")
@@ -134,7 +136,7 @@ val String.isUnAnswered: Boolean
     }
 
 fun Float?.roundDecimal(): String {
-    val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()
+    val rounded = this?.times(ReviewUtil.ROUND_DECIMAL)?.let { round(it) }?.div(ReviewUtil.ROUND_DECIMAL).toString()
     return rounded.isDecimalLengthOne()
 }
 
