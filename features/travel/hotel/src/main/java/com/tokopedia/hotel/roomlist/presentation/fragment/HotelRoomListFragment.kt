@@ -424,7 +424,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onPhotoClickListener(room: HotelRoom) {
         trackingHotelUtil.hotelClickRoomListPhoto(context, room.additionalPropertyInfo.propertyId, room.roomId,
-                room.roomPrice.priceAmount.roundToLong().toString(), ROOM_LIST_SCREEN_NAME)
+                room.roomPrice.priceAmount.toString(), ROOM_LIST_SCREEN_NAME)
     }
 
     private fun navigateToLoginPage() {

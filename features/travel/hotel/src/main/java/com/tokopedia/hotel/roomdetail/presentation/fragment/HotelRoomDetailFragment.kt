@@ -219,7 +219,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             binding?.roomDetailImages?.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(context, hotelRoom.additionalPropertyInfo.propertyId,
-                            hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString(), ROOM_DETAIL_SCREEN_NAME)
+                            hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.toString(), ROOM_DETAIL_SCREEN_NAME)
                     ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
             }
