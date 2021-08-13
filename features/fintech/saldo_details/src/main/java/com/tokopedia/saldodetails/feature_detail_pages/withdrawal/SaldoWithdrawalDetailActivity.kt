@@ -26,7 +26,7 @@ class SaldoWithdrawalDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setSecureWindowFlag()
+        setSecureWindowFlag()
         saldoComponent.inject(this)
     }
 
