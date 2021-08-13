@@ -1316,10 +1316,12 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        suspend fun fetchLeaderboard(channelId: String, isUserJoined: Boolean) = coroutineScope {
+        suspend fun fetchLeaderboard(channelId: String, interactive: PlayCurrentInteractiveModel, isUserJoined: Boolean) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
+
+            delay(interactive.endGameDelayInMs)
 
             val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
             val deferredInteractiveLeaderboard = async { repo.getInteractiveLeaderboard(channelId) }
@@ -1349,12 +1351,13 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             val isUserJoined = repo.hasJoined(activeInteractiveId)
+            val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             try {
-                fetchLeaderboard(channelId, isUserJoined)
+                fetchLeaderboard(channelId, activeInteractive, isUserJoined)
             } catch (e: Throwable) {
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             }

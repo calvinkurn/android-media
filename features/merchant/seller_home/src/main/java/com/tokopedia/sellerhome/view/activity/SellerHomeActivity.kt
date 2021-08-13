@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -27,8 +26,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
@@ -49,7 +48,7 @@ import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
-import com.tokopedia.sellerhome.view.viewhelper.SellerHomePreDrawListener
+import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
@@ -61,7 +60,6 @@ import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.abs
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
 
@@ -123,6 +121,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         setupBackground()
         setupToolbar()
+        setupStatusBar()
         setupBottomNav()
         setupNavigator()
         setupShadow()
@@ -137,6 +136,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         observeShopInfoLiveData()
         observeIsRoleEligible()
         fetchSellerAppWidget()
+        setupSellerHomeInsetListener()
     }
 
     override fun onResume() {
@@ -375,7 +375,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun onBottomNavSelected(page: PageFragment, trackingAction: String) {
         val pageType = page.type
 
-        setupStatusBar(pageType)
+        setupStatusBar()
         showToolbar(pageType)
         setCurrentFragmentType(pageType)
         resetPages(page)
@@ -492,19 +492,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
-    private fun setupStatusBar(@FragmentType pageType: Int) {
-        if (pageType == FragmentType.OTHER) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (isDarkMode()) {
-                    requestStatusBarLight()
-                } else {
-                    requestStatusBarDark()
-                }
-                statusBarBackground?.show()
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDarkMode()) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
             }
-        } else {
-            resetSellerHomeSystemUiVisibility()
-            statusBarBackground?.gone()
+            statusBarBackground?.show()
         }
     }
 
@@ -527,7 +522,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
-        createSahBottomNavVisibilityHandler()
     }
 
     private fun initSellerHomePlt() {
@@ -582,23 +576,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         }
     }
 
-    private fun resetSellerHomeSystemUiVisibility() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window?.run {
-                if (isDarkMode()) {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-                } else {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
-        }
+    private fun setupSellerHomeInsetListener() {
+        sahRootLayout?.setOnApplyWindowInsetsListener(createSellerHomeInsetsListener())
     }
 
-    private fun createSahBottomNavVisibilityHandler() {
-        sahRootLayout?.viewTreeObserver?.addOnPreDrawListener(createSahPreDrawListener())
-    }
-
-    private fun createSahPreDrawListener(): SellerHomePreDrawListener {
-        return SellerHomePreDrawListener(resources, sahRootLayout)
+    private fun createSellerHomeInsetsListener(): View.OnApplyWindowInsetsListener {
+        return SellerHomeOnApplyInsetsListener(sahContainer, sahBottomNav)
     }
 }

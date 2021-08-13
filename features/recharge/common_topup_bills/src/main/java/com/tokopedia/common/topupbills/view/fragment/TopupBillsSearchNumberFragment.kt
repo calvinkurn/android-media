@@ -51,8 +51,8 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
 
     private fun setupArguments(arguments: Bundle?) {
         arguments?.run {
-            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
-            number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
+            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
+            number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
                     ?: listOf()
         }
@@ -136,9 +136,9 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
 
     private fun setClientNumberInputType() {
         searchInputNumber.searchBarTextField.inputType = when (clientNumberType.toLowerCase()) {
-            ClientNumberType.TYPE_INPUT_TEL -> InputType.TYPE_CLASS_PHONE
-            ClientNumberType.TYPE_INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
-            ClientNumberType.TYPE_INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
+            ClientNumberType.TYPE_INPUT_TEL.value -> InputType.TYPE_CLASS_PHONE
+            ClientNumberType.TYPE_INPUT_NUMERIC.value -> InputType.TYPE_CLASS_NUMBER
+            ClientNumberType.TYPE_INPUT_ALPHANUMERIC.value -> InputType.TYPE_CLASS_TEXT
             else -> InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }
@@ -225,15 +225,15 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     companion object {
 
         const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
-        const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE"
 
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsFavNumberItem>): Fragment {
             val fragment = TopupBillsSearchNumberFragment()
             val bundle = Bundle()
-            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
-            bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             fragment.arguments = bundle
             return fragment
