@@ -266,6 +266,7 @@ ext {
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             lifeCycleCommon       : "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion",
             lifecycleRuntimeKtx   : "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion",
+            lifecycleProcess      : "androidx.lifecycle:lifecycle-process:$lifeCycleVersion",
             liveData              : "androidx.lifecycle:lifecycle-livedata:$lifeCycleVersion",
             liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
