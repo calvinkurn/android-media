@@ -12,11 +12,10 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -44,14 +43,6 @@ fun Visitable<*>.assertChooseAddressDataView() {
 
 fun Visitable<*>.assertBannerDataView() {
     assertThat(this, instanceOf(BannerDataView::class.java))
-}
-
-fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boolean) {
-    assertThat(this, instanceOf(TitleDataView::class.java))
-
-    val titleDataView = this as TitleDataView
-    assertThat(titleDataView.title, shouldBe(title))
-    assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(hasSeeAllCategoryButton))
 }
 
 fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue) {

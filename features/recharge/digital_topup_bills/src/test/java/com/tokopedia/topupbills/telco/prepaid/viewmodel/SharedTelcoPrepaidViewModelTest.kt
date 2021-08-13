@@ -89,12 +89,12 @@ class SharedTelcoPrepaidViewModelTest {
     @Test
     fun setFavNumberSelected_validData() {
         //given
-        val favNumber = TopupBillsFavNumberItem(clientNumber = "08123232323")
+        val favNumber = "08123232323"
         //when
         sharedTelcoPrepaidViewModel.setFavNumberSelected(favNumber)
         //then
         val actualData = sharedTelcoPrepaidViewModel.favNumberSelected.value
-        assertEquals(favNumber.clientNumber, actualData?.clientNumber)
+        assertEquals(favNumber, actualData)
     }
 
     @Test
@@ -140,6 +140,7 @@ class SharedTelcoPrepaidViewModelTest {
     @Test
     fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
+        val clientNumber = "08152832"
         val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
         val autoSelectProductId = 9
 
@@ -149,7 +150,7 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId)
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
@@ -158,12 +159,13 @@ class SharedTelcoPrepaidViewModelTest {
         val labelPulsa = (actualData as Success).data[0].label
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
-        assertEquals(autoSelectProductId.toString(), (sharedTelcoPrepaidViewModel.favNumberSelected.value as TopupBillsFavNumberItem).productId)
+        assertEquals(autoSelectProductId.toString(), sharedTelcoPrepaidViewModel.favNumberSelected.value)
     }
 
     @Test
     fun getCatalogProductList_DataValid_FailedGetData() {
         //given
+        val clientNumber = "08152832"
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -173,7 +175,7 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), 9)
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(),clientNumber = clientNumber)
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
@@ -183,5 +185,15 @@ class SharedTelcoPrepaidViewModelTest {
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(null, sharedTelcoPrepaidViewModel.favNumberSelected.value)
         assertEquals(errorGql.message, error.message)
+    }
+
+    @Test
+    fun setExpandInputNumberView_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setExpandInputNumberView(true)
+        Thread.sleep(500)
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.expandView.value ?: false)
     }
 }

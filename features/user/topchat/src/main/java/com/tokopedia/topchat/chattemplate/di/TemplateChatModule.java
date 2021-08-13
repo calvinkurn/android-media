@@ -27,7 +27,6 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext;
-import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -94,13 +93,6 @@ public class TemplateChatModule {
     }
 
     @Provides
-    public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
-                                                        NetworkRouter networkRouter,
-                                                        UserSession userSession) {
-        return new XUserIdInterceptor(context, networkRouter, userSession);
-    }
-
-    @Provides
     public TkpdAuthInterceptor provideChatTkpdAuthInterceptor(@ApplicationContext Context context,
                                                               NetworkRouter networkRouter,
                                                               UserSessionInterface userSessionInterface) {
@@ -117,7 +109,6 @@ public class TemplateChatModule {
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      NetworkRouter networkRouter,
                                      UserSessionInterface userSessionInterface,
-                                     XUserIdInterceptor xUserIdInterceptor,
                                      TkpdAuthInterceptor tkpdAuthInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))

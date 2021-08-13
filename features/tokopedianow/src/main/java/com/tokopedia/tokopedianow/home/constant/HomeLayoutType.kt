@@ -12,7 +12,9 @@ import androidx.annotation.StringDef
     HomeLayoutType.BANNER_CAROUSEL,
     HomeLayoutType.CATEGORY,
     HomeLayoutType.LEGO_3_IMAGE,
-    HomeLayoutType.LEGO_6_IMAGE
+    HomeLayoutType.LEGO_6_IMAGE,
+    HomeLayoutType.PRODUCT_RECOM,
+    HomeLayoutType.RECENT_PURCHASE
 )
 annotation class HomeLayoutType {
     companion object {
@@ -20,5 +22,7 @@ annotation class HomeLayoutType {
         const val CATEGORY = "category_tokonow"
         const val LEGO_3_IMAGE = "lego_3_image"
         const val LEGO_6_IMAGE = "6_image"
+        const val PRODUCT_RECOM = "top_carousel_tokonow"
+        const val RECENT_PURCHASE = "recent_purchase_tokonow"
     }
 }

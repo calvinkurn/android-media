@@ -5,17 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
+import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
-import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import java.text.NumberFormat
@@ -28,11 +33,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
-                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
+                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
+                                            private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
     companion object {
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
+        const val DEFAULT_PERCENTAGE = 100.0
+        const val DEFAULT_WEIGHT = 1000.0f
     }
 
     // Global Data
@@ -57,6 +65,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private val _miniCartListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
     val miniCartListBottomSheetUiModel: LiveData<MiniCartListUiModel>
         get() = _miniCartListBottomSheetUiModel
+
+    // Bottom Sheet Chat Data
+    private val _miniCartChatListBottomSheetUiModel = MutableLiveData<MiniCartListUiModel>()
+    val miniCartChatListBottomSheetUiModel: LiveData<MiniCartListUiModel>
+        get() = _miniCartChatListBottomSheetUiModel
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
@@ -125,6 +138,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
+    fun updateChatVisitables(visitables: MutableList<Visitable<*>>) {
+        miniCartChatListBottomSheetUiModel.value?.visitables = visitables
+        _miniCartChatListBottomSheetUiModel.value = miniCartChatListBottomSheetUiModel.value
+    }
+
     // API Call & Callback
 
     fun getLatestWidgetState(shopIds: List<String>? = null) {
@@ -167,9 +185,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             )
         } else {
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
+            val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
+
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+            tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartListUiModel.needToCalculateAfterLoad = true
+
             _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
+            _miniCartChatListBottomSheetUiModel.value = tmpMiniCartChatListUiModel
         }
     }
 
@@ -183,7 +206,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun deleteSingleCartItem(product: MiniCartProductUiModel) {
-        deleteCartUseCase.setParams(listOf(product))
+        deleteCartUseCase.setParams(listOf(product.cartId))
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessDeleteSingleCartItem(product, it)
@@ -231,11 +254,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun bulkDeleteUnavailableCartItems() {
-        val unavailableCartItems = mutableListOf<MiniCartProductUiModel>()
+        val unavailableItemsCartId = mutableListOf<String>()
         val visitables = getVisitables()
         visitables.forEach {
             if (it is MiniCartProductUiModel && it.isProductDisabled) {
-                unavailableCartItems.add(it)
+                unavailableItemsCartId.add(it.cartId)
             }
         }
 
@@ -248,7 +271,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
         }
 
-        deleteCartUseCase.setParams(unavailableCartItems)
+        deleteCartUseCase.setParams(unavailableItemsCartId)
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessBulkDeleteUnavailableCartItems(it, isLastItem)
@@ -309,23 +332,35 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
 
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-            val miniCartItems = mutableListOf<MiniCartItem>()
+            val updateCartRequestList = mutableListOf<UpdateCartRequest>()
             val allMiniCartItem = getMiniCartItems()
-            allMiniCartItem.forEach {
-                if (!it.isError) {
-                    miniCartItems.add(it)
+            allMiniCartItem.forEach { miniCartItem ->
+                if (!miniCartItem.isError) {
+                    updateCartRequestList.add(
+                            UpdateCartRequest(
+                                    cartId = miniCartItem.cartId,
+                                    quantity = miniCartItem.quantity,
+                                    notes = miniCartItem.notes
+                            )
+                    )
                 }
             }
-            updateCartUseCase.setParams(miniCartItems, true, source)
+            updateCartUseCase.setParams(updateCartRequestList, source)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-            val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
+            val updateCartRequestList = mutableListOf<UpdateCartRequest>()
             val visitables = getVisitables()
-            visitables.forEach {
-                if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                    miniCartProductUiModels.add(it)
+            visitables.forEach { visitable ->
+                if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                    updateCartRequestList.add(
+                            UpdateCartRequest(
+                                    cartId = visitable.cartId,
+                                    quantity = visitable.productQty,
+                                    notes = visitable.productNotes
+                            )
+                    )
                 }
             }
-            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, source)
+            updateCartUseCase.setParams(updateCartRequestList, source)
         }
         updateCartUseCase.execute(
                 onSuccess = {
@@ -511,7 +546,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                             else -> visitable.productPrice
                         }
                 totalPrice += visitable.productQty * price
-                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / 100.0 * price).toLong()
+                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
                 val originalPrice =
                         when {
                             visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice
@@ -609,7 +644,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
             val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
                     ?: ""
-            val overWeight = (totalWeight - maxWeight) / 1000.0f
+            val overWeight = (totalWeight - maxWeight) / DEFAULT_WEIGHT
             if (tickerWarning == null) {
                 tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
                 tickerWarning.let {

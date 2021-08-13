@@ -3,14 +3,13 @@ package com.tokopedia.otp.verification.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -80,12 +79,11 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    @JvmOverloads
     fun getVerificationMethod(
             otpType: String,
             userId: String,
-            msisdn: String = "",
-            email: String = ""
+            msisdn: String,
+            email: String
     ) {
         launchCatchError(block = {
             TkpdIdlingResource.increment()
@@ -111,13 +109,12 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    @JvmOverloads
     fun sendOtp2FA(
             otpType: String,
             mode: String,
-            msisdn: String = "",
-            email: String = "",
-            otpDigit: Int = 6,
+            msisdn: String,
+            email: String,
+            otpDigit: Int,
             validateToken: String,
             userIdEnc: String
     ) {
@@ -145,49 +142,42 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    @JvmOverloads
     fun sendOtp(
             otpType: String,
             mode: String,
-            msisdn: String = "",
-            email: String = "",
-            otpDigit: Int = 6,
-            validateToken: String = "",
-            userIdEnc: String = ""
+            msisdn: String,
+            email: String,
+            otpDigit: Int
     ) {
-        if (validateToken.isNotEmpty() && userIdEnc.isNotEmpty()) {
-            sendOtp2FA(otpType, mode, msisdn, email, otpDigit, validateToken, userIdEnc)
-        } else {
-            launchCatchError(coroutineContext, {
-                TkpdIdlingResource.increment()
-                val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
-                val data = sendOtpUseCase.getData(params).data
-                when {
-                    data.success -> {
-                        _sendOtpResult.value = Success(data)
-                        TkpdIdlingResource.decrement()
-                    }
-                    data.errorMessage.isNotEmpty() -> {
-                        _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
-                        TkpdIdlingResource.decrement()
-                    }
-                    else -> {
-                        _sendOtpResult.postValue(Fail(Throwable()))
-                        TkpdIdlingResource.decrement()
-                    }
+        launchCatchError(coroutineContext, {
+            TkpdIdlingResource.increment()
+            val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
+            val data = sendOtpUseCase.getData(params).data
+            when {
+                data.success -> {
+                    _sendOtpResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
                 }
-            }, {
-                _sendOtpResult.postValue(Fail(it))
-                TkpdIdlingResource.decrement()
-            })
-        }
+                data.errorMessage.isNotEmpty() -> {
+                    _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    TkpdIdlingResource.decrement()
+                }
+                else -> {
+                    _sendOtpResult.postValue(Fail(Throwable()))
+                    TkpdIdlingResource.decrement()
+                }
+            }
+        }, {
+            _sendOtpResult.postValue(Fail(it))
+            TkpdIdlingResource.decrement()
+        })
     }
 
     fun otpValidate2FA(
             otpType: String,
             validateToken: String,
             userIdEnc: String,
-            mode: String = "",
+            mode: String,
             code: String
     ) {
         launchCatchError(coroutineContext, {
@@ -214,50 +204,43 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    @JvmOverloads
     fun otpValidate(
             code: String,
             otpType: String,
-            msisdn: String = "",
-            fpData: String = "",
-            getSL: String = "",
-            email: String = "",
-            mode: String = "",
-            signature: String = "",
-            timeUnix: String = "",
-            userId: Int,
-            validateToken: String = "",
-            userIdEnc: String = ""
+            msisdn: String,
+            fpData: String,
+            getSL: String,
+            email: String,
+            mode: String,
+            signature: String,
+            timeUnix: String,
+            userId: Int
     ) {
-        if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString()) && userIdEnc.isNotEmpty()) {
-            otpValidate2FA(otpType, validateToken, userIdEnc, mode, code)
-        } else {
-            launchCatchError(coroutineContext, {
-                TkpdIdlingResource.increment()
-                val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
-                val data = otpValidateUseCase.getData(params).data
-                when {
-                    data.success -> {
-                        _otpValidateResult.value = Success(data)
-                        TkpdIdlingResource.decrement()
-                    }
-                    data.errorMessage.isNotEmpty() -> {
-                        _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
-                        TkpdIdlingResource.decrement()
-                    }
-                    else -> {
-                        _otpValidateResult.postValue(Fail(Throwable()))
-                        TkpdIdlingResource.decrement()
-                    }
+        launchCatchError(coroutineContext, {
+            TkpdIdlingResource.increment()
+            val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            val data = otpValidateUseCase.getData(params).data
+            when {
+                data.success -> {
+                    _otpValidateResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
                 }
-            }, {
-                _otpValidateResult.postValue(Fail(it))
-                TkpdIdlingResource.decrement()
-            })
-        }
+                data.errorMessage.isNotEmpty() -> {
+                    _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                    TkpdIdlingResource.decrement()
+                }
+                else -> {
+                    _otpValidateResult.postValue(Fail(Throwable()))
+                    TkpdIdlingResource.decrement()
+                }
+            }
+        }, {
+            _otpValidateResult.postValue(Fail(it))
+            TkpdIdlingResource.decrement()
+        })
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
         if(clear) {
             //if user interrupted login / register otp flow (not done), delete the token

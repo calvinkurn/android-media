@@ -867,7 +867,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 val listCampaignNplWidget = data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()
                 listCampaignNplWidget.forEach { nplCampaignUiModel ->
                     nplCampaignUiModel.data?.firstOrNull()?.let { nplCampaignItem ->
-                        if (nplCampaignItem.statusCampaign.toLowerCase() == StatusCampaign.UPCOMING.statusCampaign.toLowerCase())
+                        if (nplCampaignItem.statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, ignoreCase = true))
                             viewModel?.getCampaignNplRemindMeStatus(nplCampaignItem)
                     }
                 }
@@ -1098,6 +1098,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onVoucherImpression() {
         shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCoupon(shopId, viewModel?.userId)
+    }
+
+    override fun onVoucherTokoMemberInformationImpression() {
+        shopPageHomeTracking.impressionSeeEntryPointMerchantVoucherCouponTokoMemberInformation(shopId)
     }
 
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {

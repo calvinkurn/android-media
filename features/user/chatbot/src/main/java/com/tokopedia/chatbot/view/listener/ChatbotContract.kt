@@ -46,6 +46,10 @@ interface ChatbotContract {
         fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?)
 
         fun removeDummy(visitable: Visitable<*>)
+
+        fun loadChatHistory()
+
+        fun startNewSession()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -112,6 +116,8 @@ interface ChatbotContract {
                                     onGetSuccessResponse: (String) -> Unit,
                                     setStickyButtonStatus: (Boolean) -> Unit,
                                     onError: (Throwable) -> Unit)
+
+        fun checkForSession(messageId: String)
 
     }
 }
